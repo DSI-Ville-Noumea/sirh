@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nc.mairie</groupId>
-	<artifactId>SIRH_War</artifactId>
+	<artifactId>SIRH_war</artifactId>
 	<version>1.1.2</version>
 	<packaging>war</packaging>
 	<organization>
@@ -54,7 +54,7 @@
 		</contributor>
 	</contributors>
 
-	<name>SIRH_War</name>
+	<name>SIRH_war</name>
 	<url>http://sirh</url>
 	<description>
         SIRH est l'application de gestion du personnel de la Mairie. 
@@ -69,9 +69,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</connection>
-		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</developerConnection>
-		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</url>
+		<connection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</connection>
+		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</developerConnection>
+		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</url>
 	</scm>
 
 	<distributionManagement>
@@ -382,9 +382,9 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<webAccessUrl>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</webAccessUrl>
-					<anonymousConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</anonymousConnection>
-					<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_War</developerConnection>
+					<webAccessUrl>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</webAccessUrl>
+					<anonymousConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</anonymousConnection>
+					<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</developerConnection>
 				</configuration>
 				<reportSets>
 					<reportSet>

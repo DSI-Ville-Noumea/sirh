@@ -22,8 +22,7 @@
 		</links>
 
         <breadcrumbs>
-            <item name="Recette" target="_new" href="http://was/MairieTest/SPRH/"/>		
-            <item name="Prod" target="_new" href="http://was/Mairie/SPRH"/>
+            <item name="SIRH" target="_new" href="http://sirh"/>	
             <item name="JIRA" target="_new" href="http://dvlp:8181/browse/SIRH/"/>		
 			<item name="Accueil" href="home.html" /> 
 		</breadcrumbs>
