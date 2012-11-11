@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META name="GENERATOR"
+	content="IBM WebSphere Page Designer V3.5.3 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SIRH RECETTE - Gestion du personnel ${version}</TITLE>
+<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
+<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+</HEAD>
+<%
+	if (!nc.mairie.gestionagent.servlets.ServletAgent.controlerHabilitation(request)) {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setHeader("WWW-Authenticate","BASIC realm=\"Habilitation HTTP pour la Mairie\"");
+		javax.servlet.ServletContext sc= getServletContext();
+		javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher("/ConnectionInsulte.jsp");
+		rd.forward(request,response);
+	}else{
+	
+	nc.mairie.technique.UserAppli aUserAppli = (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+	
+	java.util.ArrayList listeDroits = aUserAppli.getListeDroits();
+	
+	if (listeDroits.size() == 0) {
+	
+		/*Module RECHERCHE AGENT*/
+		listeDroits.add("AgentRecherche");
+		
+		/*Module AGENT - Donnees personnelles*/
+		listeDroits.add("AgentCreation"); 
+		listeDroits.add("EnfantGestion");
+		listeDroits.add("EnfantRecherche");
+		listeDroits.add("AdministrationGestion");
+		listeDroits.add("AgentDiplomeGestion");
+		listeDroits.add("AgentEtatCivil");
+		listeDroits.add("AgentCasierJud");
+		listeDroits.add("AgentContrat");
+		listeDroits.add("AgentActesDonneesPerso");
+		
+		/*Module AGENT - HSCT*/
+		listeDroits.add("HandicapGestion");
+		listeDroits.add("VisiteMedicaleGestion");
+		listeDroits.add("InaptitudesGestion"); 
+		listeDroits.add("AccidentTravailGestion"); 
+		listeDroits.add("AgentActesHSCT");
+		
+		/*Module AGENT - Emplois*/
+		listeDroits.add("AgtEmploisAffectations");
+		listeDroits.add("AgtEmploisPoste");
+		listeDroits.add("AgtEmploisSpecificites");
+		
+		/*Module AGENT - Elts Salaire*/
+		listeDroits.add("PrimeGestion");
+		listeDroits.add("ChargeGestion");
+		listeDroits.add("PAGestion");
+		listeDroits.add("PosAdmGestion");
+		listeDroits.add("CarriereGestion");
+		
+		/*Module AGENT - EAE*/
+		listeDroits.add("AgtEae");
+
+		/*Module POSTE*/
+		listeDroits.add("FEGestion");
+		listeDroits.add("FECompetence");
+		listeDroits.add("FEActivite");
+		listeDroits.add("FPGestionOld");
+		listeDroits.add("FPGestion");
+		listeDroits.add("SuiviRecrutement");
+		
+		/*Module AVANCEMENT*/
+		listeDroits.add("AVCTSimulationFontionnaires");
+		listeDroits.add("AVCTSimulationContractuels");
+		listeDroits.add("AVCTSimulationConvCol");
+		listeDroits.add("AVCTFonctPrepaAvct");
+		listeDroits.add("AVCTFonctPrepaCAP");
+		listeDroits.add("AVCTFonctArretes");
+		listeDroits.add("AVCTFonctCarrieres");
+		listeDroits.add("AVCTContractuels");
+		listeDroits.add("AVCTConvCol");
+		listeDroits.add("AVCTCampagneEAE");
+		listeDroits.add("AVCTCampagnePlanification");
+		listeDroits.add("AVCTCampagneGestionEAE");
+		listeDroits.add("AVCTCampagneTableauBord");
+		
+		/*Module SUIVI MEDICAL*/
+		listeDroits.add("SMConvocation");
+		listeDroits.add("SMHistorique");
+		
+		/*Module PARAMETRES*/
+		listeDroits.add("ParamFicheEmploi");
+		listeDroits.add("ParamFichePoste");
+		listeDroits.add("ParamRecrutement");
+		listeDroits.add("ParamAvancement");		
+		listeDroits.add("ParamDonneesPerso");
+		listeDroits.add("ParamHSCT");
+		listeDroits.add("ParamGrade");
+		listeDroits.add("ParamGradeRef");
+		
+		/*Module GESTION DROITS*/
+		listeDroits.add("DroitsUtilisateur");
+		listeDroits.add("DroitsProfil");	
+
+	}
+%>
+
+<frameset rows="*" cols="200,*" frameborder="0" border="0"
+	framespacing="0">
+	<FRAMESET rows="47,120,20,*">
+		<FRAME src="PersonnelCarreBleu.jsp" name="carreBleu" scrolling="NO"
+			noresize marginwidth="0" marginheight="0">
+		<FRAME src="CartoucheAgentMenu.jsp" name="refAgent" frameborder="no"
+			noresize marginwidth="0" marginheight="0" scrolling="no"
+			style="margin-top:10px;">
+		<FRAME src="CartoucheAgentMenuNew.jsp" name="actionAgent" frameborder="no" noresize
+			marginwidth="0" marginheight="0" scrolling="no">
+		<FRAME src="PersonnelIndex.jsp" name="Index" frameborder="no" noresize
+			marginwidth="0" marginheight="0" scrolling="no">
+	</FRAMESET>
+	<frameset rows="47,*" cols="*" framespacing="0" frameborder="NO"
+		border="0">
+		<FRAME src="PersonnelMenuHaut.jsp" name="MenuHaut" scrolling="NO" noresize marginwidth="0">
+		<FRAME src="PersonnelMain.jsp" name="Main" marginwidth="0"
+			marginheight="0">
+	</frameset>
+	<NOFRAMES>
+	<BODY>
+	<P>L'affichage de cette page requiert un navigateur prenant en
+	charge les cadres (frames).</P>
+	</BODY>
+	</NOFRAMES>
+</FRAMESET>
+
+<%}%>
+</HTML>

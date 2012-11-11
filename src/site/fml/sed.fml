@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+
+  <part id="general">
+    <title>General</title>
+
+    <faq id="menuHaut">
+      <question>
+        L'utilisateur ne voit pas tous les onglets du menu haut ?
+      </question>
+      <answer>
+        <p>Regarder si internet explorer n'est pas à plus de 100% au niveau de la résolution d'affichage.</p>
+      </answer>
+    </faq>
+  </part>
+  
+  <part id="donnees">
+    <title>Données</title>
+
+    <faq id="suppFDP">
+      <question>
+        Comment supprimer une fiche de poste (option indisponible pour les utilisateurs)?
+      </question>
+      <answer>
+        <p>Dans de rares cas, il faut supprimer une ligne de la table FICHE_POSTE (si elle n'est pas affectée). Voici les différentes requetes SQL à passer :</p>
+		<p>delete from sirh.fe_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.histo_fiche_poste where id_fiche_poste = xxx</p>
+		<p>delete from sirh.activite_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.competence_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.diplome_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.niveau_etude_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.cadre_emploi_fp where id_fiche_poste = xxx</p>
+		<p>delete from sirh.fiche_poste where id_fiche_poste =xxx</p>
+		<p>delete from mairie.sppost where poanne = xxx and ponuor = xxx</p>
+      </answer>
+    </faq>
+	 <faq id="inactiveFDP">
+      <question>
+        Comment rendre une fiche de poste inactive ?
+      </question>
+      <answer>
+        <p>update SIRH.FICHE_POSTE set ID_STATUT_FP = 4 where ID_FICHE_POSTE = xxxx</p>
+		<p>NB : tous les statuts des FDP sont disponible dans la table R_STATUT_FP.</p>
+      </answer>
+    </faq>
+  </part>
+  <part id="erreurs">
+
+    <title>Erreurs</title>
+
+    <faq id="erreur1">
+      <question>
+        L'utilisateur tente d'imprimer un document depuis SIRH mais au moment de s'ouvrir dans Word il y a un message d'erreur ?
+      </question>
+      <answer>
+        <p>1- S'assurer que le document soit bien ouvert par word.</p>
+        <p>2- Il s'agit d'un soucis sur un caractère accentué. Si vous ouvrez le document avec un editeur de texte (Notepad ++ par exemple) et que vous allez sur la ligne indiquée en erreur par word et que vous corrigez manuellement le caractère qui pose soucis le problème sera résolu.</p>
+		<p>3- Attention , pensez à tester sur le serveur de recette cette erreur afin de pouvoir la corriger dans l'application.</p>
+      </answer>
+    </faq>
+
+    <faq id="erreur2">
+      <question>
+        L'utilisateur voit l'erreur "[SQL0901] Erreur système SQL", que faire ?
+      </question>
+      <answer>
+        <p>Du coté du SED pas grand chose à faire. Il faut regarder que l'AS400 fonctionne correctement et tester soit même la modification que souhaite faire l'utilisateur. Mais cette erreur si signifie un problème machine plutôt qu'un problème de l'application.</p>
+      </answer>
+    </faq>
+
+    <faq id="erreur3">
+      <question>
+        L'utilisateur nous informe qu'il a un message d'erreur au niveau de l'application, que faire ?
+      </question>
+      <answer>
+		<p>1 - Demander à l'utilisateur son login.</p>
+        <p>2 - Aller regarder dans les logs le soucis rencontré afin de le corriger.</p>
+      </answer>
+    </faq>
+
+    <faq id="erreur4">
+      <question>
+        Où aller voir les logs du serveur d'applications ?
+      </question>
+      <answer>
+		<p>Aller dans le repertoire \\svpwas\logs puis regarder les différents fichiers de logs sur serveurProd1 et serverProd2.</p>
+      </answer>
+    </faq>
+
+  </part>
+
+</faqs>

@@ -1,0 +1,61 @@
+
+<project name="SIRH">	
+	<bannerLeft>
+		<name>DSI - Mairie de Nouméa</name>
+		<src>img/DSI-logo-blason-or.png</src>
+		<href>http://svpsp/dsi/Pages/Accueil.aspx</href>
+		<alt>http://svpsp/dsi/Pages/Accueil.aspx</alt>
+	</bannerLeft>
+	
+    <publishDate position="right"/>
+    <version position="right"/>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-stylus-skin</artifactId>
+		<version>1.4</version>
+	  </skin>
+    <body> 
+		<links>
+		  <item name="Accueil DSI" target="_new" href="http://svpsp/dsi/Pages/accueil.aspx"/>
+		  <item name="EasyVista > Demandes d'Interventions" target="_new" href="http://easyvista.ville-noumea.nc"/>
+		  <item name="apt Reference" target="_new" href="http://maven.apache.org/doxia/references/apt-format.html"/>
+		</links>
+
+        <breadcrumbs>
+            <item name="Recette" target="_new" href="http://was/MairieTest/SPRH/"/>		
+            <item name="Prod" target="_new" href="http://was/Mairie/SPRH"/>
+            <item name="JIRA" target="_new" href="http://dvlp:8181/browse/SIRH/"/>		
+			<item name="Accueil" href="home.html" /> 
+		</breadcrumbs>
+		
+		<menu name="Exploitation">
+        	<item name="Mise en PROD" href="exploitation/mise_prod.html"/>
+        	<item name="Releases" href="exploitation/releases.html"/>
+        	<item name="Procédures" href="exploitation/procedures.html"/>
+        	<item name="SIRH dans JBoss" href="exploitation/jboss.html"/>
+        	<item name="SIRH dans Tomcat" href="exploitation/tomcat.html"/>
+        	<item name="Datasource dans Tomcat" href="exploitation/datasourceTomcat.html"/>
+        </menu>
+		<menu name="Développement">
+        	<item name="Modèles de documents" href="developpement/modeles_documents.html"/>
+        	<item name="Base de données" href="developpement/base_donnees.html"/>
+        	<item name="Application" href="developpement/application.html"/>
+        	<item name="Builder EAR" href="developpement/creerEAR.html"/>
+        	<item name="Deploiement EAR" href="developpement/deployerEAR.html"/>
+        </menu>
+		<menu name="Conception">
+        	<item name="Agent" href="conception/agent.html"/>
+        	<item name="Poste" href="conception/poste.html"/>
+        	<item name="Paramètres" href="conception/parametres.html"/>
+        	<item name="Avancement" href="conception/avancement.html"/>
+        </menu>
+		<menu name="FAQ">
+        	<item name="SIE" href="sie.html"/>
+        	<item name="SED" href="sed.html"/>
+        	<item name="Utilisateurs" href="utilisateurs.html"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+</project>
+
+

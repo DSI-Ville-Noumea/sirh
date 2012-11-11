@@ -1,0 +1,60 @@
+ -----
+ SIRH
+ -----
+ Noémie NICOLAS
+ -----
+  26/03/2012
+
+Modèles de documents dans SIRH
+
+ Dans SIRH, il est possible d'imprimer divers documents. Voici comment en ajouter un et quels sont les documents présents dans l'application.
+
+* Mettre en place un nouveau modèle de document
+
+ * Avoir un document dans word et l’enregistrer sous le format xml  de word.
+ 
+ * Remplacer les champs que l’on souhaite remplir via la base de données par $_NOMVARIABLE.
+ 
+ * Enregistrer le fichier dans le répertoire partagé de la DRH ysi\datacentre$\drh\SIRH-document \Modeles_Documents (on retrouve le répertoire dans le fichier web.xml de l’application). 
+ 
+ * Dans l’application : 
+ 
+	* Ajouter le bouton impression au niveau de l’écran souhaité
+	
+	* Mettre en place le code (regarder le code de OeAGENTEmploisAffectation.java par exemple) pour générer le document
+
+* Voir les modèles ainsi que les documents générés
+
+ ysi\datacentre$\drh\SIRH-document\PROD
+ 
+* Liste des modèles présent
+
+*--------------------*-----------------*--------------*--------------------*----------------------------------+ 
+| <<Process>>        | <<Actions>>     | <<Dossier>>  | <<Modèle(s)>>      | <<Répertoire documents générés>> |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+| OeAgentContrat     | Imprimer le     | PROD/Modeles | Tous ceux présents | PROD/Document_Associe/C          |
+|                    | contrat de      | _Documents/  | dans le dossier    |                                  |
+|                    | travail (CDD)   | Contrats     |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+| OeAgentAffectation | Imprimer les    | PROD/Modeles | Tous ceux présents | PROD/Document_Associe/NS         |
+|                    | notes de        | _Documents/  | dans le dossier    |                                  |
+|                    | services        | Affectations |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+|                    | Sauvegarde auto | PROD/Modeles | ModeleFP.xml       | PROD/Document_Associe/           |
+|                    | d'une FDP lors  | _Documents/  |                    | SauvegardeFDP                    |
+|                    | de l'affectation| FichePoste   |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+| OeAgentEmploiPoste | Imprimer les    | PROD/Modeles | ModeleFP.xml       | PROD/Document_Associe/FP         |
+|                    | fiches de       | _Documents/  |                    |                                  |
+|                    | poste           | FichePoste   |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+| OePosteFichePoste  | Imprimer les    | PROD/Modeles | ModeleFP_Vierge.xml| PROD/Document_Associe/           |
+|                    | fiches de       | _Documents/  |                    | FichePosteVierge                 |
+|                    | poste           | FichePoste   |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+|                    | Sauvegarde auto | PROD/Modeles | ModeleFP.xml       | PROD/Document_Associe/           |
+|                    | d'une FDP lors  | _Documents/  |                    | SauvegardeFDP                    |
+|                    | création/modif  | FichePoste   |                    |                                  |
+|                    | d'une FDP       |              |                    |                                  |
+*--------------------*-----------------*--------------*--------------------*----------------------------------+
+

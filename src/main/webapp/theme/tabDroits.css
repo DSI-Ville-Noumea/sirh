@@ -1,0 +1,98 @@
+.general{
+	position: absolute;
+	overflow: hidden;
+	width: 950px;
+	height: 500px;
+	border: 1px solid;
+}
+
+.titre{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: 25px;
+	background-color: #BBD2E1;
+	z-index:100; 
+	width:200px;
+}
+
+.entete{
+	position: absolute;
+	width: 2640px;
+	left: 200px;
+	top: 0px;
+	height: 25px;
+	z-index:10;
+}
+
+.first_col {
+	position: absolute;
+	top: 25px;
+	left: 0px;
+	width: 200px;
+	background-color: white;
+}
+
+.the_table {
+	position: absolute;
+	overflow: scroll;
+	left: 200px;
+	top: 25px;
+	width: 750px;
+	height: 475px;
+	background-color: white;
+	z-index:10;
+}
+
+td{
+	border:1px solid #000; 
+}
+
+.entete table tr td{
+	width:132px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	background-color: #BBD2E1;
+}
+
+.first_col table tr td{
+	width:200px;
+	height:23px;
+}
+
+.the_table table tr td{
+	width:132px;
+	height:23px;
+}
+
+.titre table, 
+.entete table,
+.first_col table,
+.the_table table{
+	border-collapse:collapse;
+	border:1px solid #000; 
+}
+
+.titre table{
+	width:200px; 
+	height:25px; 
+}
+
+.entete table{
+	height:25px;
+}
+
+.first_col table{
+	width:200px; 
+	height:500px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: left;
+}
+
+.the_table table tr {
+	height:23px;
+}

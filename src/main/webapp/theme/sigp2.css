@@ -1,0 +1,259 @@
+.sigp2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	vertical-align: middle;
+	word-spacing: small;
+	text-align: left;
+	border: thin none;
+	list-style-type: lower-alpha;
+	color: #555555;
+	position: static;
+}
+
+.sigp2Mandatory {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	vertical-align: middle;
+	word-spacing: small;
+	text-align: left;
+	border: thin none;
+	list-style-type: lower-alpha;
+	color: #555555;
+	position: static;
+}
+
+.sigp2-saisie {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	line-height: normal;
+	font-weight : bold;
+	font-variant: normal;
+	color: #191970;
+}
+
+.sigp2-statique {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	vertical-align: middle;
+	word-spacing: small;
+	text-align: left;
+	border: thin none;
+	list-style-type: lower-alpha;
+	color: #191970;
+	position: static;
+}
+
+.sigp2-saisiemajuscule {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	text-transform: uppercase;
+	color: #191970;
+}
+.sigp2-titre {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size : 12px;
+	/*font-style: oblique;*/
+	line-height: normal;
+	font-weight: bolder;
+	font-variant: normal;	
+	color: #333333;
+}
+.sigp2-saisiemajusculenongras {
+
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: uppercase;
+	color: #191970;
+}
+.OngletActif{
+  background-image : url(../images/onglet_actif_G.gif);
+  text-align : center;
+  text-decoration : blink;
+  font-weight : bold;
+  font-style : italic;
+  cursor : pointer;
+}
+.OngletInactif{
+  background-image : url(../images/onglet_inactif_G.gif);
+  text-align : center;
+  font-weight : bold;
+  font-style : italic;
+  cursor : pointer;
+}
+.sigp2Fieldset{
+  _position:relative;
+  _padding-top:20px;
+  _padding-bottom:15px;
+  _display:block;
+  font-size: 11px;
+  font-weight : bold;
+  /*font-style : italic;*/
+  color : #555555;
+  background-color:#EFEFEF;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  left : 1px;
+  z-index : 0;
+}
+.sigp2Legend{
+  _position:absolute;
+  _top:-10px;
+}
+.OngletCorps{
+  background-color:#EFEFEF;
+  border: 2px solid;
+  border-color: #BBD2E1;
+  padding: 10px;
+  margin-left: 10px;
+}
+.sigp2-Bouton-100{
+  width : 100px;
+  text-align : center;
+  margin-left : 5px;
+  margin-right : 5px;
+}
+
+.sigp2-bouton-200{
+  width : 200px;
+  text-align : center;
+  margin-left : 5px;
+  margin-right : 5px;
+}
+
+.sigp2-bouton-250{
+  width : 250px;
+  text-align : center;
+  margin-left : 5px;
+  margin-right : 5px;
+}
+
+.sigp2-liste {
+	font-family: monospace;
+	font-size : 11px;
+  	font-weight : bold;
+	vertical-align: middle;
+	text-align: left;
+	color: #191970;
+}
+.sigp2-titre-liste {
+	font-family: monospace;
+	font-size : 11px;
+	vertical-align: middle;
+	text-align: left;
+    color : #555555;
+}
+
+.sigp2-BODY{
+  text-align : center;
+}
+
+.sigp2-RadioBouton{
+  font-size : 11px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight : bold;
+  color: #555555;
+}
+
+.sigp2-tab {
+	border: 1px solid black;
+	border-collapse:collapse;
+	background-color: white;
+}
+
+.sigp2-tabTitre {
+	border: 1px solid black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	vertical-align: middle;
+	height: 20px;
+	text-align: center;
+	/*color: #555555;*/
+	/*background-color: #BBD2E1;*/
+	background-color: white;
+	z-index: 1;
+}
+.sigp2-tabLigne {
+	border: 1px solid black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: left;
+	text-align : center;
+	color: black;
+}
+
+.sigp2-displayNone{
+	display: none;
+}
+
+.scrollable{
+   overflow: auto;
+   width: 360px; /* adjust this width depending to amount of text to display */
+   height: 40px; /* adjust height depending on number of options to display */
+ }
+ .scrollable select{
+   border: none;
+ }
+.sigp2NewTab{
+  _position:relative;
+  _padding-top:20px;
+  _padding-bottom:15px;
+  /*_display:block;*/
+  font-size: 11px;
+  font-weight : bold;
+  /*font-style : italic;*/
+  color : #555555;
+  background-color:white;
+  /*margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;*/
+  padding: 10px;
+  left : 1px;
+  /*z-index : 0;*/
+  /*border: 1px solid #cac9d9;*/
+  border-collapse:collapse;
+}
+
+.sigp2NewTab-liste {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size : 11px;
+  	font-weight : bold;
+	vertical-align: middle;
+	text-align: left;
+	color: #191970;	
+	border: 1px solid #cac9d9;
+	font-style: normal;
+  	border-collapse:collapse;
+  cursor: pointer;
+}
+
+.selectLigne {
+	background-color: #EFEFEF;
+}

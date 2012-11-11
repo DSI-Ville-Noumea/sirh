@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Application context definition for PetClinic on JDBC. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+
+	<context:annotation-config />
+	<context:component-scan base-package="nc.mairie.*"
+		scoped-proxy="targetClass" />
+
+	<bean id="contextApplicationContextProvider" class="nc.mairie.spring.utils.ApplicationContextProvider"/>
+
+	<!-- Declaration des datasources recupéré depuis context.xml -->
+	<jee:jndi-lookup id="dataSourceSIRH" jndi-name="jdbc/SIRH" />
+	<jee:jndi-lookup id="dataSourceMairie" jndi-name="jdbc/MAIRIE" />
+	<jee:jndi-lookup id="dataSourceOracle" jndi-name="jdbc/SIRH_EAE"/>
+
+	<!-- DAO SIRH -->
+	<bean id="motifVisiteMedDao"
+		class="nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+
+	<bean id="suiviMedicalDao"
+		class="nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="titreFormationDao"
+		class="nc.mairie.spring.dao.metier.parametrage.TitreFormationDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="centreFormationDao"
+		class="nc.mairie.spring.dao.metier.parametrage.CentreFormationDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="formationAgentDao" class="nc.mairie.spring.dao.metier.diplome.FormationAgentDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="permisAgentDao" class="nc.mairie.spring.dao.metier.diplome.PermisAgentDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="titrePermisDao" class="nc.mairie.spring.dao.metier.parametrage.TitrePermisDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="employeurDao" class="nc.mairie.spring.dao.metier.parametrage.EmployeurDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="representantDao" class="nc.mairie.spring.dao.metier.parametrage.RepresentantDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="typeRepresentantDao" class="nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+
+	<!-- DAO Mairie -->
+	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
+		<property name="dataSource" ref="dataSourceMairie" />
+	</bean>
+	<!-- DAO SIRH ORACLE -->
+	<bean id="campagneEAEDao" class="nc.mairie.spring.dao.metier.EAE.CampagneEAEDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="campagneActionDao" class="nc.mairie.spring.dao.metier.EAE.CampagneActionDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="campagneActeurDao" class="nc.mairie.spring.dao.metier.EAE.CampagneActeurDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeDao" class="nc.mairie.spring.dao.metier.EAE.EAEDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeEvaluateurDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeEvalueDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvalueDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeFDPActiviteDao" class="nc.mairie.spring.dao.metier.EAE.EaeFDPActiviteDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeFDPCompetenceDao" class="nc.mairie.spring.dao.metier.EAE.EaeFDPCompetenceDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeFichePosteDao" class="nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeDiplomeDao" class="nc.mairie.spring.dao.metier.EAE.EaeDiplomeDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeParcoursProDao" class="nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeFormationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFormationDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeTypeObjectifDao" class="nc.mairie.spring.dao.metier.EAE.EaeTypeObjectifDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeResultatDao" class="nc.mairie.spring.dao.metier.EAE.EaeResultatDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaePlanActionDao" class="nc.mairie.spring.dao.metier.EAE.EaePlanActionDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeEvaluationDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeDocumentDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+
+</beans>

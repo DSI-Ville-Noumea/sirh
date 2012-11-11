@@ -1,0 +1,207 @@
+<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.poste.Service"%>
+<%@page import="nc.mairie.spring.domain.metier.EAE.EAE"%>
+<%@page import="nc.mairie.enums.EnumEtatEAE"%>
+<%@page import="nc.mairie.utils.MairieUtils"%>
+<%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@page import="nc.mairie.utils.TreeHierarchy"%>
+<HTML>
+<HEAD>
+<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
+<TITLE>Gestion des EAE</TITLE>
+
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
+<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
+
+<SCRIPT language="JavaScript">
+//afin de sélectionner un élément dans une liste
+function executeBouton(nom)
+{
+document.formu.elements[nom].click();
+}
+
+// afin de mettre le focus sur une zone précise
+function setfocus(nom)
+{
+if (document.formu.elements[nom] != null)
+document.formu.elements[nom].focus();
+}
+
+// afin d'afficher la hiérarchie des services
+function agrandirHierarchy() {
+
+	hier = 	document.getElementById('treeHierarchy');
+
+	if (hier.style.display!='none') {
+		reduireHierarchy();
+	} else {
+		hier.style.display='block';
+	}
+}
+
+// afin de cacher la hiérarchie des services
+function reduireHierarchy() {
+	hier = 	document.getElementById('treeHierarchy');
+	hier.style.display='none';
+}
+</SCRIPT>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<jsp:useBean
+ class="nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE" id="process" scope="session"></jsp:useBean>
+<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
+	<%@ include file="BanniereErreur.jsp" %>
+	<FORM name="formu" method="POST" class="sigp2-titre">
+		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
+		<BR/>
+		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		    <legend class="sigp2Legend">Choix de la campagne</legend>
+			<span class="sigp2" style="width:50px">Année : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=55px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:40px">Etat : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT() %>" style="width=100px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:50px">Statut : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width=150px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
+			</SELECT>			
+			<span class="sigp2" style="width:40px">CAP : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CAP() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:50px;">Service :</span>
+				<INPUT tabindex="" id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
+				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
+				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
+          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
+					value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
+				<div id="treeHierarchy" style="display: none;margin-left:500px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+					<script type="text/javascript">
+						d = new dTree('d');
+						d.add(0,-1,"Services");
+						
+						<%
+						String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
+						int theNode = 0;
+						for (int i =1; i <  process.getListeServices().size(); i++) {
+							Service serv = (Service)process.getListeServices().get(i);
+							String code = serv.getCodService();
+							TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
+							if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
+								theNode=tree.getIndex();
+							}
+						%>
+						<%=tree.getJavaScriptLine()%>
+						<%}%>
+						document.write(d);
+				
+						d.closeAll();
+						<% if (theNode !=0) { %>
+							d.openTo(<%=theNode%>,true);
+						<%}%>
+					</script>
+				</div>
+			<BR/><BR/>
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">			
+		</FIELDSET>
+		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+		    <legend class="sigp2Legend">Gestion des EAE</legend>
+			<BR/>
+			<table class="display" id="tabEAE">
+				<thead>
+					<tr>
+						<th width="30px;">Dir. <br> Sect. <br> Serv.</th>
+						<th width="50px;">Nom <br> Prénom <br> Matr</th>
+						<th width="42px;">Statut</th>
+						<th width="50px;">&nbsp;&nbsp;SHD&nbsp;&nbsp;</th>
+						<th width="48px;">Evaluateur(s)</th>
+						<th>Délégataire</th>
+						<th>CAP</th>
+						<th>Avis SHD</th>
+						<th>EAE joint</th>
+						<th>Commentaire</th>
+						<th>Crée le <br> Finalisé le <br> Contrôlé le</th>
+						<th>Actions</th>
+						<th>Contrôlé par</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%for (int indiceAvct = 0;indiceAvct<process.getListeEAE().size();indiceAvct++){
+				EAE eae = process.getListeEAE().get(indiceAvct);
+				%>
+						<tr>
+							<td width="30px;" ><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td width="50px;"><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
+							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
+							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
+							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eae.getEtat().equals(EnumEtatEAE.CREE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode())&& !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
+							<%} %>
+							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+								<br/>
+								<%if(eae.getIdDelegataire()==null){ %>
+								<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
+				    			<%}else{ %>
+				    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
+				    			<%} %>
+							<%} %>					
+							</td>
+							<td><%=process.getVAL_ST_CAP(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_AVIS_SHD(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_EAE_JOINT(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_COMMENTAIRE(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_CONTROLE(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_ACTIONS(indiceAvct)%>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && eae!=null && (eae.getEtat().equals(EnumEtatEAE.CREE.getCode())|| eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode()))){ %>
+								<INPUT title="mettre à jour EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE(indiceAvct)%>">
+							<%} %>
+							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
+							<INPUT title="dé-finalisé EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DEFINALISE_EAE(indiceAvct)%>">
+							<%} %>
+							</td>
+							<td><%=process.getVAL_ST_CONTROLE_PAR(indiceAvct)%>
+								<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
+								<INPUT <%=eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? "disabled='disabled'" : "" %>type="checkbox" onclick='executeBouton("<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>")' <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_EAE(indiceAvct),process.getVAL_CK_VALID_EAE(indiceAvct))%> >
+								<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>">		
+								<%} %>
+							</td>
+						</tr>
+				<%}%>
+				</tbody>
+			</table>
+			<script type="text/javascript">
+				$(document).ready(function() {
+				    $('#tabEAE').dataTable({
+						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"sDom": '<"H"fl>t<"F"iT>',
+						"sScrollY": "375px",
+						"bPaginate": false,
+						"oTableTools": {
+							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"avctCC","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
+							"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+						}
+				    });
+				} );
+			</script>
+			<BR/>
+		</FIELDSET>
+		</FORM>
+</BODY>
+</HTML>
