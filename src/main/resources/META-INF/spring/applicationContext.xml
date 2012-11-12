@@ -19,9 +19,9 @@
 	<bean id="contextApplicationContextProvider" class="nc.mairie.spring.utils.ApplicationContextProvider"/>
 
 	<!-- Declaration des datasources recupéré depuis context.xml -->
-	<jee:jndi-lookup id="dataSourceSIRH" jndi-name="jdbc/SIRH" />
-	<jee:jndi-lookup id="dataSourceMairie" jndi-name="jdbc/MAIRIE" />
-	<jee:jndi-lookup id="dataSourceOracle" jndi-name="jdbc/SIRH_EAE"/>
+	<jee:jndi-lookup id="dataSourceSIRH" jndi-name="jdbc/SIRH_DS1" />
+	<jee:jndi-lookup id="dataSourceMairie" jndi-name="jdbc/SIRH_DS2" />
+	<jee:jndi-lookup id="dataSourceOracle" jndi-name="jdbc/SIRH_DS3"/>
 
 	<!-- DAO SIRH -->
 	<bean id="motifVisiteMedDao"
