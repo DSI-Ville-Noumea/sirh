@@ -22,7 +22,8 @@
 		</links>
 
         <breadcrumbs>
-            <item name="SIRH" target="_new" href="http://sirh"/>	
+            <item name="SIRH-PROD" target="_new" href="http://sirh"/>	
+            <item name="SIRH-Recette" target="_new" href="http://sirh-qual"/>	
             <item name="JIRA" target="_new" href="http://dvlp:8181/browse/SIRH/"/>		
 			<item name="Accueil" href="home.html" /> 
 		</breadcrumbs>
