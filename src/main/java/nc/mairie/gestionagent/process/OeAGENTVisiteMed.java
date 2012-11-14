@@ -192,7 +192,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, true);
 			for (ListIterator list = getListeMedecin().listIterator(); list.hasNext();) {
 				Medecin m = (Medecin) list.next();
-				String ligne[] = {  m.getPrenomMedecin() + " " + m.getNomMedecin() };
+				String ligne[] = { m.getPrenomMedecin() + " " + m.getNomMedecin() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -530,7 +530,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_DATE_VISITE(), getVisiteCourante().getDateDerniereVisite());
 		addZone(getNOM_ST_DUREE_VALIDITE(), getVisiteCourante().getDureeValidite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getVisiteCourante()
 				.getDureeValidite());
-		addZone(getNOM_ST_NOM_MEDECIN(), medecin.getTitreMedecin()+" " + medecin.getPrenomMedecin()+" "+medecin.getNomMedecin());
+		addZone(getNOM_ST_NOM_MEDECIN(), medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
 		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVM() : Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante().getApte().equals("1") ? "APTE"
 				: "INAPTE");
@@ -2883,8 +2883,13 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// on supprime le fichier physiquement sur le serveur
-		String cheminDoc = getDocumentCourant().getLienDocument().replace("/", "\\");
-		File fichierASupp = new File(cheminDoc);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		// String cheminDoc =
+		// getDocumentCourant().getLienDocument().replace("/", "\\");
+		// TODO
+		// à verifier apres mise ne recette
+		String cheminDoc = getDocumentCourant().getLienDocument();
+		File fichierASupp = new File(repertoireStockage + cheminDoc);
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
