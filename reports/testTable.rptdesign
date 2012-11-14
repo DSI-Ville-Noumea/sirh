@@ -1,0 +1,2370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="sirh" id="7">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">com.ibm.as400.access.AS400JDBCDriver</property>
+            <property name="odaURL">jdbc:as400://noumea</property>
+            <property name="odaUser">adminwas</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cGxhbmV0</encrypted-property>
+            <property name="odaJndiName">java:comp/env/jdbc/SIRH</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="agent" id="8">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">ID_AGENT</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ID_AGENT</text-property>
+                    <text-property name="heading">ID_AGENT</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ID_VOIE</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ID_VOIE</text-property>
+                    <text-property name="heading">ID_VOIE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ID_COLLECTIVITE</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ID_COLLECTIVITE</text-property>
+                    <text-property name="heading">ID_COLLECTIVITE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ID_SITUATION_FAMILIALE</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ID_SITUATION_FAMILIALE</text-property>
+                    <text-property name="heading">ID_SITUATION_FAMILIALE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ID_ETAT_SERVICE</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ID_ETAT_SERVICE</text-property>
+                    <text-property name="heading">ID_ETAT_SERVICE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CPOS_VILLE_DOM</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CPOS_VILLE_DOM</text-property>
+                    <text-property name="heading">CPOS_VILLE_DOM</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CCOM_VILLE_DOM</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CCOM_VILLE_DOM</text-property>
+                    <text-property name="heading">CCOM_VILLE_DOM</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CPOS_VILLE_BP</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CPOS_VILLE_BP</text-property>
+                    <text-property name="heading">CPOS_VILLE_BP</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CCOM_VILLE_BP</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CCOM_VILLE_BP</text-property>
+                    <text-property name="heading">CCOM_VILLE_BP</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NOMATR</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">NOMATR</text-property>
+                    <text-property name="heading">NOMATR</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NOM_MARITAL</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NOM_MARITAL</text-property>
+                    <text-property name="heading">NOM_MARITAL</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRENOM</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PRENOM</text-property>
+                    <text-property name="heading">PRENOM</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRENOM_USAGE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PRENOM_USAGE</text-property>
+                    <text-property name="heading">PRENOM_USAGE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CIVILITE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CIVILITE</text-property>
+                    <text-property name="heading">CIVILITE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NOM_PATRONYMIQUE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NOM_PATRONYMIQUE</text-property>
+                    <text-property name="heading">NOM_PATRONYMIQUE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NOM_USAGE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NOM_USAGE</text-property>
+                    <text-property name="heading">NOM_USAGE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATE_NAISSANCE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DATE_NAISSANCE</text-property>
+                    <text-property name="heading">DATE_NAISSANCE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATE_DECES</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DATE_DECES</text-property>
+                    <text-property name="heading">DATE_DECES</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">SEXE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">SEXE</text-property>
+                    <text-property name="heading">SEXE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATE_PREMIERE_EMBAUCHE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DATE_PREMIERE_EMBAUCHE</text-property>
+                    <text-property name="heading">DATE_PREMIERE_EMBAUCHE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATE_DERNIERE_EMBAUCHE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DATE_DERNIERE_EMBAUCHE</text-property>
+                    <text-property name="heading">DATE_DERNIERE_EMBAUCHE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NATIONALITE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NATIONALITE</text-property>
+                    <text-property name="heading">NATIONALITE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CODE_PAYS_NAISS_ET</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CODE_PAYS_NAISS_ET</text-property>
+                    <text-property name="heading">CODE_PAYS_NAISS_ET</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CODE_COMMUNE_NAISS_ET</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CODE_COMMUNE_NAISS_ET</text-property>
+                    <text-property name="heading">CODE_COMMUNE_NAISS_ET</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CODE_COMMUNE_NAISS_FR</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CODE_COMMUNE_NAISS_FR</text-property>
+                    <text-property name="heading">CODE_COMMUNE_NAISS_FR</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_CARTE_SEJOUR</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_CARTE_SEJOUR</text-property>
+                    <text-property name="heading">NUM_CARTE_SEJOUR</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATE_VALIDITE_CARTE_SEJOUR</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DATE_VALIDITE_CARTE_SEJOUR</text-property>
+                    <text-property name="heading">DATE_VALIDITE_CARTE_SEJOUR</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_RUE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_RUE</text-property>
+                    <text-property name="heading">NUM_RUE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_RUE_BIS_TER</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_RUE_BIS_TER</text-property>
+                    <text-property name="heading">NUM_RUE_BIS_TER</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ADRESSE_COMPLEMENTAIRE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ADRESSE_COMPLEMENTAIRE</text-property>
+                    <text-property name="heading">ADRESSE_COMPLEMENTAIRE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">BP</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">BP</text-property>
+                    <text-property name="heading">BP</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CD_BANQUE</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CD_BANQUE</text-property>
+                    <text-property name="heading">CD_BANQUE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CD_GUICHET</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CD_GUICHET</text-property>
+                    <text-property name="heading">CD_GUICHET</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_COMPTE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_COMPTE</text-property>
+                    <text-property name="heading">NUM_COMPTE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">RIB</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">RIB</text-property>
+                    <text-property name="heading">RIB</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">INTITULE_COMPTE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">INTITULE_COMPTE</text-property>
+                    <text-property name="heading">INTITULE_COMPTE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">VCAT</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">VCAT</text-property>
+                    <text-property name="heading">VCAT</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DEBUT_SERVICE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DEBUT_SERVICE</text-property>
+                    <text-property name="heading">DEBUT_SERVICE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">FIN_SERVICE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">FIN_SERVICE</text-property>
+                    <text-property name="heading">FIN_SERVICE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_CAFAT</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_CAFAT</text-property>
+                    <text-property name="heading">NUM_CAFAT</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_RUAMM</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_RUAMM</text-property>
+                    <text-property name="heading">NUM_RUAMM</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_MUTUELLE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_MUTUELLE</text-property>
+                    <text-property name="heading">NUM_MUTUELLE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_CRE</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_CRE</text-property>
+                    <text-property name="heading">NUM_CRE</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_IRCAFEX</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_IRCAFEX</text-property>
+                    <text-property name="heading">NUM_IRCAFEX</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">NUM_CLR</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">NUM_CLR</text-property>
+                    <text-property name="heading">NUM_CLR</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CODE_ELECTION</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CODE_ELECTION</text-property>
+                    <text-property name="heading">CODE_ELECTION</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">QUARTIER</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">QUARTIER</text-property>
+                    <text-property name="heading">QUARTIER</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">RUE_NON_NOUMEA</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">RUE_NON_NOUMEA</text-property>
+                    <text-property name="heading">RUE_NON_NOUMEA</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">ID_AGENT</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">ID_VOIE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">ID_COLLECTIVITE</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">ID_SITUATION_FAMILIALE</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">ID_ETAT_SERVICE</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">CPOS_VILLE_DOM</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">CCOM_VILLE_DOM</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">CPOS_VILLE_BP</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">CCOM_VILLE_BP</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">NOMATR</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">NOM_MARITAL</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">PRENOM</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">PRENOM_USAGE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">CIVILITE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">NOM_PATRONYMIQUE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">NOM_USAGE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">DATE_NAISSANCE</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">DATE_DECES</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">SEXE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">DATE_PREMIERE_EMBAUCHE</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">DATE_DERNIERE_EMBAUCHE</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">NATIONALITE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">CODE_PAYS_NAISS_ET</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">CODE_COMMUNE_NAISS_ET</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">CODE_COMMUNE_NAISS_FR</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">NUM_CARTE_SEJOUR</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">DATE_VALIDITE_CARTE_SEJOUR</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">NUM_RUE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">NUM_RUE_BIS_TER</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">ADRESSE_COMPLEMENTAIRE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">31</property>
+                        <property name="name">BP</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">32</property>
+                        <property name="name">CD_BANQUE</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">33</property>
+                        <property name="name">CD_GUICHET</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">34</property>
+                        <property name="name">NUM_COMPTE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">35</property>
+                        <property name="name">RIB</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">36</property>
+                        <property name="name">INTITULE_COMPTE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">37</property>
+                        <property name="name">VCAT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">38</property>
+                        <property name="name">DEBUT_SERVICE</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">39</property>
+                        <property name="name">FIN_SERVICE</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">40</property>
+                        <property name="name">NUM_CAFAT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">41</property>
+                        <property name="name">NUM_RUAMM</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">42</property>
+                        <property name="name">NUM_MUTUELLE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">43</property>
+                        <property name="name">NUM_CRE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">44</property>
+                        <property name="name">NUM_IRCAFEX</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">45</property>
+                        <property name="name">NUM_CLR</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">46</property>
+                        <property name="name">CODE_ELECTION</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">47</property>
+                        <property name="name">QUARTIER</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">48</property>
+                        <property name="name">RUE_NON_NOUMEA</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">sirh</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">ID_AGENT</property>
+                    <property name="nativeName">ID_AGENT</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">ID_VOIE</property>
+                    <property name="nativeName">ID_VOIE</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">ID_COLLECTIVITE</property>
+                    <property name="nativeName">ID_COLLECTIVITE</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">ID_SITUATION_FAMILIALE</property>
+                    <property name="nativeName">ID_SITUATION_FAMILIALE</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">ID_ETAT_SERVICE</property>
+                    <property name="nativeName">ID_ETAT_SERVICE</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">CPOS_VILLE_DOM</property>
+                    <property name="nativeName">CPOS_VILLE_DOM</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">CCOM_VILLE_DOM</property>
+                    <property name="nativeName">CCOM_VILLE_DOM</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">CPOS_VILLE_BP</property>
+                    <property name="nativeName">CPOS_VILLE_BP</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">CCOM_VILLE_BP</property>
+                    <property name="nativeName">CCOM_VILLE_BP</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">NOMATR</property>
+                    <property name="nativeName">NOMATR</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">NOM_MARITAL</property>
+                    <property name="nativeName">NOM_MARITAL</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">PRENOM</property>
+                    <property name="nativeName">PRENOM</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">PRENOM_USAGE</property>
+                    <property name="nativeName">PRENOM_USAGE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">CIVILITE</property>
+                    <property name="nativeName">CIVILITE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">NOM_PATRONYMIQUE</property>
+                    <property name="nativeName">NOM_PATRONYMIQUE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">NOM_USAGE</property>
+                    <property name="nativeName">NOM_USAGE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">DATE_NAISSANCE</property>
+                    <property name="nativeName">DATE_NAISSANCE</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">DATE_DECES</property>
+                    <property name="nativeName">DATE_DECES</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">SEXE</property>
+                    <property name="nativeName">SEXE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">DATE_PREMIERE_EMBAUCHE</property>
+                    <property name="nativeName">DATE_PREMIERE_EMBAUCHE</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">DATE_DERNIERE_EMBAUCHE</property>
+                    <property name="nativeName">DATE_DERNIERE_EMBAUCHE</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">NATIONALITE</property>
+                    <property name="nativeName">NATIONALITE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">CODE_PAYS_NAISS_ET</property>
+                    <property name="nativeName">CODE_PAYS_NAISS_ET</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">CODE_COMMUNE_NAISS_ET</property>
+                    <property name="nativeName">CODE_COMMUNE_NAISS_ET</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">CODE_COMMUNE_NAISS_FR</property>
+                    <property name="nativeName">CODE_COMMUNE_NAISS_FR</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">NUM_CARTE_SEJOUR</property>
+                    <property name="nativeName">NUM_CARTE_SEJOUR</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">DATE_VALIDITE_CARTE_SEJOUR</property>
+                    <property name="nativeName">DATE_VALIDITE_CARTE_SEJOUR</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">NUM_RUE</property>
+                    <property name="nativeName">NUM_RUE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">NUM_RUE_BIS_TER</property>
+                    <property name="nativeName">NUM_RUE_BIS_TER</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">30</property>
+                    <property name="name">ADRESSE_COMPLEMENTAIRE</property>
+                    <property name="nativeName">ADRESSE_COMPLEMENTAIRE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">31</property>
+                    <property name="name">BP</property>
+                    <property name="nativeName">BP</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">32</property>
+                    <property name="name">CD_BANQUE</property>
+                    <property name="nativeName">CD_BANQUE</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">33</property>
+                    <property name="name">CD_GUICHET</property>
+                    <property name="nativeName">CD_GUICHET</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">34</property>
+                    <property name="name">NUM_COMPTE</property>
+                    <property name="nativeName">NUM_COMPTE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">35</property>
+                    <property name="name">RIB</property>
+                    <property name="nativeName">RIB</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">36</property>
+                    <property name="name">INTITULE_COMPTE</property>
+                    <property name="nativeName">INTITULE_COMPTE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">37</property>
+                    <property name="name">VCAT</property>
+                    <property name="nativeName">VCAT</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">38</property>
+                    <property name="name">DEBUT_SERVICE</property>
+                    <property name="nativeName">DEBUT_SERVICE</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">39</property>
+                    <property name="name">FIN_SERVICE</property>
+                    <property name="nativeName">FIN_SERVICE</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">40</property>
+                    <property name="name">NUM_CAFAT</property>
+                    <property name="nativeName">NUM_CAFAT</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">41</property>
+                    <property name="name">NUM_RUAMM</property>
+                    <property name="nativeName">NUM_RUAMM</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">42</property>
+                    <property name="name">NUM_MUTUELLE</property>
+                    <property name="nativeName">NUM_MUTUELLE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">43</property>
+                    <property name="name">NUM_CRE</property>
+                    <property name="nativeName">NUM_CRE</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">44</property>
+                    <property name="name">NUM_IRCAFEX</property>
+                    <property name="nativeName">NUM_IRCAFEX</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">45</property>
+                    <property name="name">NUM_CLR</property>
+                    <property name="nativeName">NUM_CLR</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">46</property>
+                    <property name="name">CODE_ELECTION</property>
+                    <property name="nativeName">CODE_ELECTION</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">47</property>
+                    <property name="name">QUARTIER</property>
+                    <property name="nativeName">QUARTIER</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">48</property>
+                    <property name="name">RUE_NON_NOUMEA</property>
+                    <property name="nativeName">RUE_NON_NOUMEA</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from SIRH.AGENT where id_agent in (9005138,9003041)]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ID_AGENT</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ID_AGENT</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ID_AGENT</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ID_VOIE</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>4</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ID_VOIE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ID_VOIE</design:label>
+            <design:formattingHints>
+              <design:displaySize>6</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ID_COLLECTIVITE</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ID_COLLECTIVITE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ID_COLLECTIVITE</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ID_SITUATION_FAMILIALE</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ID_SITUATION_FAMILIALE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ID_SITUATION_FAMILIALE</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ID_ETAT_SERVICE</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ID_ETAT_SERVICE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ID_ETAT_SERVICE</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CPOS_VILLE_DOM</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CPOS_VILLE_DOM</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CPOS_VILLE_DOM</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CCOM_VILLE_DOM</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CCOM_VILLE_DOM</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CCOM_VILLE_DOM</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CPOS_VILLE_BP</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CPOS_VILLE_BP</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CPOS_VILLE_BP</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CCOM_VILLE_BP</design:name>
+              <design:position>9</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CCOM_VILLE_BP</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CCOM_VILLE_BP</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NOMATR</design:name>
+              <design:position>10</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NOMATR</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NOMATR</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NOM_MARITAL</design:name>
+              <design:position>11</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>60</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NOM_MARITAL</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NOM_MARITAL</design:label>
+            <design:formattingHints>
+              <design:displaySize>60</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>PRENOM</design:name>
+              <design:position>12</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>60</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>PRENOM</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>PRENOM</design:label>
+            <design:formattingHints>
+              <design:displaySize>60</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>PRENOM_USAGE</design:name>
+              <design:position>13</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>60</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>PRENOM_USAGE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>PRENOM_USAGE</design:label>
+            <design:formattingHints>
+              <design:displaySize>60</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CIVILITE</design:name>
+              <design:position>14</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CIVILITE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CIVILITE</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NOM_PATRONYMIQUE</design:name>
+              <design:position>15</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>60</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NOM_PATRONYMIQUE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NOM_PATRONYMIQUE</design:label>
+            <design:formattingHints>
+              <design:displaySize>60</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NOM_USAGE</design:name>
+              <design:position>16</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>60</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NOM_USAGE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NOM_USAGE</design:label>
+            <design:formattingHints>
+              <design:displaySize>60</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DATE_NAISSANCE</design:name>
+              <design:position>17</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DATE_NAISSANCE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DATE_NAISSANCE</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DATE_DECES</design:name>
+              <design:position>18</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DATE_DECES</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DATE_DECES</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>SEXE</design:name>
+              <design:position>19</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>SEXE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>SEXE</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DATE_PREMIERE_EMBAUCHE</design:name>
+              <design:position>20</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DATE_PREMIERE_EMBAUCHE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DATE_PREMIERE_EMBAUCHE</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DATE_DERNIERE_EMBAUCHE</design:name>
+              <design:position>21</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DATE_DERNIERE_EMBAUCHE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DATE_DERNIERE_EMBAUCHE</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NATIONALITE</design:name>
+              <design:position>22</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NATIONALITE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NATIONALITE</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CODE_PAYS_NAISS_ET</design:name>
+              <design:position>23</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CODE_PAYS_NAISS_ET</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CODE_PAYS_NAISS_ET</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CODE_COMMUNE_NAISS_ET</design:name>
+              <design:position>24</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CODE_COMMUNE_NAISS_ET</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CODE_COMMUNE_NAISS_ET</design:label>
+            <design:formattingHints>
+              <design:displaySize>5</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CODE_COMMUNE_NAISS_FR</design:name>
+              <design:position>25</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CODE_COMMUNE_NAISS_FR</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CODE_COMMUNE_NAISS_FR</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_CARTE_SEJOUR</design:name>
+              <design:position>26</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_CARTE_SEJOUR</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_CARTE_SEJOUR</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DATE_VALIDITE_CARTE_SEJOUR</design:name>
+              <design:position>27</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DATE_VALIDITE_CARTE_SEJOUR</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DATE_VALIDITE_CARTE_SEJOUR</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_RUE</design:name>
+              <design:position>28</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>4</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_RUE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_RUE</design:label>
+            <design:formattingHints>
+              <design:displaySize>4</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_RUE_BIS_TER</design:name>
+              <design:position>29</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_RUE_BIS_TER</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_RUE_BIS_TER</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ADRESSE_COMPLEMENTAIRE</design:name>
+              <design:position>30</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ADRESSE_COMPLEMENTAIRE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ADRESSE_COMPLEMENTAIRE</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>BP</design:name>
+              <design:position>31</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>BP</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>BP</design:label>
+            <design:formattingHints>
+              <design:displaySize>5</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CD_BANQUE</design:name>
+              <design:position>32</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CD_BANQUE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CD_BANQUE</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CD_GUICHET</design:name>
+              <design:position>33</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CD_GUICHET</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CD_GUICHET</design:label>
+            <design:formattingHints>
+              <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_COMPTE</design:name>
+              <design:position>34</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>11</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_COMPTE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_COMPTE</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>RIB</design:name>
+              <design:position>35</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>2</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>RIB</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>RIB</design:label>
+            <design:formattingHints>
+              <design:displaySize>4</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>INTITULE_COMPTE</design:name>
+              <design:position>36</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>50</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>INTITULE_COMPTE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>INTITULE_COMPTE</design:label>
+            <design:formattingHints>
+              <design:displaySize>50</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>VCAT</design:name>
+              <design:position>37</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>VCAT</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>VCAT</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>DEBUT_SERVICE</design:name>
+              <design:position>38</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>DEBUT_SERVICE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>DEBUT_SERVICE</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>FIN_SERVICE</design:name>
+              <design:position>39</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>FIN_SERVICE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>FIN_SERVICE</design:label>
+            <design:formattingHints>
+              <design:displaySize>10</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_CAFAT</design:name>
+              <design:position>40</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_CAFAT</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_CAFAT</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_RUAMM</design:name>
+              <design:position>41</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_RUAMM</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_RUAMM</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_MUTUELLE</design:name>
+              <design:position>42</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_MUTUELLE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_MUTUELLE</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_CRE</design:name>
+              <design:position>43</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_CRE</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_CRE</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_IRCAFEX</design:name>
+              <design:position>44</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_IRCAFEX</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_IRCAFEX</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>NUM_CLR</design:name>
+              <design:position>45</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>15</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>NUM_CLR</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>NUM_CLR</design:label>
+            <design:formattingHints>
+              <design:displaySize>15</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CODE_ELECTION</design:name>
+              <design:position>46</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CODE_ELECTION</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CODE_ELECTION</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>QUARTIER</design:name>
+              <design:position>47</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>QUARTIER</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>QUARTIER</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>RUE_NON_NOUMEA</design:name>
+              <design:position>48</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>120</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>RUE_NON_NOUMEA</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>RUE_NON_NOUMEA</design:label>
+            <design:formattingHints>
+              <design:displaySize>120</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="62">
+            <property name="borderBottomColor">#000000</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderLeftColor">#000000</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderRightColor">#000000</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderTopColor">#000000</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="dataSet">agent</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">ID_AGENT</property>
+                    <text-property name="displayName">ID_AGENT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ID_AGENT"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">ID_VOIE</property>
+                    <text-property name="displayName">ID_VOIE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ID_VOIE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ID_COLLECTIVITE</property>
+                    <text-property name="displayName">ID_COLLECTIVITE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ID_COLLECTIVITE"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">ID_SITUATION_FAMILIALE</property>
+                    <text-property name="displayName">ID_SITUATION_FAMILIALE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ID_SITUATION_FAMILIALE"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">ID_ETAT_SERVICE</property>
+                    <text-property name="displayName">ID_ETAT_SERVICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ID_ETAT_SERVICE"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">CPOS_VILLE_DOM</property>
+                    <text-property name="displayName">CPOS_VILLE_DOM</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CPOS_VILLE_DOM"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CCOM_VILLE_DOM</property>
+                    <text-property name="displayName">CCOM_VILLE_DOM</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CCOM_VILLE_DOM"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CPOS_VILLE_BP</property>
+                    <text-property name="displayName">CPOS_VILLE_BP</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CPOS_VILLE_BP"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CCOM_VILLE_BP</property>
+                    <text-property name="displayName">CCOM_VILLE_BP</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CCOM_VILLE_BP"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">NOMATR</property>
+                    <text-property name="displayName">NOMATR</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NOMATR"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">NOM_MARITAL</property>
+                    <text-property name="displayName">NOM_MARITAL</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NOM_MARITAL"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PRENOM</property>
+                    <text-property name="displayName">PRENOM</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRENOM"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PRENOM_USAGE</property>
+                    <text-property name="displayName">PRENOM_USAGE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRENOM_USAGE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CIVILITE</property>
+                    <text-property name="displayName">CIVILITE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CIVILITE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NOM_PATRONYMIQUE</property>
+                    <text-property name="displayName">NOM_PATRONYMIQUE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NOM_PATRONYMIQUE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NOM_USAGE</property>
+                    <text-property name="displayName">NOM_USAGE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NOM_USAGE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DATE_NAISSANCE</property>
+                    <text-property name="displayName">DATE_NAISSANCE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATE_NAISSANCE"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">DATE_DECES</property>
+                    <text-property name="displayName">DATE_DECES</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATE_DECES"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">SEXE</property>
+                    <text-property name="displayName">SEXE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SEXE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DATE_PREMIERE_EMBAUCHE</property>
+                    <text-property name="displayName">DATE_PREMIERE_EMBAUCHE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATE_PREMIERE_EMBAUCHE"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">DATE_DERNIERE_EMBAUCHE</property>
+                    <text-property name="displayName">DATE_DERNIERE_EMBAUCHE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATE_DERNIERE_EMBAUCHE"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">NATIONALITE</property>
+                    <text-property name="displayName">NATIONALITE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NATIONALITE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CODE_PAYS_NAISS_ET</property>
+                    <text-property name="displayName">CODE_PAYS_NAISS_ET</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CODE_PAYS_NAISS_ET"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CODE_COMMUNE_NAISS_ET</property>
+                    <text-property name="displayName">CODE_COMMUNE_NAISS_ET</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CODE_COMMUNE_NAISS_ET"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CODE_COMMUNE_NAISS_FR</property>
+                    <text-property name="displayName">CODE_COMMUNE_NAISS_FR</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CODE_COMMUNE_NAISS_FR"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_CARTE_SEJOUR</property>
+                    <text-property name="displayName">NUM_CARTE_SEJOUR</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_CARTE_SEJOUR"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DATE_VALIDITE_CARTE_SEJOUR</property>
+                    <text-property name="displayName">DATE_VALIDITE_CARTE_SEJOUR</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATE_VALIDITE_CARTE_SEJOUR"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_RUE</property>
+                    <text-property name="displayName">NUM_RUE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_RUE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_RUE_BIS_TER</property>
+                    <text-property name="displayName">NUM_RUE_BIS_TER</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_RUE_BIS_TER"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ADRESSE_COMPLEMENTAIRE</property>
+                    <text-property name="displayName">ADRESSE_COMPLEMENTAIRE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ADRESSE_COMPLEMENTAIRE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">BP</property>
+                    <text-property name="displayName">BP</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["BP"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CD_BANQUE</property>
+                    <text-property name="displayName">CD_BANQUE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CD_BANQUE"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">CD_GUICHET</property>
+                    <text-property name="displayName">CD_GUICHET</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CD_GUICHET"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_COMPTE</property>
+                    <text-property name="displayName">NUM_COMPTE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_COMPTE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">RIB</property>
+                    <text-property name="displayName">RIB</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RIB"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">INTITULE_COMPTE</property>
+                    <text-property name="displayName">INTITULE_COMPTE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["INTITULE_COMPTE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">VCAT</property>
+                    <text-property name="displayName">VCAT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["VCAT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DEBUT_SERVICE</property>
+                    <text-property name="displayName">DEBUT_SERVICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DEBUT_SERVICE"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">FIN_SERVICE</property>
+                    <text-property name="displayName">FIN_SERVICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["FIN_SERVICE"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_CAFAT</property>
+                    <text-property name="displayName">NUM_CAFAT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_CAFAT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_RUAMM</property>
+                    <text-property name="displayName">NUM_RUAMM</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_RUAMM"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_MUTUELLE</property>
+                    <text-property name="displayName">NUM_MUTUELLE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_MUTUELLE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_CRE</property>
+                    <text-property name="displayName">NUM_CRE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_CRE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_IRCAFEX</property>
+                    <text-property name="displayName">NUM_IRCAFEX</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_IRCAFEX"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_CLR</property>
+                    <text-property name="displayName">NUM_CLR</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NUM_CLR"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CODE_ELECTION</property>
+                    <text-property name="displayName">CODE_ELECTION</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CODE_ELECTION"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">QUARTIER</property>
+                    <text-property name="displayName">QUARTIER</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["QUARTIER"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">RUE_NON_NOUMEA</property>
+                    <text-property name="displayName">RUE_NON_NOUMEA</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RUE_NON_NOUMEA"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="75"/>
+            <column id="76"/>
+            <column id="77"/>
+            <header>
+                <row id="63">
+                    <cell id="64">
+                        <label id="80">
+                            <text-property name="text">ID_AGENT</text-property>
+                        </label>
+                    </cell>
+                    <cell id="65">
+                        <label id="82">
+                            <text-property name="text">NOM_PATRONYMIQUE</text-property>
+                        </label>
+                    </cell>
+                    <cell id="66"/>
+                </row>
+            </header>
+            <detail>
+                <row id="67">
+                    <cell id="68">
+                        <data id="81">
+                            <property name="resultSetColumn">ID_AGENT</property>
+                        </data>
+                    </cell>
+                    <cell id="69">
+                        <data id="83">
+                            <property name="resultSetColumn">NOM_PATRONYMIQUE</property>
+                        </data>
+                    </cell>
+                    <cell id="70"/>
+                </row>
+            </detail>
+            <footer>
+                <row id="71">
+                    <cell id="72"/>
+                    <cell id="73"/>
+                    <cell id="74"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

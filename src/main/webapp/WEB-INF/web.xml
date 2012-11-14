@@ -3,7 +3,8 @@
 <web-app id="WebApp_ID">
 	<display-name>SIRH</display-name>
 	<!-- Clustering tomcat -->
-	<distributable />
+	<!-- Pour le moment on enleve le clustering tomcat pour tests-->
+	<!-- <distributable /> -->
 
 
 	<context-param>

@@ -29,7 +29,7 @@
 	position: absolute;
 	top: 25px;
 	left: 0px;
-	width: 200px;
+	width: 500px;
 	background-color: white;
 }
 
@@ -58,7 +58,7 @@ td{
 }
 
 .first_col table tr td{
-	width:200px;
+	width:500px;
 	height:23px;
 }
 
@@ -85,7 +85,7 @@ td{
 }
 
 .first_col table{
-	width:200px; 
+	width:500px; 
 	height:500px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;

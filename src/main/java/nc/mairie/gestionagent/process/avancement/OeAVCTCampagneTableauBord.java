@@ -219,6 +219,7 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 			setListeTableauBord(listeDirectionSection);
 
 		} catch (Exception e) {
+			System.out.println("Exception :" +e.getMessage());
 			// "ERR212",
 			// "Aucune campagne n'est ouverte. Le calcul ne s'effectue que sur une campagne ouverte."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR212"));

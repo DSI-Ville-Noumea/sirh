@@ -9,7 +9,8 @@ public interface EAEDaoInterface {
 
 	public ArrayList<EAE> listerEAETravailPourCampagne(String etat, Integer idCampagneEAE) throws Exception;
 
-	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, String prefixeServ, String cap) throws Exception;
+	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService, String cap)
+			throws Exception;
 
 	public ArrayList<EAE> listerEAEFinaliseControlePourCampagne(Integer idCampagneEAE) throws Exception;
 

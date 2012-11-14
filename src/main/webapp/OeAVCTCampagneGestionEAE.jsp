@@ -133,7 +133,6 @@ function reduireHierarchy() {
 						<th>CAP</th>
 						<th>Avis SHD</th>
 						<th>EAE joint</th>
-						<th>Commentaire</th>
 						<th>Crée le <br> Finalisé le <br> Contrôlé le</th>
 						<th>Actions</th>
 						<th>Contrôlé par</th>
@@ -165,7 +164,6 @@ function reduireHierarchy() {
 							<td><%=process.getVAL_ST_CAP(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_AVIS_SHD(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_EAE_JOINT(indiceAvct)%></td>
-							<td><%=process.getVAL_ST_COMMENTAIRE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_CONTROLE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_ACTIONS(indiceAvct)%>
 							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && eae!=null && (eae.getEtat().equals(EnumEtatEAE.CREE.getCode())|| eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode()))){ %>
@@ -189,7 +187,7 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,

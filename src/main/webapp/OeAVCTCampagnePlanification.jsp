@@ -176,7 +176,7 @@ function SelectLigne(id,tailleTableau)
 				<BR/><BR/>
 				
 				
-				<span class="sigp2Mandatory" style="width:150px;margin:5px;"> Destinataires des alertes</span>
+				<span class="sigp2Mandatory" style="width:150px;margin:5px;"> Destinataires des alertes : </span>
 		        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
 				<br/>
 	            <%if(process.getListeDestinataireMulti().size()>0){ %>
@@ -292,9 +292,28 @@ function SelectLigne(id,tailleTableau)
 				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Fait le : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_FAIT_LE()%></span>
 				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Obervation: </span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Obervation : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>				
-				<BR/><BR/>				
+				<BR/><BR/>	
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;"> Destinataires des alertes :</span>				
+				<BR/><BR/>	
+	            <%if(process.getListeDestinataireMulti().size()>0){ %>
+					<table class="sigp2NewTab" style="margin-left:20px;position:relative;text-align:left;width:480px;">
+						<%
+						int indiceActeur = 0;
+						if (process.getListeDestinataireMulti()!=null){
+							for (int i = 0;i<process.getListeDestinataireMulti().size();i++){
+						%>
+								<tr>
+									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_AGENT(indiceActeur)%></td>
+								</tr>
+								<%
+								indiceActeur++;
+							}
+						}%>
+					</table>
+				<br/>
+				<%} %>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
 					<span style="position:relative;width:9px;"></span>

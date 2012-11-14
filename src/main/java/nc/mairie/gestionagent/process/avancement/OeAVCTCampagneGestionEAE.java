@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
@@ -420,11 +421,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		for (AgentNW a : la) {
 			// Récupération de l'eae evntuel
 			try {
-				//logger.info("Req Oracle : chercherEAEAgent " + a.getIdAgent());
+				// logger.info("Req Oracle : chercherEAEAgent " +
+				// a.getIdAgent());
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
 				// si on trouve un EAE dejà existant alors on ne fait rien
 			} catch (Exception e) {
-				//logger.info("Création de l'EAE pour l'agent : " + a.getIdAgent());
+				// logger.info("Création de l'EAE pour l'agent : " +
+				// a.getIdAgent());
 				// Création de l'EAE
 				EAE eae = new EAE();
 				eae.setIdCampagneEAE(idCampagneEAE);
@@ -648,7 +651,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_CAP(i), eae.isCap() ? "oui" : "&nbsp;");
 			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvis_shd() == null ? "&nbsp;" : evaluation.getAvis_shd());
 			addZone(getNOM_ST_EAE_JOINT(i), eae.isDocumentAttache() ? "oui" : "non");
-			addZone(getNOM_ST_COMMENTAIRE(i), "&nbsp;");
 			addZone(getNOM_ST_CONTROLE(i),
 					(eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
 							+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
@@ -967,14 +969,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 		}
 		// Recherche des eae de la campagne en fonction du service
-		String prefixeServ = Const.CHAINE_VIDE;
+		ArrayList<String> listeSousService = null;
 		if (getVAL_ST_CODE_SERVICE().length() != 0) {
+
+			// on recupere les sous-service du service selectionne
 			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			prefixeServ = serv.getCodService().substring(
-					0,
-					Service.isEntite(serv.getCodService()) ? 1 : Service.isDirection(serv.getCodService()) ? 2 : Service.isDivision(serv
-							.getCodService()) ? 3 : Service.isSection(serv.getCodService()) ? 4 : 0);
+			listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 		}
+
 		// Recherche des eae de la campagne en fonction du CAP
 		int indiceCAP = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
 		String cap = Const.CHAINE_VIDE;
@@ -983,7 +985,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		}
 
 		// on affiche la liste des EAE avec le filtre
-		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat, statut, prefixeServ, cap);
+		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat, statut, listeSousService, cap);
 		setListeEAE(listeEAE);
 		return true;
 	}
@@ -1043,7 +1045,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-AVCT-CAMPAGNE-GESTION-EAE";
+		return "ECR-AVCT-CAMPAGNE-GESTION";
 	}
 
 	/**
@@ -1261,24 +1263,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_EAE_JOINT(int i) {
 		return getZone(getNOM_ST_EAE_JOINT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_COMMENTAIRE(int i) {
-		return "NOM_ST_COMMENTAIRE_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_COMMENTAIRE(int i) {
-		return getZone(getNOM_ST_COMMENTAIRE(i));
 	}
 
 	/**

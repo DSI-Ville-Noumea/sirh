@@ -2399,11 +2399,12 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean recupererPreControles(HttpServletRequest request) throws Exception {
 		String type = request.getHeader("Content-Type");
+		String repTemp = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
 		String JSP = null;
 		multi = null;
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
-			multi = new com.oreilly.servlet.MultipartRequest(request, "c:\\Temp", 10 * 1024 * 1024);
+			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

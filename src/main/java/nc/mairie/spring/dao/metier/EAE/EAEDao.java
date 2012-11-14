@@ -122,7 +122,7 @@ public class EAEDao implements EAEDaoInterface {
 	}
 
 	@Override
-	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, String prefixeServ, String capBool)
+	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService, String capBool)
 			throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (!etat.equals(Const.CHAINE_VIDE)) {
@@ -131,8 +131,14 @@ public class EAEDao implements EAEDaoInterface {
 		if (!statut.equals(Const.CHAINE_VIDE)) {
 			reqWhere += " and eval.STATUT like '" + statut + "' ";
 		}
-		if (!prefixeServ.equals(Const.CHAINE_VIDE)) {
-			reqWhere += " and (fp.DIRECTION_SERVICE like '%" + prefixeServ + "' or fp.SECTION_SERVICE like '" + prefixeServ + "%') ";
+		if (listeSousService != null) {
+			String list = "";
+			for (String codeServ : listeSousService) {
+				list += "'" + codeServ + "',";
+			}
+			if (!list.equals(""))
+				list = list.substring(0, list.length() - 1);
+			reqWhere += " and (fp.CODE_SERVICE in (" + list + ")) ";
 		}
 		if (!capBool.equals(Const.CHAINE_VIDE)) {
 			if (capBool.equals("oui")) {
@@ -142,8 +148,8 @@ public class EAEDao implements EAEDaoInterface {
 			}
 		}
 
-		String sql = "select e.* from " + NOM_TABLE + " e inner join EAE_FICHE_POSTE fp on fp.id_eae = e." + CHAMP_ID_EAE + " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae where "
-				+ CHAMP_ID_CAMPAGNE_EAE + "=? " + reqWhere;
+		String sql = "select e.* from " + NOM_TABLE + " e inner join EAE_FICHE_POSTE fp on fp.id_eae = e." + CHAMP_ID_EAE
+				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae where " + CHAMP_ID_CAMPAGNE_EAE + "=? " + reqWhere;
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
@@ -260,7 +266,8 @@ public class EAEDao implements EAEDaoInterface {
 					+ CHAMP_ETAT + "=? and  e." + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, etat, idCampagneEAE });
 		} else if (direction == null && section == null) {
-			sql = "select count(e.id_eae) from " + NOM_TABLE
+			sql = "select count(e.id_eae) from "
+					+ NOM_TABLE
 					+ " e inner join EAE_FICHE_POSTE fp on e.id_eae=fp.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e."
 					+ CHAMP_ETAT + "=? and  e." + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { etat, idCampagneEAE });
