@@ -36,7 +36,6 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 		if (getListeActeurs() == null) {
 			ArrayList xcludeListe = (ArrayList) VariablesActivite.recuperer(this, "LISTEACTEURS");
 			ArrayList aListe = new ArrayList();
-			// TODO
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), "DD");
 			aListe = elim_doubure_acteurs(aListe, xcludeListe);
 

@@ -977,9 +977,6 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 				// on supprime le fichier physiquement sur le serveur
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				//String cheminDoc = getDocumentCourant().getLienDocument().replace("/", "\\");
-				//TODO
-				//à verifier apres mise ne recette
 				String cheminDoc = getDocumentCourant().getLienDocument();
 				File fichierASupp = new File(repertoireStockage + cheminDoc);
 				try {
@@ -2552,9 +2549,6 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 				// on supprime le fichier physiquement sur le serveur
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				//String cheminDoc = getDocumentCourant().getLienDocument().replace("/", "\\");
-				//TODO
-				//à verifier apres mise ne recette
 				String cheminDoc = getDocumentCourant().getLienDocument();
 				File fichierASupp = new File(repertoireStockage + cheminDoc);
 				try {
@@ -4013,9 +4007,6 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 				// on supprime le fichier physiquement sur le serveur
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				//String cheminDoc = getDocumentCourant().getLienDocument().replace("/", "\\");
-				//TODO
-				//à verifier apres mise ne recette
 				String cheminDoc = getDocumentCourant().getLienDocument();
 				File fichierASupp = new File(repertoireStockage + cheminDoc);
 				try {
