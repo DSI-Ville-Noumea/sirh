@@ -148,7 +148,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	private void initialiseListeAction(HttpServletRequest request) throws Exception {
 		// Recherche des actions de la campagne en fonction de l'année
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
-		if (indiceCampagne > -1) {
+		if (indiceCampagne > -1 && !getListeCampagneEAE().isEmpty()) {
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
 			ArrayList<CampagneAction> listeAction = getCampagneActionDao().listerCampagneActionPourCampagne(getCampagneCourante().getIdCampagneEAE());
