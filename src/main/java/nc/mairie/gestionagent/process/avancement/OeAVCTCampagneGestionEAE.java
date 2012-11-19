@@ -603,7 +603,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					(eaeFDP.getDirectionServ() == null ? "&nbsp;" : eaeFDP.getDirectionServ()) + " <br> "
 							+ (eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ()) + " <br> "
 							+ (eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ()));
-			addZone(getNOM_ST_AGENT(i), agentEAE.getNomPatronymique() + " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
+			addZone(getNOM_ST_AGENT(i), (agentEAE.getNomMarital()==null ?agentEAE.getNomPatronymique()==null ?agentEAE.getNomUsage() : agentEAE.getNomPatronymique() : agentEAE.getNomMarital())+ " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut());
 			if (eaeFDP.getIdSHD() != null) {
 				AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), eaeFDP.getIdSHD().toString());
@@ -611,7 +611,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					getTransaction().traiterErreur();
 				}
 				if (agentResp != null && agentResp.getIdAgent() != null) {
-					addZone(getNOM_ST_SHD(i), agentResp.getNomPatronymique() + " " + agentResp.getPrenomUsage() + " (" + agentResp.getNoMatricule()
+					addZone(getNOM_ST_SHD(i), (agentResp.getNomMarital()==null ?agentResp.getNomPatronymique()==null ?agentResp.getNomUsage() : agentResp.getNomPatronymique() : agentResp.getNomMarital()) + " " + agentResp.getPrenomUsage() + " (" + agentResp.getNoMatricule()
 							+ ") ");
 				} else {
 					addZone(getNOM_ST_SHD(i), "&nbsp;");
@@ -625,13 +625,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			for (int j = 0; j < listeEvaluateur.size(); j++) {
 				EaeEvaluateur evaluateur = listeEvaluateur.get(j);
 				AgentNW agentevaluateur = AgentNW.chercherAgent(getTransaction(), evaluateur.getIdAgent().toString());
-				eval += agentevaluateur.getNomPatronymique() + " " + agentevaluateur.getPrenomUsage() + " (" + agentevaluateur.getNoMatricule()
+				eval += (agentevaluateur.getNomMarital()==null ?agentevaluateur.getNomPatronymique()==null ?agentevaluateur.getNomUsage() : agentevaluateur.getNomPatronymique() : agentevaluateur.getNomMarital()) + " " + agentevaluateur.getPrenomUsage() + " (" + agentevaluateur.getNoMatricule()
 						+ ") <br> ";
 			}
 			addZone(getNOM_ST_EVALUATEURS(i), eval.equals(Const.CHAINE_VIDE) ? "&nbsp;" : eval);
 			if (eae.getIdDelegataire() != null) {
 				AgentNW agentDelegataire = AgentNW.chercherAgent(getTransaction(), eae.getIdDelegataire().toString());
-				addZone(getNOM_ST_DELEGATAIRE(i), agentDelegataire.getNomPatronymique() + " " + agentDelegataire.getPrenomUsage() + " ("
+				addZone(getNOM_ST_DELEGATAIRE(i), (agentDelegataire.getNomMarital()==null ?agentDelegataire.getNomPatronymique()==null ?agentDelegataire.getNomUsage() : agentDelegataire.getNomPatronymique() : agentDelegataire.getNomMarital()) + " " + agentDelegataire.getPrenomUsage() + " ("
 						+ agentDelegataire.getNoMatricule() + ")");
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE(i), "&nbsp;");
