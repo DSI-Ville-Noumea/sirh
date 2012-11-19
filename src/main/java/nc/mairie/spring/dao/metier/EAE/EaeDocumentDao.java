@@ -1,7 +1,6 @@
 package nc.mairie.spring.dao.metier.EAE;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
 public class EaeDocumentDao implements EaeDocumentDaoInterface {
 
@@ -43,15 +41,12 @@ public class EaeDocumentDao implements EaeDocumentDaoInterface {
 	}
 
 	@Override
-	public Connection creerEaeDocument(Integer idCampagneEae, Integer idCampagneAction, Integer idDocument, String type) throws Exception {
+	public void creerEaeDocument(Integer idCampagneEae, Integer idCampagneAction, Integer idDocument, String type) throws Exception {
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_DOCUMENT + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ID_CAMPAGNE_ACTION + ","
 				+ CHAMP_ID_DOCUMENT + "," + CHAMP_TYPE_DOCUMENT + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?)";
-		DataSourceUtils.getConnection(jdbcTemplate.getDataSource()).setAutoCommit(false);
 
 		jdbcTemplate.update(sql, new Object[] { idCampagneEae, idCampagneAction, idDocument, type });
-
-		return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
 	}
 
 	@Override

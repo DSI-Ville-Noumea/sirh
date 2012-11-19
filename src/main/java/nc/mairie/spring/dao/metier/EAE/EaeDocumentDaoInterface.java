@@ -1,13 +1,12 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 
 public interface EaeDocumentDaoInterface {
 
-	public Connection creerEaeDocument(Integer idCampagneEae, Integer idCampagneAction, Integer idDocument, String type) throws Exception;
+	public void creerEaeDocument(Integer idCampagneEae, Integer idCampagneAction, Integer idDocument, String type) throws Exception;
 
 	public EaeDocument chercherEaeDocument(Integer idDocument) throws Exception;
 

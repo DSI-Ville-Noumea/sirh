@@ -101,15 +101,6 @@
 	<bean id="eaeFormationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFormationDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
-	<bean id="eaeTypeObjectifDao" class="nc.mairie.spring.dao.metier.EAE.EaeTypeObjectifDao">
-		<property name="dataSource" ref="dataSourceOracle" />
-	</bean>
-	<bean id="eaeResultatDao" class="nc.mairie.spring.dao.metier.EAE.EaeResultatDao">
-		<property name="dataSource" ref="dataSourceOracle" />
-	</bean>
-	<bean id="eaePlanActionDao" class="nc.mairie.spring.dao.metier.EAE.EaePlanActionDao">
-		<property name="dataSource" ref="dataSourceOracle" />
-	</bean>
 	<bean id="eaeEvaluationDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>

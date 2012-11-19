@@ -1,7 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.sql.Connection;
-
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvaluationRowMapper;
@@ -10,7 +8,6 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
 public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
@@ -49,22 +46,6 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
 		EaeEvaluation eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvaluationRowMapper());
 		return eval;
-	}
-
-	@Override
-	public Connection creerEaeEvaluation(Integer idEae, Integer idNiveau, Double noteAnnee, Double noteAnneeN1, Double noteAnneeN2,
-			Double noteAnneeN3, String avis, String avctDifferencie, String changementClasse, String avisSHD) throws Exception {
-
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_EVALUATION + "," + CHAMP_ID_EAE + "," + CHAMP_ID_NIVEAU + ","
-				+ CHAMP_NOTE_ANNEE + "," + CHAMP_NOTE_ANNEE_N1 + "," + CHAMP_NOTE_ANNEE_N2 + "," + CHAMP_NOTE_ANNEE_N3 + ","
-				+ CHAMP_AVIS_REVALORISATION + "," + CHAMP_PROPOSITION_AVANCEMENT + "," + CHAMP_AVIS_CHANGEMENT_CLASSE + "," + CHAMP_AVIS_SHD + ") "
-				+ "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?,?,?,?,?,?,?)";
-		DataSourceUtils.getConnection(jdbcTemplate.getDataSource()).setAutoCommit(false);
-
-		jdbcTemplate.update(sql, new Object[] { idEae, idNiveau, noteAnnee, noteAnneeN1, noteAnneeN2, noteAnneeN3, avis, avctDifferencie,
-				changementClasse, avisSHD });
-
-		return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
 	}
 
 	@Override
@@ -157,7 +138,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "='FAVORABLE'";
+					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "=1";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE });
 		} else if (section == null && direction != null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -165,7 +146,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "='FAVORABLE'";
+					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "=1";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE });
 		} else if (direction == null && section == null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -173,7 +154,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "='FAVORABLE'";
+					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "=1";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE });
 		} else {
 			sql = "select count(ev.ID_EAE) from "
@@ -181,7 +162,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "='FAVORABLE'";
+					+ CHAMP_AVIS_CHANGEMENT_CLASSE + "=1";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE });
 		}
 		return total;

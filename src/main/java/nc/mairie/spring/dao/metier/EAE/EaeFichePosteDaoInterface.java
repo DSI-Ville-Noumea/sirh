@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 

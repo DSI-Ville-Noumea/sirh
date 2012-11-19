@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
@@ -50,9 +49,6 @@ import nc.mairie.spring.dao.metier.EAE.EaeFDPCompetenceDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
-import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
-import nc.mairie.spring.dao.metier.EAE.EaeResultatDao;
-import nc.mairie.spring.dao.metier.EAE.EaeTypeObjectifDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
@@ -114,10 +110,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	private static Logger logger = Logger.getLogger(OeAVCTCampagneGestionEAE.class.getName());
 
-	private EaePlanActionDao eaePlanActionDao;
 	private EaeEvaluationDao eaeEvaluationDao;
-	private EaeTypeObjectifDao eaeTypeObjectifDao;
-	private EaeResultatDao eaeResultatDao;
 	private EaeFormationDao eaeFormationDao;
 	private TitreFormationDao titreFormationDao;
 	private CentreFormationDao centreFormationDao;
@@ -603,7 +596,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					(eaeFDP.getDirectionServ() == null ? "&nbsp;" : eaeFDP.getDirectionServ()) + " <br> "
 							+ (eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ()) + " <br> "
 							+ (eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ()));
-			addZone(getNOM_ST_AGENT(i), (agentEAE.getNomMarital()==null ?agentEAE.getNomPatronymique()==null ?agentEAE.getNomUsage() : agentEAE.getNomPatronymique() : agentEAE.getNomMarital())+ " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
+			addZone(getNOM_ST_AGENT(i),
+					(agentEAE.getNomMarital() == null ? agentEAE.getNomPatronymique() == null ? agentEAE.getNomUsage() : agentEAE
+							.getNomPatronymique() : agentEAE.getNomMarital())
+							+ " "
+							+ agentEAE.getPrenomUsage()
+							+ " ("
+							+ agentEAE.getNoMatricule()
+							+ ") ");
 			addZone(getNOM_ST_STATUT(i), evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut());
 			if (eaeFDP.getIdSHD() != null) {
 				AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), eaeFDP.getIdSHD().toString());
@@ -611,8 +611,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					getTransaction().traiterErreur();
 				}
 				if (agentResp != null && agentResp.getIdAgent() != null) {
-					addZone(getNOM_ST_SHD(i), (agentResp.getNomMarital()==null ?agentResp.getNomPatronymique()==null ?agentResp.getNomUsage() : agentResp.getNomPatronymique() : agentResp.getNomMarital()) + " " + agentResp.getPrenomUsage() + " (" + agentResp.getNoMatricule()
-							+ ") ");
+					addZone(getNOM_ST_SHD(i),
+							(agentResp.getNomMarital() == null ? agentResp.getNomPatronymique() == null ? agentResp.getNomUsage() : agentResp
+									.getNomPatronymique() : agentResp.getNomMarital())
+									+ " "
+									+ agentResp.getPrenomUsage()
+									+ " ("
+									+ agentResp.getNoMatricule() + ") ");
 				} else {
 					addZone(getNOM_ST_SHD(i), "&nbsp;");
 				}
@@ -625,14 +630,22 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			for (int j = 0; j < listeEvaluateur.size(); j++) {
 				EaeEvaluateur evaluateur = listeEvaluateur.get(j);
 				AgentNW agentevaluateur = AgentNW.chercherAgent(getTransaction(), evaluateur.getIdAgent().toString());
-				eval += (agentevaluateur.getNomMarital()==null ?agentevaluateur.getNomPatronymique()==null ?agentevaluateur.getNomUsage() : agentevaluateur.getNomPatronymique() : agentevaluateur.getNomMarital()) + " " + agentevaluateur.getPrenomUsage() + " (" + agentevaluateur.getNoMatricule()
-						+ ") <br> ";
+				eval += (agentevaluateur.getNomMarital() == null ? agentevaluateur.getNomPatronymique() == null ? agentevaluateur.getNomUsage()
+						: agentevaluateur.getNomPatronymique() : agentevaluateur.getNomMarital())
+						+ " "
+						+ agentevaluateur.getPrenomUsage()
+						+ " ("
+						+ agentevaluateur.getNoMatricule() + ") <br> ";
 			}
 			addZone(getNOM_ST_EVALUATEURS(i), eval.equals(Const.CHAINE_VIDE) ? "&nbsp;" : eval);
 			if (eae.getIdDelegataire() != null) {
 				AgentNW agentDelegataire = AgentNW.chercherAgent(getTransaction(), eae.getIdDelegataire().toString());
-				addZone(getNOM_ST_DELEGATAIRE(i), (agentDelegataire.getNomMarital()==null ?agentDelegataire.getNomPatronymique()==null ?agentDelegataire.getNomUsage() : agentDelegataire.getNomPatronymique() : agentDelegataire.getNomMarital()) + " " + agentDelegataire.getPrenomUsage() + " ("
-						+ agentDelegataire.getNoMatricule() + ")");
+				addZone(getNOM_ST_DELEGATAIRE(i),
+						(agentDelegataire.getNomMarital() == null ? agentDelegataire.getNomPatronymique() == null ? agentDelegataire.getNomUsage()
+								: agentDelegataire.getNomPatronymique() : agentDelegataire.getNomMarital())
+								+ " "
+								+ agentDelegataire.getPrenomUsage()
+								+ " (" + agentDelegataire.getNoMatricule() + ")");
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE(i), "&nbsp;");
 			}
@@ -695,18 +708,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 		if (getEaeFormationDao() == null) {
 			setEaeFormationDao((EaeFormationDao) context.getBean("eaeFormationDao"));
-		}
-
-		if (getEaeTypeObjectifDao() == null) {
-			setEaeTypeObjectifDao((EaeTypeObjectifDao) context.getBean("eaeTypeObjectifDao"));
-		}
-
-		if (getEaeResultatDao() == null) {
-			setEaeResultatDao((EaeResultatDao) context.getBean("eaeResultatDao"));
-		}
-
-		if (getEaePlanActionDao() == null) {
-			setEaePlanActionDao((EaePlanActionDao) context.getBean("eaePlanActionDao"));
 		}
 
 		if (getEaeEvaluationDao() == null) {
@@ -2473,30 +2474,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	public void setListeCAP(ArrayList<String> listeCAP) {
 		this.listeCAP = listeCAP;
-	}
-
-	public EaePlanActionDao getEaePlanActionDao() {
-		return eaePlanActionDao;
-	}
-
-	public void setEaePlanActionDao(EaePlanActionDao eaePlanActionDao) {
-		this.eaePlanActionDao = eaePlanActionDao;
-	}
-
-	public EaeTypeObjectifDao getEaeTypeObjectifDao() {
-		return eaeTypeObjectifDao;
-	}
-
-	public void setEaeTypeObjectifDao(EaeTypeObjectifDao eaeTypeObjectifDao) {
-		this.eaeTypeObjectifDao = eaeTypeObjectifDao;
-	}
-
-	public EaeResultatDao getEaeResultatDao() {
-		return eaeResultatDao;
-	}
-
-	public void setEaeResultatDao(EaeResultatDao eaeResultatDao) {
-		this.eaeResultatDao = eaeResultatDao;
 	}
 
 	public EaeFormationDao getEaeFormationDao() {
