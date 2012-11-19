@@ -4,7 +4,7 @@
 
 	<groupId>nc.mairie</groupId>
 	<artifactId>SIRH_war</artifactId>
-	<version>1.1.3</version>
+	<version>1.1.4</version>
 	<packaging>war</packaging>
 	<organization>
 		<name>Mairie de Nouméa</name>
@@ -78,7 +78,7 @@
 		<site>
 			<id>sirh.website</id>
 			<name>SIRH Website</name>
-			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile</url>
+			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH\</url>
 		</site>
 	</distributionManagement>
 
