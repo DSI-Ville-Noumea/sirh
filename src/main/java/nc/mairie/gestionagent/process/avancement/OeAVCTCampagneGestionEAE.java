@@ -256,19 +256,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 						if (aff != null && aff.getIdFichePoste() != null) {
 							FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-
-							TitrePoste tpResp = null;
-							if (fp.getIdResponsable() != null) {
-								Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdResponsable());
-								if (getTransaction().isErreur()) {
-									getTransaction().traiterErreur();
-								}
-								if (affSuperieur.getIdFichePoste() != null) {
-									FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), affSuperieur.getIdFichePoste());
-									tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
-								}
-							}
-							eval.setFonction(tpResp.getLibTitrePoste().trim());
+							TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+							eval.setFonction(tp.getLibTitrePoste().trim());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
 							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fp);
