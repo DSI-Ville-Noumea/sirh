@@ -4,19 +4,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeDocumentRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeDocumentDao implements EaeDocumentDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(EaeDocumentDao.class);
+	private static Logger logger = Logger.getLogger(EaeDocumentDao.class.getName());
 
 	public static final String NOM_TABLE = "EAE_DOCUMENT";
 
@@ -80,7 +79,7 @@ public class EaeDocumentDao implements EaeDocumentDaoInterface {
 		ArrayList<EaeDocument> listeEaeDocument = new ArrayList<EaeDocument>();
 		for (Map row : rows) {
 			EaeDocument docu = new EaeDocument();
-			logger.debug("List doc campagne EAE : " + row.toString());
+			logger.info("List doc campagne EAE : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_DOCUMENT);
 			docu.setIdEaeDocument(id.intValue());
 			BigDecimal idCam = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);

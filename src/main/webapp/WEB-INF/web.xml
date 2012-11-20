@@ -3,7 +3,7 @@
 <web-app id="WebApp_ID">
 	<display-name>SIRH</display-name>
 	<!-- Clustering tomcat -->
-	<!-- Pour le moment on enleve le clustering tomcat pour tests-->
+	<!-- Pour le moment on enleve le clustering tomcat pour tests -->
 	<!-- <distributable /> -->
 
 
@@ -16,6 +16,7 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
 
 	<servlet>
 		<servlet-name>GestionAgent</servlet-name>

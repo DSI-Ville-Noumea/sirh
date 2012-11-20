@@ -11,13 +11,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeFichePosteRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeFichePosteDao.class);
 
 	public static final String NOM_TABLE = "EAE_FICHE_POSTE";
 
@@ -92,8 +88,8 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	@Override
 	public ArrayList<EaeFichePoste> listerEaeFichePosteGrouperParDirectionSection(Integer idCampagneEAE) {
 		String sql = "select fp." + CHAMP_DIRECTION_SERVICE + ",fp." + CHAMP_SECTION_SERVICE + " from " + NOM_TABLE
-				+ " fp inner join EAE e on e.id_eae=fp." + CHAMP_ID_EAE + " where e.ID_CAMPAGNE_EAE=? group by fp." + CHAMP_DIRECTION_SERVICE + ",fp."
-				+ CHAMP_SECTION_SERVICE + " order by fp." + CHAMP_DIRECTION_SERVICE;
+				+ " fp inner join EAE e on e.id_eae=fp." + CHAMP_ID_EAE + " where e.ID_CAMPAGNE_EAE=? group by fp." + CHAMP_DIRECTION_SERVICE
+				+ ",fp." + CHAMP_SECTION_SERVICE + " order by fp." + CHAMP_DIRECTION_SERVICE;
 
 		ArrayList<EaeFichePoste> listeEAE = new ArrayList<EaeFichePoste>();
 

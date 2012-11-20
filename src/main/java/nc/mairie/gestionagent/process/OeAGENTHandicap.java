@@ -1920,12 +1920,12 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_DATE_DOC(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), Const.CHAINE_VIDE);
 
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
 		// Récup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument().replace("\\", "/")));
+		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
 
 		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
 
@@ -1938,7 +1938,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
 		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('file:" + cheminFichier + "');");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
 	}

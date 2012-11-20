@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -13,15 +14,13 @@ import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.mapper.metier.suiviMedical.SuiviMedicalRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(SuiviMedicalDao.class);
+	private static Logger logger = Logger.getLogger(SuiviMedicalDao.class.getName());
 
 	public static final String NOM_TABLE = "SIRH.SUIVI_MEDICAL";
 
@@ -64,7 +63,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
+			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -188,7 +187,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { mois - 1, annee, etat });
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
+			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -263,7 +262,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee, mois, etatConvoq, etatAccomp, etatPlanif });
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
+			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -298,7 +297,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi, etatConvoq, etatPlanif, etatImprime });
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
+			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -331,7 +330,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgentChoisi, mois, annee });
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
+			logger.info("List suiviMed listerSuiviMedicalNonEffectue : " + row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));

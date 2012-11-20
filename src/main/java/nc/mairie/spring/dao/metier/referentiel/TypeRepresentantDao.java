@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.referentiel.TypeRepresentantRowMapper;
 import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TypeRepresentantDao implements TypeRepresentantDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(TypeRepresentantDao.class);
 
 	public static final String NOM_TABLE = "SIRH.R_TYPE_REPRESENTANT";
 

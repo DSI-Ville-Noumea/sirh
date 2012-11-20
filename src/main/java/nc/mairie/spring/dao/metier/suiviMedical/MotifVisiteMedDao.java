@@ -3,19 +3,18 @@ package nc.mairie.spring.dao.metier.suiviMedical;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.suiviMedical.MotifVisiteMedRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(MotifVisiteMedDao.class);
+	private static Logger logger = Logger.getLogger(MotifVisiteMedDao.class.getName());
 
 	public static final String NOM_TABLE = "SIRH.R_MOTIF_VM";
 
@@ -63,7 +62,7 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map row : rows) {
 			MotifVisiteMed motif = new MotifVisiteMed();
-			logger.debug("List motif VM : " + row.toString());
+			logger.info("List motif VM : " + row.toString());
 			motif.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			motif.setLibMotifVM((String) row.get(CHAMP_LIB_MOTIF_VM));
 			listeMotifVisiteMed.add(motif);

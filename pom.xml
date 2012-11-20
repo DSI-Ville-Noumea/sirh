@@ -4,7 +4,7 @@
 
 	<groupId>nc.mairie</groupId>
 	<artifactId>SIRH_war</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5</version>
 	<packaging>war</packaging>
 	<organization>
 		<name>Mairie de Nouméa</name>
@@ -66,6 +66,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 	</properties>
 
 	<scm>
@@ -188,8 +189,8 @@
 	</dependencies>
 
 	<build>
-		<finalName>sirh##${project.version}</finalName>
-		<!-- <finalName>sirh##${project.version}-${buildNumber}</finalName> -->
+		<!-- <finalName>sirh##${project.version}</finalName> -->
+		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName>
 		<plugins>
 			<!--<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
 				<configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 

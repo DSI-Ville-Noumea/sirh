@@ -4,19 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.CampagneActeurRowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneActeur;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneActeurDao implements CampagneActeurDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(CampagneActeurDao.class);
+	private static Logger logger = Logger.getLogger(CampagneActeurDao.class.getName());
 
 	public static final String NOM_TABLE = "EAE_CAMPAGNE_ACTEURS";
 
@@ -71,7 +71,7 @@ public class CampagneActeurDao implements CampagneActeurDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneAction });
 		for (Map row : rows) {
 			CampagneActeur camp = new CampagneActeur();
-			logger.debug("List Campagne Acteur : " + row.toString());
+			logger.info("List Campagne Acteur : " + row.toString());
 			BigDecimal idCampActeur = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTEUR);
 			camp.setIdCampagneActeur(idCampActeur.intValue());
 			BigDecimal idCampAction = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);

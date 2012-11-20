@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeFormation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeFormationDao implements EaeFormationDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeFormationDao.class);
 
 	public static final String NOM_TABLE = "EAE_FORMATION";
 

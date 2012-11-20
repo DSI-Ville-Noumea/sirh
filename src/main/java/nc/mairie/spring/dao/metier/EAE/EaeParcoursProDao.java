@@ -10,13 +10,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeParcoursProDao.class);
 
 	public static final String NOM_TABLE = "EAE_PARCOURS_PRO";
 

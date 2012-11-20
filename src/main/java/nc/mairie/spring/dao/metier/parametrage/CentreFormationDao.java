@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.parametrage.CentreFormationRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CentreFormationDao implements CentreFormationDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(CentreFormationDao.class);
 
 	public static final String NOM_TABLE = "SIRH.P_CENTRE_FORMATION";
 

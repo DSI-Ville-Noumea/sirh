@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeFDPCompetence;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeFDPCompetenceDao implements EaeFDPCompetenceDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeFDPCompetenceDao.class);
 
 	public static final String NOM_TABLE = "EAE_FDP_COMPETENCE";
 

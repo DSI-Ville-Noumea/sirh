@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.parametrage.EmployeurRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EmployeurDao implements EmployeurDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EmployeurDao.class);
 
 	public static final String NOM_TABLE = "SIRH.P_EMPLOYEUR";
 

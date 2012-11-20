@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.CampagneEAERowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneEAEDao implements CampagneEAEDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(CampagneEAEDao.class);
+	private static Logger logger = Logger.getLogger(CampagneEAEDao.class.getName());
 
 	public static final String NOM_TABLE = "EAE_CAMPAGNE_EAE";
 
@@ -52,7 +51,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map row : rows) {
 			CampagneEAE camp = new CampagneEAE();
-			logger.debug("List campagne EAE : " + row.toString());
+			logger.info("List campagne EAE : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
 			camp.setIdCampagneEAE(id.intValue());
 			BigDecimal annee = (BigDecimal) row.get(CHAMP_ANNEE);

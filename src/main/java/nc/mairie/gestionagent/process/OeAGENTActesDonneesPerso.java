@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumImpressionAffectation;
+import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -73,6 +75,8 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 	private String vueCourant = null;
+
+	private static Logger logger = Logger.getLogger(OeAGENTActesDonneesPerso.class.getName());
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -854,7 +858,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
 		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('file:" + cheminFichier + "');");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
 	}
@@ -1469,13 +1473,15 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		logger.info("Rep stock : "+repertoireStockage);
 
 		// Récup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument().replace("\\", "/")));
+		logger.info("Lien doc : "+d.getLienDocument());
+		logger.info("Script : "+getScriptOuverture(repertoireStockage + d.getLienDocument()));
+		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
 
 		return true;
 	}

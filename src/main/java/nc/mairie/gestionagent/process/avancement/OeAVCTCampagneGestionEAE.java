@@ -597,13 +597,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							+ (eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ()) + " <br> "
 							+ (eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ()));
 			addZone(getNOM_ST_AGENT(i),
-					(agentEAE.getNomMarital() == null ? agentEAE.getNomPatronymique() == null ? agentEAE.getNomUsage() : agentEAE
-							.getNomPatronymique() : agentEAE.getNomMarital())
-							+ " "
-							+ agentEAE.getPrenomUsage()
-							+ " ("
-							+ agentEAE.getNoMatricule()
-							+ ") ");
+					(agentEAE.getNomMarital() == null || agentEAE.getNomMarital().equals(Const.CHAINE_VIDE) ? agentEAE.getNomPatronymique() == null
+							|| agentEAE.getNomPatronymique().equals(Const.CHAINE_VIDE) ? agentEAE.getNomUsage() : agentEAE.getNomPatronymique()
+							: agentEAE.getNomMarital())
+							+ " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut());
 			if (eaeFDP.getIdSHD() != null) {
 				AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), eaeFDP.getIdSHD().toString());
@@ -612,12 +609,12 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				}
 				if (agentResp != null && agentResp.getIdAgent() != null) {
 					addZone(getNOM_ST_SHD(i),
-							(agentResp.getNomMarital() == null ? agentResp.getNomPatronymique() == null ? agentResp.getNomUsage() : agentResp
-									.getNomPatronymique() : agentResp.getNomMarital())
+							(agentResp.getNomMarital() == null || agentResp.getNomMarital().equals(Const.CHAINE_VIDE) ? agentResp
+									.getNomPatronymique() == null || agentResp.getNomPatronymique().equals(Const.CHAINE_VIDE) ? agentResp
+									.getNomUsage() : agentResp.getNomPatronymique() : agentResp.getNomMarital())
 									+ " "
 									+ agentResp.getPrenomUsage()
-									+ " ("
-									+ agentResp.getNoMatricule() + ") ");
+									+ " (" + agentResp.getNoMatricule() + ") ");
 				} else {
 					addZone(getNOM_ST_SHD(i), "&nbsp;");
 				}
@@ -630,22 +627,21 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			for (int j = 0; j < listeEvaluateur.size(); j++) {
 				EaeEvaluateur evaluateur = listeEvaluateur.get(j);
 				AgentNW agentevaluateur = AgentNW.chercherAgent(getTransaction(), evaluateur.getIdAgent().toString());
-				eval += (agentevaluateur.getNomMarital() == null ? agentevaluateur.getNomPatronymique() == null ? agentevaluateur.getNomUsage()
-						: agentevaluateur.getNomPatronymique() : agentevaluateur.getNomMarital())
+				eval += (agentevaluateur.getNomMarital() == null || agentevaluateur.getNomMarital().equals(Const.CHAINE_VIDE) ? agentevaluateur
+						.getNomPatronymique() == null || agentevaluateur.getNomPatronymique().equals(Const.CHAINE_VIDE) ? agentevaluateur
+						.getNomUsage() : agentevaluateur.getNomPatronymique() : agentevaluateur.getNomMarital())
 						+ " "
-						+ agentevaluateur.getPrenomUsage()
-						+ " ("
-						+ agentevaluateur.getNoMatricule() + ") <br> ";
+						+ agentevaluateur.getPrenomUsage() + " (" + agentevaluateur.getNoMatricule() + ") <br> ";
 			}
 			addZone(getNOM_ST_EVALUATEURS(i), eval.equals(Const.CHAINE_VIDE) ? "&nbsp;" : eval);
 			if (eae.getIdDelegataire() != null) {
 				AgentNW agentDelegataire = AgentNW.chercherAgent(getTransaction(), eae.getIdDelegataire().toString());
 				addZone(getNOM_ST_DELEGATAIRE(i),
-						(agentDelegataire.getNomMarital() == null ? agentDelegataire.getNomPatronymique() == null ? agentDelegataire.getNomUsage()
-								: agentDelegataire.getNomPatronymique() : agentDelegataire.getNomMarital())
+						(agentDelegataire.getNomMarital() == null || agentDelegataire.getNomMarital().equals(Const.CHAINE_VIDE) ? agentDelegataire
+								.getNomPatronymique() == null || agentDelegataire.getNomPatronymique().equals(Const.CHAINE_VIDE) ? agentDelegataire
+								.getNomUsage() : agentDelegataire.getNomPatronymique() : agentDelegataire.getNomMarital())
 								+ " "
-								+ agentDelegataire.getPrenomUsage()
-								+ " (" + agentDelegataire.getNoMatricule() + ")");
+								+ agentDelegataire.getPrenomUsage() + " (" + agentDelegataire.getNoMatricule() + ")");
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE(i), "&nbsp;");
 			}

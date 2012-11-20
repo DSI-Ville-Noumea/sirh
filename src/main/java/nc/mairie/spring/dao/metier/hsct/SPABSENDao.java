@@ -4,18 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.hsct.SPABSEN;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SPABSENDao implements SPABSENDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(SPABSENDao.class);
+	private static Logger logger = Logger.getLogger(SPABSENDao.class.getName());
 
 	public static final String NOM_TABLE = "MAIRIE.SPABSEN";
 
@@ -56,7 +55,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { type, mois, anneeChoisi });
 		for (Map row : rows) {
-			logger.debug("List matricule : " + row.toString());
+			logger.info("List matricule : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			listeMatricule.add(noMat.intValue());
 		}
@@ -79,7 +78,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, type, mois, anneeChoisi });
 		for (Map row : rows) {
 			SPABSEN abs = new SPABSEN();
-			logger.debug("List SPABSEN par agent : " + row.toString());
+			logger.info("List SPABSEN par agent : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			abs.setNoMatr(noMat.intValue());
 			abs.setType((String) row.get(CHAMP_TYPE3));
@@ -121,7 +120,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { typeMA, typeLM, mois, anneeChoisi });
 		for (Map row : rows) {
-			logger.debug("List matricule : " + row.toString());
+			logger.info("List matricule : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			listeMatricule.add(noMat.intValue());
 		}
@@ -144,7 +143,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, typeMA, typeLM, mois, anneeChoisi });
 		for (Map row : rows) {
 			SPABSEN abs = new SPABSEN();
-			logger.debug("List SPABSEN par agent : " + row.toString());
+			logger.info("List SPABSEN par agent : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			abs.setNoMatr(noMat.intValue());
 			abs.setType((String) row.get(CHAMP_TYPE3));

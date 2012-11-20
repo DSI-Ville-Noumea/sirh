@@ -168,14 +168,14 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private void afficheListeDocuments() {
 		for (int i = 0; i < getListeDocuments().size(); i++) {
 			String nomDoc = getListeDocuments().get(i);
-			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(78, nomDoc.length()));
+			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/")+1, nomDoc.length()));
 		}
 	}
 
 	private ArrayList<String> listerDocumentsSM() throws ParseException {
 		ArrayList<String> res = new ArrayList<String>();
 		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
 				+ ".xml";
 		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
@@ -186,19 +186,19 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				+ getAnneeSelectionne(indiceMois) + ".xml";
 
 		// on verifie l'existance de chaque fichier
-		boolean existsConvocF = (new File(docuConvocF.substring(8, docuConvocF.length()))).exists();
+		boolean existsConvocF = new File(docuConvocF).exists();
 		if (existsConvocF) {
 			res.add(docuConvocF);
 		}
-		boolean existsConvocCC = (new File(docuConvocCC.substring(8, docuConvocCC.length()))).exists();
+		boolean existsConvocCC = new File(docuConvocCC).exists();
 		if (existsConvocCC) {
 			res.add(docuConvocCC);
 		}
-		boolean existsAccompF = (new File(docuAccompagnementF.substring(8, docuAccompagnementF.length()))).exists();
+		boolean existsAccompF = new File(docuAccompagnementF).exists();
 		if (existsAccompF) {
 			res.add(docuAccompagnementF);
 		}
-		boolean existsAcompCC = (new File(docuAccompagnementCC.substring(8, docuAccompagnementCC.length()))).exists();
+		boolean existsAcompCC = new File(docuAccompagnementCC).exists();
 		if (existsAcompCC) {
 			res.add(docuAccompagnementCC);
 		}
@@ -3029,8 +3029,11 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		String docSelection = getListeDocuments().get(indiceEltAConsulter);
-
-		setURLFichier(getScriptOuverture(docSelection));
+		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"),docSelection.length());
+	
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		setURLFichier(getScriptOuverture(repertoireStockage+"SuiviMedical"+nomDoc));
+		System.out.println("ici : "+getScriptOuverture(repertoireStockage+"SuiviMedical"+nomDoc));
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

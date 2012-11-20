@@ -13,13 +13,9 @@ import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.mapper.metier.EAE.EAERowMapper;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EAEDao implements EAEDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EAEDao.class);
 
 	public static final String NOM_TABLE = "EAE";
 

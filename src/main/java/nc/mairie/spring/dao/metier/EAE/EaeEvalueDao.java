@@ -11,13 +11,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvalueRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvalueDao implements EaeEvalueDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeEvalueDao.class);
 
 	public static final String NOM_TABLE = "EAE_EVALUE";
 

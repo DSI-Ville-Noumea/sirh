@@ -1627,7 +1627,9 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		os.close();
 		destinationFile.close();
 
-		setURLFichier(getScriptOuverture(destination.substring(8, destination.length())));
+		destination = destination.substring(destination.lastIndexOf("/"),destination.length());		
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		setURLFichier(getScriptOuverture(repertoireStockage+"FP"+destination));
 
 	}
 
@@ -1637,7 +1639,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
 		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('file:" + cheminFichier + "');");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
 	}

@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.parametrage.TitreFormationRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TitreFormationDao implements TitreFormationDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(TitreFormationDao.class);
 
 	public static final String NOM_TABLE = "SIRH.P_TITRE_FORMATION";
 

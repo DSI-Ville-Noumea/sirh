@@ -10,13 +10,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluateur;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvaluateurDao implements EaeEvaluateurDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(EaeEvaluateurDao.class);
 
 	public static final String NOM_TABLE = "EAE_EVALUATEUR";
 

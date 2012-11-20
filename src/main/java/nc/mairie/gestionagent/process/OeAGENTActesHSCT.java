@@ -814,7 +814,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
 		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('file:" + cheminFichier + "');");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
 	}
@@ -1226,11 +1226,11 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 		// Récup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument().replace("\\", "/")));
+		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
 
 		return true;
 	}

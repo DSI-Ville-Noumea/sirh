@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.CampagneActionRowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneAction;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneActionDao implements CampagneActionDaoInterface {
 
-	private static Logger logger = LoggerFactory.getLogger(CampagneActionDao.class);
+	private static Logger logger = Logger.getLogger(CampagneActionDao.class.getName());
 
 	public static final String NOM_TABLE = "EAE_CAMPAGNE_ACTION";
 
@@ -55,7 +54,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map row : rows) {
 			CampagneAction camp = new CampagneAction();
-			logger.debug("List campagne Action : " + row.toString());
+			logger.info("List campagne Action : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());
 			BigDecimal idCamp = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
@@ -113,7 +112,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
 		for (Map row : rows) {
 			CampagneAction camp = new CampagneAction();
-			logger.debug("List campagne Action : " + row.toString());
+			logger.info("List campagne Action : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());
 			BigDecimal idCamp = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);

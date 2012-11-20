@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 import nc.mairie.spring.dao.mapper.metier.parametrage.RepresentantRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Representant;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RepresentantDao implements RepresentantDaoInterface {
-
-	private static Logger logger = LoggerFactory.getLogger(RepresentantDao.class);
 
 	public static final String NOM_TABLE = "SIRH.P_REPRESENTANT";
 
@@ -74,7 +70,8 @@ public class RepresentantDao implements RepresentantDaoInterface {
 			throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_TYPE_REPRESENTANT + "=?," + CHAMP_NOM_REPRESENTANT + "=?,"
 				+ CHAMP_PRENOM_REPRESENTANT + "=? where " + CHAMP_ID_REPRESENTANT + " =?";
-		jdbcTemplate.update(sql, new Object[] { idTypeRepresentant, nomRepresentant.toUpperCase(), prenomRepresentant.toUpperCase(), idRepresentant });
+		jdbcTemplate
+				.update(sql, new Object[] { idTypeRepresentant, nomRepresentant.toUpperCase(), prenomRepresentant.toUpperCase(), idRepresentant });
 	}
 
 	@Override
