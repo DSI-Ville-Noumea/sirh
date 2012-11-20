@@ -21,7 +21,42 @@
   <part id="donnees">
     <title>Données</title>
 
-    <faq id="suppFDP">
+    <faq id="suppEAE">
+      <question>
+        Comment supprimer toutes les données des EAE ( sans toucher à la campagne ) ?
+      </question>
+      <answer>
+        <p>Voici les différentes requetes SQL à passer :</p>
+		<p>delete from EAE_APPRECIATION;</p>
+		<p>delete from EAE_AUTO_EVALUATION;</p>
+		<p>delete from EAE_EVALUATION;</p>
+		<p>delete from EAE_FDP_COMPETENCE;</p>
+		<p>delete from EAE_FDP_ACTIVITE;</p>
+		<p>delete from EAE_FICHE_POSTE;</p>
+		<p>delete from EAE_PARCOURS_PRO;</p>
+		<p>delete from EAE_PLAN_ACTION;</p>
+		<p>delete from EAE_RESULTAT;</p>
+		<p>delete from EAE_DIPLOME;</p>
+		<p>delete from EAE_EVALUATEUR;</p>
+		<p>delete from EAE_EVALUE;</p>
+		<p>delete from EAE_APPRECIATION;</p>
+		<p>delete from EAE_DEVELOPPEMENT;</p>
+		<p>delete from EAE_EVOL_SOUHAIT;</p>
+		<p>delete from EAE_EVOLUTION;</p>
+		<p>delete from EAE;</p>
+		<p>delete from EAE_COMMENTAIRE;</p>
+      </answer>
+    </faq>
+	 <faq id="inactiveFDP">
+      <question>
+        Comment rendre une fiche de poste inactive ?
+      </question>
+      <answer>
+        <p>update SIRH.FICHE_POSTE set ID_STATUT_FP = 4 where ID_FICHE_POSTE = xxxx</p>
+		<p>NB : tous les statuts des FDP sont disponible dans la table R_STATUT_FP.</p>
+      </answer>
+    </faq>
+	<faq id="suppFDP">
       <question>
         Comment supprimer une fiche de poste (option indisponible pour les utilisateurs)?
       </question>
@@ -36,15 +71,6 @@
 		<p>delete from sirh.cadre_emploi_fp where id_fiche_poste = xxx</p>
 		<p>delete from sirh.fiche_poste where id_fiche_poste =xxx</p>
 		<p>delete from mairie.sppost where poanne = xxx and ponuor = xxx</p>
-      </answer>
-    </faq>
-	 <faq id="inactiveFDP">
-      <question>
-        Comment rendre une fiche de poste inactive ?
-      </question>
-      <answer>
-        <p>update SIRH.FICHE_POSTE set ID_STATUT_FP = 4 where ID_FICHE_POSTE = xxxx</p>
-		<p>NB : tous les statuts des FDP sont disponible dans la table R_STATUT_FP.</p>
       </answer>
     </faq>
   </part>
