@@ -322,7 +322,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		ArrayList aListe = new ArrayList();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			aListe = AgentNW.listerAgent(getTransaction());
+			aListe = AgentNW.listerAgentEnActivite(getTransaction());
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
 			AgentNW aAgent = AgentNW.chercherAgent(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
