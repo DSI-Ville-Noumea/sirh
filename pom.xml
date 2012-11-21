@@ -181,11 +181,8 @@
 			<version>6.0.35</version>
 		</dependency>
 		<!-- BIRT -->
-		<!--<dependency>
-			<groupId>org.eclipse.birt.runtime.3_7_1</groupId>
-			<artifactId>org.eclipse.birt.runtime</artifactId>
-			<version>3.7.1</version>
-		</dependency>-->
+		<!--<dependency> <groupId>org.eclipse.birt.runtime.3_7_1</groupId> <artifactId>org.eclipse.birt.runtime</artifactId> 
+			<version>3.7.1</version> </dependency> -->
 	</dependencies>
 
 	<build>
@@ -210,6 +207,10 @@
 							<directory>src/main/webapp</directory>
 							<targetPath></targetPath>
 							<filtering>true</filtering>
+							<includes>
+								<include>*.jsp</include>
+								<!-- include any other file types you want to filter -->
+							</includes>
 						</resource>
 					</webResources>
 				</configuration>
