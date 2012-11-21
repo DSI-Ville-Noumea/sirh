@@ -2158,7 +2158,10 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 		if (doc != null) {
 			if (new File(repPartage + doc.getLienDocument()).exists()) {
-				addZone(getNOM_ST_PHOTO(), (repPartage + doc.getLienDocument()).replace("/", "\\"));
+				String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+				addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
+			}else{
+				addZone(getNOM_ST_PHOTO(), "");
 			}
 		}
 
