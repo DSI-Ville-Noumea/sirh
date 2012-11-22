@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR"
 	content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<TITLE>SIRH RECETTE - Gestion du personnel ${version}</TITLE>
+<TITLE>SIRH <%=(String) ServletAgent.getMesParametres().get("TYPE_SIRH")%> - Gestion du personnel ${version}</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 </HEAD>
