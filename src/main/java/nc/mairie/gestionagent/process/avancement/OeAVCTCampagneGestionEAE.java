@@ -20,6 +20,7 @@ import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
@@ -2076,7 +2077,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					getTransaction().traiterErreur();
 				} else {
 					// pour le grade
-					agentEvalue.setGrade(grade.getLibGrade());
+					//on cherche la classe si elle existe
+					String classeString = Const.CHAINE_VIDE;
+					if(grade.getCodeClasse()!= null && !grade.getCodeClasse().equals(Const.CHAINE_VIDE)){
+						Classe classe = Classe.chercherClasse(getTransaction(), grade.getCodeClasse());
+						if(getTransaction().isErreur()){
+							getTransaction().traiterErreur();
+						}
+						if(classe!= null && classe.getLibClasse()!=null){
+							classeString = classe.getLibClasse();
+						}
+					}
+					agentEvalue.setGrade(grade.getGrade()+ " "+classeString);
 					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -2126,7 +2138,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				agentEvalue.setNouvGrade(gradeAvct.getLibGrade());
+				//on cherche la classe si elle existe
+				String classeString = Const.CHAINE_VIDE;
+				if(gradeAvct.getCodeClasse()!= null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)){
+					Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
+					if(getTransaction().isErreur()){
+						getTransaction().traiterErreur();
+					}
+					if(classe!= null && classe.getLibClasse()!=null){
+						classeString = classe.getLibClasse();
+					}
+				}
+				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " +classeString);
 				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().trim().equals("")) {
 					MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
 					if (getTransaction().isErreur()) {
