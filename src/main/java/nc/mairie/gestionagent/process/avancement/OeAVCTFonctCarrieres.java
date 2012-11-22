@@ -81,7 +81,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
 
 				addZone(getNOM_ST_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_ST_DATE_ARRETE(i), av.getDateArrete().equals("01/01/0001") ? Const.CHAINE_VIDE : av.getDateArrete());
+				addZone(getNOM_ST_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
 				addZone(getNOM_CK_AFFECTER(i),
 						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
 								: getCHECKED_OFF());

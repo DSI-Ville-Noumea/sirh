@@ -2208,11 +2208,11 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_NATIONALITE_SELECT(), String.valueOf(indiceNat));
 
 		addZone(getNOM_EF_DATE_NAISSANCE(), (getAgentCourant().getDateNaissance() == null || getAgentCourant().getDateNaissance()
-				.equals("01/01/0001")) ? "" : getAgentCourant().getDateNaissance());
+				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDateNaissance());
 		addZone(getNOM_EF_DATE_PREM_EMB(), (getAgentCourant().getDatePremiereEmbauche() == null || getAgentCourant().getDatePremiereEmbauche()
-				.equals("01/01/0001")) ? "" : getAgentCourant().getDatePremiereEmbauche());
+				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDatePremiereEmbauche());
 		addZone(getNOM_EF_DATE_DERN_EMB(), (getAgentCourant().getDateDerniereEmbauche() == null || getAgentCourant().getDateDerniereEmbauche()
-				.equals("01/01/0001")) ? "" : getAgentCourant().getDateDerniereEmbauche());
+				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDateDerniereEmbauche());
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), getAgentCourant().getNumCarteSejour());
 		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), getAgentCourant().getDateValiditeCarteSejour());
 

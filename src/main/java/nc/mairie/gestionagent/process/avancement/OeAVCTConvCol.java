@@ -83,7 +83,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 								: getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals("01/01/0001") ? Const.CHAINE_VIDE : av.getDateArrete());
+				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
 				addZone(getNOM_CK_AFFECTER(i),
 						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
 								: getCHECKED_OFF());

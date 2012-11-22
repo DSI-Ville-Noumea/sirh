@@ -182,7 +182,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 
 				addZone(getNOM_ST_DATE(indiceAcc), at.getDateAT());
 				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc),
-						at.getDateATInitial().equals("01/01/0001") || at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
+						at.getDateATInitial().equals(Const.DATE_NULL) || at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
 								.getDateATInitial());
 				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursITT() == null ? "&nbsp;" : at.getNbJoursITT());
 				addZone(getNOM_ST_TYPE(indiceAcc), t.getDescTypeAT().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT().trim());
@@ -278,7 +278,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT());
-		addZone(getNOM_EF_DATE_INITIALE(), getAccidentTravailCourant().getDateATInitial().equals("01/01/0001") ? Const.CHAINE_VIDE
+		addZone(getNOM_EF_DATE_INITIALE(), getAccidentTravailCourant().getDateATInitial().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
 				: getAccidentTravailCourant().getDateATInitial());
 		addZone(getNOM_EF_NB_JOUR_IIT(), getAccidentTravailCourant().getNbJoursITT());
 

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
@@ -1812,58 +1813,97 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private void performCreerParcoursPro(HttpServletRequest request, AgentNW ag) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// sur les affectations
-		ArrayList<Affectation> listAffectation = Affectation.listerAffectationAvecAgentOrderDateDeb(getTransaction(), ag);
-		for (int i = 0; i < listAffectation.size(); i++) {
-			Affectation aff = listAffectation.get(i);
-			FichePoste fpAff = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			Service direction = Service.getDirection(getTransaction(), fpAff.getIdServi());
-			if (aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.CHAINE_VIDE) || aff.getDateFinAff().equals("01/01/0001")) {
+		// TODO
+		// ArrayList<Affectation> listAffectation =
+		// Affectation.listerAffectationAvecAgentOrderDateDeb(getTransaction(),
+		// ag);
+		ArrayList<Spmtsr> listSpmtsr = Spmtsr.listerSpmtsrAvecAgentOrderDateDeb(getTransaction(), ag);
+		for (int i = 0; i < listSpmtsr.size(); i++) {
+			Spmtsr sp = listSpmtsr.get(i);
+			Service direction = Service.getDirection(getTransaction(), sp.getServi());
+			if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
 				// on crée une ligne pour affectation
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEAE());
-				parcours.setDateDebut(sdf.parse(aff.getDateDebutAff()));
-				parcours.setDateFin(aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.CHAINE_VIDE)
-						|| aff.getDateFinAff().equals(Const.DATE_NULL) ? null : sdf.parse(aff.getDateFinAff()));
+				String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
+				String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
+				String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
+				String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+				parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
+				Date dateFinSp = null;
+				if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
+					String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
+					String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
+					String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
+					String dateFinSpmtsr = jourDateFinSpmtsr + "/" + moisDateFinSpmtsr + "/" + anneeDateFinSpmtsr;
+					dateFinSp = sdf.parse(dateFinSpmtsr);
+				}
+				parcours.setDateFin(dateFinSp);
 				parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 						parcours.getLibelleParcoursPro());
 			} else {
 				// on regarde si il y a des lignes suivantes
-				Affectation affSuiv = Affectation.chercherAffectationAvecAgentEtDateDebut(getTransaction(), ag.getIdAgent(),
-						Services.formateDateInternationale(Services.ajouteJours(aff.getDateFinAff(), 1)));
+				Spmtsr spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNoMatricule(),
+						(Integer.valueOf(sp.getDatfin()) + 1));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// on crée une ligne pour administration
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEAE());
-					parcours.setDateDebut(sdf.parse(aff.getDateDebutAff()));
-					parcours.setDateFin(aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.CHAINE_VIDE)
-							|| aff.getDateFinAff().equals(Const.DATE_NULL) ? null : sdf.parse(aff.getDateFinAff()));
+					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
+					String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
+					String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
+					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
+					Date dateFinSp = null;
+					if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
+						String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
+						String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
+						String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
+						String dateFinSpmtsr = jourDateFinSpmtsr + "/" + moisDateFinSpmtsr + "/" + anneeDateFinSpmtsr;
+						dateFinSp = sdf.parse(dateFinSpmtsr);
+					}
+					parcours.setDateFin(dateFinSp);
 					parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
 				} else {
 					boolean fin = false;
-					String dateSortie = null;
-					if (aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.CHAINE_VIDE) || aff.getDateFinAff().equals(Const.DATE_NULL)) {
-						dateSortie = Services.ajouteJours(aff.getDateFinAff(), 1);
+					Integer dateSortie = null;
+					if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
+						Integer dateFinSP = Integer.valueOf(sp.getDatfin()) + 1;
+						String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
+						String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
+						String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
+						String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+						dateSortie = Integer.valueOf(dateDebSpmtsr);
 						fin = true;
 					}
 					while (!fin) {
-						affSuiv = Affectation.chercherAffectationAvecAgentEtDateDebut(getTransaction(), ag.getIdAgent(),
-								dateSortie == null ? "01/01/0001" : dateSortie);
+						spSuiv = Spmtsr
+								.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNoMatricule(), dateSortie == null ? 0 : dateSortie);
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							fin = true;
 						} else {
-							dateSortie = Services.ajouteJours(aff.getDateFinAff(), 1);
+							Integer dateFinSP = Integer.valueOf(sp.getDatfin()) + 1;
+							String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
+							String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
+							String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
+							String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+							dateSortie = Integer.valueOf(dateDebSpmtsr);
 						}
 					}
 					// on crée la ligne
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEAE());
-					parcours.setDateDebut(sdf.parse(aff.getDateDebutAff()));
-					parcours.setDateFin(dateSortie == null ? null : sdf.parse(dateSortie));
+					String anneeDateDebSpmtsr = sp.getDatdeb().substring(0, 4);
+					String moisDateDebSpmtsr = sp.getDatdeb().substring(4, 6);
+					String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
+					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
+					parcours.setDateFin(sdf.parse(dateSortie.toString()));
 					parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
@@ -1877,7 +1917,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			AutreAdministrationAgent admAgent = listAutreAdmin.get(i);
 			AutreAdministration administration = AutreAdministration.chercherAutreAdministration(getTransaction(), admAgent.getIdAutreAdmin());
 			if (admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
-					|| admAgent.getDateSortie().equals("01/01/0001")) {
+					|| admAgent.getDateSortie().equals(Const.DATE_NULL)) {
 				// on crée une ligne pour administration
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEAE());
@@ -2077,18 +2117,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					getTransaction().traiterErreur();
 				} else {
 					// pour le grade
-					//on cherche la classe si elle existe
+					// on cherche la classe si elle existe
 					String classeString = Const.CHAINE_VIDE;
-					if(grade.getCodeClasse()!= null && !grade.getCodeClasse().equals(Const.CHAINE_VIDE)){
+					if (grade.getCodeClasse() != null && !grade.getCodeClasse().equals(Const.CHAINE_VIDE)) {
 						Classe classe = Classe.chercherClasse(getTransaction(), grade.getCodeClasse());
-						if(getTransaction().isErreur()){
+						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
-						if(classe!= null && classe.getLibClasse()!=null){
+						if (classe != null && classe.getLibClasse() != null) {
 							classeString = classe.getLibClasse();
 						}
 					}
-					agentEvalue.setGrade(grade.getGrade()+ " "+classeString);
+					agentEvalue.setGrade(grade.getGrade() + " " + classeString);
 					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -2138,18 +2178,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				//on cherche la classe si elle existe
+				// on cherche la classe si elle existe
 				String classeString = Const.CHAINE_VIDE;
-				if(gradeAvct.getCodeClasse()!= null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)){
+				if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
 					Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
-					if(getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
-					if(classe!= null && classe.getLibClasse()!=null){
+					if (classe != null && classe.getLibClasse() != null) {
 						classeString = classe.getLibClasse();
 					}
 				}
-				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " +classeString);
+				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
 				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().trim().equals("")) {
 					MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
 					if (getTransaction().isErreur()) {
