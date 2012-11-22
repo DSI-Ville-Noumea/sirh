@@ -403,7 +403,7 @@
 					            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>" style="margin-bottom:5px;">
 							</span>
 							<span class="sigp2Mandatory" style="width:50px"></span>
-							<span class="sigp2Mandatory" style="width:180px">Comportement Professionnel </span>
+							<span class="sigp2Mandatory" style="width:180px">Comportements professionnels </span>
 							<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 					            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>" style="margin-bottom:5px;">
 
