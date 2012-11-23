@@ -1812,15 +1812,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	private void performCreerParcoursPro(HttpServletRequest request, AgentNW ag) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// sur les affectations
-		// TODO
-		// ArrayList<Affectation> listAffectation =
-		// Affectation.listerAffectationAvecAgentOrderDateDeb(getTransaction(),
-		// ag);
 		ArrayList<Spmtsr> listSpmtsr = Spmtsr.listerSpmtsrAvecAgentOrderDateDeb(getTransaction(), ag);
 		for (int i = 0; i < listSpmtsr.size(); i++) {
 			Spmtsr sp = listSpmtsr.get(i);
 			Service direction = Service.getDirection(getTransaction(), sp.getServi());
+			Service serv = Service.chercherService(getTransaction(), sp.getServi());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
 			if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
 				// on crée une ligne pour affectation
 				EaeParcoursPro parcours = new EaeParcoursPro();
@@ -1839,7 +1838,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					dateFinSp = sdf.parse(dateFinSpmtsr);
 				}
 				parcours.setDateFin(dateFinSp);
-				parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
+				String lib = direction == null ? "" : direction.getLibService().trim();
+				lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+				parcours.setLibelleParcoursPro(lib);
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 						parcours.getLibelleParcoursPro());
 			} else {
@@ -1865,7 +1866,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						dateFinSp = sdf.parse(dateFinSpmtsr);
 					}
 					parcours.setDateFin(dateFinSp);
-					parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
+					String lib = direction == null ? "" : direction.getLibService().trim();
+					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
 				} else {
@@ -1903,8 +1906,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					String jourDateDebSpmtsr = sp.getDatdeb().substring(6, 8);
 					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
 					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
-					parcours.setDateFin(sdf.parse(dateSortie.toString()));
-					parcours.setLibelleParcoursPro(direction == null ? null : direction.getLibService());
+					parcours.setDateFin(dateSortie == null ? null : sdf.parse(dateSortie.toString()));
+					String lib = direction == null ? "" : direction.getLibService().trim();
+					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
 
@@ -2061,14 +2066,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				agentEvalue.setDateEntreeFonctionnaire(dateCarriere);
 			}
 		}
-		// on cherche la date la plus ancienne dans les carrieres
-		Carriere carrAncienne = Carriere.chercherCarriereAncienne(getTransaction(), ag.getNoMatricule());
+		// on cherche la date la plus ancienne dans les PA de mairie.SPADMN
+		PositionAdmAgent paAncienne = PositionAdmAgent.chercherPositionAdmAgentAncienne(getTransaction(), ag.getNoMatricule());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 		}
-		Date dateCarriereAncienne = null;
-		if (carrAncienne != null && carrAncienne.getNoMatricule() != null) {
-			dateCarriereAncienne = sdf.parse(carrAncienne.getDateDebut());
+		Date dateSpadmnAncienne = null;
+		if (paAncienne != null && paAncienne.getDatdeb() != null && !paAncienne.getDatdeb().equals(Const.ZERO)) {
+			dateSpadmnAncienne = sdf.parse(paAncienne.getDatdeb());
 		}
 		// idem dans la liste des autres administration
 		AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent.chercherAutreAdministrationAgentAncienne(getTransaction(),
@@ -2081,15 +2086,15 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			dateAutreAdminAncienne = sdf.parse(autreAdminAncienne.getDateEntree());
 		}
 
-		if (dateAutreAdminAncienne == null && dateCarriereAncienne != null) {
-			agentEvalue.setDateEntreeAdministration(dateCarriereAncienne);
-		} else if (dateAutreAdminAncienne != null && dateCarriereAncienne == null) {
+		if (dateAutreAdminAncienne == null && dateSpadmnAncienne != null) {
+			agentEvalue.setDateEntreeAdministration(dateSpadmnAncienne);
+		} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne == null) {
 			agentEvalue.setDateEntreeAdministration(dateAutreAdminAncienne);
-		} else if (dateAutreAdminAncienne != null && dateCarriereAncienne != null) {
-			if (dateAutreAdminAncienne.before(dateCarriereAncienne)) {
+		} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne != null) {
+			if (dateAutreAdminAncienne.before(dateSpadmnAncienne)) {
 				agentEvalue.setDateEntreeAdministration(dateAutreAdminAncienne);
 			} else {
-				agentEvalue.setDateEntreeAdministration(dateCarriereAncienne);
+				agentEvalue.setDateEntreeAdministration(dateSpadmnAncienne);
 			}
 		}
 
@@ -2125,10 +2130,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							getTransaction().traiterErreur();
 						}
 						if (classe != null && classe.getLibClasse() != null) {
-							classeString = classe.getLibClasse();
+							classeString = classe.getLibClasse().trim();
 						}
 					}
-					agentEvalue.setGrade(grade.getGrade() + " " + classeString);
+					agentEvalue.setGrade(grade.getGrade().trim() + " " + classeString);
 					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -2186,10 +2191,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						getTransaction().traiterErreur();
 					}
 					if (classe != null && classe.getLibClasse() != null) {
-						classeString = classe.getLibClasse();
+						classeString = classe.getLibClasse().trim();
 					}
 				}
-				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+				agentEvalue.setNouvGrade(gradeAvct.getGrade().trim() + " " + classeString);
 				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().trim().equals("")) {
 					MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
 					if (getTransaction().isErreur()) {

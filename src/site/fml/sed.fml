@@ -43,6 +43,7 @@
 		<p>delete from EAE_DEVELOPPEMENT;</p>
 		<p>delete from EAE_EVOL_SOUHAIT;</p>
 		<p>delete from EAE_EVOLUTION;</p>
+		<p>delete from EAE_FINALISATION;</p>
 		<p>delete from EAE;</p>
 		<p>delete from EAE_COMMENTAIRE;</p>
       </answer>
