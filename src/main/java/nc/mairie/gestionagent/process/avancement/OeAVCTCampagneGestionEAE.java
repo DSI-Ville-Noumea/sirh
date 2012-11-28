@@ -15,6 +15,7 @@ import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
@@ -851,6 +852,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeEAE().size(); i++) {
 				if (testerParametre(request, getNOM_PB_METTRE_A_JOUR_EAE(i))) {
 					return performPB_METTRE_A_JOUR_EAE(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_SUPP_EAE
+			for (int i = 0; i < getListeEAE().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPP_EAE(i))) {
+					return performPB_SUPP_EAE(request, i);
 				}
 			}
 
@@ -2787,5 +2795,44 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	public void setEaeFDPCompetenceDao(EaeFDPCompetenceDao eaeFDPCompetenceDao) {
 		this.eaeFDPCompetenceDao = eaeFDPCompetenceDao;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPP_EAE Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_SUPP_EAE(int i) {
+		return "NOM_PB_SUPP_EAE" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_SUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
+		//TODO
+		// on supprime tous les evaluateurs existants
+		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(eaeSelection.getIdEAE());
+		for (int i = 0; i < evaluateursExistants.size(); i++) {
+			EaeEvaluateur eval = evaluateursExistants.get(i);
+			getEaeEvaluateurDao().supprimerEaeEvaluateur(eval.getIdEaeEvaluateur());
+		}
+		//on supprime le delegataire
+		getEaeDao().modifierDelegataire(eaeSelection.getIdEAE(), null);
+		//on met à jour le statut de l'EAE
+		eaeSelection.setEtat(EnumEtatEAE.SUPPRIME.getCode());
+		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }

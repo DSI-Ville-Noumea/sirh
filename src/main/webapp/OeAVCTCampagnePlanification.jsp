@@ -131,9 +131,9 @@ function SelectLigne(id,tailleTableau)
 				
 				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Message :</span>
 				<%if(process.getActionCourante()==null || !process.getActionCourante().isDiffuse()){ %>
-				<input class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_ST_MESSAGE() %>" size="100" type="text" value="<%= process.getVAL_ST_MESSAGE() %>">				
+				<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
 				<%}else{ %>	
-				<input disabled="disabled" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_ST_MESSAGE() %>" size="100" type="text" value="<%= process.getVAL_ST_MESSAGE() %>">				
+				<textarea disabled="disabled" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
 				<%} %>			
 				<BR/><BR/>
 				

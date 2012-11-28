@@ -136,6 +136,7 @@ function reduireHierarchy() {
 						<th>Crée le <br> Finalisé le <br> Contrôlé le</th>
 						<th>Actions</th>
 						<th>Contrôlé par</th>
+						<th>Supp EAE</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -148,11 +149,11 @@ function reduireHierarchy() {
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eae.getEtat().equals(EnumEtatEAE.CREE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode())&& !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eae.getEtat().equals(EnumEtatEAE.CREE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode())&& !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 								<br/>
 								<%if(eae.getIdDelegataire()==null){ %>
 								<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
@@ -178,6 +179,11 @@ function reduireHierarchy() {
 								<INPUT <%=eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? "disabled='disabled'" : "" %>type="checkbox" onclick='executeBouton("<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>")' <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_EAE(indiceAvct),process.getVAL_CK_VALID_EAE(indiceAvct))%> >
 								<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>">		
 								<%} %>
+							</td>	
+							<td>
+							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+								<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPP_EAE(indiceAvct)%>">
+							<%} %>
 							</td>
 						</tr>
 				<%}%>
@@ -187,7 +193,7 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,

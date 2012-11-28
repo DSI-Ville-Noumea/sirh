@@ -3033,7 +3033,6 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 		setURLFichier(getScriptOuverture(repertoireStockage+"SuiviMedical"+nomDoc));
-		System.out.println("ici : "+getScriptOuverture(repertoireStockage+"SuiviMedical"+nomDoc));
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
