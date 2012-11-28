@@ -325,7 +325,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 			aListe = AgentNW.listerAgentEnActivite(getTransaction());
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			AgentNW aAgent = AgentNW.chercherAgent(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
+			AgentNW aAgent = AgentNW.chercherAgentEnActivite(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur())
 				return false;
@@ -334,10 +334,10 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
-			aListe = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
+			aListe = AgentNW.listerAgentEnActiviteAvecNomCommencant(getTransaction(), zone);
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
+			aListe = AgentNW.listerAgentEnActiviteAvecPrenomCommencant(getTransaction(), zone);
 		}
 
 		// Si la liste est vide alors erreur
