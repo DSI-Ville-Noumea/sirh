@@ -129,11 +129,11 @@ function SelectLigne(id,tailleTableau)
 				<%} %>			
 				<BR/><BR/>
 				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Message :</span>
+				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Message :</span><br/>
 				<%if(process.getActionCourante()==null || !process.getActionCourante().isDiffuse()){ %>
-				<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
+				<textarea style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
 				<%}else{ %>	
-				<textarea disabled="disabled" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
+				<textarea style="margin-left:20px;position:relative;" readonly="readonly" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
 				<%} %>			
 				<BR/><BR/>
 				
@@ -171,16 +171,16 @@ function SelectLigne(id,tailleTableau)
 				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_FAIT_LE()%>', 'dd/mm/y');">				
 				<BR/><BR/>
 				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Observation :</span>
-				<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Observation :</span><br/>
+				<textarea style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
 				<BR/><BR/>
 				
 				
-				<span class="sigp2Mandatory" style="width:150px;margin:5px;"> Destinataires des alertes : </span>
+				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;"> Destinataires des alertes : </span>
 		        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
 				<br/>
 	            <%if(process.getListeDestinataireMulti().size()>0){ %>
-					<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
+					<div style="overflow: auto;height: 120px;width:1000px;margin-left:20px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 						<%
 						int indiceActeur = 0;
@@ -277,8 +277,8 @@ function SelectLigne(id,tailleTableau)
 		    	<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Action : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ACTION()%></span>
 				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Message : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_MESSAGE()%></span>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Message : </span><br/>
+				<textarea readonly="readonly" style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
 				<BR/><BR/>
 				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">A transmettre le : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_TRANSMETTRE()%></span>
@@ -292,8 +292,8 @@ function SelectLigne(id,tailleTableau)
 				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Fait le : </span>
 				<span class="sigp2-saisie"><%=process.getVAL_ST_FAIT_LE()%></span>
 				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Obervation : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>				
+				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Obervation : </span><br/>
+				<textarea readonly="readonly" style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
 				<BR/><BR/>	
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;"> Destinataires des alertes :</span>				
 				<BR/><BR/>	

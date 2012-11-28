@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -690,7 +691,15 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	}
 
 	private boolean performRegleGestion(HttpServletRequest request) {
-
+		if(getActionCourante()!=null && getActionCourante().isDiffuse()){
+			return true;
+		}
+		// La date de l'action doit être supérieure à la date du jour
+		if (Services.compareDates(getVAL_ST_TRANSMETTRE(), Services.dateDuJour()) <= 0) {
+			//"ERR170", "La date du champ 'transmettre le' doit être supérieure à la date du jour."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR170"));
+			return false;
+		}
 		return true;
 	}
 
