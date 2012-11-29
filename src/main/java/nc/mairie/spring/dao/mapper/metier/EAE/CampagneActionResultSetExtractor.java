@@ -17,7 +17,6 @@ public class CampagneActionResultSetExtractor implements ResultSetExtractor {
 		camp.setNomAction(rs.getString(CampagneActionDao.CHAMP_NOM_ACTION));
 		camp.setMessage(rs.getString(CampagneActionDao.CHAMP_MESSAGE));
 		camp.setDateTransmission(rs.getDate(CampagneActionDao.CHAMP_DATE_TRANSMISSION));
-		camp.setDiffuse(rs.getBoolean(CampagneActionDao.CHAMP_DIFFUSE));
 		camp.setDateAFaireLe(rs.getDate(CampagneActionDao.CHAMP_DATE_A_FAIRE_LE));
 		camp.setDateFaitLe(rs.getDate(CampagneActionDao.CHAMP_DATE_FAIT_LE));
 		camp.setCommentaire(rs.getString(CampagneActionDao.CHAMP_COMMENTAIRE));

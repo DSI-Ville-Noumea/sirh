@@ -278,8 +278,6 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 		for (int i = 0; i < la.size(); i++) {
 			AgentNW a = la.get(i);
 
-			if (a.getIdAgent().equals("9003556"))
-				System.out.println("ici");
 
 			// Recuperation de la carriere en cours
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a.getIdAgent());
@@ -330,8 +328,6 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					AvisCap avisCap = AvisCap.chercherAvisCapByLibCourt(getTransaction(), Const.AVIS_CAP_MOY);
 					avct.setIdAvisCAP(avisCap.getIdAvisCAP());
 
-					if (a.getIdAgent().equals("9003556"))
-						System.out.println("ici");
 					// calcul BM/ACC applicables
 					int nbJoursBM = 0;
 					int nbJoursACC = 0;

@@ -27,7 +27,6 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 	public static final String CHAMP_NOM_ACTION = "NOM_ACTION";
 	public static final String CHAMP_MESSAGE = "MESSAGE";
 	public static final String CHAMP_DATE_TRANSMISSION = "DATE_TRANSMISSION";
-	public static final String CHAMP_DIFFUSE = "DIFFUSE";
 	public static final String CHAMP_DATE_A_FAIRE_LE = "DATE_A_FAIRE_LE";
 	public static final String CHAMP_DATE_FAIT_LE = "DATE_FAIT_LE";
 	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
@@ -62,8 +61,6 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 			camp.setNomAction((String) row.get(CHAMP_NOM_ACTION));
 			camp.setMessage((String) row.get(CHAMP_MESSAGE));
 			camp.setDateTransmission((Date) row.get(CHAMP_DATE_TRANSMISSION));
-			BigDecimal diffuse = (BigDecimal) row.get(CHAMP_DIFFUSE);
-			camp.setDiffuse(diffuse.intValue() == 0 ? false : true);
 			camp.setDateAFaireLe((Date) row.get(CHAMP_DATE_A_FAIRE_LE));
 			camp.setDateFaitLe((Date) row.get(CHAMP_DATE_FAIT_LE));
 			camp.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
@@ -86,19 +83,18 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 	}
 
 	@Override
-	public Integer creerCampagneAction(String nomAction, String message, Date transmettreLe, boolean diffuse, Date pourLe, Date faitLe,
-			String commentaire, Integer idAgentRealisation, Integer idCampagneEAE) throws Exception {
+	public Integer creerCampagneAction(String nomAction, String message, Date transmettreLe, Date pourLe, Date faitLe, String commentaire,
+			Integer idAgentRealisation, Integer idCampagneEAE) throws Exception {
 
 		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_CAMPAGNE_ACTION + "," + CHAMP_NOM_ACTION + "," + CHAMP_MESSAGE + ","
-				+ CHAMP_DATE_TRANSMISSION + "," + CHAMP_DIFFUSE + "," + CHAMP_DATE_A_FAIRE_LE + "," + CHAMP_DATE_FAIT_LE + "," + CHAMP_COMMENTAIRE
-				+ "," + CHAMP_ID_AGENT_REALISATION + "," + CHAMP_ID_CAMPAGNE_EAE + ") VALUES (?,?, ?, ?, ?,?, ?, ?, ?,?)";
+				+ CHAMP_DATE_TRANSMISSION + "," + CHAMP_DATE_A_FAIRE_LE + "," + CHAMP_DATE_FAIT_LE + "," + CHAMP_COMMENTAIRE + ","
+				+ CHAMP_ID_AGENT_REALISATION + "," + CHAMP_ID_CAMPAGNE_EAE + ") VALUES (?,?, ?, ?, ?,?, ?, ?, ?,?)";
 
-		Integer diffuseAction = diffuse ? 1 : 0;
-		jdbcTemplate.update(sql, new Object[] { id, nomAction, message, transmettreLe, diffuseAction, pourLe, faitLe, commentaire,
-				idAgentRealisation, idCampagneEAE });
+		jdbcTemplate.update(sql,
+				new Object[] { id, nomAction, message, transmettreLe, pourLe, faitLe, commentaire, idAgentRealisation, idCampagneEAE });
 
 		return id;
 	}
@@ -120,8 +116,6 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 			camp.setNomAction((String) row.get(CHAMP_NOM_ACTION));
 			camp.setMessage((String) row.get(CHAMP_MESSAGE));
 			camp.setDateTransmission((Date) row.get(CHAMP_DATE_TRANSMISSION));
-			BigDecimal diffuse = (BigDecimal) row.get(CHAMP_DIFFUSE);
-			camp.setDiffuse(diffuse.intValue() == 0 ? false : true);
 			camp.setDateAFaireLe((Date) row.get(CHAMP_DATE_A_FAIRE_LE));
 			camp.setDateFaitLe((Date) row.get(CHAMP_DATE_FAIT_LE));
 			camp.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));

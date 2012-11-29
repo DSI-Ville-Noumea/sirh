@@ -13,7 +13,7 @@ public interface CampagneActionDaoInterface {
 
 	public CampagneAction chercherCampagneAction(Integer idCampagneAction) throws Exception;
 
-	public Integer creerCampagneAction(String nomAction, String message, Date transmettreLe, boolean diffuse, Date pourLe, Date faitLe,
+	public Integer creerCampagneAction(String nomAction, String message, Date transmettreLe,  Date pourLe, Date faitLe,
 			String commentaire, Integer idAgentRealisation, Integer idCampagneEAE) throws Exception;
 
 	public void modifierCampagneAction(Integer idCampagneAction, String nomAction, String message, Date dateTransmission, Date dateAFaireLe,

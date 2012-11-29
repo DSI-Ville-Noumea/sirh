@@ -578,7 +578,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			System.out.println("erreur d'execution " + e.toString());
+			logger.severe("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX
@@ -899,7 +899,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			System.out.println("Erreur suppression physique du fichier : " + e.toString());
+			logger.severe("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé

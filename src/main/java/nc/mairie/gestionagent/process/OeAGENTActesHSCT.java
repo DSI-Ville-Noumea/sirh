@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.process.avancement.OeAVCTCampagnePlanification;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -70,6 +72,8 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean isImporting = false;
 	public com.oreilly.servlet.MultipartRequest multi = null;
 	public File fichierUpload = null;
+	
+	private static Logger logger = Logger.getLogger(OeAGENTActesHSCT.class.getName());
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -528,7 +532,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			System.out.println("erreur d'execution " + e.toString());
+			logger.severe("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX
@@ -541,14 +545,6 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		ouw.close();
 		os.close();
 		destinationFile.close();
-
-		/*
-		 * try { int bytesRead = 0; byte[] buffer = new byte[512 * 1024]; while
-		 * ((bytesRead = fis.read(buffer, 0, 512 * 1024)) != -1) {
-		 * fos.write(buffer, 0, bytesRead); } resultat = true; } catch
-		 * (Exception e) { System.out.println("erreur d'execution " +
-		 * e.toString()); } finally { fos.close(); fis.close(); }
-		 */
 
 		return resultat;
 	}
@@ -855,7 +851,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			System.out.println("Erreur suppression physique du fichier : " + e.toString());
+			logger.severe("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé

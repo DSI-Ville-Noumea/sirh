@@ -169,7 +169,6 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 				}
 				addZone(getNOM_ST_NOM_ACTION(indiceAction), action.getNomAction());
 				addZone(getNOM_ST_TRANSMETTRE(indiceAction), sdf.format(action.getDateTransmission()));
-				addZone(getNOM_ST_DIFFUSE(indiceAction), action.isDiffuse() ? "oui" : "non");
 				addZone(getNOM_ST_MESSAGE(indiceAction), action.getMessage());
 				AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
 				addZone(getNOM_ST_REALISER_PAR(indiceAction), agt.getNomUsage().toUpperCase() + " " + agt.getPrenom());
@@ -612,9 +611,8 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				Integer idAction = getCampagneActionDao().creerCampagneAction(getActionCourante().getNomAction(), getActionCourante().getMessage(),
-						getActionCourante().getDateTransmission(), getActionCourante().isDiffuse(), getActionCourante().getDateAFaireLe(),
-						getActionCourante().getDateFaitLe(), getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(),
-						getCampagneCourante().getIdCampagneEAE());
+						getActionCourante().getDateTransmission(), getActionCourante().getDateAFaireLe(), getActionCourante().getDateFaitLe(),
+						getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(), getCampagneCourante().getIdCampagneEAE());
 				getActionCourante().setIdCampagneAction(idAction);
 			}
 			if (getTransaction().isErreur())
@@ -650,7 +648,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 				try {
 					fichierASupp.delete();
 				} catch (Exception e) {
-					System.out.println("Erreur suppression physique du fichier : " + e.toString());
+					logger.severe("Erreur suppression physique du fichier : " + e.toString());
 				}
 			}
 		}
@@ -683,7 +681,6 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		getActionCourante().setNomAction(getVAL_ST_NOM_ACTION());
 		getActionCourante().setMessage(getVAL_ST_MESSAGE());
 		getActionCourante().setDateTransmission(sdf.parse(getVAL_ST_TRANSMETTRE()));
-		getActionCourante().setDiffuse(false);
 		getActionCourante().setDateAFaireLe(sdf.parse(getVAL_ST_POUR_LE()));
 		getActionCourante().setDateFaitLe(getVAL_ST_FAIT_LE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_ST_FAIT_LE()));
 		getActionCourante().setCommentaire(getVAL_ST_COMMENTAIRE());
@@ -691,16 +688,30 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	}
 
 	private boolean performRegleGestion(HttpServletRequest request) {
-		if(getActionCourante()!=null && getActionCourante().isDiffuse()){
+		if (getActionCourante() != null && isMailDiffuse(getActionCourante())) {
 			return true;
 		}
 		// La date de l'action doit être supérieure à la date du jour
 		if (Services.compareDates(getVAL_ST_TRANSMETTRE(), Services.dateDuJour()) <= 0) {
-			//"ERR170", "La date du champ 'transmettre le' doit être supérieure à la date du jour."
+			// "ERR170",
+			// "La date du champ 'transmettre le' doit être supérieure à la date du jour."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR170"));
 			return false;
 		}
 		return true;
+	}
+
+	public boolean isMailDiffuse(CampagneAction action) {
+		if (getCampagneCourante() == null || action == null) {
+			return false;
+		}
+		// La date de l'action doit être supérieure à la date du jour
+		if (Services.compareDates(action.getDateTransmission().toString(), Services.dateDuJour()) <= 0) {
+			// alors le message est diffuse
+			return true;
+		}
+		// TODO
+		return false;
 	}
 
 	private boolean performControlerChamps(HttpServletRequest request) {
@@ -804,24 +815,6 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	 */
 	public String getVAL_ST_TRANSMETTRE(int i) {
 		return getZone(getNOM_ST_TRANSMETTRE(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DIFFUSE Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_ST_DIFFUSE(int i) {
-		return "NOM_ST_DIFFUSE" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIFFUSE Date
-	 * de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_ST_DIFFUSE(int i) {
-		return getZone(getNOM_ST_DIFFUSE(i));
 	}
 
 	/**
@@ -1782,7 +1775,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 				try {
 					fichierASupp.delete();
 				} catch (Exception e) {
-					System.out.println("Erreur suppression physique du fichier : " + e.toString());
+					logger.severe("Erreur suppression physique du fichier : " + e.toString());
 				}
 
 				// tout s'est bien passé
@@ -1907,7 +1900,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 			}
 			resultat = true;
 		} catch (Exception e) {
-			System.out.println("erreur d'execution " + e.toString());
+			logger.severe("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX

@@ -811,7 +811,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 							String pourLe = Services.ajouteAnnee(sdf.format(action.getDateAFaireLe()), 1);
 
 							Integer idActionCreer = getCampagneActionDao().creerCampagneAction(action.getNomAction(), action.getMessage(),
-									sdf.parse(transmettreLe), false, sdf.parse(pourLe), null, null, action.getIdAgentRealisation(), idCampagneCreer);
+									sdf.parse(transmettreLe),  sdf.parse(pourLe), null, null, action.getIdAgentRealisation(), idCampagneCreer);
 							// on cherche les acteurs de cette action pour les
 							// dupliquer egalement
 							ArrayList<CampagneActeur> listeActeursAction = getCampagneActeurDao().listerCampagneActeur(action.getIdCampagneAction());
@@ -1404,7 +1404,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 				try {
 					fichierASupp.delete();
 				} catch (Exception e) {
-					System.out.println("Erreur suppression physique du fichier : " + e.toString());
+					logger.severe("Erreur suppression physique du fichier : " + e.toString());
 				}
 
 				// tout s'est bien passé
@@ -1530,7 +1530,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			System.out.println("erreur d'execution " + e.toString());
+			logger.severe("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX

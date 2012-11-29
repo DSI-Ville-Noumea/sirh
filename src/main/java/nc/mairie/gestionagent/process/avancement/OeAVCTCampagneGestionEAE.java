@@ -246,8 +246,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agentEvaluateur.getIdAgent());
 						if (getTransaction().isErreur() || aff.getIdFichePoste() == null) {
 							getTransaction().traiterErreur();
-							System.out.println("erreur pour l'agent : " + agentEvaluateur.getIdAgent());
-							// continue;
 						}
 
 						if (aff != null && aff.getIdFichePoste() != null) {
