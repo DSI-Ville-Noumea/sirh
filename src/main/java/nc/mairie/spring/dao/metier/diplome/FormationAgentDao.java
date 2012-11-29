@@ -37,7 +37,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 
 	@Override
 	public ArrayList<FormationAgent> listerFormationAgent(Integer idAgent) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=?";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? order by "+CHAMP_ANNEE_FORMATION+" desc";
 
 		ArrayList<FormationAgent> listeFormationAgent = new ArrayList<FormationAgent>();
 

@@ -6,7 +6,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeFormation;
 
 public interface EaeFormationDaoInterface {
 
-	public void creerEaeFormation(Integer idEae, Integer anneeFormation, Integer dureeFormation, String libFormation) throws Exception;
+	public void creerEaeFormation(Integer idEae, Integer anneeFormation, String dureeFormation, String libFormation) throws Exception;
 
 	public ArrayList<EaeFormation> listerEaeFormation(Integer idEAE) throws Exception;
 

@@ -36,7 +36,7 @@ public class EaeFormationDao implements EaeFormationDaoInterface {
 	}
 
 	@Override
-	public void creerEaeFormation(Integer idEae, Integer anneeFormation, Integer dureeFormation, String libFormation) throws Exception {
+	public void creerEaeFormation(Integer idEae, Integer anneeFormation, String dureeFormation, String libFormation) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FORMATION + "," + CHAMP_ID_EAE + "," + CHAMP_ANNEE_FORMATION + ","
 				+ CHAMP_DUREE_FORMATION + "," + CHAMP_LIBELLE_FORMATION + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?)";
 
@@ -60,8 +60,7 @@ public class EaeFormationDao implements EaeFormationDaoInterface {
 			form.setIdEAE(idEae.intValue());
 			BigDecimal annee = (BigDecimal) row.get(CHAMP_ANNEE_FORMATION);
 			form.setAnneeFormation(annee.intValue());
-			BigDecimal duree = (BigDecimal) row.get(CHAMP_DUREE_FORMATION);
-			form.setDureeFormation(duree.intValue());
+			form.setDureeFormation((String) row.get(CHAMP_DUREE_FORMATION));
 			form.setLibelleFormation((String) row.get(CHAMP_LIBELLE_FORMATION));
 
 			listeEaeFormation.add(form);

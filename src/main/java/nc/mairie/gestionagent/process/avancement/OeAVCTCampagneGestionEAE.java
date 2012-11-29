@@ -1416,14 +1416,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	private void performCreerFormation(HttpServletRequest request, AgentNW ag) throws Exception {
 		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgent(Integer.valueOf(ag.getIdAgent()));
-		for (int i = 0; i < listFormationAgent.size(); i++) {
+		Integer tailleListe = listFormationAgent.size();
+		if(tailleListe>6){
+			tailleListe = 6;
+		}
+		for (int i = 0; i < tailleListe; i++) {
 			FormationAgent formation = listFormationAgent.get(i);
 			TitreFormation titre = getTitreFormationDao().chercherTitreFormation(formation.getIdTitreFormation());
 			CentreFormation centre = getCentreFormationDao().chercherCentreFormation(formation.getIdCentreFormation());
 			EaeFormation form = new EaeFormation();
 			form.setIdEAE(getEaeCourant().getIdEAE());
 			form.setAnneeFormation(formation.getAnneeFormation());
-			form.setDureeFormation(formation.getDureeFormation());
+			form.setDureeFormation(formation.getDureeFormation().toString() + " " +formation.getUniteDuree());
 			form.setLibelleFormation(titre.getLibTitreFormation() + " - " + centre.getLibCentreFormation());
 			getEaeFormationDao().creerEaeFormation(form.getIdEAE(), form.getAnneeFormation(), form.getDureeFormation(), form.getLibelleFormation());
 		}
@@ -1986,7 +1990,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			SpecialiteDiplomeNW spe = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), d.getIdSpecialiteDiplome());
 			EaeDiplome eaeDiplome = new EaeDiplome();
 			eaeDiplome.setIdEae(getEaeCourant().getIdEAE());
-			eaeDiplome.setLibelleDiplome(td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome() + " " + d.getDateObtention());
+			String anneeObtention = Const.CHAINE_VIDE;
+			if(d.getDateObtention()!=null && !d.getDateObtention().equals(Const.DATE_NULL) && !d.getDateObtention().equals(Const.CHAINE_VIDE)){
+				anneeObtention = d.getDateObtention().substring(6,d.getDateObtention().length());
+			}
+			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE :anneeObtention+ " : " )+  td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome() );
 			getEaeDiplomeDao().creerEaeDiplome(eaeDiplome.getIdEae(), eaeDiplome.getLibelleDiplome());
 		}
 	}
@@ -2751,6 +2759,38 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
 		performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
 		performCreerCompetencesFichePosteSecondaire(request, fpSecondaire);
+		
+
+
+		// on supprime les diplomes
+		ArrayList<EaeDiplome> listeEaeDiplome = getEaeDiplomeDao().listerEaeDiplome(getEaeCourant().getIdEAE());
+		for (int j = 0; j < listeEaeDiplome.size(); j++) {
+			EaeDiplome dip = listeEaeDiplome.get(j);
+			getEaeDiplomeDao().supprimerEaeDiplome(dip.getIdEaeDiplome());
+		}		
+		// on met les données dans EAE-Diplome
+		// logger.info("Req Oracle : Insert table EAE-Diplome");
+		performCreerDiplome(request, ag);
+
+		// on supprime les parcours pro
+		ArrayList<EaeParcoursPro> listeEaeParcoursPro = getEaeParcoursProDao().listerEaeParcoursPro(getEaeCourant().getIdEAE());
+		for (int j = 0; j < listeEaeParcoursPro.size(); j++) {
+			EaeParcoursPro parcours = listeEaeParcoursPro.get(j);
+			getEaeParcoursProDao().supprimerEaeParcoursPro(parcours.getIdEaeParcoursPro());
+		}
+		// on met les données dans EAE-Parcours-Pro
+		// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
+		performCreerParcoursPro(request, ag);
+
+		// on supprime les formations
+		ArrayList<EaeFormation> listeEaeFormation = getEaeFormationDao().listerEaeFormation(getEaeCourant().getIdEAE());
+		for (int j = 0; j < listeEaeFormation.size(); j++) {
+			EaeFormation form = listeEaeFormation.get(j);
+			getEaeFormationDao().supprimerEaeFormation(form.getIdEaeFormation());
+		}
+		// on met les données dans EAE-Formation
+		// logger.info("Req Oracle : Insert table EAE-Formation");
+		performCreerFormation(request, ag);
 
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
