@@ -473,7 +473,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				.getDureeValidite());
 
 		int ligneMedecin = getListeMedecin().indexOf(medecin);
-		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin + 1));
+		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
 
 		if (getVisiteCourante().getApte() != null) {
 			if (getVisiteCourante().getApte().equals("1"))
