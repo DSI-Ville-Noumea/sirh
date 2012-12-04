@@ -52,9 +52,9 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 
 /**
  * Process OeAGENTEmploisAffectation Date de création : (04/08/11 15:20:56)

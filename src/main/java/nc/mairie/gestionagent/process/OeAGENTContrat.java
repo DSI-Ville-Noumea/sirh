@@ -48,9 +48,9 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 
 /**
  * Process OeAGENTContrat Date de création : (16/05/11 09:36:20)

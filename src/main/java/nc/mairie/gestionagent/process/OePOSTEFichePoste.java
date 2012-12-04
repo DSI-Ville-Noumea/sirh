@@ -75,9 +75,9 @@ import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
