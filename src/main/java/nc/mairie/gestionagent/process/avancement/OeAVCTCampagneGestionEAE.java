@@ -1052,7 +1052,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
 			if (!initialiseListeEAE(request)) {
-				// TODO declarere erreur
+				// TODO declarer erreur
 				return false;
 			}
 
@@ -2237,7 +2237,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			getTransaction().traiterErreur();
 		} else {
 			if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
-				// TODO
 				// attention dans le cas des categorie 4 on a pas de date
 				// moyenne avct
 				agentEvalue.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avct
@@ -2905,7 +2904,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
-		// TODO
 		// on supprime tous les evaluateurs existants
 		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(eaeSelection.getIdEAE());
 		for (int i = 0; i < evaluateursExistants.size(); i++) {

@@ -527,24 +527,6 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 
-		// TODO
-		// test birt
-		/*
-		 * Edition ed = new Edition("test"); ed.test(
-		 * "C:/workspaceRAD7/sirh/Mairie_GestionAgent_EAE/reports/test.rptdesign"
-		 * ,
-		 * "C:/workspaceRAD7/sirh/Mairie_GestionAgent_EAE/reports/monRapportFinalTest"
-		 * );
-		 */
-
-		/*
-		 * try { Edition ed = Edition.getInstance(); Map<String, Object> param =
-		 * new HashMap<String, Object>(); Integer[] test = { 9005138, 9005131 };
-		 * param.put("id_agent", "9003236,9002646,9003203"); ed.run("test2",
-		 * Locale.FRENCH, param); ed.render("test2", "monRapportFinal2", "pdf");
-		 * ed.destructeur(); } catch (BirtException e) { e.printStackTrace(); }
-		 */
-
 		return true;
 	}
 

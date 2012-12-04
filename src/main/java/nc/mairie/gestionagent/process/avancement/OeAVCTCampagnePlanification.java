@@ -709,7 +709,6 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 			// alors le message est diffuse
 			return true;
 		}
-		// TODO
 		return false;
 	}
 
