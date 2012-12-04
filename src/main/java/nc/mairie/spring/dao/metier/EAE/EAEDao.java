@@ -154,7 +154,7 @@ public class EAEDao implements EAEDaoInterface {
 		}
 
 		String sql = "select e.* from " + NOM_TABLE + " e inner join EAE_FICHE_POSTE fp on fp.id_eae = e." + CHAMP_ID_EAE
-				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae inner join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE
+				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae left join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE
 				+ "=evaluateur.id_eae where " + CHAMP_ID_CAMPAGNE_EAE + "=? and fp.primaire=1 " + reqWhere;
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();

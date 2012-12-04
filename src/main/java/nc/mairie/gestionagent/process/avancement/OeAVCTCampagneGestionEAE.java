@@ -1056,6 +1056,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				return false;
 			}
 
+
+			// "INF202","Calcul effectué."
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF202"));
 			return true;
 		} else {
 			// TODO declarer erreur
