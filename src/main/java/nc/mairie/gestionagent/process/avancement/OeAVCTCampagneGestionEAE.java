@@ -598,9 +598,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							+ (eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ()) + " <br> "
 							+ (eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ()));
 			addZone(getNOM_ST_AGENT(i),
-					(agentEAE.getNomMarital() == null || agentEAE.getNomMarital().equals(Const.CHAINE_VIDE) ? agentEAE.getNomPatronymique() == null
-							|| agentEAE.getNomPatronymique().equals(Const.CHAINE_VIDE) ? agentEAE.getNomUsage() : agentEAE.getNomPatronymique()
-							: agentEAE.getNomMarital())
+					((agentEAE.getNomUsage()== null || agentEAE.getNomUsage().equals(Const.CHAINE_VIDE))? (agentEAE.getNomMarital()== null || agentEAE.getNomMarital().equals(Const.CHAINE_VIDE))? agentEAE.getNomPatronymique(): agentEAE.getNomMarital(): agentEAE.getNomUsage())
 							+ " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut());
 			if (eaeFDP.getIdSHD() != null) {
@@ -1415,7 +1413,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private void performCreerFormation(HttpServletRequest request, AgentNW ag) throws Exception {
 		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgent(Integer.valueOf(ag.getIdAgent()));
 		Integer tailleListe = listFormationAgent.size();
-		if(tailleListe>6){
+		if (tailleListe > 6) {
 			tailleListe = 6;
 		}
 		for (int i = 0; i < tailleListe; i++) {
@@ -1425,7 +1423,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			EaeFormation form = new EaeFormation();
 			form.setIdEAE(getEaeCourant().getIdEAE());
 			form.setAnneeFormation(formation.getAnneeFormation());
-			form.setDureeFormation(formation.getDureeFormation().toString() + " " +formation.getUniteDuree());
+			form.setDureeFormation(formation.getDureeFormation().toString() + " " + formation.getUniteDuree());
 			form.setLibelleFormation(titre.getLibTitreFormation() + " - " + centre.getLibCentreFormation());
 			getEaeFormationDao().creerEaeFormation(form.getIdEAE(), form.getAnneeFormation(), form.getDureeFormation(), form.getLibelleFormation());
 		}
@@ -1989,10 +1987,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			EaeDiplome eaeDiplome = new EaeDiplome();
 			eaeDiplome.setIdEae(getEaeCourant().getIdEAE());
 			String anneeObtention = Const.CHAINE_VIDE;
-			if(d.getDateObtention()!=null && !d.getDateObtention().equals(Const.DATE_NULL) && !d.getDateObtention().equals(Const.CHAINE_VIDE)){
-				anneeObtention = d.getDateObtention().substring(6,d.getDateObtention().length());
+			if (d.getDateObtention() != null && !d.getDateObtention().equals(Const.DATE_NULL) && !d.getDateObtention().equals(Const.CHAINE_VIDE)) {
+				anneeObtention = d.getDateObtention().substring(6, d.getDateObtention().length());
 			}
-			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE :anneeObtention+ " : " )+  td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome() );
+			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : anneeObtention + " : ")
+					+ td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome());
 			getEaeDiplomeDao().creerEaeDiplome(eaeDiplome.getIdEae(), eaeDiplome.getLibelleDiplome());
 		}
 	}
@@ -2757,15 +2756,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
 		performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
 		performCreerCompetencesFichePosteSecondaire(request, fpSecondaire);
-		
-
 
 		// on supprime les diplomes
 		ArrayList<EaeDiplome> listeEaeDiplome = getEaeDiplomeDao().listerEaeDiplome(getEaeCourant().getIdEAE());
 		for (int j = 0; j < listeEaeDiplome.size(); j++) {
 			EaeDiplome dip = listeEaeDiplome.get(j);
 			getEaeDiplomeDao().supprimerEaeDiplome(dip.getIdEaeDiplome());
-		}		
+		}
 		// on met les données dans EAE-Diplome
 		// logger.info("Req Oracle : Insert table EAE-Diplome");
 		performCreerDiplome(request, ag);
@@ -2836,8 +2833,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPP_EAE Date de
-	 * création : (29/09/11 10:03:38)
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPP_EAE Date de création :
+	 * (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_SUPP_EAE(int i) {
@@ -2857,16 +2854,16 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
-		//TODO
+		// TODO
 		// on supprime tous les evaluateurs existants
 		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(eaeSelection.getIdEAE());
 		for (int i = 0; i < evaluateursExistants.size(); i++) {
 			EaeEvaluateur eval = evaluateursExistants.get(i);
 			getEaeEvaluateurDao().supprimerEaeEvaluateur(eval.getIdEaeEvaluateur());
 		}
-		//on supprime le delegataire
+		// on supprime le delegataire
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEAE(), null);
-		//on met à jour le statut de l'EAE
+		// on met à jour le statut de l'EAE
 		eaeSelection.setEtat(EnumEtatEAE.SUPPRIME.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
 
