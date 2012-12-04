@@ -59,8 +59,7 @@ function reduireHierarchy() {
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
-		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-		<BR/>
+	<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Choix de la campagne</legend>
@@ -114,6 +113,15 @@ function reduireHierarchy() {
 					</script>
 				</div>
 			<BR/><BR/>
+			<span class="sigp2" style="width:100px">Par évaluateur :</span>
+			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUATEUR() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_EVALUATEUR() %>" style="margin-right:10px;">
+			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUATEUR()%>');">
+          	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR()%>');">
+          	<span class="sigp2" style="width:100px">Par évalué :</span>
+			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUE() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_EVALUE() %>" style="margin-right:10px;">
+			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>');">
+          	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
+          	<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">			
 		</FIELDSET>
@@ -198,7 +206,7 @@ function reduireHierarchy() {
 						"sScrollY": "375px",
 						"bPaginate": false,
 						"oTableTools": {
-							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"avctCC","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
+							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"gestionEAE","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
 							"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
 						}
 				    });
@@ -206,6 +214,13 @@ function reduireHierarchy() {
 			</script>
 			<BR/>
 		</FIELDSET>
+		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
+		
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUATEUR()%>" value="RECHERCHERAGENTEVALUATEUR">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR()%>" value="SUPPRECHERCHERAGENTEVALUATEUR">		
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>" value="RECHERCHERAGENTEVALUE">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>" value="SUPPRECHERCHERAGENTEVALUE">
+		
 		</FORM>
 </BODY>
 </HTML>

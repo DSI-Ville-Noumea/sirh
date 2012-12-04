@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
+import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.spring.dao.mapper.metier.EAE.EAERowMapper;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 
@@ -118,8 +119,8 @@ public class EAEDao implements EAEDaoInterface {
 	}
 
 	@Override
-	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService, String capBool)
-			throws Exception {
+	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService,
+			String capBool, AgentNW agentEvaluateur, AgentNW agentEvalue) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		if (!etat.equals(Const.CHAINE_VIDE)) {
 			reqWhere += " and " + CHAMP_ETAT + " like '" + etat + "' ";
@@ -144,8 +145,17 @@ public class EAEDao implements EAEDaoInterface {
 			}
 		}
 
+		if (agentEvaluateur != null) {
+			reqWhere += " and evaluateur.id_agent = " + agentEvaluateur.getIdAgent();
+		}
+
+		if (agentEvalue != null) {
+			reqWhere += " and eval.id_agent = " + agentEvalue.getIdAgent();
+		}
+
 		String sql = "select e.* from " + NOM_TABLE + " e inner join EAE_FICHE_POSTE fp on fp.id_eae = e." + CHAMP_ID_EAE
-				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae where " + CHAMP_ID_CAMPAGNE_EAE + "=? and fp.primaire=1 " + reqWhere;
+				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae inner join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE
+				+ "=evaluateur.id_eae where " + CHAMP_ID_CAMPAGNE_EAE + "=? and fp.primaire=1 " + reqWhere;
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 

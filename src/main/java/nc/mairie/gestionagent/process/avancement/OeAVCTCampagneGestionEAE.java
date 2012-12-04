@@ -15,7 +15,6 @@ import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
@@ -89,6 +88,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	public static final int STATUT_EVALUATEUR = 1;
 	public static final int STATUT_RECHERCHER_AGENT = 2;
+	public static final int STATUT_RECHERCHER_AGENT_EVALUATEUR = 3;
+	public static final int STATUT_RECHERCHER_AGENT_EVALUE = 4;
 
 	private String[] LB_ANNEE;
 	private String[] LB_ETAT;
@@ -165,6 +166,18 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
 			initialiseDelegataire();
+		}
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_EVALUATEUR) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT_EVALUATEUR(), agt.getNoMatricule());
+		}
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_EVALUE) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT_EVALUE(), agt.getNoMatricule());
 		}
 
 		// initialisation de l'affichage la liste des eae
@@ -598,7 +611,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							+ (eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ()) + " <br> "
 							+ (eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ()));
 			addZone(getNOM_ST_AGENT(i),
-					((agentEAE.getNomUsage()== null || agentEAE.getNomUsage().equals(Const.CHAINE_VIDE))? (agentEAE.getNomMarital()== null || agentEAE.getNomMarital().equals(Const.CHAINE_VIDE))? agentEAE.getNomPatronymique(): agentEAE.getNomMarital(): agentEAE.getNomUsage())
+					((agentEAE.getNomUsage() == null || agentEAE.getNomUsage().equals(Const.CHAINE_VIDE)) ? (agentEAE.getNomMarital() == null || agentEAE
+							.getNomMarital().equals(Const.CHAINE_VIDE)) ? agentEAE.getNomPatronymique() : agentEAE.getNomMarital() : agentEAE
+							.getNomUsage())
 							+ " " + agentEAE.getPrenomUsage() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut());
 			if (eaeFDP.getIdSHD() != null) {
@@ -858,6 +873,26 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_EVALUATEUR
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_EVALUATEUR())) {
+				return performPB_RECHERCHER_AGENT_EVALUATEUR(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_EVALUE
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_EVALUE())) {
+				return performPB_RECHERCHER_AGENT_EVALUE(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUE(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -976,8 +1011,21 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			cap = getListeCAP().get(indiceCAP - 1);
 		}
 
+		// recuperation agent evaluateur
+		AgentNW agentEvaluateur = null;
+		if (getVAL_ST_AGENT_EVALUATEUR().length() != 0) {
+			agentEvaluateur = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT_EVALUATEUR());
+		}
+
+		// recuperation agent evalue
+		AgentNW agentEvalue = null;
+		if (getVAL_ST_AGENT_EVALUE().length() != 0) {
+			agentEvalue = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT_EVALUE());
+		}
+
 		// on affiche la liste des EAE avec le filtre
-		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat, statut, listeSousService, cap);
+		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat, statut, listeSousService, cap,
+				agentEvaluateur, agentEvalue);
 		setListeEAE(listeEAE);
 		return true;
 	}
@@ -2868,6 +2916,140 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
 
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_EVALUATEUR
+	 * Date de création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT_EVALUATEUR() {
+		return "NOM_ST_AGENT_EVALUATEUR";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_AGENT_EVALUATEUR Date de création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT_EVALUATEUR() {
+		return getZone(getNOM_ST_AGENT_EVALUATEUR());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_EVALUATEUR
+	 * Date de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT_EVALUATEUR() {
+		return "NOM_PB_RECHERCHER_AGENT_EVALUATEUR";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public boolean performPB_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
+
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT_EVALUATEUR, true);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR Date de création : (13/07/11
+	 * 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT_EVALUATEUR(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_EVALUE Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT_EVALUE() {
+		return "NOM_ST_AGENT_EVALUE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_EVALUE
+	 * Date de création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT_EVALUE() {
+		return getZone(getNOM_ST_AGENT_EVALUE());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_EVALUE Date
+	 * de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT_EVALUE() {
+		return "NOM_PB_RECHERCHER_AGENT_EVALUE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public boolean performPB_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
+
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT_EVALUE, true);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE Date de création : (13/07/11
+	 * 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT_EVALUE(), Const.CHAINE_VIDE);
 		return true;
 	}
 }

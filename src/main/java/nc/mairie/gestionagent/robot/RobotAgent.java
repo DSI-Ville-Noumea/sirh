@@ -70,9 +70,10 @@ import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
 
 /**
- * Insérez la description du type à cet endroit. Date de création : (28/10/02 10:14:36)
+ * Insérez la description du type à cet endroit. Date de création : (28/10/02
+ * 10:14:36)
  * 
-     *
+ * 
  */
 public class RobotAgent extends nc.mairie.robot.Robot {
 	/**
@@ -83,14 +84,16 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 	}
 
 	/**
-	 * Insérez la description de la méthode à cet endroit. Date de création : (28/10/02 10:16:34)
+	 * Insérez la description de la méthode à cet endroit. Date de création :
+	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getDefaultProcess() {
 		return new PersonnelMain();
 	}
 
 	/**
-	 * Insérez la description de la méthode à cet endroit. Date de création : (28/10/02 10:16:34)
+	 * Insérez la description de la méthode à cet endroit. Date de création :
+	 * (28/10/02 10:16:34)
 	 */
 	public BasicProcess getFirstProcess(String activite) throws Exception {
 
@@ -146,7 +149,7 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		// Module AGENT - EAE
 		else if (activite.equals("AgtEae")) {
 			return new OeAGENTEae();
-		} 
+		}
 		// Module POSTE
 		else if (activite.equals("FEGestion")) {
 			return new OePOSTEFicheEmploi();
@@ -232,12 +235,14 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 			return null;
 		}
 
-		// throw new Exception("Activite "+activite+" non déclarée dans le robot de navigation");
+		// throw new
+		// Exception("Activite "+activite+" non déclarée dans le robot de navigation");
 
 	}
 
 	/**
-	 * Insérez la description de la méthode ici. Date de création : (28/10/2002 11:59:52)
+	 * Insérez la description de la méthode ici. Date de création : (28/10/2002
+	 * 11:59:52)
 	 * 
 	 * @return Hashtable
 	 */
@@ -245,12 +250,14 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 
 		Hashtable<String, String> navigation = new Hashtable<String, String>();
 
-		/////////////////////
+		// ///////////////////
 		// AGENT - Emplois //
-		/////////////////////
+		// ///////////////////
 		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP, OePOSTEFPSelection.class.getName());
-		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_HISTORIQUE, OeAGENTEmploisAffHisto.class.getName());
-		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE, OePOSTEFPSelection.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_HISTORIQUE,
+				OeAGENTEmploisAffHisto.class.getName());
+		navigation.put(OeAGENTEmploisAffectation.class.getName() + OeAGENTEmploisAffectation.STATUT_RECHERCHE_FP_SECONDAIRE,
+				OePOSTEFPSelection.class.getName());
 
 		// Classe OeAGENTEtatCivil
 		navigation.put(OeAGENTEtatCivil.class.getName() + OeAGENTEtatCivil.STATUT_LIEU_NAISS, OeCOMMUNESelection.class.getName());
@@ -288,7 +295,8 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		navigation.put(OePOSTEFPSelection.class.getName() + OePOSTEFPSelection.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OePOSTEFPRechercheAvancee
-		navigation.put(OePOSTEFPRechercheAvancee.class.getName() + OePOSTEFPRechercheAvancee.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePOSTEFPRechercheAvancee.class.getName() + OePOSTEFPRechercheAvancee.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
 
 		// Classe OeAGENTRecherche
 		navigation.put(OeAGENTRecherche.class.getName() + OeAGENTRecherche.STATUT_ETAT_CIVIL, OeAGENTEtatCivil.class.getName());
@@ -313,6 +321,10 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		// Classe OeAVCTCampagneGestionEAE
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_EVALUATEUR,
 				OeAVCTSelectionEvaluateur.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUATEUR,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT_EVALUE,
+				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// pour la recherche d'un agent
@@ -324,16 +336,16 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		navigation.put(OeAGENTContrat.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCasierJud.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTActesDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//hsct
+		// hsct
 		navigation.put(OeAGENTVisiteMed.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTAccidentTravail.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTHandicap.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTActesHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//emplois
+		// emplois
 		navigation.put(OeAGENTEmploisPoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTEmploisAffectation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTEmploisSpecificites.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//element salaire
+		// element salaire
 		navigation.put(OeAGENTPosAdm.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCharge.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
@@ -345,9 +357,9 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		navigation.put(OePOSTEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePOSTEFEActivite.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePOSTEFECompetence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//FP
+		// FP
 		navigation.put(OePOSTEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//AVCT
+		// AVCT
 		navigation.put(OeAVCTContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
@@ -373,16 +385,18 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		navigation.put(OePARAMETRAGEGradeRef.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEGrade.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//DROITS
+		// DROITS
 		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		//PERSONEL MAIN
+		// PERSONEL MAIN
 		navigation.put(PersonnelMain.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		return navigation;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nc.mairie.robot.Robot#initialiseTesteur()
 	 */
 	@Override
