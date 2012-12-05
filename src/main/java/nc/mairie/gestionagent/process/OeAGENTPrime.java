@@ -32,6 +32,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList<Prime> listePrimes;
 	private ArrayList<Rubrique> listeRubriques;
+	private ArrayList<Rubrique> listeRubriquesTotales;
 
 	private Hashtable<String, Rubrique> hashRubriques;
 
@@ -86,6 +87,9 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 		// RG_AG_PR_C02
 
 		if (getHashRubriques().size() == 0) {
+			ArrayList<Rubrique> listeRubTot = Rubrique.listerRubriqueAvecTypeRubrAvecInactives(getTransaction(), "P");
+			setListeRubriquesTotales(listeRubTot);
+			
 
 			ArrayList<Rubrique> listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "P");
 			// remplissage de la hashTable
@@ -141,7 +145,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListePrimes().size(); i++) {
 				Prime p = (Prime) getListePrimes().get(i);
 				Rubrique r = Rubrique.chercherRubrique(getTransaction(), p.getNoRubr());
-				
+
 				addZone(getNOM_ST_CODE_RUBR(indicePrime),
 						r == null || r.getNumRubrique() == null || r.getNumRubrique().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
 								.getNumRubrique().trim());
@@ -250,7 +254,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	private boolean initialisePrimeCourante(HttpServletRequest request) throws Exception {
-		Rubrique r = (Rubrique) getHashRubriques().get(getPrimeCourante().getNoRubr());
+		Rubrique r = Rubrique.chercherRubrique(getTransaction(), getPrimeCourante().getNoRubr());
 
 		// Alim zones
 		addZone(getNOM_ST_RUBRIQUE(), r.getLibRubrique());
@@ -467,7 +471,10 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 			String dateDebut = getZone(getNOM_EF_DATE_DEBUT());
 
 			Rubrique r = getSelectedRubrique();
-
+			if (r == null){
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
+				return false;
+			}
 			// Création de l'objet prime à créer/modifier
 			AgentNW agentCourant = getAgentCourant();
 			getPrimeCourante().setNoMatr(agentCourant.getNoMatricule());
@@ -772,6 +779,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 	private Rubrique getSelectedRubrique() throws Exception {
 		// récupération de la rubrique et vérification de son existence.
 		String idRubrique = Const.CHAINE_VIDE;
+		//pour les rubriques actives
 		for (int i = 0; i < getListeRubriques().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriques().get(i);
 			String textRubr = r.getNumRubrique().trim() + " " + r.getLibRubrique().trim();
@@ -780,8 +788,18 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 				break;
 			}
 		}
-		if (idRubrique.length() == 0) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
+//tests sur rubriques inactives
+		for (int i = 0; i < getListeRubriquesTotales().size(); i++) {
+			Rubrique r = (Rubrique) getListeRubriquesTotales().get(i);
+			String textRubr = r.getNumRubrique().trim() + " " + r.getLibRubrique().trim();
+			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
+				idRubrique = r.getNumRubrique();
+				break;
+			}
+		}
+		
+		if (idRubrique.equals(Const.CHAINE_VIDE)) {				
+			return null;
 		}
 		return Rubrique.chercherRubrique(getTransaction(), idRubrique);
 	}
@@ -1013,5 +1031,13 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public ArrayList<Rubrique> getListeRubriquesTotales() {
+		return listeRubriquesTotales;
+	}
+
+	public void setListeRubriquesTotales(ArrayList<Rubrique> listeRubriquesTotales) {
+		this.listeRubriquesTotales = listeRubriquesTotales;
 	}
 }
