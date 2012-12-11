@@ -18,6 +18,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.ContactNW;
 import nc.mairie.metier.agent.Document;
+import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.commun.BanqueGuichet;
 import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
@@ -708,6 +709,25 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "numéro de cafat"));
 				result &= false;
 			}
+			// **************************************
+			// Vérification unicité n° CAFAT
+			// **************************************
+
+			AgentNW cafatAg = AgentNW.chercherCafat(getTransaction(), getVAL_EF_NUM_CAFAT(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (cafatAg != null && cafatAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "cafat"));
+				result &= false;
+
+			}
+
 		}
 
 		// **************************************
@@ -720,9 +740,115 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "numéro de ruamm"));
 				result &= false;
 			}
+
+			// **************************************
+			// Vérification unicité n° RUAM
+			// **************************************
+
+			AgentNW ruamAg = AgentNW.chercherRuam(getTransaction(), getVAL_EF_NUM_RUAMM(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (ruamAg != null && ruamAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "ruamm"));
+				result &= false;
+			}
+
+		}
+
+		// **************************************
+		// Vérification unicité n° MUTUELLE
+		// **************************************
+
+		if (getVAL_EF_NUM_MUTUELLE().length() != 0) {
+
+			AgentNW mutuelleAg = AgentNW.chercherMutuelle(getTransaction(), getVAL_EF_NUM_MUTUELLE(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (mutuelleAg != null && mutuelleAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "mutuelle"));
+				result &= false;
+			}
+
+		}
+
+		// **************************************
+		// Vérification unicité n° CLR
+		// **************************************
+
+		if (getVAL_EF_NUM_CLR().length() != 0) {
+
+			AgentNW clrAg = AgentNW.chercherClr(getTransaction(), getVAL_EF_NUM_CLR(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (clrAg != null && clrAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CLR"));
+				result &= false;
+			}
+
+		}
+
+		// **************************************
+		// Vérification unicité n° CRE
+		// **************************************
+
+		if (getVAL_EF_NUM_CRE().length() != 0) {
+
+			AgentNW creAg = AgentNW.chercherCre(getTransaction(), getVAL_EF_NUM_CRE(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (creAg != null && creAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CRE"));
+				result &= false;
+			}
+		}
+
+		// **************************************
+		// Vérification unicité n° IRCAFEX
+		// **************************************
+
+		if (getVAL_EF_NUM_IRCAFEX().length() != 0) {
+
+			AgentNW ircafexAg = AgentNW.chercherIrcafex(getTransaction(), getVAL_EF_NUM_IRCAFEX(), getAgentCourant());
+			if (result == true) {
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+
+			if (ircafexAg != null && ircafexAg.getIdAgent() != null) {
+				// "ERR997",
+				// "Ce numéro de @ est déjà utilisé, il doit être unique."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "Ircafex"));
+				result &= false;
+			}
 		}
 
 		return result;
+
 	}
 
 	/**
@@ -2160,7 +2286,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 			if (new File(repPartage + doc.getLienDocument()).exists()) {
 				String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 				addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
-			}else{
+			} else {
 				addZone(getNOM_ST_PHOTO(), "");
 			}
 		}
@@ -2207,8 +2333,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		}
 		addZone(getNOM_LB_NATIONALITE_SELECT(), String.valueOf(indiceNat));
 
-		addZone(getNOM_EF_DATE_NAISSANCE(), (getAgentCourant().getDateNaissance() == null || getAgentCourant().getDateNaissance()
-				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDateNaissance());
+		addZone(getNOM_EF_DATE_NAISSANCE(),
+				(getAgentCourant().getDateNaissance() == null || getAgentCourant().getDateNaissance().equals(Const.DATE_NULL)) ? ""
+						: getAgentCourant().getDateNaissance());
 		addZone(getNOM_EF_DATE_PREM_EMB(), (getAgentCourant().getDatePremiereEmbauche() == null || getAgentCourant().getDatePremiereEmbauche()
 				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDatePremiereEmbauche());
 		addZone(getNOM_EF_DATE_DERN_EMB(), (getAgentCourant().getDateDerniereEmbauche() == null || getAgentCourant().getDateDerniereEmbauche()
