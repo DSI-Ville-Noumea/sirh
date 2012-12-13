@@ -107,9 +107,13 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	private ArrayList<String> listeUniteDuree;
 
 	private ArrayList<FormationAgent> listeFormationsAgent;
+	private Hashtable<Integer, TitreFormation> hashTitreFormation;
+	private Hashtable<Integer, CentreFormation> hashCentreFormation;
 	private FormationAgent formationAgentCourant;
 	private ArrayList<TitreFormation> listeTitreFormation;
 	private ArrayList<CentreFormation> listeCentreFormation;
+	private TitreFormation titreFormationCourant;
+	private CentreFormation centreFormationCourant;
 
 	private ArrayList<PermisAgent> listePermisAgent;
 	private PermisAgent permisAgentCourant;
@@ -628,7 +632,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 		if (getLB_TITRE_FORMATION() == LBVide) {
 			ArrayList<TitreFormation> listeTitreFormation = getTitreFormationDao().listerTitreFormation();
 			setListeTitreFormation(listeTitreFormation);
-			int[] tailles = { 25 };
+			int[] tailles = { 70 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator list = listeTitreFormation.listIterator(); list.hasNext();) {
 				TitreFormation titre = (TitreFormation) list.next();
@@ -638,11 +642,21 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setLB_TITRE_FORMATION(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_TITRE_FORMATION_SELECT(), Const.ZERO);
 		}
+
+		// Si hashtable des titres formation vide
+		if (getHashTitreFormation().size() == 0) {
+			// remplissage de la hashTable
+			for (int i = 0; i < getListeTitreFormation().size(); i++) {
+				TitreFormation aTitreFormation = (TitreFormation) getListeTitreFormation().get(i);
+				getHashTitreFormation().put(aTitreFormation.getIdTitreFormation(), aTitreFormation);
+			}
+		}
+
 		// Si liste centre formation vide alors affectation
 		if (getLB_CENTRE_FORMATION() == LBVide) {
 			ArrayList<CentreFormation> listeCentreFormation = getCentreFormationDao().listerCentreFormation();
 			setListeCentreFormation(listeCentreFormation);
-			int[] tailles = { 25 };
+			int[] tailles = { 70 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator list = listeCentreFormation.listIterator(); list.hasNext();) {
 				CentreFormation centre = (CentreFormation) list.next();
@@ -652,6 +666,16 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setLB_CENTRE_FORMATION(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), Const.ZERO);
 		}
+
+		// Si hashtable des centres formation vide
+		if (getHashCentreFormation().size() == 0) {
+			// remplissage de la hashTable
+			for (int i = 0; i < getListeCentreFormation().size(); i++) {
+				CentreFormation aCentreFormation = (CentreFormation) getListeCentreFormation().get(i);
+				getHashCentreFormation().put(aCentreFormation.getIdCentreFormation(), aCentreFormation);
+			}
+		}
+
 		// Si liste unité durée vide
 		if (getLB_UNITE_DUREE() == LBVide) {
 			ArrayList<String> listeUniteDuree = new ArrayList<String>();
@@ -1269,8 +1293,16 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * @param newTitreDiplomeCourant
 	 *            nc.mairie.metier.diplome.TitreDiplome
 	 */
-	private void setTitreDiplomeCourant(nc.mairie.metier.parametrage.TitreDiplome newTitreDiplomeCourant) {
+	private void setTitreDiplomeCourant(TitreDiplome newTitreDiplomeCourant) {
 		titreDiplomeCourant = newTitreDiplomeCourant;
+	}
+
+	private void setTitreFormationCourant(TitreFormation newTitreFormationCourant) {
+		titreFormationCourant = newTitreFormationCourant;
+	}
+
+	private void setCentreFormationCourant(CentreFormation newCentreFormationCourant) {
+		centreFormationCourant = newCentreFormationCourant;
 	}
 
 	/**
@@ -2229,16 +2261,19 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 */
 	private boolean initialiseFormationCourant(HttpServletRequest request) throws Exception {
 		FormationAgent f = getFormationAgentCourant();
-		TitreFormation titre = getTitreFormationDao().chercherTitreFormation(f.getIdTitreFormation());
-		CentreFormation centre = getCentreFormationDao().chercherCentreFormation(f.getIdCentreFormation());
+		TitreFormation titre = (TitreFormation) getHashTitreFormation().get(f.getIdTitreFormation());
+		setTitreFormationCourant(titre);
+		CentreFormation centre = (CentreFormation) getHashCentreFormation().get(f.getIdCentreFormation());
+		setCentreFormationCourant(centre);
 
 		// Alim zones
 		// Titre formation
 		int ligneTitre = getListeTitreFormation().indexOf(titre);
-		addZone(getNOM_LB_TITRE_FORMATION_SELECT(), String.valueOf(ligneTitre + 1));
+		addZone(getNOM_LB_TITRE_FORMATION_SELECT(), String.valueOf(ligneTitre));
+
 		// Centre formation
 		int ligneCentre = getListeCentreFormation().indexOf(centre);
-		addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), String.valueOf(ligneCentre + 1));
+		addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), String.valueOf(ligneCentre));
 
 		// Duree
 		addZone(getNOM_ST_DUREE_FORMATION(), f.getDureeFormation().toString());
@@ -2249,6 +2284,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_UNITE_DUREE_SELECT(), String.valueOf(ligneUnite));
 
 		return true;
+
 	}
 
 	/**
@@ -4080,5 +4116,27 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_NB_DOC_DIPLOME(int i) {
 		return getZone(getNOM_ST_NB_DOC_DIPLOME(i));
+	}
+
+	public Hashtable<Integer, TitreFormation> getHashTitreFormation() {
+		if (hashTitreFormation == null) {
+			hashTitreFormation = new Hashtable<Integer, TitreFormation>();
+		}
+		return hashTitreFormation;
+	}
+
+	public void setHashTitreFormation(Hashtable<Integer, TitreFormation> hashTitreFormation) {
+		this.hashTitreFormation = hashTitreFormation;
+	}
+
+	public Hashtable<Integer, CentreFormation> getHashCentreFormation() {
+		if (hashCentreFormation == null) {
+			hashCentreFormation = new Hashtable<Integer, CentreFormation>();
+		}
+		return hashCentreFormation;
+	}
+
+	public void setHashCentreFormation(Hashtable<Integer, CentreFormation> hashCentreFormation) {
+		this.hashCentreFormation = hashCentreFormation;
 	}
 }

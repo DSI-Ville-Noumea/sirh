@@ -358,14 +358,14 @@
 				<div>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Titre de la formation : </span>
 					<span>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 350px;">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 500px;">
 						<%=process.forComboHTML(process.getVAL_LB_TITRE_FORMATION(), process.getVAL_LB_TITRE_FORMATION_SELECT()) %>
 						</SELECT>
 					</span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Centre de formation : </span>
 					<span>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 350px;">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 500px;">
 						<%=process.forComboHTML(process.getVAL_LB_CENTRE_FORMATION(), process.getVAL_LB_CENTRE_FORMATION_SELECT()) %>
 						</SELECT>
 					</span>
@@ -453,14 +453,14 @@
 				    <% } %>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Titre de la formation : </span>
 					<span>
-						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 350px;">
+						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 500px;">
 						<%=process.forComboHTML(process.getVAL_LB_TITRE_FORMATION(), process.getVAL_LB_TITRE_FORMATION_SELECT()) %>
 						</SELECT>
 					</span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Centre de formation : </span>
 					<span>
-						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 350px;">
+						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 500px;">
 						<%=process.forComboHTML(process.getVAL_LB_CENTRE_FORMATION(), process.getVAL_LB_CENTRE_FORMATION_SELECT()) %>
 						</SELECT>
 					</span>
