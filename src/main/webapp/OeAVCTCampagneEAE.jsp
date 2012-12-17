@@ -101,10 +101,10 @@ function SelectLigneTabDoc(id,tailleTableau)
 								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_KIOSQUE(indiceCamp)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN_KIOSQUE(indiceCamp)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:110px;text-align: center;">
-									<INPUT <%= process.peutOuvrirCampagne(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Ouvrir" name="<%=process.getNOM_PB_OUVRIR_KIOSQUE(indiceCamp)%>">
+									<INPUT <%= process.peutOuvrirKiosque(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Ouvrir" name="<%=process.getNOM_PB_OUVRIR_KIOSQUE(indiceCamp)%>">
 								</td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:110px;text-align: center;">
-									<INPUT <%= process.peutFermerCampagne(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_FERMER_KIOSQUE(indiceCamp)%>">
+									<INPUT <%= process.peutFermerKiosque(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_FERMER_KIOSQUE(indiceCamp)%>">
 								</td>
 								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">
 									<INPUT <%= process.peutCloturerCampagne(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Cloturer" name="<%=process.getNOM_PB_CLOTURER_CAMPAGNE(indiceCamp)%>">

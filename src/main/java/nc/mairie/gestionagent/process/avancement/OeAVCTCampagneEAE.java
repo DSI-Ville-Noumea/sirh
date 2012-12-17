@@ -327,9 +327,12 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 		setCampagneCourante(campagneCourante);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		getCampagneCourante().setDateOuvertureKiosque(sdf.parse(Services.dateDuJour()));
+		getCampagneCourante().setDateFermetureKiosque(null);
 		// RG-EAE-4
 		getCampagneEAEDao().modifierOuvertureKiosqueCampagneEAE(getCampagneCourante().getIdCampagneEAE(),
 				getCampagneCourante().getDateOuvertureKiosque());
+		getCampagneEAEDao().modifierFermetureKiosqueCampagneEAE(getCampagneCourante().getIdCampagneEAE(),
+				getCampagneCourante().getDateFermetureKiosque());
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -463,7 +466,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	public boolean peutOuvrirCampagne(int element) throws Exception {
+	public boolean peutOuvrirKiosque(int element) throws Exception {
 		CampagneEAE campagneCourante = (CampagneEAE) getListeCampagne().get(element);
 		// RG-EAE-4
 		// campagne ouverte si date début campagne < date du jour ET date fin
@@ -471,15 +474,14 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 		// fin campagne vide et date ouverture kiosque vide
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() == null
-				&& campagneCourante.getDateOuvertureKiosque() == null) {
+				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque()!=null) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public boolean peutFermerCampagne(int element) throws Exception {
+	public boolean peutFermerKiosque(int element) throws Exception {
 		CampagneEAE campagneCourante = (CampagneEAE) getListeCampagne().get(element);
 		// RG-EAE-5
 		// date début kiosque < date du jour ET date fin kiosque vide
