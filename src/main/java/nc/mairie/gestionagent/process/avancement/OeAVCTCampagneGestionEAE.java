@@ -873,6 +873,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_DESUPP_EAE
+			for (int i = 0; i < getListeEAE().size(); i++) {
+				if (testerParametre(request, getNOM_PB_DESUPP_EAE(i))) {
+					return performPB_DESUPP_EAE(request, i);
+				}
+			}
+
 			// Si clic sur le bouton PB_RECHERCHER_AGENT_EVALUATEUR
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_EVALUATEUR())) {
 				return performPB_RECHERCHER_AGENT_EVALUATEUR(request);
@@ -2912,6 +2919,37 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEAE(), null);
 		// on met à jour le statut de l'EAE
 		eaeSelection.setEtat(EnumEtatEAE.SUPPRIME.getCode());
+		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_DESUPP_EAE Date de création :
+	 * (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_DESUPP_EAE(int i) {
+		return "NOM_PB_DESUPP_EAE" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_DESUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
+		// on met à jour le statut de l'EAE
+		eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
 
 		setStatut(STATUT_MEME_PROCESS);

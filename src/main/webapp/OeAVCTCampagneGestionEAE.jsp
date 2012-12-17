@@ -192,6 +192,9 @@ function reduireHierarchy() {
 							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 								<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPP_EAE(indiceAvct)%>">
 							<%} %>
+							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+								<INPUT title="ajouter" type="image" src="images/ajout.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DESUPP_EAE(indiceAvct)%>">
+							<%} %>
 							</td>
 						</tr>
 				<%}%>
