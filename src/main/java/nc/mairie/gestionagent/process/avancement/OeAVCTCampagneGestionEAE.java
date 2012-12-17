@@ -866,6 +866,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_DEFINALISE_EAE
+			for (int i = 0; i < getListeEAE().size(); i++) {
+				if (testerParametre(request, getNOM_PB_DEFINALISE_EAE(i))) {
+					return performPB_DEFINALISE_EAE(request, i);
+				}
+			}
+
 			// Si clic sur le bouton PB_SUPP_EAE
 			for (int i = 0; i < getListeEAE().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPP_EAE(i))) {
@@ -2202,6 +2209,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							classeString = classe.getLibClasse();
 						}
 					}
+					agentEvalue.setNbMoisDureeMin(grade.getDureeMin().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMin()));
+					agentEvalue.setNbMoisDureeMoy(grade.getDureeMoy().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMoy()));
+					agentEvalue.setNbMoisDureeMax(grade.getDureeMax().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMax()));
+
 					agentEvalue.setGrade(grade.getGrade() + " " + classeString);
 					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 					if (getTransaction().isErreur()) {
@@ -2297,7 +2308,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				agentEvalue.getStatut(), agentEvalue.getAncienneteEchelonJours(), agentEvalue.getCadre(), agentEvalue.getCategorie(),
 				agentEvalue.getClassification(), agentEvalue.getGrade(), agentEvalue.getEchelon(), agentEvalue.getDateEffetAvct(),
 				agentEvalue.getNouvGrade(), agentEvalue.getNouvEchelon(), agentEvalue.getPosition(), agentEvalue.getTypeAvct(),
-				agentEvalue.getPrecisionStatut());
+				agentEvalue.getPrecisionStatut(), agentEvalue.getNbMoisDureeMin(), agentEvalue.getNbMoisDureeMoy(), agentEvalue.getNbMoisDureeMax());
 	}
 
 	public Integer getIdCreerFichePosteSecondaire() {
@@ -2925,10 +2936,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DESUPP_EAE Date de création :
-	 * (29/09/11 10:03:38)
+	 * Retourne le nom d'un bouton pour la JSP : PB_DESUPP_EAE Date de création
+	 * : (29/09/11 10:03:38)
 	 * 
 	 */
 	public String getNOM_PB_DESUPP_EAE(int i) {

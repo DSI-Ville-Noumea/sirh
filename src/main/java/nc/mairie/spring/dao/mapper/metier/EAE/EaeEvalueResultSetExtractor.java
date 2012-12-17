@@ -32,6 +32,9 @@ public class EaeEvalueResultSetExtractor implements ResultSetExtractor {
 		eaeEval.setNouvEchelon(rs.getString(EaeEvalueDao.CHAMP_NOUV_ECHELON));
 		eaeEval.setPosition(rs.getString(EaeEvalueDao.CHAMP_POSITION));
 		eaeEval.setTypeAvct(rs.getString(EaeEvalueDao.CHAMP_TYPE_AVCT));
+		eaeEval.setNbMoisDureeMin(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MIN));
+		eaeEval.setNbMoisDureeMoy(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MOY));
+		eaeEval.setNbMoisDureeMax(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MAX));
 
 		return eaeEval;
 	}

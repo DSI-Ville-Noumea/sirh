@@ -39,6 +39,9 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	public static final String CHAMP_NOUV_ECHELON = "NOUV_ECHELON";
 	public static final String CHAMP_POSITION = "POSITION";
 	public static final String CHAMP_TYPE_AVCT = "TYPE_AVCT";
+	public static final String CHAMP_AVCT_DUR_MIN = "AVCT_DUR_MIN";
+	public static final String CHAMP_AVCT_DUR_MOY = "AVCT_DUR_MOY";
+	public static final String CHAMP_AVCT_DUR_MAX = "AVCT_DUR_MAX";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -56,18 +59,19 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	public void creerEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
 			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
 			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
-			String statutPrecision) throws Exception {
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax) throws Exception {
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_EVALUE + "," + CHAMP_ID_EAE + "," + CHAMP_ID_AGENT + ","
 				+ CHAMP_DATE_ENTREE_SERVICE + "," + CHAMP_DATE_ENTREE_COLLECTIVITE + "," + CHAMP_DATE_ENTREE_FONCTIONNAIRE + ","
 				+ CHAMP_DATE_ENTREE_ADMINISTRATION + "," + CHAMP_STATUT + "," + CHAMP_ANCIENNETE_ECHELON_JOURS + "," + CHAMP_CADRE + ","
 				+ CHAMP_CATEGORIE + "," + CHAMP_CLASSIFICATION + "," + CHAMP_GRADE + "," + CHAMP_ECHELON + "," + CHAMP_DATE_EFFET_AVCT + ","
-				+ CHAMP_NOUV_GRADE + "," + CHAMP_NOUV_ECHELON + "," + CHAMP_POSITION + "," + CHAMP_TYPE_AVCT + "," + CHAMP_STATUT_PRECISION
-				+ ") values(" + NOM_SEQUENCE + ".nextval,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_NOUV_GRADE + "," + CHAMP_NOUV_ECHELON + "," + CHAMP_POSITION + "," + CHAMP_TYPE_AVCT + "," + CHAMP_STATUT_PRECISION + ","
+				+ CHAMP_AVCT_DUR_MIN + "," + CHAMP_AVCT_DUR_MOY + "," + CHAMP_AVCT_DUR_MAX + ") values(" + NOM_SEQUENCE
+				+ ".nextval,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idEae, idAgent, dateEntreeService, dateEntreeCollectivite, dateEntreeFonctionnaire,
 				dateEntreeAdministration, statut, ancienneteEchelon, cadre, categorie, classification, grade, echelon, dateEffectAvct, nouvGrade,
-				nouvEchelon, position, typeAvct, statutPrecision });
+				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax });
 
 	}
 
@@ -118,6 +122,12 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setPosition((String) row.get(CHAMP_POSITION));
 			evalue.setPrecisionStatut((String) row.get(CHAMP_STATUT_PRECISION));
 			evalue.setTypeAvct((String) row.get(CHAMP_TYPE_AVCT));
+			BigDecimal min = (BigDecimal) row.get(CHAMP_AVCT_DUR_MIN);
+			evalue.setNbMoisDureeMin(min.intValue());
+			BigDecimal moy = (BigDecimal) row.get(CHAMP_AVCT_DUR_MOY);
+			evalue.setNbMoisDureeMoy(moy.intValue());
+			BigDecimal max = (BigDecimal) row.get(CHAMP_AVCT_DUR_MAX);
+			evalue.setNbMoisDureeMax(max.intValue());
 
 			listeEaeEvalue.add(evalue);
 		}
