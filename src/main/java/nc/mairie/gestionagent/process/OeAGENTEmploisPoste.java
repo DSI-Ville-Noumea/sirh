@@ -37,7 +37,6 @@ import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
-import nc.mairie.metier.poste.CadreEmploiFP;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.DiplomeFP;
 import nc.mairie.metier.poste.EntiteGeo;
@@ -90,10 +89,10 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	private Service section;
 	private String localisation;
 	private String responsable;
+	private String cadreEmploi;
 	private String gradeFP;
 	private String gradeAgt;
 	private String listeDiplomeGenFP = Const.CHAINE_VIDE;
-	private String listeCadreEmploi = Const.CHAINE_VIDE;
 	private String diplomeAgt;
 
 	public String ACTION_IMPRESSION = "Impression d'un contrat.";
@@ -192,8 +191,20 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 				setResponsable(fpResponsable.getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
 						fpResponsable.getIdTitrePoste()).getLibTitrePoste());
 			}
-			setGradeFP(getFichePosteCourant().getCodeGradeGenerique() == null ? Const.CHAINE_VIDE : GradeGenerique.chercherGradeGenerique(
-					getTransaction(), getFichePosteCourant().getCodeGradeGenerique()).getLibGradeGenerique());
+			String gradeAffichage = Const.CHAINE_VIDE;
+			if (getFichePosteCourant().getCodeGrade() != null) {
+				Grade g = Grade.chercherGrade(getTransaction(), getFichePosteCourant().getCodeGrade());
+				gradeAffichage = g.getGrade();
+
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+				CadreEmploi cadreEmp = null;
+				if (gg != null && gg.getIdCadreEmploi() != null) {
+					cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+				}
+				setCadreEmploi(cadreEmp == null || cadreEmp.getIdCadreEmploi() == null ? Const.CHAINE_VIDE : cadreEmp.getLibCadreEmploi());
+			}
+
+			setGradeFP(gradeAffichage);
 
 			// Liste Diplomes FP
 			setListeDiplomeGenFP(null);
@@ -203,16 +214,6 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 					setListeDiplomeGenFP(d.getLibDiplomeGenerique());
 				else
 					setListeDiplomeGenFP(getListeDiplomeGenFP().concat(", " + d.getLibDiplomeGenerique()));
-			}
-
-			// Liste CadreEmploi
-			setListeCadreEmploi(null);
-			ArrayList<CadreEmploi> ce = CadreEmploi.listerCadreEmploiAvecFichePoste(getTransaction(), getFichePosteCourant());
-			for (CadreEmploi cadre : ce) {
-				if (getListeCadreEmploi() == null)
-					setListeCadreEmploi(cadre.getLibCadreEmploi());
-				else
-					setListeCadreEmploi(getListeCadreEmploi().concat(", " + cadre.getLibCadreEmploi()));
 			}
 
 			// Diplome Agent
@@ -273,8 +274,8 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
 
-					addZone(getNOM_ST_AV_TYPE(indiceAvantage), typAv.getLibTypeAvantage().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typAv
-							.getLibTypeAvantage().trim());
+					addZone(getNOM_ST_AV_TYPE(indiceAvantage),
+							typAv.getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typAv.getLibTypeAvantage());
 					addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant());
 					addZone(getNOM_ST_AV_NATURE(indiceAvantage), natAv == null ? "&nbsp;" : natAv.getLibNatureAvantage());
 				}
@@ -297,10 +298,10 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 				if (aDel != null) {
 					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
 
-					addZone(getNOM_ST_DEL_TYPE(indiceDelegation), typDel.getLibTypeDelegation().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typDel
-							.getLibTypeDelegation().trim());
-					addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation), aDel.getLibDelegation().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel
-							.getLibDelegation().trim());
+					addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
+							typDel.getLibTypeDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typDel.getLibTypeDelegation());
+					addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
+							aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
 				}
 				indiceDelegation++;
 			}
@@ -320,8 +321,8 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 				if (aReg != null) {
 					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(), aReg.getIdTypeRegIndemn());
 
-					addZone(getNOM_ST_REG_TYPE(indiceRegime), typReg.getLibTypeRegIndemn().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typReg
-							.getLibTypeRegIndemn().trim());
+					addZone(getNOM_ST_REG_TYPE(indiceRegime),
+							typReg.getLibTypeRegIndemn().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typReg.getLibTypeRegIndemn());
 					addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait());
 					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
 				}
@@ -380,8 +381,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		if (getListeSavoir() != null) {
 			for (int i = 0; i < getListeSavoir().size(); i++) {
 				Competence co = (Competence) getListeSavoir().get(i);
-				addZone(getNOM_ST_LIB_COMP_S(indiceCompS), co.getNomCompetence().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence()
-						.trim());
+				addZone(getNOM_ST_LIB_COMP_S(indiceCompS), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
 				indiceCompS++;
 			}
 		}
@@ -390,8 +390,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		if (getListeSavoirFaire() != null) {
 			for (int i = 0; i < getListeSavoirFaire().size(); i++) {
 				Competence co = (Competence) getListeSavoirFaire().get(i);
-				addZone(getNOM_ST_LIB_COMP_SF(indiceCompSF), co.getNomCompetence().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co
-						.getNomCompetence().trim());
+				addZone(getNOM_ST_LIB_COMP_SF(indiceCompSF), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
 				indiceCompSF++;
 			}
 		}
@@ -400,8 +399,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		if (getListeComportementPro() != null) {
 			for (int i = 0; i < getListeComportementPro().size(); i++) {
 				Competence co = (Competence) getListeComportementPro().get(i);
-				addZone(getNOM_ST_LIB_COMP_PRO(indiceCompPro), co.getNomCompetence().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co
-						.getNomCompetence().trim());
+				addZone(getNOM_ST_LIB_COMP_PRO(indiceCompPro), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
 				indiceCompPro++;
 			}
 		}
@@ -420,8 +418,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		if (getListeActivite() != null) {
 			for (int i = 0; i < getListeActivite().size(); i++) {
 				Activite acti = (Activite) getListeActivite().get(i);
-				addZone(getNOM_ST_LIB_ACTI(indiceActi), acti.getNomActivite().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : acti.getNomActivite()
-						.trim());
+				addZone(getNOM_ST_LIB_ACTI(indiceActi), acti.getNomActivite().equals(Const.CHAINE_VIDE) ? "&nbsp;" : acti.getNomActivite());
 				indiceActi++;
 			}
 		}
@@ -450,7 +447,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ETUDE(), getListeDiplomeGenFP());
 		addZone(getNOM_ST_RESPONSABLE(), getResponsable());
 		addZone(getNOM_ST_GRADE(), getGradeFP());
-		addZone(getNOM_ST_CADRE_EMPLOI(), getListeCadreEmploi());
+		addZone(getNOM_ST_CADRE_EMPLOI(), getCadreEmploi());
 		addZone(getNOM_ST_MISSION(), getFichePosteCourant().getMissions());
 
 		addZone(getNOM_ST_TITULAIRE(), getAgentCourant().getNomUsage() + " " + getAgentCourant().getPrenomUsage());
@@ -1187,6 +1184,19 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		this.responsable = responsable;
 	}
 
+	private String getCadreEmploi() {
+		return cadreEmploi;
+	}
+
+	/**
+	 * Setter du cadreEmploi.
+	 * 
+	 * @param cadreEmploi
+	 */
+	private void setCadreEmploi(String cadreEmploi) {
+		this.cadreEmploi = cadreEmploi;
+	}
+
 	private String getGradeFP() {
 		return gradeFP;
 	}
@@ -1216,21 +1226,6 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	 */
 	private String getListeDiplomeGenFP() {
 		return listeDiplomeGenFP;
-	}
-
-	/**
-	 * @return listeCadreEmploi
-	 */
-	private String getListeCadreEmploi() {
-		return listeCadreEmploi;
-	}
-
-	/**
-	 * @param listeCadreEmploi
-	 *            listeCadreEmploi à définir
-	 */
-	private void setListeCadreEmploi(String listeCadreEmploi) {
-		this.listeCadreEmploi = listeCadreEmploi;
 	}
 
 	/**
@@ -1323,7 +1318,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "FP_" + getFichePosteCourant().getIdFichePoste());
 			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			File f = new File(repertoireStockage+d.getLienDocument());
+			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
@@ -1385,46 +1380,51 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 
 		// requete necessaire
 		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
-		FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCodFiliere());
+		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+		FiliereGrade fi = null;
+		CadreEmploi cadreEmp = null;
+		if (gg != null && gg.getIdCadreEmploi() != null) {
+			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
 
 		// partie concernant le statut
 		String statutFP = Const.CHAINE_VIDE;
 		StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP());
-		statutFP = statut.getLibStatutFP().trim();
+		statutFP = statut.getLibStatutFP();
 
 		// partie concernant le service
-		String lieuPoste = eg.getLibEntiteGeo().trim();
-		String libService = s.getLibService().trim();
+		String lieuPoste = eg.getLibEntiteGeo();
+		String libService = s.getLibService();
 
 		// partie concernant le grade,cadre emploi...
-		String grade = gg.getLibGradeGenerique().trim();
-		String categorie = gg.getCodCadre().trim();
+		String grade = g.getGrade();
+		String categorie = gg.getCodCadre();
 		String filiere = Const.CHAINE_VIDE;
 		if (fi != null && fi.getLibFiliere() != null) {
-			filiere = fi.getLibFiliere().trim();
+			filiere = fi.getLibFiliere();
 		}
-		CadreEmploiFP cadreFP = CadreEmploiFP.chercherCadreEmploiAvecFP(getTransaction(), fp.getIdFichePoste());
-		String cadreEmploi = Const.CHAINE_VIDE;
-		if (cadreFP != null && cadreFP.getIdCadreEmploi() != null) {
-			CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFP.getIdCadreEmploi());
-			cadreEmploi = cadre.getLibCadreEmploi().trim();
+
+		String cadreEmploiAffiche = Const.CHAINE_VIDE;
+		if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
+			cadreEmploiAffiche = cadreEmp.getLibCadreEmploi();
 		}
 
 		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
 		String niveauEtude = Const.CHAINE_VIDE;
 		if (nivEtuFP != null && nivEtuFP.getIdNiveauEtude() != null) {
 			NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
-			niveauEtude = nivEtu.getLibNiveauEtude().trim();
+			niveauEtude = nivEtu.getLibNiveauEtude();
 		}
 
 		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
 		String diplome = Const.CHAINE_VIDE;
 		if (dipFP != null && dipFP.getIdDiplomeGenerique() != null) {
 			DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), dipFP.getIdDiplomeGenerique());
-			diplome = dip.getLibDiplomeGenerique().trim();
+			diplome = dip.getLibDiplomeGenerique();
 		}
 
 		// partie concernant l'emploi
@@ -1517,10 +1517,10 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			rempFP = fpRemplacement.getNumFP();
 			rempTitreFP = tpRemplacement.getLibTitrePoste();
 		}
-		String titrePoste = tp.getLibTitrePoste().trim();
+		String titrePoste = tp.getLibTitrePoste();
 
 		// partie concernant la mission
-		String missions = fp.getMissions().trim();
+		String missions = fp.getMissions();
 
 		// partie concernant les activites
 		String activites = Const.CHAINE_VIDE;
@@ -1537,7 +1537,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		ArrayList<Competence> lComp = Competence.listerCompetenceAvecFP(getTransaction(), fp);
 		for (Competence comp : lComp) {
 			TypeCompetence tc = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
-			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence().trim() + ")<w:br />";
+			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence() + ")<w:br />";
 		}
 		if (competences.length() > 8) {
 			competences = competences.substring(0, competences.length() - 8);
@@ -1568,7 +1568,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
 			ligne = StringUtils.replace(ligne, "$_CATEGORIE_POSTE", categorie);
 			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
-			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploi);
+			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
 			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
 			ligne = StringUtils.replace(ligne, "$_DIPLOME", diplome);
 			// emploi
@@ -1627,9 +1627,9 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		os.close();
 		destinationFile.close();
 
-		destination = destination.substring(destination.lastIndexOf("/"),destination.length());		
+		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage+"FP"+destination));
+		setURLFichier(getScriptOuverture(repertoireStockage + "FP" + destination));
 
 	}
 

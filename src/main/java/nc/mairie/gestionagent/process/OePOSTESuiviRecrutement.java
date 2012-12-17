@@ -770,8 +770,8 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_SUBDIVISION(), "TODO");
 			TitrePoste titreP = TitrePoste.chercherTitrePoste(getTransaction(), ficheP.getIdTitrePoste());
 			addZone(getNOM_ST_TITRE_POSTE(), titreP == null ? Const.CHAINE_VIDE : titreP.getLibTitrePoste());
-			Grade grade = Grade.chercherGrade(getTransaction(), ficheP.getCodeGradeGenerique());
-			addZone(getNOM_ST_GRADE(), grade == null ? Const.CHAINE_VIDE : grade.getLibGrade());
+			Grade grade = Grade.chercherGrade(getTransaction(), ficheP.getCodeGrade());
+			addZone(getNOM_ST_GRADE(), grade == null ? Const.CHAINE_VIDE : grade.getGrade());
 		}
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
 	}

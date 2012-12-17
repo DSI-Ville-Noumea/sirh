@@ -137,7 +137,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < listeCreancier.size(); i++) {
 				Creancier c = (Creancier) listeCreancier.get(i);
 				getHashCreanciers().put(c.getCdCrea(), c);
-				String ligne[] = { c.getDesign().trim() + " - " + c.getNoCpte().trim() };
+				String ligne[] = { c.getDesign() + " - " + c.getNoCpte() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_CREANCIER(aFormat.getListeFormatee(true));
@@ -269,12 +269,11 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 				Rubrique r = (Rubrique) getHashRubriques().get(c.getNoRubr());
 				String codeChge = c.getCdChar();
 
-				addZone(getNOM_ST_CODE_RUBR(indiceCharge), r.getNumRubrique().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique().trim());
-				addZone(getNOM_ST_RUBRIQUE(indiceCharge), r.getLibRubrique().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique().trim());
-				addZone(getNOM_ST_MAT_CHARGE(indiceCharge), c.getNoMate().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNoMate().trim());
-				addZone(getNOM_ST_LIB_CHARGE(indiceCharge),
-						getLibCharge(c, codeChge) == null ? "&nbsp;" : getLibCharge(c, codeChge).trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-								: getLibCharge(c, codeChge).trim());
+				addZone(getNOM_ST_CODE_RUBR(indiceCharge), r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_RUBRIQUE(indiceCharge), r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+				addZone(getNOM_ST_MAT_CHARGE(indiceCharge), c.getNoMate().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNoMate());
+				addZone(getNOM_ST_LIB_CHARGE(indiceCharge), getLibCharge(c, codeChge).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: getLibCharge(c, codeChge));
 				addZone(getNOM_ST_TAUX(indiceCharge), Float.valueOf(c.getTxSal()) == 0 ? "&nbsp;" : c.getTxSal());
 				addZone(getNOM_ST_MONTANT(indiceCharge), Integer.valueOf(c.getMttreg()) == 0 ? "&nbsp;" : c.getMttreg());
 				addZone(getNOM_ST_DATE_DEBUT(indiceCharge), c.getDatDeb());
@@ -400,7 +399,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_RUBRIQUE(), r.getLibRubrique());
-		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique().trim() + " " + r.getLibRubrique().trim());
+		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique() + " " + r.getLibRubrique());
 
 		if (c != null) {
 			int ligneCreancier = getListeCreancier().indexOf(c);
@@ -507,7 +506,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 		String idRubrique = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListeRubriques().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriques().get(i);
-			String textRubr = r.getNumRubrique().trim() + " " + r.getLibRubrique().trim();
+			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
 				idRubrique = r.getNumRubrique();
 				break;

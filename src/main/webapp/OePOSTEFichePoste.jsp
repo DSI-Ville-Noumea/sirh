@@ -173,22 +173,7 @@
 							</SELECT>
 						</fieldset>
 						<fieldset class="sigp2Fieldset" style="margin-right:0px;width:570px;">
-							<legend class="sigp2Legend">Information emploi</legend>
-							<span class="sigp2Mandatory" style="width:100px;vertical-align:top;"> Cadres emploi : </span>
-							<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-						        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CADRE()%>" style="margin-bottom:5px">
-						        <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>" style="margin-bottom:5px">
-								<% if (process.isAfficherListeCadre()) {%>
-									<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" style="width:355px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI() %>")'>
-										<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI(), process.getVAL_LB_CADRE_EMPLOI_SELECT())%>
-									</SELECT>
-								<%} %>
-								<br/>
-							</span>
-							<SELECT size="3" style="margin-left:100px;width:393px;font-family:monospace;" class="sigp2-liste" disabled="disabled" name="<%=process.getNOM_LB_CADRE_EMPLOI_MULTI()%>" >
-								<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_MULTI(), process.getVAL_LB_CADRE_EMPLOI_MULTI_SELECT()) %>
-							</SELECT>
-							<br/><br/>
+							<legend class="sigp2Legend">Information emploi</legend>							
 							<span class="sigp2Mandatory" style="width:100px"> Niveau d'étude : </span>
 							<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 					            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_NIVEAU()%>" style="margin-bottom:5px">
@@ -558,7 +543,6 @@
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
-			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI()%>">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_DIPLOME()%>">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">						
 			<%=process.getUrlFichier()%>

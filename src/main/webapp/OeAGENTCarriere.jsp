@@ -54,12 +54,12 @@
 		for (int i = 0; i < listeGrades.size(); i++){
 			String iban = "";
 			Grade grade = (Grade) listeGrades.get(i);
-			if(Services.estNumerique(grade.getIban().trim())){
-				iban =Services.lpad(grade.getIban().trim(), 7, "0");					
+			if(Services.estNumerique(grade.getIban())){
+				iban =Services.lpad(grade.getIban(), 7, "0");					
 			}else{
-				iban = grade.getIban().trim();					
+				iban = grade.getIban();					
 			}
-			res+= "   \""+grade.getCodeGrade().trim()+" "+grade.getLibGrade().trim()+" "+iban+"\"";
+			res+= "   \""+grade.getCodeGrade()+" "+grade.getLibGrade()+" "+iban+"\"";
 			if (i+1 < listeGrades.size())
 				res+=",\n";
 			else	res+="\n";

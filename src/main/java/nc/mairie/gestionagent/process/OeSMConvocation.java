@@ -216,7 +216,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService().trim());
+			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
 					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite().toString(), "yyyy-MM-dd",
 							"dd/MM/yyyy"));

@@ -123,8 +123,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 					infoAgent = prenomAgent + " " + nom;
 				}
 
-				addZone(getNOM_ST_NOM(indiceUtil), u.getLoginUtilisateur().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : u.getLoginUtilisateur()
-						.trim());
+				addZone(getNOM_ST_NOM(indiceUtil), u.getLoginUtilisateur().equals(Const.CHAINE_VIDE) ? "&nbsp;" : u.getLoginUtilisateur());
 				addZone(getNOM_ST_GROUPES(indiceUtil), listeGroupes.equals(Const.CHAINE_VIDE) ? "&nbsp;" : listeGroupes);
 				addZone(getNOM_ST_AGENT(indiceUtil), infoAgent);
 

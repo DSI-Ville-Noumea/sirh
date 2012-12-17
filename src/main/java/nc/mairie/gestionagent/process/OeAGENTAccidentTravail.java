@@ -187,8 +187,8 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 						at.getDateATInitial().equals(Const.DATE_NULL) || at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
 								.getDateATInitial());
 				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursITT() == null ? "&nbsp;" : at.getNbJoursITT());
-				addZone(getNOM_ST_TYPE(indiceAcc), t.getDescTypeAT().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT().trim());
-				addZone(getNOM_ST_SIEGE(indiceAcc), s.getDescSiege().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getDescSiege().trim());
+				addZone(getNOM_ST_TYPE(indiceAcc), t.getDescTypeAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT());
+				addZone(getNOM_ST_SIEGE(indiceAcc), s.getDescSiege().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getDescSiege());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceAcc++;
@@ -1158,13 +1158,10 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td
-						.getLibTypeDocument().trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -1582,7 +1579,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			File f = new File(repertoireStockage+d.getLienDocument());
+			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
@@ -1623,9 +1620,9 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		if(extension.equals(".pdf")){
+		if (extension.equals(".pdf")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
-		}else{
+		} else {
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
 		}
 
@@ -1633,7 +1630,8 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// on crée le document en base de données
-		//String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		// String repPartage = (String)
+		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomDocument(nom);
@@ -1661,7 +1659,6 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-
 	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -1671,7 +1668,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
 
 		FileInputStream in = new FileInputStream(f);
-		
+
 		try {
 			FileOutputStream out = new FileOutputStream(newFile);
 			try {
@@ -1689,6 +1686,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 
 		return resultat;
 	}
+
 	private boolean uploadFichier(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");

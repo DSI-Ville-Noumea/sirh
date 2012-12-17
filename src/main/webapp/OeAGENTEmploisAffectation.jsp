@@ -117,7 +117,7 @@
 					<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP()%>">
 				<%} %>
 				<span class="sigp2" style="width:125px">Temps réglementaire :</span>
-				<span class="sigp2-statique" style="width:100px"><%=process.getVAL_ST_TPS_REG()%></span>
+				<span class="sigp2-statique" style="width:170px"><%=process.getVAL_ST_TPS_REG()%></span>
 				<BR/><BR/>
 				<span class="sigp2" style="width:60px">Direction :</span>
 				<span class="sigp2-statique" style="width:250px"><%=process.getVAL_ST_DIRECTION()%></span>
@@ -143,7 +143,7 @@
 					<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP_SECONDAIRE()%>">
 				<%} %>
 				<span class="sigp2" style="width:125px">Temps réglementaire :</span>
-				<span class="sigp2-statique" style="width:100px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
+				<span class="sigp2-statique" style="width:170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
 				<BR/><BR/>
 				<span class="sigp2" style="width:60px">Direction :</span>
 				<span class="sigp2-statique" style="width:250px"><%=process.getVAL_ST_DIRECTION_SECONDAIRE()%></span>
@@ -169,7 +169,7 @@
 						<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP_SECONDAIRE()%>">
 					<%} %>
 					<span class="sigp2" style="width:125px">Temps réglementaire :</span>
-					<span class="sigp2-statique" style="width:100px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
+					<span class="sigp2-statique" style="width:170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
 					<BR/><BR/>
 					<span class="sigp2" style="width:60px">Direction :</span>
 					<span class="sigp2-statique" style="width:250px"><%=process.getVAL_ST_DIRECTION_SECONDAIRE()%></span>

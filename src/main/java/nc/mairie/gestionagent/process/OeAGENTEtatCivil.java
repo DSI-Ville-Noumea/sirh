@@ -2595,11 +2595,11 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				ContactNW aContact = (ContactNW) getListeContact().get(i);
 				TypeContact aType = TypeContact.chercherTypeContact(getTransaction(), aContact.getIdTypeContact());
 
-				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibTypeContact().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType
-						.getLibTypeContact().trim());
+				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibTypeContact().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType
+						.getLibTypeContact());
 				addZone(getNOM_ST_DIFFUSABLE_CONTACT(indiceContact), aContact.isDiffusable() ? "Diffusable" : "Non diffusable");
-				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact), aContact.getDescription().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: aContact.getDescription().trim());
+				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact), aContact.getDescription().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: aContact.getDescription());
 				addZone(getNOM_ST_PRIORITAIRE_CONTACT(indiceContact), aContact.isPrioritaire() ? "Prioritaire" : "Non prioritaire");
 
 				indiceContact++;

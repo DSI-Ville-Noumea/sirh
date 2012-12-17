@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +18,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
@@ -278,7 +278,6 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 		for (int i = 0; i < la.size(); i++) {
 			AgentNW a = la.get(i);
 
-
 			// Recuperation de la carriere en cours
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a.getIdAgent());
 			if (getTransaction().isErreur() || carr == null || carr.getDateDebut() == null) {
@@ -407,7 +406,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 
 					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant
 							.getCodeGrade());
-					avct.setLibNouvGrade(gradeSuivant.getLibGrade().trim());
+					avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCodeCadre(gradeActuel.getCodeCadre());
 
 					avct.setDateArrete("01/01/" + annee);
@@ -435,7 +434,8 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 
 						// on calcul le nouvel INM
 						if (bareme != null && bareme.getInm() != null) {
-							GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
+							Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+							GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
 							String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
 							// avec ce nouvel INM on recupere l'iban et l'ina
 							// correspondant
@@ -454,16 +454,16 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade().trim());
+							avct.setLibelleGrade(grd.getLibGrade());
 
 							// on prend l'id motif de la colonne CDTAVA du grade
 							// si CDTAVA correspond à AVANCEMENT DIFF alors on
 							// calcul les 3 dates sinon on calcul juste la date
 							// moyenne
-							if (grd.getCodeTava() != null && !grd.getCodeTava().trim().equals(Const.CHAINE_VIDE)) {
+							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
 								avct.setIdMotifAvct(grd.getCodeTava());
 								MotifAvancement motif = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
-								if (!motif.getIdMotifAvct().trim().equals(avct.getIdMotifAvct().trim())) {
+								if (!motif.getIdMotifAvct().equals(avct.getIdMotifAvct())) {
 									avct.setDateAvctMaxi(null);
 									avct.setDateAvctMini(null);
 								}
@@ -471,9 +471,18 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 								avct.setIdMotifAvct(null);
 							}
 
-							if (grd.getCodeFiliere() != null && grd.getCodeFiliere().length() != 0) {
-								FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), grd.getCodeFiliere());
-								avct.setFiliere(fil.getLibFiliere());
+							if (grd.getCodeGradeGenerique() != null) {
+								// on cherche le grade generique pour trouver la
+								// filiere
+								GradeGenerique ggCarr = GradeGenerique.chercherGradeGenerique(getTransaction(), grd.getCodeGradeGenerique());
+								if (getTransaction().isErreur())
+									getTransaction().traiterErreur();
+
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
+									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+									avct.setFiliere(fil.getLibFiliere());
+								}
 							}
 						}
 					}

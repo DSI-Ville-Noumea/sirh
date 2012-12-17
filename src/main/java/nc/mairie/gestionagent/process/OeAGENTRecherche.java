@@ -260,8 +260,8 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 				AgentNW agent = (AgentNW) getListeAgent().get(i);
 
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
-				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage().trim());
-				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom().trim());
+				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage());
+				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom());
 
 				indiceAgent++;
 			}
@@ -291,7 +291,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
-							service = serv.getLibService().trim();
+							service = serv.getLibService();
 						}
 					}
 				}
@@ -459,8 +459,8 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 				AgentNW agent = (AgentNW) getListeAgent().get(i);
 
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
-				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage().trim());
-				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom().trim());
+				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage());
+				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom());
 
 				indiceAgent++;
 			}
@@ -708,7 +708,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
-						service = serv.getLibService().trim();
+						service = serv.getLibService();
 					}
 				}
 			}

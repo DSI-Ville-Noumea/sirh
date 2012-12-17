@@ -19,6 +19,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
@@ -264,7 +265,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 			if (!codeService.equals("")) {
 				Service serv = Service.chercherService(getTransaction(), codeService);
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
-			}		
+			}
 
 			// Récupération des agents
 			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, EnumCategorieAgent.CONTRACTUEL.getLibLong());
@@ -304,7 +305,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 					MotifAvancement motifAvct = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), Const.MOTIF_AVCT);
 					avct.setIdMotifAvct(motifAvct.getIdMotifAvct());
-					
+
 					PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), paAgent.getCdpadm());
 					avct.setPa(pa.getLiPAdm());
 
@@ -316,16 +317,17 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 					avct.setNumFP(fp.getNumFP());
 					TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-					avct.setTitreFP(tp.getLibTitrePoste().trim());
+					avct.setTitreFP(tp.getLibTitrePoste());
 					// on cherche à quelle categorie appartient l'agent
 					// (A,B,A+..;)
-					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
+					Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 					// on recupere les points pour cette categorie (A,B,A+..)
 					if (gg.getCodCadre() == null || gg.getCodCadre().equals(Const.CHAINE_VIDE)) {
 						continue;
 					}
-					avct.setCodeCadre(gg.getCodCadre().trim());
+					avct.setCodeCadre(gg.getCodCadre());
 					// on calcul le nouvel INM
 					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
 					// avec ce nouvel INM on recupere l'iban et l'ina
@@ -346,10 +348,21 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade().trim());
-							if (grd.getCodeFiliere() != null && grd.getCodeFiliere().length() != 0) {
-								FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), grd.getCodeFiliere());
-								avct.setFiliere(fil.getLibFiliere());
+							avct.setLibelleGrade(grd.getLibGrade());
+							if (grd.getCodeGradeGenerique() != null) {
+								// on cherche le grade generique pour trouver la
+								// filiere
+								GradeGenerique ggCarr = GradeGenerique.chercherGradeGenerique(getTransaction(), grd.getCodeGradeGenerique());
+								if (getTransaction().isErreur())
+									getTransaction().traiterErreur();
+
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
+									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
+									if (getTransaction().isErreur())
+										getTransaction().traiterErreur();
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+									avct.setFiliere(fil.getLibFiliere());
+								}
 							}
 						}
 					}

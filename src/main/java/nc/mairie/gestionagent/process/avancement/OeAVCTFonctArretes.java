@@ -68,8 +68,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_GRADE(i),
 						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade().trim();
-				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade().trim();
+				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
+				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());

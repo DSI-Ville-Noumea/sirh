@@ -93,7 +93,7 @@ function SelectLigne(id,tailleTableau)
 				<br/>
                 <%if(process.getListeCommunePays()!= null && process.getListeCommunePays().size()>0){ %>
                 	<%if(process.getPaysCourant()!=null){ %>
-					<span class="sigp2-titre">&nbsp;Liste des communes du pays <%=process.getPaysCourant().getLibPays().trim() %></span>
+					<span class="sigp2-titre">&nbsp;Liste des communes du pays <%=process.getPaysCourant().getLibPays() %></span>
 					<%}else{ %>
 					<span class="sigp2-titre">&nbsp;Liste des communes du pays sélectionné</span>
 					<%} %>

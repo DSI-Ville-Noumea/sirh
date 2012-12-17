@@ -38,7 +38,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 
-
 /**
  * Process OeAGENTHandicap Date de création : (01/07/11 09:42:08)
  * 
@@ -175,17 +174,14 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 					nbDoc = listeDocAgent.size();
 				}
 
-				addZone(getNOM_ST_TYPE(indiceHandi), n.getNomTypeHandicap().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : n.getNomTypeHandicap()
-						.trim());
+				addZone(getNOM_ST_TYPE(indiceHandi), n.getNomTypeHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : n.getNomTypeHandicap());
 				addZone(getNOM_ST_DEBUT(indiceHandi), h.getDateDebutHandicap());
 				addZone(getNOM_ST_FIN(indiceHandi), h.getDateFinHandicap().equals(Const.DATE_NULL)
 						|| h.getDateFinHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getDateFinHandicap());
 				addZone(getNOM_ST_INCAPACITE(indiceHandi), h.getPourcentIncapacite().equals(Const.ZERO) ? "&nbsp;" : h.getPourcentIncapacite() + " %");
 				addZone(getNOM_ST_MALADIE_PROF(indiceHandi), h.isReconnaissanceMP() ? "OUI" : "NON");
 				addZone(getNOM_ST_CRDHNC(indiceHandi), h.isHandicapCRDHNC() ? "OUI" : "NON");
-				addZone(getNOM_ST_NUM_CARTE(indiceHandi),
-						h.getNumCarteCRDHNC() == null || h.getNumCarteCRDHNC().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getNumCarteCRDHNC()
-								.trim());
+				addZone(getNOM_ST_NUM_CARTE(indiceHandi), h.getNumCarteCRDHNC().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getNumCarteCRDHNC());
 				addZone(getNOM_ST_RENOUVELLEMENT(indiceHandi), h.isRenouvellement() ? "OUI" : "NON");
 				addZone(getNOM_ST_AMENAGEMENT(indiceHandi), h.isAmenagementPoste() ? "OUI" : "NON");
 				addZone(getNOM_ST_NB_DOC(indiceHandi), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
@@ -1777,13 +1773,11 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td
-						.getLibTypeDocument().trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE_DOCUMENT(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc
-						.getCommentaire().trim());
+				addZone(getNOM_ST_COMMENTAIRE_DOCUMENT(indiceActeVM),
+						doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -2092,7 +2086,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		// on supprime le fichier physiquement sur le serveur
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 		String cheminDoc = getDocumentCourant().getLienDocument();
-		File fichierASupp = new File(repertoireStockage+cheminDoc);
+		File fichierASupp = new File(repertoireStockage + cheminDoc);
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
@@ -2182,7 +2176,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "HANDI_" + handi.getIdHandicap());
 			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-			File f = new File(repertoireStockage+d.getLienDocument());
+			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
@@ -2225,7 +2219,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		// on upload le fichier
 		boolean upload = false;
 		if (extension.equals(".pdf"))
-		upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
+			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		else
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
 
@@ -2233,8 +2227,9 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// on crée le document en base de données
-		//String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		getDocumentCourant().setLienDocument( codTypeDoc + "/" + nom);
+		// String repPartage = (String)
+		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -2260,6 +2255,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 
 		return true;
 	}
+
 	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -2269,7 +2265,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
 
 		FileInputStream in = new FileInputStream(f);
-		
+
 		try {
 			FileOutputStream out = new FileOutputStream(newFile);
 			try {
@@ -2287,6 +2283,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 
 		return resultat;
 	}
+
 	private boolean uploadFichier(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");

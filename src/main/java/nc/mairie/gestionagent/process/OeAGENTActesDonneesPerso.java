@@ -501,7 +501,8 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// on crée le document en base de données
-		//String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		// String repPartage = (String)
+		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
 		getDocumentCourant().setNomDocument(nom);
@@ -603,7 +604,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
 
 		FileInputStream in = new FileInputStream(f);
-		
+
 		try {
 			FileOutputStream out = new FileOutputStream(newFile);
 			try {
@@ -747,12 +748,10 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument().trim());
-				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument()
-						.trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActe++;
 			}
@@ -1473,13 +1472,13 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		logger.info("Rep stock : "+repertoireStockage);
+		logger.info("Rep stock : " + repertoireStockage);
 
 		// Récup du document courant
 		Document d = (Document) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
-		logger.info("Lien doc : "+d.getLienDocument());
-		logger.info("Script : "+getScriptOuverture(repertoireStockage + d.getLienDocument()));
+		logger.info("Lien doc : " + d.getLienDocument());
+		logger.info("Script : " + getScriptOuverture(repertoireStockage + d.getLienDocument()));
 		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
 
 		return true;

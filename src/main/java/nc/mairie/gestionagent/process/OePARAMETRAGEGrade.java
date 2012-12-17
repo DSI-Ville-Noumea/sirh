@@ -10,7 +10,6 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
-import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.technique.FormateListe;
@@ -297,7 +296,7 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 			// remplissage de la hashTable
 			for (GradeGenerique g : listeGradeGenerique) {
-				getHashGradeGenerique().put(g.getCodGradeGenerique().trim(), g);
+				getHashGradeGenerique().put(g.getCodGradeGenerique(), g);
 			}
 		}
 
@@ -373,8 +372,8 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 				addZone(getNOM_ST_CODE_GRADE(indiceGrade), grade.getCodeGrade());
 				addZone(getNOM_ST_LIB_GRADE(indiceGrade), grade.getLibGrade());
-				addZone(getNOM_ST_IBA_GRADE(indiceGrade), Services.estNumerique(grade.getIban().trim()) ? Integer.valueOf(grade.getIban().trim())
-						.toString() : grade.getIban().trim());
+				addZone(getNOM_ST_IBA_GRADE(indiceGrade), Services.estNumerique(grade.getIban()) ? Integer.valueOf(grade.getIban()).toString()
+						: grade.getIban());
 				addZone(getNOM_ST_GRADE_SUIVANT(indiceGrade),
 						grade.getCodeGradeSuivant() == null || grade.getCodeGradeSuivant().equals(Const.CHAINE_VIDE) ? "&nbsp;" : grade
 								.getCodeGradeSuivant());
@@ -477,14 +476,10 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 	 */
 	private boolean initialiseClasseEchelonCourant(HttpServletRequest request) throws Exception {
 
-		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(getGradeCourant().getCodeGradeGenerique().trim());
+		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(getGradeCourant().getCodeGradeGenerique());
 		Classe classe = (Classe) getHashClasse().get(getGradeCourant().getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(getGradeCourant().getCodeEchelon());
-		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(getGradeCourant().getIban().trim(), 7, "0"));
-
-		FiliereGrade filiere = null;
-		if (gradeGenerique != null)
-			filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGenerique.getCodFiliere());
+		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(getGradeCourant().getIban(), 7, "0"));
 
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
@@ -494,11 +489,6 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(), String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
 
 		addZone(getNOM_EF_GRADE(), getGradeCourant().getGrade());
-
-		if (filiere != null && filiere.getCodeFiliere() != null)
-			addZone(getNOM_ST_FILIERE(), filiere.getCodeFiliere() + " - " + filiere.getLibFiliere());
-		else
-			addZone(getNOM_ST_FILIERE(), Const.CHAINE_VIDE);
 
 		if (classe != null)
 			addZone(getNOM_LB_CLASSE_SELECT(), String.valueOf(getListeClasse().indexOf(classe) + 1));
@@ -634,15 +624,8 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 		GradeGenerique gradeGenerique = (GradeGenerique) getListeGradeGenerique().get(numligne);
 		addZone(getNOM_EF_GRADE(), gradeGenerique.getLibGradeGenerique());
 
-		FiliereGrade filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGenerique.getCodFiliere());
-
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
-
-		if (filiere != null && filiere.getCodeFiliere() != null)
-			addZone(getNOM_ST_FILIERE(), filiere.getCodeFiliere() + " - " + filiere.getLibFiliere());
-		else
-			addZone(getNOM_ST_FILIERE(), Const.CHAINE_VIDE);
 
 	}
 
@@ -893,7 +876,7 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 				getTransaction().traiterErreur();
 			}
 
-			ArrayList<Grade> gradesExistants = Grade.listerGrade(getTransaction());
+			ArrayList<Grade> gradesExistants = Grade.listerGradeActif(getTransaction());
 			for (Grade g : gradesExistants)
 				if (g.getCodeGrade().equals(getVAL_EF_CODE_GRADE().toUpperCase())) {
 					// listeMessages.put("ERR974",
@@ -945,16 +928,16 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 		Grade gradePrecedant = getGradePrecedant();
 		Grade gradeSuivant = getGradeSuivant();
-		if (gradePrecedant != null && Services.estNumerique(gradePrecedant.getIban().trim())) {
-			if (Integer.parseInt(gradePrecedant.getIban().trim()) >= Integer.parseInt(bareme.getIban().trim())) {
+		if (gradePrecedant != null && Services.estNumerique(gradePrecedant.getIban())) {
+			if (Integer.parseInt(gradePrecedant.getIban()) >= Integer.parseInt(bareme.getIban())) {
 				// "ERR142",
 				// "L'IBAN doit etre supérieur à l'IBAN du grade précédant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR142"));
 				return false;
 			}
 		}
-		if (gradeSuivant != null && Services.estNumerique(gradeSuivant.getIban().trim())) {
-			if (Integer.parseInt(gradeSuivant.getIban().trim()) <= Integer.parseInt(bareme.getIban().trim())) {
+		if (gradeSuivant != null && Services.estNumerique(gradeSuivant.getIban())) {
+			if (Integer.parseInt(gradeSuivant.getIban()) <= Integer.parseInt(bareme.getIban())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR143"));
 				return false;
 			}
@@ -1039,14 +1022,13 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 		getGradeCourant().setCodeGradeGenerique(gradeGenerique.getCodGradeGenerique());
 		getGradeCourant().setCodeCadre(gradeGenerique.getCodCadre());
-		getGradeCourant().setCodeFiliere(gradeGenerique.getCodFiliere());
 		getGradeCourant().setCodeGrade(getVAL_EF_CODE_GRADE());
 
 		getGradeCourant().setMontantForfait(getVAL_EF_MONTANT_FORFAIT());
 		getGradeCourant().setMontantPrime(getVAL_EF_MONTANT_PRIME());
 
 		Bareme bareme = getListeBareme().get(Integer.parseInt(getVAL_LB_BAREME_SELECT()));
-		String iban = bareme.getIban().trim();
+		String iban = bareme.getIban();
 		if (Services.estNumerique(iban)) {
 			iban = Integer.valueOf(iban).toString();
 		}
@@ -1058,8 +1040,8 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 		getGradeCourant().setGrade(getVAL_EF_GRADE());
 		getGradeCourant().setLibGrade(
-				getVAL_EF_GRADE().trim() + (classe != null ? " " + classe.getLibClasse().trim() : "")
-						+ (echelon != null ? " " + echelon.getLibEchelon().trim() : ""));
+				getVAL_EF_GRADE().trim() + (classe != null ? " " + classe.getLibClasse() : "")
+						+ (echelon != null ? " " + echelon.getLibEchelon() : ""));
 
 		return true;
 	}
@@ -1115,14 +1097,10 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 	private boolean initialiseClasseEchelonAncien(HttpServletRequest request, Grade dernierGrade) throws Exception {
 
-		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(dernierGrade.getCodeGradeGenerique().trim());
+		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(dernierGrade.getCodeGradeGenerique());
 		Classe classe = (Classe) getHashClasse().get(dernierGrade.getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(dernierGrade.getCodeEchelon());
-		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(dernierGrade.getIban().trim(), 7, "0"));
-
-		FiliereGrade filiere = null;
-		if (gradeGenerique != null)
-			filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGenerique.getCodFiliere());
+		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(dernierGrade.getIban(), 7, "0"));
 
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
@@ -1132,11 +1110,6 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(), String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
 
 		addZone(getNOM_EF_GRADE(), dernierGrade.getGrade());
-
-		if (filiere != null && filiere.getCodeFiliere() != null)
-			addZone(getNOM_ST_FILIERE(), filiere.getCodeFiliere() + " - " + filiere.getLibFiliere());
-		else
-			addZone(getNOM_ST_FILIERE(), Const.CHAINE_VIDE);
 
 		if (classe != null)
 			addZone(getNOM_LB_CLASSE_SELECT(), String.valueOf(getListeClasse().indexOf(classe) + 1));
@@ -1495,15 +1468,6 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_FILIERE Date de
-	 * création : (19/10/11 10:16:14)
-	 * 
-	 */
-	public String getNOM_ST_FILIERE() {
-		return "NOM_ST_FILIERE";
-	}
-
-	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
@@ -1560,15 +1524,6 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FILIERE Date
-	 * de création : (19/10/11 10:16:14)
-	 * 
-	 */
-	public String getVAL_ST_FILIERE() {
-		return getZone(getNOM_ST_FILIERE());
 	}
 
 	private String[] LB_BAREME;

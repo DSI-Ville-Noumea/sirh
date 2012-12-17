@@ -287,7 +287,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		}
 		if (division == null) {
 			Service serv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
-			division = serv.getLibService().trim();
+			division = serv.getLibService();
 		}
 		// temps reglementaire de travail
 		Horaire hor = Horaire.chercherHoraire(getTransaction(), getFichePosteCourant().getIdCdthorReg());
@@ -557,6 +557,11 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 							PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent
 									.chercherPositionAdmAgentDateComprise(getTransaction(), getAgentCourant().getNoMatricule(), Services
 											.convertitDate(Services.formateDate(getAffectationCourant().getDateDebutAff()), "dd/MM/yyyy", "yyyyMMdd"));
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+								getTransaction().declarerErreur(MessageUtils.getMessage("ERR133"));
+								return false;
+							}
 							// si PA recupérée est ACTIVE
 							if (!posAdmAgtActiveAUneDate.estPAInactive(getTransaction())) {
 								// on regarde que la date de fin AFF > dateFin
@@ -1293,7 +1298,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 				addZone(getNOM_ST_DATE_FIN(indiceAff),
 						a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());
 				addZone(getNOM_ST_NUM_FP(indiceAff), numFP.equals(Const.CHAINE_VIDE) ? "&nbsp;" : numFP);
-				addZone(getNOM_ST_TITRE(indiceAff), titreFichePoste.trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : titreFichePoste.trim());
+				addZone(getNOM_ST_TITRE(indiceAff), titreFichePoste.equals(Const.CHAINE_VIDE) ? "&nbsp;" : titreFichePoste);
 
 				indiceAff++;
 			}
@@ -1851,9 +1856,9 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		os.close();
 		destinationFile.close();
 
-		destination = destination.substring(destination.lastIndexOf("/"),destination.length());		
+		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage+"NS"+destination));
+		setURLFichier(getScriptOuverture(repertoireStockage + "NS" + destination));
 	}
 
 	private void setURLFichier(String scriptOuverture) {
@@ -2083,6 +2088,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	}
 
 	private boolean sauvegardeFDP(String idFichePoste) throws Exception {
+
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String destination = "SauvegardeFDP/SauvFP_" + idFichePoste + "_" + dateJour + ".xml";
@@ -2143,9 +2149,8 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			if (grade.getLibGrade() != null) {
-				gradeTitulaire += grade.getLibGrade().trim().replace("°", "eme");
-			}
+			gradeTitulaire += grade.getGrade().replace("°", "eme");
+
 		}
 		// on recupère les champs liés à la FP
 		FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
@@ -2153,12 +2158,13 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
-		String titrePoste = tp.getLibTitrePoste().trim();
-		String lieuPoste = eg.getLibEntiteGeo().trim();
-		String libService = s.getLibService().trim();
-		String missions = fp.getMissions().trim();
-		String grade = gg.getLibGradeGenerique().trim();
+		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+		String titrePoste = tp.getLibTitrePoste();
+		String lieuPoste = eg.getLibEntiteGeo();
+		String libService = s.getLibService();
+		String missions = fp.getMissions();
+		String grade = g.getGrade();
 		String responsable = tpResponsable.getLibTitrePoste();
 		// Liste Diplomes FP
 		String formationRequise = Const.CHAINE_VIDE;
@@ -2195,7 +2201,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 			DiplomeAgent da = (DiplomeAgent) iter.next();
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
 			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
-			listeDiplome += td.getLibTitreDiplome().trim() + " " + sd.getLibSpeDiplome().trim() + ",";
+			listeDiplome += td.getLibTitreDiplome() + " " + sd.getLibSpeDiplome() + ",";
 		}
 		if (!listeDiplome.equals(Const.CHAINE_VIDE)) {
 			listeDiplome = listeDiplome.substring(0, listeDiplome.length() - 1);
@@ -2237,6 +2243,10 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		ouw.close();
 		os.close();
 		destinationFile.close();
+
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+		}
 	}
 
 	/**

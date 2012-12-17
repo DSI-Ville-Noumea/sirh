@@ -514,9 +514,9 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 				String titre = t.getLibTitreDiplome();
 				SpecialiteDiplomeNW spec = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), d.getIdSpecialiteDiplome());
 
-				addZone(getNOM_ST_TITRE_DIPLOME(indiceDiplome), titre.trim());
-				addZone(getNOM_ST_SPE_DIPLOME(indiceDiplome), spec.getLibSpeDiplome().trim());
-				addZone(getNOM_ST_NIVEAU(indiceDiplome), t.getNiveauEtude().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude().trim());
+				addZone(getNOM_ST_TITRE_DIPLOME(indiceDiplome), titre);
+				addZone(getNOM_ST_SPE_DIPLOME(indiceDiplome), spec.getLibSpeDiplome());
+				addZone(getNOM_ST_NIVEAU(indiceDiplome), t.getNiveauEtude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude());
 
 				// calcul du nb de docs
 				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
@@ -3762,11 +3762,9 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -3790,11 +3788,9 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -3818,11 +3814,9 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}

@@ -907,16 +907,14 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 				TypeContrat t = (TypeContrat) getHashTypeContrat().get(c.getIdTypeContrat());
 				Motif m = (Motif) getHashMotif().get(c.getIdMotif());
 
-				addZone(getNOM_ST_NUM(indiceContrat), c.getNumContrat().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumContrat().trim());
-				addZone(getNOM_ST_TYPE(indiceContrat), t.getLibTypeContrat().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat()
-						.trim());
+				addZone(getNOM_ST_NUM(indiceContrat), c.getNumContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumContrat());
+				addZone(getNOM_ST_TYPE(indiceContrat), t.getLibTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat());
 				addZone(getNOM_ST_AVENANT(indiceContrat), c.isAvenant() ? "Oui" : "Non");
 				addZone(getNOM_ST_DATE_DEBUT(indiceContrat), c.getDateDebut());
 				addZone(getNOM_ST_DATE_ESSAI(indiceContrat), c.getDateFinPeriodeEssai() == null ? "&nbsp;" : c.getDateFinPeriodeEssai());
 				addZone(getNOM_ST_DATE_FIN(indiceContrat), c.getDateFin() == null ? "&nbsp;" : c.getDateFin());
-				addZone(getNOM_ST_MOTIF(indiceContrat), m.getLibMotif().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif().trim());
-				addZone(getNOM_ST_JUSTIFICATION(indiceContrat), c.getJustification().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c
-						.getJustification().trim());
+				addZone(getNOM_ST_MOTIF(indiceContrat), m.getLibMotif().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif());
+				addZone(getNOM_ST_JUSTIFICATION(indiceContrat), c.getJustification().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getJustification());
 
 				indiceContrat++;
 			}
@@ -1411,7 +1409,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		String modele;
 		String type;
 		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_CONTRATS");
-		
+
 		if (TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant().getIdTypeContrat()).getLibTypeContrat().equals("CDD")) {
 			if (Integer.parseInt(getContratCourant().getIdMotif()) < 10) {
 				modele = repModeles + "ModeleCDD_" + getContratCourant().getIdMotif() + ".xml";
@@ -1489,9 +1487,9 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
 			EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 			Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-			titrePoste = tp.getLibTitrePoste().trim();
-			lieuPoste = eg.getLibEntiteGeo().trim();
-			libService = s.getLibService().trim();
+			titrePoste = tp.getLibTitrePoste();
+			lieuPoste = eg.getLibEntiteGeo();
+			libService = s.getLibService();
 		}
 
 		// on récupère les diplomes de l'agent
@@ -1501,7 +1499,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			DiplomeAgent da = (DiplomeAgent) iter.next();
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
 			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
-			listeDiplome += td.getLibTitreDiplome().trim() + " " + sd.getLibSpeDiplome().trim() + ",";
+			listeDiplome += td.getLibTitreDiplome() + " " + sd.getLibSpeDiplome() + ",";
 		}
 		if (!listeDiplome.equals("")) {
 			listeDiplome = listeDiplome.substring(0, listeDiplome.length() - 1);
@@ -1523,9 +1521,10 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			commNaiss = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), a.getCodePaysNaissanceEt(), a.getCodeCommuneNaissanceEt())
 					.getLibCommuneEtrangere();
 			commNaiss += " ("
-					+ Pays.chercherPays(getTransaction(),
-							CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), a.getCodePaysNaissanceEt(), a.getCodeCommuneNaissanceEt()).getCodPays())
-							.getLibPays() + ")";
+					+ Pays.chercherPays(
+							getTransaction(),
+							CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), a.getCodePaysNaissanceEt(), a.getCodeCommuneNaissanceEt())
+									.getCodPays()).getLibPays() + ")";
 		} else {
 			commNaiss = Commune.chercherCommune(getTransaction(), a.getCodeCommuneNaissanceFr()).getLibCommune();
 		}
@@ -1540,7 +1539,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		String banque = Const.CHAINE_VIDE;
 		if (a.getCodeBanque() != null) {
 			numCpte = a.getCodeBanque() + " " + a.getCodeGuichet() + " " + a.getNumCompte() + " " + a.getRib();
-			banque = BanqueGuichet.chercherBanqueGuichet(getTransaction(), a.getCodeBanque(), a.getCodeGuichet()).getLibBanque().trim();
+			banque = BanqueGuichet.chercherBanqueGuichet(getTransaction(), a.getCodeBanque(), a.getCodeGuichet()).getLibBanque();
 
 		}
 		String cafat = a.getNumCafat().equals("") ? "Inconnu" : a.getNumCafat();
@@ -1637,9 +1636,9 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		os.close();
 		destinationFile.close();
 
-		destination = destination.substring(destination.lastIndexOf("/"),destination.length());		
+		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage+"C"+destination));
+		setURLFichier(getScriptOuverture(repertoireStockage + "C" + destination));
 	}
 
 	private void setURLFichier(String scriptOuverture) {

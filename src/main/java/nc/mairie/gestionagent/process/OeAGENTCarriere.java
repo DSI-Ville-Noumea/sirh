@@ -20,6 +20,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.ModeReglement;
 import nc.mairie.metier.carriere.StatutCarriere;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.poste.Affectation;
@@ -188,7 +189,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		// RG_AG_CA_C11
 		// RG_AG_CA_C02
 		if (getListeGrade() == null) {
-			ArrayList<Grade> listeGrade = Grade.listerGrade(getTransaction());
+			ArrayList<Grade> listeGrade = Grade.listerGradeActif(getTransaction());
 			setListeGrade(listeGrade);
 			afficherListeGrade();
 		}
@@ -279,10 +280,10 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 			for (ListIterator list = getListeGrade().listIterator(); list.hasNext();) {
 				Grade grade = (Grade) list.next();
 				String iban = "";
-				if (Services.estNumerique(grade.getIban().trim())) {
-					iban = Services.lpad(grade.getIban().trim(), 7, "0");
+				if (Services.estNumerique(grade.getIban())) {
+					iban = Services.lpad(grade.getIban(), 7, "0");
 				} else {
-					iban = grade.getIban().trim();
+					iban = grade.getIban();
 				}
 				String ligne[] = { grade.getCodeGrade(), grade.getLibGrade(), iban };
 				aFormat.ajouteLigne(ligne);
@@ -318,10 +319,9 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 				StatutCarriere statut = StatutCarriere.chercherStatutCarriere(getTransaction(), carriere.getCodeCategorie());
 				Float taux = Float.parseFloat(horaire.getCdTaux()) * 100;
 
-				addZone(getNOM_ST_GRADE(indiceCarr), carriere.getCodeGrade().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere.getCodeGrade()
-						.trim());
-				addZone(getNOM_ST_TYPE_CONTRAT(indiceCarr), carriere.getTypeContrat().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere
-						.getTypeContrat().trim());
+				addZone(getNOM_ST_GRADE(indiceCarr), carriere.getCodeGrade().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere.getCodeGrade());
+				addZone(getNOM_ST_TYPE_CONTRAT(indiceCarr),
+						carriere.getTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere.getTypeContrat());
 				addZone(getNOM_ST_BASE_HORAIRE(indiceCarr), String.valueOf(taux.intValue()) + "%");
 				addZone(getNOM_ST_IBA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIban() : "&nbsp;");
 				addZone(getNOM_ST_INA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIna() : "&nbsp;");
@@ -490,13 +490,13 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 
 		if (grade != null) {
 			String iban = "";
-			if (Services.estNumerique(grade.getIban().trim())) {
-				iban = Services.lpad(grade.getIban().trim(), 7, "0");
+			if (Services.estNumerique(grade.getIban())) {
+				iban = Services.lpad(grade.getIban(), 7, "0");
 			} else {
-				iban = grade.getIban().trim();
+				iban = grade.getIban();
 			}
 			addZone(getNOM_ST_GRADE(), grade.getLibGrade());
-			addZone(getNOM_EF_GRADE(), grade.getCodeGrade().trim() + " " + grade.getLibGrade().trim() + " " + iban);
+			addZone(getNOM_EF_GRADE(), grade.getCodeGrade() + " " + grade.getLibGrade() + " " + iban);
 		}
 
 		int ligneRegime = getListeRegime().indexOf(getCarriereCourante().getCodeTypeEmploi());
@@ -549,7 +549,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_BM_MOIS(), getCarriereCourante().getBMMois());
 		addZone(getNOM_EF_BM_ANNEES(), getCarriereCourante().getBMAnnee());
 
-		if (getCarriereCourante().getTypeContrat() == null || getCarriereCourante().getTypeContrat().trim().equals(Const.CHAINE_VIDE)) {
+		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 			if (!getVAL_EF_DATE_DEBUT().equals(Const.CHAINE_VIDE) && Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
 				Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), getVAL_EF_DATE_DEBUT());
 				if (getTransaction().isErreur()) {
@@ -803,7 +803,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		getCarriereCourante().setBMAnnee(bmAnnees);
 		getCarriereCourante().setIban(iba);
 
-		if (getCarriereCourante().getTypeContrat() == null || getCarriereCourante().getTypeContrat().trim().equals("")) {
+		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 
 			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), dateDebut);
 			if (getTransaction().isErreur()) {
@@ -1844,12 +1844,12 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		for (int i = 0; i < getListeGrade().size(); i++) {
 			Grade g = (Grade) getListeGrade().get(i);
 			String iban = "";
-			if (Services.estNumerique(g.getIban().trim())) {
-				iban = Services.lpad(g.getIban().trim(), 7, "0");
+			if (Services.estNumerique(g.getIban())) {
+				iban = Services.lpad(g.getIban(), 7, "0");
 			} else {
-				iban = g.getIban().trim();
+				iban = g.getIban();
 			}
-			String textGrade = g.getCodeGrade().trim() + " " + g.getLibGrade().trim() + " " + iban;
+			String textGrade = g.getCodeGrade() + " " + g.getLibGrade() + " " + iban;
 			if (textGrade.equals(getVAL_EF_GRADE())) {
 				idGrade = g.getCodeGrade();
 				break;
@@ -1892,15 +1892,15 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 
 			if (grade != null && grade.getIban() != null && !Const.CHAINE_VIDE.equals(grade.getIban())) {
 				if (Services.estNumerique(grade.getIban())) {
-					addZone(getNOM_EF_IBA(), Services.lpad(grade.getIban().trim(), 7, "0"));
+					addZone(getNOM_EF_IBA(), Services.lpad(grade.getIban(), 7, "0"));
 				} else {
-					addZone(getNOM_EF_IBA(), grade.getIban().trim());
+					addZone(getNOM_EF_IBA(), grade.getIban());
 				}
 				Bareme bareme = null;
 				if (Services.estNumerique(grade.getIban())) {
-					bareme = Bareme.chercherBareme(getTransaction(), Services.lpad(grade.getIban().trim(), 7, "0"));
+					bareme = Bareme.chercherBareme(getTransaction(), Services.lpad(grade.getIban(), 7, "0"));
 				} else {
-					bareme = Bareme.chercherBareme(getTransaction(), grade.getIban().trim());
+					bareme = Bareme.chercherBareme(getTransaction(), grade.getIban());
 				}
 
 				if (getTransaction().isErreur())
@@ -1928,14 +1928,22 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_ST_FILIERE(), Const.CHAINE_VIDE);
 
-		if (g != null && g.getCodeFiliere() != null && !Const.CHAINE_VIDE.equals(g.getCodeFiliere())) {
-			FiliereGrade filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), g.getCodeFiliere());
-
+		if (g != null && g.getCodeGradeGenerique() != null) {
+			// alors on cherche le grade generique afin de trouver la filiere
+			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
+			if (gg != null && gg.getIdCadreEmploi() != null) {
+				CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+				if (getTransaction().isErreur())
+					getTransaction().traiterErreur();
+				FiliereGrade filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+				if (getTransaction().isErreur())
+					getTransaction().traiterErreur();
 
-			if (filiere != null)
-				addZone(getNOM_ST_FILIERE(), filiere.getLibFiliere());
+				if (filiere != null)
+					addZone(getNOM_ST_FILIERE(), filiere.getLibFiliere());
+			}
 		}
 
 	}
@@ -2444,9 +2452,13 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
 		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
-		Grade grade = Grade.chercherGradeByCodeGradeGenerique(getTransaction(), gg.getCodGradeGenerique());
-		FiliereGrade filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), grade.getCodeFiliere());
+		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
+		FiliereGrade filiere = null;
+		if (gg != null && gg.getIdCadreEmploi() != null) {
+			CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+			filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
 
 		Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 		if (getTransaction().isErreur()) {
@@ -2477,7 +2489,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 
 		// on rempli les champs
 		addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
-		addZone(getNOM_ST_FILIERE(), filiere.getLibFiliere());
+		addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
 		addZone(getNOM_EF_IBA(), Iban);
 		addZone(getNOM_ST_INA(), Ina);
@@ -2543,8 +2555,12 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 			int nbJoursRestantsBM = nbJoursBonus > nbJoursACC ? nbJoursBonus - nbJoursACC : Integer.parseInt(Const.ZERO);
 			int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
 
-			FiliereGrade filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeSuivant.getCodeFiliere());
 			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(), gradeSuivant.getCodeGradeGenerique());
+			FiliereGrade filiere = null;
+			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getIdCadreEmploi() != null) {
+				CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gradeGeneriqueSuivant.getIdCadreEmploi());
+				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+			}
 			Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 			// on recupere les points pour cette categorie (A,B,A+..)
 			// on calcul le nouvel INM
@@ -2564,7 +2580,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_EF_ACC_JOURS(), String.valueOf((nbJoursRestantsACC % 365) % 30));
 
 			addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
-			addZone(getNOM_ST_FILIERE(), filiere.getLibFiliere());
+			addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
 			addZone(getNOM_ST_NOUV_GRADE(),
 					gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());

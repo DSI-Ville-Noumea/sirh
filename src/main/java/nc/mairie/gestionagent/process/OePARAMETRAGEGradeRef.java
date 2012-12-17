@@ -10,8 +10,8 @@ import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Categorie;
 import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
-import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -27,6 +27,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private String[] LB_CLASSE;
 	private String[] LB_ECHELON;
 	private String[] LB_GRADE_GENERIQUE;
+	private String[] LB_CATEGORIE;
+	private String[] LB_CADRE_EMPLOI;
 
 	private ArrayList<Classe> listeClasse;
 	private Classe classeCourante;
@@ -40,11 +42,11 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private ArrayList<GradeGenerique> listeGradeGenerique;
 	private GradeGenerique gradeGeneriqueCourant;
 
-	private ArrayList<FiliereGrade> listeFiliere;
-	private ArrayList<Categorie> listeCadre;
+	private ArrayList<Categorie> listeCategorie;
+	private Hashtable<String, Categorie> hashCategorie;
 
-	private Hashtable<String, FiliereGrade> hashFiliere;
-	private Hashtable<String, Categorie> hashCadre;
+	private ArrayList<CadreEmploi> listeCadreEmploi;
+	private Hashtable<String, CadreEmploi> hashCadreEmploi;
 
 	public String ACTION_CREATION = "0";
 	public String ACTION_MODIFICATION = "1";
@@ -86,11 +88,11 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			initialiseListeGradeGenerique(request);
 		}
 
-		if (getListeFiliere() == null)
-			initialiseListeFiliere(request);
+		if (getListeCategorie() == null)
+			initialiseListeCategorie(request);
 
-		if (getListeCadre() == null)
-			initialiseListeCadre(request);
+		if (getListeCadreEmploi() == null)
+			initialiseListeCadreEmploi(request);
 
 	}
 
@@ -162,12 +164,12 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeGradeGenerique(HttpServletRequest request) throws Exception {
 		setListeGradeGenerique(GradeGenerique.listerGradeGenerique(getTransaction()));
 		if (getListeGradeGenerique().size() != 0) {
-			int tailles[] = { 5, 5, 6, 5, 50 };
-			String padding[] = { "G", "C", "C", "C", "G" };
+			int tailles[] = { 5, 6, 5, 50 };
+			String padding[] = { "G", "C", "C", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
-				String ligne[] = { gradeGenerique.getCodGradeGenerique(), gradeGenerique.getCodFiliere(), gradeGenerique.getCodCadre(),
-						gradeGenerique.getCodeInactif(), gradeGenerique.getLibGradeGenerique() };
+				String ligne[] = { gradeGenerique.getCodGradeGenerique(), gradeGenerique.getCodCadre(), gradeGenerique.getCodeInactif(),
+						gradeGenerique.getLibGradeGenerique() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_GRADE_GENERIQUE(aFormat.getListeFormatee());
@@ -177,47 +179,37 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des filières
+	 * Initialisation de la liste des categories
 	 * 
 	 */
-	private void initialiseListeFiliere(HttpServletRequest request) throws Exception {
+	private void initialiseListeCategorie(HttpServletRequest request) throws Exception {
+		ArrayList<Categorie> liste = Categorie.listerCategorie(getTransaction());
+		setListeCategorie(liste);
 
-		ArrayList<FiliereGrade> liste = FiliereGrade.listerFiliereGrade(getTransaction());
-		setListeFiliere(liste);
-		
-		if (getListeFiliere().size() != 0) {
-			int tailles[] = { 50 };
-			String padding[] = { "G"};
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (FiliereGrade filiere : getListeFiliere()) {
-				String ligne[] = { filiere.getCodeFiliere().trim() + " - " + filiere.getLibFiliere().trim() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_FILIERE(aFormat.getListeFormatee());
-		} else {
-			setLB_FILIERE(null);
-		}
+		int[] tailles = { 2 };
+		String[] champs = { "libCategorie" };
+		setLB_CATEGORIE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
 
 		// remplissage de la hashTable
-		for (FiliereGrade filiere : liste)
-			getHashFiliere().put(filiere.getCodeFiliere(), filiere);
+		for (Categorie categorie : liste)
+			getHashCategorie().put(categorie.getLibCategorie(), categorie);
 	}
 
 	/**
 	 * Initialisation de la liste des cadre emploi
 	 * 
 	 */
-	private void initialiseListeCadre(HttpServletRequest request) throws Exception {
-		ArrayList<Categorie> liste = Categorie.listerCategorie(getTransaction());
-		setListeCadre(liste);
+	private void initialiseListeCadreEmploi(HttpServletRequest request) throws Exception {
+		ArrayList<CadreEmploi> liste = CadreEmploi.listerCadreEmploi(getTransaction());
+		setListeCadreEmploi(liste);
 
-		int[] tailles = { 2 };
-		String[] champs = { "libCategorie" };
-		setLB_CADRE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+		int[] tailles = { 70 };
+		String[] champs = { "libCadreEmploi" };
+		setLB_CADRE_EMPLOI(new FormateListe(tailles, liste, champs).getListeFormatee(true));
 
 		// remplissage de la hashTable
-		for (Categorie categorie : liste)
-			getHashCadre().put(categorie.getLibCategorie(), categorie);
+		for (CadreEmploi cadreEmp : liste)
+			getHashCadreEmploi().put(cadreEmp.getIdCadreEmploi(), cadreEmp);
 	}
 
 	/**
@@ -407,11 +399,11 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_GRADE_GENERIQUE(), ACTION_CREATION);
 		addZone(getNOM_EF_CODE_GRADE_GENERIQUE(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_CADRE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_CATEGORIE_SELECT(), Const.ZERO);
 		addZone(getNOM_EF_LIBELLE_GRADE_GENERIQUE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NB_PTS_CATEGORIE(), Const.ZERO);
 		addZone(getNOM_RG_INACTIF(), getNOM_RB_NON());
+		addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), Const.ZERO);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -818,12 +810,13 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		if (!performControlerRegleGestionGradeGenerique(request))
 			return false;
 
-		// classe
-		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FILIERE_SELECT())) : -1);
-		FiliereGrade filiere = numFiliere > -1 ? (FiliereGrade) getListeFiliere().get(numFiliere) : null;
+		int numCategorie = (Services.estNumerique(getZone(getNOM_LB_CATEGORIE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CATEGORIE_SELECT()))
+				: -1);
+		Categorie categorie = numCategorie > 0 ? (Categorie) getListeCategorie().get(numCategorie - 1) : null;
 
-		int numCadre = (Services.estNumerique(getZone(getNOM_LB_CADRE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CADRE_SELECT())) : -1);
-		Categorie cadre = numCadre > 0 ? (Categorie) getListeCadre().get(numCadre - 1) : null;
+		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_CADRE_EMPLOI_SELECT())) : -1);
+		CadreEmploi cadreEmp = numCadreEmp > 0 ? (CadreEmploi) getListeCadreEmploi().get(numCadreEmp - 1) : null;
 
 		if (getVAL_ST_ACTION_GRADE_GENERIQUE() != null && getVAL_ST_ACTION_GRADE_GENERIQUE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_CREATION)) {
@@ -831,21 +824,21 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
 				setGradeGeneriqueCourant(new GradeGenerique());
 				getGradeGeneriqueCourant().setCodGradeGenerique(getVAL_EF_CODE_GRADE_GENERIQUE());
-				getGradeGeneriqueCourant().setCodFiliere(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
-				getGradeGeneriqueCourant().setCodCadre(cadre != null ? cadre.getLibCategorie() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setCodCadre(categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
+				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().creerGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().add(getGradeGeneriqueCourant());
 			} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
-				getGradeGeneriqueCourant().setCodFiliere(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
-				getGradeGeneriqueCourant().setCodCadre(cadre != null ? cadre.getLibCategorie() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setCodCadre(categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
+				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().modifierGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().remove(getGradeGeneriqueCourant());
@@ -923,20 +916,18 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 					return false;
 				}
 			}
-		}
-		else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
+		} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
 
-				if(!gradeGenerique.getCodGradeGenerique().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())){
+				if (!gradeGenerique.getCodGradeGenerique().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
 					if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 						return false;
 					}
 				}
-				
-			}		
+
+			}
 		}
-			
 
 		return true;
 	}
@@ -1551,14 +1542,19 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		if (indice != -1 && indice < getListeGradeGenerique().size()) {
 			GradeGenerique grade = getListeGradeGenerique().get(indice);
 
-			FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCodFiliere());
-			Categorie cadre = (Categorie) getHashCadre().get(grade.getCodCadre());
+			Categorie categorie = (Categorie) getHashCategorie().get(grade.getCodCadre());
 
-			int ligneFiliere = getListeFiliere().indexOf(filiere);
-			addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere));
+			int ligneCategorie = getListeCategorie().indexOf(categorie);
+			addZone(getNOM_LB_CATEGORIE_SELECT(), String.valueOf(ligneCategorie + 1));
 
-			int ligneCadre = getListeCadre().indexOf(cadre);
-			addZone(getNOM_LB_CADRE_SELECT(), String.valueOf(ligneCadre + 1));
+			if(grade.getIdCadreEmploi()!=null){
+				CadreEmploi cadreEmp = (CadreEmploi) getHashCadreEmploi().get(grade.getIdCadreEmploi());
+
+				int ligneCadreEmp = getListeCadreEmploi().indexOf(cadreEmp);
+				addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), String.valueOf(ligneCadreEmp + 1));
+			}else{
+				addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), Const.ZERO);
+			}
 
 			setGradeGeneriqueCourant(grade);
 			addZone(getNOM_EF_LIBELLE_GRADE_GENERIQUE(), grade.getLibGradeGenerique());
@@ -1612,9 +1608,6 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		return "NOM_RB_OUI";
 	}
 
-	private String[] LB_CADRE;
-	private String[] LB_FILIERE;
-
 	/**
 	 * Constructeur du process OePARAMETRAGEGradeRef. Date de création :
 	 * (30/09/11 09:50:04)
@@ -1637,137 +1630,68 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	 * (30/09/11 09:50:04)
 	 * 
 	 */
-	private String[] getLB_CADRE() {
-		if (LB_CADRE == null)
-			LB_CADRE = initialiseLazyLB();
-		return LB_CADRE;
+	private String[] getLB_CATEGORIE() {
+		if (LB_CATEGORIE == null)
+			LB_CATEGORIE = initialiseLazyLB();
+		return LB_CATEGORIE;
 	}
 
 	/**
-	 * Setter de la liste: LB_CADRE Date de création : (30/09/11 09:50:04)
+	 * Setter de la liste: LB_CATEGORIE Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
-	private void setLB_CADRE(String[] newLB_CADRE) {
-		LB_CADRE = newLB_CADRE;
+	private void setLB_CATEGORIE(String[] newLB_CATEGORIE) {
+		LB_CATEGORIE = newLB_CATEGORIE;
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CADRE Date de création :
-	 * (30/09/11 09:50:04)
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CATEGORIE Date de
+	 * création : (30/09/11 09:50:04)
 	 * 
 	 */
-	public String getNOM_LB_CADRE() {
-		return "NOM_LB_CADRE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CADRE_SELECT Date de création : (30/09/11 09:50:04)
-	 * 
-	 */
-	public String getNOM_LB_CADRE_SELECT() {
-		return "NOM_LB_CADRE_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CADRE Date de création : (30/09/11 09:50:04)
-	 * 
-	 */
-	public String[] getVAL_LB_CADRE() {
-		return getLB_CADRE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CADRE Date de création : (30/09/11 09:50:04)
-	 * 
-	 */
-	public String getVAL_LB_CADRE_SELECT() {
-		return getZone(getNOM_LB_CADRE_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de création
-	 * : (30/09/11 09:50:04)
-	 * 
-	 */
-	private String[] getLB_FILIERE() {
-		if (LB_FILIERE == null)
-			LB_FILIERE = initialiseLazyLB();
-		return LB_FILIERE;
-	}
-
-	/**
-	 * Setter de la liste: LB_FILIERE Date de création : (30/09/11 09:50:04)
-	 * 
-	 */
-	private void setLB_FILIERE(String[] newLB_FILIERE) {
-		LB_FILIERE = newLB_FILIERE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de création
-	 * : (30/09/11 09:50:04)
-	 * 
-	 */
-	public String getNOM_LB_FILIERE() {
-		return "NOM_LB_FILIERE";
+	public String getNOM_LB_CATEGORIE() {
+		return "NOM_LB_CATEGORIE";
 	}
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_FILIERE_SELECT Date de création : (30/09/11 09:50:04)
+	 * NOM_LB_CATEGORIE_SELECT Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
-	public String getNOM_LB_FILIERE_SELECT() {
-		return "NOM_LB_FILIERE_SELECT";
+	public String getNOM_LB_CATEGORIE_SELECT() {
+		return "NOM_LB_CATEGORIE_SELECT";
 	}
 
 	/**
 	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_FILIERE Date de création : (30/09/11 09:50:04)
+	 * JSP : LB_CATEGORIE Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
-	public String[] getVAL_LB_FILIERE() {
-		return getLB_FILIERE();
+	public String[] getVAL_LB_CATEGORIE() {
+		return getLB_CATEGORIE();
 	}
 
 	/**
 	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_FILIERE Date de création : (30/09/11 09:50:04)
+	 * la JSP : LB_CATEGORIE Date de création : (30/09/11 09:50:04)
 	 * 
 	 */
-	public String getVAL_LB_FILIERE_SELECT() {
-		return getZone(getNOM_LB_FILIERE_SELECT());
+	public String getVAL_LB_CATEGORIE_SELECT() {
+		return getZone(getNOM_LB_CATEGORIE_SELECT());
 	}
 
-	private ArrayList<Categorie> getListeCadre() {
-		return listeCadre;
+	private ArrayList<Categorie> getListeCategorie() {
+		return listeCategorie;
 	}
 
-	private void setListeCadre(ArrayList<Categorie> listeCadre) {
-		this.listeCadre = listeCadre;
+	private void setListeCategorie(ArrayList<Categorie> listeCategorie) {
+		this.listeCategorie = listeCategorie;
 	}
 
-	private ArrayList<FiliereGrade> getListeFiliere() {
-		return listeFiliere;
-	}
-
-	private void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
-		this.listeFiliere = listeFiliere;
-	}
-
-	private Hashtable<String, Categorie> getHashCadre() {
-		if (hashCadre == null)
-			hashCadre = new Hashtable<String, Categorie>();
-		return hashCadre;
-	}
-
-	private Hashtable<String, FiliereGrade> getHashFiliere() {
-		if (hashFiliere == null)
-			hashFiliere = new Hashtable<String, FiliereGrade>();
-		return hashFiliere;
+	private Hashtable<String, Categorie> getHashCategorie() {
+		if (hashCategorie == null)
+			hashCategorie = new Hashtable<String, Categorie>();
+		return hashCategorie;
 	}
 
 	/**
@@ -1955,5 +1879,75 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_EF_NB_PTS_CATEGORIE() {
 		return getZone(getNOM_EF_NB_PTS_CATEGORIE());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CADRE_EMPLOI Date de
+	 * création : (30/09/11 09:50:04)
+	 * 
+	 */
+	private String[] getLB_CADRE_EMPLOI() {
+		if (LB_CADRE_EMPLOI == null)
+			LB_CADRE_EMPLOI = initialiseLazyLB();
+		return LB_CADRE_EMPLOI;
+	}
+
+	/**
+	 * Setter de la liste: LB_CADRE_EMPLOI Date de création : (30/09/11
+	 * 09:50:04)
+	 * 
+	 */
+	private void setLB_CADRE_EMPLOI(String[] newLB_CADRE_EMPLOI) {
+		LB_CADRE_EMPLOI = newLB_CADRE_EMPLOI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CADRE_EMPLOI Date de
+	 * création : (30/09/11 09:50:04)
+	 * 
+	 */
+	public String getNOM_LB_CADRE_EMPLOI() {
+		return "NOM_LB_CADRE_EMPLOI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CADRE_EMPLOI_SELECT Date de création : (30/09/11 09:50:04)
+	 * 
+	 */
+	public String getNOM_LB_CADRE_EMPLOI_SELECT() {
+		return "NOM_LB_CADRE_EMPLOI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CADRE_EMPLOI Date de création : (30/09/11 09:50:04)
+	 * 
+	 */
+	public String[] getVAL_LB_CADRE_EMPLOI() {
+		return getLB_CADRE_EMPLOI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CADRE_EMPLOI Date de création : (30/09/11 09:50:04)
+	 * 
+	 */
+	public String getVAL_LB_CADRE_EMPLOI_SELECT() {
+		return getZone(getNOM_LB_CADRE_EMPLOI_SELECT());
+	}
+
+	private ArrayList<CadreEmploi> getListeCadreEmploi() {
+		return listeCadreEmploi;
+	}
+
+	private void setListeCadreEmploi(ArrayList<CadreEmploi> listeCadreEmploi) {
+		this.listeCadreEmploi = listeCadreEmploi;
+	}
+
+	private Hashtable<String, CadreEmploi> getHashCadreEmploi() {
+		if (hashCadreEmploi == null)
+			hashCadreEmploi = new Hashtable<String, CadreEmploi>();
+		return hashCadreEmploi;
 	}
 }

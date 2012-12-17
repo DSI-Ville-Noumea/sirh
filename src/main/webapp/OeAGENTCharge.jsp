@@ -50,7 +50,7 @@
 				"var availableRubriques = new Array(\n";
 		
 		for (int i = 0; i < listeRubriques.size(); i++){
-			res+= "   \""+((Rubrique)listeRubriques.get(i)).getNumRubrique().trim()+" "+((Rubrique)listeRubriques.get(i)).getLibRubrique().trim()+"\"";
+			res+= "   \""+((Rubrique)listeRubriques.get(i)).getNumRubrique()+" "+((Rubrique)listeRubriques.get(i)).getLibRubrique()+"\"";
 			if (i+1 < listeRubriques.size())
 				res+=",\n";
 			else	res+="\n";

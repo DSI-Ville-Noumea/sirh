@@ -114,11 +114,6 @@
 					<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
 					
 					<BR/><BR/>
-					
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Filière :</span>
-					<span class="sigp2-saisie" name="<%= process.getNOM_ST_FILIERE() %>"> <%= process.getVAL_ST_FILIERE() %> </span>
-						
-					<BR/><BR/>
 					<div style="text-align: center;">
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRILLE()%>">
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
@@ -194,11 +189,6 @@
 						<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
 						
 						<BR/><BR/>
-						
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Filière :</span>
-						<span class="sigp2-saisie" name="<%= process.getNOM_ST_FILIERE() %>"> <%= process.getVAL_ST_FILIERE() %> </span>
-						
-						<BR/><BR/>	
 						
 						<span class="sigp2" style="margin-left:20px;position:relative;width:130px;">Classe:</span>
 						<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_CLASSE() %>">

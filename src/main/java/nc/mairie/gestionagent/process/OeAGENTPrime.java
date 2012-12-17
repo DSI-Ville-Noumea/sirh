@@ -89,7 +89,6 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 		if (getHashRubriques().size() == 0) {
 			ArrayList<Rubrique> listeRubTot = Rubrique.listerRubriqueAvecTypeRubrAvecInactives(getTransaction(), "P");
 			setListeRubriquesTotales(listeRubTot);
-			
 
 			ArrayList<Rubrique> listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "P");
 			// remplissage de la hashTable
@@ -146,15 +145,11 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 				Prime p = (Prime) getListePrimes().get(i);
 				Rubrique r = Rubrique.chercherRubrique(getTransaction(), p.getNoRubr());
 
-				addZone(getNOM_ST_CODE_RUBR(indicePrime),
-						r == null || r.getNumRubrique() == null || r.getNumRubrique().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
-								.getNumRubrique().trim());
-				addZone(getNOM_ST_LIB_RUBR(indicePrime),
-						r == null || r.getNumRubrique() == null || r.getLibRubrique().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
-								.getLibRubrique().trim());
-				addZone(getNOM_ST_REF_ARR(indicePrime), p.getRefArr().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr().trim());
+				addZone(getNOM_ST_CODE_RUBR(indicePrime), r == null || r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_LIB_RUBR(indicePrime), r == null || r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+				addZone(getNOM_ST_REF_ARR(indicePrime), p.getRefArr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr());
 				addZone(getNOM_ST_DATE_ARR(indicePrime), p.getDateArrete() == null ? "&nbsp;" : p.getDateArrete());
-				addZone(getNOM_ST_MONTANT(indicePrime), p.getMtPri().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getMtPri().trim());
+				addZone(getNOM_ST_MONTANT(indicePrime), p.getMtPri().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getMtPri());
 				addZone(getNOM_ST_DATE_DEBUT(indicePrime), p.getDatDeb());
 				addZone(getNOM_ST_DATE_FIN(indicePrime), p.getDatFin() == null ? "&nbsp;" : p.getDatFin());
 
@@ -258,7 +253,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_RUBRIQUE(), r.getLibRubrique());
-		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique().trim() + " " + r.getLibRubrique().trim());
+		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique() + " " + r.getLibRubrique());
 
 		addZone(getNOM_EF_REF_ARR(), getPrimeCourante().getRefArr());
 		addZone(getNOM_EF_MONTANT(), getPrimeCourante().getMtPri());
@@ -471,7 +466,7 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 			String dateDebut = getZone(getNOM_EF_DATE_DEBUT());
 
 			Rubrique r = getSelectedRubrique();
-			if (r == null){
+			if (r == null) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
 				return false;
 			}
@@ -779,26 +774,26 @@ public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
 	private Rubrique getSelectedRubrique() throws Exception {
 		// récupération de la rubrique et vérification de son existence.
 		String idRubrique = Const.CHAINE_VIDE;
-		//pour les rubriques actives
+		// pour les rubriques actives
 		for (int i = 0; i < getListeRubriques().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriques().get(i);
-			String textRubr = r.getNumRubrique().trim() + " " + r.getLibRubrique().trim();
+			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
 				idRubrique = r.getNumRubrique();
 				break;
 			}
 		}
-//tests sur rubriques inactives
+		// tests sur rubriques inactives
 		for (int i = 0; i < getListeRubriquesTotales().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriquesTotales().get(i);
-			String textRubr = r.getNumRubrique().trim() + " " + r.getLibRubrique().trim();
+			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
 				idRubrique = r.getNumRubrique();
 				break;
 			}
 		}
-		
-		if (idRubrique.equals(Const.CHAINE_VIDE)) {				
+
+		if (idRubrique.equals(Const.CHAINE_VIDE)) {
 			return null;
 		}
 		return Rubrique.chercherRubrique(getTransaction(), idRubrique);

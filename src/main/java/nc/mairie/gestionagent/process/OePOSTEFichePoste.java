@@ -26,6 +26,7 @@ import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.carriere.FiliereGrade;
+import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
@@ -37,8 +38,6 @@ import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.ActiviteFP;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
-import nc.mairie.metier.poste.CadreEmploiFE;
-import nc.mairie.metier.poste.CadreEmploiFP;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.poste.DiplomeFE;
@@ -110,8 +109,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private String[] LB_BUDGETE;
 	private String[] LB_REGLEMENTAIRE;
 	private String[] LB_STATUT;
-	private String[] LB_CADRE_EMPLOI;
-	private String[] LB_CADRE_EMPLOI_MULTI;
 	private String[] LB_DIPLOME;
 	private String[] LB_DIPLOME_MULTI;
 	private String[] LB_NIVEAU_ETUDE;
@@ -138,15 +135,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	// competences de la fiche poste ajouté
 	private ArrayList listeAjoutCompFP;
 
-	// Nouvelle gestion des cadres emploi
-	private ArrayList listeTousCadres;
-	// cadre emploi de la fiche emploi primaire
-	private ArrayList listeCadresFEP;
-	// cadre emploi de la fiche emploi secondaire
-	private ArrayList listeCadresFES;
-	// cadre emploi de la fiche poste
-	private ArrayList listeCadresFP;
-
 	// Nouvelle gestion des niveau etude
 	private ArrayList listeTousNiveau;
 	// niveau etude de la fiche emploi primaire
@@ -166,7 +154,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private ArrayList listeDiplomeFP;
 
 	// pour les liste deroulante
-	private ArrayList listeCadresEmploi;
 	private ArrayList listeNiveauEtude;
 	private ArrayList listeDiplome;
 
@@ -189,7 +176,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private String observation;
 	private String mission;
 
-	private boolean afficherListeCadre = false;
 	private boolean afficherListeGrade = false;
 	private boolean afficherListeNivEt = false;
 	private boolean afficherListeDiplome = false;
@@ -416,7 +402,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			if (getService() != null) {
 				addZone(getNOM_EF_SERVICE(), getService().getSigleService());
 				addZone(getNOM_EF_CODESERVICE(), getService().getCodService());
-				String infoService = getService().getCodService().trim() + " - " + getService().getLibService().trim().replace("\'", " ");
+				String infoService = getService().getCodService() + " - " + getService().getLibService().replace("\'", " ");
 				addZone(getNOM_ST_INFO_SERVICE(), infoService);
 			}
 
@@ -441,14 +427,17 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_EF_DATE_DEBUT_APPLI_SERV(), getFichePosteCourante().getDateDebAppliService());
 			addZone(getNOM_EF_NFA(), getFichePosteCourante().getNFA());
 			addZone(getNOM_EF_OPI(), getFichePosteCourante().getOPI());
-			if (getFichePosteCourante().getCodeGradeGenerique() != null) {
-				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), getFichePosteCourante().getCodeGradeGenerique());
-				addZone(getNOM_EF_GRADE(), gg.getLibGradeGenerique());
+			if (getFichePosteCourante().getCodeGrade() != null) {
+				Grade g = Grade.chercherGrade(getTransaction(), getFichePosteCourante().getCodeGrade());
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+				addZone(getNOM_EF_GRADE(), g.getGrade());
 				// on récupère la categorie et la filiere de ce grade
-				if (gg.getCodCadre() != null && (!gg.getCodCadre().equals(""))) {
+				if (gg.getCodCadre() != null && (!gg.getCodCadre().equals(Const.CHAINE_VIDE))) {
 					String info = "Cat : " + gg.getCodCadre();
-					if (gg.getCodFiliere() != null && (!gg.getCodFiliere().equals(""))) {
-						FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCodFiliere());
+
+					if (gg.getIdCadreEmploi() != null) {
+						CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+						FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
 						if (fi == null || getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
@@ -458,7 +447,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 					addZone(getNOM_ST_INFO_GRADE(), info);
 				}
 			}
-			addZone(getNOM_EF_CODE_GRADE(), getFichePosteCourante().getCodeGradeGenerique());
+			addZone(getNOM_EF_CODE_GRADE(), getFichePosteCourante().getCodeGrade());
 
 			if (getListeStatut() != null)
 				for (int i = 0; i < getListeStatut().size(); i++) {
@@ -702,22 +691,12 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste grade vide alors affectation
 		if (getLB_GRADE() == LBVide) {
-			ArrayList grade = GradeGenerique.listerGradeGeneriqueActif(getTransaction());
+			ArrayList grade = Grade.listerGradeInitialActif(getTransaction());
 			setListeGrade(grade);
 
 			int[] tailles = { 100 };
-			String[] champs = { "libGradeGenerique" };
+			String[] champs = { "grade" };
 			setLB_GRADE(new FormateListe(tailles, grade, champs).getListeFormatee(true));
-		}
-
-		// Si liste cadres emploi vide alors affectation
-		if (getLB_CADRE_EMPLOI() == LBVide) {
-			ArrayList cadresE = CadreEmploi.listerCadreEmploi(getTransaction());
-			setListeCadresEmploi(cadresE);
-
-			int[] tailles = { 100 };
-			String[] champs = { "libCadreEmploi" };
-			setLB_CADRE_EMPLOI(new FormateListe(tailles, cadresE, champs).getListeFormatee(true));
 		}
 
 		// Si liste niveau etude vide alors affectation
@@ -1003,12 +982,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				if (aAvNat != null) {
 
 					addZone(getNOM_ST_AV_TYPE(indiceAvantage),
-							getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-									: getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().trim());
+							getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashtypAv()
+									.get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
 					addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant());
 					addZone(getNOM_ST_AV_NATURE(indiceAvantage),
-							aAvNat.getIdNatureAvantage() == null ? "&nbsp;" : getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage()
-									.trim());
+							aAvNat.getIdNatureAvantage() == null ? "&nbsp;" : getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
 				}
 				indiceAvantage++;
 			}
@@ -1021,10 +999,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
 
-					addZone(getNOM_ST_DEL_TYPE(indiceDelegation), getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation().trim()
-							.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation().trim());
-					addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation), aDel.getLibDelegation().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel
-							.getLibDelegation().trim());
+					addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
+							getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+									: getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation());
+					addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
+							aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
 				}
 				indiceDelegation++;
 			}
@@ -1037,8 +1016,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
 
-					addZone(getNOM_ST_REG_TYPE(indiceRegime), getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn().trim()
-							.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn().trim());
+					addZone(getNOM_ST_REG_TYPE(indiceRegime),
+							getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+									: getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn());
 					addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait());
 					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
 				}
@@ -1089,7 +1069,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_BUDGET_SELECT(), "0");
 		addZone(getNOM_LB_BUDGETE_SELECT(), "0");
 		addZone(getNOM_LB_REGLEMENTAIRE_SELECT(), "0");
-		addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), "0");
 		addZone(getNOM_LB_NIVEAU_ETUDE_SELECT(), "0");
 		addZone(getNOM_LB_DIPLOME_SELECT(), "0");
 		addZone(getNOM_LB_LOC_SELECT(), "0");
@@ -1100,7 +1079,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_INFO_RESP(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
 
-		setLB_CADRE_EMPLOI_MULTI(null);
 		setLB_NIVEAU_ETUDE(null);
 		setLB_DIPLOME_MULTI(null);
 	}
@@ -1129,7 +1107,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		setAgtRemplacement(null);
 		setTitrePosteRemplacement(null);
 
-		setListeTousCadres(null);
 		setListeTousNiveau(null);
 		setListeTousDiplomes(null);
 
@@ -1140,13 +1117,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		setListeDelegation(null);
 		setListeRegime(null);
 
-		setListeTousCadres(new ArrayList());
 		setListeTousNiveau(new ArrayList());
 		setListeTousDiplomes(new ArrayList());
-
-		setListeCadresFP(new ArrayList());
-		setListeCadresFES(new ArrayList());
-		setListeCadresFEP(new ArrayList());
 
 		setListeNiveauFP(new ArrayList());
 		setListeNiveauFES(new ArrayList());
@@ -1238,22 +1210,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "grade"));
 			setFocus(getNOM_EF_GRADE());
-			return false;
-		}
-
-		// **********************
-		// Verification Cadre emploi
-		// **********************
-		if (getListeTousCadres().size() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Cadres emploi"));
-			setFocus(getNOM_LB_CADRE_EMPLOI_MULTI());
-			return false;
-		}
-		if (getListeTousCadres().size() > 1) {
-			// "ERR110", "La liste @ ne doit contenir qu'un seul élément."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR110", "Cadres emploi"));
-			setFocus(getNOM_LB_CADRE_EMPLOI_MULTI());
 			return false;
 		}
 
@@ -1487,7 +1443,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		String nfa = getVAL_EF_NFA();
 		String missions = getVAL_EF_MISSIONS();
 		String codServ = getVAL_EF_CODESERVICE();
-		String gradeGenerique = getVAL_EF_CODE_GRADE();
+		String grade = getVAL_EF_CODE_GRADE();
 
 		// récupération du titre de poste et vérification de son existence.
 		String idTitre = Const.CHAINE_VIDE;
@@ -1564,7 +1520,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		getFichePosteCourante().setNFA(nfa);
 		getFichePosteCourante().setIdEntiteGeo(lieu.getIdEntiteGeo());
 		getFichePosteCourante().setIdTitrePoste(idTitre);
-		getFichePosteCourante().setCodeGradeGenerique(gradeGenerique);
+		getFichePosteCourante().setCodeGrade(grade);
 		getFichePosteCourante().setIdServi(codServ);
 		getFichePosteCourante().setIdCdthorBud(budgete.getCdtHor());
 		getFichePosteCourante().setIdCdthorReg(reglementaire.getCdtHor());
@@ -1627,20 +1583,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				ancienLien.supprimerFEFP(getTransaction());
 			}
 		}
-
-		// on supprime tous les cadres emploi de la FDP
-		ArrayList cadreFPExistant = CadreEmploiFP.listerCadreEmploiFPAvecFichePoste(getTransaction(), getFichePosteCourante().getIdFichePoste());
-		if (cadreFPExistant != null && cadreFPExistant.size() > 0) {
-			for (int i = 0; i < cadreFPExistant.size(); i++) {
-				CadreEmploiFP cadreFP = (CadreEmploiFP) cadreFPExistant.get(i);
-				cadreFP.supprimerCadreEmploiFP(getTransaction());
-			}
-		}
-		// on ajoute le cadre emploi dela FDP
-		CadreEmploi cadreAAjouter = (CadreEmploi) getListeTousCadres().get(0);
-		CadreEmploiFP cadreFP = new CadreEmploiFP(getFichePosteCourante().getIdFichePoste(), cadreAAjouter.getIdCadreEmploi());
-		cadreFP.creerCadreEmploiFP(getTransaction());
-
 		// on supprime tous les diplome de la FDP
 		ArrayList diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante());
 		if (diplomeFPExistant != null && diplomeFPExistant.size() > 0) {
@@ -2517,68 +2459,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_CADRE_EMPLOI Date de
-	 * création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	private String[] getLB_CADRE_EMPLOI() {
-		if (LB_CADRE_EMPLOI == null)
-			LB_CADRE_EMPLOI = initialiseLazyLB();
-		return LB_CADRE_EMPLOI;
-	}
-
-	/**
-	 * Setter de la liste: LB_CADRE_EMPLOI Date de création : (08/07/11
-	 * 09:13:07)
-	 * 
-	 * 
-	 */
-	private void setLB_CADRE_EMPLOI(String[] newLB_CADRE_EMPLOI) {
-		LB_CADRE_EMPLOI = newLB_CADRE_EMPLOI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CADRE_EMPLOI Date de
-	 * création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI() {
-		return "NOM_LB_CADRE_EMPLOI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CADRE_EMPLOI_SELECT Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI_SELECT() {
-		return "NOM_LB_CADRE_EMPLOI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CADRE_EMPLOI Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String[] getVAL_LB_CADRE_EMPLOI() {
-		return getLB_CADRE_EMPLOI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CADRE_EMPLOI Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getVAL_LB_CADRE_EMPLOI_SELECT() {
-		return getZone(getNOM_LB_CADRE_EMPLOI_SELECT());
-	}
-
-	/**
 	 * Getter de la liste avec un lazy initialize : LB_DIPLOME Date de création
 	 * : (08/07/11 09:13:07)
 	 * 
@@ -2702,52 +2582,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_CADRE_EMPLOI Date de
-	 * création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_AJOUTER_CADRE_EMPLOI() {
-		return "NOM_PB_AJOUTER_CADRE_EMPLOI";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public boolean performPB_AJOUTER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-		// Récupération du cadre emploi à ajouter
-		int indiceCadre = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
-		if (indiceCadre == -1 || getListeCadresEmploi().size() == 0 || indiceCadre > getListeCadresEmploi().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Cadres emploi"));
-			return false;
-		}
-
-		if (indiceCadre > 0) {
-			CadreEmploi c = (CadreEmploi) getListeCadresEmploi().get(indiceCadre - 1);
-
-			if (c != null) {
-				if (getListeTousCadres() == null)
-					setListeTousCadres(new ArrayList());
-
-				if (!getListeTousCadres().contains(c)) {
-					getListeTousCadres().add(c);
-				}
-
-				int[] tailles = { 50 };
-				String[] champs = { "libCadreEmploi" };
-				setLB_CADRE_EMPLOI_MULTI(new FormateListe(tailles, getListeTousCadres(), champs).getListeFormatee());
-			}
-		}
-		setAfficherListeCadre(false);
-		return true;
-	}
-
-	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_GRADE Date de
 	 * création : (08/07/11 09:21:06)
 	 * 
@@ -2774,13 +2608,25 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 
 		if (indiceGrade != -1) {
-			GradeGenerique g = (GradeGenerique) getListeGrade().get(indiceGrade - 1);
-			addZone(getNOM_EF_GRADE(), g.getLibGradeGenerique());
-			addZone(getNOM_EF_CODE_GRADE(), g.getCodGradeGenerique());
+			Grade g = (Grade) getListeGrade().get(indiceGrade - 1);
+			Grade gr = Grade.chercherGradeByGradeInitial(getTransaction(), g.getGrade());
+			addZone(getNOM_EF_GRADE(), gr.getGrade());
+			addZone(getNOM_EF_CODE_GRADE(), gr.getCodeGrade());
+
+			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), gr.getCodeGradeGenerique());
+			if(getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+			}
+			CadreEmploi cadreEmp = null;
+			if (gg != null && gg.getIdCadreEmploi() != null) {
+				cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+			}
 			// on récupère la categorie et la filiere de ce grade
-			String info = "Cat : " + g.getCodCadre();
-			FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), g.getCodFiliere());
-			info += " , filière : " + fi.getLibFiliere();
+			String info = "Cat : " + gg.getCodCadre();
+			if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
+				FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+				info += " , filière : " + fi.getLibFiliere();
+			}
 			addZone(getNOM_ST_INFO_GRADE(), info);
 
 		}
@@ -2883,40 +2729,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 		}
 		setAfficherListeNivEt(false);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CADRE_EMPLOI Date
-	 * de création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_CADRE_EMPLOI() {
-		return "NOM_PB_SUPPRIMER_CADRE_EMPLOI";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-
-		// Suppression du dernier cadre emploi de la liste
-		if (getListeTousCadres() != null && getListeTousCadres().size() != 0) {
-			CadreEmploi ce = (CadreEmploi) getListeTousCadres().get(getListeTousCadres().size() - 1);
-			getListeTousCadres().remove(ce);
-
-			// Rafraichissement de la liste affichée
-			int[] tailles = { 50 };
-			String[] champs = { "libCadreEmploi" };
-			setLB_CADRE_EMPLOI_MULTI(new FormateListe(tailles, getListeTousCadres(), champs).getListeFormatee());
-		}
-
 		return true;
 	}
 
@@ -3218,68 +3030,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_CADRE_EMPLOI_MULTI Date
-	 * de création : (11/07/11 14:22:22)
-	 * 
-	 * 
-	 */
-	private String[] getLB_CADRE_EMPLOI_MULTI() {
-		if (LB_CADRE_EMPLOI_MULTI == null)
-			LB_CADRE_EMPLOI_MULTI = initialiseLazyLB();
-		return LB_CADRE_EMPLOI_MULTI;
-	}
-
-	/**
-	 * Setter de la liste: LB_CADRE_EMPLOI_MULTI Date de création : (11/07/11
-	 * 14:22:22)
-	 * 
-	 * 
-	 */
-	private void setLB_CADRE_EMPLOI_MULTI(String[] newLB_CADRE_EMPLOI_MULTI) {
-		LB_CADRE_EMPLOI_MULTI = newLB_CADRE_EMPLOI_MULTI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CADRE_EMPLOI_MULTI Date
-	 * de création : (11/07/11 14:22:22)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI_MULTI() {
-		return "NOM_LB_CADRE_EMPLOI_MULTI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CADRE_EMPLOI_MULTI_SELECT Date de création : (11/07/11 14:22:22)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI_MULTI_SELECT() {
-		return "NOM_LB_CADRE_EMPLOI_MULTI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CADRE_EMPLOI_MULTI Date de création : (11/07/11 14:22:22)
-	 * 
-	 * 
-	 */
-	public String[] getVAL_LB_CADRE_EMPLOI_MULTI() {
-		return getLB_CADRE_EMPLOI_MULTI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CADRE_EMPLOI_MULTI Date de création : (11/07/11 14:22:22)
-	 * 
-	 * 
-	 */
-	public String getVAL_LB_CADRE_EMPLOI_MULTI_SELECT() {
-		return getZone(getNOM_LB_CADRE_EMPLOI_MULTI_SELECT());
-	}
-
-	/**
 	 * Getter de la liste avec un lazy initialize : LB_DIPLOME_MULTI Date de
 	 * création : (11/07/11 14:22:23)
 	 * 
@@ -3555,63 +3305,13 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void initialiseInfoEmploi() throws Exception {
-		// on fait une liste de toutes les cadres emploi
-		setListeTousCadres(new ArrayList());
 		// on fait une liste de toutes les niveau etude
 		setListeTousNiveau(new ArrayList());
 		// on fait une liste de toutes les diplomes
 		setListeTousDiplomes(new ArrayList());
 
-		// cadres emploi
-		boolean trouve = false;
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			// on recupere les cadres emploi de la FDP
-			setListeCadresFP(CadreEmploiFP.listerCadreEmploiFPAvecFichePoste(getTransaction(), getFichePosteCourante().getIdFichePoste()));
-			for (int i = 0; i < getListeCadresFP().size(); i++) {
-				CadreEmploiFP cadreFP = (CadreEmploiFP) getListeCadresFP().get(i);
-				CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFP.getIdCadreEmploi());
-				getListeTousCadres().add(cadre);
-				trouve = true;
-			}
-		} else {
-			setListeCadresFP(new ArrayList());
-		}
-		// si il n'y avait pas de cadre emploi sur la FDP on affiche celle des
-		// FE
-		if (!trouve) {
-			if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
-				// on recupere les cadres emploi de la FEP
-				setListeCadresFEP(CadreEmploiFE.listerCadreEmploiFEAvecFicheEmploi(getTransaction(), getEmploiPrimaire().getIdFicheEmploi()));
-				for (int i = 0; i < getListeCadresFEP().size(); i++) {
-					CadreEmploiFE cadreFE = (CadreEmploiFE) getListeCadresFEP().get(i);
-					CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFE.getIdCadreEmploi());
-					if (!getListeTousCadres().contains(cadre)) {
-						getListeTousCadres().add(cadre);
-					}
-				}
-			} else {
-				setListeCadresFEP(new ArrayList());
-			}
-			if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
-				// on recupere les cadres emploi de la FES
-				setListeCadresFES(CadreEmploiFE.listerCadreEmploiFEAvecFicheEmploi(getTransaction(), getEmploiSecondaire().getIdFicheEmploi()));
-				for (int i = 0; i < getListeCadresFES().size(); i++) {
-					CadreEmploiFE cadreFE = (CadreEmploiFE) getListeCadresFES().get(i);
-					CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFE.getIdCadreEmploi());
-					if (!getListeTousCadres().contains(cadre)) {
-						getListeTousCadres().add(cadre);
-					}
-				}
-			} else {
-				setListeCadresFES(new ArrayList());
-			}
-		}
-		int[] taillesCadre = { 50 };
-		String[] champsCadre = { "libCadreEmploi" };
-		setLB_CADRE_EMPLOI_MULTI(new FormateListe(taillesCadre, getListeTousCadres(), champsCadre).getListeFormatee());
-
 		// niveau etude
-		trouve = false;
+		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les niveau etude de la FDP
 			setListeNiveauFP(NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante()));
@@ -3750,12 +3450,12 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			if (getFichePosteCourante().getMissions() != null && getFichePosteCourante().getMissions().length() != 0)
 				setMission(getMission() + " " + getFichePosteCourante().getMissions());
 			if (getEmploiPrimaire() != null) {
-				if (!getMission().trim().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().trim().toUpperCase())) {
+				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
 				}
 			}
 			if (getEmploiSecondaire() != null) {
-				if (!getMission().trim().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().trim().toUpperCase())) {
+				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
 				}
 			}
@@ -4594,30 +4294,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AFFICHER_LISTE_CADRE Date de
-	 * création : (29/08/11 10:08:17)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_AFFICHER_LISTE_CADRE() {
-		return "NOM_PB_AFFICHER_LISTE_CADRE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/08/11 10:08:17)
-	 * 
-	 * 
-	 */
-	public boolean performPB_AFFICHER_LISTE_CADRE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), "0");
-		setAfficherListeCadre(true);
-		return true;
-	}
-
-	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AFFICHER_LISTE_GRADE Date de
 	 * création : (29/08/11 10:08:17)
 	 * 
@@ -4687,25 +4363,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_NIVEAU_ETUDE_SELECT(), "0");
 		setAfficherListeNivEt(true);
 		return true;
-	}
-
-	/**
-	 * Retourne vrai si la liste des cadres doit être affichée.
-	 * 
-	 * @return afficherListeCadre boolean
-	 */
-	public boolean isAfficherListeCadre() {
-		return afficherListeCadre;
-	}
-
-	/**
-	 * Met à jour l'indicateur d'afichage de la liste des cadres.
-	 * 
-	 * @param afficherListeCadre
-	 *            boolean
-	 */
-	private void setAfficherListeCadre(boolean afficherListeCadre) {
-		this.afficherListeCadre = afficherListeCadre;
 	}
 
 	/**
@@ -5171,38 +4828,45 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// requete necessaire
 		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
-		FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCodFiliere());
+		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+		FiliereGrade fi = null;
+		CadreEmploi cadreEmp = null;
+		if (gg != null && gg.getIdCadreEmploi() != null) {
+			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
 
 		// partie concernant le statut
 		String statutFP = Const.CHAINE_VIDE;
 		StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP());
-		statutFP = statut.getLibStatutFP().trim();
+		statutFP = statut.getLibStatutFP();
 
 		// partie concernant le service
-		String lieuPoste = eg.getLibEntiteGeo().trim();
-		String libService = s.getLibService().trim();
+		String lieuPoste = eg.getLibEntiteGeo();
+		String libService = s.getLibService();
 
 		// partie concernant le grade,cadre emploi...
-		String grade = gg.getLibGradeGenerique().trim();
-		String categorie = gg.getCodCadre().trim();
+		String grade = g.getGrade();
+		String categorie = gg.getCodCadre();
 		String filiere = Const.CHAINE_VIDE;
 		if (fi != null && fi.getLibFiliere() != null) {
-			filiere = fi.getLibFiliere().trim();
+			filiere = fi.getLibFiliere();
 		}
-		CadreEmploiFP cadreFP = CadreEmploiFP.chercherCadreEmploiAvecFP(getTransaction(), fp.getIdFichePoste());
-		CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFP.getIdCadreEmploi());
-		String cadreEmploi = cadre.getLibCadreEmploi().trim();
+		String cadreEmploiAffiche = Const.CHAINE_VIDE;
+		if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
+			cadreEmploiAffiche = cadreEmp.getLibCadreEmploi();
+		}
 
 		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
 		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
-		String niveauEtude = nivEtu.getLibNiveauEtude().trim();
+		String niveauEtude = nivEtu.getLibNiveauEtude();
 
 		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
 		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), dipFP.getIdDiplomeGenerique());
-		String diplome = dip.getLibDiplomeGenerique().trim();
+		String diplome = dip.getLibDiplomeGenerique();
 
 		// partie concernant l'emploi
 		String emploiPrimaire = Const.CHAINE_VIDE;
@@ -5284,10 +4948,10 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			rempTitreFP = tpRemplacement.getLibTitrePoste();
 
 		}
-		String titrePoste = tp.getLibTitrePoste().trim();
+		String titrePoste = tp.getLibTitrePoste();
 
 		// partie concernant la mission
-		String missions = fp.getMissions().trim();
+		String missions = fp.getMissions();
 
 		// partie concernant les activites
 		String activites = Const.CHAINE_VIDE;
@@ -5304,7 +4968,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		ArrayList<Competence> lComp = Competence.listerCompetenceAvecFP(getTransaction(), fp);
 		for (Competence comp : lComp) {
 			TypeCompetence tc = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
-			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence().trim() + ")<w:br />";
+			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence() + ")<w:br />";
 		}
 		if (competences.length() > 8) {
 			competences = competences.substring(0, competences.length() - 8);
@@ -5335,7 +4999,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
 			ligne = StringUtils.replace(ligne, "$_CATEGORIE_POSTE", categorie);
 			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
-			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploi);
+			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
 			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
 			ligne = StringUtils.replace(ligne, "$_DIPLOME", diplome);
 			// emploi
@@ -5394,9 +5058,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		os.close();
 		destinationFile.close();
 
-		destination = destination.substring(destination.lastIndexOf("/"),destination.length());		
+		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage+repertoire+destination));
+		setURLFichier(getScriptOuverture(repertoireStockage + repertoire + destination));
 	}
 
 	private void creerModeleDocumentFP(String repertoire, String modele, String destination, String idFichePoste) throws Exception {
@@ -5422,38 +5086,46 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// requete necessaire
 		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), fp.getCodeGradeGenerique());
-		FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCodFiliere());
+		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+		CadreEmploi cadreEmp = null;
+		FiliereGrade fi = null;
+		if (gg != null && gg.getIdCadreEmploi() != null) {
+			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
 
 		// partie concernant le statut
 		String statutFP = Const.CHAINE_VIDE;
 		StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP());
-		statutFP = statut.getLibStatutFP().trim();
+		statutFP = statut.getLibStatutFP();
 
 		// partie concernant le service
-		String lieuPoste = eg.getLibEntiteGeo().trim();
-		String libService = s.getLibService().trim();
+		String lieuPoste = eg.getLibEntiteGeo();
+		String libService = s.getLibService();
 
 		// partie concernant le grade,cadre emploi...
-		String grade = gg.getLibGradeGenerique().trim();
-		String categorie = gg.getCodCadre().trim();
+		String grade = g.getGrade();
+		String categorie = gg.getCodCadre();
 		String filiere = Const.CHAINE_VIDE;
 		if (fi != null && fi.getLibFiliere() != null) {
-			filiere = fi.getLibFiliere().trim();
+			filiere = fi.getLibFiliere();
 		}
-		CadreEmploiFP cadreFP = CadreEmploiFP.chercherCadreEmploiAvecFP(getTransaction(), fp.getIdFichePoste());
-		CadreEmploi cadre = CadreEmploi.chercherCadreEmploi(getTransaction(), cadreFP.getIdCadreEmploi());
-		String cadreEmploi = cadre.getLibCadreEmploi().trim();
+
+		String cadreEmploiAffiche = Const.CHAINE_VIDE;
+		if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
+			cadreEmploiAffiche = cadreEmp.getLibCadreEmploi();
+		}
 
 		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
 		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
-		String niveauEtude = nivEtu.getLibNiveauEtude().trim();
+		String niveauEtude = nivEtu.getLibNiveauEtude();
 
 		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
 		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), dipFP.getIdDiplomeGenerique());
-		String diplome = dip.getLibDiplomeGenerique().trim();
+		String diplome = dip.getLibDiplomeGenerique();
 
 		// partie concernant l'emploi
 		String emploiPrimaire = Const.CHAINE_VIDE;
@@ -5546,10 +5218,10 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			rempFP = fpRemplacement.getNumFP();
 			rempTitreFP = tpRemplacement.getLibTitrePoste();
 		}
-		String titrePoste = tp.getLibTitrePoste().trim();
+		String titrePoste = tp.getLibTitrePoste();
 
 		// partie concernant la mission
-		String missions = fp.getMissions().trim();
+		String missions = fp.getMissions();
 
 		// partie concernant les activites
 		String activites = Const.CHAINE_VIDE;
@@ -5566,7 +5238,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		ArrayList<Competence> lComp = Competence.listerCompetenceAvecFP(getTransaction(), fp);
 		for (Competence comp : lComp) {
 			TypeCompetence tc = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
-			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence().trim() + ")<w:br />";
+			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence() + ")<w:br />";
 		}
 		if (competences.length() > 8) {
 			competences = competences.substring(0, competences.length() - 8);
@@ -5597,7 +5269,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
 			ligne = StringUtils.replace(ligne, "$_CATEGORIE_POSTE", categorie);
 			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
-			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploi);
+			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
 			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
 			ligne = StringUtils.replace(ligne, "$_DIPLOME", diplome);
 			// emploi
@@ -6115,11 +5787,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				return performPB_DUPLIQUER_FP(request);
 			}
 
-			// Si clic sur le bouton PB_AFFICHER_LISTE_CADRE
-			if (testerParametre(request, getNOM_PB_AFFICHER_LISTE_CADRE())) {
-				return performPB_AFFICHER_LISTE_CADRE(request);
-			}
-
 			// Si clic sur le bouton PB_AFFICHER_LISTE_GRADE
 			if (testerParametre(request, getNOM_PB_AFFICHER_LISTE_GRADE())) {
 				return performPB_AFFICHER_LISTE_GRADE(request);
@@ -6170,11 +5837,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				return performPB_SUPPRIMER_EMPLOI_SECONDAIRE(request);
 			}
 
-			// Si clic sur le bouton PB_AJOUTER_CADRE_EMPLOI
-			if (testerParametre(request, getNOM_PB_AJOUTER_CADRE_EMPLOI())) {
-				return performPB_AJOUTER_CADRE_EMPLOI(request);
-			}
-
 			// Si clic sur le bouton PB_AJOUTER_GRADE
 			if (testerParametre(request, getNOM_PB_AJOUTER_GRADE())) {
 				return performPB_AJOUTER_GRADE(request);
@@ -6188,11 +5850,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_AJOUTER_NIVEAU_ETUDE
 			if (testerParametre(request, getNOM_PB_AJOUTER_NIVEAU_ETUDE())) {
 				return performPB_AJOUTER_NIVEAU_ETUDE(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_CADRE_EMPLOI
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_CADRE_EMPLOI())) {
-				return performPB_SUPPRIMER_CADRE_EMPLOI(request);
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_DIPLOME
@@ -6283,10 +5940,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	private String getMission() {
-		if (mission == null) {
-			return Const.CHAINE_VIDE;
-		}
-		return mission;
+		return mission == null ? Const.CHAINE_VIDE : mission.trim();
 	}
 
 	private void setMission(String mission) {
@@ -6566,38 +6220,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return hashOrigineCompetence;
 	}
 
-	private ArrayList getListeTousCadres() {
-		return listeTousCadres;
-	}
-
-	private void setListeTousCadres(ArrayList listeTousCadres) {
-		this.listeTousCadres = listeTousCadres;
-	}
-
-	private ArrayList getListeCadresFEP() {
-		return listeCadresFEP;
-	}
-
-	private void setListeCadresFEP(ArrayList listeCadresFEP) {
-		this.listeCadresFEP = listeCadresFEP;
-	}
-
-	private ArrayList getListeCadresFES() {
-		return listeCadresFES;
-	}
-
-	private void setListeCadresFES(ArrayList listeCadresFES) {
-		this.listeCadresFES = listeCadresFES;
-	}
-
-	private ArrayList getListeCadresFP() {
-		return listeCadresFP;
-	}
-
-	private void setListeCadresFP(ArrayList listeCadresFP) {
-		this.listeCadresFP = listeCadresFP;
-	}
-
 	private ArrayList getListeNiveauFEP() {
 		return listeNiveauFEP;
 	}
@@ -6660,14 +6282,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 	private void setListeTousDiplomes(ArrayList listeTousDiplomes) {
 		this.listeTousDiplomes = listeTousDiplomes;
-	}
-
-	private ArrayList getListeCadresEmploi() {
-		return listeCadresEmploi;
-	}
-
-	private void setListeCadresEmploi(ArrayList listeCadresEmploi) {
-		this.listeCadresEmploi = listeCadresEmploi;
 	}
 
 	private ArrayList getListeDiplome() {

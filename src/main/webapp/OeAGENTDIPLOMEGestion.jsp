@@ -63,7 +63,7 @@
 		
 		for (int i = 0; i < listeEcoles.size(); i++){
 			DiplomeAgent ecole = (DiplomeAgent) listeEcoles.get(i);
-			res+= "   \""+ecole.getNomEcole().trim().toUpperCase()+"\"";
+			res+= "   \""+ecole.getNomEcole().toUpperCase()+"\"";
 			if (i+1 < listeEcoles.size())
 				res+=",\n";
 			else	res+="\n";

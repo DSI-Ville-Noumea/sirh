@@ -264,7 +264,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						if (aff != null && aff.getIdFichePoste() != null) {
 							FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 							TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-							eval.setFonction(tp.getLibTitrePoste().trim());
+							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
 							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fp);
@@ -535,7 +535,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					EaeEvaluateur eval = new EaeEvaluateur();
 					eval.setIdEae(idEaeCreer);
 					eval.setIdAgent(Integer.valueOf(agentResp.getIdAgent()));
-					eval.setFonction(tpResp.getLibTitrePoste().trim());
+					eval.setFonction(tpResp.getLibTitrePoste());
 					eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche() == null
 							|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp.getDateDerniereEmbauche()));
 					// on cherche toutes les affectations sur la FDP du
@@ -1055,7 +1055,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// TODO declarer erreur
 				return false;
 			}
-
 
 			// "INF202","Calcul effectué."
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF202"));
@@ -1606,11 +1605,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 			}
 			// grade du poste
-			GradeGenerique gradeGenFP = GradeGenerique.chercherGradeGenerique(getTransaction(), fpSecondaire.getCodeGradeGenerique());
+			Grade g = Grade.chercherGrade(getTransaction(), fpSecondaire.getCodeGrade());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				fichePosteEae.setGradePoste(gradeGenFP.getLibGradeGenerique());
+				fichePosteEae.setGradePoste(g.getGrade());
 			}
 			EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpSecondaire.getIdEntiteGeo());
 			if (getTransaction().isErreur()) {
@@ -1773,11 +1772,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 			}
 			// grade du poste
-			GradeGenerique gradeGenFP = GradeGenerique.chercherGradeGenerique(getTransaction(), fpPrincipale.getCodeGradeGenerique());
+			Grade g = Grade.chercherGrade(getTransaction(), fpPrincipale.getCodeGrade());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				fichePosteEae.setGradePoste(gradeGenFP.getLibGradeGenerique());
+				fichePosteEae.setGradePoste(g.getGrade());
 			}
 			EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpPrincipale.getIdEntiteGeo());
 			if (getTransaction().isErreur()) {
@@ -1897,8 +1896,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					dateFinSp = sdf.parse(dateFinSpmtsr);
 				}
 				parcours.setDateFin(dateFinSp);
-				String lib = direction == null ? "" : direction.getLibService().trim();
-				lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+				String lib = direction == null ? "" : direction.getLibService();
+				lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
 				parcours.setLibelleParcoursPro(lib);
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 						parcours.getLibelleParcoursPro());
@@ -1925,8 +1924,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						dateFinSp = sdf.parse(dateFinSpmtsr);
 					}
 					parcours.setDateFin(dateFinSp);
-					String lib = direction == null ? "" : direction.getLibService().trim();
-					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+					String lib = direction == null ? "" : direction.getLibService();
+					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
@@ -1966,8 +1965,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
 					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
 					parcours.setDateFin(dateSortie == null ? null : sdf.parse(dateSortie.toString()));
-					String lib = direction == null ? "" : direction.getLibService().trim();
-					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService().trim();
+					String lib = direction == null ? "" : direction.getLibService();
+					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
@@ -2169,8 +2168,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		if (carrCours != null & carrCours.getNoMatricule() != null) {
 			agentEvalue.setStatut(Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()));
 			if (agentEvalue.getStatut().equals("A")) {
-				agentEvalue.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie()).getLiCate()
-						.trim());
+				agentEvalue.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie()).getLiCate());
 			}
 			if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("F")) {
 				// pour le cadre
@@ -2194,10 +2192,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							getTransaction().traiterErreur();
 						}
 						if (classe != null && classe.getLibClasse() != null) {
-							classeString = classe.getLibClasse().trim();
+							classeString = classe.getLibClasse();
 						}
 					}
-					agentEvalue.setGrade(grade.getGrade().trim() + " " + classeString);
+					agentEvalue.setGrade(grade.getGrade() + " " + classeString);
 					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -2254,11 +2252,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						getTransaction().traiterErreur();
 					}
 					if (classe != null && classe.getLibClasse() != null) {
-						classeString = classe.getLibClasse().trim();
+						classeString = classe.getLibClasse();
 					}
 				}
-				agentEvalue.setNouvGrade(gradeAvct.getGrade().trim() + " " + classeString);
-				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().trim().equals("")) {
+				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
 					MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();

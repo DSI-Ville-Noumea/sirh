@@ -51,7 +51,7 @@
 				"var availablePA = new Array(\n";
 		
 		for (int i = 0; i < listePA.size(); i++){
-			res+= "   \""+((PositionAdm)listePA.get(i)).getCdpadm().trim()+" "+((PositionAdm)listePA.get(i)).getLiPAdm().trim()+"\"";
+			res+= "   \""+((PositionAdm)listePA.get(i)).getCdpadm()+" "+((PositionAdm)listePA.get(i)).getLiPAdm()+"\"";
 			if (i+1 < listePA.size())
 				res+=",\n";
 			else	res+="\n";

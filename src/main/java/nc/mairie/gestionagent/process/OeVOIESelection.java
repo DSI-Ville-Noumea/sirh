@@ -139,9 +139,9 @@ public class OeVOIESelection extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeVoie().size(); i++) {
 				VoieQuartier c = (VoieQuartier) getListeVoie().get(i);
 
-				addZone(getNOM_ST_CODE(indiceRue), c.getCodVoie().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCodVoie());
-				addZone(getNOM_ST_LIB(indiceRue), c.getLibVoie().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibVoie());
-				addZone(getNOM_ST_QUARTIER(indiceRue), c.getLibQuartier().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibQuartier());
+				addZone(getNOM_ST_CODE(indiceRue), c.getCodVoie().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCodVoie());
+				addZone(getNOM_ST_LIB(indiceRue), c.getLibVoie().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibVoie());
+				addZone(getNOM_ST_QUARTIER(indiceRue), c.getLibQuartier().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibQuartier());
 
 				indiceRue++;
 			}

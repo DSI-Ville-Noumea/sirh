@@ -86,9 +86,9 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 				CasierJudiciaire c = (CasierJudiciaire) getListeCasierJud().get(i);
 
 				addZone(getNOM_ST_DATE(indiceCasierJud), c.getDateExtrait());
-				addZone(getNOM_ST_NUM(indiceCasierJud), c.getNumExtrait().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumExtrait().trim());
+				addZone(getNOM_ST_NUM(indiceCasierJud), c.getNumExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumExtrait());
 				addZone(getNOM_ST_PRIVATION(indiceCasierJud), c.isPrivationDroitsCiv() ? "Oui" : "Non");
-				addZone(getNOM_ST_COMMENTAIRE(indiceCasierJud), c.getCommExtrait().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCommExtrait().trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceCasierJud), c.getCommExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCommExtrait());
 
 				indiceCasierJud++;
 			}

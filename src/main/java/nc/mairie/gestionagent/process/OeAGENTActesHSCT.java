@@ -673,7 +673,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 				String info = "&nbsp;";
 				if (td.getCodTypeDocument().equals("VM")) {
-					String nomDoc = doc.getNomDocument().trim();
+					String nomDoc = doc.getNomDocument();
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
@@ -682,7 +682,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 						info = "VM du : " + vm.getDateDerniereVisite();
 					}
 				} else if (td.getCodTypeDocument().equals("AT")) {
-					String nomDoc = doc.getNomDocument().trim();
+					String nomDoc = doc.getNomDocument();
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
@@ -691,7 +691,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 						info = "AT du : " + at.getDateAT();
 					}
 				} else if (td.getCodTypeDocument().equals("HANDI")) {
-					String nomDoc = doc.getNomDocument().trim();
+					String nomDoc = doc.getNomDocument();
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
@@ -701,12 +701,12 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 					}
 				}
 
-				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument().trim());
-				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument()
-						.trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument()
+						);
 				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
+						);
 				addZone(getNOM_ST_INFO(indiceActe), info);
 
 				indiceActe++;

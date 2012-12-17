@@ -87,8 +87,8 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_ACC_J(i), av.getACCJour() + " <br> " + av.getNouvACCJour());
 				addZone(getNOM_ST_GRADE(i),
 						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade().trim();
-				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade().trim();
+				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
+				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
@@ -390,7 +390,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
-						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban().trim(), 7, "0"));
+						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
 
 						// champ à remplir pour creer une carriere NB : on
 						// reprend ceux de la carriere precedente

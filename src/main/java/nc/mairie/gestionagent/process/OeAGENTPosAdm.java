@@ -140,9 +140,9 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 				PositionAdmAgent paa = (PositionAdmAgent) getListePAAgent().get(i);
 				PositionAdm pa = (PositionAdm) getHashPA().get(paa.getCdpadm());
 
-				addZone(getNOM_ST_POSA(indicePaAgent), pa.getCdpadm().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getCdpadm().trim());
-				addZone(getNOM_ST_LIB_POSA(indicePaAgent), pa.getLiPAdm().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getLiPAdm().trim());
-				addZone(getNOM_ST_REF_ARR(indicePaAgent), paa.getRefarr().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : paa.getRefarr().trim());
+				addZone(getNOM_ST_POSA(indicePaAgent), pa.getCdpadm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getCdpadm());
+				addZone(getNOM_ST_LIB_POSA(indicePaAgent), pa.getLiPAdm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getLiPAdm());
+				addZone(getNOM_ST_REF_ARR(indicePaAgent), paa.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : paa.getRefarr());
 				addZone(getNOM_ST_DATE_ARR(indicePaAgent), paa.getDateArrete() == null ? "&nbsp;" : paa.getDateArrete());
 				addZone(getNOM_ST_DATE_DEBUT(indicePaAgent), paa.getDatdeb() == null ? "&nbsp;" : paa.getDatdeb());
 				addZone(getNOM_ST_DATE_FIN(indicePaAgent), paa.getDatfin() == null ? "&nbsp;" : paa.getDatfin());
@@ -443,8 +443,13 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 
 					if (affActive.size() > 0) {
 						Affectation active = (Affectation) affActive.get(0);
-
 						if (Services.compareDates(active.getDateDebutAff(), getPaCourante().getDatdeb()) > 0) {
+							getTransaction().declarerErreur(MessageUtils.getMessage("ERR133"));
+							return false;
+						}
+
+						// si l'affectation a une date de fin
+						if (!active.getDateFinAff().equals(Const.CHAINE_VIDE)) {
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR133"));
 							return false;
 						}
@@ -456,6 +461,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR009"));
 							return false;
 						}
+
 					}
 				}
 
@@ -534,7 +540,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_POSA(), pa.getLiPAdm());
-		addZone(getNOM_EF_POSA(), pa.getCdpadm().trim() + " " + pa.getLiPAdm().trim());
+		addZone(getNOM_EF_POSA(), pa.getCdpadm() + " " + pa.getLiPAdm());
 
 		addZone(getNOM_EF_REF_ARR(), getPaCourante().getRefarr());
 		addZone(getNOM_EF_DATE_ARR(), getPaCourante().getDateArrete());
@@ -553,7 +559,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_POSA(), pa.getLiPAdm());
-		addZone(getNOM_EF_POSA(), pa.getCdpadm() + " " + pa.getLiPAdm().trim());
+		addZone(getNOM_EF_POSA(), pa.getCdpadm() + " " + pa.getLiPAdm());
 
 		addZone(getNOM_EF_REF_ARR(), getPaCourante().getRefarr());
 		addZone(getNOM_EF_DATE_ARR(), getPaCourante().getDateArrete());
@@ -815,7 +821,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 		String idPA = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListePA().size(); i++) {
 			PositionAdm pa = (PositionAdm) getListePA().get(i);
-			String textPA = pa.getCdpadm() + " " + pa.getLiPAdm().trim();
+			String textPA = pa.getCdpadm() + " " + pa.getLiPAdm();
 			if (textPA.equals(getVAL_EF_POSA())) {
 				idPA = pa.getCdpadm();
 				break;

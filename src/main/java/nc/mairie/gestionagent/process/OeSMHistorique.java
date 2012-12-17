@@ -108,7 +108,7 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService().trim());
+			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
 
 			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVM()).getLibMotifVM());
 			// RG-SVM-15

@@ -328,8 +328,8 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 				AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) getListeAgentAdministrations().get(i);
 				AutreAdministration aAdministration = (AutreAdministration) AutreAdministration.chercherAutreAdministration(getTransaction(), aAdministrationAgent.getIdAutreAdmin());
 
-				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration), aAdministration.getLibAutreAdmin().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aAdministration.getLibAutreAdmin().trim());
-				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration), aAdministrationAgent.getFonctionnaire().trim().equals(Const.ZERO) ? "NON" : "OUI");
+				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration), aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aAdministration.getLibAutreAdmin());
+				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration), aAdministrationAgent.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
 				addZone(getNOM_ST_DATE_ENTREE(indiceAdministration), aAdministrationAgent.getDateEntree());
 				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration), aAdministrationAgent.getDateSortie() == null ? "&nbsp;" : aAdministrationAgent.getDateSortie());
 

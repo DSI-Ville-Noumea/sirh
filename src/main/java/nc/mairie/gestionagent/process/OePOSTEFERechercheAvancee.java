@@ -105,7 +105,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 				FicheEmploi fe = (FicheEmploi) getListeFE().get(i);
 
 				addZone(getNOM_ST_REF(indiceFe), fe.getRefMairie());
-				addZone(getNOM_ST_NOM(indiceFe), fe.getNomMetierEmploi().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fe.getNomMetierEmploi());
+				addZone(getNOM_ST_NOM(indiceFe), fe.getNomMetierEmploi().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fe.getNomMetierEmploi());
 
 				indiceFe++;
 			}

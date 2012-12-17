@@ -786,9 +786,9 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 					nomCommune = c.getLibCommune();
 				}
 
-				addZone(getNOM_ST_NOM(indiceEnfant), aEnfant.getNom().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getNom().trim());
-				addZone(getNOM_ST_PRENOM(indiceEnfant), aEnfant.getPrenom().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getPrenom().trim());
-				addZone(getNOM_ST_SEXE(indiceEnfant), aEnfant.getSexe().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getSexe());
+				addZone(getNOM_ST_NOM(indiceEnfant), aEnfant.getNom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getNom());
+				addZone(getNOM_ST_PRENOM(indiceEnfant), aEnfant.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getPrenom());
+				addZone(getNOM_ST_SEXE(indiceEnfant), aEnfant.getSexe().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getSexe());
 				addZone(getNOM_ST_DATE_NAISS(indiceEnfant), aEnfant.getDateNaissance());
 				addZone(getNOM_ST_LIEU_NAISS(indiceEnfant), nomCommune == null ? "&nbsp;" : nomCommune);
 

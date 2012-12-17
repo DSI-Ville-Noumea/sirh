@@ -80,8 +80,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 				addZone(getNOM_ST_GRADE(i),
 						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade().trim();
-				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade().trim();
+				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
+				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
@@ -98,7 +98,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_LB_AVIS_CAP_SELECT(i),
 						av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP().indexOf(
 								getHashAvisCAP().get(av.getIdAvisCAP()))));
-				addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite() == null ? Const.CHAINE_VIDE : av.getOrdreMerite().trim());
+				addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : av.getOrdreMerite());
 				// motif Avct
 				MotifAvancement motif = null;
 				if (av.getIdMotifAvct() != null) {

@@ -334,15 +334,16 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 					nbDoc = listeDocAgent.size();
 				}
 				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null ? "&nbsp;" : vm.getDateDerniereVisite());
-				addZone(getNOM_ST_DUREE(indiceVisite), vm == null || vm.getDureeValidite().trim().equals(Const.CHAINE_VIDE)
-						|| vm.getDureeValidite().trim().equals(Const.ZERO) ? "&nbsp;" : vm.getDureeValidite().trim());
+				addZone(getNOM_ST_DUREE(indiceVisite),
+						vm == null || vm.getDureeValidite().equals(Const.CHAINE_VIDE) || vm.getDureeValidite().equals(Const.ZERO) ? "&nbsp;" : vm
+								.getDureeValidite());
 				addZone(getNOM_ST_NOM_MEDECIN(indiceVisite),
-						m == null || m.getNomMedecin().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " " + m.getPrenomMedecin()
-								+ " " + m.getNomMedecin().trim());
-				addZone(getNOM_ST_MOTIF(indiceVisite), motif == null || motif.getLibMotifVM().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
-						.getLibMotifVM().trim());
+						m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " " + m.getPrenomMedecin() + " "
+								+ m.getNomMedecin());
+				addZone(getNOM_ST_MOTIF(indiceVisite),
+						motif == null || motif.getLibMotifVM().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif.getLibMotifVM());
 				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte" : "Inapte");
-				addZone(getNOM_ST_RECOMMANDATION(indiceVisite), r == null || r.getDescRecommandation().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+				addZone(getNOM_ST_RECOMMANDATION(indiceVisite), r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: r.getDescRecommandation());
 				addZone(getNOM_ST_NB_DOC(indiceVisite), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
@@ -366,8 +367,8 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				Inaptitude inapt = (Inaptitude) getListeInaptitude().get(i);
 				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(inapt.getIdTypeInaptitude());
 
-				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude), ti.getDescTypeInaptitude().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti
-						.getDescTypeInaptitude().trim());
+				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude), ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti
+						.getDescTypeInaptitude());
 				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), inapt.getDateDebutInaptitude());
 				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee() : Const.ZERO);
 				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois() : Const.ZERO);
@@ -2572,13 +2573,11 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						.trim());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td
-						.getLibTypeDocument().trim());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
+						);
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						.trim());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
 			}

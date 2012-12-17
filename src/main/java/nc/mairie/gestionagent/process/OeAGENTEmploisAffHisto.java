@@ -55,13 +55,11 @@ public class OeAGENTEmploisAffHisto extends nc.mairie.technique.BasicProcess {
 				Service service = Service.chercherService(getTransaction(), ah.getCodeService());
 
 				addZone(getNOM_ST_MATR(indiceHistoAff), ah.getNoMatr());
-				addZone(getNOM_ST_SERV(indiceHistoAff), service.getLibService().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : service.getLibService()
-						.trim());
-				addZone(getNOM_ST_REF_ARR(indiceHistoAff), ah.getRefArrete().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getRefArrete().trim());
+				addZone(getNOM_ST_SERV(indiceHistoAff), service.getLibService().equals(Const.CHAINE_VIDE) ? "&nbsp;" : service.getLibService());
+				addZone(getNOM_ST_REF_ARR(indiceHistoAff), ah.getRefArrete().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getRefArrete());
 				addZone(getNOM_ST_DATE_DEBUT(indiceHistoAff), ah.getDateDebut());
 				addZone(getNOM_ST_DATE_FIN(indiceHistoAff), ah.getDateFin() == null ? "&nbsp;" : ah.getDateFin());
-				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff), ah.getCodeEcole().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getCodeEcole()
-						.trim());
+				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff), ah.getCodeEcole().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getCodeEcole());
 
 				indiceHistoAff++;
 			}

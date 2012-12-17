@@ -17,6 +17,8 @@ import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
@@ -315,10 +317,21 @@ public class OeAVCTSimulationConvCol extends nc.mairie.technique.BasicProcess {
 						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade().trim());
-							if (grd.getCodeFiliere() != null && grd.getCodeFiliere().length() != 0) {
-								FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), grd.getCodeFiliere());
-								avct.setFiliere(fil.getLibFiliere());
+							avct.setLibelleGrade(grd.getLibGrade());
+							if (grd.getCodeGradeGenerique() != null) {
+								// on cherche le grade generique pour trouver la
+								// filiere
+								GradeGenerique ggCarr = GradeGenerique.chercherGradeGenerique(getTransaction(), grd.getCodeGradeGenerique());
+								if (getTransaction().isErreur())
+									getTransaction().traiterErreur();
+
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
+									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
+									if (getTransaction().isErreur())
+										getTransaction().traiterErreur();
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+									avct.setFiliere(fil.getLibFiliere());
+								}
 							}
 						}
 					}

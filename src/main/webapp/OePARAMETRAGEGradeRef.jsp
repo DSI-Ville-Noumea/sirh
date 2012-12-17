@@ -166,8 +166,7 @@
 			
 		    	<legend class="sigp2Legend">Grades génériques</legend>
 				<span style="position:relative;width:44px;">Code</span>
-				<span style="position:relative;width:40px;">Filière</span>
-				<span style="position:relative;width:40px;">Catégorie</span>
+				<span style="position:relative;width:40px;">Cat</span>
 				<span style="position:relative;width:40px;">Inactif</span>
 				<span style="position:relative;width:73px;">Libellé</span>
 				
@@ -196,19 +195,18 @@
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
 					
 					<br />
-				
-					<label class="sigp2Mandatory" Style="width:100px">Filière:</label>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-					</SELECT>
+					
+					<label class="sigp2Mandatory" Style="width:100px">Catégorie:</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
+					</SELECT>				
 					<br />
 					<br />
 					
-					<label class="sigp2Mandatory" Style="width:100px">Catégorie:</label>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_CADRE(), process.getVAL_LB_CADRE_SELECT()) %>
+					<label class="sigp2" Style="width:100px">Cadre emploi:</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE_EMPLOI() %>">
+							<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI(), process.getVAL_LB_CADRE_EMPLOI_SELECT()) %>
 					</SELECT>				
-					<br />
 					<br />
 	
 					<LABEL class="sigp2Mandatory" Style="width:100px">Inactif:</label>					
