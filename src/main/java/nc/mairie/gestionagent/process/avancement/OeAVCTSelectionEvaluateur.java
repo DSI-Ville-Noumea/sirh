@@ -19,8 +19,10 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	private ArrayList<AgentNW> listeEvaluateurs;
 	private ArrayList<AgentNW> listeEvaluateursExistant;
 	private ArrayList<AgentNW> listeEvaluateursPossible;
+	private ArrayList<AgentNW> listeDepart = new ArrayList<AgentNW>();
 
 	public String focus = null;
+	private boolean first = true;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -31,19 +33,25 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// on recupere les evaluateurs deja present
-		recupereEvaluateur(request);
+		ArrayList<AgentNW> listDep= new ArrayList<AgentNW>();
+		if (isFirst()) {
+			listDep = (ArrayList) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
+			VariablesActivite.enlever(this, "LISTEEVALUATEUR");
+			setListeDepart(listDep);
+			setFirst(false);
+		}
+		recupereEvaluateur(request,listDep);
 		afficheListe(request);
 		addZone(getNOM_RG_RECHERCHE(), getNOM_RB_RECH_NOM());
 
 	}
 
-	private void recupereEvaluateur(HttpServletRequest request) {
+	private void recupereEvaluateur(HttpServletRequest request, ArrayList<AgentNW> listDep) {
 		if (getListeEvaluateursExistant().size() == 0) {
-			ArrayList evalExistant = (ArrayList) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
 
 			// Affectation de la liste
-			setListeEvaluateursExistant(evalExistant);
-			setListeEvaluateurs(evalExistant);
+			setListeEvaluateursExistant(listDep);
+			setListeEvaluateurs(listDep);
 		}
 	}
 
@@ -83,6 +91,8 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
+		VariablesActivite.ajouter(this, "EVALUATEURS", getListeDepart());
+		setListeDepart(null);
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
 	}
@@ -492,6 +502,22 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 
 	public String getFocus() {
 		return focus;
+	}
+
+	public ArrayList<AgentNW> getListeDepart() {
+		return listeDepart ;
+	}
+
+	public void setListeDepart(ArrayList<AgentNW> listeDepart) {
+		this.listeDepart = listeDepart;
+	}
+
+	public boolean isFirst() {
+		return first;
+	}
+
+	public void setFirst(boolean first) {
+		this.first = first;
 	}
 
 }

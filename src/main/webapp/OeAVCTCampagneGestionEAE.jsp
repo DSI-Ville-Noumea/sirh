@@ -157,7 +157,7 @@ function reduireHierarchy() {
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eae.getEtat().equals(EnumEtatEAE.CREE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode())&& !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
