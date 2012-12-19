@@ -139,9 +139,9 @@ function reduireHierarchy() {
 						<th width="48px;">Evaluateur(s)</th>
 						<th>Délégataire</th>
 						<th>CAP</th>
-						<th>Avis SHD</th>
+						<th>Avis Evaluateur</th>
 						<th>EAE joint</th>
-						<th>Crée le <br> Finalisé le <br> Contrôlé le</th>
+						<th>Etat <br> Crée le <br> Finalisé le <br> Contrôlé le</th>
 						<th>Actions</th>
 						<th>Contrôlé par</th>
 						<th>Supp EAE</th>

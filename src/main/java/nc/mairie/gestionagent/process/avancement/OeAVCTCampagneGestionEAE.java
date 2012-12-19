@@ -663,10 +663,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_CAP(i), eae.isCap() ? "oui" : "&nbsp;");
 			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvis_shd() == null ? "&nbsp;" : evaluation.getAvis_shd());
 			addZone(getNOM_ST_EAE_JOINT(i), eae.isDocumentAttache() ? "oui" : "non");
-			addZone(getNOM_ST_CONTROLE(i),
-					(eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
-							+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
-							+ (eae.getDateControle() == null ? "&nbsp;" : sdf.format(eae.getDateControle())));
+			addZone(getNOM_ST_CONTROLE(i), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()) + " <br> "
+					+ (eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
+					+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
+					+ (eae.getDateControle() == null ? "&nbsp;" : sdf.format(eae.getDateControle())));
 			addZone(getNOM_ST_ACTIONS(i), "&nbsp;");
 			addZone(getNOM_CK_VALID_EAE(i), eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_CONTROLE_PAR(i), eae.getUserControle() == null ? "&nbsp;" : eae.getUserControle());
