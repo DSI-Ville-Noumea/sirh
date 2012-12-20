@@ -196,7 +196,7 @@
 					
 					<br />
 					
-					<label class="sigp2Mandatory" Style="width:100px">Catégorie:</label>
+					<label class="sigp2" Style="width:100px">Catégorie:</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
 					</SELECT>				
