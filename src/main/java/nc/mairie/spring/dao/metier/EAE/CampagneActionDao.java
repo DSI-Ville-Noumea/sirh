@@ -90,7 +90,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_CAMPAGNE_ACTION + "," + CHAMP_NOM_ACTION + "," + CHAMP_MESSAGE + ","
 				+ CHAMP_DATE_TRANSMISSION + "," + CHAMP_DATE_A_FAIRE_LE + "," + CHAMP_DATE_FAIT_LE + "," + CHAMP_COMMENTAIRE + ","
-				+ CHAMP_ID_AGENT_REALISATION + "," + CHAMP_ID_CAMPAGNE_EAE + ") VALUES (?,?, ?, ?, ?,?, ?, ?, ?,?)";
+				+ CHAMP_ID_AGENT_REALISATION + "," + CHAMP_ID_CAMPAGNE_EAE + ") VALUES (?,?, ?, ?, ?,?, ?, ?, ?)";
 
 		jdbcTemplate.update(sql,
 				new Object[] { id, nomAction, message, transmettreLe, pourLe, faitLe, commentaire, idAgentRealisation, idCampagneEAE });
