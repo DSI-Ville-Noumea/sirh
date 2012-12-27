@@ -5180,6 +5180,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
 			TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
 			Affectation affResponsable = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdResponsable());
+			if(getTransaction().isErreur())
+				getTransaction().traiterErreur();
 			if (affResponsable != null && affResponsable.getIdAgent() != null) {
 				AgentNW agentResponsable = AgentNW.chercherAgent(getTransaction(), affResponsable.getIdAgent());
 				respMatr = agentResponsable.getNoMatricule();
@@ -5203,6 +5205,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
 			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(), fpRemplacement.getIdTitrePoste());
 			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdRemplacement());
+			if(getTransaction().isErreur())
+				getTransaction().traiterErreur();
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
 				rempMatr = agentRemplacement.getNoMatricule();
