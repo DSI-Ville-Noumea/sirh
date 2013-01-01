@@ -90,7 +90,12 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 		if (getLB_ANNEE() == LBVide) {
 			String anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[1]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
+
+			// TODO
+			// changement de l'année pour faire au mieux.
+			// getListeAnnee()[0] =
+			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
 			setLB_ANNEE(getListeAnnee());
 		}
 	}
@@ -478,7 +483,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 								if (getTransaction().isErreur())
 									getTransaction().traiterErreur();
 
-								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null) {
 									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
 									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
 									avct.setFiliere(fil.getLibFiliere());

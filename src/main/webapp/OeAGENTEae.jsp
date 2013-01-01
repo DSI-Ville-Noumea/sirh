@@ -129,6 +129,7 @@
 								<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_ENTRETIEN()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:200px;">Evaluateur(s) : </span>
+								<%if(process.getListeEvaluateurEae().size()>0){ %>
 								<span style="position:relative;width:150px;text-align: left;">Agent</span>
 								<span style="position:relative;text-align: center;">Fonction</span>
 								<br/>
@@ -147,7 +148,8 @@
 											indiceEvaluateur++;
 									}%>
 									</table>	
-								</div>					
+								</div>	
+								<%} %>				
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Direction / Service : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_SERVICE()%></span>
@@ -165,13 +167,13 @@
 							<% }else {%>
 								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Commentaire de l'évaluateur : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'évaluateur : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_EVALUATEUR()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Niveau : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Niveau : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_NIVEAU()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Note de l'année : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Note de l'année : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_NOTE()%></span>
 								<BR/><BR/>
 							</div>

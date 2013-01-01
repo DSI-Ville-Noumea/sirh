@@ -441,12 +441,20 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 		// Alim zone evaluation
 		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
-		if (evaluation.getIdCommEvaluateur() != null) {
-			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommEvaluateur());
-			addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? "non renseigné" : commEvaluateur.getCommentaire());
+		if (evaluation == null) {
+			addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), "non renseigné");
+			addZone(getNOM_ST_NIVEAU(), "non renseigné");
+			addZone(getNOM_ST_NOTE(), "non renseigné");
+		} else {
+			if (evaluation.getIdCommEvaluateur() != null) {
+				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommEvaluateur());
+				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? "non renseigné" : commEvaluateur.getCommentaire());
+			} else {
+				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), "non renseigné");
+			}
+			addZone(getNOM_ST_NIVEAU(), evaluation.getNiveau() == null ? "non renseigné" : evaluation.getNiveau());
+			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
 		}
-		addZone(getNOM_ST_NIVEAU(), evaluation == null || evaluation.getNiveau() == null ? "non renseigné" : evaluation.getNiveau());
-		addZone(getNOM_ST_NOTE(), evaluation == null || evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
 
 	}
 
