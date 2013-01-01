@@ -15,7 +15,7 @@ public class EaeEvaluationResultSetExtractor implements ResultSetExtractor {
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setIdEaeEvaluation(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE_EVALUATION));
 		eval.setIdEae(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE));
-		eval.setIdNiveau(rs.getInt(EaeEvaluationDao.CHAMP_ID_NIVEAU));
+		eval.setNiveau(rs.getString(EaeEvaluationDao.CHAMP_NIVEAU));
 		eval.setNoteAnnee(rs.getDouble(EaeEvaluationDao.CHAMP_NOTE_ANNEE));
 		eval.setNoteAnneeN1(rs.getDouble(EaeEvaluationDao.CHAMP_NOTE_ANNEE_N1));
 		eval.setNoteAnneeN2(rs.getDouble(EaeEvaluationDao.CHAMP_NOTE_ANNEE_N2));
@@ -24,6 +24,10 @@ public class EaeEvaluationResultSetExtractor implements ResultSetExtractor {
 		eval.setPropositionAvancement(rs.getString(EaeEvaluationDao.CHAMP_PROPOSITION_AVANCEMENT));
 		eval.setAvisChangementClasse(rs.getInt(EaeEvaluationDao.CHAMP_AVIS_CHANGEMENT_CLASSE));
 		eval.setAvis_shd(rs.getString(EaeEvaluationDao.CHAMP_AVIS_SHD));
+		eval.setIdCommEvaluateur(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE_COM_EVALUATEUR));
+		eval.setIdCommEvalue(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE_COM_EVALUE));
+		eval.setIdCommAvctEvaluateur(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE_COM_AVCT_EVALUATEUR));
+		eval.setIdCommAvctEvalue(rs.getInt(EaeEvaluationDao.CHAMP_ID_EAE_COM_AVCT_EVALUE));
 
 		return eval;
 	}

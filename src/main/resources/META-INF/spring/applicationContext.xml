@@ -107,5 +107,8 @@
 	<bean id="eaeDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeDocumentDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
+	<bean id="eaeCommentaireDao" class="nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
 
 </beans>

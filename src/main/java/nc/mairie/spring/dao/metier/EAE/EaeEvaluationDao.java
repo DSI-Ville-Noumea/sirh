@@ -15,7 +15,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	public static final String CHAMP_ID_EAE_EVALUATION = "ID_EAE_EVALUATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
-	public static final String CHAMP_ID_NIVEAU = "ID_EAE_NIVEAU";
+	public static final String CHAMP_NIVEAU = "NIVEAU";
 	public static final String CHAMP_NOTE_ANNEE = "NOTE_ANNEE";
 	public static final String CHAMP_NOTE_ANNEE_N1 = "NOTE_ANNEE_N1";
 	public static final String CHAMP_NOTE_ANNEE_N2 = "NOTE_ANNEE_N2";
@@ -24,6 +24,10 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 	public static final String CHAMP_PROPOSITION_AVANCEMENT = "PROPOSITION_AVANCEMENT";
 	public static final String CHAMP_AVIS_CHANGEMENT_CLASSE = "AVIS_CHANGEMENT_CLASSE";
 	public static final String CHAMP_AVIS_SHD = "AVIS_SHD";
+	public static final String CHAMP_ID_EAE_COM_EVALUATEUR = "ID_EAE_COM_EVALUATEUR";
+	public static final String CHAMP_ID_EAE_COM_EVALUE = "ID_EAE_COM_EVALUE";
+	public static final String CHAMP_ID_EAE_COM_AVCT_EVALUATEUR = "ID_EAE_COM_AVCT_EVALUATEUR";
+	public static final String CHAMP_ID_EAE_COM_AVCT_EVALUE = "ID_EAE_COM_AVCT_EVALUE";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -40,7 +44,12 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 	@Override
 	public EaeEvaluation chercherEaeEvaluation(Integer idEAE) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
-		EaeEvaluation eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvaluationRowMapper());
+		EaeEvaluation eval = null;
+		try {
+			eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvaluationRowMapper());
+
+		} catch (Exception e) {
+		}
 		return eval;
 	}
 
