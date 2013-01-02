@@ -129,6 +129,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private CampagneEAEDao campagneEAEDao;
 	private EaeFDPCompetenceDao eaeFDPCompetenceDao;
 
+	private String message;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -182,6 +184,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 		// initialisation de l'affichage la liste des eae
 		initialiseAffichageListeEAE(request);
+
+		if (getMessage() != null && !getMessage().equals(Const.CHAINE_VIDE)) {
+			setStatut(STATUT_MEME_PROCESS, false, getMessage());
+		}
 
 	}
 
@@ -667,7 +673,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					+ (eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
 					+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
 					+ (eae.getDateControle() == null ? "&nbsp;" : sdf.format(eae.getDateControle())));
-			addZone(getNOM_ST_ACTIONS(i), "&nbsp;");
+			addZone(getNOM_ST_ACTIONS_DEFINALISE(i), "&nbsp;");
+			addZone(getNOM_ST_ACTIONS_MAJ(i), "&nbsp;");
+			addZone(getNOM_CK_VALID_MAJ(i), getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_EAE(i), eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_CONTROLE_PAR(i), eae.getUserControle() == null ? "&nbsp;" : eae.getUserControle());
 
@@ -860,10 +868,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_METRE_A_JOUR_EAE
-			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_METTRE_A_JOUR_EAE(i))) {
-					return performPB_METTRE_A_JOUR_EAE(request, i);
-				}
+			if (testerParametre(request, getNOM_PB_METTRE_A_JOUR_EAE())) {
+				return performPB_METTRE_A_JOUR_EAE(request);
 			}
 
 			// Si clic sur le bouton PB_DEFINALISE_EAE
@@ -948,6 +954,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_GERER_EVALUATEUR(HttpServletRequest request, int elementEae) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		ArrayList listeEval = new ArrayList();
 
 		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
@@ -983,6 +990,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
@@ -1061,6 +1069,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CALCULER(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		if (getListeCampagneEAE() != null && getListeCampagneEAE().size() > 0) {
 			int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
@@ -1071,7 +1080,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 
 			// "INF202","Calcul effectué."
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF202"));
+			setMessage(MessageUtils.getMessage("INF202"));
 			return true;
 		} else {
 			// TODO declarer erreur
@@ -1340,21 +1349,39 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIONS Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIONS_DEFINALISE
+	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_ST_ACTIONS(int i) {
-		return "NOM_ST_ACTIONS_" + i;
+	public String getNOM_ST_ACTIONS_DEFINALISE(int i) {
+		return "NOM_ST_ACTIONS_DEFINALISE_" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTIONS Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_ACTIONS_DEFINALISE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getVAL_ST_ACTIONS(int i) {
-		return getZone(getNOM_ST_ACTIONS(i));
+	public String getVAL_ST_ACTIONS_DEFINALISE(int i) {
+		return getZone(getNOM_ST_ACTIONS_DEFINALISE(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIONS_MAJ Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_ACTIONS_MAJ(int i) {
+		return "NOM_ST_ACTIONS_MAJ_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTIONS_MAJ
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_ACTIONS_MAJ(int i) {
+		return getZone(getNOM_ST_ACTIONS_MAJ(i));
 	}
 
 	/**
@@ -1428,6 +1455,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request, int elem) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
@@ -1466,6 +1494,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request, int elemSupp) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		// On enlève l'agent selectionnée
 		EAE eaeSelection = getListeEAE().get(elemSupp);
 		eaeSelection.setIdDelegataire(null);
@@ -2502,6 +2531,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		// On enlève le service selectionnée
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
@@ -2758,6 +2788,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALID_EAE(HttpServletRequest request, int elementEae) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
 		setEaeCourant(eaeCourant);
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
@@ -2777,24 +2808,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_METTRE_A_JOUR_EAE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_PB_METTRE_A_JOUR_EAE(int i) {
-		return "NOM_PB_METTRE_A_JOUR_EAE" + i;
-	}
-
-	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_METTRE_A_JOUR_EAE(HttpServletRequest request, int elementEae) throws Exception {
-		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
-		setEaeCourant(eaeCourant);
+	public boolean perform_METTRE_A_JOUR_EAE(HttpServletRequest request, EAE eaeChoisi) throws Exception {
+		setEaeCourant(eaeChoisi);
 
 		// on met à jour les tables utiles
 		// RG-EAE-41
@@ -2856,9 +2877,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 		}
-
-		// pour reinitiliser l'affichage du tableau.
-		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -2879,6 +2897,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_DEFINALISE_EAE(HttpServletRequest request, int elementEae) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
 		setEaeCourant(eaeCourant);
 
@@ -2915,6 +2934,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -2953,6 +2973,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_DESUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -3001,6 +3022,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
@@ -3028,6 +3050,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		// On enlève l'agent selectionnée
 		addZone(getNOM_ST_AGENT_EVALUATEUR(), Const.CHAINE_VIDE);
 		return true;
@@ -3068,6 +3091,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
@@ -3095,8 +3119,75 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUE(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
 		// On enlève l'agent selectionnée
 		addZone(getNOM_ST_AGENT_EVALUE(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_VALID_MAJ Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_VALID_MAJ(int i) {
+		return "NOM_CK_VALID_MAJ_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_VALID_MAJ Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_VALID_MAJ(int i) {
+		return getZone(getNOM_CK_VALID_MAJ(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_METTRE_A_JOUR_EAE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_PB_METTRE_A_JOUR_EAE() {
+		return "NOM_PB_METTRE_A_JOUR_EAE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public boolean performPB_METTRE_A_JOUR_EAE(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
+		// on recupere les lignes qui sont cochées pour mettre à jour
+		int nbEae = 0;
+		for (int i = 0; i < getListeEAE().size(); i++) {
+			// on recupère la ligne concernée
+			EAE eae = (EAE) getListeEAE().get(i);
+			// si la colonne mettre à jour est cochée
+			if (getVAL_CK_VALID_MAJ(i).equals(getCHECKED_ON())) {
+				setEaeCourant(eae);
+				perform_METTRE_A_JOUR_EAE(request, eae);
+				nbEae++;
+			}
+
+		}
+
+		// pour reinitiliser l'affichage du tableau.
+		performPB_FILTRER(request);
+
+		// "INF203", "@ EAE(s) ont été mis à jour.");
+		setMessage(MessageUtils.getMessage("INF203", String.valueOf(nbEae)));
+		return true;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

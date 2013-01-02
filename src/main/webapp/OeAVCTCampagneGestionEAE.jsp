@@ -19,6 +19,7 @@
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
+<script type="text/javascript" src="js/eae.js"></script>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -123,7 +124,9 @@ function reduireHierarchy() {
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
           	<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">			
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">		
+			<BR/><BR/>
+			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton calcul ne re-calcul que les EAEs non-affectés.</span>	
 		</FIELDSET>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -142,7 +145,10 @@ function reduireHierarchy() {
 						<th>Avis Evaluateur</th>
 						<th>EAE joint</th>
 						<th>Etat <br> Crée le <br> Finalisé le <br> Contrôlé le</th>
-						<th>Actions</th>
+						<th>Dé-finaliser EAE</th>
+						<th>Mettre à jour EAE
+								<INPUT type="checkbox" name="CHECK_ALL_MAJ" onClick='activeMAJ("<%=process.getListeEAE().size() %>")'>
+						</th>
 						<th>Contrôlé par</th>
 						<th>Supp EAE</th>
 					</tr>
@@ -174,12 +180,14 @@ function reduireHierarchy() {
 							<td><%=process.getVAL_ST_AVIS_SHD(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_EAE_JOINT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_CONTROLE(indiceAvct)%></td>
-							<td><%=process.getVAL_ST_ACTIONS(indiceAvct)%>
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && eae!=null && (eae.getEtat().equals(EnumEtatEAE.CREE.getCode())|| eae.getEtat().equals(EnumEtatEAE.EN_COURS.getCode()))){ %>
-								<INPUT title="mettre à jour EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE(indiceAvct)%>">
-							<%} %>
+							<td><%=process.getVAL_ST_ACTIONS_DEFINALISE(indiceAvct)%>
 							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
 							<INPUT title="dé-finalisé EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DEFINALISE_EAE(indiceAvct)%>">
+							<%} %>
+							</td>
+							<td><%=process.getVAL_ST_ACTIONS_MAJ(indiceAvct)%>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && eae!=null && !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+								<INPUT type="checkbox" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_MAJ(indiceAvct),process.getVAL_CK_VALID_MAJ(indiceAvct))%>>
 							<%} %>
 							</td>
 							<td><%=process.getVAL_ST_CONTROLE_PAR(indiceAvct)%>
@@ -204,7 +212,7 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,
@@ -216,6 +224,9 @@ function reduireHierarchy() {
 				} );
 			</script>
 			<BR/>
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE()%>">	
+			<BR/><BR/>
+			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton "mettre à jour" met à jour les informations de l'évalué, de sa fiche de poste, de ses diplomes, de ses parcours pro. et de ses formations.</span>	
 		</FIELDSET>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		
