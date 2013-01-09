@@ -64,6 +64,8 @@
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
+	
+	
 	<!-- DAO SIRH ORACLE -->
 	<bean id="campagneEAEDao" class="nc.mairie.spring.dao.metier.EAE.CampagneEAEDao">
 		<property name="dataSource" ref="dataSourceOracle" />
@@ -108,6 +110,9 @@
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
 	<bean id="eaeCommentaireDao" class="nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeFinalisationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
 

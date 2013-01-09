@@ -15,6 +15,7 @@ import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
@@ -49,6 +50,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFDPActiviteDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFDPCompetenceDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
+import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
@@ -128,8 +130,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private EaeEvaluateurDao eaeEvaluateurDao;
 	private CampagneEAEDao campagneEAEDao;
 	private EaeFDPCompetenceDao eaeFDPCompetenceDao;
+	private EaeFinalisationDao eaeFinalisationDao;
 
 	private String message;
+	private String urlFichier;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -732,6 +736,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
 		}
 
+		if (getEaeFinalisationDao() == null) {
+			setEaeFinalisationDao((EaeFinalisationDao) context.getBean("eaeFinalisationDao"));
+		}
+
 		// AS400
 		if (getFormationAgentDao() == null) {
 			setFormationAgentDao((FormationAgentDao) context.getBean("formationAgentDao"));
@@ -911,6 +919,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_EVALUE(request);
+			}
+
+			// Si clic sur le bouton PB_CONSULTER_DOC
+			for (int i = 0; i < getListeEAE().size(); i++) {
+				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(i))) {
+					return performPB_CONSULTER_DOC(request, i);
+				}
 			}
 
 		}
@@ -3189,5 +3204,67 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION_DOC Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_DOC(int i) {
+		return "NOM_PB_CONSULTER_DOC" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("URL_SHAREPOINT_GED");
+		logger.info("Rep stock : " + repertoireStockage);
+
+		// Récup de l'EAE courant
+		EAE eae = (EAE) getListeEAE().get(indiceEltAConsulter);
+		String finalisation = getEaeFinalisationDao().chercherDernierDocumentFinalise(eae.getIdEAE());
+		// on affiche le document
+		logger.info("Script : " + getScriptOuverture(repertoireStockage + finalisation));
+		setURLFichier(getScriptOuverture(repertoireStockage + finalisation));
+
+		return true;
+	}
+
+	public EaeFinalisationDao getEaeFinalisationDao() {
+		return eaeFinalisationDao;
+	}
+
+	public void setEaeFinalisationDao(EaeFinalisationDao eaeFinalisationDao) {
+		this.eaeFinalisationDao = eaeFinalisationDao;
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
 	}
 }
