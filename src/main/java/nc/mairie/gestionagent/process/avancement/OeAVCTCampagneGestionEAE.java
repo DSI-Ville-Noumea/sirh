@@ -446,7 +446,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// pour le CAP
 				// on cherche si il y a une ligne dans les avancements
 				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(), a.getIdAgent());
+				Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(), a.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				if (avct != null && avct.getIdAvct() != null) {
@@ -2890,6 +2890,27 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		// on met les données dans EAE-Formation
 		// logger.info("Req Oracle : Insert table EAE-Formation");
 		performCreerFormation(request, ag);
+		
+		//on met à jour le champ CAP
+		// on cherche si il y a une ligne dans les avancements
+		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
+		Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
+		if (getTransaction().isErreur())
+			getTransaction().traiterErreur();
+		EAE eae = getEaeCourant();
+		if (avct != null && avct.getIdAvct() != null) {
+			// on a trouvé une ligne dans avancement
+			// on regarde l'etat de la ligne
+			// si 'valid DRH' alors on met CAP à true;
+			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
+				eae.setCap(true);
+			} else {
+				eae.setCap(false);
+			}
+		} else {
+			eae.setCap(false);
+		}
+		getEaeDao().modifierCAP(getEaeCourant().getIdEAE(), eae.isCap());
 
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
