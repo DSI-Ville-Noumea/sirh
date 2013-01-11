@@ -124,9 +124,10 @@ function reduireHierarchy() {
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
           	<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Calculer" name="<%=process.getNOM_PB_CALCULER()%>">		
+			<INPUT type="submit" class="sigp2-Bouton-150" value="Générer les EAEs" name="<%=process.getNOM_PB_CALCULER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE()%>">	
 			<BR/><BR/>
-			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton calcul ne re-calcul que les EAEs non-affectés.</span>	
+			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton "mettre à jour" met à jour les informations de l'évalué (ainsi que sa CAP), de sa fiche de poste, de ses diplomes, de ses parcours pro. et de ses formations.</span>	
 		</FIELDSET>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -229,10 +230,7 @@ function reduireHierarchy() {
 				    });
 				} );
 			</script>
-			<BR/>
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE()%>">	
-			<BR/><BR/>
-			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton "mettre à jour" met à jour les informations de l'évalué, de sa fiche de poste, de ses diplomes, de ses parcours pro. et de ses formations.</span>	
+			<BR/>	
 		</FIELDSET>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		
