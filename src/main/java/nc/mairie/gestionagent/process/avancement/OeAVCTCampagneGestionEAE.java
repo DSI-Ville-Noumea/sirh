@@ -357,9 +357,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 		logger.info("Entree dans le calcul");
 
+		//ON ENELEVE CETTE PARTIE CAR SI L'EAE a été saisi dans le KIOSQUE ALORS ON A DES GROS SOUCIS EN BASE :cf JIRA SIRH-232
 		// Suppression des eae à l'état 'Non Affecté' de la campagne donnée
 		// et des evaluateurs associés
-		ArrayList<EAE> listeEaeNonAffASupprimer = getEaeDao().listerEAETravailPourCampagne(EnumEtatEAE.NON_AFFECTE.getCode(), idCampagneEAE);
+		/*ArrayList<EAE> listeEaeNonAffASupprimer = getEaeDao().listerEAETravailPourCampagne(EnumEtatEAE.NON_AFFECTE.getCode(), idCampagneEAE);
 		for (int i = 0; i < listeEaeNonAffASupprimer.size(); i++) {
 			EAE eaeASupp = listeEaeNonAffASupprimer.get(i);
 			ArrayList<EaeEvaluateur> listeEvalEae = getEaeEvaluateurDao().listerEvaluateurEAE(eaeASupp.getIdEAE());
@@ -410,6 +411,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			getEaeDao().supprimerEAE(eaeASupp.getIdEAE());
 		}
 		logger.info("fin des suppressions");
+		*/
 
 		// Calcul des personnes soumises à l'EAE
 		// on cherche toutes les personnes en affectation sur une FDP sur
