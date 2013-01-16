@@ -10,6 +10,7 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.poste.Horaire;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao;
@@ -539,8 +540,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_VAE(), evolution.isVae() ? "oui" : "non");
 			addZone(getNOM_ST_NOM_VAE(), evolution.getNomVae() == null ? "non renseigné" : evolution.getNomVae());
 			addZone(getNOM_ST_TPS_PARTIEL(), evolution.isTempsPartiel() ? "oui" : "non");
-			addZone(getNOM_ST_POURC_TPS_PARTIEL(), evolution.getPourcTempsPartiel() == null ? "non renseigné" : evolution.getPourcTempsPartiel()
-					.toString());
+			Horaire tempsPart = Horaire.chercherHoraire(getTransaction(), evolution.getIdSpbhorTpsPartiel().toString());
+			Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
+			addZone(getNOM_ST_POURC_TPS_PARTIEL(), tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
+					+ " - " + String.valueOf(taux.intValue()) + "%");
 			addZone(getNOM_ST_RETRAITE(), evolution.isRetraite() ? "oui" : "non");
 			addZone(getNOM_ST_DATE_RETRAITE(), evolution.getDateRetraite() == null ? "non renseigné" : evolution.getDateRetraite().toString());
 			addZone(getNOM_ST_AUTRE_PERSP(), evolution.isAutrePerspective() ? "oui" : "non");
@@ -1379,8 +1382,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_COM_EVOLUTION Date de
-	 * création : (10/08/11 09:33:52)
+	 * Retourne pour la JSP le nom de la zone statique : ST_COM_EVOLUTION Date
+	 * de création : (10/08/11 09:33:52)
 	 * 
 	 */
 	public String getNOM_ST_COM_EVOLUTION() {
@@ -1388,8 +1391,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COM_EVOLUTION Date
-	 * de création : (10/08/11 09:33:52)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COM_EVOLUTION
+	 * Date de création : (10/08/11 09:33:52)
 	 * 
 	 */
 	public String getVAL_ST_COM_EVOLUTION() {

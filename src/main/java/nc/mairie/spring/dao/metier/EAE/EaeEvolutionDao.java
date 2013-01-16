@@ -33,7 +33,7 @@ public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 	public static final String CHAMP_VAE = "VAE";
 	public static final String CHAMP_NOM_VAE = "NOM_VAE";
 	public static final String CHAMP_TEMPS_PARTIEL = "TEMPS_PARTIEL";
-	public static final String CHAMP_POURC_TEMPS_PARTIEL = "POURC_TEMPS_PARTIEL";
+	public static final String CHAMP_TEMPS_PARTIEL_ID_SPBHOR = "TEMPS_PARTIEL_ID_SPBHOR";
 	public static final String CHAMP_RETRAITE = "RETRAITE";
 	public static final String CHAMP_DATE_RETRAITE = "DATE_RETRAITE";
 	public static final String CHAMP_AUTRE_PERSPECTIVE = "AUTRE_PERSPECTIVE";

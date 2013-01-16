@@ -29,7 +29,7 @@ public class EaeEvolutionResultSetExtractor implements ResultSetExtractor {
 		eaeEvolution.setVae(rs.getBoolean(EaeEvolutionDao.CHAMP_VAE));
 		eaeEvolution.setNomVae(rs.getString(EaeEvolutionDao.CHAMP_NOM_VAE));
 		eaeEvolution.setTempsPartiel(rs.getBoolean(EaeEvolutionDao.CHAMP_TEMPS_PARTIEL));
-		eaeEvolution.setPourcTempsPartiel(rs.getDouble(EaeEvolutionDao.CHAMP_POURC_TEMPS_PARTIEL));
+		eaeEvolution.setIdSpbhorTpsPartiel(rs.getInt(EaeEvolutionDao.CHAMP_TEMPS_PARTIEL_ID_SPBHOR));
 		eaeEvolution.setRetraite(rs.getBoolean(EaeEvolutionDao.CHAMP_RETRAITE));
 		eaeEvolution.setDateRetraite(rs.getDate(EaeEvolutionDao.CHAMP_DATE_RETRAITE));
 		eaeEvolution.setAutrePerspective(rs.getBoolean(EaeEvolutionDao.CHAMP_AUTRE_PERSPECTIVE));
