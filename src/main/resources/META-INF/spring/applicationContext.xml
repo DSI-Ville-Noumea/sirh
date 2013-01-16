@@ -115,5 +115,11 @@
 	<bean id="eaeFinalisationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
+	<bean id="eaePlanActionDao" class="nc.mairie.spring.dao.metier.EAE.EaePlanActionDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+	<bean id="eaeEvolutionDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
 
 </beans>

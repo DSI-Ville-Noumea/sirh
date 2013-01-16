@@ -110,7 +110,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setDateEntreeAdministration((Date) row.get(CHAMP_DATE_ENTREE_ADMINISTRATION));
 			evalue.setStatut((String) row.get(CHAMP_STATUT));
 			BigDecimal anciennete = (BigDecimal) row.get(CHAMP_ANCIENNETE_ECHELON_JOURS);
-			evalue.setAncienneteEchelonJours(anciennete.intValue());
+			evalue.setAncienneteEchelonJours(anciennete == null ? null : anciennete.intValue());
 			evalue.setCadre((String) row.get(CHAMP_CADRE));
 			evalue.setCategorie((String) row.get(CHAMP_CATEGORIE));
 			evalue.setClassification((String) row.get(CHAMP_CLASSIFICATION));
@@ -123,11 +123,11 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setPrecisionStatut((String) row.get(CHAMP_STATUT_PRECISION));
 			evalue.setTypeAvct((String) row.get(CHAMP_TYPE_AVCT));
 			BigDecimal min = (BigDecimal) row.get(CHAMP_AVCT_DUR_MIN);
-			evalue.setNbMoisDureeMin(min.intValue());
+			evalue.setNbMoisDureeMin(min == null ? null : min.intValue());
 			BigDecimal moy = (BigDecimal) row.get(CHAMP_AVCT_DUR_MOY);
-			evalue.setNbMoisDureeMoy(moy.intValue());
+			evalue.setNbMoisDureeMoy(moy == null ? null : moy.intValue());
 			BigDecimal max = (BigDecimal) row.get(CHAMP_AVCT_DUR_MAX);
-			evalue.setNbMoisDureeMax(max.intValue());
+			evalue.setNbMoisDureeMax(max == null ? null : max.intValue());
 
 			listeEaeEvalue.add(evalue);
 		}
