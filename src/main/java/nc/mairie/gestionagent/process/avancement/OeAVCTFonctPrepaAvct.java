@@ -381,7 +381,7 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 					try {
 						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()), campagne.getIdCampagneEAE());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
-							// si oui alors on flag CAP à true;
+							// si oui alors on flag CAP à false;
 							getEAEDao().modifierCAP(eaeAgentAnne.getIdEAE(), false);
 						}
 					} catch (Exception e) {
