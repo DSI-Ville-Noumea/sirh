@@ -37,7 +37,9 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		if (isFirst()) {
 			listDep = (ArrayList) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
 			VariablesActivite.enlever(this, "LISTEEVALUATEUR");
-			setListeDepart(listDep);
+			setListeDepart(null);
+			ArrayList<AgentNW> listeBis = (ArrayList<AgentNW>) listDep.clone();
+			setListeDepart(listeBis);
 			setFirst(false);
 		}
 		recupereEvaluateur(request,listDep);
@@ -505,7 +507,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	}
 
 	public ArrayList<AgentNW> getListeDepart() {
-		return listeDepart ;
+		return listeDepart ==null ? new ArrayList<AgentNW>() : listeDepart;
 	}
 
 	public void setListeDepart(ArrayList<AgentNW> listeDepart) {
