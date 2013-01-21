@@ -1,10 +1,10 @@
 <%@page import="java.net.InetAddress"%>
-sirh.version=${version}
-sirh.hostaddress=<%=InetAddress.getLocalHost().getHostAddress() %>
-sirh.canonicalhostname=<%=InetAddress.getLocalHost().getCanonicalHostName() %>
-sirh.hostname=<%=InetAddress.getLocalHost().getHostName() %>
-sirh.tomcat.version=<%= application.getServerInfo() %>
-sirh.tomcat.catalina_base=<%= System.getProperty("catalina.base") %>
+sirh.version=${version}<br/>
+sirh.hostaddress=<%=InetAddress.getLocalHost().getHostAddress() %><br/>
+sirh.canonicalhostname=<%=InetAddress.getLocalHost().getCanonicalHostName() %><br/>
+sirh.hostname=<%=InetAddress.getLocalHost().getHostName() %><br/>
+sirh.tomcat.version=<%= application.getServerInfo() %><br/>
+sirh.tomcat.catalina_base=<%= System.getProperty("catalina.base") %><br/>
 
 
 <% 
