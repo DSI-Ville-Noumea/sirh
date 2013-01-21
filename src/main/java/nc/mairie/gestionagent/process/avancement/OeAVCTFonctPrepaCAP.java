@@ -9,10 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.EAE.EAEDao;
+import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
+import nc.mairie.spring.domain.metier.EAE.EAE;
+import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -20,6 +28,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -38,6 +48,10 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private ArrayList listeAvisCAP;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
+
+	private EAEDao eaeDao;
+	private EaeEvaluationDao eaeEvaluationDao;
+	private CampagneEAEDao campagneEAEDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -62,6 +76,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
+		initialiseDao();
+
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
@@ -79,7 +95,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 				addZone(getNOM_ST_GRADE(i),
-						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
+						av.getGrade() + " <br> "
+								+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
 				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
 				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
@@ -88,6 +105,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
 						+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
 
+
 				addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
@@ -95,18 +113,69 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				String heure = av.getHeureVerifSEF() == null ? "&nbsp;" : av.getHeureVerifSEF();
 				String date = av.getDateVerifSEF() == null ? "&nbsp;" : av.getDateVerifSEF();
 				addZone(getNOM_ST_USER_VALID_SEF(i), user + " <br> " + date + " <br> " + heure);
-				addZone(getNOM_LB_AVIS_CAP_SELECT(i),
-						av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP().indexOf(
-								getHashAvisCAP().get(av.getIdAvisCAP()))));
 				addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : av.getOrdreMerite());
-				// motif Avct
+
+				// avis SHD
+				// on cherche la camapagne correspondante
+				String avisSHD = "";
 				MotifAvancement motif = null;
-				if (av.getIdMotifAvct() != null) {
-					motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+				try {
+					CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(annee));
+					// on cherche l'eae correspondant ainsi que l'eae evaluation
+					EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(av.getIdAgent()), campagneEAE.getIdCampagneEAE());
+					if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
+						EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
+						if (av.getIdMotifAvct().equals("7")) {
+							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? "" : eaeEvaluation.getPropositionAvancement();
+						}
+						// motif Avct
+						if (av.getIdMotifAvct() != null) {
+							motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+						}
+					}
+				} catch (Exception e) {
+					// pas de campagne pour cette année
 				}
-				addZone(getNOM_ST_MOTIF_AVCT(i), motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct());
+				addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>" + avisSHD);
+
+				// duree VDN
+				if (av.getIdAvisCAP() == null) {
+					if (!avisSHD.equals("")) {
+						if (avisSHD.equals("MAXI")) {
+							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("3"))));
+						} else if (avisSHD.equals("MOY")) {
+							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+						} else if (avisSHD.equals("MINI")) {
+							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("1"))));
+						}
+					} else {
+						addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+					}
+
+				} else {
+					addZone(getNOM_LB_AVIS_CAP_SELECT(i),
+							av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP()
+									.indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+				}
 
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getEaeDao() == null) {
+			setEaeDao((EAEDao) context.getBean("eaeDao"));
+		}
+
+		if (getEaeEvaluationDao() == null) {
+			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+		}
+
+		if (getCampagneEAEDao() == null) {
+			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
 		}
 	}
 
@@ -121,7 +190,12 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			if (anneeCourante == null || anneeCourante.length() == 0)
 				anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[5]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
+
+			// TODO
+			// changement de l'année pour faire au mieux.
+			// getListeAnnee()[0] =
+			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
 			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
 			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
 			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
@@ -813,5 +887,29 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_MOTIF_AVCT(int i) {
 		return getZone(getNOM_ST_MOTIF_AVCT(i));
+	}
+
+	public EAEDao getEaeDao() {
+		return eaeDao;
+	}
+
+	public void setEaeDao(EAEDao eaeDao) {
+		this.eaeDao = eaeDao;
+	}
+
+	public EaeEvaluationDao getEaeEvaluationDao() {
+		return eaeEvaluationDao;
+	}
+
+	public void setEaeEvaluationDao(EaeEvaluationDao eaeEvaluationDao) {
+		this.eaeEvaluationDao = eaeEvaluationDao;
+	}
+
+	public CampagneEAEDao getCampagneEAEDao() {
+		return campagneEAEDao;
+	}
+
+	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
+		this.campagneEAEDao = campagneEAEDao;
 	}
 }

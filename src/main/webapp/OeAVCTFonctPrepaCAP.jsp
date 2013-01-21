@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.avancement.Avancement"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -80,6 +81,7 @@ function setfocus(nom)
 					<%
 					if (process.getListeAvct()!=null){
 						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+							Avancement avct = (Avancement) process.getListeAvct().get(indiceAvct);
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -99,7 +101,15 @@ function setfocus(nom)
 									</SELECT>
 								</td>
 								<td>
-									<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
+									<%if(avct.getIdAvisCAP()!=null && avct.getIdMotifAvct()!=null){%>
+										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
+										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
+										<%}else{%>
+										&nbsp;
+										<%} %>
+									<%}else{ %>
+										&nbsp;
+									<%} %>
 								</td>								
 								<%}else{%>
 								<td>
@@ -108,8 +118,16 @@ function setfocus(nom)
 									</SELECT>
 								</td>
 								<td>
-									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
-								</td>								
+									<%if(avct.getIdAvisCAP()!=null && avct.getIdMotifAvct()!=null){%>
+										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
+										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
+										<%}else{%>
+										&nbsp;
+										<%} %>
+									<%}else{ %>
+										&nbsp;
+									<%} %>
+								</td>							
 								<%} %>
 								
 								<td><INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
