@@ -1261,18 +1261,42 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 					// si entre 6 mois et 1an alors dateFin = DateDeb+14 jours
 					// si inf à 6 mois alors dateFin = DateDeb+1 jours par
 					// semaine dans limite des 14jours
-					int nbJours = Services.compteJoursEntreDates(getZone(getNOM_EF_DATE_DEB()), getZone(getNOM_EF_DATE_FIN()));
+					String datedebut = getZone(getNOM_EF_DATE_DEB());
+					String datefin = getZone(getNOM_EF_DATE_FIN());
+					String dateDebFinale=null;
+					String dateFinFinale = null;
+					try{
+						SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+						Date dateDeb = sdf.parse(datedebut);
+						Date dateFin = sdf.parse(datefin);
+						SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+						dateDebFinale = sdf2.format(dateDeb);
+						dateFinFinale = sdf2.format(dateFin);
+					}catch (Exception e) {
+						// on essaye un autre format
+						try{
+							SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+							Date dateDeb = sdf.parse(datedebut);
+							Date dateFin = sdf.parse(datefin);
+							SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+							dateDebFinale = sdf2.format(dateDeb);
+							dateFinFinale = sdf2.format(dateFin);
+						}catch (Exception e2) {
+							//on ne fait rien
+						}
+					}
+					int nbJours = Services.compteJoursEntreDates(dateDebFinale, dateFinFinale);
 					if (nbJours >= 365) {
-						datePeriodeEssai = Services.ajouteMois(Services.formateDate(getZone(getNOM_EF_DATE_DEB())), 1);
+						datePeriodeEssai = Services.ajouteMois(Services.formateDate(dateDebFinale), 1);
 					} else if (182 <= nbJours && nbJours < 365) {
-						datePeriodeEssai = Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE_DEB())), 14);
+						datePeriodeEssai = Services.ajouteJours(Services.formateDate(dateDebFinale), 14);
 					} else if (nbJours < 182) {
 						// on calcul le nombre de semaine
 						int nbSemaines = nbJours / 7;
 						if (nbSemaines > 14) {
 							nbSemaines = 14;
 						}
-						datePeriodeEssai = Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE_DEB())), nbSemaines);
+						datePeriodeEssai = Services.ajouteJours(Services.formateDate(dateDebFinale), nbSemaines);
 					} else {
 						datePeriodeEssai = Const.CHAINE_VIDE;
 					}
