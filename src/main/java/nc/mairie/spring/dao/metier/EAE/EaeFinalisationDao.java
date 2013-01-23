@@ -2,6 +2,8 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
@@ -16,6 +18,8 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
 	public static final String CHAMP_ID_GED_DOCUMENT = "ID_GED_DOCUMENT";
 	public static final String CHAMP_VERSION_GED_DOCUMENT = "VERSION_GED_DOCUMENT";
+
+	private Logger logger = LoggerFactory.getLogger(EaeFinalisationDao.class);
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -38,6 +42,7 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 			finalisation = (String) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, String.class);
 
 		} catch (Exception e) {
+			logger.error("Erreur dans la recherche du document finalise : ", e);
 		}
 		return finalisation;
 	}
