@@ -32,3 +32,13 @@ function activeSEF(tailleListe) {
 		}
 	}
 }
+
+//active/Désactive la case ordre du mérite
+function activeOrdreMerite(indice) {
+	if(document.formu.elements['NOM_LB_AVIS_CAP_' + indice].value==1){
+    	document.formu.elements['NOM_EF_ORDRE_MERITE_'+indice].style.visibility = "hidden";
+	}else{
+    	document.formu.elements['NOM_EF_ORDRE_MERITE_'+indice].style.visibility = "visible";
+	}
+	
+}

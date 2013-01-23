@@ -420,12 +420,19 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				avct.setIdAvisCAP(idAvisCap);
 			}
 			// on traite l'odre de merite
-			String ordre = getVAL_EF_ORDRE_MERITE(i);
-			if (!ordre.equals(Const.CHAINE_VIDE)) {
-				avct.setOrdreMerite(ordre);
-			} else {
+			// on test si "moyenne" choisi alors on remete à vide ordre du mérite
+			if(indiceAvisCap==1){
 				avct.setOrdreMerite(null);
+			}else{
+				String ordre = getVAL_EF_ORDRE_MERITE(i);
+				if (!ordre.equals(Const.CHAINE_VIDE)) {
+					avct.setOrdreMerite(ordre);
+				} else {
+					avct.setOrdreMerite(null);
+				}
 			}
+			
+			
 			avct.modifierAvancement(getTransaction());
 			if (getTransaction().isErreur())
 				return false;
