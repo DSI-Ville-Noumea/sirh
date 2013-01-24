@@ -427,11 +427,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		// AND MAIRIE.SPCARR.CDCATE NOT IN (7, 9, 10, 11)
 		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat sdfSIRH = new SimpleDateFormat("yyyy-MM-dd");
-		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE ");
+		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans détachés ");
 		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), sdfMairie.format(new Date()), sdfSIRH.format(new Date()));
-		logger.info("Req AS400 : FIN listerAgentEligibleEAE : " + la.size());
+		logger.info("Req AS400 : FIN listerAgentEligibleEAE sans détachés : " + la.size());
 
-		// Parcours des agents
+		// Parcours des agents sans les détachés
 		for (AgentNW a : la) {
 			// Récupération de l'eae evntuel
 			try {
@@ -528,7 +528,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// logger.info("Req AS400 : chercherAgent");
 				// on met les données dans EAE-evalué
 				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a,true);
+				performCreerEvalue(request, a, true, false);
 				// on met les données dans EAE-Diplome
 				// logger.info("Req Oracle : Insert table EAE-Diplome");
 				performCreerDiplome(request, a);
@@ -600,6 +600,72 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(), eval.getDateEntreeService(),
 							eval.getDateEntreeCollectivite(), eval.getDateEntreeFonction());
 				}
+
+			}
+		}
+
+		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE détachés ");
+		ArrayList<AgentNW> laSuite = AgentNW.listerAgentDetacheEligibleEAE(getTransaction(), sdfMairie.format(new Date()));
+		logger.info("Req AS400 : FIN listerAgentEligibleEAE détachés : " + laSuite.size());
+		// Parcours des agents sans les détachés
+		for (AgentNW a : laSuite) {
+			// Récupération de l'eae evntuel
+			try {
+				// logger.info("Req Oracle : chercherEAEAgent " +
+				// a.getIdAgent());
+				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
+				// si on trouve un EAE dejà existant alors on ne fait rien
+			} catch (Exception e) {
+				// logger.info("Création de l'EAE pour l'agent : " +
+				// a.getIdAgent());
+				// Création de l'EAE
+				EAE eae = new EAE();
+				eae.setIdCampagneEAE(idCampagneEAE);
+				eae.setDocumentAttache(false);
+				eae.setDateCreation(null);
+
+				// pour le CAP
+				// on cherche si il y a une ligne dans les avancements
+				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
+				Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
+						a.getIdAgent());
+				if (getTransaction().isErreur())
+					getTransaction().traiterErreur();
+				if (avct != null && avct.getIdAvct() != null) {
+					// on a trouvé une ligne dans avancement
+					// on regarde l'etat de la ligne
+					// si 'valid DRH' alors on met CAP à true;
+					if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
+						eae.setCap(true);
+					} else {
+						eae.setCap(false);
+					}
+				} else {
+					eae.setCap(false);
+				}
+
+				eae.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
+				// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
+				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(), eae.isDocumentAttache(),
+						eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(), eae.getDureeEntretien(), eae.getDateFinalise(),
+						eae.getDateControle(), eae.getHeureControle(), eae.getUserControle(), eae.getIdDelegataire());
+
+				// logger.info("Req Oracle : chercherEAE (celui crée )");
+				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
+				setEaeCourant(eaeCree);
+				// logger.info("Req AS400 : chercherAgent");
+				// on met les données dans EAE-evalué
+				// logger.info("Req Oracle : Insert table EAE-evalué");
+				performCreerEvalue(request, a, true, true);
+				// on met les données dans EAE-Diplome
+				// logger.info("Req Oracle : Insert table EAE-Diplome");
+				performCreerDiplome(request, a);
+				// on met les données dans EAE-Parcours-Pro
+				// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
+				performCreerParcoursPro(request, a);
+				// on met les données dans EAE-Formation
+				// logger.info("Req Oracle : Insert table EAE-Formation");
+				performCreerFormation(request, a);
 
 			}
 		}
@@ -2116,7 +2182,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		}
 	}
 
-	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration) throws Exception {
+	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration, boolean agentDetach)
+			throws Exception {
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// on supprime la ligne xistante si elle existe
@@ -2360,13 +2427,15 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			agentEvalue.setPosition(paCours.getPositionAdmEAE(paCours.getCdpadm()));
 		}
 
+		agentEvalue.setAgentDetache(agentDetach);
 		// enfin on créer la ligne
 		getEaeEvalueDao().creerEaeEvalue(agentEvalue.getIdEae(), agentEvalue.getIdAgent(), agentEvalue.getDateEntreeService(),
 				agentEvalue.getDateEntreeCollectivite(), agentEvalue.getDateEntreeFonctionnaire(), agentEvalue.getDateEntreeAdministration(),
 				agentEvalue.getStatut(), agentEvalue.getAncienneteEchelonJours(), agentEvalue.getCadre(), agentEvalue.getCategorie(),
 				agentEvalue.getClassification(), agentEvalue.getGrade(), agentEvalue.getEchelon(), agentEvalue.getDateEffetAvct(),
 				agentEvalue.getNouvGrade(), agentEvalue.getNouvEchelon(), agentEvalue.getPosition(), agentEvalue.getTypeAvct(),
-				agentEvalue.getPrecisionStatut(), agentEvalue.getNbMoisDureeMin(), agentEvalue.getNbMoisDureeMoy(), agentEvalue.getNbMoisDureeMax());
+				agentEvalue.getPrecisionStatut(), agentEvalue.getNbMoisDureeMin(), agentEvalue.getNbMoisDureeMoy(), agentEvalue.getNbMoisDureeMax(),
+				agentEvalue.isAgentDetache());
 	}
 
 	public Integer getIdCreerFichePosteSecondaire() {
@@ -2863,7 +2932,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		performCreerEvalue(request, ag,false);
+		performCreerEvalue(request, ag, false, evalue.isAgentDetache());
 		// on met les données dans EAE-FichePoste
 		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
