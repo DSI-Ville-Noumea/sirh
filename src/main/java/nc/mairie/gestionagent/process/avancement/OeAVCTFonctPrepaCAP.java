@@ -85,7 +85,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
 			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat));
+					reqEtat,null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				Avancement av = (Avancement) getListeAvct().get(i);

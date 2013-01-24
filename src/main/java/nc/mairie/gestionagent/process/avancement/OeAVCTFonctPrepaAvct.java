@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process.avancement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +13,13 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -35,9 +38,11 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	private static Logger logger = Logger.getLogger(OeAVCTFonctPrepaAvct.class.getName());
 
 	private String[] LB_ANNEE;
+	private String[] LB_FILIERE;
 
 	private String[] listeAnnee;
-	private String anneeSelect;
+
+	private ArrayList<FiliereGrade> listeFiliere;
 
 	private ArrayList<Avancement> listeAvct;
 
@@ -93,9 +98,17 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
+
+			// Recuperation filiere
+			FiliereGrade filiere = null;
+			int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
+			if (indiceFiliere > 0) {
+				filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
+			}
+
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='" + EnumEtatAvancement.SGC.getValue() + "')";
 			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat));
+					reqEtat, filiere));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				Avancement av = (Avancement) getListeAvct().get(i);
@@ -176,7 +189,23 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			getListeAnnee()[4] = String.valueOf(Integer.parseInt(anneeCourante) + 5);
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
-			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
+		}
+
+		// Si liste medecins vide alors affectation
+		if (getListeFiliere() == null || getListeFiliere().size() == 0) {
+			setListeFiliere(FiliereGrade.listerFiliereGrade(getTransaction()));
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
+				FiliereGrade fili = (FiliereGrade) list.next();
+				String ligne[] = { fili.getLibFiliere() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_FILIERE(aFormat.getListeFormatee(true));
+
 		}
 	}
 
@@ -196,8 +225,8 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_CHANGER_ANNEE
-			if (testerParametre(request, getNOM_PB_CHANGER_ANNEE())) {
-				return performPB_CHANGER_ANNEE(request);
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
 			}
 
 			// Si clic sur le bouton PB_IMPRIMER
@@ -255,12 +284,12 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_ANNEE Date de
-	 * création : (28/11/11)
+	 * Retourne le nom d'un bouton pour la JSP : PB_FILTRER Date de création :
+	 * (28/11/11)
 	 * 
 	 */
-	public String getNOM_PB_CHANGER_ANNEE() {
-		return "NOM_PB_CHANGER_ANNEE";
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
 	}
 
 	/**
@@ -270,13 +299,10 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
 	 * 
 	 */
-	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
-		String annee = (String) getListeAnnee()[indiceAnnee];
-		if (!annee.equals(getAnneeSelect())) {
-			setListeAvct(null);
-			setAnneeSelect(annee);
-		}
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+
+		setListeAvct(null);
+
 		return true;
 	}
 
@@ -863,24 +889,6 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Getter de l'annee sélectionnée.
-	 * 
-	 * @return anneeSelect
-	 */
-	public String getAnneeSelect() {
-		return anneeSelect;
-	}
-
-	/**
-	 * Setter de l'année sélectionnée
-	 * 
-	 * @param newAnneeSelect
-	 */
-	public void setAnneeSelect(String newAnneeSelect) {
-		this.anneeSelect = newAnneeSelect;
-	}
-
-	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CARRIERE_SIMU Date
 	 * de création : (21/11/11 09:55:36)
 	 * 
@@ -914,5 +922,68 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_USER_VALID_SGC(int i) {
 		return getZone(getNOM_ST_USER_VALID_SGC(i));
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_FILIERE() {
+		if (LB_FILIERE == null)
+			LB_FILIERE = initialiseLazyLB();
+		return LB_FILIERE;
+	}
+
+	/**
+	 * Setter de la liste: LB_FILIERE Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_FILIERE(String[] newLB_FILIERE) {
+		LB_FILIERE = newLB_FILIERE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_FILIERE() {
+		return "NOM_LB_FILIERE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_FILIERE_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_FILIERE_SELECT() {
+		return "NOM_LB_FILIERE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_FILIERE Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_FILIERE() {
+		return getLB_FILIERE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_FILIERE Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_FILIERE_SELECT() {
+		return getZone(getNOM_LB_FILIERE_SELECT());
+	}
+
+	public ArrayList<FiliereGrade> getListeFiliere() {
+		return listeFiliere == null ? new ArrayList<FiliereGrade>() : listeFiliere;
+	}
+
+	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
+		this.listeFiliere = listeFiliere;
 	}
 }
