@@ -2121,7 +2121,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEAE());
 				parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
-				parcours.setDateFin(sdf.parse(admAgent.getDateSortie()));
+				parcours.setDateFin(admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
+						|| admAgent.getDateSortie().equals(Const.DATE_NULL) ? null : sdf.parse(admAgent.getDateSortie()));
 				parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 						parcours.getLibelleParcoursPro());
