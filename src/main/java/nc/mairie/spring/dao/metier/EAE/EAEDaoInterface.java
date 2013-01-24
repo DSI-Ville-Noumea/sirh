@@ -11,8 +11,7 @@ public interface EAEDaoInterface {
 	public ArrayList<EAE> listerEAETravailPourCampagne(String etat, Integer idCampagneEAE) throws Exception;
 
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService, String cap,
-			AgentNW agentEvaluateur, AgentNW agentEvalue)
-			throws Exception;
+			AgentNW agentEvaluateur, AgentNW agentEvalue, String detach) throws Exception;
 
 	public ArrayList<EAE> listerEAEFinaliseControlePourCampagne(Integer idCampagneEAE) throws Exception;
 

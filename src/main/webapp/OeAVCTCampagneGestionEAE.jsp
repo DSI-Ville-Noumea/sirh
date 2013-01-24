@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.EAE.EaeEvalue"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EAE"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
@@ -122,7 +123,11 @@ function reduireHierarchy() {
 			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUE() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_EVALUE() %>" style="margin-right:10px;">
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
-          	<BR/><BR/>
+          	<span class="sigp2" style="width:70px">Détachés : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DETACHE() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_DETACHE(), process.getVAL_LB_DETACHE_SELECT()) %>
+			</SELECT>
+			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
 			<INPUT type="submit" class="sigp2-Bouton-150" value="Générer les EAEs" name="<%=process.getNOM_PB_CALCULER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE()%>">	
@@ -138,7 +143,7 @@ function reduireHierarchy() {
 					<tr>
 						<th width="30px;">Dir. <br> Sect. <br> Serv.</th>
 						<th width="50px;">Nom <br> Prénom <br> Matr</th>
-						<th width="42px;">Statut</th>
+						<th width="42px;">Statut <br> Détachés </th>
 						<th width="50px;">&nbsp;&nbsp;SHD&nbsp;&nbsp;</th>
 						<th width="48px;">Evaluateur(s)</th>
 						<th>Délégataire</th>
@@ -158,6 +163,7 @@ function reduireHierarchy() {
 				<tbody>
 				<%for (int indiceAvct = 0;indiceAvct<process.getListeEAE().size();indiceAvct++){
 				EAE eae = process.getListeEAE().get(indiceAvct);
+				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
 				%>
 						<tr>
 							<td width="30px;" ><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
@@ -165,18 +171,29 @@ function reduireHierarchy() {
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
-								<br/>
-								<%if(eae.getIdDelegataire()==null){ %>
-								<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
-				    			<%}else{ %>
-				    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
-				    			<%} %>
-							<%} %>					
+							<%if(!eaeEvalue.isAgentDetache()){ %>							
+								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+									<br/>
+									<%if(eae.getIdDelegataire()==null){ %>
+									<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
+					    			<%}else{ %>
+					    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
+					    			<%} %>
+								<%} %>	
+							<%}else{ %>
+								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+									<br/>
+									<%if(eae.getIdDelegataire()==null){ %>
+									<INPUT title="rechercher agent" type="image" src="images/loupe.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RECHERCHER_AGENT(indiceAvct)%>">
+					    			<%}else{ %>
+					    			<INPUT title="supprimer agent" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(indiceAvct)%>">
+					    			<%} %>
+								<%} %>	
+							<%} %>				
 							</td>
 							<td><%=process.getVAL_ST_CAP(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_AVIS_SHD(indiceAvct)%></td>

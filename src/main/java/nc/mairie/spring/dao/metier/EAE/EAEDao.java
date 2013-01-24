@@ -120,8 +120,9 @@ public class EAEDao implements EAEDaoInterface {
 
 	@Override
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut, ArrayList<String> listeSousService,
-			String capBool, AgentNW agentEvaluateur, AgentNW agentEvalue) throws Exception {
+			String capBool, AgentNW agentEvaluateur, AgentNW agentEvalue, String detach) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
+		String reqInner = Const.CHAINE_VIDE;
 		if (!etat.equals(Const.CHAINE_VIDE)) {
 			reqWhere += " and " + CHAMP_ETAT + " like '" + etat + "' ";
 		}
@@ -135,6 +136,7 @@ public class EAEDao implements EAEDaoInterface {
 			}
 			if (!list.equals(""))
 				list = list.substring(0, list.length() - 1);
+			reqInner += " inner join EAE_FICHE_POSTE fp on e." + CHAMP_ID_EAE + "=fp.id_eae ";
 			reqWhere += " and (fp.CODE_SERVICE in (" + list + ")) ";
 		}
 		if (!capBool.equals(Const.CHAINE_VIDE)) {
@@ -144,10 +146,15 @@ public class EAEDao implements EAEDaoInterface {
 				reqWhere += " and " + CHAMP_CAP + " = 0";
 			}
 		}
-
-		String reqInner = "";
+		if (!detach.equals(Const.CHAINE_VIDE)) {
+			if (detach.equals("oui")) {
+				reqWhere += " and eval.AGENT_DETACHE = 1 ";
+			} else {
+				reqWhere += " and eval.AGENT_DETACHE = 0 ";
+			}
+		}
 		if (agentEvaluateur != null) {
-			reqInner = "left join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE + "=evaluateur.id_eae";
+			reqInner += " inner join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE + "=evaluateur.id_eae ";
 			reqWhere += " and evaluateur.id_agent = " + agentEvaluateur.getIdAgent();
 		}
 
@@ -155,9 +162,8 @@ public class EAEDao implements EAEDaoInterface {
 			reqWhere += " and eval.id_agent = " + agentEvalue.getIdAgent();
 		}
 
-		String sql = "select e.* from " + NOM_TABLE + " e inner join EAE_FICHE_POSTE fp on fp.id_eae = e." + CHAMP_ID_EAE
-				+ " inner join EAE_EVALUE eval on eval.id_eae = e.id_eae " + reqInner + " where e." + CHAMP_ID_CAMPAGNE_EAE + "=? and fp.primaire=1 "
-				+ reqWhere;
+		String sql = "select e.* from " + NOM_TABLE + " e  inner join EAE_EVALUE eval on eval.id_eae = e.id_eae " + reqInner + " where e."
+				+ CHAMP_ID_CAMPAGNE_EAE + "=? " + reqWhere;
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
