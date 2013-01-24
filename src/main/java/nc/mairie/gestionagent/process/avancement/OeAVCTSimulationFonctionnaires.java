@@ -511,6 +511,9 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					} else {
 						avct.setCarriereSimu("S");
 					}
+
+					avct.setDateVerifSEF(Const.DATE_NULL);
+					avct.setDateVerifSGC(Const.DATE_NULL);
 					avct.creerAvancement(getTransaction());
 				}
 			}

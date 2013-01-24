@@ -365,6 +365,9 @@ public class OeAVCTSimulationConvCol extends nc.mairie.technique.BasicProcess {
 						}
 					}
 
+
+					avct.setDateVerifSEF(Const.DATE_NULL);
+					avct.setDateVerifSGC(Const.DATE_NULL);
 					avct.creerAvancement(getTransaction());
 				}
 			}

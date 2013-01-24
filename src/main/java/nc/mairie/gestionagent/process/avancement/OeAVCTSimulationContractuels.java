@@ -392,6 +392,8 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 						avct.setCarriereSimu("S");
 					}
 
+					avct.setDateVerifSEF(Const.DATE_NULL);
+					avct.setDateVerifSGC(Const.DATE_NULL);
 					avct.creerAvancement(getTransaction());
 				}
 			}
