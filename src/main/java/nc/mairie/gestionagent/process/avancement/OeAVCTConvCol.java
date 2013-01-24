@@ -106,7 +106,12 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 			if (anneeCourante == null || anneeCourante.length() == 0)
 				anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[5]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
+
+			// TODO
+			// changement de l'année pour faire au mieux.
+			// getListeAnnee()[0] =
+			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
 			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
 			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
 			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
