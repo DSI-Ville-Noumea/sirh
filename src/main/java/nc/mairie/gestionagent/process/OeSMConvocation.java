@@ -334,6 +334,9 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			setListeMois(new String[tailleTotal]);
 
 			for (int i = moisCourant; i < moisAnneeFR.length - 1; i++) {
+				if(j>=tailleTotal){
+					break;
+				}
 				getListeMois()[j] = moisAnneeFR[i] + " - " + anneeCourante;
 				getHashMois().put(moisAnneeFR[i] + " - " + anneeCourante, moisAnnee[i] + "/" + anneeCourante);
 				j++;
