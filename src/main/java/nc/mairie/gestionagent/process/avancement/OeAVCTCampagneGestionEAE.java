@@ -1744,6 +1744,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 			EaeFichePoste fichePosteEae = new EaeFichePoste();
 			fichePosteEae.setIdEae(eae.getIdEAE());
+			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpSecondaire.getIdFichePoste()));
 			if (fpSecondaire.getIdResponsable() != null) {
 				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpSecondaire.getIdResponsable());
 				if (getTransaction().isErreur()) {
@@ -1876,7 +1877,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					fichePosteEae.getFonction(), fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
 					fichePosteEae.getLocalisation(), fichePosteEae.getMission(), fichePosteEae.getFonctionResponsable(),
 					fichePosteEae.getDateEntreeServiceResponsable(), fichePosteEae.getDateEntreeCollectiviteResponsable(),
-					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService());
+					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(), fichePosteEae.getIdSirhFichePoste());
 
 		}
 	}
@@ -1913,6 +1914,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 			EaeFichePoste fichePosteEae = new EaeFichePoste();
 			fichePosteEae.setIdEae(eae.getIdEAE());
+			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
 			if (fpPrincipale.getIdResponsable() != null) {
 				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
 				if (getTransaction().isErreur()) {
@@ -2046,7 +2048,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					fichePosteEae.getFonction(), fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
 					fichePosteEae.getLocalisation(), fichePosteEae.getMission(), fichePosteEae.getFonctionResponsable(),
 					fichePosteEae.getDateEntreeServiceResponsable(), fichePosteEae.getDateEntreeCollectiviteResponsable(),
-					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService());
+					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(), fichePosteEae.getIdSirhFichePoste());
 
 		}
 	}

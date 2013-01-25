@@ -9,7 +9,7 @@ public interface EaeFichePosteDaoInterface {
 
 	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service, String section,
 			String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission, String fonctionResp,
-			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService)
+			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
 			throws Exception;
 
 	public Integer getIdEaeFichePoste() throws Exception;

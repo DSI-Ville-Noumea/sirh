@@ -31,6 +31,7 @@ public class EaeFichePosteResultSetExtractor implements ResultSetExtractor {
 		eaeFDP.setDateEntreeCollectiviteResponsable(rs.getDate(EaeFichePosteDao.CHAMP_DATE_ENTREE_COLLECT_RESP));
 		eaeFDP.setDateEntreeFonctionResponsable(rs.getDate(EaeFichePosteDao.CHAMP_DATE_ENTREE_FONCTION_RESP));
 		eaeFDP.setCodeService(rs.getString(EaeFichePosteDao.CHAMP_CODE_SERVICE));
+		eaeFDP.setIdSirhFichePoste(rs.getInt(EaeFichePosteDao.CHAMP_ID_SIRH_FICHE_POSTE));
 
 		return eaeFDP;
 	}

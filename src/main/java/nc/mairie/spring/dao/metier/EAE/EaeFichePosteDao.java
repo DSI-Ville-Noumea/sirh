@@ -37,6 +37,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	public static final String CHAMP_DATE_ENTREE_COLLECT_RESP = "DATE_ENTREE_COLLECT_RESP";
 	public static final String CHAMP_DATE_ENTREE_FONCTION_RESP = "DATE_ENTREE_FONCTION_RESP";
 	public static final String CHAMP_CODE_SERVICE = "CODE_SERVICE";
+	public static final String CHAMP_ID_SIRH_FICHE_POSTE = "ID_SIRH_FICHE_POSTE";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -53,15 +54,17 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	@Override
 	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service, String section,
 			String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission, String fonctionResp,
-			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService) throws Exception {
+			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
+			throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_ID_EAE + "," + CHAMP_ID_SHD + "," + CHAMP_PRIMAIRE
 				+ "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + "," + CHAMP_SECTION_SERVICE + "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + ","
 				+ CHAMP_DATE_ENTREE_FONCTION + "," + CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP
 				+ "," + CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + "," + CHAMP_DATE_ENTREE_FONCTION_RESP + ","
-				+ CHAMP_CODE_SERVICE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_CODE_SERVICE + "," + CHAMP_ID_SIRH_FICHE_POSTE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { id, idEae, idSHD, typeFDP, direction, service, section, emploi, fonction, dateEntreeFonction, grade,
-				localisation, mission, fonctionResp, dateEntreeServiceResp, dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService });
+				localisation, mission, fonctionResp, dateEntreeServiceResp, dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService,
+				idSirhFichePoste });
 
 	}
 
