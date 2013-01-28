@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
 import nc.mairie.spring.dao.metier.parametrage.RepresentantDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao;
+import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
 import nc.mairie.spring.domain.metier.parametrage.Representant;
 import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
@@ -33,6 +35,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private String[] LB_EMPLOYEUR;
 	private String[] LB_REPRESENTANT;
 	private String[] LB_TYPE_REPRESENTANT;
+	private String[] LB_DELIBERATION;
+	private String[] LB_TYPE_DELIBERATION;
 
 	private ArrayList<MotifAvancement> listeMotif;
 	private MotifAvancement motifCourant;
@@ -46,9 +50,14 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private RepresentantDao representantDao;
 
 	private ArrayList<TypeRepresentant> listeTypeRepresentant;
-	private TypeRepresentant typeRepresentantCourant;
 	private TypeRepresentantDao typeRepresentantDao;
 	private Hashtable<Integer, TypeRepresentant> hashTypeRepresentant;
+
+	private ArrayList<Deliberation> listeDeliberation;
+	private Deliberation deliberationCourant;
+	private DeliberationDao deliberationDao;
+
+	private ArrayList<String> listeTypeDeliberation;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
@@ -90,6 +99,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeTypeRepresentant().size() == 0) {
 			initialiseListeTypeRepresentant(request);
 		}
+		if (getListeDeliberation().size() == 0) {
+			initialiseListeDeliberation(request);
+		}
+		if (getListeTypeDeliberation().size() == 0) {
+			initialiseListeTypeDeliberation(request);
+		}
 	}
 
 	private void initialiseDao() {
@@ -103,6 +118,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 		if (getTypeRepresentantDao() == null) {
 			setTypeRepresentantDao((TypeRepresentantDao) context.getBean("typeRepresentantDao"));
+		}
+		if (getDeliberationDao() == null) {
+			setDeliberationDao((DeliberationDao) context.getBean("deliberationDao"));
 		}
 	}
 
@@ -197,6 +215,57 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			setLB_TYPE_REPRESENTANT(aFormat.getListeFormatee());
 		} else {
 			setLB_TYPE_REPRESENTANT(null);
+		}
+	}
+
+	/**
+	 * Initialisation de la listes des types de délibération Date de création :
+	 * (14/09/11)
+	 * 
+	 */
+	private void initialiseListeTypeDeliberation(HttpServletRequest request) throws Exception {
+		ArrayList<String> listeTypeDelib = new ArrayList<String>();
+		listeTypeDelib.add("COMMUNAL");
+		listeTypeDelib.add("TERRITORIAL");
+		setListeTypeDeliberation(listeTypeDelib);
+
+		if (getListeTypeDeliberation().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeTypeDeliberation().listIterator(); list.hasNext();) {
+				String type = (String) list.next();
+				String ligne[] = { type };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_DELIBERATION(aFormat.getListeFormatee());
+		} else {
+			setLB_TYPE_DELIBERATION(null);
+		}
+
+	}
+
+	/**
+	 * Initialisation de la listes des délibérations Date de création :
+	 * (14/09/11)
+	 * 
+	 */
+	private void initialiseListeDeliberation(HttpServletRequest request) throws Exception {
+		setListeDeliberation(getDeliberationDao().listerDeliberation());
+		if (getListeDeliberation().size() != 0) {
+			int tailles[] = { 10, 20, 70 };
+			String padding[] = { "G", "G", "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeDeliberation().listIterator(); list.hasNext();) {
+				Deliberation delib = (Deliberation) list.next();
+				String ligne[] = { delib.getCodeDeliberation(), delib.getTypeDeliberation(), delib.getLibDeliberation() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_DELIBERATION(aFormat.getListeFormatee());
+		} else {
+			setLB_DELIBERATION(null);
 		}
 	}
 
@@ -590,6 +659,26 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_REPRESENTANT
 			if (testerParametre(request, getNOM_PB_VALIDER_REPRESENTANT())) {
 				return performPB_VALIDER_REPRESENTANT(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_DELIBERATION
+			if (testerParametre(request, getNOM_PB_ANNULER_DELIBERATION())) {
+				return performPB_ANNULER_DELIBERATION(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_DELIBERATION
+			if (testerParametre(request, getNOM_PB_CREER_DELIBERATION())) {
+				return performPB_CREER_DELIBERATION(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_DELIBERATION
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_DELIBERATION())) {
+				return performPB_SUPPRIMER_DELIBERATION(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_DELIBERATION
+			if (testerParametre(request, getNOM_PB_VALIDER_DELIBERATION())) {
+				return performPB_VALIDER_DELIBERATION(request);
 			}
 
 		}
@@ -1290,14 +1379,6 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		this.listeTypeRepresentant = listeTypeRepresentant;
 	}
 
-	private TypeRepresentant getTypeRepresentantCourant() {
-		return typeRepresentantCourant;
-	}
-
-	private void setTypeRepresentantCourant(TypeRepresentant typeRepresentantCourant) {
-		this.typeRepresentantCourant = typeRepresentantCourant;
-	}
-
 	public TypeRepresentantDao getTypeRepresentantDao() {
 		return typeRepresentantDao;
 	}
@@ -1350,5 +1431,420 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	public void setHashTypeRepresentant(Hashtable<Integer, TypeRepresentant> hashTypeRepresentant) {
 		this.hashTypeRepresentant = hashTypeRepresentant;
+	}
+
+	public String[] getLB_DELIBERATION() {
+		if (LB_DELIBERATION == null)
+			LB_DELIBERATION = initialiseLazyLB();
+		return LB_DELIBERATION;
+	}
+
+	public void setLB_DELIBERATION(String[] lB_DELIBERATION) {
+		LB_DELIBERATION = lB_DELIBERATION;
+	}
+
+	public ArrayList<Deliberation> getListeDeliberation() {
+		return listeDeliberation == null ? new ArrayList<Deliberation>() : listeDeliberation;
+	}
+
+	public void setListeDeliberation(ArrayList<Deliberation> listeDeliberation) {
+		this.listeDeliberation = listeDeliberation;
+	}
+
+	public Deliberation getDeliberationCourant() {
+		return deliberationCourant;
+	}
+
+	public void setDeliberationCourant(Deliberation deliberationCourant) {
+		this.deliberationCourant = deliberationCourant;
+	}
+
+	public DeliberationDao getDeliberationDao() {
+		return deliberationDao;
+	}
+
+	public void setDeliberationDao(DeliberationDao deliberationDao) {
+		this.deliberationDao = deliberationDao;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_DELIBERATION() {
+		return "NOM_LB_DELIBERATION";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_DELIBERATION_SELECT Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_DELIBERATION_SELECT() {
+		return "NOM_LB_DELIBERATION_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String[] getVAL_LB_DELIBERATION() {
+		return getLB_DELIBERATION();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_LB_DELIBERATION_SELECT() {
+		return getZone(getNOM_LB_DELIBERATION_SELECT());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_DELIBERATION
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_ST_ACTION_DELIBERATION() {
+		return "NOM_ST_ACTION_DELIBERATION";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_ACTION_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_ST_ACTION_DELIBERATION() {
+		return getZone(getNOM_ST_ACTION_DELIBERATION());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER_DELIBERATION() {
+		return "NOM_PB_ANNULER_DELIBERATION";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_ANNULER_DELIBERATION(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_DELIBERATION(), "");
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_CREER_DELIBERATION() {
+		return "NOM_PB_CREER_DELIBERATION";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_CREER_DELIBERATION(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_DELIBERATION(), ACTION_CREATION);
+		addZone(getNOM_EF_CODE_DELIBERATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIB_DELIBERATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TEXTE_CAP_DELIBERATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_TYPE_DELIBERATION_SELECT(), Const.ZERO);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DELIBERATION Date
+	 * de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_DELIBERATION() {
+		return "NOM_PB_SUPPRIMER_DELIBERATION";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_DELIBERATION(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
+		if (indice != -1 && indice < getListeDeliberation().size()) {
+			Deliberation delib = getListeDeliberation().get(indice);
+			setDeliberationCourant(delib);
+
+			int ligneTypeDelib = getListeTypeDeliberation().indexOf(delib.getTypeDeliberation());
+
+			addZone(getNOM_LB_TYPE_DELIBERATION_SELECT(), String.valueOf(ligneTypeDelib));
+			addZone(getNOM_EF_CODE_DELIBERATION(), delib.getCodeDeliberation());
+			addZone(getNOM_EF_LIB_DELIBERATION(), delib.getLibDeliberation());
+			addZone(getNOM_EF_TEXTE_CAP_DELIBERATION(), delib.getTexteCAP());
+
+			addZone(getNOM_ST_ACTION_DELIBERATION(), ACTION_SUPPRESSION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "délibérations"));
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER_DELIBERATION() {
+		return "NOM_PB_VALIDER_DELIBERATION";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_VALIDER_DELIBERATION(HttpServletRequest request) throws Exception {
+		if (!performControlerSaisieDeliberation(request))
+			return false;
+
+		if (!performControlerRegleGestionDeliberation(request))
+			return false;
+
+		if (getVAL_ST_ACTION_DELIBERATION() != null && getVAL_ST_ACTION_DELIBERATION() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_CREATION)) {
+				setDeliberationCourant(new Deliberation());
+
+				// on recupere le type de déliberation
+				int indiceTypeDelib = (Services.estNumerique(getVAL_LB_TYPE_DELIBERATION_SELECT()) ? Integer
+						.parseInt(getVAL_LB_TYPE_DELIBERATION_SELECT()) : -1);
+				String typeDelib = Const.CHAINE_VIDE;
+				if (indiceTypeDelib > -1) {
+					typeDelib = getListeTypeDeliberation().get(indiceTypeDelib);
+				}
+
+				getDeliberationCourant().setCodeDeliberation(getVAL_EF_CODE_DELIBERATION());
+				getDeliberationCourant().setLibDeliberation(getVAL_EF_LIB_DELIBERATION());
+				getDeliberationCourant().setTexteCAP(getVAL_EF_TEXTE_CAP_DELIBERATION());
+				getDeliberationCourant().setTypeDeliberation(typeDelib);
+				getDeliberationDao().creerDeliberation(getDeliberationCourant().getCodeDeliberation(), getDeliberationCourant().getLibDeliberation(),
+						getDeliberationCourant().getTypeDeliberation(), getDeliberationCourant().getTexteCAP());
+				getListeDeliberation().add(getDeliberationCourant());
+
+			} else if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_SUPPRESSION)) {
+				getDeliberationDao().supprimerDeliberation(getDeliberationCourant().getIdDeliberation());
+				getListeDeliberation().remove(getDeliberationCourant());
+				setDeliberationCourant(null);
+			}
+			initialiseListeDeliberation(request);
+			addZone(getNOM_ST_ACTION_DELIBERATION(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_DELIBERATION
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_CODE_DELIBERATION() {
+		return "NOM_EF_CODE_DELIBERATION";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_CODE_DELIBERATION() {
+		return getZone(getNOM_EF_CODE_DELIBERATION());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_DELIBERATION
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_LIB_DELIBERATION() {
+		return "NOM_EF_LIB_DELIBERATION";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_LIB_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_LIB_DELIBERATION() {
+		return getZone(getNOM_EF_LIB_DELIBERATION());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP :
+	 * EF_TEXTE_CAP_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_TEXTE_CAP_DELIBERATION() {
+		return "NOM_EF_TEXTE_CAP_DELIBERATION";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_TEXTE_CAP_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_TEXTE_CAP_DELIBERATION() {
+		return getZone(getNOM_EF_TEXTE_CAP_DELIBERATION());
+	}
+
+	/**
+	 * Contrôle les zones saisies d'une délibération Date de création :
+	 * (14/09/11)
+	 */
+	private boolean performControlerSaisieDeliberation(HttpServletRequest request) throws Exception {
+		// Verification code délibération not null
+		if (getZone(getNOM_EF_CODE_DELIBERATION()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			return false;
+		}
+		// Verification libellé délibération not null
+		if (getZone(getNOM_EF_LIB_DELIBERATION()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+		// Verification texte CAP not null
+		if (getZone(getNOM_EF_TEXTE_CAP_DELIBERATION()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "texte CAP"));
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Contrôle les règles de gestion d'une délibération Date de création :
+	 * (14/09/11)
+	 */
+	private boolean performControlerRegleGestionDeliberation(HttpServletRequest request) throws Exception {
+		// Verification si suppression d'une délibération utilisée sur un
+		// avancement
+		// TODO
+
+		/*
+		 * if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION) &&
+		 * Avancement.listerAvancementAvecMotif(getTransaction(),
+		 * getMotifCourant()).size() > 0) { // "ERR989", //
+		 * "Suppression impossible. Il existe au moins @ rattaché à @."
+		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR989",
+		 * "un avancement", "ce motif d'avancement")); return false; }
+		 */
+
+		// Vérification des contraintes d'unicité de la délibération
+		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_CREATION)) {
+
+			for (Deliberation delib : getListeDeliberation()) {
+				if (delib.getCodeDeliberation().equals(getVAL_EF_CODE_DELIBERATION().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce code"));
+					return false;
+				}
+				if (delib.getLibDeliberation().equals(getVAL_EF_LIB_DELIBERATION().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce libellé"));
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public ArrayList<String> getListeTypeDeliberation() {
+		return listeTypeDeliberation == null ? new ArrayList<String>() : listeTypeDeliberation;
+	}
+
+	public void setListeTypeDeliberation(ArrayList<String> listeTypeDeliberation) {
+		this.listeTypeDeliberation = listeTypeDeliberation;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_TYPE_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	private String[] getLB_TYPE_DELIBERATION() {
+		if (LB_TYPE_DELIBERATION == null)
+			LB_TYPE_DELIBERATION = initialiseLazyLB();
+		return LB_TYPE_DELIBERATION;
+	}
+
+	/**
+	 * Setter de la liste: LB_TYPE_DELIBERATION Date de création : (14/09/11
+	 * 13:52:54)
+	 * 
+	 */
+	private void setLB_TYPE_DELIBERATION(String[] newLB_TYPE_DELIBERATION) {
+		LB_TYPE_DELIBERATION = newLB_TYPE_DELIBERATION;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DELIBERATION Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_DELIBERATION() {
+		return "NOM_LB_TYPE_DELIBERATION";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_TYPE_DELIBERATION_SELECT Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_DELIBERATION_SELECT() {
+		return "NOM_LB_TYPE_DELIBERATION_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String[] getVAL_LB_TYPE_DELIBERATION() {
+		return getLB_TYPE_DELIBERATION();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_TYPE_DELIBERATION Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_LB_TYPE_DELIBERATION_SELECT() {
+		return getZone(getNOM_LB_TYPE_DELIBERATION_SELECT());
 	}
 }

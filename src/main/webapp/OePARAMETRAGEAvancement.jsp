@@ -182,7 +182,69 @@
 				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_EMPLOYEUR()%>"></span>
 				</div>
 				<% } %>
-			</FIELDSET>			
+			</FIELDSET>		
+	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px; float:left;">
+		    	<legend class="sigp2Legend">Délibérations</legend>
+				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
+				<span class="sigp2-saisie" style="position:relative;width:140px;">Type</span>
+				<span class="sigp2-saisie" style="position:relative;">Libellé</span>
+				<SELECT name="<%= process.getNOM_LB_DELIBERATION() %>" size="10"
+					style="width:100%;" class="sigp2-liste">
+					<%=process.forComboHTML(process.getVAL_LB_DELIBERATION(), process.getVAL_LB_DELIBERATION_SELECT()) %>
+				</SELECT>
+            	</span>
+
+				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_DELIBERATION()%>">
+    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_DELIBERATION()%>">
+    	        </div>
+            	
+            	<% if (process.getVAL_ST_ACTION_DELIBERATION()!= null && !process.getVAL_ST_ACTION_DELIBERATION().equals("")) {%>
+            	<br>
+	            
+				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_DELIBERATION())) { %>
+					<label class="sigp2Mandatory" Style="width:50px">Code :</label>
+					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Texte CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />					
+					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_DELIBERATION(), process.getVAL_LB_TYPE_DELIBERATION_SELECT()) %>
+					</SELECT>				
+					<br />
+					
+					<div Style="width:100%" align="center">
+					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_DELIBERATION())) { %>
+						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_DELIBERATION()%>"></span>
+					<% } %>
+				<%} else {%>
+					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Texte CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />						
+					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
+					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_DELIBERATION(), process.getVAL_LB_TYPE_DELIBERATION_SELECT()) %>
+					</SELECT>				
+					<br />
+					<div Style="width:100%" align="center">
+					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_DELIBERATION()%>"></span>
+			   <%}%>
+				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DELIBERATION()%>"></span>
+				</div>
+				<% } %>
+			</FIELDSET>		
 			</div>
 		</FORM>
 	</BODY>
