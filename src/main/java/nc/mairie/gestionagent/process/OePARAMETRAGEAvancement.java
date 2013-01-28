@@ -114,12 +114,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		setListeMotif(MotifAvancement.listerMotifAvancement(getTransaction()));
 		if (getListeMotif().size() != 0) {
-			int tailles[] = { 40,10 };
-			String padding[] = { "G","G" };
+			int tailles[] = { 40, 10 };
+			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeMotif().listIterator(); list.hasNext();) {
 				MotifAvancement ma = (MotifAvancement) list.next();
-				String ligne[] = { ma.getLibMotifAvct(),ma.getCodeMotifAvct() };
+				String ligne[] = { ma.getLibMotifAvct(), ma.getCodeMotifAvct() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -136,12 +136,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeEmployeur(HttpServletRequest request) throws Exception {
 		setListeEmployeur(getEmployeurDao().listerEmployeur());
 		if (getListeEmployeur().size() != 0) {
-			int tailles[] = { 70 };
-			String padding[] = { "G" };
+			int tailles[] = { 50, 90 };
+			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeEmployeur().listIterator(); list.hasNext();) {
 				Employeur emp = (Employeur) list.next();
-				String ligne[] = { emp.getLibEmployeur() };
+				String ligne[] = { emp.getLibEmployeur(), emp.getTitreEmployeur() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -159,13 +159,13 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeRepresentant(HttpServletRequest request) throws Exception {
 		setListeRepresentant(getRepresentantDao().listerRepresentant());
 		if (getListeRepresentant().size() != 0) {
-			int tailles[] = { 20,20,10 };
-			String padding[] = { "G","G","G" };
+			int tailles[] = { 20, 20, 10 };
+			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeRepresentant().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
 				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-				String ligne[] = { repre.getNomRepresentant(),repre.getPrenomRepresentant(),typeRepre.getLibTypeRepresentant() };
+				String ligne[] = { repre.getNomRepresentant(), repre.getPrenomRepresentant(), typeRepre.getLibTypeRepresentant() };
 
 				aFormat.ajouteLigne(ligne);
 			}

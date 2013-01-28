@@ -1,22 +1,17 @@
 package nc.mairie.gestionagent.process;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Categorie;
-import nc.mairie.metier.carriere.FiliereGrade;
-import nc.mairie.metier.carriere.GradeGenerique;
-import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.CodeRome;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.CategorieFE;
-import nc.mairie.metier.poste.Ecole;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.technique.FormateListe;
@@ -32,10 +27,7 @@ import nc.mairie.utils.MessageUtils;
 public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	private String[] LB_DOMAINE;
 	private String[] LB_CATEGORIE;
-	private String[] LB_CADRE_EMPLOI;
 	private String[] LB_CODE_ROME;
-	private String[] LB_FILIERE;
-
 	private String[] LB_DIPLOME;
 
 	private ArrayList<DomaineEmploi> listeDomaine;
@@ -43,12 +35,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList<FamilleEmploi> listeFamille;
 	private FamilleEmploi familleCourante;
-
-	private ArrayList<CadreEmploi> listeCadreEmploi;
-	private CadreEmploi cadreEmploiCourant;
-
-	private ArrayList<FiliereGrade> listeFiliere;
-	private Hashtable<String, FiliereGrade> hashFiliere;
 
 	private ArrayList<DiplomeGenerique> listeDiplome;
 	private DiplomeGenerique diplomeCourant;
@@ -101,25 +87,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			initialiseListeFamille(request);
 		}
 
-		if (getListeCadreEmploi() == null) {
-			// Recherche des domaines d'activité
-			ArrayList liste = CadreEmploi.listerCadreEmploi(getTransaction());
-			setListeCadreEmploi(liste);
-			initialiseListeCadreEmploi(request);
-		}
-
-		// Si hashtable des écoles vide
-		if (getHashFiliere().size() == 0) {
-			ArrayList a = FiliereGrade.listerFiliereGrade(getTransaction());
-			setListeFiliere(a);
-			initialiseListeFiliere(request);
-			// remplissage de la hashTable
-			for (int i = 0; i < a.size(); i++) {
-				FiliereGrade fi = (FiliereGrade) a.get(i);
-				getHashFiliere().put(fi.getCodeFiliere(), fi);
-			}
-		}
-
 		if (getListeDiplome() == null) {
 			// Recherche des domaines d'activité
 			ArrayList liste = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
@@ -141,23 +108,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			initialiseListeCodeRome(request);
 		}
 
-	}
-
-	private void initialiseListeFiliere(HttpServletRequest request) {
-		if (getListeFiliere().size() != 0) {
-			int tailles[] = { 40 };
-			String padding[] = { "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
-				FiliereGrade fi = (FiliereGrade) list.next();
-				String ligne[] = { fi.getLibFiliere() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_FILIERE(aFormat.getListeFormatee(true));
-		} else {
-			setLB_FILIERE(null);
-		}
 	}
 
 	/**
@@ -225,29 +175,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			setLB_FAMILLE(aFormat.getListeFormatee());
 		} else {
 			setLB_FAMILLE(null);
-		}
-	}
-
-	/**
-	 * Initialisation de la liste des domaine d'activité Date de création :
-	 * (09/09/11)
-	 * 
-	 */
-	private void initialiseListeCadreEmploi(HttpServletRequest request) throws Exception {
-		setListeCadreEmploi(CadreEmploi.listerCadreEmploi(getTransaction()));
-		if (getListeCadreEmploi().size() != 0) {
-			int tailles[] = { 70 };
-			String padding[] = { "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCadreEmploi().listIterator(); list.hasNext();) {
-				CadreEmploi ce = (CadreEmploi) list.next();
-				String ligne[] = { ce.libCadreEmploi };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_CADRE_EMPLOI(aFormat.getListeFormatee());
-		} else {
-			setLB_CADRE_EMPLOI(null);
 		}
 	}
 
@@ -869,292 +796,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CADRE Date de
-	 * création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_PB_ANNULER_CADRE_EMPLOI() {
-		return "NOM_PB_ANNULER_CADRE_EMPLOI";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public boolean performPB_ANNULER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), "");
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CADRE Date de création
-	 * : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_PB_CREER_CADRE_EMPLOI() {
-		return "NOM_PB_CREER_CADRE_EMPLOI";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public boolean performPB_CREER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-
-		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), ACTION_CREATION);
-		addZone(getNOM_EF_CADRE_EMPLOI(), "");
-		addZone(getNOM_LB_FILIERE_SELECT(), "0");
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CADRE Date de
-	 * création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_CADRE_EMPLOI() {
-		return "NOM_PB_SUPPRIMER_CADRE_EMPLOI";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-
-		int indice = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
-
-		if (indice != -1 && indice < getListeCadreEmploi().size()) {
-			CadreEmploi c = getListeCadreEmploi().get(indice);
-			setCadreEmploiCourant(c);
-
-			FiliereGrade fi = (FiliereGrade) getHashFiliere().get(c.getCdfili());
-			int ligneFiliere = getListeFiliere().indexOf(fi);
-			addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
-
-			addZone(getNOM_EF_CADRE_EMPLOI(), c.getLibCadreEmploi());
-			addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), ACTION_SUPPRESSION);
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "cadres emploi"));
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CADRE Date de
-	 * création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_PB_VALIDER_CADRE_EMPLOI() {
-		return "NOM_PB_VALIDER_CADRE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public boolean performPB_VALIDER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-		if (!performControlerSaisieCadreEmploi(request))
-			return false;
-
-		if (!performControlerRegleGestionCadreEmploi(request))
-			return false;
-
-		if (getVAL_EF_ACTION_CADRE_EMPLOI() != null && getVAL_EF_ACTION_CADRE_EMPLOI() != Const.CHAINE_VIDE) {
-			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
-				// on recupere la filiere
-				int indice = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
-				String codFiliere = ((FiliereGrade) getListeFiliere().get(indice - 1)).getCodeFiliere();
-				setCadreEmploiCourant(new CadreEmploi());
-				getCadreEmploiCourant().setLibCadreEmploi(getVAL_EF_CADRE_EMPLOI());
-				getCadreEmploiCourant().setCdfili(codFiliere);
-				getCadreEmploiCourant().creerCadreEmploi(getTransaction());
-				if (!getTransaction().isErreur())
-					getListeCadreEmploi().add(getCadreEmploiCourant());
-			} else if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_SUPPRESSION)) {
-				getCadreEmploiCourant().supprimerCadreEmploi(getTransaction());
-				if (!getTransaction().isErreur())
-					getListeCadreEmploi().remove(getCadreEmploiCourant());
-				setCadreEmploiCourant(null);
-			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
-			initialiseListeCadreEmploi(request);
-			addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), Const.CHAINE_VIDE);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Contrôle les zones saisies d'un cadre emploi Date de création :
-	 * (12/09/11)
-	 */
-	private boolean performControlerSaisieCadreEmploi(HttpServletRequest request) throws Exception {
-
-		// ************************************
-		// Verification lib cadre emploi not null
-		// ************************************
-		if (getZone(getNOM_EF_CADRE_EMPLOI()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-		// la filiere est obligatoire
-		if (getVAL_LB_FILIERE_SELECT().equals("0")) {
-			// ERR002:La zone @ est obligatoire.
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "filière"));
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Contrôle les règles de gestion d'une filiere Date de création : (12/09/11
-	 * 11:04:00)
-	 */
-	private boolean performControlerRegleGestionCadreEmploi(HttpServletRequest request) throws Exception {
-
-		// Verification si suppression d'un cadre emploi utilisée sur
-		// un grade generique
-		if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_SUPPRESSION)
-				&& GradeGenerique.listerGradeGeneriqueAvecCadreEmploi(getTransaction(), getCadreEmploiCourant()).size() > 0) {
-
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un grade générique", "ce cadre emploi"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité du cadre emploi
-		if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
-
-			// Vérification des contraintes d'unicité du cadre emploi
-			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
-				for (CadreEmploi cadre : getListeCadreEmploi()) {
-					if (cadre.getLibCadreEmploi().equals(getVAL_EF_CADRE_EMPLOI().toUpperCase())) {
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un cadre emploi", "ce libellé"));
-						return false;
-					}
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_ACTION_CADRE Date
-	 * de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_EF_ACTION_CADRE_EMPLOI() {
-		return "NOM_EF_ACTION_CADRE_EMPLOI";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_ACTION_CADRE Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getVAL_EF_ACTION_CADRE_EMPLOI() {
-		return getZone(getNOM_EF_ACTION_CADRE_EMPLOI());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CADRE Date de
-	 * création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_EF_CADRE_EMPLOI() {
-		return "NOM_EF_CADRE_EMPLOI";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CADRE Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getVAL_EF_CADRE_EMPLOI() {
-		return getZone(getNOM_EF_CADRE_EMPLOI());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_CADRE Date de création :
-	 * (09/09/11 13:36:47)
-	 * 
-	 */
-	private String[] getLB_CADRE_EMPLOI() {
-		if (LB_CADRE_EMPLOI == null)
-			LB_CADRE_EMPLOI = initialiseLazyLB();
-		return LB_CADRE_EMPLOI;
-	}
-
-	/**
-	 * Setter de la liste: LB_CADRE Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	private void setLB_CADRE_EMPLOI(String[] newLB_CADRE_EMPLOI) {
-		LB_CADRE_EMPLOI = newLB_CADRE_EMPLOI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CADRE Date de création :
-	 * (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI() {
-		return "NOM_LB_CADRE_EMPLOI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CADRE_SELECT Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getNOM_LB_CADRE_EMPLOI_SELECT() {
-		return "NOM_LB_CADRE_EMPLOI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CADRE Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String[] getVAL_LB_CADRE_EMPLOI() {
-		return getLB_CADRE_EMPLOI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CADRE Date de création : (09/09/11 13:36:47)
-	 * 
-	 */
-	public String getVAL_LB_CADRE_EMPLOI_SELECT() {
-		return getZone(getNOM_LB_CADRE_EMPLOI_SELECT());
-	}
-
-	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DIPLOME Date de
 	 * création : (09/09/11 13:37:43)
 	 * 
@@ -1716,14 +1357,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		this.familleCourante = familleCourante;
 	}
 
-	private CadreEmploi getCadreEmploiCourant() {
-		return cadreEmploiCourant;
-	}
-
-	private void setCadreEmploiCourant(CadreEmploi cadreEmploiCourant) {
-		this.cadreEmploiCourant = cadreEmploiCourant;
-	}
-
 	private CodeRome getCodeRomeCourant() {
 		return codeRomeCourant;
 	}
@@ -1738,10 +1371,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 	private void setDiplomeCourant(DiplomeGenerique diplomeCourant) {
 		this.diplomeCourant = diplomeCourant;
-	}
-
-	private void setListeCadreEmploi(ArrayList<CadreEmploi> listeCadreEmploi) {
-		this.listeCadreEmploi = listeCadreEmploi;
 	}
 
 	private void setListeCodeRome(ArrayList<CodeRome> listeCodeRome) {
@@ -1822,26 +1451,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_DIPLOME
 			if (testerParametre(request, getNOM_PB_VALIDER_DIPLOME())) {
 				return performPB_VALIDER_DIPLOME(request);
-			}
-
-			// Si clic sur le bouton PB_ANNULER_CADRE
-			if (testerParametre(request, getNOM_PB_ANNULER_CADRE_EMPLOI())) {
-				return performPB_ANNULER_CADRE_EMPLOI(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_CADRE
-			if (testerParametre(request, getNOM_PB_CREER_CADRE_EMPLOI())) {
-				return performPB_CREER_CADRE_EMPLOI(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_CADRE
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_CADRE_EMPLOI())) {
-				return performPB_SUPPRIMER_CADRE_EMPLOI(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_CADRE
-			if (testerParametre(request, getNOM_PB_VALIDER_CADRE_EMPLOI())) {
-				return performPB_VALIDER_CADRE_EMPLOI(request);
 			}
 
 			// Si clic sur le bouton PB_ANNULER_FAMILLE
@@ -1963,10 +1572,6 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_EF_CODE_FAMILLE() {
 		return getZone(getNOM_EF_CODE_FAMILLE());
-	}
-
-	private ArrayList<CadreEmploi> getListeCadreEmploi() {
-		return listeCadreEmploi;
 	}
 
 	private ArrayList<DiplomeGenerique> getListeDiplome() {
@@ -2271,81 +1876,5 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_LB_CODE_ROME_SELECT() {
 		return getZone(getNOM_LB_CODE_ROME_SELECT());
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de création
-	 * : (13/09/11 15:49:10)
-	 * 
-	 */
-	public String getNOM_LB_FILIERE() {
-		return "NOM_LB_FILIERE";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_FILIERE Date de création : (13/09/11 15:49:10)
-	 * 
-	 */
-	public String[] getVAL_LB_FILIERE() {
-		return getLB_FILIERE();
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de création
-	 * : (13/09/11 15:49:10)
-	 * 
-	 */
-	private String[] getLB_FILIERE() {
-		if (LB_FILIERE == null)
-			LB_FILIERE = initialiseLazyLB();
-		return LB_FILIERE;
-	}
-
-	/**
-	 * Setter de la liste: LB_FILIERE Date de création : (13/09/11 15:49:10)
-	 * 
-	 */
-	private void setLB_FILIERE(String[] newLB_FILIERE) {
-		LB_FILIERE = newLB_FILIERE;
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_FILIERE Date de création : (13/09/11 15:49:10)
-	 * 
-	 */
-	public String getVAL_LB_FILIERE_SELECT() {
-		return getZone(getNOM_LB_FILIERE_SELECT());
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_FILIERE_SELECT Date de création : (13/09/11 15:49:10)
-	 * 
-	 */
-	public String getNOM_LB_FILIERE_SELECT() {
-		return "NOM_LB_FILIERE_SELECT";
-	}
-
-	/**
-	 * Retourne les ecoles dans une table de hashage Date de création :
-	 * (11/06/2003 15:37:08)
-	 * 
-	 * @return Hashtable
-	 */
-	private Hashtable<String, FiliereGrade> getHashFiliere() {
-		if (hashFiliere == null) {
-			hashFiliere = new Hashtable<String, FiliereGrade>();
-		}
-		return hashFiliere;
-	}
-
-	private ArrayList<FiliereGrade> getListeFiliere() {
-		return listeFiliere;
-	}
-
-	private void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
-		this.listeFiliere = listeFiliere;
 	}
 }

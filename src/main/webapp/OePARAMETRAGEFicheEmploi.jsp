@@ -201,52 +201,7 @@
 			</FIELDSET>
 			</div>
 			
-			<div style="width:100%">			
-			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">			
-		    	<legend class="sigp2Legend">Cadre emploi</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
-				<SELECT name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" size="10"
-					style="width:100%;" class="sigp2-liste">
-					<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI(), process.getVAL_LB_CADRE_EMPLOI_SELECT()) %>
-				</SELECT>
-            	</span>            	
-				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CADRE_EMPLOI()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>">
-    	        </div>
-            	<% if (process.getVAL_EF_ACTION_CADRE_EMPLOI()!= null && !process.getVAL_EF_ACTION_CADRE_EMPLOI().equals("")) {%>
-            	<br>
-				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_EF_ACTION_CADRE_EMPLOI())) { %>
-					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />												
-					<label class="sigp2Mandatory" Style="width:50px">Filière:</label>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-					</SELECT>				
-					<br />	
-					<br />				
-					<div Style="width:100%" align="center">					
-					<% if (process.ACTION_CREATION.equals(process.getVAL_EF_ACTION_CADRE_EMPLOI())) { %>
-						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CADRE_EMPLOI()%>"></span>
-					<% } %>
-				<%} else {%>
-					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT readonly="readonly" tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />							
-					<label class="sigp2Mandatory" Style="width:50px">Filière:</label>
-					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-					</SELECT>				
-					<br />
-					<br />					
-					<div Style="width:100%" align="center">
-					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CADRE_EMPLOI()%>"></span>
-			   <%}%>
-				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_CADRE_EMPLOI()%>"></span>
-				</div>
-				<% } %>			
-			</FIELDSET>			
+			<div style="width:100%">		
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">			
 		    	<legend class="sigp2Legend">Code rome</legend>
 				<span class="sigp2-titre" align="center" colspan="2">
