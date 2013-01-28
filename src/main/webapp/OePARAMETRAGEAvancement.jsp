@@ -183,7 +183,9 @@
 				</div>
 				<% } %>
 			</FIELDSET>		
-	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px; float:left;">
+			</div>
+			<div style="width:100%">
+	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Délibérations</legend>
 				<span class="sigp2-titre" align="center" colspan="2">
 				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
