@@ -528,7 +528,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
 				// on met les données dans EAE-FichePoste
 				// logger.info("Req Oracle : Insert table EAE_FDP");
-				performCreerFichePostePrincipale(request, fpPrincipale, eaeCree, true);
+				performCreerFichePostePrincipale(request, fpPrincipale, eaeCree, true, true);
 				performCreerFichePosteSecondaire(request, fpSecondaire, eaeCree);
 				// on met les données dans EAE-FDP-Activites
 				// logger.info("Req Oracle : Insert table EAE-FDP-Activites");
@@ -540,7 +540,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// logger.info("Req AS400 : chercherAgent");
 				// on met les données dans EAE-evalué
 				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a, true, false);
+				performCreerEvalue(request, a, true, false, true);
 				// on met les données dans EAE-Diplome
 				// logger.info("Req Oracle : Insert table EAE-Diplome");
 				performCreerDiplome(request, a);
@@ -668,7 +668,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// logger.info("Req AS400 : chercherAgent");
 				// on met les données dans EAE-evalué
 				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a, true, true);
+				performCreerEvalue(request, a, true, true, true);
 				// on met les données dans EAE-Diplome
 				// logger.info("Req Oracle : Insert table EAE-Diplome");
 				performCreerDiplome(request, a);
@@ -1882,25 +1882,25 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		}
 	}
 
-	private void performCreerFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale, EAE eae, boolean modifDateFonction)
-			throws Exception {
+	private void performCreerFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale, EAE eae, boolean modifDateFonction,
+			boolean modeCreation) throws Exception {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+		EaeFichePoste fpModif = null;
 		// on traite la principale
 		if (fpPrincipale != null) {
 			// on supprime les lignes existantes si elles existent
 			try {
-				EaeFichePoste aSupp = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
+				fpModif = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
 				// on recupere les activites/competence liées
 				try {
-					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(aSupp.getIdEaeFichePoste());
+					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
 						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
 					}
 
-					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(aSupp.getIdEaeFichePoste());
+					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
 						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
@@ -1908,148 +1908,161 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				} catch (Exception e) {
 					// il n'y avait pas d'activites
 				}
-				getEaeFichePosteDao().supprimerEaeFichePoste(aSupp.getIdEaeFichePoste());
 			} catch (Exception e) {
 				// on ne fait rien
+				fpModif = new EaeFichePoste();
 			}
-			EaeFichePoste fichePosteEae = new EaeFichePoste();
-			fichePosteEae.setIdEae(eae.getIdEAE());
-			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
-			if (fpPrincipale.getIdResponsable() != null) {
-				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
+			if (fpModif != null) {
+
+				fpModif.setIdEae(eae.getIdEAE());
+				fpModif.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
+				if (fpPrincipale.getIdResponsable() != null) {
+					AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					}
+					fpModif.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer.valueOf(agentResp.getIdAgent()));
+
+				}
+				fpModif.setPrimaire(true);
+				fpModif.setCodeService(fpPrincipale.getIdServi());
+				Service direction = Service.getDirection(getTransaction(), fpPrincipale.getIdServi());
+				fpModif.setDirectionServ(direction != null ? direction.getLibService() : null);
+				Service service = Service.chercherService(getTransaction(), fpPrincipale.getIdServi());
+				fpModif.setServiceServ(service != null ? service.getLibService() : null);
+				Service section = Service.getSection(getTransaction(), fpPrincipale.getIdServi());
+				fpModif.setSectionServ(section != null ? section.getLibService() : null);
+				// pour l'emploi
+				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
-				fichePosteEae.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer.valueOf(agentResp.getIdAgent()));
-
-			}
-			fichePosteEae.setPrimaire(true);
-			fichePosteEae.setCodeService(fpPrincipale.getIdServi());
-			Service direction = Service.getDirection(getTransaction(), fpPrincipale.getIdServi());
-			fichePosteEae.setDirectionServ(direction != null ? direction.getLibService() : null);
-			Service service = Service.chercherService(getTransaction(), fpPrincipale.getIdServi());
-			fichePosteEae.setServiceServ(service != null ? service.getLibService() : null);
-			Service section = Service.getSection(getTransaction(), fpPrincipale.getIdServi());
-			fichePosteEae.setSectionServ(section != null ? section.getLibService() : null);
-			// pour l'emploi
-			FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (fe != null) {
-				fichePosteEae.setEmploi(fe.getNomMetierEmploi());
-			}
-			// pour la fonction
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fpPrincipale.getIdTitrePoste());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
-				fichePosteEae.setFonction(tp.getLibTitrePoste());
-			}
-			if (modifDateFonction) {
-				// on cherche toutes les affectations sur la FDP
-				// on prend la date la plus ancienne
-				ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpPrincipale);
-				if (listeAffectationSurMemeFDP.size() > 0) {
-					fichePosteEae.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-							|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
-							.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+				if (fe != null) {
+					fpModif.setEmploi(fe.getNomMetierEmploi());
 				}
-			}
-			// grade du poste
-			Grade g = Grade.chercherGrade(getTransaction(), fpPrincipale.getCodeGrade());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
-				fichePosteEae.setGradePoste(g.getGrade());
-			}
-			EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpPrincipale.getIdEntiteGeo());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
-				fichePosteEae.setLocalisation(lieu.getLibEntiteGeo());
-			}
-			fichePosteEae.setMission(fpPrincipale.getMissions());
-			if (fpPrincipale.getIdResponsable() != null) {
-				FichePoste fpResp = FichePoste.chercherFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
+				// pour la fonction
+				TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fpPrincipale.getIdTitrePoste());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
-					TitrePoste tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResp.getIdTitrePoste());
+					fpModif.setFonction(tp.getLibTitrePoste());
+				}
+				if (modifDateFonction) {
+					// on cherche toutes les affectations sur la FDP
+					// on prend la date la plus ancienne
+					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpPrincipale);
+					if (listeAffectationSurMemeFDP.size() > 0) {
+						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
+								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+								.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+					}
+				}
+				// grade du poste
+				Grade g = Grade.chercherGrade(getTransaction(), fpPrincipale.getCodeGrade());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+					fpModif.setGradePoste(g.getGrade());
+				}
+				EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpPrincipale.getIdEntiteGeo());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+					fpModif.setLocalisation(lieu.getLibEntiteGeo());
+				}
+				fpModif.setMission(fpPrincipale.getMissions());
+				if (fpPrincipale.getIdResponsable() != null) {
+					FichePoste fpResp = FichePoste.chercherFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
-						fichePosteEae.setFonctionResponsable(tpResp.getLibTitrePoste());
-					}
-					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp.getIdFichePoste());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (affResp != null && affResp.getIdAgent() != null) {
-						AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), affResp.getIdAgent());
+						TitrePoste tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResp.getIdTitrePoste());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							fpModif.setFonctionResponsable(tpResp.getLibTitrePoste());
+						}
+						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp.getIdFichePoste());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
-						if (agentResp != null && agentResp.getIdAgent() != null) {
-							fichePosteEae.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
-									|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp
-									.getDateDerniereEmbauche()));
-						}
-
-						// on cherche toutes les affectations sur la FDP du
-						// responsable
-						// on prend la date la plus ancienne
-						if (fpResp != null && fpResp.getIdServi() != null) {
-							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpResp);
-							if (listeAffectationRespSurMemeFDP.size() > 0) {
-								fichePosteEae.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
-										|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
-										.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
+						if (affResp != null && affResp.getIdAgent() != null) {
+							AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), affResp.getIdAgent());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
 							}
-							// on cherche toutes les affectations sur le meme
-							// service et
+							if (agentResp != null && agentResp.getIdAgent() != null) {
+								fpModif.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
+										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp
+										.getDateDerniereEmbauche()));
+							}
+
+							// on cherche toutes les affectations sur la FDP du
+							// responsable
 							// on prend la date la plus ancienne
-							// NB : pour les affectations successives
-							ArrayList<Affectation> listeAffectationRespService = Affectation.listerAffectationAgentAvecService(getTransaction(),
-									agentResp.getIdAgent(), fpResp.getIdServi());
-							String dateDebutService = null;
-							for (int i = 0; i < listeAffectationRespService.size(); i++) {
-								Affectation affCours = listeAffectationRespService.get(i);
-								if (listeAffectationRespService.size() > i + 1) {
-									if (listeAffectationRespService.get(i + 1) != null) {
-										Affectation affPrecedente = listeAffectationRespService.get(i + 1);
-										if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
-											dateDebutService = affPrecedente.getDateDebutAff();
+							if (fpResp != null && fpResp.getIdServi() != null) {
+								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpResp);
+								if (listeAffectationRespSurMemeFDP.size() > 0) {
+									fpModif.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
+											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+											.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
+								}
+								// on cherche toutes les affectations sur le
+								// meme
+								// service et
+								// on prend la date la plus ancienne
+								// NB : pour les affectations successives
+								ArrayList<Affectation> listeAffectationRespService = Affectation.listerAffectationAgentAvecService(getTransaction(),
+										agentResp.getIdAgent(), fpResp.getIdServi());
+								String dateDebutService = null;
+								for (int i = 0; i < listeAffectationRespService.size(); i++) {
+									Affectation affCours = listeAffectationRespService.get(i);
+									if (listeAffectationRespService.size() > i + 1) {
+										if (listeAffectationRespService.get(i + 1) != null) {
+											Affectation affPrecedente = listeAffectationRespService.get(i + 1);
+											if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+												dateDebutService = affPrecedente.getDateDebutAff();
+											} else {
+												dateDebutService = affCours.getDateDebutAff();
+											}
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
 										}
 									} else {
 										dateDebutService = affCours.getDateDebutAff();
 									}
-								} else {
-									dateDebutService = affCours.getDateDebutAff();
 								}
+								fpModif.setDateEntreeServiceResponsable(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
+										: sdf.parse(dateDebutService));
 							}
-							fichePosteEae
-									.setDateEntreeServiceResponsable(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
-											: sdf.parse(dateDebutService));
 						}
 					}
+
+				}
+
+				if (modeCreation) {
+					// on créer la ligne
+					// on recupere l'id
+					Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
+					setIdCreerFichePostePrimaire(idCreer);
+					getEaeFichePosteDao().creerEaeFichePoste(idCreer, fpModif.getIdEae(), fpModif.getIdSHD(), fpModif.isPrimaire(),
+							fpModif.getDirectionServ(), fpModif.getServiceServ(), fpModif.getSectionServ(), fpModif.getEmploi(),
+							fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(), fpModif.getLocalisation(),
+							fpModif.getMission(), fpModif.getFonctionResponsable(), fpModif.getDateEntreeServiceResponsable(),
+							fpModif.getDateEntreeCollectiviteResponsable(), fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(),
+							fpModif.getIdSirhFichePoste());
+
+				} else {
+					setIdCreerFichePostePrimaire(fpModif.getIdEaeFichePoste());
+					getEaeFichePosteDao().modifierEaeFichePoste(fpModif.getIdEaeFichePoste(), fpModif.getIdEae(), fpModif.getIdSHD(),
+							fpModif.isPrimaire(), fpModif.getDirectionServ(), fpModif.getServiceServ(), fpModif.getSectionServ(),
+							fpModif.getEmploi(), fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(),
+							fpModif.getLocalisation(), fpModif.getMission(), fpModif.getFonctionResponsable(),
+							fpModif.getDateEntreeServiceResponsable(), fpModif.getDateEntreeCollectiviteResponsable(),
+							fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(), fpModif.getIdSirhFichePoste());
 				}
 
 			}
-
-			// on créer la ligne
-			// on recupere l'id
-			Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
-			setIdCreerFichePostePrimaire(idCreer);
-			getEaeFichePosteDao().creerEaeFichePoste(idCreer, fichePosteEae.getIdEae(), fichePosteEae.getIdSHD(), fichePosteEae.isPrimaire(),
-					fichePosteEae.getDirectionServ(), fichePosteEae.getServiceServ(), fichePosteEae.getSectionServ(), fichePosteEae.getEmploi(),
-					fichePosteEae.getFonction(), fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
-					fichePosteEae.getLocalisation(), fichePosteEae.getMission(), fichePosteEae.getFonctionResponsable(),
-					fichePosteEae.getDateEntreeServiceResponsable(), fichePosteEae.getDateEntreeCollectiviteResponsable(),
-					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(), fichePosteEae.getIdSirhFichePoste());
-
 		}
 	}
 
@@ -2232,151 +2245,220 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		}
 	}
 
-	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration, boolean agentDetach)
-			throws Exception {
+	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration, boolean agentDetach,
+			boolean modeCreation) throws Exception {
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// on supprime la ligne xistante si elle existe
+		EaeEvalue evalAModif = null;
+		// on cherche la ligen de l'EAE Evalué
 		try {
-			EaeEvalue evalASupp = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
-			getEaeEvalueDao().supprimerEaeEvalue(evalASupp.getIdEaeEvalue());
+			evalAModif = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
 		} catch (Exception e) {
 			// on en fait rien
+			evalAModif = new EaeEvalue();
 		}
-		EaeEvalue agentEvalue = new EaeEvalue();
-		agentEvalue.setIdEae(getEaeCourant().getIdEAE());
-		agentEvalue.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		// on recupere l'affectation en cours
-		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
+		if (evalAModif != null) {
 
-		if (aff != null && aff.getIdFichePoste() != null) {
-			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			// on cherche toutes les affectations sur le meme
-			// service et
-			// on prend la date la plus ancienne
-			// NB : pour les affectations successives
-			ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(getTransaction(), ag.getIdAgent(),
-					fp.getIdServi());
-			String dateDebutService = null;
-			for (int i = 0; i < listeAffectationService.size(); i++) {
-				Affectation affCours = listeAffectationService.get(i);
-				if (listeAffectationService.size() > i + 1) {
-					if (listeAffectationService.get(i + 1) != null) {
-						Affectation affPrecedente = listeAffectationService.get(i + 1);
-						if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
-							dateDebutService = affPrecedente.getDateDebutAff();
+			evalAModif.setIdEae(getEaeCourant().getIdEAE());
+			evalAModif.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+			// on recupere l'affectation en cours
+			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+
+			if (aff != null && aff.getIdFichePoste() != null) {
+				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+				// on cherche toutes les affectations sur le meme
+				// service et
+				// on prend la date la plus ancienne
+				// NB : pour les affectations successives
+				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(getTransaction(), ag.getIdAgent(),
+						fp.getIdServi());
+				String dateDebutService = null;
+				for (int i = 0; i < listeAffectationService.size(); i++) {
+					Affectation affCours = listeAffectationService.get(i);
+					if (listeAffectationService.size() > i + 1) {
+						if (listeAffectationService.get(i + 1) != null) {
+							Affectation affPrecedente = listeAffectationService.get(i + 1);
+							if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+								dateDebutService = affPrecedente.getDateDebutAff();
+							} else {
+								dateDebutService = affCours.getDateDebutAff();
+							}
 						} else {
 							dateDebutService = affCours.getDateDebutAff();
 						}
 					} else {
 						dateDebutService = affCours.getDateDebutAff();
 					}
-				} else {
-					dateDebutService = affCours.getDateDebutAff();
 				}
+				evalAModif.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
+						.parse(dateDebutService));
 			}
-			agentEvalue.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
-					.parse(dateDebutService));
-		}
 
-		agentEvalue.setDateEntreeCollectivite(ag.getDateDerniereEmbauche() == null || ag.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-				|| ag.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(ag.getDateDerniereEmbauche()));
-		// on cherche la date la plus ancienne dans les carrieres pour le statut
-		// fonctionnaire
-		Carriere carr = Carriere.chercherCarriereFonctionnaireAncienne(getTransaction(), ag.getNoMatricule());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		Date dateCarriere = null;
-		if (carr != null && carr.getNoMatricule() != null) {
-			dateCarriere = sdf.parse(carr.getDateDebut());
-		}
-		// idem dans la liste des autres administration
-		AutreAdministrationAgent autreAdmin = AutreAdministrationAgent.chercherAutreAdministrationAgentFonctionnaireAncienne(getTransaction(),
-				ag.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		Date dateAutreAdmin = null;
-		if (autreAdmin != null && autreAdmin.getIdAutreAdmin() != null) {
-			dateAutreAdmin = sdf.parse(autreAdmin.getDateEntree());
-		}
-
-		if (dateAutreAdmin == null && dateCarriere != null) {
-			agentEvalue.setDateEntreeFonctionnaire(dateCarriere);
-		} else if (dateAutreAdmin != null && dateCarriere == null) {
-			agentEvalue.setDateEntreeFonctionnaire(dateAutreAdmin);
-		} else if (dateAutreAdmin != null && dateCarriere != null) {
-			if (dateAutreAdmin.before(dateCarriere)) {
-				agentEvalue.setDateEntreeFonctionnaire(dateAutreAdmin);
-			} else {
-				agentEvalue.setDateEntreeFonctionnaire(dateCarriere);
-			}
-		}
-		if (miseAjourDateAdministration) {
-			// on cherche la date la plus ancienne dans les PA de mairie.SPADMN
-			PositionAdmAgent paAncienne = PositionAdmAgent.chercherPositionAdmAgentAncienne(getTransaction(), ag.getNoMatricule());
+			evalAModif.setDateEntreeCollectivite(ag.getDateDerniereEmbauche() == null || ag.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+					|| ag.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(ag.getDateDerniereEmbauche()));
+			// on cherche la date la plus ancienne dans les carrieres pour le
+			// statut
+			// fonctionnaire
+			Carriere carr = Carriere.chercherCarriereFonctionnaireAncienne(getTransaction(), ag.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			Date dateSpadmnAncienne = null;
-			if (paAncienne != null && paAncienne.getDatdeb() != null && !paAncienne.getDatdeb().equals(Const.ZERO)) {
-				dateSpadmnAncienne = sdf.parse(paAncienne.getDatdeb());
+			Date dateCarriere = null;
+			if (carr != null && carr.getNoMatricule() != null) {
+				dateCarriere = sdf.parse(carr.getDateDebut());
 			}
 			// idem dans la liste des autres administration
-			AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent.chercherAutreAdministrationAgentAncienne(getTransaction(),
+			AutreAdministrationAgent autreAdmin = AutreAdministrationAgent.chercherAutreAdministrationAgentFonctionnaireAncienne(getTransaction(),
 					ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			Date dateAutreAdminAncienne = null;
-			if (autreAdminAncienne != null && autreAdminAncienne.getIdAutreAdmin() != null) {
-				dateAutreAdminAncienne = sdf.parse(autreAdminAncienne.getDateEntree());
+			Date dateAutreAdmin = null;
+			if (autreAdmin != null && autreAdmin.getIdAutreAdmin() != null) {
+				dateAutreAdmin = sdf.parse(autreAdmin.getDateEntree());
 			}
 
-			if (dateAutreAdminAncienne == null && dateSpadmnAncienne != null) {
-				agentEvalue.setDateEntreeAdministration(dateSpadmnAncienne);
-			} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne == null) {
-				agentEvalue.setDateEntreeAdministration(dateAutreAdminAncienne);
-			} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne != null) {
-				if (dateAutreAdminAncienne.before(dateSpadmnAncienne)) {
-					agentEvalue.setDateEntreeAdministration(dateAutreAdminAncienne);
+			if (dateAutreAdmin == null && dateCarriere != null) {
+				evalAModif.setDateEntreeFonctionnaire(dateCarriere);
+			} else if (dateAutreAdmin != null && dateCarriere == null) {
+				evalAModif.setDateEntreeFonctionnaire(dateAutreAdmin);
+			} else if (dateAutreAdmin != null && dateCarriere != null) {
+				if (dateAutreAdmin.before(dateCarriere)) {
+					evalAModif.setDateEntreeFonctionnaire(dateAutreAdmin);
 				} else {
-					agentEvalue.setDateEntreeAdministration(dateSpadmnAncienne);
+					evalAModif.setDateEntreeFonctionnaire(dateCarriere);
 				}
 			}
-		}
+			if (miseAjourDateAdministration) {
+				// on cherche la date la plus ancienne dans les PA de
+				// mairie.SPADMN
+				PositionAdmAgent paAncienne = PositionAdmAgent.chercherPositionAdmAgentAncienne(getTransaction(), ag.getNoMatricule());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+				Date dateSpadmnAncienne = null;
+				if (paAncienne != null && paAncienne.getDatdeb() != null && !paAncienne.getDatdeb().equals(Const.ZERO)) {
+					dateSpadmnAncienne = sdf.parse(paAncienne.getDatdeb());
+				}
+				// idem dans la liste des autres administration
+				AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent.chercherAutreAdministrationAgentAncienne(getTransaction(),
+						ag.getIdAgent());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+				Date dateAutreAdminAncienne = null;
+				if (autreAdminAncienne != null && autreAdminAncienne.getIdAutreAdmin() != null) {
+					dateAutreAdminAncienne = sdf.parse(autreAdminAncienne.getDateEntree());
+				}
 
-		Carriere carrCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		if (carrCours != null & carrCours.getNoMatricule() != null) {
-			agentEvalue.setStatut(Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()));
-			if (agentEvalue.getStatut().equals("A")) {
-				agentEvalue.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie()).getLiCate());
+				if (dateAutreAdminAncienne == null && dateSpadmnAncienne != null) {
+					evalAModif.setDateEntreeAdministration(dateSpadmnAncienne);
+				} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne == null) {
+					evalAModif.setDateEntreeAdministration(dateAutreAdminAncienne);
+				} else if (dateAutreAdminAncienne != null && dateSpadmnAncienne != null) {
+					if (dateAutreAdminAncienne.before(dateSpadmnAncienne)) {
+						evalAModif.setDateEntreeAdministration(dateAutreAdminAncienne);
+					} else {
+						evalAModif.setDateEntreeAdministration(dateSpadmnAncienne);
+					}
+				}
 			}
-			if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("F")) {
-				// pour le cadre
-				StatutCarriere statCarr = StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie());
+
+			Carriere carrCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+			if (carrCours != null & carrCours.getNoMatricule() != null) {
+				evalAModif.setStatut(Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()));
+				if (evalAModif.getStatut().equals("A")) {
+					evalAModif.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie()).getLiCate());
+				}
+				if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("F")) {
+					// pour le cadre
+					StatutCarriere statCarr = StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						evalAModif.setCadre(statCarr.getLiCate());
+					}
+					// pour la categorie
+					Grade grade = Grade.chercherGrade(getTransaction(), carrCours.getCodeGrade());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						// pour le grade
+						// on cherche la classe si elle existe
+						String classeString = Const.CHAINE_VIDE;
+						if (grade.getCodeClasse() != null && !grade.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+							Classe classe = Classe.chercherClasse(getTransaction(), grade.getCodeClasse());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							}
+							if (classe != null && classe.getLibClasse() != null) {
+								classeString = classe.getLibClasse();
+							}
+						}
+						evalAModif.setNbMoisDureeMin(grade.getDureeMin().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMin()));
+						evalAModif.setNbMoisDureeMoy(grade.getDureeMoy().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMoy()));
+						evalAModif.setNbMoisDureeMax(grade.getDureeMax().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMax()));
+
+						evalAModif.setGrade(grade.getGrade() + " " + classeString);
+						GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							evalAModif.setCategorie(gradeGen.getCodCadre());
+						}
+						// pour l'echelon
+						Echelon ech = Echelon.chercherEchelon(getTransaction(), grade.getCodeEchelon());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							evalAModif.setEchelon(ech.getLibEchelon());
+						}
+					}
+				} else if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("CC")) {
+					// pour la classification
+					Grade grade = Grade.chercherGrade(getTransaction(), carrCours.getCodeGrade());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						evalAModif.setClassification(grade.getLibGrade());
+					}
+				}
+			}
+
+			// pour l'anciennete on met le resultat en nb de jours
+			if (carrCours != null && carrCours.getDateDebut() != null) {
+				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
+				evalAModif.setAncienneteEchelonJours(nbJours);
+			}
+
+			// on regarde dans l'avancement pour le nouveau grade, le nouvel
+			// echelon
+			// et la date d'avancement
+			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(),
+					ag.getIdAgent());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			} else {
+				if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
+					// attention dans le cas des categorie 4 on a pas de date
+					// moyenne avct
+					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf
+							.parse(avct.getDateAvctMoy()));
+				}
+				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
-					agentEvalue.setCadre(statCarr.getLiCate());
-				}
-				// pour la categorie
-				Grade grade = Grade.chercherGrade(getTransaction(), carrCours.getCodeGrade());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					// pour le grade
 					// on cherche la classe si elle existe
 					String classeString = Const.CHAINE_VIDE;
-					if (grade.getCodeClasse() != null && !grade.getCodeClasse().equals(Const.CHAINE_VIDE)) {
-						Classe classe = Classe.chercherClasse(getTransaction(), grade.getCodeClasse());
+					if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+						Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -2384,108 +2466,55 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							classeString = classe.getLibClasse();
 						}
 					}
-					agentEvalue.setNbMoisDureeMin(grade.getDureeMin().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMin()));
-					agentEvalue.setNbMoisDureeMoy(grade.getDureeMoy().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMoy()));
-					agentEvalue.setNbMoisDureeMax(grade.getDureeMax().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMax()));
-
-					agentEvalue.setGrade(grade.getGrade() + " " + classeString);
-					GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
+					evalAModif.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
+						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						}
+						if (motif != null && motif.getCodeMotifAvct() != null) {
+							evalAModif.setTypeAvct(motif.getCodeMotifAvct());
+						}
+					}
+				}
+				if (gradeAvct != null && gradeAvct.getCodeEchelon() != null) {
+					Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeAvct.getCodeEchelon());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
-						agentEvalue.setCategorie(gradeGen.getCodCadre());
-					}
-					// pour l'echelon
-					Echelon ech = Echelon.chercherEchelon(getTransaction(), grade.getCodeEchelon());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
-						agentEvalue.setEchelon(ech.getLibEchelon());
+						evalAModif.setNouvEchelon(echAvct.getLibEchelon());
 					}
 				}
-			} else if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("CC")) {
-				// pour la classification
-				Grade grade = Grade.chercherGrade(getTransaction(), carrCours.getCodeGrade());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					agentEvalue.setClassification(grade.getLibGrade());
-				}
 			}
-		}
 
-		// pour l'anciennete on met le resultat en nb de jours
-		if (carrCours != null && carrCours.getDateDebut() != null) {
-			int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
-			agentEvalue.setAncienneteEchelonJours(nbJours);
-		}
-
-		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon
-		// et la date d'avancement
-		Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(),
-				ag.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		} else {
-			if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
-				// attention dans le cas des categorie 4 on a pas de date
-				// moyenne avct
-				agentEvalue.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avct
-						.getDateAvctMoy()));
-			}
-			Grade gradeAvct = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
+			// pour la PA
+			PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				// on cherche la classe si elle existe
-				String classeString = Const.CHAINE_VIDE;
-				if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
-					Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (classe != null && classe.getLibClasse() != null) {
-						classeString = classe.getLibClasse();
-					}
-				}
-				agentEvalue.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
-				if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
-					MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (motif != null && motif.getCodeMotifAvct() != null) {
-						agentEvalue.setTypeAvct(motif.getCodeMotifAvct());
-					}
-				}
+				evalAModif.setPosition(paCours.getPositionAdmEAE(paCours.getCdpadm()));
 			}
-			if (gradeAvct != null && gradeAvct.getCodeEchelon() != null) {
-				Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeAvct.getCodeEchelon());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					agentEvalue.setNouvEchelon(echAvct.getLibEchelon());
-				}
+
+			evalAModif.setAgentDetache(agentDetach);
+			if (modeCreation) {
+				// enfin on créer la ligne
+				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(), evalAModif.getDateEntreeService(),
+						evalAModif.getDateEntreeCollectivite(), evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
+						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(), evalAModif.getCategorie(),
+						evalAModif.getClassification(), evalAModif.getGrade(), evalAModif.getEchelon(), evalAModif.getDateEffetAvct(),
+						evalAModif.getNouvGrade(), evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
+						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(), evalAModif.getNbMoisDureeMoy(),
+						evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
+			} else {
+				getEaeEvalueDao().modifierEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(), evalAModif.getDateEntreeService(),
+						evalAModif.getDateEntreeCollectivite(), evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
+						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(), evalAModif.getCategorie(),
+						evalAModif.getClassification(), evalAModif.getGrade(), evalAModif.getEchelon(), evalAModif.getDateEffetAvct(),
+						evalAModif.getNouvGrade(), evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
+						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(), evalAModif.getNbMoisDureeMoy(),
+						evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
 			}
 		}
-
-		// pour la PA
-		PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		} else {
-			agentEvalue.setPosition(paCours.getPositionAdmEAE(paCours.getCdpadm()));
-		}
-
-		agentEvalue.setAgentDetache(agentDetach);
-		// enfin on créer la ligne
-		getEaeEvalueDao().creerEaeEvalue(agentEvalue.getIdEae(), agentEvalue.getIdAgent(), agentEvalue.getDateEntreeService(),
-				agentEvalue.getDateEntreeCollectivite(), agentEvalue.getDateEntreeFonctionnaire(), agentEvalue.getDateEntreeAdministration(),
-				agentEvalue.getStatut(), agentEvalue.getAncienneteEchelonJours(), agentEvalue.getCadre(), agentEvalue.getCategorie(),
-				agentEvalue.getClassification(), agentEvalue.getGrade(), agentEvalue.getEchelon(), agentEvalue.getDateEffetAvct(),
-				agentEvalue.getNouvGrade(), agentEvalue.getNouvEchelon(), agentEvalue.getPosition(), agentEvalue.getTypeAvct(),
-				agentEvalue.getPrecisionStatut(), agentEvalue.getNbMoisDureeMin(), agentEvalue.getNbMoisDureeMoy(), agentEvalue.getNbMoisDureeMax(),
-				agentEvalue.isAgentDetache());
 	}
 
 	public Integer getIdCreerFichePosteSecondaire() {
@@ -2982,9 +3011,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		performCreerEvalue(request, ag, false, evalue.isAgentDetache());
+		performCreerEvalue(request, ag, false, evalue.isAgentDetache(), false);
 		// on met les données dans EAE-FichePoste
-		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false);
+		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
 		// on met les données dans EAE-FDP-Activites
 		performCreerActivitesFichePostePrincipale(request, fpPrincipale);

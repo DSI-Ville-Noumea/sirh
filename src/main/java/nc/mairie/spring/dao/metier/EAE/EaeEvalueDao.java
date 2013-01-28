@@ -84,12 +84,6 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	}
 
 	@Override
-	public void supprimerEaeEvalue(Integer idEaeEvalue) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_EAE_EVALUE + "=?";
-		jdbcTemplate.update(sql, new Object[] { idEaeEvalue });
-	}
-
-	@Override
 	public ArrayList<EaeEvalue> listerEaeEvalue(Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where  " + CHAMP_ID_AGENT + "=?";
 
@@ -135,5 +129,25 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			listeEaeEvalue.add(evalue);
 		}
 		return listeEaeEvalue;
+	}
+
+	@Override
+	public void modifierEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
+			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
+			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentDetache) throws Exception {
+
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_DATE_ENTREE_SERVICE + "=?,"
+				+ CHAMP_DATE_ENTREE_COLLECTIVITE + "=?," + CHAMP_DATE_ENTREE_FONCTIONNAIRE + "=?," + CHAMP_DATE_ENTREE_ADMINISTRATION + "=?,"
+				+ CHAMP_STATUT + "=?," + CHAMP_ANCIENNETE_ECHELON_JOURS + "=?," + CHAMP_CADRE + "=?," + CHAMP_CATEGORIE + "=?,"
+				+ CHAMP_CLASSIFICATION + "=?," + CHAMP_GRADE + "=?," + CHAMP_ECHELON + "=?," + CHAMP_DATE_EFFET_AVCT + "=?," + CHAMP_NOUV_GRADE
+				+ "=?," + CHAMP_NOUV_ECHELON + "=?," + CHAMP_POSITION + "=?," + CHAMP_TYPE_AVCT + "=?," + CHAMP_STATUT_PRECISION + "=?,"
+				+ CHAMP_AVCT_DUR_MIN + "=?," + CHAMP_AVCT_DUR_MOY + "=?," + CHAMP_AVCT_DUR_MAX + "=?," + CHAMP_AGENT_DETACHE + "=? where "
+				+ CHAMP_ID_EAE + "=?";
+
+		jdbcTemplate.update(sql, new Object[] { idAgent, dateEntreeService, dateEntreeCollectivite, dateEntreeFonctionnaire,
+				dateEntreeAdministration, statut, ancienneteEchelon, cadre, categorie, classification, grade, echelon, dateEffectAvct, nouvGrade,
+				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax, agentDetache, idEae });
+
 	}
 }
