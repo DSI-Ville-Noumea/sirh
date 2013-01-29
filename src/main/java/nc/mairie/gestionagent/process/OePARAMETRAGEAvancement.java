@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
 import nc.mairie.spring.dao.metier.parametrage.RepresentantDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao;
+import nc.mairie.spring.domain.metier.parametrage.Cap;
 import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
 import nc.mairie.spring.domain.metier.parametrage.Representant;
@@ -37,6 +39,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private String[] LB_TYPE_REPRESENTANT;
 	private String[] LB_DELIBERATION;
 	private String[] LB_TYPE_DELIBERATION;
+	private String[] LB_CAP;
 
 	private ArrayList<MotifAvancement> listeMotif;
 	private MotifAvancement motifCourant;
@@ -58,6 +61,10 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private DeliberationDao deliberationDao;
 
 	private ArrayList<String> listeTypeDeliberation;
+
+	private ArrayList<Cap> listeCap;
+	private Cap capCourant;
+	private CapDao capDao;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
@@ -105,6 +112,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeTypeDeliberation().size() == 0) {
 			initialiseListeTypeDeliberation(request);
 		}
+		if (getListeCap().size() == 0) {
+			initialiseListeCap(request);
+		}
 	}
 
 	private void initialiseDao() {
@@ -121,6 +131,31 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 		if (getDeliberationDao() == null) {
 			setDeliberationDao((DeliberationDao) context.getBean("deliberationDao"));
+		}
+		if (getCapDao() == null) {
+			setCapDao((CapDao) context.getBean("capDao"));
+		}
+	}
+
+	/**
+	 * Initialisation de la listes des cap Date de création : (14/09/11)
+	 * 
+	 */
+	private void initialiseListeCap(HttpServletRequest request) throws Exception {
+		setListeCap(getCapDao().listerCap());
+		if (getListeCap().size() != 0) {
+			int tailles[] = { 10, 10 };
+			String padding[] = { "G", "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeCap().listIterator(); list.hasNext();) {
+				Cap cap = (Cap) list.next();
+				String ligne[] = { cap.getCodeCap(), cap.getRefCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_CAP(aFormat.getListeFormatee());
+		} else {
+			setLB_CAP(null);
 		}
 	}
 
@@ -1846,5 +1881,307 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_LB_TYPE_DELIBERATION_SELECT() {
 		return getZone(getNOM_LB_TYPE_DELIBERATION_SELECT());
+	}
+
+	public String[] getLB_CAP() {
+		if (LB_CAP == null)
+			LB_CAP = initialiseLazyLB();
+		return LB_CAP;
+	}
+
+	public void setLB_CAP(String[] lB_CAP) {
+		LB_CAP = lB_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de création :
+	 * (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_CAP() {
+		return "NOM_LB_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CAP_SELECT Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_CAP_SELECT() {
+		return "NOM_LB_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String[] getVAL_LB_CAP() {
+		return getLB_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_LB_CAP_SELECT() {
+		return getZone(getNOM_LB_CAP_SELECT());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_CAP Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_ST_ACTION_CAP() {
+		return "NOM_ST_ACTION_CAP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_CAP
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_ST_ACTION_CAP() {
+		return getZone(getNOM_ST_ACTION_CAP());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_CAP Date de création
+	 * : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER_CAP() {
+		return "NOM_PB_ANNULER_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_ANNULER_CAP(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_CAP(), "");
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_CAP Date de création :
+	 * (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_CREER_CAP() {
+		return "NOM_PB_CREER_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_CREER_CAP(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_CAP(), ACTION_CREATION);
+		addZone(getNOM_EF_CODE_CAP(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_REF_CAP(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_CAP Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_CAP() {
+		return "NOM_PB_SUPPRIMER_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_CAP(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
+		if (indice != -1 && indice < getListeCap().size()) {
+			Cap cap = getListeCap().get(indice);
+			setCapCourant(cap);
+
+			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
+			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
+
+			addZone(getNOM_ST_ACTION_CAP(), ACTION_SUPPRESSION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "cap"));
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_CAP Date de création
+	 * : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER_CAP() {
+		return "NOM_PB_VALIDER_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public boolean performPB_VALIDER_CAP(HttpServletRequest request) throws Exception {
+		if (!performControlerSaisieCap(request))
+			return false;
+
+		if (!performControlerRegleGestionCap(request))
+			return false;
+
+		if (getVAL_ST_ACTION_CAP() != null && getVAL_ST_ACTION_CAP() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+				setCapCourant(new Cap());
+
+				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
+				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
+				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
+				getListeCap().add(getCapCourant());
+
+			} else if (getVAL_ST_ACTION_CAP().equals(ACTION_SUPPRESSION)) {
+				getCapDao().supprimerCap(getCapCourant().getIdCap());
+				getListeCap().remove(getCapCourant());
+				setCapCourant(null);
+			}
+			initialiseListeCap(request);
+			addZone(getNOM_ST_ACTION_CAP(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+
+	public ArrayList<Cap> getListeCap() {
+		return listeCap;
+	}
+
+	public void setListeCap(ArrayList<Cap> listeCap) {
+		this.listeCap = listeCap;
+	}
+
+	public Cap getCapCourant() {
+		return capCourant;
+	}
+
+	public void setCapCourant(Cap capCourant) {
+		this.capCourant = capCourant;
+	}
+
+	public CapDao getCapDao() {
+		return capDao;
+	}
+
+	public void setCapDao(CapDao capDao) {
+		this.capDao = capDao;
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_CAP Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_CODE_CAP() {
+		return "NOM_EF_CODE_CAP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_CODE_CAP() {
+		return getZone(getNOM_EF_CODE_CAP());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_CAP Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_REF_CAP() {
+		return "NOM_EF_REF_CAP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_REF_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_REF_CAP() {
+		return getZone(getNOM_EF_REF_CAP());
+	}
+
+	/**
+	 * Contrôle les zones saisies d'une cap Date de création : (14/09/11)
+	 */
+	private boolean performControlerSaisieCap(HttpServletRequest request) throws Exception {
+		// Verification reference cap not null
+		if (getZone(getNOM_EF_REF_CAP()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "référence"));
+			return false;
+		}
+		// Verification code cap not null
+		if (getZone(getNOM_EF_CODE_CAP()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Contrôle les règles de gestion d'une cap Date de création : (14/09/11)
+	 */
+	private boolean performControlerRegleGestionCap(HttpServletRequest request) throws Exception {
+		// Verification si suppression d'une cap utilisée sur un
+		// avancement
+		// TODO
+
+		/*
+		 * if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION) &&
+		 * Avancement.listerAvancementAvecMotif(getTransaction(),
+		 * getMotifCourant()).size() > 0) { // "ERR989", //
+		 * "Suppression impossible. Il existe au moins @ rattaché à @."
+		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR989",
+		 * "un avancement", "ce motif d'avancement")); return false; }
+		 */
+
+		// Vérification des contraintes d'unicité de la cap
+		if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+
+			for (Cap cap : getListeCap()) {
+				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }

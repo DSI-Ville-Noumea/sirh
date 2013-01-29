@@ -247,6 +247,51 @@
 				</div>
 				<% } %>
 			</FIELDSET>		
+	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
+		    	<legend class="sigp2Legend">CAP</legend>
+				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
+				<span class="sigp2-saisie" style="position:relative;">Reférence</span>
+				<SELECT name="<%= process.getNOM_LB_CAP() %>" size="10"
+					style="width:100%;" class="sigp2-liste">
+					<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
+				</SELECT>
+            	</span>
+
+				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CAP()%>">
+    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CAP()%>">
+    	        </div>
+            	
+            	<% if (process.getVAL_ST_ACTION_CAP()!= null && !process.getVAL_ST_ACTION_CAP().equals("")) {%>
+            	<br>
+	            
+				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_CAP())) { %>
+					<label class="sigp2Mandatory" Style="width:50px">Code :</label>
+					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Référence CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_REF_CAP() %>" size="100" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />	
+					
+					<div Style="width:100%" align="center">
+					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
+						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
+					<% } %>
+				<%} else {%>
+					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:50px">Référence CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="100" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />		
+					<div Style="width:100%" align="center">
+					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
+			   <%}%>
+				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_CAP()%>"></span>
+				</div>
+				<% } %>
+			</FIELDSET>	
 			</div>
 		</FORM>
 	</BODY>

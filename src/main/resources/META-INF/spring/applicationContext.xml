@@ -62,6 +62,9 @@
 	<bean id="deliberationDao" class="nc.mairie.spring.dao.metier.parametrage.DeliberationDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
+	<bean id="capDao" class="nc.mairie.spring.dao.metier.parametrage.CapDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
 
 	<!-- DAO Mairie -->
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
