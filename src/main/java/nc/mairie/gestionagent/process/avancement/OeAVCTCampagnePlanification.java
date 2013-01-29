@@ -83,6 +83,8 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
+	private ArrayList<AgentNW> listeDestinataireMulti;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -1258,8 +1260,6 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 			}
 		}
 	}
-
-	private ArrayList<AgentNW> listeDestinataireMulti;
 
 	/**
 	 * Retourne la liste des activités principales.

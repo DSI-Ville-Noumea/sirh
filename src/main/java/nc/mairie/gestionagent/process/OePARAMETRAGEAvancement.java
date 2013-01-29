@@ -716,6 +716,26 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				return performPB_VALIDER_DELIBERATION(request);
 			}
 
+			// Si clic sur le bouton PB_ANNULER_CAP
+			if (testerParametre(request, getNOM_PB_ANNULER_CAP())) {
+				return performPB_ANNULER_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_CAP
+			if (testerParametre(request, getNOM_PB_CREER_CAP())) {
+				return performPB_CREER_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_CAP
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_CAP())) {
+				return performPB_SUPPRIMER_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_CAP
+			if (testerParametre(request, getNOM_PB_VALIDER_CAP())) {
+				return performPB_VALIDER_CAP(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -848,7 +868,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_LB_EMPLOYEUR_SELECT());
 	}
 
-	private ArrayList<Employeur> getListeEmployeur() {
+	public ArrayList<Employeur> getListeEmployeur() {
 		if (listeEmployeur == null)
 			return new ArrayList<Employeur>();
 		return listeEmployeur;
@@ -1136,7 +1156,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_LB_REPRESENTANT_SELECT());
 	}
 
-	private ArrayList<Representant> getListeRepresentant() {
+	public ArrayList<Representant> getListeRepresentant() {
 		if (listeRepresentant == null)
 			return new ArrayList<Representant>();
 		return listeRepresentant;
@@ -2074,7 +2094,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<Cap> getListeCap() {
-		return listeCap;
+		return listeCap == null ? new ArrayList<Cap>() : listeCap;
 	}
 
 	public void setListeCap(ArrayList<Cap> listeCap) {
@@ -2183,5 +2203,43 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_SELECT_LIGNE_EMPLOYEUR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_SELECT_LIGNE_EMPLOYEUR(int i) {
+		return "NOM_CK_SELECT_LIGNE_EMPLOYEUR_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_SELECT_LIGNE_EMPLOYEUR Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_SELECT_LIGNE_EMPLOYEUR(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_EMPLOYEUR(i));
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_SELECT_LIGNE_REPRESENTANT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_SELECT_LIGNE_REPRESENTANT(int i) {
+		return "NOM_CK_SELECT_LIGNE_REPRESENTANT_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_SELECT_LIGNE_REPRESENTANT Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_SELECT_LIGNE_REPRESENTANT(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_REPRESENTANT(i));
 	}
 }

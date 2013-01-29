@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.parametrage.Representant"%>
+<%@page import="nc.mairie.spring.domain.metier.parametrage.Employeur"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -270,10 +272,42 @@
 					<label class="sigp2Mandatory" Style="width:50px">Code :</label>
 					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
-					<label class="sigp2Mandatory" Style="width:50px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_REF_CAP() %>" size="100" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />	
-					
+					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;"> Employeurs : </span>
+					<br/>
+					<table class="sigp2NewTab" style="text-align:left;width:100%;">
+						<%
+						if (process.getListeEmployeur()!=null){
+							for (int indiceEmp = 0;indiceEmp<process.getListeEmployeur().size();indiceEmp++){
+								Employeur emp = process.getListeEmployeur().get(indiceEmp);
+						%>
+								<tr>
+									<td><INPUT type="checkbox" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_EMPLOYEUR(indiceEmp),process.getVAL_CK_SELECT_LIGNE_EMPLOYEUR(indiceEmp))%> ></td>
+									<td><%=emp.getLibEmployeur()%></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>
+					<br/>
+					<table class="sigp2NewTab" style="text-align:left;width:100%;">
+						<%
+						if (process.getListeRepresentant()!=null){
+							for (int indiceRep = 0;indiceRep<process.getListeRepresentant().size();indiceRep++){
+								Representant rep = process.getListeRepresentant().get(indiceRep);
+						%>
+								<tr>
+									<td><INPUT type="checkbox" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_REPRESENTANT(indiceRep),process.getVAL_CK_SELECT_LIGNE_REPRESENTANT(indiceRep))%> ></td>
+									<td><%=rep.getNomRepresentant()+ " " + rep.getPrenomRepresentant() %></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>
 					<div Style="width:100%" align="center">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
@@ -282,8 +316,8 @@
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
-					<label class="sigp2Mandatory" Style="width:50px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="100" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />		
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
