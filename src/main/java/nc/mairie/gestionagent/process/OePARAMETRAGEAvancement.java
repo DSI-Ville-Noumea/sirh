@@ -2137,7 +2137,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
-				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
+				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
+				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(),getCapCourant().getDescription());
 				Cap capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 
 				// on ajoute les employeurs CAP
@@ -2231,6 +2232,24 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESCRIPTION_CAP Date de
+	 * création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_DESCRIPTION_CAP() {
+		return "NOM_EF_DESCRIPTION_CAP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_DESCRIPTION_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_DESCRIPTION_CAP() {
+		return getZone(getNOM_EF_DESCRIPTION_CAP());
+	}
+
+	/**
 	 * Contrôle les zones saisies d'une cap Date de création : (14/09/11)
 	 */
 	private boolean performControlerSaisieCap(HttpServletRequest request) throws Exception {
@@ -2244,6 +2263,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getZone(getNOM_EF_CODE_CAP()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			return false;
+		}
+		// Verification description not null
+		if (getZone(getNOM_EF_DESCRIPTION_CAP()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "description"));
 			return false;
 		}
 

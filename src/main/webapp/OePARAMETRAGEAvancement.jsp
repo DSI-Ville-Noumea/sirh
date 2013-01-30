@@ -213,10 +213,10 @@
 					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
-					<label class="sigp2Mandatory" Style="width:50px">Texte CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<label class="sigp2Mandatory" Style="width:70px">Texte CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />					
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
@@ -233,10 +233,10 @@
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
-					<label class="sigp2Mandatory" Style="width:50px">Texte CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="100" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<label class="sigp2Mandatory" Style="width:70px">Texte CAP :</label>
+					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />						
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
@@ -271,10 +271,14 @@
 	            
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_CAP())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Code :</label>
-					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />	
+					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
+					<br/>
+					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
 					<br />	
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
@@ -320,12 +324,15 @@
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />		
-						
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<br />
+					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
+					<br/>
+					<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
+					<br />	
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
 					<table class="sigp2NewTab" style="text-align:left;width:90%;">
@@ -336,6 +343,23 @@
 						%>
 								<tr>
 									<td><%=emp.getLibEmployeur()%></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>	
+					<br />	
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Représentants : </span>
+					<br/>
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
+						<%
+						if (process.getListeRepresentantCap()!=null){
+							for (int indiceRep = 0;indiceRep<process.getListeRepresentantCap().size();indiceRep++){
+								Representant rep = process.getListeRepresentantCap().get(indiceRep);
+						%>
+								<tr>
+									<td><%=rep.getNomRepresentant()+ " " + rep.getPrenomRepresentant() %></td>								
 								</tr>						
 						<%
 							}

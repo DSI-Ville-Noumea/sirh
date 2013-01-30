@@ -258,8 +258,24 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				getHashCadreEmploi().put(cadreEmp.getIdCadreEmploi(), cadreEmp);
 
 			setLB_CADRE_EMPLOI(aFormat.getListeFormatee());
+
+			// pour l'affichage du cadre emploi dans la gestion des grades
+			// génériques
+
+			int taillesCadre[] = { 40 };
+			String paddingCadre[] = { "G" };
+			FormateListe aFormatCadre = new FormateListe(taillesCadre, paddingCadre, false);
+			for (ListIterator list = getListeCadreEmploi().listIterator(); list.hasNext();) {
+				CadreEmploi ce = (CadreEmploi) list.next();
+
+				String ligne[] = { ce.getLibCadreEmploi() };
+
+				aFormatCadre.ajouteLigne(ligne);
+			}
+			setLB_CADRE_EMPLOI_GRADE(aFormatCadre.getListeFormatee(true));
 		} else {
 			setLB_CADRE_EMPLOI(null);
+			setLB_CADRE_EMPLOI_GRADE(null);
 		}
 	}
 

@@ -236,6 +236,10 @@
 			<div style="width:100%">
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">			
 		    	<legend class="sigp2Legend">Cadre emploi</legend>
+				<span style="position:relative;width:290px;">Libellé</span>
+				<span style="position:relative;">Filière</span>
+				
+				<br/>
 				<span class="sigp2-titre" align="center" colspan="2">
 				<SELECT name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
