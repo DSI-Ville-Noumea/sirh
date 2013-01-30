@@ -11,13 +11,17 @@ import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
+import nc.mairie.spring.dao.metier.parametrage.EmployeurCapDao;
 import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
+import nc.mairie.spring.dao.metier.parametrage.RepresentantCapDao;
 import nc.mairie.spring.dao.metier.parametrage.RepresentantDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
+import nc.mairie.spring.domain.metier.parametrage.EmployeurCap;
 import nc.mairie.spring.domain.metier.parametrage.Representant;
+import nc.mairie.spring.domain.metier.parametrage.RepresentantCap;
 import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
@@ -65,6 +69,11 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private ArrayList<Cap> listeCap;
 	private Cap capCourant;
 	private CapDao capDao;
+
+	private EmployeurCapDao employeurCapDao;
+	private RepresentantCapDao representantCapDao;
+	private ArrayList<Employeur> listeEmployeurCap;
+	private ArrayList<Representant> listeRepresentantCap;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
@@ -134,6 +143,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 		if (getCapDao() == null) {
 			setCapDao((CapDao) context.getBean("capDao"));
+		}
+		if (getEmployeurCapDao() == null) {
+			setEmployeurCapDao((EmployeurCapDao) context.getBean("employeurCapDao"));
+		}
+		if (getRepresentantCapDao() == null) {
+			setRepresentantCapDao((RepresentantCapDao) context.getBean("representantCapDao"));
 		}
 	}
 
@@ -1032,17 +1047,14 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionEmployeur(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un employeur utilisée sur un
-		// avancement
-		/*
-		 * if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_SUPPRESSION) &&
-		 * getEmployeurDao().listerEmployeur() &&
-		 * Avancement.listerAvancementAvecMotif(getTransaction(),
-		 * getMotifCourant()).size() > 0) { // TODO // "ERR989", //
-		 * "Suppression impossible. Il existe au moins @ rattaché à @."
-		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR989",
-		 * "un avancement", "ce motif d'avancement")); return false; }
-		 */
+		// Verification si suppression d'un employeur utilisée sur une CAP
+		if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_SUPPRESSION)
+				&& getEmployeurCapDao().listerEmployeurCapParEmployeur(getEmployeurCourant().getIdEmployeur()).size() > 0) {
+			// "ERR989",
+			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "cet employeur"));
+			return false;
+		}
 
 		// Vérification des contraintes d'unicité de l'employeur
 		if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_CREATION)) {
@@ -1333,18 +1345,15 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * (14/09/11)
 	 */
 	private boolean performControlerRegleGestionRepresentant(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un employeur utilisée sur un
-		// avancement
-
-		/*
-		 * if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_SUPPRESSION) &&
-		 * getRepresentantDao().listerRepresentant() &&
-		 * Avancement.listerAvancementAvecMotif(getTransaction(),
-		 * getMotifCourant()).size() > 0) { // TODO // "ERR989", //
-		 * "Suppression impossible. Il existe au moins @ rattaché à @."
-		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR989",
-		 * "un avancement", "ce motif d'avancement")); return false; }
-		 */
+		// Verification si suppression d'un employeur utilisée sur une
+		// cap
+		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_SUPPRESSION)
+				&& getRepresentantCapDao().listerRepresentantCapParRepresentant(getRepresentantCourant().getIdRepresentant()).size() > 0) {
+			// "ERR989",
+			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "ce représentant"));
+			return false;
+		}
 
 		// Vérification des contraintes d'unicité de l'employeur
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION)) {
@@ -1985,6 +1994,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_ANNULER_CAP(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_CAP(), "");
+
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -2010,6 +2020,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION_CAP(), ACTION_CREATION);
 		addZone(getNOM_EF_CODE_CAP(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_REF_CAP(), Const.CHAINE_VIDE);
+
+		setListeEmployeurCap(null);
+		setListeRepresentantCap(null);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2040,6 +2053,26 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 
+			// on affiche la liste des employeurs CAP
+			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
+			ArrayList<Employeur> listeTempEmp = new ArrayList<Employeur>();
+			for (int i = 0; i < listeEmpCap.size(); i++) {
+				EmployeurCap empCap = listeEmpCap.get(i);
+				Employeur emp = getEmployeurDao().chercherEmployeur(empCap.getIdEmployeur());
+				listeTempEmp.add(emp);
+			}
+			setListeEmployeurCap(listeTempEmp);
+
+			// on affiche la liste des représentant CAP
+			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(getCapCourant().getIdCap());
+			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
+			for (int i = 0; i < listeRepreCap.size(); i++) {
+				RepresentantCap reprCap = listeRepreCap.get(i);
+				Representant rep = getRepresentantDao().chercherRepresentant(reprCap.getIdRepresentant());
+				listeTempRepre.add(rep);
+			}
+			setListeRepresentantCap(listeTempRepre);
+
 			addZone(getNOM_ST_ACTION_CAP(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "cap"));
@@ -2066,22 +2099,66 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER_CAP(HttpServletRequest request) throws Exception {
-		if (!performControlerSaisieCap(request))
-			return false;
-
-		if (!performControlerRegleGestionCap(request))
-			return false;
 
 		if (getVAL_ST_ACTION_CAP() != null && getVAL_ST_ACTION_CAP() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+
+				// on alimente la liste des employeurs
+				setListeEmployeurCap(null);
+				ArrayList<Employeur> listeEmp = new ArrayList<Employeur>();
+				for (int i = 0; i < getListeEmployeur().size(); i++) {
+					// on recupère la ligne concernée
+					Employeur emp = (Employeur) getListeEmployeur().get(i);
+					if (getVAL_CK_SELECT_LIGNE_EMPLOYEUR(i).equals(getCHECKED_ON())) {
+						listeEmp.add(emp);
+					}
+				}
+				setListeEmployeurCap(listeEmp);
+
+				// on alimente la liste des représentants
+				setListeRepresentantCap(null);
+				ArrayList<Representant> listeRepre = new ArrayList<Representant>();
+				for (int i = 0; i < getListeRepresentant().size(); i++) {
+					// on recupère la ligne concernée
+					Representant repr = (Representant) getListeRepresentant().get(i);
+					if (getVAL_CK_SELECT_LIGNE_REPRESENTANT(i).equals(getCHECKED_ON())) {
+						listeRepre.add(repr);
+					}
+				}
+				setListeRepresentantCap(listeRepre);
+
+				if (!performControlerSaisieCap(request))
+					return false;
+
+				if (!performControlerRegleGestionCap(request))
+					return false;
+
 				setCapCourant(new Cap());
 
 				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
 				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
-				getListeCap().add(getCapCourant());
+				Cap capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
+
+				// on ajoute les employeurs CAP
+				for (int i = 0; i < getListeEmployeurCap().size(); i++) {
+					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(), capAjoute.getIdCap());
+				}
+				setListeEmployeurCap(null);
+
+				// on ajoute les représentants CAP
+				for (int i = 0; i < getListeRepresentantCap().size(); i++) {
+					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(), capAjoute.getIdCap());
+				}
+				setListeRepresentantCap(null);
 
 			} else if (getVAL_ST_ACTION_CAP().equals(ACTION_SUPPRESSION)) {
+				// on supprime les employeurs liés
+				getEmployeurCapDao().supprimerEmployeurCapParCap(getCapCourant().getIdCap());
+
+				// on supprime les employeurs liés
+				getRepresentantCapDao().supprimerRepresentantCapParCap(getCapCourant().getIdCap());
+
 				getCapDao().supprimerCap(getCapCourant().getIdCap());
 				getListeCap().remove(getCapCourant());
 				setCapCourant(null);
@@ -2169,6 +2246,24 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
 			return false;
 		}
+
+		// **********************************
+		// Verification Employeur
+		// **********************************
+		if (getListeEmployeurCap() == null || getListeEmployeurCap().size() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Employeurs"));
+			return false;
+		}
+
+		// **********************************
+		// Verification Representant
+		// **********************************
+		if (getListeRepresentantCap() == null || getListeRepresentantCap().size() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Représentants"));
+			return false;
+		}
 		return true;
 	}
 
@@ -2241,5 +2336,37 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_CK_SELECT_LIGNE_REPRESENTANT(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE_REPRESENTANT(i));
+	}
+
+	public EmployeurCapDao getEmployeurCapDao() {
+		return employeurCapDao;
+	}
+
+	public void setEmployeurCapDao(EmployeurCapDao employeurCapDao) {
+		this.employeurCapDao = employeurCapDao;
+	}
+
+	public ArrayList<Employeur> getListeEmployeurCap() {
+		return listeEmployeurCap == null ? new ArrayList<Employeur>() : listeEmployeurCap;
+	}
+
+	public void setListeEmployeurCap(ArrayList<Employeur> listeEmployeurCap) {
+		this.listeEmployeurCap = listeEmployeurCap;
+	}
+
+	public RepresentantCapDao getRepresentantCapDao() {
+		return representantCapDao;
+	}
+
+	public void setRepresentantCapDao(RepresentantCapDao representantCapDao) {
+		this.representantCapDao = representantCapDao;
+	}
+
+	public ArrayList<Representant> getListeRepresentantCap() {
+		return listeRepresentantCap == null ? new ArrayList<Representant>() : listeRepresentantCap;
+	}
+
+	public void setListeRepresentantCap(ArrayList<Representant> listeRepresentantCap) {
+		this.listeRepresentantCap = listeRepresentantCap;
 	}
 }

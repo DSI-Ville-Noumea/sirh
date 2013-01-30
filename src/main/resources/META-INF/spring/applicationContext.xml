@@ -65,6 +65,12 @@
 	<bean id="capDao" class="nc.mairie.spring.dao.metier.parametrage.CapDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
+	<bean id="employeurCapDao" class="nc.mairie.spring.dao.metier.parametrage.EmployeurCapDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
+	<bean id="representantCapDao" class="nc.mairie.spring.dao.metier.parametrage.RepresentantCapDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
+	</bean>
 
 	<!-- DAO Mairie -->
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import nc.mairie.spring.dao.mapper.metier.parametrage.CapRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,5 +61,12 @@ public class CapDao implements CapDaoInterface {
 	public void supprimerCap(Integer idCap) throws Exception {
 		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_CAP + "=?";
 		jdbcTemplate.update(sql, new Object[] { idCap });
+	}
+
+	@Override
+	public Cap chercherCap(String codeCap, String refCap) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? and " + CHAMP_REF_CAP + " =? ";
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap }, new CapRowMapper());
+		return c;
 	}
 }

@@ -12,4 +12,6 @@ public interface CapDaoInterface {
 
 	public void supprimerCap(Integer idCap) throws Exception;
 
+	public Cap chercherCap(String codeCap, String refCap) throws Exception;
+
 }

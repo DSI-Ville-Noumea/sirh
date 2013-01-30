@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.parametrage.EmployeurCap"%>
 <%@page import="nc.mairie.spring.domain.metier.parametrage.Representant"%>
 <%@page import="nc.mairie.spring.domain.metier.parametrage.Employeur"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -275,9 +276,10 @@
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />	
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;"> Employeurs : </span>
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
-					<table class="sigp2NewTab" style="text-align:left;width:100%;">
+					<div style="overflow: auto;height: 120px;width:95%;">
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
 						<%
 						if (process.getListeEmployeur()!=null){
 							for (int indiceEmp = 0;indiceEmp<process.getListeEmployeur().size();indiceEmp++){
@@ -292,8 +294,11 @@
 						}
 						%>
 					</table>
+					</div>
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Représentants : </span>
 					<br/>
-					<table class="sigp2NewTab" style="text-align:left;width:100%;">
+					<div style="overflow: auto;height: 120px;width:95%;">
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
 						<%
 						if (process.getListeRepresentant()!=null){
 							for (int indiceRep = 0;indiceRep<process.getListeRepresentant().size();indiceRep++){
@@ -308,6 +313,7 @@
 						}
 						%>
 					</table>
+					</div>
 					<div Style="width:100%" align="center">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
@@ -319,6 +325,23 @@
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />		
+						
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
+					<br/>
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
+						<%
+						if (process.getListeEmployeurCap()!=null){
+							for (int indiceEmp = 0;indiceEmp<process.getListeEmployeurCap().size();indiceEmp++){
+								Employeur emp = process.getListeEmployeurCap().get(indiceEmp);
+						%>
+								<tr>
+									<td><%=emp.getLibEmployeur()%></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
 			   <%}%>
