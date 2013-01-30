@@ -424,7 +424,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void initialiseEae() throws Exception {
-		// TODO
 
 		// Récup de l'EAE courant
 		EAE eae = getEaeCourant();

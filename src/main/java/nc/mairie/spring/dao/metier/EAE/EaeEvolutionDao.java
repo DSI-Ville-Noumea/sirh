@@ -60,7 +60,7 @@ public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 		try {
 			evol = (EaeEvolution) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvolutionRowMapper());
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 		}
 		return evol;
 	}
