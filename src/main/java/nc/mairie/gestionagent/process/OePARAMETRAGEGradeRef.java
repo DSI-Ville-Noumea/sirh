@@ -100,17 +100,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		if (getListeCategorie() == null)
 			initialiseListeCategorie(request);
 
-		// Si hashtable des écoles vide
-		if (getHashFiliere().size() == 0) {
-			ArrayList a = FiliereGrade.listerFiliereGrade(getTransaction());
-			setListeFiliere(a);
+		if (getListeFiliere() == null)
 			initialiseListeFiliere(request);
-			// remplissage de la hashTable
-			for (int i = 0; i < a.size(); i++) {
-				FiliereGrade fi = (FiliereGrade) a.get(i);
-				getHashFiliere().put(fi.getCodeFiliere(), fi);
-			}
-		}
 
 		if (getListeCadreEmploi() == null)
 			initialiseListeCadreEmploi(request);
@@ -216,21 +207,17 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			getHashCategorie().put(categorie.getLibCategorie(), categorie);
 	}
 
-	private void initialiseListeFiliere(HttpServletRequest request) {
-		if (getListeFiliere().size() != 0) {
-			int tailles[] = { 40 };
-			String padding[] = { "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
-				FiliereGrade fi = (FiliereGrade) list.next();
-				String ligne[] = { fi.getLibFiliere() };
+	private void initialiseListeFiliere(HttpServletRequest request) throws Exception {
+		ArrayList<FiliereGrade> liste = FiliereGrade.listerFiliereGrade(getTransaction());
+		setListeFiliere(liste);
 
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_FILIERE(aFormat.getListeFormatee(true));
-		} else {
-			setLB_FILIERE(null);
-		}
+		int[] tailles = { 40 };
+		String[] champs = { "libFiliere" };
+		setLB_FILIERE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+
+		// remplissage de la hashTable
+		for (FiliereGrade filiere : liste)
+			getHashFiliere().put(filiere.getCodeFiliere(), filiere);
 	}
 
 	/**
@@ -881,8 +868,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				: -1);
 		Categorie categorie = numCategorie > 0 ? (Categorie) getListeCategorie().get(numCategorie - 1) : null;
 
-		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FILIERE_SELECT()))
-				: -1);
+		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FILIERE_SELECT())) : -1);
 		FiliereGrade filiere = numFiliere > 0 ? (FiliereGrade) getListeFiliere().get(numFiliere - 1) : null;
 
 		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) ? Integer
@@ -1619,10 +1605,14 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			int ligneCategorie = getListeCategorie().indexOf(categorie);
 			addZone(getNOM_LB_CATEGORIE_SELECT(), String.valueOf(ligneCategorie + 1));
 
-			//filiere
-			FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCdfili());
-			int ligneFiliere = getListeFiliere().indexOf(filiere);
-			addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
+			// filiere
+			if(grade.getCdfili()!=null){
+				FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCdfili());
+				int ligneFiliere = getListeFiliere().indexOf(filiere);
+				addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
+			}else{
+				addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
+			}
 
 			if (grade.getIdCadreEmploi() != null) {
 				CadreEmploi cadreEmp = (CadreEmploi) getHashCadreEmploi().get(grade.getIdCadreEmploi());
