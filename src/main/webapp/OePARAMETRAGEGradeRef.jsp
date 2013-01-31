@@ -216,7 +216,12 @@
 					<br />
 					<label class="sigp2Mandatory" Style="width:100px">Nb points:</label>
 					<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_NB_PTS_CATEGORIE() %>" size="4" type="text" value="<%= process.getVAL_EF_NB_PTS_CATEGORIE() %>" style="margin-right:10px; margin-bottom:10px">
-					<br />
+					<br />											
+					<label class="sigp2" Style="width:100px">Filière:</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+					</SELECT>				
+					<br />	
 					<br/>
 					
 					<div Style="width:100%" align="center">
@@ -236,9 +241,7 @@
 			<div style="width:100%">
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">			
 		    	<legend class="sigp2Legend">Cadre emploi</legend>
-				<span style="position:relative;width:290px;">Libellé</span>
-				<span style="position:relative;">Filière</span>
-				
+				<span style="position:relative;width:290px;">Libellé</span>				
 				<br/>
 				<span class="sigp2-titre" align="center" colspan="2">
 				<SELECT name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" size="10"
@@ -255,11 +258,6 @@
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_EF_ACTION_CADRE_EMPLOI())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />												
-					<label class="sigp2Mandatory" Style="width:50px">Filière:</label>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-					</SELECT>				
 					<br />	
 					<br />				
 					<div Style="width:100%" align="center">					
@@ -269,12 +267,7 @@
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
 					<INPUT disabled="disabled" tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />							
-					<label class="sigp2Mandatory" Style="width:50px">Filière:</label>
-					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-					</SELECT>				
-					<br />
+					<br />	
 					<br />					
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_CADRE_EMPLOI()%>"></span>

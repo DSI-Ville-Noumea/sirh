@@ -470,6 +470,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_NB_PTS_CATEGORIE(), Const.ZERO);
 		addZone(getNOM_RG_INACTIF(), getNOM_RB_NON());
 		addZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -880,6 +881,10 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				: -1);
 		Categorie categorie = numCategorie > 0 ? (Categorie) getListeCategorie().get(numCategorie - 1) : null;
 
+		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FILIERE_SELECT()))
+				: -1);
+		FiliereGrade filiere = numFiliere > 0 ? (FiliereGrade) getListeFiliere().get(numFiliere - 1) : null;
+
 		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) : -1);
 		CadreEmploi cadreEmp = numCadreEmp > 0 ? (CadreEmploi) getListeCadreEmploi().get(numCadreEmp - 1) : null;
@@ -895,6 +900,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
+				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().creerGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().add(getGradeGeneriqueCourant());
@@ -905,6 +911,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
+				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().modifierGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().remove(getGradeGeneriqueCourant());
@@ -1609,9 +1616,13 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			GradeGenerique grade = getListeGradeGenerique().get(indice);
 
 			Categorie categorie = (Categorie) getHashCategorie().get(grade.getCodCadre());
-
 			int ligneCategorie = getListeCategorie().indexOf(categorie);
 			addZone(getNOM_LB_CATEGORIE_SELECT(), String.valueOf(ligneCategorie + 1));
+
+			//filiere
+			FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCdfili());
+			int ligneFiliere = getListeFiliere().indexOf(filiere);
+			addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
 
 			if (grade.getIdCadreEmploi() != null) {
 				CadreEmploi cadreEmp = (CadreEmploi) getHashCadreEmploi().get(grade.getIdCadreEmploi());
@@ -2277,12 +2288,6 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		if (getZone(getNOM_EF_CADRE_EMPLOI()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-		// la filiere est obligatoire
-		if (getVAL_LB_FILIERE_SELECT().equals("0")) {
-			// ERR002:La zone @ est obligatoire.
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "filière"));
 			return false;
 		}
 
