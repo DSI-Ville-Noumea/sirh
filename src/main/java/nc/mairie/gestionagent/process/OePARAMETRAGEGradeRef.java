@@ -241,14 +241,13 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeCadreEmploi(HttpServletRequest request) throws Exception {
 		setListeCadreEmploi(CadreEmploi.listerCadreEmploi(getTransaction()));
 		if (getListeCadreEmploi().size() != 0) {
-			int tailles[] = { 40, 50 };
-			String padding[] = { "G", "G" };
+			int tailles[] = { 40 };
+			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeCadreEmploi().listIterator(); list.hasNext();) {
 				CadreEmploi ce = (CadreEmploi) list.next();
-				FiliereGrade fi = (FiliereGrade) getHashFiliere().get(ce.getCdfili());
 
-				String ligne[] = { ce.getLibCadreEmploi(), fi == null || fi.getLibFiliere() == null ? "" : fi.getLibFiliere() };
+				String ligne[] = { ce.getLibCadreEmploi() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -2209,10 +2208,6 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			CadreEmploi c = getListeCadreEmploi().get(indice);
 			setCadreEmploiCourant(c);
 
-			FiliereGrade fi = (FiliereGrade) getHashFiliere().get(c.getCdfili());
-			int ligneFiliere = getListeFiliere().indexOf(fi);
-			addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
-
 			addZone(getNOM_EF_CADRE_EMPLOI(), c.getLibCadreEmploi());
 			addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), ACTION_SUPPRESSION);
 		} else {
@@ -2247,12 +2242,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 		if (getVAL_EF_ACTION_CADRE_EMPLOI() != null && getVAL_EF_ACTION_CADRE_EMPLOI() != Const.CHAINE_VIDE) {
 			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
-				// on recupere la filiere
-				int indice = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
-				String codFiliere = ((FiliereGrade) getListeFiliere().get(indice - 1)).getCodeFiliere();
 				setCadreEmploiCourant(new CadreEmploi());
 				getCadreEmploiCourant().setLibCadreEmploi(getVAL_EF_CADRE_EMPLOI());
-				getCadreEmploiCourant().setCdfili(codFiliere);
 				getCadreEmploiCourant().creerCadreEmploi(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeCadreEmploi().add(getCadreEmploiCourant());

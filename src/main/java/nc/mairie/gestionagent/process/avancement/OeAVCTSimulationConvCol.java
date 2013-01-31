@@ -18,7 +18,6 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
-import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
@@ -330,11 +329,8 @@ public class OeAVCTSimulationConvCol extends nc.mairie.technique.BasicProcess {
 								if (getTransaction().isErreur())
 									getTransaction().traiterErreur();
 
-								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
-									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
-									if (getTransaction().isErreur())
-										getTransaction().traiterErreur();
-									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null && ggCarr.getCdfili() != null) {
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), ggCarr.getCdfili());
 									avct.setFiliere(fil.getLibFiliere());
 								}
 							}
@@ -364,7 +360,6 @@ public class OeAVCTSimulationConvCol extends nc.mairie.technique.BasicProcess {
 							avct.setMontantPrime1200(prime1200.getMtPri());
 						}
 					}
-
 
 					avct.setDateVerifSEF(Const.DATE_NULL);
 					avct.setDateVerifSGC(Const.DATE_NULL);

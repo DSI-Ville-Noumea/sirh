@@ -1386,7 +1386,9 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		CadreEmploi cadreEmp = null;
 		if (gg != null && gg.getIdCadreEmploi() != null) {
 			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+			if (gg.getCdfili() != null) {
+				fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
+			}
 		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());

@@ -361,11 +361,8 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 								if (getTransaction().isErreur())
 									getTransaction().traiterErreur();
 
-								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null ) {
-									CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), ggCarr.getIdCadreEmploi());
-									if (getTransaction().isErreur())
-										getTransaction().traiterErreur();
-									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null && ggCarr.getCdfili() != null) {
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), ggCarr.getCdfili());
 									avct.setFiliere(fil.getLibFiliere());
 								}
 							}

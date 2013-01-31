@@ -436,12 +436,13 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 					String info = "Cat : " + gg.getCodCadre();
 
 					if (gg.getIdCadreEmploi() != null) {
-						CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-						FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
-						if (fi == null || getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						} else {
-							info += " , filière : " + fi.getLibFiliere();
+						if (gg.getCdfili() != null) {
+							FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
+							if (fi == null || getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							} else {
+								info += " , filière : " + fi.getLibFiliere();
+							}
 						}
 					}
 					addZone(getNOM_ST_INFO_GRADE(), info);
@@ -2614,17 +2615,13 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_EF_CODE_GRADE(), gr.getCodeGrade());
 
 			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), gr.getCodeGradeGenerique());
-			if(getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-			}
-			CadreEmploi cadreEmp = null;
-			if (gg != null && gg.getIdCadreEmploi() != null) {
-				cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
 			}
 			// on récupère la categorie et la filiere de ce grade
 			String info = "Cat : " + gg.getCodCadre();
-			if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
-				FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+			if (gg != null && gg.getCdfili() != null) {
+				FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
 				info += " , filière : " + fi.getLibFiliere();
 			}
 			addZone(getNOM_ST_INFO_GRADE(), info);
@@ -4834,7 +4831,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		CadreEmploi cadreEmp = null;
 		if (gg != null && gg.getIdCadreEmploi() != null) {
 			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
+		if (gg != null && gg.getCdfili() != null) {
+			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
 		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
@@ -5092,7 +5091,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		FiliereGrade fi = null;
 		if (gg != null && gg.getIdCadreEmploi() != null) {
 			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), cadreEmp.getCdfili());
+		}
+		if (gg != null && gg.getCdfili() != null) {
+			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
 		}
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
@@ -5180,7 +5181,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
 			TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
 			Affectation affResponsable = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdResponsable());
-			if(getTransaction().isErreur())
+			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			if (affResponsable != null && affResponsable.getIdAgent() != null) {
 				AgentNW agentResponsable = AgentNW.chercherAgent(getTransaction(), affResponsable.getIdAgent());
@@ -5205,7 +5206,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
 			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(), fpRemplacement.getIdTitrePoste());
 			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdRemplacement());
-			if(getTransaction().isErreur())
+			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
