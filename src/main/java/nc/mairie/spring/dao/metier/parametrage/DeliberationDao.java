@@ -58,13 +58,56 @@ public class DeliberationDao implements DeliberationDaoInterface {
 			throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CODE_DELIBERATION + "," + CHAMP_LIB_DELIBERATION + "," + CHAMP_TYPE_DELIBERATION + ","
 				+ CHAMP_TEXTE_CAP + ") " + "VALUES (?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { codeDeliberation.toUpperCase(), libelleDeliberation.toUpperCase(), typeDeliberation.toUpperCase(), texteCAPDeliberation });
+		jdbcTemplate.update(sql, new Object[] { codeDeliberation.toUpperCase(), libelleDeliberation.toUpperCase(), typeDeliberation.toUpperCase(),
+				texteCAPDeliberation });
 
 	}
 
 	@Override
 	public void supprimerDeliberation(Integer idDeliberation) throws Exception {
 		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_DELIBERATION + "=?";
-		jdbcTemplate.update(sql, new Object[] { idDeliberation });		
+		jdbcTemplate.update(sql, new Object[] { idDeliberation });
+	}
+
+	@Override
+	public ArrayList<Deliberation> listerDeliberationCommunale() throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_TYPE_DELIBERATION + " =?";
+
+		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { "COMMUNAL" });
+		for (Map row : rows) {
+			Deliberation delib = new Deliberation();
+			delib.setIdDeliberation((Integer) row.get(CHAMP_ID_DELIBERATION));
+			delib.setCodeDeliberation((String) row.get(CHAMP_CODE_DELIBERATION));
+			delib.setLibDeliberation((String) row.get(CHAMP_LIB_DELIBERATION));
+			delib.setTypeDeliberation((String) row.get(CHAMP_TYPE_DELIBERATION));
+			delib.setTexteCAP((String) row.get(CHAMP_TEXTE_CAP));
+
+			listeDeliberation.add(delib);
+		}
+
+		return listeDeliberation;
+	}
+
+	@Override
+	public ArrayList<Deliberation> listerDeliberationTerritoriale() throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_TYPE_DELIBERATION + " =?";
+
+		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { "TERRITORIAL" });
+		for (Map row : rows) {
+			Deliberation delib = new Deliberation();
+			delib.setIdDeliberation((Integer) row.get(CHAMP_ID_DELIBERATION));
+			delib.setCodeDeliberation((String) row.get(CHAMP_CODE_DELIBERATION));
+			delib.setLibDeliberation((String) row.get(CHAMP_LIB_DELIBERATION));
+			delib.setTypeDeliberation((String) row.get(CHAMP_TYPE_DELIBERATION));
+			delib.setTexteCAP((String) row.get(CHAMP_TEXTE_CAP));
+
+			listeDeliberation.add(delib);
+		}
+
+		return listeDeliberation;
 	}
 }

@@ -14,11 +14,16 @@ import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
+import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
+import nc.mairie.spring.domain.metier.parametrage.Deliberation;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEGradeRef Date de création : (29/09/11 15:07:35)
@@ -33,6 +38,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private String[] LB_CADRE_EMPLOI_GRADE;
 	private String[] LB_CADRE_EMPLOI;
 	private String[] LB_FILIERE;
+	private String[] LB_DELIB_TERR_GRADE;
+	private String[] LB_DELIB_COMM_GRADE;
 
 	private ArrayList<Classe> listeClasse;
 	private Classe classeCourante;
@@ -55,6 +62,11 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList<FiliereGrade> listeFiliere;
 	private Hashtable<String, FiliereGrade> hashFiliere;
+
+	private DeliberationDao deliberationDao;
+	private ArrayList<Deliberation> listeDeliberationTerr;
+	private ArrayList<Deliberation> listeDeliberationComm;
+	private Hashtable<Integer, Deliberation> hashDeliberation;
 
 	public String ACTION_CREATION = "0";
 	public String ACTION_MODIFICATION = "1";
@@ -81,6 +93,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		if (getListeBareme() == null) {
 			initialiseListeBareme(request);
 		}
@@ -105,6 +119,63 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 		if (getListeCadreEmploi() == null)
 			initialiseListeCadreEmploi(request);
+
+		if (getListeDeliberationComm() == null || getListeDeliberationTerr() == null)
+			initialiseListeDeliberation(request);
+
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getDeliberationDao() == null) {
+			setDeliberationDao((DeliberationDao) context.getBean("deliberationDao"));
+		}
+	}
+
+	private void initialiseListeDeliberation(HttpServletRequest request) throws Exception {
+		setListeDeliberationComm(getDeliberationDao().listerDeliberationCommunale());
+		if (getListeDeliberationComm().size() != 0) {
+			int tailles[] = { 10 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeDeliberationComm().listIterator(); list.hasNext();) {
+				Deliberation delibComm = (Deliberation) list.next();
+
+				String ligne[] = { delibComm.getCodeDeliberation() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+
+			setLB_DELIB_COMM_GRADE(aFormat.getListeFormatee());
+
+		} else {
+			setLB_DELIB_COMM_GRADE(null);
+		}
+
+		setListeDeliberationTerr(getDeliberationDao().listerDeliberationTerritoriale());
+		if (getListeDeliberationTerr().size() != 0) {
+			int tailles[] = { 10 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeDeliberationTerr().listIterator(); list.hasNext();) {
+				Deliberation delibTerr = (Deliberation) list.next();
+
+				String ligne[] = { delibTerr.getCodeDeliberation() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+
+			setLB_DELIB_TERR_GRADE(aFormat.getListeFormatee());
+
+		} else {
+			setLB_DELIB_TERR_GRADE(null);
+		}
+
+		// remplissage de la hashTable
+		ArrayList<Deliberation> toutesDelib = getDeliberationDao().listerDeliberation();
+		for (Deliberation delib : toutesDelib)
+			getHashDeliberation().put(delib.getIdDeliberation(), delib);
 
 	}
 
@@ -180,7 +251,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			String padding[] = { "G", "C", "C", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
-				String ligne[] = { gradeGenerique.getCodGradeGenerique(), gradeGenerique.getCodCadre(), gradeGenerique.getCodeInactif(),
+				String ligne[] = { gradeGenerique.getCdgeng(), gradeGenerique.getCodCadre(), gradeGenerique.getCodeInactif(),
 						gradeGenerique.getLibGradeGenerique() };
 				aFormat.ajouteLigne(ligne);
 			}
@@ -458,6 +529,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_RG_INACTIF(), getNOM_RB_NON());
 		addZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), Const.ZERO);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -875,18 +948,29 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				.parseInt(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) : -1);
 		CadreEmploi cadreEmp = numCadreEmp > 0 ? (CadreEmploi) getListeCadreEmploi().get(numCadreEmp - 1) : null;
 
+		int numDelibTerr = (Services.estNumerique(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) : -1);
+		Deliberation delibTerr = numDelibTerr > 0 ? (Deliberation) getListeDeliberationTerr().get(numDelibTerr - 1) : null;
+
+		int numDelibComm = (Services.estNumerique(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) : -1);
+		Deliberation delibComm = numDelibComm > 0 ? (Deliberation) getListeDeliberationComm().get(numDelibComm - 1) : null;
+
 		if (getVAL_ST_ACTION_GRADE_GENERIQUE() != null && getVAL_ST_ACTION_GRADE_GENERIQUE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_CREATION)) {
 
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
 				setGradeGeneriqueCourant(new GradeGenerique());
-				getGradeGeneriqueCourant().setCodGradeGenerique(getVAL_EF_CODE_GRADE_GENERIQUE());
+				getGradeGeneriqueCourant().setCdgeng(getVAL_EF_CODE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodCadre(categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
+				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationCommunale(delibComm == null ? null : delibComm.getIdDeliberation().toString());
 				getGradeGeneriqueCourant().creerGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().add(getGradeGeneriqueCourant());
@@ -898,6 +982,9 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
+				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationCommunale(delibComm == null ? null : delibComm.getIdDeliberation().toString());
 				getGradeGeneriqueCourant().modifierGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().remove(getGradeGeneriqueCourant());
@@ -970,7 +1057,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 					return false;
 				}
 
-				if (gradeGenerique.getCodGradeGenerique().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
+				if (gradeGenerique.getCdgeng().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce code"));
 					return false;
 				}
@@ -978,7 +1065,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
 
-				if (!gradeGenerique.getCodGradeGenerique().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
+				if (!gradeGenerique.getCdgeng().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
 					if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 						return false;
@@ -1151,6 +1238,24 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_EF_CODE_GRADE_GENERIQUE() {
 		return getZone(getNOM_EF_CODE_GRADE_GENERIQUE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP :
+	 * EF_TEXTE_CAP_GRADE_GENERIQUE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getNOM_EF_TEXTE_CAP_GRADE_GENERIQUE() {
+		return "NOM_EF_TEXTE_CAP_GRADE_GENERIQUE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_TEXTE_CAP_GRADE_GENERIQUE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE() {
+		return getZone(getNOM_EF_TEXTE_CAP_GRADE_GENERIQUE());
 	}
 
 	/**
@@ -1606,27 +1711,45 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_LB_CATEGORIE_SELECT(), String.valueOf(ligneCategorie + 1));
 
 			// filiere
-			if(grade.getCdfili()!=null){
+			if (grade.getCdfili() != null) {
 				FiliereGrade filiere = (FiliereGrade) getHashFiliere().get(grade.getCdfili());
 				int ligneFiliere = getListeFiliere().indexOf(filiere);
 				addZone(getNOM_LB_FILIERE_SELECT(), String.valueOf(ligneFiliere + 1));
-			}else{
+			} else {
 				addZone(getNOM_LB_FILIERE_SELECT(), Const.ZERO);
 			}
 
 			if (grade.getIdCadreEmploi() != null) {
 				CadreEmploi cadreEmp = (CadreEmploi) getHashCadreEmploi().get(grade.getIdCadreEmploi());
-
 				int ligneCadreEmp = getListeCadreEmploi().indexOf(cadreEmp);
 				addZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT(), String.valueOf(ligneCadreEmp + 1));
 			} else {
 				addZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT(), Const.ZERO);
 			}
 
+			// delib communale
+			if (grade.getIdDeliberationCommunale() != null) {
+				Deliberation delibComm = (Deliberation) getHashDeliberation().get(Integer.valueOf(grade.getIdDeliberationCommunale()));
+				int ligneDelibComm = getListeDeliberationComm().indexOf(delibComm);
+				addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), String.valueOf(ligneDelibComm + 1));
+			} else {
+				addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), Const.ZERO);
+			}
+
+			// delib territoriale
+			if (grade.getIdDeliberationTerritoriale() != null) {
+				Deliberation delibTerr = (Deliberation) getHashDeliberation().get(Integer.valueOf(grade.getIdDeliberationTerritoriale()));
+				int ligneDelibTerr = getListeDeliberationTerr().indexOf(delibTerr);
+				addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), String.valueOf(ligneDelibTerr + 1));
+			} else {
+				addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), Const.ZERO);
+			}
+
 			setGradeGeneriqueCourant(grade);
 			addZone(getNOM_EF_LIBELLE_GRADE_GENERIQUE(), grade.getLibGradeGenerique());
-			addZone(getNOM_EF_CODE_GRADE_GENERIQUE(), grade.getCodGradeGenerique());
+			addZone(getNOM_EF_CODE_GRADE_GENERIQUE(), grade.getCdgeng());
 			addZone(getNOM_EF_NB_PTS_CATEGORIE(), grade.getNbPointsAvct());
+			addZone(getNOM_EF_TEXTE_CAP_GRADE_GENERIQUE(), grade.getTexteCapCadreEmploi());
 			addZone(getNOM_ST_ACTION_GRADE_GENERIQUE(), ACTION_MODIFICATION);
 			if (grade.getCodeInactif().equals("I"))
 				addZone(getNOM_RG_INACTIF(), getNOM_RB_OUI());
@@ -2392,5 +2515,154 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 	private void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
 		this.listeFiliere = listeFiliere;
+	}
+
+	public ArrayList<Deliberation> getListeDeliberationTerr() {
+		return listeDeliberationTerr == null ? new ArrayList<Deliberation>() : listeDeliberationTerr;
+	}
+
+	public void setListeDeliberationTerr(ArrayList<Deliberation> listeDeliberationTerr) {
+		this.listeDeliberationTerr = listeDeliberationTerr;
+	}
+
+	public ArrayList<Deliberation> getListeDeliberationComm() {
+		return listeDeliberationComm == null ? new ArrayList<Deliberation>() : listeDeliberationComm;
+	}
+
+	public void setListeDeliberationComm(ArrayList<Deliberation> listeDeliberationComm) {
+		this.listeDeliberationComm = listeDeliberationComm;
+	}
+
+	public DeliberationDao getDeliberationDao() {
+		return deliberationDao;
+	}
+
+	public void setDeliberationDao(DeliberationDao deliberationDao) {
+		this.deliberationDao = deliberationDao;
+	}
+
+	/**
+	 * Retourne les déliberations dans une table de hashage Date de création :
+	 * (11/06/2003 15:37:08)
+	 * 
+	 * @return Hashtable
+	 */
+	private Hashtable<Integer, Deliberation> getHashDeliberation() {
+		if (hashDeliberation == null) {
+			hashDeliberation = new Hashtable<Integer, Deliberation>();
+		}
+		return hashDeliberation;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_DELIB_TERR_GRADE Date de
+	 * création : (29/09/11 15:07:35)
+	 * 
+	 */
+	private String[] getLB_DELIB_TERR_GRADE() {
+		if (LB_DELIB_TERR_GRADE == null)
+			LB_DELIB_TERR_GRADE = initialiseLazyLB();
+		return LB_DELIB_TERR_GRADE;
+	}
+
+	/**
+	 * Setter de la liste: LB_DELIB_TERR_GRADE Date de création : (29/09/11
+	 * 15:07:35)
+	 * 
+	 */
+	private void setLB_DELIB_TERR_GRADE(String[] newLB_DELIB_TERR_GRADE) {
+		LB_DELIB_TERR_GRADE = newLB_DELIB_TERR_GRADE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DELIB_TERR_GRADE Date de
+	 * création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getNOM_LB_DELIB_TERR_GRADE() {
+		return "NOM_LB_DELIB_TERR_GRADE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_DELIB_TERR_GRADE_SELECT Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getNOM_LB_DELIB_TERR_GRADE_SELECT() {
+		return "NOM_LB_DELIB_TERR_GRADE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_DELIB_TERR_GRADE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String[] getVAL_LB_DELIB_TERR_GRADE() {
+		return getLB_DELIB_TERR_GRADE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_DELIB_TERR_GRADE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getVAL_LB_DELIB_TERR_GRADE_SELECT() {
+		return getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_DELIB_COMM_GRADE Date de
+	 * création : (29/09/11 15:07:35)
+	 * 
+	 */
+	private String[] getLB_DELIB_COMM_GRADE() {
+		if (LB_DELIB_COMM_GRADE == null)
+			LB_DELIB_COMM_GRADE = initialiseLazyLB();
+		return LB_DELIB_COMM_GRADE;
+	}
+
+	/**
+	 * Setter de la liste: LB_DELIB_COMM_GRADE Date de création : (29/09/11
+	 * 15:07:35)
+	 * 
+	 */
+	private void setLB_DELIB_COMM_GRADE(String[] newLB_DELIB_COMM_GRADE) {
+		LB_DELIB_COMM_GRADE = newLB_DELIB_COMM_GRADE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DELIB_COMM_GRADE Date de
+	 * création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getNOM_LB_DELIB_COMM_GRADE() {
+		return "NOM_LB_DELIB_COMM_GRADE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_DELIB_COMM_GRADE_SELECT Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getNOM_LB_DELIB_COMM_GRADE_SELECT() {
+		return "NOM_LB_DELIB_COMM_GRADE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_DELIB_COMM_GRADE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String[] getVAL_LB_DELIB_COMM_GRADE() {
+		return getLB_DELIB_COMM_GRADE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_DELIB_COMM_GRADE Date de création : (29/09/11 15:07:35)
+	 * 
+	 */
+	public String getVAL_LB_DELIB_COMM_GRADE_SELECT() {
+		return getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT());
 	}
 }

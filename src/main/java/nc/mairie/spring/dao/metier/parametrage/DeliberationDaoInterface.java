@@ -8,6 +8,10 @@ public interface DeliberationDaoInterface {
 
 	public ArrayList<Deliberation> listerDeliberation() throws Exception;
 
+	public ArrayList<Deliberation> listerDeliberationCommunale() throws Exception;
+
+	public ArrayList<Deliberation> listerDeliberationTerritoriale() throws Exception;
+
 	public void creerDeliberation(String codeDeliberation, String libelleDeliberation, String typeDeliberation, String texteCAPDeliberation)
 			throws Exception;
 

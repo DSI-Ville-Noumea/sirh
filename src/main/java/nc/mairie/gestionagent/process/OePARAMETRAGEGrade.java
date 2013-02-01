@@ -296,7 +296,7 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 			// remplissage de la hashTable
 			for (GradeGenerique g : listeGradeGenerique) {
-				getHashGradeGenerique().put(g.getCodGradeGenerique(), g);
+				getHashGradeGenerique().put(g.getCdgeng(), g);
 			}
 		}
 
@@ -1020,7 +1020,7 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 		getGradeCourant().setBm(getVAL_RG_BM().equals(getNOM_RB_OUI()) ? "O" : "N");
 		getGradeCourant().setCodeGrille(getVAL_RG_CODE_GRILLE().equals(getNOM_RB_NC()) ? "NC" : "FR");
 
-		getGradeCourant().setCodeGradeGenerique(gradeGenerique.getCodGradeGenerique());
+		getGradeCourant().setCodeGradeGenerique(gradeGenerique.getCdgeng());
 		getGradeCourant().setCodeCadre(gradeGenerique.getCodCadre());
 		getGradeCourant().setCodeGrade(getVAL_EF_CODE_GRADE());
 

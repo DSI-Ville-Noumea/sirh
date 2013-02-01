@@ -221,7 +221,11 @@
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
 					</SELECT>				
-					<br />	
+					<br />				
+					<br />						
+					<label class="sigp2" Style="width:100px">Texte CAP cadre emploi:</label>
+					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">					
+					<br />
 					<br/>
 					
 					<div Style="width:100%" align="center">
