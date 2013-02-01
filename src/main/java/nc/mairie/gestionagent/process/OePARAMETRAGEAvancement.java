@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
@@ -1814,17 +1815,15 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 */
 	private boolean performControlerRegleGestionDeliberation(HttpServletRequest request) throws Exception {
 		// Verification si suppression d'une délibération utilisée sur un
-		// avancement
-		// TODO
+		// grade générique
 
-		/*
-		 * if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION) &&
-		 * Avancement.listerAvancementAvecMotif(getTransaction(),
-		 * getMotifCourant()).size() > 0) { // "ERR989", //
-		 * "Suppression impossible. Il existe au moins @ rattaché à @."
-		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR989",
-		 * "un avancement", "ce motif d'avancement")); return false; }
-		 */
+		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_SUPPRESSION)
+				&& GradeGenerique.listerGradeGeneriqueAvecDeliberation(getTransaction(), getDeliberationCourant().getIdDeliberation()).size() > 0) {
+			// "ERR989",
+			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une délibération", "un grade générique"));
+			return false;
+		}
 
 		// Vérification des contraintes d'unicité de la délibération
 		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_CREATION)) {
@@ -2138,7 +2137,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
 				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
-				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(),getCapCourant().getDescription());
+				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription());
 				Cap capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 
 				// on ajoute les employeurs CAP
@@ -2232,8 +2231,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESCRIPTION_CAP Date de
-	 * création : (14/09/11 13:52:54)
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DESCRIPTION_CAP
+	 * Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
 	public String getNOM_EF_DESCRIPTION_CAP() {

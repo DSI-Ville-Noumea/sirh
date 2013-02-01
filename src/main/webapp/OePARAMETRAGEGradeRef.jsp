@@ -187,47 +187,60 @@
             	
             	<% if (process.getVAL_ST_ACTION_GRADE_GENERIQUE()!= null && !process.getVAL_ST_ACTION_GRADE_GENERIQUE().equals(Const.CHAINE_VIDE)) {%>
 	            	<br>
-					<label class="sigp2Mandatory" Style="width:100px">Code:</label>
+					<label class="sigp2Mandatory" Style="width:100px">Code :</label>
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="4" <%= process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_GRADE_GENERIQUE()) ? "disabled='disabled'" : Const.CHAINE_VIDE %> name="<%= process.getNOM_EF_CODE_GRADE_GENERIQUE() %>" size="4" type="text" value="<%= process.getVAL_EF_CODE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					
-					<label class="sigp2Mandatory" Style="width:100px">Libellé:</label>
+					<label class="sigp2Mandatory" Style="width:100px">Libellé :</label>
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
 					
 					<br />
 					
-					<label class="sigp2" Style="width:100px">Catégorie:</label>
+					<label class="sigp2" Style="width:100px">Catégorie :</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
 					</SELECT>				
 					<br />
 					<br />
 					
-					<label class="sigp2" Style="width:100px">Cadre emploi:</label>
+					<label class="sigp2" Style="width:100px">Cadre emploi :</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE_EMPLOI_GRADE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_GRADE(), process.getVAL_LB_CADRE_EMPLOI_GRADE_SELECT()) %>
 					</SELECT>				
 					<br />
 	
-					<LABEL class="sigp2Mandatory" Style="width:100px">Inactif:</label>					
+					<LABEL class="sigp2Mandatory" Style="width:100px">Inactif :</label>					
 					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_INACTIF(), process.getNOM_RB_OUI()) %> >oui
 					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_INACTIF(), process.getNOM_RB_NON()) %> >non
 					<br />
 					<br />
-					<label class="sigp2Mandatory" Style="width:100px">Nb points:</label>
+					<label class="sigp2Mandatory" Style="width:100px">Nb points :</label>
 					<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_NB_PTS_CATEGORIE() %>" size="4" type="text" value="<%= process.getVAL_EF_NB_PTS_CATEGORIE() %>" style="margin-right:10px; margin-bottom:10px">
 					<br />											
-					<label class="sigp2" Style="width:100px">Filière:</label>
+					<label class="sigp2" Style="width:100px">Filière :</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>">
 							<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
 					</SELECT>				
 					<br />				
 					<br />						
-					<label class="sigp2" Style="width:100px">Texte CAP cadre emploi:</label>
+					<label class="sigp2" Style="width:100px">Texte CAP cadre emploi :</label>
 					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">					
 					<br />
 					<br/>
 					
+					<label class="sigp2" Style="width:100px">Déliberation territoriale :</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DELIB_TERR_GRADE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_DELIB_TERR_GRADE(), process.getVAL_LB_DELIB_TERR_GRADE_SELECT()) %>
+					</SELECT>				
+					<br />
+					<br />
+					
+					<label class="sigp2" Style="width:100px">Déliberation communale :</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DELIB_COMM_GRADE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_DELIB_COMM_GRADE(), process.getVAL_LB_DELIB_COMM_GRADE_SELECT()) %>
+					</SELECT>				
+					<br />
+					<br />
 					<div Style="width:100%" align="center">
 					
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_GRADE_GENERIQUE())) { %>

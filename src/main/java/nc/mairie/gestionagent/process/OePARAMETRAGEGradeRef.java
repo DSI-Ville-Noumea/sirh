@@ -66,7 +66,8 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	private DeliberationDao deliberationDao;
 	private ArrayList<Deliberation> listeDeliberationTerr;
 	private ArrayList<Deliberation> listeDeliberationComm;
-	private Hashtable<Integer, Deliberation> hashDeliberation;
+	private Hashtable<String, Deliberation> hashDeliberationComm;
+	private Hashtable<String, Deliberation> hashDeliberationTerr;
 
 	public String ACTION_CREATION = "0";
 	public String ACTION_MODIFICATION = "1";
@@ -120,8 +121,11 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		if (getListeCadreEmploi() == null)
 			initialiseListeCadreEmploi(request);
 
-		if (getListeDeliberationComm() == null || getListeDeliberationTerr() == null)
-			initialiseListeDeliberation(request);
+		if (getListeDeliberationComm() == null)
+			initialiseListeDeliberationComm(request);
+
+		if (getListeDeliberationTerr() == null)
+			initialiseListeDeliberationTerr(request);
 
 	}
 
@@ -133,11 +137,14 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		}
 	}
 
-	private void initialiseListeDeliberation(HttpServletRequest request) throws Exception {
-		setListeDeliberationComm(getDeliberationDao().listerDeliberationCommunale());
+	private void initialiseListeDeliberationComm(HttpServletRequest request) throws Exception {
+
+		int tailles[] = { 10 };
+		String padding[] = { "G" };
+
+		ArrayList<Deliberation> listeDelibComm = getDeliberationDao().listerDeliberationCommunale();
+		setListeDeliberationComm(listeDelibComm);
 		if (getListeDeliberationComm().size() != 0) {
-			int tailles[] = { 10 };
-			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeDeliberationComm().listIterator(); list.hasNext();) {
 				Deliberation delibComm = (Deliberation) list.next();
@@ -147,16 +154,26 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				aFormat.ajouteLigne(ligne);
 			}
 
-			setLB_DELIB_COMM_GRADE(aFormat.getListeFormatee());
+			setLB_DELIB_COMM_GRADE(aFormat.getListeFormatee(true));
 
 		} else {
 			setLB_DELIB_COMM_GRADE(null);
 		}
 
-		setListeDeliberationTerr(getDeliberationDao().listerDeliberationTerritoriale());
+		// remplissage de la hashTable
+		for (Deliberation delib : getListeDeliberationComm())
+			getHashDeliberationComm().put(delib.getIdDeliberation().toString(), delib);
+
+	}
+
+	private void initialiseListeDeliberationTerr(HttpServletRequest request) throws Exception {
+
+		int tailles[] = { 10 };
+		String padding[] = { "G" };
+
+		ArrayList<Deliberation> listeDelibTerr = getDeliberationDao().listerDeliberationTerritoriale();
+		setListeDeliberationTerr(listeDelibTerr);
 		if (getListeDeliberationTerr().size() != 0) {
-			int tailles[] = { 10 };
-			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeDeliberationTerr().listIterator(); list.hasNext();) {
 				Deliberation delibTerr = (Deliberation) list.next();
@@ -166,16 +183,15 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 				aFormat.ajouteLigne(ligne);
 			}
 
-			setLB_DELIB_TERR_GRADE(aFormat.getListeFormatee());
+			setLB_DELIB_TERR_GRADE(aFormat.getListeFormatee(true));
 
 		} else {
 			setLB_DELIB_TERR_GRADE(null);
 		}
 
 		// remplissage de la hashTable
-		ArrayList<Deliberation> toutesDelib = getDeliberationDao().listerDeliberation();
-		for (Deliberation delib : toutesDelib)
-			getHashDeliberation().put(delib.getIdDeliberation(), delib);
+		for (Deliberation delib : getListeDeliberationTerr())
+			getHashDeliberationTerr().put(delib.getIdDeliberation().toString(), delib);
 
 	}
 
@@ -1729,7 +1745,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 			// delib communale
 			if (grade.getIdDeliberationCommunale() != null) {
-				Deliberation delibComm = (Deliberation) getHashDeliberation().get(Integer.valueOf(grade.getIdDeliberationCommunale()));
+				Deliberation delibComm = (Deliberation) getHashDeliberationComm().get(grade.getIdDeliberationCommunale());
 				int ligneDelibComm = getListeDeliberationComm().indexOf(delibComm);
 				addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), String.valueOf(ligneDelibComm + 1));
 			} else {
@@ -1738,7 +1754,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 
 			// delib territoriale
 			if (grade.getIdDeliberationTerritoriale() != null) {
-				Deliberation delibTerr = (Deliberation) getHashDeliberation().get(Integer.valueOf(grade.getIdDeliberationTerritoriale()));
+				Deliberation delibTerr = (Deliberation) getHashDeliberationTerr().get(grade.getIdDeliberationTerritoriale());
 				int ligneDelibTerr = getListeDeliberationTerr().indexOf(delibTerr);
 				addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), String.valueOf(ligneDelibTerr + 1));
 			} else {
@@ -2518,7 +2534,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<Deliberation> getListeDeliberationTerr() {
-		return listeDeliberationTerr == null ? new ArrayList<Deliberation>() : listeDeliberationTerr;
+		return listeDeliberationTerr;
 	}
 
 	public void setListeDeliberationTerr(ArrayList<Deliberation> listeDeliberationTerr) {
@@ -2526,7 +2542,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<Deliberation> getListeDeliberationComm() {
-		return listeDeliberationComm == null ? new ArrayList<Deliberation>() : listeDeliberationComm;
+		return listeDeliberationComm;
 	}
 
 	public void setListeDeliberationComm(ArrayList<Deliberation> listeDeliberationComm) {
@@ -2547,11 +2563,24 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return Hashtable
 	 */
-	private Hashtable<Integer, Deliberation> getHashDeliberation() {
-		if (hashDeliberation == null) {
-			hashDeliberation = new Hashtable<Integer, Deliberation>();
+	private Hashtable<String, Deliberation> getHashDeliberationComm() {
+		if (hashDeliberationComm == null) {
+			hashDeliberationComm = new Hashtable<String, Deliberation>();
 		}
-		return hashDeliberation;
+		return hashDeliberationComm;
+	}
+
+	/**
+	 * Retourne les déliberations dans une table de hashage Date de création :
+	 * (11/06/2003 15:37:08)
+	 * 
+	 * @return Hashtable
+	 */
+	private Hashtable<String, Deliberation> getHashDeliberationTerr() {
+		if (hashDeliberationTerr == null) {
+			hashDeliberationTerr = new Hashtable<String, Deliberation>();
+		}
+		return hashDeliberationTerr;
 	}
 
 	/**

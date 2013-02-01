@@ -34,7 +34,7 @@ public class DeliberationDao implements DeliberationDaoInterface {
 
 	@Override
 	public ArrayList<Deliberation> listerDeliberation() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_TYPE_DELIBERATION;
 
 		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
 
