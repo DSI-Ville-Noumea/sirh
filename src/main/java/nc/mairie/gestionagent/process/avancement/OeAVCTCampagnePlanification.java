@@ -688,7 +688,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		getActionCourante().setIdAgentRealisation(Integer.valueOf(getVAL_ST_ID_AGENT()));
 	}
 
-	private boolean performRegleGestion(HttpServletRequest request) {
+	private boolean performRegleGestion(HttpServletRequest request) throws Exception {
 		if (getActionCourante() != null && isMailDiffuse(getActionCourante())) {
 			return true;
 		}
@@ -702,12 +702,14 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		return true;
 	}
 
-	public boolean isMailDiffuse(CampagneAction action) {
+	public boolean isMailDiffuse(CampagneAction action) throws Exception {
 		if (getCampagneCourante() == null || action == null) {
 			return false;
 		}
 		// La date de l'action doit être supérieure à la date du jour
-		if (Services.compareDates(action.getDateTransmission().toString(), Services.dateDuJour()) <= 0) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+		String dateTransmission = sdf.format(action.getDateTransmission());
+		if (Services.compareDates(dateTransmission, Services.dateDuJour()) <= 0) {
 			// alors le message est diffuse
 			return true;
 		}
