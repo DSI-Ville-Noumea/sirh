@@ -264,6 +264,7 @@
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CAP()%>">
+    	        	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_CAP()%>">
     	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CAP()%>">
     	        </div>
             	
@@ -300,6 +301,7 @@
 						%>
 					</table>
 					</div>
+					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
 					<div style="overflow: auto;height: 120px;width:95%;">
@@ -319,6 +321,7 @@
 						%>
 					</table>
 					</div>
+					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Représentants : </span>
 					<br/>
 					<div style="overflow: auto;height: 120px;width:95%;">
@@ -341,6 +344,9 @@
 					<div Style="width:100%" align="center">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
+					<% } %>
+					<% if (process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
+						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>

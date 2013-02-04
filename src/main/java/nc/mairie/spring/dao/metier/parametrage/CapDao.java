@@ -56,7 +56,6 @@ public class CapDao implements CapDaoInterface {
 	public void creerCap(String codeCap, String refCap, String description) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CODE_CAP + "," + CHAMP_REF_CAP + "," + CHAMP_DESCRIPTION + ") " + "VALUES (?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description });
-
 	}
 
 	@Override
@@ -70,5 +69,12 @@ public class CapDao implements CapDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? and " + CHAMP_REF_CAP + " =? ";
 		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap }, new CapRowMapper());
 		return c;
+	}
+
+	@Override
+	public void modifierCap(Integer idCap, String codeCap, String refCap, String description) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CODE_CAP + "=?," + CHAMP_REF_CAP + "=?," + CHAMP_DESCRIPTION + "=? where "
+				+ CHAMP_ID_CAP + "=?";
+		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description,idCap });
 	}
 }

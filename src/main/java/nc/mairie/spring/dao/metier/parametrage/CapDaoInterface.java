@@ -10,6 +10,8 @@ public interface CapDaoInterface {
 
 	public void creerCap(String codeCap, String refCap, String description) throws Exception;
 
+	public void modifierCap(Integer idCap, String codeCap, String refCap, String description) throws Exception;
+
 	public void supprimerCap(Integer idCap) throws Exception;
 
 	public Cap chercherCap(String codeCap, String refCap) throws Exception;

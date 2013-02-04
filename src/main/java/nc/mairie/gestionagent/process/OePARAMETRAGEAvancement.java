@@ -83,6 +83,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
+	public String ACTION_MODIFICATION = "2";
 
 	private ArrayList<GradeGenerique> listeCorps;
 
@@ -781,6 +782,11 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_CAP
 			if (testerParametre(request, getNOM_PB_VALIDER_CAP())) {
 				return performPB_VALIDER_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_CAP
+			if (testerParametre(request, getNOM_PB_MODIFIER_CAP())) {
+				return performPB_MODIFIER_CAP(request);
 			}
 
 		}
@@ -2083,6 +2089,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
+			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
 
 			// on affiche la liste des employeurs CAP
 			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
@@ -2142,7 +2149,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_VALIDER_CAP(HttpServletRequest request) throws Exception {
 
 		if (getVAL_ST_ACTION_CAP() != null && getVAL_ST_ACTION_CAP() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+			if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION) || getVAL_ST_ACTION_CAP().equals(ACTION_MODIFICATION)) {
 
 				// on alimente la liste des corps
 				setListeCorpsCap(null);
@@ -2186,13 +2193,35 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				if (!performControlerRegleGestionCap(request))
 					return false;
 
-				setCapCourant(new Cap());
+				if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+					setCapCourant(new Cap());
+
+				} else {
+					// modification
+				}
 
 				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
 				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
-				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription());
-				Cap capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
+				Cap capAjoute = null;
+				if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+					getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription());
+					capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
+				} else {
+					// modification
+					capAjoute = getCapCourant();
+					getCapDao().modifierCap(getCapCourant().getIdCap(), getCapCourant().getCodeCap(), getCapCourant().getRefCap(),
+							getCapCourant().getDescription());
+
+					// on supprime les corps liés
+					getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
+
+					// on supprime les employeurs liés
+					getEmployeurCapDao().supprimerEmployeurCapParCap(getCapCourant().getIdCap());
+
+					// on supprime les employeurs liés
+					getRepresentantCapDao().supprimerRepresentantCapParCap(getCapCourant().getIdCap());
+				}
 
 				// on ajoute les corps CAP
 				for (int i = 0; i < getListeCorpsCap().size(); i++) {
@@ -2226,6 +2255,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				getListeCap().remove(getCapCourant());
 				setCapCourant(null);
 			}
+
 			initialiseListeCap(request);
 			addZone(getNOM_ST_ACTION_CAP(), Const.CHAINE_VIDE);
 		}
@@ -2393,6 +2423,18 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			}
 		}
 
+		// Vérification des contraintes d'unicité de la cap
+		if (getVAL_ST_ACTION_CAP().equals(ACTION_MODIFICATION)) {
+			for (Cap cap : getListeCap()) {
+				if (cap.getCodeCap().equals(getVAL_EF_CODE_CAP().toUpperCase()) && (!cap.equals(getCapCourant()))) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 
@@ -2552,5 +2594,70 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	public void setCorpsCapDao(CorpsCapDao corpsCapDao) {
 		this.corpsCapDao = corpsCapDao;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_MODIFIER_CAP Date de
+	 * création : (14/09/11 15:57:59)
+	 * 
+	 */
+	public String getNOM_PB_MODIFIER_CAP() {
+		return "NOM_PB_MODIFIER_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 15:57:59)
+	 * 
+	 */
+	public boolean performPB_MODIFIER_CAP(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
+
+		if (indice != -1 && indice < getListeCap().size()) {
+			Cap cap = getListeCap().get(indice);
+			setCapCourant(cap);
+			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
+			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
+			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
+
+			// on affiche la liste des employeurs CAP
+			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
+			ArrayList<Employeur> listeTempEmp = new ArrayList<Employeur>();
+			for (int i = 0; i < listeEmpCap.size(); i++) {
+				EmployeurCap empCap = listeEmpCap.get(i);
+				Employeur emp = getEmployeurDao().chercherEmployeur(empCap.getIdEmployeur());
+				listeTempEmp.add(emp);
+			}
+			setListeEmployeurCap(listeTempEmp);
+
+			// on affiche la liste des représentant CAP
+			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(getCapCourant().getIdCap());
+			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
+			for (int i = 0; i < listeRepreCap.size(); i++) {
+				RepresentantCap reprCap = listeRepreCap.get(i);
+				Representant rep = getRepresentantDao().chercherRepresentant(reprCap.getIdRepresentant());
+				listeTempRepre.add(rep);
+			}
+			setListeRepresentantCap(listeTempRepre);
+
+			// on affiche la liste des corps CAP
+			ArrayList<CorpsCap> listeCorpsCap = getCorpsCapDao().listerCorpsCapParCap(getCapCourant().getIdCap());
+			ArrayList<GradeGenerique> listeTempCorps = new ArrayList<GradeGenerique>();
+			for (int i = 0; i < listeCorpsCap.size(); i++) {
+				CorpsCap corpsCap = listeCorpsCap.get(i);
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCodeSpgeng());
+				listeTempCorps.add(gg);
+			}
+			setListeCorpsCap(listeTempCorps);
+
+			addZone(getNOM_ST_ACTION_CAP(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "CAP"));
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
