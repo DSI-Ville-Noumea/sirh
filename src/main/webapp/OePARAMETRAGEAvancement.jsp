@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.carriere.GradeGenerique"%>
 <%@page import="nc.mairie.spring.domain.metier.parametrage.EmployeurCap"%>
 <%@page import="nc.mairie.spring.domain.metier.parametrage.Representant"%>
 <%@page import="nc.mairie.spring.domain.metier.parametrage.Employeur"%>
@@ -280,6 +281,25 @@
 					<br/>
 					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
 					<br />	
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
+					<br/>
+					<div style="overflow: auto;height: 120px;width:95%;">
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
+						<%
+						if (process.getListeCorps()!=null){
+							for (int indiceCorps = 0;indiceCorps<process.getListeCorps().size();indiceCorps++){
+								GradeGenerique gg = process.getListeCorps().get(indiceCorps);
+						%>
+								<tr>
+									<td><INPUT type="checkbox" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_CORPS(indiceCorps),process.getVAL_CK_SELECT_LIGNE_CORPS(indiceCorps))%> ></td>
+									<td><%=gg.getLibGradeGenerique()%></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>
+					</div>
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
 					<div style="overflow: auto;height: 120px;width:95%;">
@@ -333,6 +353,23 @@
 					<br/>
 					<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
 					<br />	
+					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
+					<br/>
+					<table class="sigp2NewTab" style="text-align:left;width:90%;">
+						<%
+						if (process.getListeCorpsCap()!=null){
+							for (int indiceCorps = 0;indiceCorps<process.getListeCorpsCap().size();indiceCorps++){
+								GradeGenerique gg = process.getListeCorpsCap().get(indiceCorps);
+						%>
+								<tr>
+									<td><%=gg.getLibGradeGenerique()%></td>								
+								</tr>						
+						<%
+							}
+						}
+						%>
+					</table>	
+					<br />	
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
 					<br/>
 					<table class="sigp2NewTab" style="text-align:left;width:90%;">
@@ -373,7 +410,7 @@
 				</div>
 				<% } %>
 			</FIELDSET>	
-			</div>
+			</div>		
 		</FORM>
 	</BODY>
 </HTML>

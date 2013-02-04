@@ -11,6 +11,7 @@ import nc.mairie.metier.avancement.Avancement;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
+import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.dao.metier.parametrage.EmployeurCapDao;
 import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
@@ -18,6 +19,7 @@ import nc.mairie.spring.dao.metier.parametrage.RepresentantCapDao;
 import nc.mairie.spring.dao.metier.parametrage.RepresentantDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
+import nc.mairie.spring.domain.metier.parametrage.CorpsCap;
 import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
 import nc.mairie.spring.domain.metier.parametrage.EmployeurCap;
@@ -45,6 +47,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private String[] LB_DELIBERATION;
 	private String[] LB_TYPE_DELIBERATION;
 	private String[] LB_CAP;
+	private String[] LB_CORPS;
 
 	private ArrayList<MotifAvancement> listeMotif;
 	private MotifAvancement motifCourant;
@@ -73,11 +76,15 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	private EmployeurCapDao employeurCapDao;
 	private RepresentantCapDao representantCapDao;
+	private CorpsCapDao corpsCapDao;
 	private ArrayList<Employeur> listeEmployeurCap;
 	private ArrayList<Representant> listeRepresentantCap;
+	private ArrayList<GradeGenerique> listeCorpsCap;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
+
+	private ArrayList<GradeGenerique> listeCorps;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -125,6 +132,27 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeCap().size() == 0) {
 			initialiseListeCap(request);
 		}
+		if (getListeCorps().size() == 0) {
+			initialiseListeCorps(request);
+		}
+	}
+
+	private void initialiseListeCorps(HttpServletRequest request) throws Exception {
+		setListeCorps(GradeGenerique.listerGradeGeneriqueActif(getTransaction()));
+		if (getListeCorps().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeCorps().listIterator(); list.hasNext();) {
+				GradeGenerique gg = (GradeGenerique) list.next();
+				String ligne[] = { gg.getLibGradeGenerique() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_CORPS(aFormat.getListeFormatee());
+		} else {
+			setLB_CORPS(null);
+		}
 	}
 
 	private void initialiseDao() {
@@ -150,6 +178,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 		if (getRepresentantCapDao() == null) {
 			setRepresentantCapDao((RepresentantCapDao) context.getBean("representantCapDao"));
+		}
+		if (getCorpsCapDao() == null) {
+			setCorpsCapDao((CorpsCapDao) context.getBean("corpsCapDao"));
 		}
 	}
 
@@ -2022,6 +2053,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		setListeEmployeurCap(null);
 		setListeRepresentantCap(null);
+		setListeCorpsCap(null);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2072,6 +2104,16 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			}
 			setListeRepresentantCap(listeTempRepre);
 
+			// on affiche la liste des corps CAP
+			ArrayList<CorpsCap> listeCorpsCap = getCorpsCapDao().listerCorpsCapParCap(getCapCourant().getIdCap());
+			ArrayList<GradeGenerique> listeTempCorps = new ArrayList<GradeGenerique>();
+			for (int i = 0; i < listeCorpsCap.size(); i++) {
+				CorpsCap corpsCap = listeCorpsCap.get(i);
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCodeSpgeng());
+				listeTempCorps.add(gg);
+			}
+			setListeCorpsCap(listeTempCorps);
+
 			addZone(getNOM_ST_ACTION_CAP(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "cap"));
@@ -2101,6 +2143,18 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		if (getVAL_ST_ACTION_CAP() != null && getVAL_ST_ACTION_CAP() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
+
+				// on alimente la liste des corps
+				setListeCorpsCap(null);
+				ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
+				for (int i = 0; i < getListeCorps().size(); i++) {
+					// on recupère la ligne concernée
+					GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
+					if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
+						listeCorps.add(gg);
+					}
+				}
+				setListeCorpsCap(listeCorps);
 
 				// on alimente la liste des employeurs
 				setListeEmployeurCap(null);
@@ -2140,6 +2194,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription());
 				Cap capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 
+				// on ajoute les corps CAP
+				for (int i = 0; i < getListeCorpsCap().size(); i++) {
+					getCorpsCapDao().creerCorpsCap(getListeCorpsCap().get(i).getCdgeng(), capAjoute.getIdCap());
+				}
+				setListeCorpsCap(null);
+
 				// on ajoute les employeurs CAP
 				for (int i = 0; i < getListeEmployeurCap().size(); i++) {
 					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(), capAjoute.getIdCap());
@@ -2153,6 +2213,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				setListeRepresentantCap(null);
 
 			} else if (getVAL_ST_ACTION_CAP().equals(ACTION_SUPPRESSION)) {
+				// on supprime les corps liés
+				getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
+
 				// on supprime les employeurs liés
 				getEmployeurCapDao().supprimerEmployeurCapParCap(getCapCourant().getIdCap());
 
@@ -2288,6 +2351,15 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Représentants"));
 			return false;
 		}
+
+		// **********************************
+		// Verification Corps
+		// **********************************
+		if (getListeCorpsCap() == null || getListeCorpsCap().size() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Corps"));
+			return false;
+		}
 		return true;
 	}
 
@@ -2392,5 +2464,93 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	public void setListeRepresentantCap(ArrayList<Representant> listeRepresentantCap) {
 		this.listeRepresentantCap = listeRepresentantCap;
+	}
+
+	public ArrayList<GradeGenerique> getListeCorpsCap() {
+		return listeCorpsCap == null ? new ArrayList<GradeGenerique>() : listeCorpsCap;
+	}
+
+	public void setListeCorpsCap(ArrayList<GradeGenerique> listeCorpsCap) {
+		this.listeCorpsCap = listeCorpsCap;
+	}
+
+	public ArrayList<GradeGenerique> getListeCorps() {
+		return listeCorps == null ? new ArrayList<GradeGenerique>() : listeCorps;
+	}
+
+	public void setListeCorps(ArrayList<GradeGenerique> listeCorps) {
+		this.listeCorps = listeCorps;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CORPS Date de création :
+	 * (14/09/11 13:52:54)
+	 * 
+	 */
+	private String[] getLB_CORPS() {
+		if (LB_CORPS == null)
+			LB_CORPS = initialiseLazyLB();
+		return LB_CORPS;
+	}
+
+	/**
+	 * Setter de la liste: LB_CORPS Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	private void setLB_CORPS(String[] newLB_CORPS) {
+		LB_CORPS = newLB_CORPS;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CORPS Date de création :
+	 * (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_CORPS() {
+		return "NOM_LB_CORPS";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CORPS_SELECT Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_CORPS_SELECT() {
+		return "NOM_LB_CORPS_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CORPS Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String[] getVAL_LB_CORPS() {
+		return getLB_CORPS();
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_SELECT_LIGNE_CORPS(int i) {
+		return "NOM_CK_SELECT_LIGNE_CORPS_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_SELECT_LIGNE_CORPS Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_SELECT_LIGNE_CORPS(int i) {
+		return getZone(getNOM_CK_SELECT_LIGNE_CORPS(i));
+	}
+
+	public CorpsCapDao getCorpsCapDao() {
+		return corpsCapDao;
+	}
+
+	public void setCorpsCapDao(CorpsCapDao corpsCapDao) {
+		this.corpsCapDao = corpsCapDao;
 	}
 }
