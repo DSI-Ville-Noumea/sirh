@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -89,7 +90,11 @@ document.write(menuAgentEltsSalaires.afficher());
 var menuAVCTAvancementFonctionnaire = new MenuHaut("Module_avct_simulationFonctionnaires");
 menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTSimulationFontionnaires", "SIMU FONCTIONNAIRES", "Simulation pour les fonctionnaires", true, false,"AVCT/SIMU"));
 menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaAvct", "prepa avct", "Avancement des fonctionnaires", true, false,"AVCT/PREPAAVCT"));
-//menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaCAP", "prepa cap", "Avancement des fonctionnaires", true, false,"AVCT/PREPACAP"));
+<% 
+String affAvctCAP =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_CAP");
+if (affAvctCAP.equals("TRUE")){ %>
+menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaCAP", "prepa cap", "Avancement des fonctionnaires", true, false,"AVCT/PREPACAP"));
+<%}%>
 //menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"AVCT/ARRETES"));
 //menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"AVCT/CARRIERES"));
 document.write(menuAVCTAvancementFonctionnaire.afficher());

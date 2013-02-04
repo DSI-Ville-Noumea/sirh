@@ -354,8 +354,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// si il s'agit d'une campagne ouverte on fait le calcul
 				if (getCampagneCourante().estOuverte()) {
 					if (!performCalculEAE(request, getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getAnnee())) {
-						// TODO
-						// il faut declarer l'erreur
+						//"ERR213", "Une erreur est survenue dans le calcul des EAEs. Merci de contacter le responsable du projet."
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR213"));
 						return false;
 					}
 				}
@@ -1204,7 +1204,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
 			if (!initialiseListeEAE(request)) {
-				// TODO declarer erreur
 				return false;
 			}
 
@@ -1212,7 +1211,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setMessage(MessageUtils.getMessage("INF202"));
 			return true;
 		} else {
-			// TODO declarer erreur
 			return false;
 		}
 	}
