@@ -196,6 +196,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 		if (getMessage() != null && !getMessage().equals(Const.CHAINE_VIDE)) {
 			setStatut(STATUT_MEME_PROCESS, false, getMessage());
+			setMessage(null);
 		}
 
 	}
@@ -354,7 +355,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// si il s'agit d'une campagne ouverte on fait le calcul
 				if (getCampagneCourante().estOuverte()) {
 					if (!performCalculEAE(request, getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getAnnee())) {
-						//"ERR213", "Une erreur est survenue dans le calcul des EAEs. Merci de contacter le responsable du projet."
+						// "ERR213",
+						// "Une erreur est survenue dans le calcul des EAEs. Merci de contacter le responsable du projet."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR213"));
 						return false;
 					}
@@ -1112,7 +1114,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		setMessage(Const.CHAINE_VIDE);
+		//setMessage(Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
@@ -2969,6 +2971,72 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		if (getVAL_CK_VALID_EAE(elementEae).equals(getCHECKED_ON())) {
+
+			// RG-EAE-6 --> mis au moment où on controle un EAE.
+			// on cherche pour chaque EAE de la campagne si il y a une ligne
+			// dans
+			// Avanacement pourla meme année
+			MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
+			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
+			MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
+			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
+			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(), evalue
+					.getIdAgent().toString());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "INF500",
+				// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
+				setMessage(MessageUtils.getMessage("INF500"));
+			}
+			if (avct != null && avct.getIdAvct() != null) {
+				if (avct.getGrade() != null) {
+					Grade gradeAgent = Grade.chercherGrade(getTransaction(), avct.getGrade());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+						avct.setIdMotifAvct(null);
+						avct.setAvisSHD(null);
+					} else {
+						String typeAvct = gradeAgent.getCodeTava();
+						if (!typeAvct.equals(Const.CHAINE_VIDE)) {
+							// on cherche le type avancement correspondant
+							MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), typeAvct);
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+								avct.setIdMotifAvct(null);
+								avct.setAvisSHD(null);
+							} else {
+								avct.setIdMotifAvct(motif.getIdMotifAvct());
+								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(getEaeCourant().getIdEAE());
+								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
+									avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
+								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
+									avct.setAvisSHD(eval.getPropositionAvancement());
+								} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
+									avct.setAvisSHD(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
+								} else {
+									avct.setAvisSHD(null);
+								}
+							}
+						} else {
+							avct.setIdMotifAvct(null);
+							avct.setAvisSHD(null);
+						}
+					}
+				} else {
+					avct.setIdMotifAvct(null);
+					avct.setAvisSHD(null);
+				}
+				avct.modifierAvancement(getTransaction());
+
+				if (getTransaction().isErreur())
+					return false;
+
+				// tout s'est bien passé
+				commitTransaction();
+
+			}
+
+			// on met à jour le statut de l'EAE
 			getEaeCourant().setEtat(EnumEtatEAE.CONTROLE.getCode());
 			getEaeCourant().setDateControle(new Date());
 			getEaeCourant().setHeureControle(heureAction);

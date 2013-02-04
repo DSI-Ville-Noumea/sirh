@@ -395,10 +395,10 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 		CampagneEAE campagneCourante = (CampagneEAE) getListeCampagne().get(elementACloturer);
 		setCampagneCourante(campagneCourante);
 
-		// RG-EAE-6
+		// RG-EAE-6 --> mis au moment où on controle un EAE.
 		// on cherche pour chaque EAE de la campagne si il y a une ligne dans
 		// Avanacement pourla meme année
-		MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
+		/*MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
 		MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
 		MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
 		ArrayList<EAE> listeEAE = getEaeDao().listerEAEFinaliseControlePourCampagne(getCampagneCourante().getIdCampagneEAE());
@@ -455,7 +455,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// tout s'est bien passé
-		commitTransaction();
+		commitTransaction();*/
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		getCampagneCourante().setDateFin(sdf.parse(Services.dateDuJour()));
