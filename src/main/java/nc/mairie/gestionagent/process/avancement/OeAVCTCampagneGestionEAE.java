@@ -780,7 +780,6 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	private void initialiseDao() {
 		// on initialise le dao
-		// ApplicationContext context = new
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		// Oracle
