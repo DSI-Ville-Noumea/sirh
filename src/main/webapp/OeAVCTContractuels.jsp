@@ -119,11 +119,7 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_INA(indiceAvct)%></td>	
 								<% if (process.getVAL_CK_AFFECTER(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td>
-										<SELECT name="<%= process.getNOM_LB_MOTIF_AVCT(indiceAvct) %>" class="sigp2-liste" disabled="disabled">
-											<%=process.forComboHTML(process.getVAL_LB_MOTIF_AVCT(indiceAvct), process.getVAL_LB_MOTIF_AVCT_SELECT(indiceAvct)) %>
-										</SELECT>
-									</td>
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
@@ -141,11 +137,7 @@ function reduireHierarchy() {
 									
 								<%}else if(process.getVAL_CK_PROJET_ARRETE(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td>
-										<SELECT name="<%= process.getNOM_LB_MOTIF_AVCT(indiceAvct) %>" class="sigp2-liste" disabled="disabled">
-											<%=process.forComboHTML(process.getVAL_LB_MOTIF_AVCT(indiceAvct), process.getVAL_LB_MOTIF_AVCT_SELECT(indiceAvct)) %>
-										</SELECT>
-									</td>
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
@@ -158,11 +150,7 @@ function reduireHierarchy() {
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																
 								<%}else if(process.getVAL_CK_VALID_DRH(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td>
-										<SELECT disabled="disabled" name="<%= process.getNOM_LB_MOTIF_AVCT(indiceAvct) %>" class="sigp2-liste">
-											<%=process.forComboHTML(process.getVAL_LB_MOTIF_AVCT(indiceAvct), process.getVAL_LB_MOTIF_AVCT_SELECT(indiceAvct)) %>
-										</SELECT>
-									</td>
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
@@ -175,11 +163,7 @@ function reduireHierarchy() {
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>								
 								<%}else{ %>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
-									<td>
-										<SELECT disabled="disabled" name="<%= process.getNOM_LB_MOTIF_AVCT(indiceAvct) %>" class="sigp2-liste" style="visibility:hidden">
-											<%=process.forComboHTML(process.getVAL_LB_MOTIF_AVCT(indiceAvct), process.getVAL_LB_MOTIF_AVCT_SELECT(indiceAvct)) %>
-										</SELECT>
-									</td>
+									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
 										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
