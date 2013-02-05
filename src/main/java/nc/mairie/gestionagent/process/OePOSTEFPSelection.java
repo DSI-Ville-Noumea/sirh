@@ -141,7 +141,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFP());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
-				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomUsage().toUpperCase() + " " + agent.getPrenom());
+				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " " + agent.getPrenomAgent());
 
 				indiceFp++;
 			}

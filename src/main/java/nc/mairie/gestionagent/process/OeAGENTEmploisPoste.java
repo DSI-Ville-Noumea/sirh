@@ -450,7 +450,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_CADRE_EMPLOI(), getCadreEmploi());
 		addZone(getNOM_ST_MISSION(), getFichePosteCourant().getMissions());
 
-		addZone(getNOM_ST_TITULAIRE(), getAgentCourant().getNomUsage() + " " + getAgentCourant().getPrenomUsage());
+		addZone(getNOM_ST_TITULAIRE(), getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 
 		addZone(getNOM_ST_GRADE_AGT(), getGradeAgt());
 		addZone(getNOM_ST_ETUDE_AGT(), getDiplomeAgt());
@@ -1459,12 +1459,11 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		String titulaireMatr = Const.CHAINE_VIDE;
 		String titulaireNom = "Poste vacant.";
 		if (agent != null) {
-			String prenomTitulaire = agent.getPrenom().toLowerCase();
+			String prenomTitulaire = agent.getPrenomAgent().toLowerCase();
 			String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
 			String restePrenomTitulaire = prenomTitulaire.substring(1, prenomTitulaire.length()).toLowerCase();
 			prenomTitulaire = premLettreTitulaire + restePrenomTitulaire;
-			String nomTitulaire = agent.getNomUsage() == null || agent.getNomUsage().equals(Const.CHAINE_VIDE) ? agent.getNomPatronymique()
-					.toUpperCase() : agent.getNomUsage().toUpperCase();
+			String nomTitulaire = agent.getNomAgent().toUpperCase();
 			titulaireNom = prenomTitulaire + " " + nomTitulaire;
 			titulaireMatr = agent.getNoMatricule();
 		}
@@ -1484,12 +1483,11 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			if (affResponsable != null && affResponsable.getIdAgent() != null) {
 				AgentNW agentResponsable = AgentNW.chercherAgent(getTransaction(), affResponsable.getIdAgent());
 				respMatr = agentResponsable.getNoMatricule();
-				String prenomResponsable = agentResponsable.getPrenom().toLowerCase();
+				String prenomResponsable = agentResponsable.getPrenomAgent().toLowerCase();
 				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
 				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length()).toLowerCase();
 				prenomResponsable = premLettreResponsable + restePrenomResponsable;
-				String nom = agentResponsable.getNomUsage() == null || agentResponsable.getNomUsage().equals(Const.CHAINE_VIDE) ? agentResponsable
-						.getNomPatronymique().toUpperCase() : agentResponsable.getNomUsage().toUpperCase();
+				String nom = agentResponsable.getNomAgent().toUpperCase();
 				respNom = prenomResponsable + " " + nom;
 			}
 			respFP = fpResponsable.getNumFP();
@@ -1508,12 +1506,11 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
 				rempMatr = agentRemplacement.getNoMatricule();
-				String prenomRemplacement = agentRemplacement.getPrenom().toLowerCase();
+				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
 				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
 				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length()).toLowerCase();
 				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
-				String nom = agentRemplacement.getNomUsage() == null || agentRemplacement.getNomUsage().equals(Const.CHAINE_VIDE) ? agentRemplacement
-						.getNomPatronymique().toUpperCase() : agentRemplacement.getNomUsage().toUpperCase();
+				String nom = agentRemplacement.getNomAgent().toUpperCase();
 				rempNom = prenomRemplacement + " " + nom;
 			}
 			rempFP = fpRemplacement.getNumFP();

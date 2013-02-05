@@ -114,12 +114,11 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 				String infoAgent = "&nbsp;";
 				if (user != null && user.getNomatr() != null) {
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
-					String prenomAgent = agent.getPrenom().toLowerCase();
+					String prenomAgent = agent.getPrenomAgent().toLowerCase();
 					String premLettre = prenomAgent.substring(0, 1).toUpperCase();
 					String restePrenom = prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
 					prenomAgent = premLettre + restePrenom;
-					String nom = agent.getNomUsage() == null || agent.getNomUsage().equals(Const.CHAINE_VIDE) ? agent.getNomPatronymique()
-							.toUpperCase() : agent.getNomUsage().toUpperCase();
+					String nom = agent.getNomAgent().toUpperCase();
 					infoAgent = prenomAgent + " " + nom;
 				}
 

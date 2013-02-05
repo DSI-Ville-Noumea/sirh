@@ -67,7 +67,7 @@ public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 				EnfantNW enfant = (EnfantNW) getListeEnfantHomonyme().get(i);
 				ArrayList<AgentNW> parents = AgentNW.listerAgentNWAvecEnfant(getTransaction(), enfant);
 				if (parents.size() < 2) {
-					String colonnes[] = { parents.get(0).getNoMatricule(), parents.get(0).getNomUsage() + " " + parents.get(0).getPrenomUsage(), enfant.getCommentaire() };
+					String colonnes[] = { parents.get(0).getNoMatricule(), parents.get(0).getNomAgent() + " " + parents.get(0).getPrenomAgent(), enfant.getCommentaire() };
 					aListeEnfantFormatee.ajouteLigne(colonnes);
 				}
 			}

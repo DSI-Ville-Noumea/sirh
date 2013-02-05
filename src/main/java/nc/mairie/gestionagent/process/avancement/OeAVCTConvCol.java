@@ -65,7 +65,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_GRADE(i), av.getGrade());
 				addZone(getNOM_ST_GRADE_LIB(i), av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 
 				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());

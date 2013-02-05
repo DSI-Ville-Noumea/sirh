@@ -69,7 +69,7 @@ public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
 				FichePoste fp = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), av.getNumFP());
 				TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
 
-				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche());
 				addZone(getNOM_ST_FP(i), av.getNumFP() + " <br> " + tp.getLibTitrePoste());
 				addZone(getNOM_ST_PA(i), av.getPa());
@@ -316,8 +316,7 @@ public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
-						agentEnErreur += agentCarr.getNomMarital() == null || agentCarr.getNomMarital().equals(Const.CHAINE_VIDE) ? agentCarr
-								.getNomUsage() : agentCarr.getNomMarital() + " " + agentCarr.getPrenom() + " (" + agentCarr.getNoMatricule() + "); ";
+						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
 					}
 				}
 			}

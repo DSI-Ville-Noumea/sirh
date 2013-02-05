@@ -1799,11 +1799,11 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 
 		// on recupere les champs qui nous interessent
-		String prenom = a.getPrenom().toLowerCase();
+		String prenom = a.getPrenomAgent().toLowerCase();
 		String premLettre = prenom.substring(0, 1).toUpperCase();
 		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
 		prenom = premLettre + restePrenom;
-		String nom = a.getNomPatronymique().toUpperCase();
+		String nom = a.getNomAgent().toUpperCase();
 		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame" : "Mademoiselle";
 		String dateDebAffectation = aff.getDateDebutAff();
 		String dateFinAffectation = aff.getDateFinAff() == null ? "Il n'y a pas de date de fin pour ce contrat !" : aff.getDateFinAff();
@@ -2183,11 +2183,11 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		String budgete = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorBud()).getLibHor();
 
 		// on recupère les champs liés à l'agent
-		String prenom = a.getPrenom().toLowerCase();
+		String prenom = a.getPrenomAgent().toLowerCase();
 		String premLettre = prenom.substring(0, 1).toUpperCase();
 		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
 		prenom = premLettre + restePrenom;
-		String nom = a.getNomPatronymique().toUpperCase();
+		String nom = a.getNomAgent().toUpperCase();
 		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame" : "Mademoiselle";
 		String dateNaiss = a.getCivilite().equals("0") ? "ne le " + a.getDateNaissance() : "nee le " + a.getDateNaissance();
 		String embauche = a.getCivilite().equals("0") ? "embauche le " + a.getDateDerniereEmbauche() : "embauchee le " + a.getDateDerniereEmbauche()

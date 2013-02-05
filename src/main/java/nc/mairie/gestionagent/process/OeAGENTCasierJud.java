@@ -58,7 +58,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomUsage() + " " + getAgentCourant().getPrenom());
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 
 				//initialisation fenêtre si changement de l'agent
 				initialiseListeCasierJudAgent(request);

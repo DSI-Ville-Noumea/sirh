@@ -107,8 +107,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 		if (getAutreParentCourant() == null) {
 			addZone(getNOM_ST_AUTRE_PARENT(), "");
 		} else {
-			addZone(getNOM_ST_AUTRE_PARENT(), (getAutreParentCourant().getNomUsage() == null ? "" : getAutreParentCourant().getNomUsage()) + " "
-					+ (getAutreParentCourant().getPrenomUsage() == null ? "" : getAutreParentCourant().getPrenomUsage()));
+			addZone(getNOM_ST_AUTRE_PARENT(), getAutreParentCourant().getNomAgent() + " " + getAutreParentCourant().getPrenomAgent());
 		}
 	}
 

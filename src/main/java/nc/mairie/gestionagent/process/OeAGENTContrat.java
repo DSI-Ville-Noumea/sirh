@@ -1530,11 +1530,11 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		}
 
 		// on recupere les champs qui nous interessent
-		String prenom = a.getPrenom().toLowerCase();
+		String prenom = a.getPrenomAgent().toLowerCase();
 		String premLettre = prenom.substring(0, 1).toUpperCase();
 		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
 		prenom = premLettre + restePrenom;
-		String nom = a.getNomPatronymique().toUpperCase();
+		String nom = a.getNomAgent().toUpperCase();
 		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame" : "Mademoiselle";
 		String contractant = a.getCivilite().equals("0") ? "le contractant" : "la contractante";
 		String nationalite = a.getNationalite().equals("F") ? "Française" : "Etrangère";

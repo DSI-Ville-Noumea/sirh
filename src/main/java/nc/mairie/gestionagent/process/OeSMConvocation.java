@@ -605,7 +605,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-			sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -716,7 +716,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-					sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
@@ -834,7 +834,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-					sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
@@ -951,7 +951,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-					sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
@@ -1035,7 +1035,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-			sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -1211,7 +1211,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-					sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
@@ -1293,7 +1293,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-			sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+			sm.setAgent(agent.getNomAgent()+ " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
@@ -1368,7 +1368,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 			sm.setIdAgent(Integer.valueOf(vm.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
-			sm.setAgent(agent.getNomUsage() + " " + agent.getPrenomUsage());
+			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse(vm.getDateDerniereVisite());
@@ -2354,7 +2354,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			String nomPrenom = "";
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomUsage();
+				String prenom = agentSelectionne.getPrenomAgent();
 				if(prenom.contains("-")){
 					StringTokenizer st = new StringTokenizer(prenom, "-");				 
 					while (st.hasMoreElements()) {
@@ -2379,7 +2379,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				}else{
 					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 				}
-				nomPrenom += " " + agentSelectionne.getNomUsage();
+				nomPrenom += " " + agentSelectionne.getNomAgent();
 			}else{
 				nomPrenom = sm.getAgent();				
 			}
@@ -2512,7 +2512,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			String nomPrenom = "";
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomUsage();
+				String prenom = agentSelectionne.getPrenomAgent();
 				if(prenom.contains("-")){
 					StringTokenizer st = new StringTokenizer(prenom, "-");				 
 					while (st.hasMoreElements()) {
@@ -2537,7 +2537,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				}else{
 					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 				}
-				nomPrenom += " " + agentSelectionne.getNomUsage();
+				nomPrenom += " " + agentSelectionne.getNomAgent();
 			}else{
 				nomPrenom = sm.getAgent();				
 			}
@@ -2728,7 +2728,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			String nomPrenom = "";
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomUsage();
+				String prenom = agentSelectionne.getPrenomAgent();
 				if(prenom.contains("-")){
 					StringTokenizer st = new StringTokenizer(prenom, "-");				 
 					while (st.hasMoreElements()) {
@@ -2753,7 +2753,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				}else{
 					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 				}
-				nomPrenom += " " + agentSelectionne.getNomUsage();
+				nomPrenom += " " + agentSelectionne.getNomAgent();
 			}else{
 				nomPrenom = sm.getAgent();				
 			}
@@ -2886,7 +2886,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			String nomPrenom = "";
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomUsage();
+				String prenom = agentSelectionne.getPrenomAgent();
 				if(prenom.contains("-")){
 					StringTokenizer st = new StringTokenizer(prenom, "-");				 
 					while (st.hasMoreElements()) {
@@ -2911,7 +2911,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				}else{
 					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 				}
-				nomPrenom += " " + agentSelectionne.getNomUsage();
+				nomPrenom += " " + agentSelectionne.getNomAgent();
 			}else{
 				nomPrenom = sm.getAgent();				
 			}

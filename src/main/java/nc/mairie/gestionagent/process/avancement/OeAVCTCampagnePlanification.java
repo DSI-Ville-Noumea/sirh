@@ -109,7 +109,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-			addZone(getNOM_ST_AGENT(), agt.getNomUsage().toUpperCase() + " " + agt.getPrenom());
+			addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 			addZone(getNOM_ST_ID_AGENT(), agt.getIdAgent());
 		}
 
@@ -172,7 +172,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 				addZone(getNOM_ST_TRANSMETTRE(indiceAction), sdf.format(action.getDateTransmission()));
 				addZone(getNOM_ST_MESSAGE(indiceAction), action.getMessage());
 				AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
-				addZone(getNOM_ST_REALISER_PAR(indiceAction), agt.getNomUsage().toUpperCase() + " " + agt.getPrenom());
+				addZone(getNOM_ST_REALISER_PAR(indiceAction), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 				addZone(getNOM_ST_POUR_LE(indiceAction), sdf.format(action.getDateAFaireLe()));
 				addZone(getNOM_ST_FAIT_LE(indiceAction), action.getDateFaitLe() == null ? "&nbsp;" : sdf.format(action.getDateFaitLe()));
 				addZone(getNOM_ST_NB_DOC(indiceAction), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
@@ -395,7 +395,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		addZone(getNOM_ST_MESSAGE(), action.getMessage());
 		addZone(getNOM_ST_TRANSMETTRE(), action.getDateTransmission() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateTransmission()));
 		AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
-		addZone(getNOM_ST_AGENT(), agt.getNomUsage().toUpperCase() + " " + agt.getPrenom());
+		addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 		addZone(getNOM_ST_ID_AGENT(), action.getIdAgentRealisation().toString());
 		addZone(getNOM_ST_NOM_ACTION(), action.getNomAction());
 		addZone(getNOM_ST_POUR_LE(), action.getDateAFaireLe() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateAFaireLe()));
@@ -1341,7 +1341,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		if (getListeDestinataireMulti() != null) {
 			for (int i = 0; i < getListeDestinataireMulti().size(); i++) {
 				AgentNW ag = (AgentNW) getListeDestinataireMulti().get(i);
-				addZone(getNOM_ST_LIB_AGENT(indiceActeur), ag.getNomUsage() + " " + ag.getPrenom());
+				addZone(getNOM_ST_LIB_AGENT(indiceActeur), ag.getNomAgent() + " " + ag.getPrenomAgent());
 
 				indiceActeur++;
 			}

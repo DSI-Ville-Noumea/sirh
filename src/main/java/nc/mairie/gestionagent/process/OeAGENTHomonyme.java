@@ -52,7 +52,7 @@ public class OeAGENTHomonyme extends nc.mairie.technique.BasicProcess {
 		FormateListe aListeAgtFormatee = new FormateListe(taillesAgtHomonyme);
 		for (int i = 0; i < getListeAgtHomonyme().size(); i++) {
 			AgentNW agt = (AgentNW) getListeAgtHomonyme().get(i);
-			String colonnes[] = { agt.getNoMatricule(), agt.getNomUsage(), agt.getPrenomUsage(), agt.getDateNaissance() };
+			String colonnes[] = { agt.getNoMatricule(), agt.getNomAgent(), agt.getPrenomAgent(), agt.getDateNaissance() };
 			aListeAgtFormatee.ajouteLigne(colonnes);
 		}
 		setLB_AGENT_HOMONYME(aListeAgtFormatee.getListeFormatee());

@@ -63,7 +63,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
 				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
-				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_GRADE(i),

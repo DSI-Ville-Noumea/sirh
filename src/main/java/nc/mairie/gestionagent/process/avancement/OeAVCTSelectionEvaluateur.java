@@ -61,7 +61,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		for (int i = 0; i < getListeEvaluateurs().size(); i++) {
 			AgentNW agent = (AgentNW) getListeEvaluateurs().get(i);
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
-			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomUsage() + " " + agent.getPrenom());
+			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent()+ " " + agent.getPrenomAgent());
 			if (getListeEvaluateursExistant().contains(agent))
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 		}
@@ -71,7 +71,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		for (int i = 0; i < getListeEvaluateursPossible().size(); i++) {
 			AgentNW agent = (AgentNW) getListeEvaluateursPossible().get(i);
 			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
-			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomUsage() + " " + agent.getPrenom());
+			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
 		}
 	}

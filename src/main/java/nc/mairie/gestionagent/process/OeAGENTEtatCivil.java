@@ -2293,7 +2293,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_LB_CIVILITE_SELECT(), getAgentCourant().getCivilite());
 
-		addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getNomUsage() + " " + getAgentCourant().getPrenom());
+		addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 		addZone(getNOM_ST_SEXE(),
 				(getAgentCourant().getCivilite().equals(EnumCivilite.M.getCode()) ? EnumSexe.MASCULIN.getValue() : EnumSexe.FEMININ.getValue()));
 		addZone(getNOM_EF_NOM_PATRONYMIQUE(), getAgentCourant().getNomPatronymique());

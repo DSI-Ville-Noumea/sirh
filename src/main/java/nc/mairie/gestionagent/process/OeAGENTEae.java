@@ -133,7 +133,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				for (int j = 0; j < listeEvaluateur.size(); j++) {
 					EaeEvaluateur eval = listeEvaluateur.get(j);
 					AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-					evaluateur += agentEvaluateur.getNomPatronymique() + " " + agentEvaluateur.getPrenomUsage() + " ("
+					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
 							+ agentEvaluateur.getNoMatricule() + ") <br/> ";
 				}
 
@@ -436,7 +436,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
 			EaeEvaluateur eval = listeEvaluateur.get(j);
 			AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-			String evaluateur = agentEvaluateur.getNomPatronymique() + " " + agentEvaluateur.getPrenomUsage() + " ("
+			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
 					+ agentEvaluateur.getNoMatricule() + ") ";
 
 			addZone(getNOM_ST_EVALUATEUR_NOM(j), evaluateur.equals(Const.CHAINE_VIDE) ? "non renseigné" : evaluateur);

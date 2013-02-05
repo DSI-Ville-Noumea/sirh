@@ -260,8 +260,8 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 				AgentNW agent = (AgentNW) getListeAgent().get(i);
 
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
-				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage());
-				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom());
+				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
+				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
 
 				indiceAgent++;
 			}
@@ -459,8 +459,8 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 				AgentNW agent = (AgentNW) getListeAgent().get(i);
 
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
-				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomUsage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNomUsage());
-				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getPrenom());
+				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
+				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
 
 				indiceAgent++;
 			}

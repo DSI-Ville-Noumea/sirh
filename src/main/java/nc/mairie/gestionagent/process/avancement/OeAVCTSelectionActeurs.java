@@ -46,7 +46,7 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 				if (agent != null) {
 					getListeActeurs().add(agent);
 					addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
-					addZone(getNOM_ST_LIB_AGENT(i), agent.getNomUsage() + " " + agent.getPrenom());
+					addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 				}
 			}
 		}
