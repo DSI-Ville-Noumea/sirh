@@ -95,7 +95,11 @@ String affAvctCAP =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVC
 if (affAvctCAP.equals("TRUE")){ %>
 menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctPrepaCAP", "prepa cap", "Avancement des fonctionnaires", true, false,"AVCT/PREPACAP"));
 <%}%>
-//menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"AVCT/ARRETES"));
+<% 
+String affAvctArr =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_ARR");
+if (affAvctArr.equals("TRUE")){ %>
+menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"AVCT/ARRETES"));
+<%}%>
 //menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"AVCT/CARRIERES"));
 document.write(menuAVCTAvancementFonctionnaire.afficher());
 

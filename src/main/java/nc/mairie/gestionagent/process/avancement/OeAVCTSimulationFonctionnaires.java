@@ -276,6 +276,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 			}
 
 			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Fonctionnaire");
+			System.out.println("taille eligible : " + la.size());
 		}
 		// Parcours des agents
 		for (int i = 0; i < la.size(); i++) {
@@ -508,6 +509,9 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					avct.setDateVerifSEF(Const.DATE_NULL);
 					avct.setDateVerifSGC(Const.DATE_NULL);
 					avct.creerAvancement(getTransaction());
+					if(getTransaction().isErreur()){
+						getTransaction().traiterErreur();
+					}
 				}
 			}
 		}
