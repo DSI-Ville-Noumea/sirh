@@ -2719,7 +2719,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					String prenom = m.getPrenomMedecin();
 					prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 					String titreMedecin = m.getTitreMedecin();
-					titreMedecin = !titreMedecin.equals(Const.CHAINE_VIDE) ?titreMedecin.substring(0, 1).toUpperCase() + titreMedecin.substring(1, titreMedecin.length()).toLowerCase() : "";
+					titreMedecin = !titreMedecin.equals(Const.CHAINE_VIDE) ?titreMedecin.substring(0, 1).toUpperCase() + titreMedecin.substring(1, titreMedecin.length()).toLowerCase() : Const.CHAINE_VIDE;
 					medecin = titreMedecin + " " + prenom + " " + m.getNomMedecin();
 				} else {
 					getTransaction().traiterErreur();

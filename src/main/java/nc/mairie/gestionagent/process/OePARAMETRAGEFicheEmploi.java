@@ -555,7 +555,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_FAMILLE(HttpServletRequest request) throws Exception {
 
 		addZone(getNOM_ST_ACTION_FAMILLE(), ACTION_CREATION);
-		addZone(getNOM_EF_CODE_FAMILLE(), "");
+		addZone(getNOM_EF_CODE_FAMILLE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_FAMILLE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
