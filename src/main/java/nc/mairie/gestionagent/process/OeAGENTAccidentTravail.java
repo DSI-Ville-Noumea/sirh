@@ -213,10 +213,10 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		if ("".equals(getVAL_ST_ACTION())) {
+		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		} else {
-			addZone(getNOM_ST_ACTION(), "");
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setStatut(STATUT_MEME_PROCESS);
 		}
 		return true;
@@ -264,8 +264,8 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 
 		// On vide les zone de saisie
-		addZone(getNOM_EF_DATE(), "");
-		addZone(getNOM_EF_NB_JOUR_IIT(), "");
+		addZone(getNOM_EF_DATE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_NB_JOUR_IIT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TYPE_SELECT(), "0");
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), "0");
 	}
@@ -412,7 +412,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		}
 
 		// On a fini l'action
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		// Tout s'est bien passé
 		commitTransaction();
@@ -433,7 +433,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
 
 		// date de l'accident du travail
-		if (("").equals(getZone(getNOM_EF_DATE()))) {
+		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date d'AT"));
 			return false;
 		} else if (!Services.estUneDate(getZone(getNOM_EF_DATE()))) {
@@ -470,13 +470,13 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		}
 
 		// dae d'AT initial
-		if (!("").equals(getZone(getNOM_EF_DATE_INITIALE())) && !Services.estUneDate(getZone(getNOM_EF_DATE_INITIALE()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_INITIALE())) && !Services.estUneDate(getZone(getNOM_EF_DATE_INITIALE()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'AT Initial"));
 			return false;
 		}
 
 		// duree ITT
-		if (!("").equals(getZone(getNOM_EF_NB_JOUR_IIT())) && !Services.estNumerique(getZone(getNOM_EF_NB_JOUR_IIT()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NB_JOUR_IIT())) && !Services.estNumerique(getZone(getNOM_EF_NB_JOUR_IIT()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée ITT"));
 			return false;
 		}

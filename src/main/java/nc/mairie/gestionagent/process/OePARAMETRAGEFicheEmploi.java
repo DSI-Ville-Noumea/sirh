@@ -249,7 +249,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_DOMAINE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_DOMAINE(), "");
+		addZone(getNOM_ST_ACTION_DOMAINE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -274,8 +274,8 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_DOMAINE(), ACTION_CREATION);
-		addZone(getNOM_EF_CODE_DOMAINE(), "");
-		addZone(getNOM_EF_LIB_DOMAINE(), "");
+		addZone(getNOM_EF_CODE_DOMAINE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIB_DOMAINE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -531,7 +531,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_FAMILLE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_FAMILLE(), "");
+		addZone(getNOM_ST_ACTION_FAMILLE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -556,7 +556,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_ST_ACTION_FAMILLE(), ACTION_CREATION);
 		addZone(getNOM_EF_CODE_FAMILLE(), "");
-		addZone(getNOM_EF_FAMILLE(), "");
+		addZone(getNOM_EF_FAMILLE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -812,7 +812,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_DIPLOME(HttpServletRequest request) throws Exception {
-		addZone(getNOM_EF_ACTION_DIPLOME(), "");
+		addZone(getNOM_EF_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -836,7 +836,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_DIPLOME(HttpServletRequest request) throws Exception {
 
 		addZone(getNOM_EF_ACTION_DIPLOME(), ACTION_CREATION);
-		addZone(getNOM_EF_DIPLOME(), "");
+		addZone(getNOM_EF_DIPLOME(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1087,7 +1087,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_CATEGORIE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_CATEGORIE(), "");
+		addZone(getNOM_ST_ACTION_CATEGORIE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -1112,7 +1112,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_CATEGORIE(), ACTION_CREATION);
-		addZone(getNOM_EF_LIB_CATEGORIE(), "");
+		addZone(getNOM_EF_LIB_CATEGORIE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1599,7 +1599,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_CODE_ROME(HttpServletRequest request) throws Exception {
-		addZone(getNOM_EF_ACTION_CODE_ROME(), "");
+		addZone(getNOM_EF_ACTION_CODE_ROME(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -1623,8 +1623,8 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_CODE_ROME(HttpServletRequest request) throws Exception {
 
 		addZone(getNOM_EF_ACTION_CODE_ROME(), ACTION_CREATION);
-		addZone(getNOM_EF_CODE_ROME(), "");
-		addZone(getNOM_EF_DESC_CODE_ROME(), "");
+		addZone(getNOM_EF_CODE_ROME(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DESC_CODE_ROME(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

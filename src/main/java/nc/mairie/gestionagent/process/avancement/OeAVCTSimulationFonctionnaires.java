@@ -124,7 +124,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if ("".equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
 				// recherche du supérieur
@@ -270,13 +270,12 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 			// on recupere les sous-service du service selectionne
 
 			ArrayList<String> listeSousService = null;
-			if (!codeService.equals("")) {
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
 				Service serv = Service.chercherService(getTransaction(), codeService);
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
 			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Fonctionnaire");
-			System.out.println("taille eligible : " + la.size());
 		}
 		// Parcours des agents
 		for (int i = 0; i < la.size(); i++) {
@@ -509,7 +508,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					avct.setDateVerifSEF(Const.DATE_NULL);
 					avct.setDateVerifSGC(Const.DATE_NULL);
 					avct.creerAvancement(getTransaction());
-					if(getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
 				}

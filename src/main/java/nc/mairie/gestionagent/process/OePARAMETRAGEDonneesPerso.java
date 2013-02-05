@@ -352,7 +352,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_TITRE_PERMIS(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TITRE_PERMIS(), "");
+		addZone(getNOM_ST_ACTION_TITRE_PERMIS(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -374,7 +374,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_CENTRE_FORMATION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_CENTRE_FORMATION(), "");
+		addZone(getNOM_ST_ACTION_CENTRE_FORMATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -396,7 +396,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_TITRE_FORMATION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TITRE_FORMATION(), "");
+		addZone(getNOM_ST_ACTION_TITRE_FORMATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -418,7 +418,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_DIPLOME(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_DIPLOME(), "");
+		addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -440,7 +440,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_SPECIALITE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_SPECIALITE(), "");
+		addZone(getNOM_ST_ACTION_SPECIALITE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -464,7 +464,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_CENTRE_FORMATION(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_CENTRE_FORMATION(), ACTION_CREATION);
-		addZone(getNOM_EF_CENTRE_FORMATION(), "");
+		addZone(getNOM_EF_CENTRE_FORMATION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -489,7 +489,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_TITRE_PERMIS(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TITRE_PERMIS(), ACTION_CREATION);
-		addZone(getNOM_EF_TITRE_PERMIS(), "");
+		addZone(getNOM_EF_TITRE_PERMIS(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -514,7 +514,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_TITRE_FORMATION(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TITRE_FORMATION(), ACTION_CREATION);
-		addZone(getNOM_EF_TITRE_FORMATION(), "");
+		addZone(getNOM_EF_TITRE_FORMATION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -539,8 +539,8 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_DIPLOME(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_DIPLOME(), ACTION_CREATION);
-		addZone(getNOM_EF_DIPLOME(), "");
-		addZone(getNOM_EF_NIV_ETUDE(), "");
+		addZone(getNOM_EF_DIPLOME(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_NIV_ETUDE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -565,7 +565,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_SPECIALITE(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_SPECIALITE(), ACTION_CREATION);
-		addZone(getNOM_EF_SPECIALITE(), "");
+		addZone(getNOM_EF_SPECIALITE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2024,7 +2024,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_ADMIN(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_ADMIN(), ACTION_CREATION);
-		addZone(getNOM_EF_ADMIN(), "");
+		addZone(getNOM_EF_ADMIN(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2040,8 +2040,8 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_CREER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_DOCUMENT(), "");
-		addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), "");
+		addZone(getNOM_EF_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2561,7 +2561,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), "");
+		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}

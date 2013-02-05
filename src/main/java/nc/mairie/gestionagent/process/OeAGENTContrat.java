@@ -284,8 +284,8 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 
 		commitTransaction();
 		initialiseListeContratsAgent(request);
-		addZone(getNOM_ST_ACTION(), "");
-		addZone(getNOM_ST_WARNING(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -969,7 +969,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif));
 		addZone(getNOM_ST_MOTIF(), m.getLibMotif());
 		addZone(getNOM_EF_JUSTIFICATION(), c.getJustification());
-		addZone(getNOM_ST_NUM_CONTRAT_REF(), reference != null ? reference.getNumContrat() : "");
+		addZone(getNOM_ST_NUM_CONTRAT_REF(), reference != null ? reference.getNumContrat() : Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -1468,8 +1468,8 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		commitTransaction();
 
 		initialiseListeContratsAgent(request);
-		addZone(getNOM_ST_WARNING(), "");
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -1518,14 +1518,14 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 
 		// on récupère les diplomes de l'agent
 		ArrayList diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
-		String listeDiplome = "";
+		String listeDiplome = Const.CHAINE_VIDE;
 		for (Iterator iter = diplomesAgent.iterator(); iter.hasNext();) {
 			DiplomeAgent da = (DiplomeAgent) iter.next();
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
 			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
 			listeDiplome += td.getLibTitreDiplome() + " " + sd.getLibSpeDiplome() + ",";
 		}
-		if (!listeDiplome.equals("")) {
+		if (!listeDiplome.equals(Const.CHAINE_VIDE)) {
 			listeDiplome = listeDiplome.substring(0, listeDiplome.length() - 1);
 		}
 
@@ -1566,9 +1566,9 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			banque = BanqueGuichet.chercherBanqueGuichet(getTransaction(), a.getCodeBanque(), a.getCodeGuichet()).getLibBanque();
 
 		}
-		String cafat = a.getNumCafat().equals("") ? "Inconnu" : a.getNumCafat();
-		String mutuelle = a.getNumMutuelle().equals("") ? "Inconnu" : a.getNumMutuelle();
-		String numCre = a.getNumCre().equals("") ? "En cours d'affiliation" : a.getNumCre();
+		String cafat = a.getNumCafat().equals(Const.CHAINE_VIDE) ? "Inconnu" : a.getNumCafat();
+		String mutuelle = a.getNumMutuelle().equals(Const.CHAINE_VIDE) ? "Inconnu" : a.getNumMutuelle();
+		String numCre = a.getNumCre().equals(Const.CHAINE_VIDE) ? "En cours d'affiliation" : a.getNumCre();
 
 		String dateDebContrat = c.getDateDebut();
 		String dateFinContrat = c.getDateDebut() == null ? "Il n'y a pas de date de fin pour ce contrat !" : c.getDateFin();
@@ -1590,13 +1590,13 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			dureePeriodeEssai = String.valueOf(Services.compteJoursEntreDates(c.getDateDebut(), c.getDateFinPeriodeEssai()));
 		}
 
-		String adresse = "";
+		String adresse = Const.CHAINE_VIDE;
 		if (null == a.getNumRue())
-			adresse += "";
+			adresse += Const.CHAINE_VIDE;
 		else
 			adresse += " " + a.getNumRue();
 		if (null == a.getNumRueBisTer())
-			adresse += "";
+			adresse += Const.CHAINE_VIDE;
 		else
 			adresse += " " + a.getNumRueBisTer();
 		if (null == a.getIdVoie())

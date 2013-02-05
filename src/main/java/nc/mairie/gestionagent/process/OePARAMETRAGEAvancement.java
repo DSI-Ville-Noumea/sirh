@@ -378,7 +378,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_MOTIF(), "");
+		addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -402,8 +402,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_MOTIF(), ACTION_CREATION);
-		addZone(getNOM_EF_LIB_MOTIF(), "");
-		addZone(getNOM_EF_CODE_MOTIF(), "");
+		addZone(getNOM_EF_LIB_MOTIF(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_CODE_MOTIF(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -956,7 +956,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_EMPLOYEUR(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_EMPLOYEUR(), "");
+		addZone(getNOM_ST_ACTION_EMPLOYEUR(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -980,8 +980,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_EMPLOYEUR(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_EMPLOYEUR(), ACTION_CREATION);
-		addZone(getNOM_EF_EMPLOYEUR(), "");
-		addZone(getNOM_EF_TITRE_EMPLOYEUR(), "");
+		addZone(getNOM_EF_EMPLOYEUR(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_EMPLOYEUR(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1241,7 +1241,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_REPRESENTANT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_REPRESENTANT(), "");
+		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -1266,8 +1266,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_REPRESENTANT(), ACTION_CREATION);
 		addZone(getNOM_LB_TYPE_REPRESENTANT_SELECT(), Const.ZERO);
-		addZone(getNOM_EF_NOM_REPRESENTANT(), "");
-		addZone(getNOM_EF_PRENOM_REPRESENTANT(), "");
+		addZone(getNOM_EF_NOM_REPRESENTANT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_PRENOM_REPRESENTANT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -1640,7 +1640,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_DELIBERATION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_DELIBERATION(), "");
+		addZone(getNOM_ST_ACTION_DELIBERATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -2029,7 +2029,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_CAP(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_CAP(), "");
+		addZone(getNOM_ST_ACTION_CAP(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

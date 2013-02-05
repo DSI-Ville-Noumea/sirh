@@ -146,7 +146,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 				if (c.size() > 0) {
 					int[] tailles = { 14, 8, 12 };
 					FormateListe aFormat = new FormateListe(tailles);
-					String ligneVide[] = { "", "", "" };
+					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator list = c.listIterator(); list.hasNext();) {
 						Contrat contrat = (Contrat) list.next();
@@ -169,7 +169,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 				if (aff.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
-					String ligneVide[] = { "", "", "" };
+					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator list = aff.listIterator(); list.hasNext();) {
 						Affectation a = (Affectation) list.next();
@@ -193,7 +193,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 				if (listeFp.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
-					String ligneVide[] = { "", "", "" };
+					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator list = listeFp.listIterator(); list.hasNext();) {
 						FichePoste fiche = (FichePoste) list.next();

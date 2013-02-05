@@ -130,11 +130,11 @@ public class EAEDao implements EAEDaoInterface {
 			reqWhere += " and eval.STATUT like '" + statut + "' ";
 		}
 		if (listeSousService != null) {
-			String list = "";
+			String list = Const.CHAINE_VIDE;
 			for (String codeServ : listeSousService) {
 				list += "'" + codeServ + "',";
 			}
-			if (!list.equals(""))
+			if (!list.equals(Const.CHAINE_VIDE))
 				list = list.substring(0, list.length() - 1);
 			reqInner += " inner join EAE_FICHE_POSTE fp on e." + CHAMP_ID_EAE + "=fp.id_eae ";
 			reqWhere += " and (fp.CODE_SERVICE in (" + list + ")) ";
@@ -267,7 +267,7 @@ public class EAEDao implements EAEDaoInterface {
 
 	@Override
 	public int compterEAEDirectionSectionEtat(Integer idCampagneEAE, String direction, String section, String etat) throws Exception {
-		String sql = "";
+		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
 			sql = "select count(e.id_eae) from " + NOM_TABLE
@@ -296,7 +296,7 @@ public class EAEDao implements EAEDaoInterface {
 
 	@Override
 	public int compterEAEDirectionSectionCAP(Integer idCampagneEAE, String direction, String section) throws Exception {
-		String sql = "";
+		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
 			sql = "select count(e.id_eae) from " + NOM_TABLE

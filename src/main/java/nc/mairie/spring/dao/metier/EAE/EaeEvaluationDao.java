@@ -2,6 +2,7 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import javax.sql.DataSource;
 
+import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvaluationRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 
@@ -55,7 +56,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	@Override
 	public int compterAvisSHDNonDefini(Integer idCampagneEAE, String direction, String section) throws Exception {
-		String sql = "";
+		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -95,7 +96,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	@Override
 	public int compterAvisSHDAvct(Integer idCampagneEAE, String direction, String section, String dureeAvct) throws Exception {
-		String sql = "";
+		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -135,7 +136,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	@Override
 	public int compterAvisSHDChangementClasse(Integer idCampagneEAE, String direction, String section) throws Exception {
-		String sql = "";
+		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
 			sql = "select count(ev.ID_EAE) from "

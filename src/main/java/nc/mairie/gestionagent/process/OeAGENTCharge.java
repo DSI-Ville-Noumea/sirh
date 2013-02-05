@@ -102,7 +102,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
-		if (!percou.trim().equals("")) {
+		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
 			setCalculPaye(percou);
 		} else {
 			setCalculPaye(Const.CHAINE_VIDE);

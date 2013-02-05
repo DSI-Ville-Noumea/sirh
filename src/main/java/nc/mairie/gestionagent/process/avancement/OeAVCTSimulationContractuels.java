@@ -123,7 +123,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if ("".equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
 				// recherche du supérieur
@@ -262,7 +262,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 			la.add(agent);
 		} else {
 			ArrayList<String> listeSousService = null;
-			if (!codeService.equals("")) {
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
 				Service serv = Service.chercherService(getTransaction(), codeService);
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}

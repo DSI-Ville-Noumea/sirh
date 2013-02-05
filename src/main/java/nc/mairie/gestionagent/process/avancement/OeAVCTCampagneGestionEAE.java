@@ -222,7 +222,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if ("".equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
 				// recherche du supérieur
@@ -2077,8 +2077,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					dateFinSp = sdf.parse(dateFinSpmtsr);
 				}
 				parcours.setDateFin(dateFinSp);
-				String lib = direction == null ? "" : direction.getLibService();
-				lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
+				String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
+				lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
 				parcours.setLibelleParcoursPro(lib);
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 						parcours.getLibelleParcoursPro());
@@ -2105,8 +2105,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						dateFinSp = sdf.parse(dateFinSpmtsr);
 					}
 					parcours.setDateFin(dateFinSp);
-					String lib = direction == null ? "" : direction.getLibService();
-					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
+					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
+					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());
@@ -2146,8 +2146,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
 					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
 					parcours.setDateFin(dateSortie == null ? null : sdf.parse(dateSortie.toString()));
-					String lib = direction == null ? "" : direction.getLibService();
-					lib += serv == null || serv.getLibService() == null ? "" : " " + serv.getLibService();
+					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
+					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
 							parcours.getLibelleParcoursPro());

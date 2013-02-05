@@ -268,7 +268,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 */
 	private void initialiserFichePoste() throws Exception {
 		// Titre
-		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? "" : TitrePoste.chercherTitrePoste(getTransaction(),
+		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
 				getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
@@ -311,7 +311,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 */
 	private void initialiserFichePosteSecondaire() throws Exception {
 		// Titre
-		String titreFichePoste = getFichePosteSecondaireCourant().getIdTitrePoste() == null ? "" : TitrePoste.chercherTitrePoste(getTransaction(),
+		String titreFichePoste = getFichePosteSecondaireCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
 				getFichePosteSecondaireCourant().getIdTitrePoste()).getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteSecondaireCourant().getIdServi());
@@ -389,7 +389,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 						.parseInt(getZone(getNOM_LB_LISTE_IMPRESSION_SELECT())));
 				// Récup affectation courante
 				Affectation aff = getAffectationCourant();
-				if (getVAL_ST_WARNING().equals("")) {
+				if (getVAL_ST_WARNING().equals(Const.CHAINE_VIDE)) {
 					// on verifie si il existe dejà un fichier pour cette
 					// affectation dans la BD
 					if (verifieExistFichier(aff.getIdAffectation(), nomDocument)) {
@@ -1808,8 +1808,8 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		String dateDebAffectation = aff.getDateDebutAff();
 		String dateFinAffectation = aff.getDateFinAff() == null ? "Il n'y a pas de date de fin pour ce contrat !" : aff.getDateFinAff();
 		String titrePoste = tp.getLibTitrePoste();
-		String dureePeriodeEssai = "";
-		String dateFinEssai = "";
+		String dureePeriodeEssai = Const.CHAINE_VIDE;
+		String dateFinEssai = Const.CHAINE_VIDE;
 		if (c != null) {
 			if (c.getDateFinPeriodeEssai() == null) {
 				dureePeriodeEssai = "Il n'y a pas de date fin de periode d'essai pour ce contrat !";
@@ -2178,7 +2178,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		for (Activite acti : lActi) {
 			tachesPrincipales += acti.getNomActivite();
 		}
-		String budget = fp.getIdBudget() == null ? "" : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
 		String budgete = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorBud()).getLibHor();
 
@@ -2214,7 +2214,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 			ligne = StringUtils.replace(ligne, "$_BUDGET_POSTE", budget);
 			ligne = StringUtils.replace(ligne, "$_ANNEE", fp.getAnneeCreation());
 			ligne = StringUtils.replace(ligne, "$_NFA", fp.getNFA());
-			ligne = StringUtils.replace(ligne, "$_OPI", fp.getOPI() == null ? "" : fp.getOPI());
+			ligne = StringUtils.replace(ligne, "$_OPI", fp.getOPI() == null ? Const.CHAINE_VIDE : fp.getOPI());
 			ligne = StringUtils.replace(ligne, "$_REGLEMENTAIRE", reglementaire);
 			ligne = StringUtils.replace(ligne, "$_BUDGETE", budgete);
 			ligne = StringUtils.replace(ligne, "$_TITRE_POSTE", titrePoste);

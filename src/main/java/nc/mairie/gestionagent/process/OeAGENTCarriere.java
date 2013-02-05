@@ -122,7 +122,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
-		if (!percou.trim().equals("")) {
+		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
 			setCalculPaye(percou);
 		} else {
 			setCalculPaye(Const.CHAINE_VIDE);
@@ -278,7 +278,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeGrade().listIterator(); list.hasNext();) {
 				Grade grade = (Grade) list.next();
-				String iban = "";
+				String iban = Const.CHAINE_VIDE;
 				if (Services.estNumerique(grade.getIban())) {
 					iban = Services.lpad(grade.getIban(), 7, "0");
 				} else {
@@ -488,7 +488,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		}
 
 		if (grade != null) {
-			String iban = "";
+			String iban = Const.CHAINE_VIDE;
 			if (Services.estNumerique(grade.getIban())) {
 				iban = Services.lpad(grade.getIban(), 7, "0");
 			} else {
@@ -1842,7 +1842,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		String idGrade = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListeGrade().size(); i++) {
 			Grade g = (Grade) getListeGrade().get(i);
-			String iban = "";
+			String iban = Const.CHAINE_VIDE;
 			if (Services.estNumerique(g.getIban())) {
 				iban = Services.lpad(g.getIban(), 7, "0");
 			} else {

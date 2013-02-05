@@ -309,11 +309,11 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 		initialiseListeAgentAdministrations(request);
 
 		//Alim des zones
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), "0");
 		addZone(getNOM_RG_FONCTIONNAIRE(), getNOM_RB_FONCTIONNAIRE_N());
-		addZone(getNOM_EF_DATE_DEBUT(), "");
-		addZone(getNOM_EF_DATE_FIN(), "");
+		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 	}
 
 	/**
@@ -403,7 +403,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
      *
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		if ("".equals(getVAL_ST_ACTION())) {
+		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		} else {
 			initialiseFenetre(request);
@@ -428,8 +428,8 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 
 		//On vide la zone de saisie
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), "0");
-		addZone(getNOM_EF_DATE_DEBUT(), "");
-		addZone(getNOM_EF_DATE_FIN(), "");
+		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_FONCTIONNAIRE(), getNOM_RB_FONCTIONNAIRE_N());
 		
 		//init du administration courant

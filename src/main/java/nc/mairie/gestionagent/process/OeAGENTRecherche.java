@@ -164,7 +164,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if ("".equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
 				// recherche du supérieur

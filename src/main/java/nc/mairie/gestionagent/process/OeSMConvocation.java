@@ -1012,7 +1012,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private void perfomrCalculCas1(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°1 : A la demande de l'agent ou du service
 		// on liste toutes les visites medicales du type "a la demande..."
-		Medecin m = Medecin.chercherMedecinByLib(getTransaction(), "", "A", "RENSEIGNER");
+		Medecin m = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
 		ArrayList<VisiteMedicale> listeSMCas1 = VisiteMedicale.listerVisiteMedicalePourSMCas1(getTransaction(),
 				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(), m.getIdMedecin());
 		int nbCas1 = 0;
@@ -2144,7 +2144,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			if (sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getValue())) {
 				if (getVAL_CK_A_IMPRIMER_ACCOMP(i).equals(getCHECKED_ON())) {
 					// RG-SVM-12.4
-					if (sm.getStatut() != null && !sm.getStatut().equals("")) {
+					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-4
 							smFonctionnaireAImprimer.add(sm);
@@ -2250,7 +2250,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			if (!sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getValue())) {
 				if (getVAL_CK_A_IMPRIMER_CONVOC(i).equals(getCHECKED_ON())) {
 					// RG-SVM-10.3
-					if (sm.getStatut() != null && !sm.getStatut().equals("")) {
+					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-1
 							smFonctionnaireAImprimer.add(sm);
@@ -2351,7 +2351,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on recupere l'agent concerné pour connaitre sa civilité
 			// RG-SVM-30
 			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			String nomPrenom = "";
+			String nomPrenom = Const.CHAINE_VIDE;
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
 				String prenom = agentSelectionne.getPrenomAgent();
@@ -2509,7 +2509,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on recupere l'agent concerné pour connaitre sa civilité
 			// RG-SVM-27
 			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			String nomPrenom = "";
+			String nomPrenom = Const.CHAINE_VIDE;
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
 				String prenom = agentSelectionne.getPrenomAgent();
@@ -2719,13 +2719,13 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					String prenom = m.getPrenomMedecin();
 					prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
 					String titreMedecin = m.getTitreMedecin();
-					titreMedecin = !titreMedecin.equals("") ?titreMedecin.substring(0, 1).toUpperCase() + titreMedecin.substring(1, titreMedecin.length()).toLowerCase() : "";
+					titreMedecin = !titreMedecin.equals(Const.CHAINE_VIDE) ?titreMedecin.substring(0, 1).toUpperCase() + titreMedecin.substring(1, titreMedecin.length()).toLowerCase() : "";
 					medecin = titreMedecin + " " + prenom + " " + m.getNomMedecin();
 				} else {
 					getTransaction().traiterErreur();
 				}
 			}
-			String nomPrenom = "";
+			String nomPrenom = Const.CHAINE_VIDE;
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
 				String prenom = agentSelectionne.getPrenomAgent();
@@ -2883,7 +2883,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				rendezVous = rendezVous + "le " + sdf.format(sm.getDateProchaineVisite());
 				rendezVous = rendezVous + " à " + sm.getHeureProchaineVisite().replace(":", "h");
 			}
-			String nomPrenom = "";
+			String nomPrenom = Const.CHAINE_VIDE;
 			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
 				ArrayList<String> listePrenomAgent = new ArrayList<String>();
 				String prenom = agentSelectionne.getPrenomAgent();

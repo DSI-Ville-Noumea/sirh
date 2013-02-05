@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import nc.mairie.gestionagent.robot.MaClasse;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.droits.Autorisation;
 import nc.mairie.servlets.Frontale;
 import nc.mairie.technique.BasicProcess;
@@ -39,7 +40,7 @@ public class ServletAgent extends Frontale {
 		// recup de la demande d’action envoyée par la recherche en haut à
 		// gauche
 		String ACTION = request.getParameter("ACTION");
-		if (ACTION != null && !ACTION.equals("")) {
+		if (ACTION != null && !ACTION.equals(Const.CHAINE_VIDE)) {
 			// On vérifie si on a une session
 			BasicProcess processCourant = (BasicProcess) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_PROCESS);
 

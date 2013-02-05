@@ -218,7 +218,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 
-		if (!getVAL_ST_AGENT().equals("")) {
+		if (!getVAL_ST_AGENT().equals(Const.CHAINE_VIDE)) {
 			AgentNW a = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 			aListe = FichePoste.listerFichePosteAvecAgent(getTransaction(), a);
 		}
@@ -271,7 +271,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 		if (getListeFichePoste().size() == 1) {
 			//Alimentation de la variable fichePoste
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, getListeFichePoste().get(0));
-			addZone(getVAL_ST_AGENT(), "");
+			addZone(getVAL_ST_AGENT(), Const.CHAINE_VIDE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			setStatut(STATUT_PROCESS_APPELANT);
 
@@ -652,7 +652,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 
 		//Alimentation de la variable fichePoste
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, fp);
-		addZone(getVAL_ST_AGENT(), "");
+		addZone(getVAL_ST_AGENT(), Const.CHAINE_VIDE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;

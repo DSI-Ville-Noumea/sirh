@@ -805,7 +805,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		viderFicheEmploi();
 		setSuppression(false);
 
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -3529,7 +3529,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR122"));
 		}
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
 	}
 

@@ -106,7 +106,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-		if (getZone(getNOM_RG_ORIGINE_COMMUNE()) == "") {
+		if (getZone(getNOM_RG_ORIGINE_COMMUNE()) == Const.CHAINE_VIDE) {
 			addZone(getNOM_RG_ORIGINE_COMMUNE(), getNOM_RB_ORIGINE_COMMUNE_FRANCE());
 			setOrigine(Const.COMMUNE_FRANCE);
 		}

@@ -1440,7 +1440,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		if (ficheEmploiSecondaire != null && ficheEmploiSecondaire.getRefMairie() != null) {
 			emploiSecondaire = ficheEmploiSecondaire.getRefMairie();
 		}
-		String budget = fp.getIdBudget() == null ? "" : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
 
 		// partie concernant le temps de travail du poste
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();

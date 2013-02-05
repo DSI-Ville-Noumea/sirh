@@ -267,7 +267,7 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
-		if (!percou.trim().equals("")) {
+		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
 			setCalculPaye(percou);
 		} else {
 			setCalculPaye(Const.CHAINE_VIDE);
@@ -1040,8 +1040,8 @@ public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
 
 		getGradeCourant().setGrade(getVAL_EF_GRADE());
 		getGradeCourant().setLibGrade(
-				getVAL_EF_GRADE().trim() + (classe != null ? " " + classe.getLibClasse() : "")
-						+ (echelon != null ? " " + echelon.getLibEchelon() : ""));
+				getVAL_EF_GRADE().trim() + (classe != null ? " " + classe.getLibClasse() : Const.CHAINE_VIDE)
+						+ (echelon != null ? " " + echelon.getLibEchelon() : Const.CHAINE_VIDE));
 
 		return true;
 	}

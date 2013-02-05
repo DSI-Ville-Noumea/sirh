@@ -302,9 +302,9 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_NOM_SELECT(), String.valueOf(ligneNom + 1));
 
 		addZone(getNOM_EF_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
-		addZone(getNOM_EF_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? "" : getHandicapCourant()
+		addZone(getNOM_EF_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : getHandicapCourant()
 				.getDateFinHandicap());
-		addZone(getNOM_EF_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? "" : getHandicapCourant()
+		addZone(getNOM_EF_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getHandicapCourant()
 				.getPourcentIncapacite());
 
 		showMaladiePro = getHandicapCourant().isReconnaissanceMP();
@@ -359,9 +359,9 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_NOM(), nom.getNomTypeHandicap());
 		addZone(getNOM_ST_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
-		addZone(getNOM_ST_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? "" : getHandicapCourant()
+		addZone(getNOM_ST_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : getHandicapCourant()
 				.getDateFinHandicap());
-		addZone(getNOM_ST_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? "" : getHandicapCourant()
+		addZone(getNOM_ST_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getHandicapCourant()
 				.getPourcentIncapacite());
 
 		addZone(getNOM_ST_RECO_MP(), getHandicapCourant().isReconnaissanceMP() ? "Oui" : "Non");

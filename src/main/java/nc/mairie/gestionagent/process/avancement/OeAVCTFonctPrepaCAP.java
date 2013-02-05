@@ -128,7 +128,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 				// avis SHD
 				// on cherche la camapagne correspondante
-				String avisSHD = "";
+				String avisSHD = Const.CHAINE_VIDE;
 				MotifAvancement motif = null;
 				try {
 					CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(annee));
@@ -137,7 +137,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
 						EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
 						if (av.getIdMotifAvct().equals("7")) {
-							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? "" : eaeEvaluation.getPropositionAvancement();
+							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation.getPropositionAvancement();
 						}
 						// motif Avct
 						if (av.getIdMotifAvct() != null) {
@@ -151,7 +151,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 				// duree VDN
 				if (av.getIdAvisCAP() == null) {
-					if (!avisSHD.equals("")) {
+					if (!avisSHD.equals(Const.CHAINE_VIDE)) {
 						if (avisSHD.equals("MAXI")) {
 							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("3"))));
 						} else if (avisSHD.equals("MOY")) {

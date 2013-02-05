@@ -663,7 +663,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), "", "HSCT");
+		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), Const.CHAINE_VIDE, "HSCT");
 		setListeDocuments(listeDocAgent);
 
 		int indiceActe = 0;

@@ -476,7 +476,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_AT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_AT(), "");
+		addZone(getNOM_ST_ACTION_AT(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -500,7 +500,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_INAPTITUDE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_INAPTITUDE(), "");
+		addZone(getNOM_ST_ACTION_INAPTITUDE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -524,7 +524,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_LESION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_LESION(), "");
+		addZone(getNOM_ST_ACTION_LESION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -548,7 +548,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_MALADIE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_MALADIE(), "");
+		addZone(getNOM_ST_ACTION_MALADIE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -572,7 +572,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_MEDECIN(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_MEDECIN(), "");
+		addZone(getNOM_ST_ACTION_MEDECIN(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -596,7 +596,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_RECOMMANDATION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_RECOMMANDATION(), "");
+		addZone(getNOM_ST_ACTION_RECOMMANDATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -622,7 +622,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_AT(HttpServletRequest request) throws Exception {
 		//On nomme l'action
 		addZone(getNOM_ST_ACTION_AT(), ACTION_CREATION);
-		addZone(getNOM_EF_DESC_AT(), "");
+		addZone(getNOM_EF_DESC_AT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -649,7 +649,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_INAPTITUDE(HttpServletRequest request) throws Exception {
 		//	On nomme l'action
 		addZone(getNOM_ST_ACTION_INAPTITUDE(), ACTION_CREATION);
-		addZone(getNOM_EF_DESC_INAPTITUDE(), "");
+		addZone(getNOM_EF_DESC_INAPTITUDE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -676,7 +676,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_LESION(HttpServletRequest request) throws Exception {
 		//	On nomme l'action
 		addZone(getNOM_ST_ACTION_LESION(), ACTION_CREATION);
-		addZone(getNOM_EF_DESC_LESION(), "");
+		addZone(getNOM_EF_DESC_LESION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -703,8 +703,8 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_MALADIE(HttpServletRequest request) throws Exception {
 		//	On nomme l'action
 		addZone(getNOM_ST_ACTION_MALADIE(), ACTION_CREATION);
-		addZone(getNOM_EF_CODE_MALADIE(), "");
-		addZone(getNOM_EF_LIBELLE_MALADIE(), "");
+		addZone(getNOM_EF_CODE_MALADIE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIBELLE_MALADIE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -731,7 +731,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_MEDECIN(HttpServletRequest request) throws Exception {
 		//	On nomme l'action
 		addZone(getNOM_ST_ACTION_MEDECIN(), ACTION_CREATION);
-		addZone(getNOM_EF_NOM_MEDECIN(), "");
+		addZone(getNOM_EF_NOM_MEDECIN(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -758,7 +758,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_RECOMMANDATION(HttpServletRequest request) throws Exception {
 		//	On nomme l'action
 		addZone(getNOM_ST_ACTION_RECOMMANDATION(), ACTION_CREATION);
-		addZone(getNOM_EF_DESC_RECOMMANDATION(), "");
+		addZone(getNOM_EF_DESC_RECOMMANDATION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2550,7 +2550,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), "");
+		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -2672,8 +2672,8 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
 		//On nomme l'action
 		addZone(getNOM_ST_ACTION_TYPE_DOCUMENT(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_DOCUMENT(), "");
-		addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), "");
+		addZone(getNOM_EF_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_CODE_TYPE_DOCUMENT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

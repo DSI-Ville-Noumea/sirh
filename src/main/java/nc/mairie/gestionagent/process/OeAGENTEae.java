@@ -216,7 +216,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	public String getDefaultFocus() {
 		// return getNOM_EF_DATE_OBTENTION();
-		return "";
+		return Const.CHAINE_VIDE;
 	}
 
 	/**

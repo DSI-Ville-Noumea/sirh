@@ -72,7 +72,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	private CommunePostal communeDomCourant;
 	private CommunePostal communeBPCourant;
 	private String codePostal;
-	public String message = "";
+	public String message = Const.CHAINE_VIDE;
 	public String focus = null;
 
 	// Pour la gestion des contacts
@@ -86,7 +86,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	private String ACTION_MODIFICATION = "Modification.";
 	private String ACTION_CREATION = "Création.";
 	private ArrayList listeTypeContact;
-	public String messageDesign = "";
+	public String messageDesign = Const.CHAINE_VIDE;
 
 	public boolean diffusableModifiable = true;
 	public boolean prioritaireModifiable = true;
@@ -170,7 +170,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_ST_ACTION_CONTACT(), ACTION_CREATION);
 
-		addZone(getNOM_EF_LIBELLE_CONTACT(), "");
+		addZone(getNOM_EF_LIBELLE_CONTACT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TCONTACT_SELECT(), "0");
 		addZone(getNOM_RG_CONTACT_DIFF(), getNOM_RB_CONTACT_DIFF_NON());
 		TypeContact typeContact = (TypeContact) getListeTypeContact().get(0);
@@ -2046,7 +2046,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
-			addZone(getNOM_ST_LIEU_NAISSANCE(), getLieuNaissance() == null ? "" : getLieuNaissance());
+			addZone(getNOM_ST_LIEU_NAISSANCE(), getLieuNaissance() == null ? Const.CHAINE_VIDE : getLieuNaissance());
 			return;
 		}
 
@@ -2279,7 +2279,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// zones de l'agent directement
 		// //////////////////////////////////////////////////////////////////////////////////////
-		addZone(getNOM_ST_PHOTO(), "");
+		addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
 		Document doc = Document.chercherDocumentParTypeEtAgent(getTransaction(), "PHO", getAgentCourant().getIdAgent());
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 		if (doc != null) {
@@ -2287,7 +2287,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 				addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
 			} else {
-				addZone(getNOM_ST_PHOTO(), "");
+				addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
 			}
 		}
 
@@ -2334,12 +2334,12 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_NATIONALITE_SELECT(), String.valueOf(indiceNat));
 
 		addZone(getNOM_EF_DATE_NAISSANCE(),
-				(getAgentCourant().getDateNaissance() == null || getAgentCourant().getDateNaissance().equals(Const.DATE_NULL)) ? ""
+				(getAgentCourant().getDateNaissance() == null || getAgentCourant().getDateNaissance().equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE
 						: getAgentCourant().getDateNaissance());
 		addZone(getNOM_EF_DATE_PREM_EMB(), (getAgentCourant().getDatePremiereEmbauche() == null || getAgentCourant().getDatePremiereEmbauche()
-				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDatePremiereEmbauche());
+				.equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE : getAgentCourant().getDatePremiereEmbauche());
 		addZone(getNOM_EF_DATE_DERN_EMB(), (getAgentCourant().getDateDerniereEmbauche() == null || getAgentCourant().getDateDerniereEmbauche()
-				.equals(Const.DATE_NULL)) ? "" : getAgentCourant().getDateDerniereEmbauche());
+				.equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE : getAgentCourant().getDateDerniereEmbauche());
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), getAgentCourant().getNumCarteSejour());
 		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), getAgentCourant().getDateValiditeCarteSejour());
 
@@ -2360,7 +2360,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 			if (bg != null && bg.getCodBanque().equals(getAgentCourant().getCodeBanque())
 					&& bg.getCodGuichet().equals(getAgentCourant().getCodeGuichet())) {
 				addZone(getNOM_LB_BANQUE_GUICHET_SELECT(), String.valueOf(i));
-				addZone(getNOM_ST_BANQUE_GUICHET(), bg == null ? "" : bg.getLibBanque() + " - " + bg.getLibGuichet());
+				addZone(getNOM_ST_BANQUE_GUICHET(), bg == null ? Const.CHAINE_VIDE : bg.getLibBanque() + " - " + bg.getLibGuichet());
 				break;
 			}
 		}
@@ -2385,18 +2385,18 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		}
 		addZone(getNOM_RG_VCAT(), (getAgentCourant().getVcat() != null && getAgentCourant().getVcat().equals("O")) ? getNOM_RB_VCAT_OUI()
 				: getNOM_RB_VCAT_NON());
-		addZone(getNOM_EF_SERVICE_DEBUT(), getAgentCourant().getDebutService() == null ? "" : getAgentCourant().getDebutService());
-		addZone(getNOM_EF_SERVICE_FIN(), getAgentCourant().getFinService() == null ? "" : getAgentCourant().getFinService());
+		addZone(getNOM_EF_SERVICE_DEBUT(), getAgentCourant().getDebutService() == null ? Const.CHAINE_VIDE : getAgentCourant().getDebutService());
+		addZone(getNOM_EF_SERVICE_FIN(), getAgentCourant().getFinService() == null ? Const.CHAINE_VIDE : getAgentCourant().getFinService());
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones Couverture
 		// //////////////////////////////////////////////////////////////////////////////////////
-		addZone(getNOM_EF_NUM_CAFAT(), getAgentCourant().getNumCafat() == null ? "" : getAgentCourant().getNumCafat());
-		addZone(getNOM_EF_NUM_RUAMM(), getAgentCourant().getNumRuamm() == null ? "" : getAgentCourant().getNumRuamm());
-		addZone(getNOM_EF_NUM_MUTUELLE(), getAgentCourant().getNumMutuelle() == null ? "" : getAgentCourant().getNumMutuelle());
-		addZone(getNOM_EF_NUM_CRE(), getAgentCourant().getNumCre() == null ? "" : getAgentCourant().getNumCre());
-		addZone(getNOM_EF_NUM_IRCAFEX(), getAgentCourant().getNumIrcafex() == null ? "" : getAgentCourant().getNumIrcafex());
-		addZone(getNOM_EF_NUM_CLR(), getAgentCourant().getNumClr() == null ? "" : getAgentCourant().getNumClr());
+		addZone(getNOM_EF_NUM_CAFAT(), getAgentCourant().getNumCafat() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumCafat());
+		addZone(getNOM_EF_NUM_RUAMM(), getAgentCourant().getNumRuamm() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumRuamm());
+		addZone(getNOM_EF_NUM_MUTUELLE(), getAgentCourant().getNumMutuelle() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumMutuelle());
+		addZone(getNOM_EF_NUM_CRE(), getAgentCourant().getNumCre() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumCre());
+		addZone(getNOM_EF_NUM_IRCAFEX(), getAgentCourant().getNumIrcafex() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumIrcafex());
+		addZone(getNOM_EF_NUM_CLR(), getAgentCourant().getNumClr() == null ? Const.CHAINE_VIDE : getAgentCourant().getNumClr());
 	}
 
 	/**
@@ -2414,16 +2414,15 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < a.size(); i++) {
 				BanqueGuichet b = (BanqueGuichet) a.get(i);
 				if (b == null) {
-					String colonnes[] = { "", "", "" };
+					String colonnes[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aListeFormatee.ajouteLigne(colonnes);
 				} else {
 					String colonnes[] = { Services.lpad(b.getCodBanque(), 5, "0"), "/", Services.lpad(b.getCodGuichet(), 5, "0") };
 					aListeFormatee.ajouteLigne(colonnes);
 				}
 			}
-			// aListeFormatee.ajouteLigne(new String[] { "", "", "" });
 			setLB_BANQUE_GUICHET(aListeFormatee.getListeFormatee());
-			addZone(getNOM_ST_BANQUE_GUICHET(), "");
+			addZone(getNOM_ST_BANQUE_GUICHET(), Const.CHAINE_VIDE);
 		}
 	}
 
@@ -2444,7 +2443,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 						+ getPaysNaissanceCourant().getLibPays());
 			}
 		}
-		addZone(getNOM_ST_LIEU_NAISSANCE(), getLieuNaissance() == null ? "" : getLieuNaissance());
+		addZone(getNOM_ST_LIEU_NAISSANCE(), getLieuNaissance() == null ? Const.CHAINE_VIDE : getLieuNaissance());
 	}
 
 	/**
@@ -2846,9 +2845,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_CONTACT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_CONTACT(), "");
-		addZone(getNOM_EF_LIBELLE_CONTACT(), "");
-		addZone(getNOM_ST_TCONTACT(), "");
+		addZone(getNOM_ST_ACTION_CONTACT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIBELLE_CONTACT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_TCONTACT(), Const.CHAINE_VIDE);
 		setContactCourant(null);
 		return true;
 	}
@@ -2876,7 +2875,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		int indice = Integer.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT());
 		BanqueGuichet b = (BanqueGuichet) getListeBanqueGuichet().get(indice);
 
-		addZone(getNOM_ST_BANQUE_GUICHET(), b == null ? "" : b.getLibBanque() + " - " + b.getLibGuichet());
+		addZone(getNOM_ST_BANQUE_GUICHET(), b == null ? Const.CHAINE_VIDE : b.getLibBanque() + " - " + b.getLibGuichet());
 
 		return true;
 	}

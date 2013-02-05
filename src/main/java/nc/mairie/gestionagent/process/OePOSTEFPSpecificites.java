@@ -1206,7 +1206,7 @@ public class OePOSTEFPSpecificites extends nc.mairie.technique.BasicProcess {
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
-					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(), natAv == null ? "" : natAv.getLibNatureAvantage() };
+					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(), natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
 				}
 			}

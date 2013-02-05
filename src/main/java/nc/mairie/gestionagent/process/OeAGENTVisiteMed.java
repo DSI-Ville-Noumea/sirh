@@ -1027,7 +1027,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 						// si le motif est : a la demande...
 						// alors il faut supprimer la visite medicale
 						// correspondante
-						Medecin med = Medecin.chercherMedecinByLib(getTransaction(), "", "A", "RENSEIGNER");
+						Medecin med = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
 						if (getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode())
 								|| getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) {
 							VisiteMedicale vmASupp = VisiteMedicale.chercherVisiteMedicaleCriteres(getTransaction(), getAgentCourant().getIdAgent(),
@@ -1194,7 +1194,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 			setFocus(getNOM_EF_DATE_VISITE());
 			return false;
 		} else if (!Services.estUneDate(getZone(getNOM_EF_DATE_VISITE()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", ""));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", Const.CHAINE_VIDE));
 			return false;
 		}
 
@@ -3208,7 +3208,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_LB_RECOMMANDATION_SELECT(), Const.ZERO);
 				addZone(getNOM_EF_DATE_VISITE(), Services.dateDuJour());
 				addZone(getNOM_EF_DUREE(), Const.ZERO);
-				Medecin medecin = Medecin.chercherMedecinByLib(getTransaction(), "", "A", "RENSEIGNER");
+				Medecin medecin = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
 				int ligneMedecin = getListeMedecin().indexOf(getHashMedecin().get(medecin.getIdMedecin()));
 				addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin + 1));
 				addZone(getNOM_RG_AVIS(), Const.CHAINE_VIDE);

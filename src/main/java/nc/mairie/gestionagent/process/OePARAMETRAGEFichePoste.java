@@ -413,7 +413,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_ENTITE_GEO(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_ENTITE_GEO(), "");
+		addZone(getNOM_ST_ACTION_ENTITE_GEO(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -435,7 +435,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_NATURE_AVANTAGE(), "");
+		addZone(getNOM_ST_ACTION_NATURE_AVANTAGE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -457,7 +457,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_TITRE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TITRE(), "");
+		addZone(getNOM_ST_ACTION_TITRE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -479,7 +479,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_AVANTAGE(), "");
+		addZone(getNOM_ST_ACTION_TYPE_AVANTAGE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -501,7 +501,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_DELEGATION(), "");
+		addZone(getNOM_ST_ACTION_TYPE_DELEGATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -523,7 +523,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_TYPE_REGIME(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_TYPE_REGIME(), "");
+		addZone(getNOM_ST_ACTION_TYPE_REGIME(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -548,7 +548,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_ENTITE_GEO(), ACTION_CREATION);
-		addZone(getNOM_EF_ENTITE_GEO(), "");
+		addZone(getNOM_EF_ENTITE_GEO(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ENTITE_GEO_ECOLE_SELECT(), "0");
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -613,7 +613,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_NATURE_AVANTAGE(), ACTION_CREATION);
-		addZone(getNOM_EF_NATURE_AVANTAGE(), "");
+		addZone(getNOM_EF_NATURE_AVANTAGE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -639,7 +639,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_TITRE(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TITRE(), ACTION_CREATION);
-		addZone(getNOM_EF_TITRE(), "");
+		addZone(getNOM_EF_TITRE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -664,7 +664,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TYPE_AVANTAGE(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_AVANTAGE(), "");
+		addZone(getNOM_EF_TYPE_AVANTAGE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -689,7 +689,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TYPE_DELEGATION(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_DELEGATION(), "");
+		addZone(getNOM_EF_TYPE_DELEGATION(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -714,7 +714,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_TYPE_REGIME(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION_TYPE_REGIME(), ACTION_CREATION);
-		addZone(getNOM_EF_TYPE_REGIME(), "");
+		addZone(getNOM_EF_TYPE_REGIME(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

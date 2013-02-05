@@ -2293,7 +2293,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
-		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), "");
+		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -2317,7 +2317,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
 
 		addZone(getNOM_EF_ACTION_CADRE_EMPLOI(), ACTION_CREATION);
-		addZone(getNOM_EF_CADRE_EMPLOI(), "");
+		addZone(getNOM_EF_CADRE_EMPLOI(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_FILIERE_SELECT(), "0");
 
 		setStatut(STATUT_MEME_PROCESS);

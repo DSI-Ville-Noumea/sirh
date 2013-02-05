@@ -141,7 +141,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_MOTIF(), "");
+		addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -167,7 +167,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
 		//On nomme l'action
 		addZone(getNOM_ST_ACTION_MOTIF(), ACTION_CREATION);
-		addZone(getNOM_EF_MOTIF(), "");
+		addZone(getNOM_EF_MOTIF(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -518,7 +518,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	public boolean performPB_ANNULER_NON_REC(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_NON_REC(), "");
+		addZone(getNOM_ST_ACTION_NON_REC(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -544,7 +544,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_CREER_NON_REC(HttpServletRequest request) throws Exception {
 		//On nomme l'action
 		addZone(getNOM_ST_ACTION_NON_REC(), ACTION_CREATION);
-		addZone(getNOM_EF_NON_REC(), "");
+		addZone(getNOM_EF_NON_REC(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;

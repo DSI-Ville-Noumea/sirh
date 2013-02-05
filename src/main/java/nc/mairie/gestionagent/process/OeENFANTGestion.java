@@ -105,7 +105,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si parent est null
 		if (getAutreParentCourant() == null) {
-			addZone(getNOM_ST_AUTRE_PARENT(), "");
+			addZone(getNOM_ST_AUTRE_PARENT(), Const.CHAINE_VIDE);
 		} else {
 			addZone(getNOM_ST_AUTRE_PARENT(), getAutreParentCourant().getNomAgent() + " " + getAutreParentCourant().getPrenomAgent());
 		}
@@ -155,7 +155,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 		setAutreParentCourant(null);
 
 		if (liens.size() > 2) {
-			String listeMatriculesParents = "";
+			String listeMatriculesParents = Const.CHAINE_VIDE;
 			for (int i = 0; i < liens.size(); i++) {
 				LienEnfantNWAgentNW aLien = (LienEnfantNWAgentNW) liens.get(i);
 				listeMatriculesParents += aLien.getIdAgent().substring(2) + " ";
@@ -304,8 +304,8 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_COMMUNE_NAISS(), c.getLibCommuneEtrangere());
 			// Sinon
 		} else {
-			addZone(getNOM_ST_PAYS_NAISS(), "");
-			addZone(getNOM_ST_COMMUNE_NAISS(), "");
+			addZone(getNOM_ST_PAYS_NAISS(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_COMMUNE_NAISS(), Const.CHAINE_VIDE);
 		}
 	}
 
@@ -796,7 +796,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 		}
 
 		// init des zones et actions
-		addZone(getNOM_ST_ACTION(), "");
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		setEnfantCourant(null);
 		afficheEnfantCourant(request);
 	}
@@ -923,7 +923,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 
-		if (!("").equals(getZone(getNOM_EF_DATE_NAISS()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_NAISS()))) {
 			// format de date
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_NAISS()))) {
 				// ERR007 : La date @ est incorrecte. Elle doit être au format
@@ -979,7 +979,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 
-		if (!("").equals(getZone(getNOM_EF_DATE_DECES()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_DECES()))) {
 			// ERR007 : La date @ est incorrecte. Elle doit être au format date.
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_DECES()))) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de décès"));
@@ -1068,7 +1068,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
-		if ("".equals(getVAL_ST_ACTION())) {
+		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		} else {
 			initialiseListeEnfants(request);
@@ -1452,21 +1452,21 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 
 		// On vide les zone de saisie
-		addZone(getNOM_EF_NOM(), "");
-		addZone(getNOM_EF_PRENOM(), "");
-		addZone(getNOM_EF_DATE_NAISS(), "");
-		addZone(getNOM_EF_DATE_DECES(), "");
-		addZone(getNOM_ST_COMMUNE_NAISS(), "");
-		addZone(getNOM_ST_PAYS_NAISS(), "");
+		addZone(getNOM_EF_NOM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_PRENOM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_NAISS(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_DECES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_COMMUNE_NAISS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_PAYS_NAISS(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_NATIONALITE_SELECT(), "0");
 		// RG_AG_EN_A02
 		addZone(getNOM_RG_SEXE(), getNOM_RB_SEXE_M());
 		// RG_AG_EN_A01
 		addZone(getNOM_RG_CHARGE(), getNOM_RB_CHARGE_N());
-		addZone(getNOM_ST_AUTRE_PARENT(), "");
-		addZone(getNOM_EF_DATE_DEBUT_SCOLARITE(), "");
-		addZone(getNOM_EF_DATE_FIN_SCOLARITE(), "");
-		addZone(getNOM_EF_COMMENTAIRE(), "");
+		addZone(getNOM_ST_AUTRE_PARENT(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_DEBUT_SCOLARITE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DATE_FIN_SCOLARITE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
 		setListeScolarites(null);
 	}
 
