@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,14 +13,19 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.parametrage.CapDao;
+import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.spring.domain.metier.parametrage.Cap;
+import nc.mairie.spring.domain.metier.parametrage.CorpsCap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -38,6 +44,8 @@ import org.springframework.context.ApplicationContext;
 public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private String[] LB_ANNEE;
 	private String[] LB_AVIS_CAP;
+	private String[] LB_CODE_CAP;
+	private String[] LB_CORPS_CAP;
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
@@ -46,12 +54,16 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList listeAvct;
 	private ArrayList listeAvisCAP;
+	private ArrayList<Cap> listeCap;
+	private ArrayList<CorpsCap> listeCorpsCap;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private EAEDao eaeDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private CampagneEAEDao campagneEAEDao;
+	private CapDao capDao;
+	private CorpsCapDao corpsCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -73,10 +85,10 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
-
-		initialiseDao();
 
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
@@ -85,7 +97,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
 			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat,null));
+					reqEtat, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				Avancement av = (Avancement) getListeAvct().get(i);
@@ -104,7 +116,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 				addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
 						+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
-
 
 				addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
@@ -177,6 +188,14 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		if (getCampagneEAEDao() == null) {
 			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
 		}
+
+		if (getCapDao() == null) {
+			setCapDao((CapDao) context.getBean("capDao"));
+		}
+
+		if (getCorpsCapDao() == null) {
+			setCorpsCapDao((CorpsCapDao) context.getBean("corpsCapDao"));
+		}
 	}
 
 	/**
@@ -220,6 +239,41 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
 			}
 		}
+
+		// Si liste CAP vide alors affectation
+		if (getListeCap().size() == 0) {
+			setListeCap(getCapDao().listerCap());
+			int[] tailles = { 10 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = getListeCap().listIterator(); list.hasNext();) {
+				Cap cap = (Cap) list.next();
+				String ligne[] = { cap.getCodeCap() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_CODE_CAP(aFormat.getListeFormatee());
+			addZone(getNOM_LB_CODE_CAP_SELECT(), Const.ZERO);
+		}
+
+		// Si liste CAP vide alors affectation
+		if (getListeCorpsCap().size() == 0 && getListeCap().size() != 0) {
+			setListeCorpsCap(getCorpsCapDao().listerCorpsCapParCap(getListeCap().get(0).getIdCap()));
+			afficheListeCorpsCap();
+
+		}
+	}
+
+	private void afficheListeCorpsCap() throws Exception {
+		int[] tailles = { 100 };
+		FormateListe aFormat = new FormateListe(tailles);
+		for (ListIterator list = getListeCorpsCap().listIterator(); list.hasNext();) {
+			CorpsCap cap = (CorpsCap) list.next();
+			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), cap.getCodeSpgeng());
+			String ligne[] = { gg.getLibGradeGenerique()};
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_CORPS_CAP(aFormat.getListeFormatee());
+		addZone(getNOM_LB_CORPS_CAP_SELECT(), Const.ZERO);
+
 	}
 
 	/**
@@ -250,6 +304,11 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
+			}
+
+			// Si clic sur le bouton PB_CORPS_CAP
+			if (testerParametre(request, getNOM_PB_CORPS_CAP())) {
+				return performPB_CORPS_CAP(request);
 			}
 
 		}
@@ -420,10 +479,11 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				avct.setIdAvisCAP(idAvisCap);
 			}
 			// on traite l'odre de merite
-			// on test si "moyenne" choisi alors on remete à vide ordre du mérite
-			if(indiceAvisCap==1){
+			// on test si "moyenne" choisi alors on remete à vide ordre du
+			// mérite
+			if (indiceAvisCap == 1) {
 				avct.setOrdreMerite(null);
-			}else{
+			} else {
 				String ordre = getVAL_EF_ORDRE_MERITE(i);
 				if (!ordre.equals(Const.CHAINE_VIDE)) {
 					avct.setOrdreMerite(ordre);
@@ -431,8 +491,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					avct.setOrdreMerite(null);
 				}
 			}
-			
-			
+
 			avct.modifierAvancement(getTransaction());
 			if (getTransaction().isErreur())
 				return false;
@@ -918,5 +977,169 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
 		this.campagneEAEDao = campagneEAEDao;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CODE_CAP Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_CODE_CAP() {
+		if (LB_CODE_CAP == null)
+			LB_CODE_CAP = initialiseLazyLB();
+		return LB_CODE_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_CODE_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_CODE_CAP(String[] newLB_CODE_CAP) {
+		LB_CODE_CAP = newLB_CODE_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CODE_CAP Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CODE_CAP() {
+		return "NOM_LB_CODE_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CODE_CAP_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CODE_CAP_SELECT() {
+		return "NOM_LB_CODE_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CODE_CAP Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_CODE_CAP() {
+		return getLB_CODE_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CODE_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_CODE_CAP_SELECT() {
+		return getZone(getNOM_LB_CODE_CAP_SELECT());
+	}
+
+	public ArrayList<Cap> getListeCap() {
+		return listeCap == null ? new ArrayList<Cap>() : listeCap;
+	}
+
+	public void setListeCap(ArrayList<Cap> listeCap) {
+		this.listeCap = listeCap;
+	}
+
+	public CapDao getCapDao() {
+		return capDao;
+	}
+
+	public void setCapDao(CapDao capDao) {
+		this.capDao = capDao;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CORPS_CAP Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_CORPS_CAP() {
+		if (LB_CORPS_CAP == null)
+			LB_CORPS_CAP = initialiseLazyLB();
+		return LB_CORPS_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_CORPS_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_CORPS_CAP(String[] newLB_CORPS_CAP) {
+		LB_CORPS_CAP = newLB_CORPS_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CORPS_CAP Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CORPS_CAP() {
+		return "NOM_LB_CORPS_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CORPS_CAP_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CORPS_CAP_SELECT() {
+		return "NOM_LB_CORPS_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CORPS_CAP Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_CORPS_CAP() {
+		return getLB_CORPS_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CORPS_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_CORPS_CAP_SELECT() {
+		return getZone(getNOM_LB_CORPS_CAP_SELECT());
+	}
+
+	public String getNOM_PB_CORPS_CAP() {
+		return "NOM_PB_CORPS_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/03/11 09:31:44)
+	 * 
+	 * 
+	 */
+	public boolean performPB_CORPS_CAP(HttpServletRequest request) throws Exception {
+		int numCorps = (Services.estNumerique(getZone(getNOM_LB_CODE_CAP_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CODE_CAP_SELECT())) : -1);
+		if (numCorps < 0 || getListeCap().size() == 0 || numCorps > getListeCap().size())
+			return false;
+		Cap cap = (Cap) getListeCap().get(numCorps);
+		setListeCorpsCap(getCorpsCapDao().listerCorpsCapParCap(cap.getIdCap()));
+		afficheListeCorpsCap();
+		return true;
+	}
+
+	public CorpsCapDao getCorpsCapDao() {
+		return corpsCapDao;
+	}
+
+	public void setCorpsCapDao(CorpsCapDao corpsCapDao) {
+		this.corpsCapDao = corpsCapDao;
+	}
+
+	public ArrayList<CorpsCap> getListeCorpsCap() {
+		return listeCorpsCap == null ? new ArrayList<CorpsCap>() : listeCorpsCap;
+	}
+
+	public void setListeCorpsCap(ArrayList<CorpsCap> listeCorpsCap) {
+		this.listeCorpsCap = listeCorpsCap;
 	}
 }
