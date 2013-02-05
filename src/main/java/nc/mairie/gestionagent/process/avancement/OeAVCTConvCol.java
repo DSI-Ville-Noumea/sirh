@@ -11,7 +11,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.avancement.AvancementConvCol;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -27,15 +27,11 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	private String[] LB_ANNEE;
-	private String[] LB_MOTIF_AVCT;
-
-	private Hashtable<String, MotifAvancement> hashMotifAvct;
 
 	private String[] listeAnnee;
 	private String anneeSelect;
-
-	private ArrayList<MotifAvancement> listeMotifAvct;
-	private ArrayList listeAvct;
+	
+	private ArrayList<AvancementConvCol> listeAvct;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -64,21 +60,20 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
-			setListeAvct(Avancement.listerAvancementAvecCategorieEtAnnee(getTransaction(), EnumCategorieAgent.CONV_COLL.getLibLong(), annee));
+			setListeAvct(AvancementConvCol.listerAvancementConvColAvecAnnee(getTransaction(), annee));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				Avancement av = (Avancement) getListeAvct().get(i);
+				AvancementConvCol av = (AvancementConvCol) getListeAvct().get(i);
+				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
 				addZone(getNOM_ST_GRADE(i), av.getGrade());
 				addZone(getNOM_ST_GRADE_LIB(i), av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_AGENT(i), av.getNomAgent() + " <br> " + av.getPrenomAgent() + " <br> " + av.getMatrAgent());
+				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 
 				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-				addZone(getNOM_LB_MOTIF_AVCT_SELECT(i),
-						av.getIdMotifAvct() == null ? Const.ZERO : String.valueOf(getListeMotifAvct().indexOf(
-								getHashMotifAvancement().get(av.getIdMotifAvct()))));
+				addZone(getNOM_ST_MOTIF_AVCT(i),"REVALORISATION");
 				addZone(getNOM_CK_PROJET_ARRETE(i),
 						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 								: getCHECKED_ON());
@@ -119,25 +114,6 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
-		}
-		// Si liste motifs avancement vide alors affectation
-		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
-			MotifAvancement motif = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
-			ArrayList<MotifAvancement> motifAvct = new ArrayList<MotifAvancement>();
-			motifAvct.add(motif);
-			// ArrayList motif =
-			// MotifAvancement.listerMotifAvancement(getTransaction());
-			setListeMotifAvct(motifAvct);
-
-			int[] tailles = { 15 };
-			String[] champs = { "libMotifAvct" };
-			setLB_MOTIF_AVCT(new FormateListe(tailles, motifAvct, champs).getListeFormatee());
-
-			// remplissage de la hashTable
-			for (int i = 0; i < getListeMotifAvct().size(); i++) {
-				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
-				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
-			}
 		}
 	}
 
@@ -277,7 +253,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 		int nbAgentAffectes = 0;
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementConvCol avct = (AvancementConvCol) getListeAvct().get(i);
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
@@ -285,17 +261,11 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 					// alors on fait les modifs sur avancement
 					avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 					addZone(getNOM_ST_ETAT(i), avct.getEtat());
-					// on traite le motif d'avancement
-					int indiceMotifAvct = (Services.estNumerique(getVAL_LB_MOTIF_AVCT_SELECT(i)) ? Integer.parseInt(getVAL_LB_MOTIF_AVCT_SELECT(i))
-							: -1);
-					if (indiceMotifAvct != -1) {
-						String idMotifAvct = ((MotifAvancement) getListeMotifAvct().get(indiceMotifAvct)).getIdMotifAvct();
-						avct.setIdMotifAvct(idMotifAvct);
-					}
+					
 					// on traite le numero et la date d'arreté
 					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-					avct.modifierAvancement(getTransaction());
+					avct.modifierAvancementConvCol(getTransaction());
 
 					// on crée une ligne de prime
 					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
@@ -400,7 +370,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 		// on sauvegarde l'état du tableau
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementConvCol avct = (AvancementConvCol) getListeAvct().get(i);
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
@@ -413,17 +383,11 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 				} else {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
-				// on traite le motif d'avancement
-				int indiceMotifAvct = (Services.estNumerique(getVAL_LB_MOTIF_AVCT_SELECT(i)) ? Integer.parseInt(getVAL_LB_MOTIF_AVCT_SELECT(i)) : -1);
-				if (indiceMotifAvct != -1) {
-					String idMotifAvct = ((MotifAvancement) getListeMotifAvct().get(indiceMotifAvct)).getIdMotifAvct();
-					avct.setIdMotifAvct(idMotifAvct);
-				}
 				// on traite le numero et la date d'arreté
 				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 			}
-			avct.modifierAvancement(getTransaction());
+			avct.modifierAvancementConvCol(getTransaction());
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -449,6 +413,25 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
+	}
+
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF_AVCT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_MOTIF_AVCT(int i) {
+		return "NOM_ST_MOTIF_AVCT_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF_AVCT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_MOTIF_AVCT(int i) {
+		return getZone(getNOM_ST_MOTIF_AVCT(i));
 	}
 
 	/**
@@ -632,61 +615,6 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF_AVCT Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_MOTIF_AVCT(int i) {
-		if (LB_MOTIF_AVCT == null)
-			LB_MOTIF_AVCT = initialiseLazyLB();
-		return LB_MOTIF_AVCT;
-	}
-
-	/**
-	 * Setter de la liste: LB_MOTIF_AVCT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private void setLB_MOTIF_AVCT(String[] newLB_MOTIF_AVCT) {
-		LB_MOTIF_AVCT = newLB_MOTIF_AVCT;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF_AVCT Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF_AVCT(int i) {
-		return "NOM_LB_MOTIF_AVCT_" + i;
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_AVCT_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF_AVCT_SELECT(int i) {
-		return "NOM_LB_MOTIF_AVCT_" + i + "_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF_AVCT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_MOTIF_AVCT(int i) {
-		return getLB_MOTIF_AVCT(i);
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF_AVCT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_MOTIF_AVCT_SELECT(int i) {
-		return getZone(getNOM_LB_MOTIF_AVCT_SELECT(i));
-	}
-
-	/**
 	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
 	 * CK_AFFECTER Date de création : (21/11/11 09:55:36)
 	 * 
@@ -741,29 +669,11 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste des motifs d'avancement.
-	 * 
-	 * @return listeMotifAvct
-	 */
-	private ArrayList<MotifAvancement> getListeMotifAvct() {
-		return listeMotifAvct;
-	}
-
-	/**
-	 * Setter de la liste des motifs d'avancement.
-	 * 
-	 * @param listeMotifAvct
-	 */
-	private void setListeMotifAvct(ArrayList<MotifAvancement> listeMotifAvct) {
-		this.listeMotifAvct = listeMotifAvct;
-	}
-
-	/**
 	 * Getter de la liste des avancements des fonctionnaires.
 	 * 
 	 * @return listeAvct
 	 */
-	public ArrayList getListeAvct() {
+	public ArrayList<AvancementConvCol> getListeAvct() {
 		return listeAvct;
 	}
 
@@ -772,7 +682,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvct
 	 */
-	private void setListeAvct(ArrayList listeAvct) {
+	private void setListeAvct(ArrayList<AvancementConvCol> listeAvct) {
 		this.listeAvct = listeAvct;
 	}
 
@@ -872,16 +782,5 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	 */
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
-	}
-
-	/**
-	 * Getter de la HashTable MotifAvancement.
-	 * 
-	 * @return Hashtable<String, MotifAvancement>
-	 */
-	private Hashtable<String, MotifAvancement> getHashMotifAvancement() {
-		if (hashMotifAvct == null)
-			hashMotifAvct = new Hashtable<String, MotifAvancement>();
-		return hashMotifAvct;
 	}
 }

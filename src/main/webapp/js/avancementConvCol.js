@@ -4,12 +4,10 @@ function validDRH(indice)
   var box = document.formu.elements['NOM_CK_VALID_DRH_'+indice];
   if (box != null && box.checked)
   {
-    document.formu.elements['NOM_LB_MOTIF_AVCT_'+indice].style.visibility = "visible";
     document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].style.visibility = "visible";
   }
   else
   {
-    document.formu.elements['NOM_LB_MOTIF_AVCT_'+indice].style.visibility = "hidden";
     document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].style.visibility = "hidden";
   }
 }
