@@ -68,8 +68,12 @@ function setfocus(nom)
 							<th>Date Avct Mini <br> Moy <br> Maxi</th>
 							<th>Prop avct <br> Type <br> SHD <br> VDN</th>
 							<th>Date CAP</th>
-							<th>Avis CAP</th>		
-							<th>Observations</th>							
+							<th>Avis CAP <br> Decision Employeur</th>	
+							<th>Observations</th>
+							<th>Verif SGC</th>	
+							<th>Date Avct</th>
+							<th>A imprimer</th>	
+							<th>Imprimé le <br> A <br> PAR</th>							
 						</tr>
 					</thead>
 					<tbody>
@@ -90,6 +94,10 @@ function setfocus(nom)
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
 							</tr>
 					<%
 						}
@@ -106,7 +114,7 @@ function setfocus(nom)
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,

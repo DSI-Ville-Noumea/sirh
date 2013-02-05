@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
@@ -518,7 +518,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		// Verification si suppression d'un motif avancement utilisée sur un
 		// avancement
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)
-				&& Avancement.listerAvancementAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
+				&& AvancementFonctionnaires.listerAvancementAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avancement", "ce motif d'avancement"));
@@ -2398,7 +2398,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * Contrôle les règles de gestion d'une cap Date de création : (14/09/11)
 	 */
 	private boolean performControlerRegleGestionCap(HttpServletRequest request) throws Exception {
-		
+
 		// Vérification des contraintes d'unicité de la cap
 		if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
 

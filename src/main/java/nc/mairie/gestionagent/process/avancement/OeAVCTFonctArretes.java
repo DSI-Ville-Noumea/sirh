@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -24,7 +24,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	private String[] listeAnnee;
 	private String anneeSelect;
 
-	private ArrayList listeAvct;
+	private ArrayList<AvancementFonctionnaires> listeAvct;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -57,17 +57,18 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE_IMPRIME.getValue() + "')";
-			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat,null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				Avancement av = (Avancement) getListeAvct().get(i);
+				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
-				addZone(getNOM_ST_AGENT(i), av.getNomAgent() + " <br> " + av.getPrenomAgent() + " <br> " + av.getMatrAgent());
+				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_GRADE(i),
-						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
+						av.getGrade() + " <br> "
+								+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
 				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
 				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
@@ -94,7 +95,12 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			if (anneeCourante == null || anneeCourante.length() == 0)
 				anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[5]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
+
+			// TODO
+			// changement de l'année pour faire au mieux.
+			// getListeAnnee()[0] =
+			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
 			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
 			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
 			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
@@ -245,7 +251,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		// on sauvegarde l'état du tableau
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat

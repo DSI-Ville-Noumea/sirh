@@ -7,12 +7,11 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.PositionAdmAgent;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
@@ -220,7 +219,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 
 		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
 		// et de l'année
-		Avancement.supprimerAvancementTravailAvecCategorie(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), an);
+		AvancementFonctionnaires.supprimerAvancementTravailAvecCategorie(getTransaction(), an);
 
 		// recuperation agent
 		AgentNW agent = null;
@@ -276,7 +275,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
-			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, EnumCategorieAgent.FONCTIONNAIRE.getLibLong());
+			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Fonctionnaire");
 		}
 		// Parcours des agents
 		for (int i = 0; i < la.size(); i++) {
@@ -296,7 +295,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 			}
 
 			// Récupération de l'avancement
-			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), annee, a.getIdAgent());
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), annee, a.getIdAgent());
 			if (getTransaction().isErreur() || avct.getIdAvct() == null) {
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
@@ -314,7 +313,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 				// Si pas de grade suivant, agent non éligible
 				if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
 					// Création de l'avancement
-					avct = new Avancement();
+					avct = new AvancementFonctionnaires();
 					avct.setIdAgent(a.getIdAgent());
 					avct.setCodeCategorie(carr.getCodeCategorie());
 					avct.setAnnee(annee);
@@ -421,7 +420,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
-					avct.setIba(carr.getIban());
+					avct.setIban(carr.getIban());
 					avct.setInm(bareme.getInm());
 					avct.setIna(bareme.getIna());
 
@@ -447,7 +446,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 							if (listeBarem.size() > 0) {
 								Bareme nouvBareme = (Bareme) listeBarem.get(0);
 								// on rempli les champs
-								avct.setNouvIBA(nouvBareme.getIban());
+								avct.setNouvIBAN(nouvBareme.getIban());
 								avct.setNouvINM(nouvBareme.getInm());
 								avct.setNouvINA(nouvBareme.getIna());
 							}
@@ -489,10 +488,6 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 							}
 						}
 					}
-					avct.setNomAgent(a.getNomUsage() == null ? (a.getNomMarital() == null ? a.getNomPatronymique() : a.getNomMarital()) : a
-							.getNomUsage());
-					avct.setPrenomAgent(a.getPrenomUsage() == null ? a.getPrenom() : a.getPrenomUsage());
-					avct.setMatrAgent(a.getNoMatricule());
 					avct.setDateGrade(carr.getDateDebut());
 					avct.setBMAnnee(carr.getBMAnnee());
 					avct.setBMMois(carr.getBMMois());

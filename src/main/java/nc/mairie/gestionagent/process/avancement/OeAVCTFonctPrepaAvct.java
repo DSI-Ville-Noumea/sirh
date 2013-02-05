@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
@@ -44,7 +44,7 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList<FiliereGrade> listeFiliere;
 
-	private ArrayList<Avancement> listeAvct;
+	private ArrayList<AvancementFonctionnaires> listeAvct;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -107,18 +107,18 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			}
 
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='" + EnumEtatAvancement.SGC.getValue() + "')";
-			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat, filiere));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				Avancement av = (Avancement) getListeAvct().get(i);
+				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
-				addZone(getNOM_ST_AGENT(i), av.getNomAgent() + " <br> " + av.getPrenomAgent() + " <br> " + av.getMatrAgent());
+				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 				addZone(getNOM_ST_IBA(i),
-						(av.getIba() == null ? "&nbsp;" : av.getIba()) + " <br> " + (av.getNouvIBA() == null ? "&nbsp;" : av.getNouvIBA()));
+						(av.getIban() == null ? "&nbsp;" : av.getIban()) + " <br> " + (av.getNouvIBAN() == null ? "&nbsp;" : av.getNouvIBAN()));
 				addZone(getNOM_ST_INM(i),
 						(av.getInm() == null ? "&nbsp;" : av.getInm()) + " <br> " + (av.getNouvINM() == null ? "&nbsp;" : av.getNouvINM()));
 				addZone(getNOM_ST_INA(i),
@@ -350,7 +350,7 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 		// on sauvegarde l'état du tableau
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_SGC(i).equals(getCHECKED_ON())) {
@@ -792,9 +792,9 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvct
 	 */
-	public ArrayList<Avancement> getListeAvct() {
+	public ArrayList<AvancementFonctionnaires> getListeAvct() {
 		if (listeAvct == null) {
-			return new ArrayList<Avancement>();
+			return new ArrayList<AvancementFonctionnaires>();
 		}
 		return listeAvct;
 	}
@@ -804,7 +804,7 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvct
 	 */
-	private void setListeAvct(ArrayList<Avancement> listeAvct) {
+	private void setListeAvct(ArrayList<AvancementFonctionnaires> listeAvct) {
 		this.listeAvct = listeAvct;
 	}
 

@@ -20,7 +20,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
@@ -466,8 +466,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// pour le CAP
 				// on cherche si il y a une ligne dans les avancements
 				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
-						a.getIdAgent());
+				AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
+						anneeCampagne.toString(), a.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				if (avct != null && avct.getIdAvct() != null) {
@@ -641,8 +641,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// pour le CAP
 				// on cherche si il y a une ligne dans les avancements
 				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
-						a.getIdAgent());
+				AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
+						anneeCampagne.toString(), a.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				if (avct != null && avct.getIdAvct() != null) {
@@ -1114,7 +1114,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		//setMessage(Const.CHAINE_VIDE);
+		// setMessage(Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
@@ -2439,8 +2439,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
 			// echelon
 			// et la date d'avancement
-			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(),
-					ag.getIdAgent());
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
+					.getAnnee().toString(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
@@ -2980,8 +2980,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
 			MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
-			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(), evalue
-					.getIdAgent().toString());
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
+					.getAnnee().toString(), evalue.getIdAgent().toString());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// "INF500",
@@ -3119,8 +3119,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		// on met à jour le champ CAP
 		// on cherche si il y a une ligne dans les avancements
 		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-		Avancement avct = Avancement.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(),
-				evalue.getIdAgent().toString());
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
+				getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
 		EAE eae = getEaeCourant();

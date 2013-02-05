@@ -1,19 +1,15 @@
 package nc.mairie.gestionagent.process.avancement;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.avancement.AvancementConvCol;
-import nc.mairie.metier.parametrage.MotifAvancement;
-import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -30,7 +26,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 
 	private String[] listeAnnee;
 	private String anneeSelect;
-	
+
 	private ArrayList<AvancementConvCol> listeAvct;
 
 	/**
@@ -73,7 +69,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 
 				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-				addZone(getNOM_ST_MOTIF_AVCT(i),"REVALORISATION");
+				addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
 				addZone(getNOM_CK_PROJET_ARRETE(i),
 						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
 								: getCHECKED_ON());
@@ -261,7 +257,7 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 					// alors on fait les modifs sur avancement
 					avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 					addZone(getNOM_ST_ETAT(i), avct.getEtat());
-					
+
 					// on traite le numero et la date d'arreté
 					avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
@@ -415,7 +411,6 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_AGENT(i));
 	}
 
-
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF_AVCT Date de
 	 * création : (21/11/11 09:55:36)
@@ -426,8 +421,8 @@ public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF_AVCT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF_AVCT
+	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_MOTIF_AVCT(int i) {

@@ -8,11 +8,11 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
@@ -96,13 +96,13 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
-			setListeAvct(Avancement.listerAvancementAvecCategorieAnneeEtat(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee,
-					reqEtat, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				Avancement av = (Avancement) getListeAvct().get(i);
+				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
-				addZone(getNOM_ST_AGENT(i), av.getNomAgent() + " <br> " + av.getPrenomAgent() + " <br> " + av.getMatrAgent());
+				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
@@ -268,7 +268,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		for (ListIterator list = getListeCorpsCap().listIterator(); list.hasNext();) {
 			CorpsCap cap = (CorpsCap) list.next();
 			GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), cap.getCodeSpgeng());
-			String ligne[] = { gg.getLibGradeGenerique()};
+			String ligne[] = { gg.getLibGradeGenerique() };
 			aFormat.ajouteLigne(ligne);
 		}
 		setLB_CORPS_CAP(aFormat.getListeFormatee());
@@ -445,7 +445,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		// on sauvegarde l'état du tableau
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_SEF(i).equals(getCHECKED_ON())) {

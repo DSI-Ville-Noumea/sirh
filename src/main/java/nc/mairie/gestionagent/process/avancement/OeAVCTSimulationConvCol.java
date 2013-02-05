@@ -7,7 +7,6 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -15,9 +14,7 @@ import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementConvCol;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
-import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;

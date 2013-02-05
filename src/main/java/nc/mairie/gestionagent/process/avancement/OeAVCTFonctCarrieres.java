@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumCategorieAgent;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.avancement.Avancement;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.referentiel.AvisCap;
@@ -61,17 +60,19 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
-			setListeAvct(Avancement.listerAvancementAvecCategorieEtAnnee(getTransaction(), EnumCategorieAgent.FONCTIONNAIRE.getLibLong(), annee));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				Avancement av = (Avancement) getListeAvct().get(i);
+				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 
-				addZone(getNOM_ST_AGENT(i), av.getNomAgent() + " <br> " + av.getPrenomAgent() + " <br> " + av.getMatrAgent());
+				addZone(getNOM_ST_AGENT(i), agent.getNomPatronymique() + " <br> " + agent.getPrenomUsage() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 				addZone(getNOM_ST_DATE_CAP(i), Const.CHAINE_VIDE);
 				addZone(getNOM_ST_GRADE(i),
-						av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
+						av.getGrade() + " <br> "
+								+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
 				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
 				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
@@ -252,7 +253,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		int nbAgentAffectes = 0;
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
@@ -306,7 +307,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
-						
+
 						nouvelleCarriere.setCodeMotif(avct.getIdMotifAvct());
 
 						// champ à remplir pour creer une carriere NB : on
@@ -345,7 +346,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	private void calculAccBm(Avancement avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap) throws Exception {
+	private void calculAccBm(AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap) throws Exception {
 		// calcul BM/ACC applicables
 		int nbJoursBM = 0;
 		int nbJoursACC = 0;
@@ -479,7 +480,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		// on sauvegarde l'état du tableau
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			// on recupère la ligne concernée
-			Avancement avct = (Avancement) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
