@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,6 +80,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -218,6 +221,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	public boolean responsableObligatoire = false;
 	private boolean changementFEAutorise = true;
 	public boolean estFDPInactive = false;
+
+	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -2017,30 +2022,38 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (!miseAJourArbreFDP()) {
 			// "ERR970",
 			// "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
+			if (getTransaction().isErreur())
+				getTransaction().traiterErreur();
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
+			messageInf = "";
 			return false;
 		}
 		return true;
 	}
 
-	private boolean miseAJourArbreFDP() throws Exception {
+	private boolean miseAJourArbreFDP() {
 
 		String urlWSArbreFDP = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARBRE_FDP");
-
-		URL url = new URL(urlWSArbreFDP);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		conn.setRequestProperty("Accept", "application/json");
 		boolean response = true;
+
 		try {
-			if (conn.getResponseCode() != 200) {
+			URL url = new URL(urlWSArbreFDP);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+			try {
+				if (conn.getResponseCode() != 200) {
+					response = false;
+					logger.error("Failed Arbre service : HTTP error code : " + conn.getResponseCode());
+				}
+			} catch (Exception e) {
 				response = false;
-				throw new Exception("Failed Arbre service : HTTP error code : " + conn.getResponseCode());
+				logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
 			}
 		} catch (Exception e) {
-			response = false;
-			throw new Exception("Erreur dans la connexion à l'url des WS SIRH", e);
+			logger.error("Erreur dans la connexion à l'url des WS SIRH", e);
 		}
+
 		return response;
 
 	}
