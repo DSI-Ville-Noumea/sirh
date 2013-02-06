@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -538,7 +540,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getResponsable() != null) {
 			addZone(getNOM_ST_RESPONSABLE(), getResponsable().getNumFP());
 			if (getAgtResponsable() != null) {
-				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomUsage() + " " + getAgtResponsable().getPrenomUsage() + " ("
+				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomAgent() + " " + getAgtResponsable().getPrenomAgent() + " ("
 						+ getAgtResponsable().getNoMatricule() + ") - " + getTitrePosteResponsable().getLibTitrePoste());
 			} else {
 				addZone(getNOM_ST_INFO_RESP(), "Cette fiche de poste (" + getTitrePosteResponsable().getLibTitrePoste() + ") n'est pas affectée");
@@ -556,7 +558,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getRemplacement() != null) {
 			addZone(getNOM_ST_REMPLACEMENT(), getRemplacement().getNumFP());
 			if (getAgtRemplacement() != null) {
-				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomUsage() + " " + getAgtRemplacement().getPrenomUsage() + " ("
+				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomAgent() + " " + getAgtRemplacement().getPrenomAgent() + " ("
 						+ getAgtRemplacement().getNoMatricule() + ") - " + getTitrePosteRemplacement().getLibTitrePoste());
 			} else {
 				addZone(getNOM_ST_INFO_REMP(), "Cette fiche de poste (" + getTitrePosteRemplacement().getLibTitrePoste() + ") n'est pas affectée");
@@ -572,8 +574,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 */
 	private void afficheInfosAffectationFP() {
 		if (getFichePosteCourante() != null && getAgentCourant() != null && getAffectationCourante() != null) {
-			String chaine = "Cette fiche de poste est affectée à l'agent " + getAgentCourant().getNomUsage() + " "
-					+ getAgentCourant().getPrenomUsage() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
+			String chaine = "Cette fiche de poste est affectée à l'agent " + getAgentCourant().getNomAgent() + " "
+					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
 					+ getAffectationCourante().getDateDebutAff();
 			if (getContratCourant() != null && getContratCourant().getIdContrat() != null) {
 				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le " + getContratCourant().getDateDebut();
@@ -617,7 +619,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if ("".equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
 					continue;
 
 				// recherche du nfa
@@ -1846,6 +1848,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * RG_PE_FP_A02
 	 */
+
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 
@@ -2010,7 +2013,36 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(messageInf);
 		}
 
+		// TODO appel WS ARbre
+		if (!miseAJourArbreFDP()) {
+			// "ERR970",
+			// "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
+			return false;
+		}
 		return true;
+	}
+
+	private boolean miseAJourArbreFDP() throws Exception {
+
+		String urlWSArbreFDP = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARBRE_FDP");
+
+		URL url = new URL(urlWSArbreFDP);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Accept", "application/json");
+		boolean response = true;
+		try {
+			if (conn.getResponseCode() != 200) {
+				response = false;
+				throw new Exception("Failed Arbre service : HTTP error code : " + conn.getResponseCode());
+			}
+		} catch (Exception e) {
+			response = false;
+			throw new Exception("Erreur dans la connexion à l'url des WS SIRH", e);
+		}
+		return response;
+
 	}
 
 	private boolean sauvegardeFDP() throws Exception {
@@ -4876,7 +4908,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getEmploiSecondaire() != null) {
 			emploiSecondaire = getEmploiSecondaire().getRefMairie();
 		}
-		String budget = fp.getIdBudget() == null ? "" : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
 
 		// partie concernant le temps de travail du poste
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
@@ -4890,12 +4922,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getAgentCourant() != null) {
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
 			if (aff != null && aff.getIdAffectation() != null) {
-				String prenomTitulaire = getAgentCourant().getPrenom().toLowerCase();
+				String prenomTitulaire = getAgentCourant().getPrenomAgent().toLowerCase();
 				String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
 				String restePrenomTitulaire = prenomTitulaire.substring(1, prenomTitulaire.length()).toLowerCase();
 				prenomTitulaire = premLettreTitulaire + restePrenomTitulaire;
-				String nomTitulaire = getAgentCourant().getNomUsage() == null || getAgentCourant().getNomUsage().equals(Const.CHAINE_VIDE) ? getAgentCourant()
-						.getNomPatronymique().toUpperCase() : getAgentCourant().getNomUsage().toUpperCase();
+				String nomTitulaire = getAgentCourant().getNomAgent().toUpperCase();
 				titulaireNom = prenomTitulaire + " " + nomTitulaire;
 				titulaireMatr = getAgentCourant().getNoMatricule();
 				dateAff = aff.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le " + aff.getDateDebutAff();
@@ -4912,12 +4943,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
 			if (getAgtResponsable() != null) {
 				respMatr = getAgtResponsable().getNoMatricule();
-				String prenomResponsable = getAgtResponsable().getPrenom().toLowerCase();
+				String prenomResponsable = getAgtResponsable().getPrenomAgent().toLowerCase();
 				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
 				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length()).toLowerCase();
 				prenomResponsable = premLettreResponsable + restePrenomResponsable;
-				String nom = getAgtResponsable().getNomUsage() == null || getAgtResponsable().getNomUsage().equals(Const.CHAINE_VIDE) ? getAgtResponsable()
-						.getNomPatronymique().toUpperCase() : getAgtResponsable().getNomUsage().toUpperCase();
+				String nom = getAgtResponsable().getNomAgent().toUpperCase();
 				respNom = prenomResponsable + " " + nom;
 			}
 			respFP = fpResponsable.getNumFP();
@@ -4935,12 +4965,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
 				rempMatr = agentRemplacement.getNoMatricule();
-				String prenomRemplacement = agentRemplacement.getPrenom().toLowerCase();
+				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
 				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
 				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length()).toLowerCase();
 				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
-				String nom = agentRemplacement.getNomUsage() == null || agentRemplacement.getNomUsage().equals(Const.CHAINE_VIDE) ? agentRemplacement
-						.getNomPatronymique().toUpperCase() : agentRemplacement.getNomUsage().toUpperCase();
+				String nom = agentRemplacement.getNomAgent().toUpperCase();
 				rempNom = prenomRemplacement + " " + nom;
 			}
 			rempFP = fpRemplacement.getNumFP();
@@ -5137,7 +5166,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getEmploiSecondaire() != null) {
 			emploiSecondaire = getEmploiSecondaire().getRefMairie();
 		}
-		String budget = fp.getIdBudget() == null ? "" : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
 
 		// partie concernant le temps de travail du poste
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
@@ -5159,12 +5188,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				agent = AgentNW.chercherAgent(getTransaction(), aff.getIdAgent());
 			}
 			if (agent != null) {
-				String prenomTitulaire = agent.getPrenom().toLowerCase();
+				String prenomTitulaire = agent.getPrenomAgent().toLowerCase();
 				String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
 				String restePrenomTitulaire = prenomTitulaire.substring(1, prenomTitulaire.length()).toLowerCase();
 				prenomTitulaire = premLettreTitulaire + restePrenomTitulaire;
-				String nomTitulaire = agent.getNomUsage() == null || agent.getNomUsage().equals(Const.CHAINE_VIDE) ? agent.getNomPatronymique()
-						.toUpperCase() : agent.getNomUsage().toUpperCase();
+				String nomTitulaire = agent.getNomAgent().toUpperCase();
 				titulaireNom = prenomTitulaire + " " + nomTitulaire;
 				titulaireMatr = agent.getNoMatricule();
 			}
@@ -5186,12 +5214,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			if (affResponsable != null && affResponsable.getIdAgent() != null) {
 				AgentNW agentResponsable = AgentNW.chercherAgent(getTransaction(), affResponsable.getIdAgent());
 				respMatr = agentResponsable.getNoMatricule();
-				String prenomResponsable = agentResponsable.getPrenom().toLowerCase();
+				String prenomResponsable = agentResponsable.getPrenomAgent().toLowerCase();
 				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
 				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length()).toLowerCase();
 				prenomResponsable = premLettreResponsable + restePrenomResponsable;
-				String nom = agentResponsable.getNomUsage() == null || agentResponsable.getNomUsage().equals(Const.CHAINE_VIDE) ? agentResponsable
-						.getNomPatronymique().toUpperCase() : agentResponsable.getNomUsage().toUpperCase();
+				String nom = agentResponsable.getNomAgent().toUpperCase();
 				respNom = prenomResponsable + " " + nom;
 			}
 			respFP = fpResponsable.getNumFP();
@@ -5211,12 +5238,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
 				rempMatr = agentRemplacement.getNoMatricule();
-				String prenomRemplacement = agentRemplacement.getPrenom().toLowerCase();
+				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
 				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
 				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length()).toLowerCase();
 				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
-				String nom = agentRemplacement.getNomUsage() == null || agentRemplacement.getNomUsage().equals(Const.CHAINE_VIDE) ? agentRemplacement
-						.getNomPatronymique().toUpperCase() : agentRemplacement.getNomUsage().toUpperCase();
+				String nom = agentRemplacement.getNomAgent().toUpperCase();
 				rempNom = prenomRemplacement + " " + nom;
 
 			}

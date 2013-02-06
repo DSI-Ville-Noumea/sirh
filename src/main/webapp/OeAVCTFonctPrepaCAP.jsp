@@ -1,5 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.metier.avancement.Avancement"%>
+<%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -81,7 +81,7 @@ function setfocus(nom)
 					<%
 					if (process.getListeAvct()!=null){
 						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
-							Avancement avct = (Avancement) process.getListeAvct().get(indiceAvct);
+							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(indiceAvct);
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
