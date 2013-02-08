@@ -1,0 +1,7 @@
+
+ 
+ [[1]] <<Ajouter un paramètre>> dans le contexte : <<SIRH_WS_URL_ARBRE_FDP>> à "http://ws-qual.sirh.site-mairie.noumea.nc/sirhws/fichePostes/rebuildFichePosteTree"
+ 
+ [[2]] <<Ajouter un paramètre>> dans le contexte : <<AFFICHAGE_AVCT_CAP>> à "TRUE" pour la qual et à "FALSE" pour la prod 
+ 
+ [[3]] <<Ajouter un paramètre>> dans le contexte : <<AFFICHAGE_AVCT_ARR>> à "FALSE" pour la qual et la prod 
