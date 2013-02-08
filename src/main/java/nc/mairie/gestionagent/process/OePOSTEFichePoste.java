@@ -2018,7 +2018,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(messageInf);
 		}
 
-		// TODO appel WS ARbre
+		// appel WS mise à jour Abre FDP
 		if (!miseAJourArbreFDP()) {
 			// "ERR970",
 			// "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
