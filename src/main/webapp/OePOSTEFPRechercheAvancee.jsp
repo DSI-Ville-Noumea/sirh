@@ -185,7 +185,7 @@
 				<BR/>
 				<BR/>
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER_AFF()%>" accesskey="R">
-				<BR/>
+				<BR/><BR/>
 				<%if (process.getListeAffectation().size()>0){ %>
 				    <span style="position:relative;width:50px;text-align:left;">Direction</span>
 					<span style="position:relative;width:300px;text-align:left;">Service/Section/...</span>
