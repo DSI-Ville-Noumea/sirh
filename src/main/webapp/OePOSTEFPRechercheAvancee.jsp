@@ -177,6 +177,47 @@
 				<%} %>
 				<INPUT type="submit" value="Annuler" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_ANNULER()%>" accesskey="A">
 			</FIELDSET>
+			
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" >
+				<LEGEND class="sigp2Legend">Voir toutes les affectations d'une fiche de poste</LEGEND>
+				<span class="sigp2" style="width:60px;">Numero :</span>
+				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE_AFF() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE_AFF() %>" style="margin-right:10px;">
+				<BR/>
+				<BR/>
+				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER_AFF()%>" accesskey="R">
+				<BR/>
+				<%if (process.getListeAffectation().size()>0){ %>
+				    <span style="position:relative;width:50px;text-align:left;">Direction</span>
+					<span style="position:relative;width:300px;text-align:left;">Service/Section/...</span>
+					<span style="position:relative;width:80px;text-align:left;">Agent</span>
+					<span style="position:relative;width:80px;text-align: center;">Date début</span>
+					<span style="position:relative;width:85px;text-align: center;">Date fin</span>
+					<span style="position:relative;width:65px;text-align: left;">Fiche poste</span>
+					<span style="position:relative;text-align: left;">Titre poste</span>
+					<br/>
+				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							int indiceAff = 0;
+								for (int i = 0;i<process.getListeAffectation().size();i++){
+							%>
+									<tr>
+										<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: left;"><%=process.getVAL_ST_DIR_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_SERV_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_AGENT_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_FIN_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:65px;text-align: left;"><%=process.getVAL_ST_NUM_FP_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_TITRE_AFF(indiceAff)%></td>
+									</tr>
+									<%
+									indiceAff++;
+								}
+							%>
+						</table>	
+						</div>	
+				<%} %>
+			</FIELDSET>
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">

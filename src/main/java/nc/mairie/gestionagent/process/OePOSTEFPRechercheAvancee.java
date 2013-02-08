@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
@@ -32,6 +34,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	private ArrayList listeTitre;
 	private ArrayList listeServices;
 	private ArrayList listeFP;
+	private ArrayList<Affectation> listeAffectation;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	public String focus = null;
@@ -596,6 +599,11 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 
+			// Si clic sur le bouton PB_RECHERCHER_AFF
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AFF())) {
+				return performPB_RECHERCHER_AFF(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -789,5 +797,225 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 */
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NUM_FICHE_POSTE_AFF
+	 * Date de création : (07/11/11 16:40:08)
+	 * 
+	 */
+	public String getNOM_EF_NUM_FICHE_POSTE_AFF() {
+		return "NOM_EF_NUM_FICHE_POSTE_AFF";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_NUM_FICHE_POSTE_AFF Date de création : (07/11/11 16:40:08)
+	 * 
+	 */
+	public String getVAL_EF_NUM_FICHE_POSTE_AFF() {
+		return getZone(getNOM_EF_NUM_FICHE_POSTE_AFF());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AFF Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AFF() {
+		return "NOM_PB_RECHERCHER_AFF";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public boolean performPB_RECHERCHER_AFF(HttpServletRequest request) throws Exception {
+		// Recherche de la fiche de poste
+		if (getVAL_EF_NUM_FICHE_POSTE_AFF() != null && !getVAL_EF_NUM_FICHE_POSTE_AFF().equals(Const.CHAINE_VIDE)) {
+			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_NUM_FICHE_POSTE_AFF());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+				return false;
+			}
+			if (fiche != null && fiche.getIdFichePoste() != null) {
+				// on alimente une liste d'affectation que l'on affiche
+				// TODO
+				ArrayList<Affectation> listeAff = Affectation.listerAffectationAvecFPOrderDatDeb(getTransaction(), fiche);
+				setListeAffectation(listeAff);
+				initialiseListeAff();
+
+			} else {
+				setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+				return false;
+			}
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR982"));
+			return false;
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void initialiseListeAff() throws Exception {
+		for (int i = 0; i < getListeAffectation().size(); i++) {
+			Affectation a = (Affectation) getListeAffectation().get(i);
+			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
+			// Titre du poste
+			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+			// Service
+			Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+			Service service = Service.getSection(getTransaction(), fp.getIdServi());
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), a.getIdAgent());
+			
+			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getCodService() : "&nbsp;");
+			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLibService() : "&nbsp;");
+			addZone(getNOM_ST_AGENT_AFF(i), agent.getNomAgent() + " " +agent.getPrenomAgent() + "(" + agent.getNoMatricule()+")");
+			addZone(getNOM_ST_DATE_DEBUT_AFF(i), a.getDateDebutAff());
+			addZone(getNOM_ST_DATE_FIN_AFF(i),
+					a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());
+			addZone(getNOM_ST_NUM_FP_AFF(i), fp.getNumFP().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fp.getNumFP());
+			addZone(getNOM_ST_TITRE_AFF(i), tp == null ? "&nbsp;" : tp.getLibTitrePoste());
+
+		}
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_AGENT_AFF(int i) {
+		return "NOM_ST_AGENT_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_AFF Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_AGENT_AFF(int i) {
+		return getZone(getNOM_ST_AGENT_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DIR_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_DIR_AFF(int i) {
+		return "NOM_ST_DIR_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DIR_AFF Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_DIR_AFF(int i) {
+		return getZone(getNOM_ST_DIR_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_SERV_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_SERV_AFF(int i) {
+		return "NOM_ST_SERV_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERV_AFF Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_SERV_AFF(int i) {
+		return getZone(getNOM_ST_SERV_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEBUT_AFF Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_DATE_DEBUT_AFF(int i) {
+		return "NOM_ST_DATE_DEBUT_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEBUT_AFF
+	 * Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_DATE_DEBUT_AFF(int i) {
+		return getZone(getNOM_ST_DATE_DEBUT_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_FIN_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_DATE_FIN_AFF(int i) {
+		return "NOM_ST_DATE_FIN_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_FIN_AFF
+	 * Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_DATE_FIN_AFF(int i) {
+		return getZone(getNOM_ST_DATE_FIN_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_FP_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_NUM_FP_AFF(int i) {
+		return "NOM_ST_NUM_FP_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_FP_AFF
+	 * Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_NUM_FP_AFF(int i) {
+		return getZone(getNOM_ST_NUM_FP_AFF(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TITRE_AFF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_TITRE_AFF(int i) {
+		return "NOM_ST_TITRE_AFF" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TITRE_AFF Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_TITRE_AFF(int i) {
+		return getZone(getNOM_ST_TITRE_AFF(i));
+	}
+
+	public ArrayList<Affectation> getListeAffectation() {
+		return listeAffectation == null ? new ArrayList<Affectation>() : listeAffectation;
+	}
+
+	public void setListeAffectation(ArrayList<Affectation> listeAffectation) {
+		this.listeAffectation = listeAffectation;
 	}
 }
