@@ -171,17 +171,8 @@ function setfocus(nom)
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Impression des tableaux d'avancement différencié et des EAE</legend>
-			<span class="sigp2" style="width:75px">Code CAP : </span>
-			<SELECT onchange='executeBouton("<%=process.getNOM_PB_CORPS_CAP() %>")'  class="sigp2-saisie" name="<%= process.getNOM_LB_CODE_CAP() %>" style="width=70px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_CODE_CAP(), process.getVAL_LB_CODE_CAP_SELECT()) %>
-			</SELECT>
-			<span class="sigp2" style="width:75px">Corps : </span>
-			<SELECT  class="sigp2-saisie" name="<%= process.getNOM_LB_CORPS_CAP() %>" >
-				<%=process.forComboHTML(process.getVAL_LB_CORPS_CAP(), process.getVAL_LB_CORPS_CAP_SELECT()) %>
-			</SELECT>
 		    
 		</FIELDSET>
-	<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_CORPS_CAP()%>" >
 	</FORM>
 </BODY>
 </HTML>
