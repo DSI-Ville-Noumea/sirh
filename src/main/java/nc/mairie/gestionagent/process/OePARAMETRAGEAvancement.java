@@ -48,6 +48,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private String[] LB_TYPE_DELIBERATION;
 	private String[] LB_CAP;
 	private String[] LB_CORPS;
+	private String[] LB_TYPE_CAP;
 
 	private ArrayList<MotifAvancement> listeMotif;
 	private MotifAvancement motifCourant;
@@ -69,6 +70,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private DeliberationDao deliberationDao;
 
 	private ArrayList<String> listeTypeDeliberation;
+	private ArrayList<String> listeTypeCap;
 
 	private ArrayList<Cap> listeCap;
 	private Cap capCourant;
@@ -130,11 +132,36 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeTypeDeliberation().size() == 0) {
 			initialiseListeTypeDeliberation(request);
 		}
+		if (getListeTypeCap().size() == 0) {
+			initialiseListeTypeCap(request);
+		}
 		if (getListeCap().size() == 0) {
 			initialiseListeCap(request);
 		}
 		if (getListeCorps().size() == 0) {
 			initialiseListeCorps(request);
+		}
+	}
+
+	private void initialiseListeTypeCap(HttpServletRequest request) {
+		ArrayList<String> listeTypeCap = new ArrayList<String>();
+		listeTypeCap.add("COMMUNAL");
+		listeTypeCap.add("TERRITORIAL");
+		setListeTypeCap(listeTypeCap);
+
+		if (getListeTypeCap().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeTypeCap().listIterator(); list.hasNext();) {
+				String type = (String) list.next();
+				String ligne[] = { type };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_CAP(aFormat.getListeFormatee());
+		} else {
+			setLB_TYPE_CAP(null);
 		}
 	}
 
@@ -192,12 +219,12 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeCap(HttpServletRequest request) throws Exception {
 		setListeCap(getCapDao().listerCap());
 		if (getListeCap().size() != 0) {
-			int tailles[] = { 10, 10 };
-			String padding[] = { "G", "G" };
+			int tailles[] = { 10, 15, 10 };
+			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator list = getListeCap().listIterator(); list.hasNext();) {
 				Cap cap = (Cap) list.next();
-				String ligne[] = { cap.getCodeCap(), cap.getRefCap() };
+				String ligne[] = { cap.getCodeCap(), cap.getTypeCap(), cap.getRefCap() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -2057,6 +2084,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_CODE_CAP(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_REF_CAP(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DESCRIPTION_CAP(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_TYPE_CAP_SELECT(), Const.ZERO);
 
 		setListeEmployeurCap(null);
 		setListeRepresentantCap(null);
@@ -2088,6 +2116,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			Cap cap = getListeCap().get(indice);
 			setCapCourant(cap);
 
+			int ligneTypeCap = getListeTypeCap().indexOf(cap.getTypeCap());
+
+			addZone(getNOM_LB_TYPE_CAP_SELECT(), String.valueOf(ligneTypeCap));
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
@@ -2201,18 +2232,27 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 					// modification
 				}
 
+				// on recupere le type de déliberation
+				int indicetypeCap = (Services.estNumerique(getVAL_LB_TYPE_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_CAP_SELECT()) : -1);
+				String typeCap = Const.CHAINE_VIDE;
+				if (indicetypeCap > -1) {
+					typeCap = getListeTypeCap().get(indicetypeCap);
+				}
+
 				getCapCourant().setCodeCap(getVAL_EF_CODE_CAP());
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
 				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
+				getCapCourant().setTypeCap(typeCap);
 				Cap capAjoute = null;
 				if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
-					getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription());
+					getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription(),
+							getCapCourant().getTypeCap());
 					capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 				} else {
 					// modification
 					capAjoute = getCapCourant();
 					getCapDao().modifierCap(getCapCourant().getIdCap(), getCapCourant().getCodeCap(), getCapCourant().getRefCap(),
-							getCapCourant().getDescription());
+							getCapCourant().getDescription(), getCapCourant().getTypeCap());
 
 					// on supprime les corps liés
 					getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
@@ -2681,5 +2721,68 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_TYPE_CAP Date de création
+	 * : (14/09/11 13:52:54)
+	 * 
+	 */
+	private String[] getLB_TYPE_CAP() {
+		if (LB_TYPE_CAP == null)
+			LB_TYPE_CAP = initialiseLazyLB();
+		return LB_TYPE_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	private void setLB_TYPE_CAP(String[] newLB_TYPE_CAP) {
+		LB_TYPE_CAP = newLB_TYPE_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_CAP Date de création
+	 * : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_CAP() {
+		return "NOM_LB_TYPE_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_TYPE_CAP_SELECT Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_CAP_SELECT() {
+		return "NOM_LB_TYPE_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String[] getVAL_LB_TYPE_CAP() {
+		return getLB_TYPE_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_TYPE_CAP Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_LB_TYPE_CAP_SELECT() {
+		return getZone(getNOM_LB_TYPE_CAP_SELECT());
+	}
+
+	public ArrayList<String> getListeTypeCap() {
+		return listeTypeCap == null ? new ArrayList<String>() : listeTypeCap;
+	}
+
+	public void setListeTypeCap(ArrayList<String> listeTypeCap) {
+		this.listeTypeCap = listeTypeCap;
 	}
 }

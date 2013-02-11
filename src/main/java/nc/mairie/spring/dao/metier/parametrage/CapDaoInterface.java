@@ -8,9 +8,9 @@ public interface CapDaoInterface {
 
 	public ArrayList<Cap> listerCap() throws Exception;
 
-	public void creerCap(String codeCap, String refCap, String description) throws Exception;
+	public void creerCap(String codeCap, String refCap, String description, String typeCap) throws Exception;
 
-	public void modifierCap(Integer idCap, String codeCap, String refCap, String description) throws Exception;
+	public void modifierCap(Integer idCap, String codeCap, String refCap, String description, String typeCap) throws Exception;
 
 	public void supprimerCap(Integer idCap) throws Exception;
 

@@ -255,6 +255,7 @@
 		    	<legend class="sigp2Legend">CAP</legend>
 				<span class="sigp2-titre" align="center" colspan="2">
 				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
+				<span class="sigp2-saisie" style="position:relative;width:110px;">Type</span>
 				<span class="sigp2-saisie" style="position:relative;">Reférence</span>
 				<SELECT name="<%= process.getNOM_LB_CAP() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
@@ -281,7 +282,12 @@
 					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
 					<br/>
 					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
-					<br />	
+					<br />				
+					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_CAP() %>">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_CAP(), process.getVAL_LB_TYPE_CAP_SELECT()) %>
+					</SELECT>				
+					<br />
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
 					<br/>
 					<div style="overflow: auto;height: 120px;width:95%;">
@@ -358,7 +364,12 @@
 					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
 					<br/>
 					<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
-					<br />	
+					<br />					
+					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
+					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_CAP() %>">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE_CAP(), process.getVAL_LB_TYPE_CAP_SELECT()) %>
+					</SELECT>				
+					<br />
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
 					<br/>
 					<table class="sigp2NewTab" style="text-align:left;width:90%;">

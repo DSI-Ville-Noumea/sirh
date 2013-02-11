@@ -19,6 +19,7 @@ public class CapDao implements CapDaoInterface {
 	public static final String CHAMP_CODE_CAP = "CODE_CAP";
 	public static final String CHAMP_REF_CAP = "REF_CAP";
 	public static final String CHAMP_DESCRIPTION = "DESCRIPTION";
+	public static final String CHAMP_TYPE_CAP = "TYPE_CAP";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -45,6 +46,7 @@ public class CapDao implements CapDaoInterface {
 			cap.setCodeCap((String) row.get(CHAMP_CODE_CAP));
 			cap.setRefCap((String) row.get(CHAMP_REF_CAP));
 			cap.setDescription((String) row.get(CHAMP_DESCRIPTION));
+			cap.setTypeCap((String) row.get(CHAMP_TYPE_CAP));
 
 			listeCap.add(cap);
 		}
@@ -53,9 +55,10 @@ public class CapDao implements CapDaoInterface {
 	}
 
 	@Override
-	public void creerCap(String codeCap, String refCap, String description) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CODE_CAP + "," + CHAMP_REF_CAP + "," + CHAMP_DESCRIPTION + ") " + "VALUES (?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description });
+	public void creerCap(String codeCap, String refCap, String description, String typeCap) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CODE_CAP + "," + CHAMP_REF_CAP + "," + CHAMP_DESCRIPTION + "," + CHAMP_TYPE_CAP + ") "
+				+ "VALUES (?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap });
 	}
 
 	@Override
@@ -72,9 +75,9 @@ public class CapDao implements CapDaoInterface {
 	}
 
 	@Override
-	public void modifierCap(Integer idCap, String codeCap, String refCap, String description) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CODE_CAP + "=?," + CHAMP_REF_CAP + "=?," + CHAMP_DESCRIPTION + "=? where "
-				+ CHAMP_ID_CAP + "=?";
-		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description,idCap });
+	public void modifierCap(Integer idCap, String codeCap, String refCap, String description, String typeCap) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CODE_CAP + "=?," + CHAMP_REF_CAP + "=?," + CHAMP_DESCRIPTION + "=?," + CHAMP_TYPE_CAP
+				+ "=? where " + CHAMP_ID_CAP + "=?";
+		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap, idCap });
 	}
 }
