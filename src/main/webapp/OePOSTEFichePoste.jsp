@@ -368,6 +368,7 @@
 									"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null],
 									"sScrollY": "275px",
 									"bPaginate": false,
+									"aaSorting": [],
 									"sDom": '<"H"f>t<"F"i>'						
 							    });
 							} );
@@ -430,6 +431,7 @@
 									"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null,null,null],
 									"sScrollY": "275px",
 									"bPaginate": false,
+									"aaSorting": [],
 									"sDom": '<"H"f>t<"F"i>'						
 							    });
 							} );
