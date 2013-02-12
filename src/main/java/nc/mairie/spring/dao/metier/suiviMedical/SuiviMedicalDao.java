@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -14,13 +13,15 @@ import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.mapper.metier.suiviMedical.SuiviMedicalRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
-	private static Logger logger = Logger.getLogger(SuiviMedicalDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(SuiviMedicalDao.class);
 
 	public static final String NOM_TABLE = "SIRH.SUIVI_MEDICAL";
 

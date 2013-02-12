@@ -1,17 +1,18 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvolutionRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 
-	private static Logger logger = Logger.getLogger(EaeEvolutionDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(EaeEvolutionDao.class);
 
 	public static final String NOM_TABLE = "EAE_EVOLUTION";
 

@@ -4,18 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.EaeDocumentRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeDocumentDao implements EaeDocumentDaoInterface {
 
-	private static Logger logger = Logger.getLogger(EaeDocumentDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(EaeDocumentDao.class);
 
 	public static final String NOM_TABLE = "EAE_DOCUMENT";
 

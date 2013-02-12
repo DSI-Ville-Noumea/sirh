@@ -4,17 +4,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaePlanActionDao implements EaePlanActionDaoInterface {
 
-	private static Logger logger = Logger.getLogger(EaePlanActionDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(EaePlanActionDao.class);
 
 	public static final String NOM_TABLE = "EAE_PLAN_ACTION";
 

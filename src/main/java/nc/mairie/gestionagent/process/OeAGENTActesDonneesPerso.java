@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,6 +39,8 @@ import nc.mairie.utils.MessageUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -75,7 +76,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	public File fichierUpload = null;
 	private String vueCourant = null;
 
-	private static Logger logger = Logger.getLogger(OeAGENTActesDonneesPerso.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAGENTActesDonneesPerso.class);
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -578,7 +579,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			logger.severe("erreur d'execution " + e.toString());
+			logger.error("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX
@@ -897,7 +898,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			logger.severe("Erreur suppression physique du fichier : " + e.toString());
+			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé

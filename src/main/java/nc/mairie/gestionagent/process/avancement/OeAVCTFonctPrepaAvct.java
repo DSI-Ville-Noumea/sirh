@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +26,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -35,7 +36,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 
-	private static Logger logger = Logger.getLogger(OeAVCTFonctPrepaAvct.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctPrepaAvct.class);
 
 	private String[] LB_ANNEE;
 	private String[] LB_FILIERE;

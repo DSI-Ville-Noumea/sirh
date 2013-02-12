@@ -17,7 +17,6 @@ import java.util.Hashtable;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,6 +48,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -77,8 +78,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	public String ACTION_MODIFICATION = "Modification";
 	public String ACTION_SUPPRESSION = "Suppression";
 
-	private static Logger logger = Logger.getLogger(OeSMConvocation.class
-			.getName());
+	private Logger logger = LoggerFactory.getLogger(OeSMConvocation.class);
 
 	public String convocationsEnErreur = Const.CHAINE_VIDE;
 	private String urlFichier;
@@ -559,7 +559,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						EnumEtatSuiviMed.TRAVAIL.getValue(), moisChoisi,
 						anneeChoisi);
 			} catch (Exception e) {
-				logger.warning("Problème dans la suppression des suivi medicaux"
+				logger.error("Problème dans la suppression des suivi medicaux"
 						+ new Date());
 			}
 
@@ -689,7 +689,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				SuiviMedical smTemp = getSuiviMedDao()
 						.chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
 								moisChoisi, anneeChoisi);
-				logger.fine("SM : " + smTemp.toString());
+				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
 				// si oui, on regarde si la date de prevision est
@@ -837,7 +837,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 								.chercherSuiviMedicalAgentMoisetAnnee(
 										sm.getIdAgent(), moisChoisi,
 										anneeChoisi);
-						logger.fine("SM : " + smTemp.toString());
+						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
 						// si oui, on regarde si la date de prevision est
@@ -990,7 +990,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 								.chercherSuiviMedicalAgentMoisetAnnee(
 										sm.getIdAgent(), moisChoisi,
 										anneeChoisi);
-						logger.fine("SM : " + smTemp.toString());
+						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
 						// si oui, on regarde si la date de prevision est
@@ -1143,7 +1143,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 								.chercherSuiviMedicalAgentMoisetAnnee(
 										sm.getIdAgent(), moisChoisi,
 										anneeChoisi);
-						logger.fine("SM : " + smTemp.toString());
+						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
 						// si oui, on regarde si la date de prevision est
@@ -1251,7 +1251,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				SuiviMedical smTemp = getSuiviMedDao()
 						.chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
 								moisChoisi, anneeChoisi);
-				logger.fine("SM : " + smTemp.toString());
+				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
 				// si oui, on regarde si la date de prevision est
@@ -1363,7 +1363,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 							.chercherSuiviMedicalAgentMoisetAnnee(
 									smAncien.getIdAgent(), moisChoisi,
 									anneeChoisi);
-					logger.fine("SM : " + smTemp.toString());
+					logger.debug("SM : " + smTemp.toString());
 					// si une ligne existe deja
 					// on regarde si etat Travail
 					// si oui, on regarde si la date de prevision est
@@ -1480,7 +1480,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 										Integer.valueOf(paHorsEffectif
 												.getNomatr()), moisChoisi,
 										anneeChoisi);
-						logger.fine("SM : " + smTemp.toString());
+						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
 						// si oui, on regarde si la date de prevision est
@@ -1584,7 +1584,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						.chercherSuiviMedicalAgentMoisetAnnee(
 								Integer.valueOf(agent.getIdAgent()),
 								moisChoisi, anneeChoisi);
-				logger.fine("SM : " + smTemp.toString());
+				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
 				// si oui, on regarde si la date de prevision est superieur à
@@ -1684,7 +1684,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						.chercherSuiviMedicalAgentMoisetAnnee(
 								Integer.valueOf(vm.getIdAgent()), moisChoisi,
 								anneeChoisi);
-				logger.fine("SM : " + smTemp.toString());
+				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
 				// si oui, on regarde si la date de prevision est superieur à

@@ -1,24 +1,14 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvolutionRowMapper;
-import nc.mairie.spring.domain.metier.EAE.EaeDeveloppement;
-import nc.mairie.spring.domain.metier.EAE.EaeDiplome;
-import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
 
-	private static Logger logger = Logger.getLogger(EaeDeveloppementDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(EaeDeveloppementDao.class);
 
 	public static final String NOM_TABLE = "EAE_DEVELOPPEMENT";
 

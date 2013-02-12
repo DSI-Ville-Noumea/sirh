@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,6 +36,8 @@ import nc.mairie.utils.MessageUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Process OeAGENTHandicap Date de création : (01/07/11 09:42:08)
@@ -44,7 +45,7 @@ import org.apache.commons.vfs2.VFS;
  */
 public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private static Logger logger = Logger.getLogger(OeAGENTHandicap.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAGENTHandicap.class);
 
 	private String[] LB_NOM;
 	private String[] LB_NOM_MP;
@@ -2090,7 +2091,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			logger.severe("Erreur suppression physique du fichier : " + e.toString());
+			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé
@@ -2312,7 +2313,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			logger.severe("erreur d'execution " + e.toString());
+			logger.error("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX

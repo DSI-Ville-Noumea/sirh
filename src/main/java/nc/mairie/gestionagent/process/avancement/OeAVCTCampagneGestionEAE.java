@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -80,6 +79,8 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -116,7 +117,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 	public String ACTION_CALCUL = "Calcul";
 
-	private static Logger logger = Logger.getLogger(OeAVCTCampagneGestionEAE.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneGestionEAE.class);
 
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeFormationDao eaeFormationDao;

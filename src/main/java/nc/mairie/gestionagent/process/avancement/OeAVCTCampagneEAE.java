@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,6 +40,8 @@ import nc.mairie.utils.MessageUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
@@ -71,7 +72,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 
 	public boolean dateDebutModifiable = false;
 
-	private static Logger logger = Logger.getLogger(OeAVCTCampagneEAE.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneEAE.class);
 
 	private CampagneEAEDao campagneEAEDao;
 	private CampagneActionDao campagneActionDao;
@@ -1382,7 +1383,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 				try {
 					fichierASupp.delete();
 				} catch (Exception e) {
-					logger.severe("Erreur suppression physique du fichier : " + e.toString());
+					logger.error("Erreur suppression physique du fichier : " + e.toString());
 				}
 
 				// tout s'est bien passé
@@ -1508,7 +1509,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			logger.severe("erreur d'execution " + e.toString());
+			logger.error("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX

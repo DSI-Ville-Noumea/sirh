@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.EAE;
 
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -34,12 +35,15 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 	}
 
 	@Override
-	public String chercherDernierDocumentFinalise(Integer idEAE) throws Exception {
-		String sql = "select distinct " + CHAMP_ID_GED_DOCUMENT + " from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
+	public String chercherDernierDocumentFinalise(Integer idEAE)
+			throws Exception {
+		String sql = "select distinct " + CHAMP_ID_GED_DOCUMENT + " from "
+				+ NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
 
 		String finalisation = null;
 		try {
-			finalisation = (String) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, String.class);
+			finalisation = (String) jdbcTemplate.queryForObject(sql,
+					new Object[] { idEAE }, String.class);
 
 		} catch (Exception e) {
 			logger.error("Erreur dans la recherche du document finalise : ", e);

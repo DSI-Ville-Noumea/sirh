@@ -1,12 +1,10 @@
 package nc.mairie.gestionagent.process.avancement;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatEAE;
-import nc.mairie.gestionagent.process.OeAGENTVisiteMed;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
@@ -18,6 +16,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -33,7 +33,7 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeFichePosteDao eaeFichePosteDao;
 	
-	private static Logger logger = Logger.getLogger(OeAVCTCampagneTableauBord.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneTableauBord.class);
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -223,7 +223,7 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 			setListeTableauBord(listeDirectionSection);
 
 		} catch (Exception e) {
-			logger.severe("Exception :" +e.getMessage());
+			logger.error("Exception :" +e.getMessage());
 			// "ERR212",
 			// "Aucune campagne n'est ouverte. Le calcul ne s'effectue que sur une campagne ouverte."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR212"));

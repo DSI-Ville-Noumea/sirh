@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.dao.mapper.metier.EAE.CampagneActionRowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneAction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneActionDao implements CampagneActionDaoInterface {
 
-	private static Logger logger = Logger.getLogger(CampagneActionDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(CampagneActionDao.class);
 
 	public static final String NOM_TABLE = "EAE_CAMPAGNE_ACTION";
 

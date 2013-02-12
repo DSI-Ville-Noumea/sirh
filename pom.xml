@@ -67,6 +67,7 @@
 	<properties>
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<spring.version>3.2.1.RELEASE</spring.version>
 	</properties>
 
 	<scm>
@@ -84,108 +85,48 @@
 	</distributionManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>3.1.1.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>3.1.1.RELEASE</version>
-		</dependency>
+	<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.jt400</groupId>
-			<artifactId>jt400</artifactId>
-			<version>6.7</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
+		<!-- sirh_api -->
 		<dependency>
 			<groupId>nc.mairie</groupId>
 			<artifactId>sirh_api</artifactId>
 			<version>2.11</version>
 		</dependency>
-		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-access</artifactId>
-			<version>1.0.6</version>
-		</dependency>
+		<!-- pour les logs -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.9</version>
 		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>6.0.35</version>
-		</dependency>
+		<!-- Pour la gestion des documents -->
 		<dependency>
 			<groupId>servlets.com</groupId>
 			<artifactId>cos</artifactId>
 			<version>05Nov2002</version>
 		</dependency>
 		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-vfs2</artifactId>
 			<version>2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.6</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>dbcp</artifactId>
-			<version>6.0.35</version>
-		</dependency>
-		<!-- BIRT -->
-		<!--<dependency> <groupId>org.eclipse.birt.runtime.3_7_1</groupId> <artifactId>org.eclipse.birt.runtime</artifactId> 
-			<version>3.7.1</version> </dependency> -->
 	</dependencies>
 
 	<build>
-		<!-- <finalName>sirh##${project.version}</finalName> -->
 		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName>
 		<plugins>
 			<!--<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 

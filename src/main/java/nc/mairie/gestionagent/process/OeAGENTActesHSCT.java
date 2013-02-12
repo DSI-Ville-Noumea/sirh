@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,6 +40,8 @@ import nc.mairie.utils.MessageUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
@@ -72,7 +73,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	public com.oreilly.servlet.MultipartRequest multi = null;
 	public File fichierUpload = null;
 	
-	private static Logger logger = Logger.getLogger(OeAGENTActesHSCT.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAGENTActesHSCT.class);
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -531,7 +532,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			logger.severe("erreur d'execution " + e.toString());
+			logger.error("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX
@@ -850,7 +851,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			logger.severe("Erreur suppression physique du fichier : " + e.toString());
+			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé

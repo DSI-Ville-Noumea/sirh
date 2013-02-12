@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,6 +47,8 @@ import nc.mairie.utils.MessageUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -56,7 +57,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private static Logger logger = Logger.getLogger(OeAGENTVisiteMed.class.getName());
+	private Logger logger = LoggerFactory.getLogger(OeAGENTVisiteMed.class);
 
 	private String[] LB_TYPE;
 	private String[] LB_MEDECIN;
@@ -2890,7 +2891,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
-			logger.severe("Erreur suppression physique du fichier : " + e.toString());
+			logger.error("Erreur suppression physique du fichier : " + e.toString());
 		}
 
 		// tout s'est bien passé
@@ -3077,7 +3078,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 			}
 			resultat = true;
 		} catch (Exception e) {
-			logger.severe("erreur d'execution " + e.toString());
+			logger.error("erreur d'execution " + e.toString());
 		}
 
 		// FERMETURE DES FLUX
@@ -3226,7 +3227,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 					}
 				} catch (Exception e) {
 					// on laisse la création
-					logger.severe("Erreur : " + e.getMessage());
+					logger.error("Erreur : " + e.getMessage());
 				}
 			}
 		}

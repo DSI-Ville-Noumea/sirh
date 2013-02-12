@@ -4,17 +4,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.hsct.SPABSEN;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SPABSENDao implements SPABSENDaoInterface {
 
-	private static Logger logger = Logger.getLogger(SPABSENDao.class.getName());
+	private Logger logger = LoggerFactory.getLogger(SPABSENDao.class);
 
 	public static final String NOM_TABLE = "MAIRIE.SPABSEN";
 
