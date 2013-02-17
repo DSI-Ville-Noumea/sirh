@@ -171,7 +171,53 @@ function setfocus(nom)
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Impression des tableaux d'avancement différencié et des EAE</legend>
-		    
+		    <BR/>
+				<table class="display" id="tabAvctFonctImpr">
+					<thead>
+						<tr>
+							<th>Code CAP</th>
+							<th>Cadre Emploi</th>
+							<th>Consulter</th>
+							<th>Tableau<br> 							
+								<INPUT type="checkbox" name="CHECK_ALL_TAB" onClick='activeTab("<%=process.getListeImpression().size() %>")'>
+							</th>
+							<th>Tableau + EAEs<br> 							
+								<INPUT type="checkbox" name="CHECK_ALL_EAE" onClick='activeEae("<%=process.getListeImpression().size() %>")'>
+							</th>
+							<th>Imprimé par</th>
+						</tr>
+					</thead>
+					<tbody>
+					<%
+					if (process.getListeImpression()!=null){
+						for (int indiceImpr = 0;indiceImpr<process.getListeImpression().size();indiceImpr++){
+					%>
+							<tr>
+								<td><%=process.getVAL_ST_CODE_CAP(indiceImpr)%></td>
+								<td><%=process.getVAL_ST_CADRE_EMPLOI(indiceImpr)%></td>
+								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU(indiceImpr)%>"></td>
+								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_TAB(indiceImpr),process.getVAL_CK_TAB(indiceImpr))%>></td>
+								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_EAE(indiceImpr),process.getVAL_CK_EAE(indiceImpr))%>></td>								
+								<td><%=process.getVAL_ST_USER_IMPRESSION(indiceImpr)%></td>
+								
+							</tr>
+					<%
+						}
+					}
+					%>
+					</tbody>
+				</table>
+				<script type="text/javascript">
+					$(document).ready(function() {
+					    $('#tabAvctFonctImpr').dataTable({
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"aoColumns": [null,null,null,null,null,null],
+							"sDom": '<"H"fl>t<"F"iT>',
+							"bPaginate": false,
+					    });
+					} );
+				</script>
+			<BR/>
 		</FIELDSET>
 	</FORM>
 </BODY>

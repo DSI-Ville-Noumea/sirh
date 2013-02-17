@@ -3,8 +3,8 @@ package nc.mairie.gestionagent.process.avancement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
-import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
@@ -25,7 +25,6 @@ import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
-import nc.mairie.spring.domain.metier.parametrage.CorpsCap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -60,6 +59,9 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private CampagneEAEDao campagneEAEDao;
 	private CapDao capDao;
 	private CorpsCapDao corpsCapDao;
+
+	private Hashtable<Cap, ArrayList<CadreEmploi>> hashListeImpression;
+	ArrayList<CadreEmploi> listeImpression = new ArrayList<CadreEmploi>();
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -166,6 +168,51 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				}
 
 			}
+		}
+
+		initialiseTableauImpression();
+	}
+
+	private void initialiseTableauImpression() throws Exception {
+
+		// Si liste impression
+		if (getListeImpression().size() == 0) {
+			getHashListeImpression().clear();
+
+			ArrayList<Cap> listeCap = new ArrayList<Cap>();
+			listeCap.addAll(getCapDao().listerCap());
+
+			for (int i = 0; i < listeCap.size(); i++) {
+				Cap cap = listeCap.get(i);
+				ArrayList<CadreEmploi> listeCadreEmploiCap = CadreEmploi.listerCadreEmploiCap(getTransaction(), cap.getIdCap());
+				getHashListeImpression().put(cap, listeCadreEmploiCap);
+
+			}
+
+			Enumeration nb = getHashListeImpression().keys();
+			ArrayList<Cap> listeTemp = new ArrayList<Cap>();
+			while (nb.hasMoreElements()) {
+				Cap cap = (Cap) nb.nextElement();
+				listeTemp.add(cap);
+			}
+			setListeImpression(null);
+			ArrayList<CadreEmploi> listeTempCadreEmp = new ArrayList<CadreEmploi>();
+			int k = 0;
+			for (int i = 0; i < listeTemp.size(); i++) {
+				Cap cap = listeTemp.get(i);
+				ArrayList<CadreEmploi> cadre = (ArrayList<CadreEmploi>) getHashListeImpression().get(cap);
+				for (int j = 0; j < cadre.size(); j++) {
+					CadreEmploi cadreEmp = cadre.get(j);
+					listeTempCadreEmp.add(cadreEmp);
+					addZone(getNOM_ST_CODE_CAP(k), cap.getCodeCap());
+					addZone(getNOM_ST_CADRE_EMPLOI(k), cadreEmp.getLibCadreEmploi());
+					addZone(getNOM_ST_USER_IMPRESSION(k), "&nbsp;");
+					k++;
+				}
+
+			}
+			setListeImpression(listeTempCadreEmp);
+
 		}
 	}
 
@@ -949,5 +996,134 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setCorpsCapDao(CorpsCapDao corpsCapDao) {
 		this.corpsCapDao = corpsCapDao;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_TAB
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_TAB(int i) {
+		return "NOM_CK_TAB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_TAB Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_TAB(int i) {
+		return getZone(getNOM_CK_TAB(i));
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_EAE
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_EAE(int i) {
+		return "NOM_CK_EAE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_EAE Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_EAE(int i) {
+		return getZone(getNOM_CK_EAE(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_USER_IMPRESSION Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_USER_IMPRESSION(int i) {
+		return "NOM_ST_USER_IMPRESSION_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_USER_IMPRESSION Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_USER_IMPRESSION(int i) {
+		return getZone(getNOM_ST_USER_IMPRESSION(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_CAP Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_CODE_CAP(int i) {
+		return "NOM_ST_CODE_CAP_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_CAP Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_CODE_CAP(int i) {
+		return getZone(getNOM_ST_CODE_CAP(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CADRE_EMPLOI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_CADRE_EMPLOI(int i) {
+		return "NOM_ST_CADRE_EMPLOI_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CADRE_EMPLOI
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_CADRE_EMPLOI(int i) {
+		return getZone(getNOM_ST_CADRE_EMPLOI(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_TABLEAU Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_TABLEAU(int i) {
+		return "NOM_PB_CONSULTER_TABLEAU" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		return true;
+	}
+
+	/**
+	 * Getter de la HashTable hashListeImpression.
+	 * 
+	 * @return Hashtable<Cap, CadreEmploi>
+	 */
+	private Hashtable<Cap, ArrayList<CadreEmploi>> getHashListeImpression() {
+		if (hashListeImpression == null)
+			hashListeImpression = new Hashtable<Cap, ArrayList<CadreEmploi>>();
+		return hashListeImpression;
+	}
+
+	public ArrayList<CadreEmploi> getListeImpression() {
+		return listeImpression == null ? new ArrayList<CadreEmploi>() : listeImpression;
+	}
+
+	public void setListeImpression(ArrayList<CadreEmploi> listeImpression) {
+		this.listeImpression = listeImpression;
 	}
 }
