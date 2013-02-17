@@ -291,7 +291,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
-							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fp);
+							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fp,
+									agentEvaluateur.getIdAgent());
 							if (listeAffectationSurMemeFDP.size() > 0) {
 								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -577,7 +578,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 					// on prend la date la plus ancienne
 					if (fpResponsable != null && fpResponsable.getIdServi() != null) {
 						// logger.info("Req AS400 : listerAffectationAvecFP (fonction evaluateur)");
-						ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpResponsable);
+						ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
+								fpResponsable, agentResp.getIdAgent());
 						if (listeAffectationSurMemeFDP.size() > 0) {
 							eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -1725,7 +1727,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			} catch (Exception e) {
 				// on ne fait rien
 			}
-
+			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
 			EaeFichePoste fichePosteEae = new EaeFichePoste();
 			fichePosteEae.setIdEae(eae.getIdEAE());
 			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpSecondaire.getIdFichePoste()));
@@ -1763,7 +1765,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			}
 			// on cherche toutes les affectations sur la FDP
 			// on prend la date la plus ancienne
-			ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpSecondaire);
+			ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fpSecondaire, evalue
+					.getIdAgent().toString());
 			if (listeAffectationSurMemeFDP.size() > 0) {
 				fichePosteEae.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 						|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -1813,7 +1816,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 						// responsable
 						// on prend la date la plus ancienne
 						if (fpResp != null && fpResp.getIdServi() != null) {
-							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpResp);
+							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
+									fpResp, agentResp.getIdAgent());
 							if (listeAffectationRespSurMemeFDP.size() > 0) {
 								fichePosteEae.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
 										|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -1897,7 +1901,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				fpModif = new EaeFichePoste();
 			}
 			if (fpModif != null) {
-
+				EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
 				fpModif.setIdEae(eae.getIdEAE());
 				fpModif.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
 				if (fpPrincipale.getIdResponsable() != null) {
@@ -1934,7 +1938,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				if (modifDateFonction) {
 					// on cherche toutes les affectations sur la FDP
 					// on prend la date la plus ancienne
-					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpPrincipale);
+					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fpPrincipale,
+							evalue.getIdAgent().toString());
 					if (listeAffectationSurMemeFDP.size() > 0) {
 						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -1985,7 +1990,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 							// responsable
 							// on prend la date la plus ancienne
 							if (fpResp != null && fpResp.getIdServi() != null) {
-								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFP(getTransaction(), fpResp);
+								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
+										fpResp, agentResp.getIdAgent());
 								if (listeAffectationRespSurMemeFDP.size() > 0) {
 									fpModif.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
 											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
