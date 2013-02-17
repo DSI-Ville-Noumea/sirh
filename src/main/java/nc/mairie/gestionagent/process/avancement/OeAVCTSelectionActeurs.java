@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.poste.Activite;
 import nc.mairie.utils.VariablesActivite;
 
 /**

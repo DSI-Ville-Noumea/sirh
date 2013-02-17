@@ -758,14 +758,6 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	
 
 	/**
-	 * Retourne l'administration courante
-	 * @return AutreAdministration
-	 */
-	private AutreAdministration getAutreAdministrationCourant() {
-		return autreAdministrationCourant;
-	}
-
-	/**
 	 * Met à jour l'administration courante
 	 * @param autreAdministrationCourant
 	 */

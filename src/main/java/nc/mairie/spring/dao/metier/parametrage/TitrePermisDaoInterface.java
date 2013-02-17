@@ -2,7 +2,6 @@ package nc.mairie.spring.dao.metier.parametrage;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitrePermis;
 
 public interface TitrePermisDaoInterface {

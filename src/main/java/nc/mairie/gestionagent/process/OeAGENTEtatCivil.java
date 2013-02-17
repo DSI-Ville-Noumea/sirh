@@ -18,7 +18,6 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.ContactNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.commun.BanqueGuichet;
 import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
