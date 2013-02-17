@@ -188,8 +188,8 @@
 				<BR/><BR/>
 				<%if (process.getListeAffectation().size()>0){ %>
 				    <span style="position:relative;width:50px;text-align:left;">Direction</span>
-					<span style="position:relative;width:300px;text-align:left;">Service/Section/...</span>
-					<span style="position:relative;width:80px;text-align:left;">Agent</span>
+					<span style="position:relative;width:250px;text-align:left;">Service/Section/...</span>
+					<span style="position:relative;width:200px;text-align:left;">Agent</span>
 					<span style="position:relative;width:80px;text-align: center;">Date début</span>
 					<span style="position:relative;width:85px;text-align: center;">Date fin</span>
 					<span style="position:relative;width:65px;text-align: left;">Fiche poste</span>
@@ -203,8 +203,8 @@
 							%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: left;"><%=process.getVAL_ST_DIR_AFF(indiceAff)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_SERV_AFF(indiceAff)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_AGENT_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: left;"><%=process.getVAL_ST_SERV_AFF(indiceAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT_AFF(indiceAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_AFF(indiceAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_FIN_AFF(indiceAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:65px;text-align: left;"><%=process.getVAL_ST_NUM_FP_AFF(indiceAff)%></td>

@@ -4,7 +4,10 @@
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="sirh_api-2.12.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sirh_api/sirh_api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="WebContent/WEB-INF/classes"/>
-        <property name="context-root" value="sirh##${maven.build.timestamp}-1.1.15"/>
+        <property name="context-root" value="sirh##${maven.build.timestamp}-1.1.16"/>
     </wb-module>
 </project-modules>
