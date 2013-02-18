@@ -6,7 +6,7 @@ import nc.mairie.spring.domain.metier.parametrage.Representant;
 
 public interface RepresentantDaoInterface {
 
-	public ArrayList<Representant> listerRepresentant() throws Exception;
+	public ArrayList<Representant> listerRepresentantOrderByNom() throws Exception;
 
 	public Representant chercherRepresentant(Integer idRepresentant) throws Exception;
 

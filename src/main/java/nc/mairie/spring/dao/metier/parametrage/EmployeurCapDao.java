@@ -16,6 +16,7 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 
 	public static final String CHAMP_ID_EMPLOYEUR = "ID_EMPLOYEUR";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
+	public static final String CHAMP_POSITION = "POSITION";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -30,26 +31,9 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 	}
 
 	@Override
-	public ArrayList<EmployeurCap> listerEmployeurCap() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
-
-		ArrayList<EmployeurCap> listeEmployeurCap = new ArrayList<EmployeurCap>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
-			EmployeurCap employeurCap = new EmployeurCap();
-			employeurCap.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
-			employeurCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
-			listeEmployeurCap.add(employeurCap);
-		}
-
-		return listeEmployeurCap;
-	}
-
-	@Override
-	public void creerEmployeurCap(Integer idEmployeur, Integer idCap) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EMPLOYEUR + "," + CHAMP_ID_CAP + ") " + "VALUES (?,?)";
-		jdbcTemplate.update(sql, new Object[] { idEmployeur, idCap });
+	public void creerEmployeurCap(Integer idEmployeur, Integer idCap, Integer position) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EMPLOYEUR + "," + CHAMP_ID_CAP + "," + CHAMP_POSITION + ") " + "VALUES (?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idEmployeur, idCap, position });
 	}
 
 	@Override
@@ -69,6 +53,7 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 			EmployeurCap employeurCap = new EmployeurCap();
 			employeurCap.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
 			employeurCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
+			employeurCap.setPosition((Integer) row.get(CHAMP_POSITION));
 			listeEmployeurCap.add(employeurCap);
 		}
 
@@ -86,6 +71,7 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 			EmployeurCap employeurCap = new EmployeurCap();
 			employeurCap.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
 			employeurCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
+			employeurCap.setPosition((Integer) row.get(CHAMP_POSITION));
 			listeEmployeurCap.add(employeurCap);
 		}
 

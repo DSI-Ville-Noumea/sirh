@@ -16,6 +16,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 
 	public static final String CHAMP_ID_REPRESENTANT = "ID_REPRESENTANT";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
+	public static final String CHAMP_POSITION = "POSITION";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -30,26 +31,9 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 	}
 
 	@Override
-	public ArrayList<RepresentantCap> listerRepresentantCap() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
-
-		ArrayList<RepresentantCap> listeRepresentantCap = new ArrayList<RepresentantCap>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
-			RepresentantCap repreCap = new RepresentantCap();
-			repreCap.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
-			repreCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
-			listeRepresentantCap.add(repreCap);
-		}
-
-		return listeRepresentantCap;
-	}
-
-	@Override
-	public void creerRepresentantCap(Integer idRepresentant, Integer idCap) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_REPRESENTANT + "," + CHAMP_ID_CAP + ") " + "VALUES (?,?)";
-		jdbcTemplate.update(sql, new Object[] { idRepresentant, idCap });
+	public void creerRepresentantCap(Integer idRepresentant, Integer idCap, Integer position) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_REPRESENTANT + "," + CHAMP_ID_CAP + "," + CHAMP_POSITION + ") " + "VALUES (?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idRepresentant, idCap, position });
 	}
 
 	@Override
@@ -69,6 +53,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 			RepresentantCap repreCap = new RepresentantCap();
 			repreCap.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
 			repreCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
+			repreCap.setPosition((Integer) row.get(CHAMP_POSITION));
 			listeRepresentantCap.add(repreCap);
 		}
 
@@ -77,7 +62,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 
 	@Override
 	public ArrayList<RepresentantCap> listerRepresentantCapParCap(Integer idCap) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAP + "=?";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAP + "=? order by " + CHAMP_POSITION;
 
 		ArrayList<RepresentantCap> listeRepresentantCap = new ArrayList<RepresentantCap>();
 
@@ -86,6 +71,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 			RepresentantCap repreCap = new RepresentantCap();
 			repreCap.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
 			repreCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
+			repreCap.setPosition((Integer) row.get(CHAMP_POSITION));
 			listeRepresentantCap.add(repreCap);
 		}
 

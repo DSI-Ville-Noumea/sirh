@@ -33,7 +33,7 @@ public class EmployeurDao implements EmployeurDaoInterface {
 
 	@Override
 	public ArrayList<Employeur> listerEmployeur() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
+		String sql = "select * from " + NOM_TABLE ;
 
 		ArrayList<Employeur> listeEmployeur = new ArrayList<Employeur>();
 

@@ -33,25 +33,6 @@ public class RepresentantDao implements RepresentantDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Representant> listerRepresentant() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
-
-		ArrayList<Representant> listeRepresentant = new ArrayList<Representant>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
-			Representant repre = new Representant();
-			repre.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
-			repre.setIdTypeRepresentant((Integer) row.get(CHAMP_ID_TYPE_REPRESENTANT));
-			repre.setNomRepresentant((String) row.get(CHAMP_NOM_REPRESENTANT));
-			repre.setPrenomRepresentant((String) row.get(CHAMP_PRENOM_REPRESENTANT));
-			listeRepresentant.add(repre);
-		}
-
-		return listeRepresentant;
-	}
-
-	@Override
 	public Representant chercherRepresentant(Integer idRepresentant) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_REPRESENTANT + " = ? ";
 		Representant repre = (Representant) jdbcTemplate.queryForObject(sql, new Object[] { idRepresentant }, new RepresentantRowMapper());
@@ -78,5 +59,24 @@ public class RepresentantDao implements RepresentantDaoInterface {
 	public void supprimerRepresentant(Integer idRepresentant) throws Exception {
 		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_REPRESENTANT + "=?";
 		jdbcTemplate.update(sql, new Object[] { idRepresentant });
+	}
+
+	@Override
+	public ArrayList<Representant> listerRepresentantOrderByNom() {
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_NOM_REPRESENTANT;
+
+		ArrayList<Representant> listeRepresentant = new ArrayList<Representant>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+		for (Map row : rows) {
+			Representant repre = new Representant();
+			repre.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
+			repre.setIdTypeRepresentant((Integer) row.get(CHAMP_ID_TYPE_REPRESENTANT));
+			repre.setNomRepresentant((String) row.get(CHAMP_NOM_REPRESENTANT));
+			repre.setPrenomRepresentant((String) row.get(CHAMP_PRENOM_REPRESENTANT));
+			listeRepresentant.add(repre);
+		}
+
+		return listeRepresentant;
 	}
 }

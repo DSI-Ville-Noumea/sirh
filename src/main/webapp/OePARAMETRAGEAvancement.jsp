@@ -40,7 +40,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Motif des avancements</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre">
 				<span class="sigp2-saisie" style="position:relative;width:290px;">Libellé</span>
 				<span class="sigp2-saisie" style="position:relative;">Code</span>
 				<SELECT name="<%= process.getNOM_LB_MOTIF() %>" size="10"
@@ -86,7 +86,7 @@
 			
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Représentants du personnel</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre">
 				<span class="sigp2-saisie" style="position:relative;width:145px;">Nom</span>
 				<span class="sigp2-saisie" style="position:relative;width:145px;">Prénom</span>
 				<span class="sigp2-saisie" style="position:relative;">Type</span>
@@ -144,7 +144,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px; float:left;">
 		    	<legend class="sigp2Legend">Employeurs</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre">
 				<span class="sigp2-saisie" style="position:relative;width:360px;">Libellé</span>
 				<span class="sigp2-saisie" style="position:relative;">Raison</span>
 				<SELECT name="<%= process.getNOM_LB_EMPLOYEUR() %>" size="10"
@@ -191,7 +191,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Délibérations</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre">
 				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
 				<span class="sigp2-saisie" style="position:relative;width:140px;">Type</span>
 				<span class="sigp2-saisie" style="position:relative;">Libellé</span>
@@ -253,7 +253,7 @@
 			</FIELDSET>		
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">CAP</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
 				<span class="sigp2-saisie" style="position:relative;width:110px;">Type</span>
 				<span class="sigp2-saisie" style="position:relative;">Reférence</span>
@@ -306,47 +306,33 @@
 						}
 						%>
 					</table>
-					</div>
+					</div>				
 					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
+					<span >
+						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP()%>" style="margin-bottom:5px">
+					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_EMP_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_EMPLOYEUR_CAP() %>")'>
+							<%=process.forComboHTML(process.getVAL_LB_EMP_CAP(), process.getVAL_LB_EMP_CAP_SELECT())%>
+						</SELECT>
 					<br/>
-					<div style="overflow: auto;height: 120px;width:95%;">
-					<table class="sigp2NewTab" style="text-align:left;width:90%;">
-						<%
-						if (process.getListeEmployeur()!=null){
-							for (int indiceEmp = 0;indiceEmp<process.getListeEmployeur().size();indiceEmp++){
-								Employeur emp = process.getListeEmployeur().get(indiceEmp);
-						%>
-								<tr>
-									<td><INPUT type="checkbox" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_EMPLOYEUR(indiceEmp),process.getVAL_CK_SELECT_LIGNE_EMPLOYEUR(indiceEmp))%> ></td>
-									<td><%=emp.getLibEmployeur()%></td>								
-								</tr>						
-						<%
-							}
-						}
-						%>
-					</table>
-					</div>
+					</span>
+					<SELECT size="4" style="width:393px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_EMP_CAP_MULTI()%>" >
+						<%=process.forComboHTML(process.getVAL_LB_EMP_CAP_MULTI(), process.getVAL_LB_EMP_CAP_MULTI_SELECT()) %>
+					</SELECT>
+					<br/><br/>
 					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Représentants : </span>
+					<span >
+						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>" style="margin-bottom:5px">
+					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REPRE_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_REPRESENTANT_CAP() %>")'>
+							<%=process.forComboHTML(process.getVAL_LB_REPRE_CAP(), process.getVAL_LB_REPRE_CAP_SELECT())%>
+						</SELECT>
 					<br/>
-					<div style="overflow: auto;height: 120px;width:95%;">
-					<table class="sigp2NewTab" style="text-align:left;width:90%;">
-						<%
-						if (process.getListeRepresentant()!=null){
-							for (int indiceRep = 0;indiceRep<process.getListeRepresentant().size();indiceRep++){
-								Representant rep = process.getListeRepresentant().get(indiceRep);
-						%>
-								<tr>
-									<td><INPUT type="checkbox" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forCheckBoxHTML(process.getNOM_CK_SELECT_LIGNE_REPRESENTANT(indiceRep),process.getVAL_CK_SELECT_LIGNE_REPRESENTANT(indiceRep))%> ></td>
-									<td><%=rep.getNomRepresentant()+ " " + rep.getPrenomRepresentant() %></td>								
-								</tr>						
-						<%
-							}
-						}
-						%>
-					</table>
-					</div>
+					</span>
+					<SELECT size="4" style="width:393px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_REPRE_CAP_MULTI()%>" >
+						<%=process.forComboHTML(process.getVAL_LB_REPRE_CAP_MULTI(), process.getVAL_LB_REPRE_CAP_MULTI_SELECT()) %>
+					</SELECT>
+					<br/><br/>
 					<div Style="width:100%" align="center">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_CAP())) { %>
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_CAP()%>"></span>
@@ -428,6 +414,10 @@
 				<% } %>
 			</FIELDSET>	
 			</div>		
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_REPRESENTANT_CAP()%>">	
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>">	
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_EMPLOYEUR_CAP()%>">	
+			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP()%>">	
 		</FORM>
 	</BODY>
 </HTML>

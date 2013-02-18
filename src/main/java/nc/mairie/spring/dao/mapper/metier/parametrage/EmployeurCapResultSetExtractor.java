@@ -15,6 +15,7 @@ public class EmployeurCapResultSetExtractor implements ResultSetExtractor {
 		EmployeurCap employeurCap = new EmployeurCap();
 		employeurCap.setIdEmployeur(rs.getInt(EmployeurCapDao.CHAMP_ID_EMPLOYEUR));
 		employeurCap.setIdCap(rs.getInt(EmployeurCapDao.CHAMP_ID_CAP));
+		employeurCap.setPosition(rs.getInt(EmployeurCapDao.CHAMP_POSITION));
 
 		return employeurCap;
 	}

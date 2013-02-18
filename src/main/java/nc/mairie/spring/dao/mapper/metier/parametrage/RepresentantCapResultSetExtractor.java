@@ -15,6 +15,7 @@ public class RepresentantCapResultSetExtractor implements ResultSetExtractor {
 		RepresentantCap repreCap = new RepresentantCap();
 		repreCap.setIdRepresentant(rs.getInt(RepresentantCapDao.CHAMP_ID_REPRESENTANT));
 		repreCap.setIdCap(rs.getInt(RepresentantCapDao.CHAMP_ID_CAP));
+		repreCap.setPosition(rs.getInt(RepresentantCapDao.CHAMP_POSITION));
 
 		return repreCap;
 	}

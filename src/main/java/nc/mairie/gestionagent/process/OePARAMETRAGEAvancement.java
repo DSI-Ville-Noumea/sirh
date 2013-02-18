@@ -49,6 +49,10 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	private String[] LB_CAP;
 	private String[] LB_CORPS;
 	private String[] LB_TYPE_CAP;
+	private String[] LB_REPRE_CAP;
+	private String[] LB_REPRE_CAP_MULTI;
+	private String[] LB_EMP_CAP;
+	private String[] LB_EMP_CAP_MULTI;
 
 	private ArrayList<MotifAvancement> listeMotif;
 	private MotifAvancement motifCourant;
@@ -141,6 +145,34 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeCorps().size() == 0) {
 			initialiseListeCorps(request);
 		}
+		if (getListeCorpsCap().size() == 0) {
+			initialiseListeCorpsCap(request);
+		}
+	}
+
+	private void initialiseListeCorpsCap(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+
+		// Afiichage des corps deja présent
+		if (getListeCorpsCap().size() > 0) {
+			for (int i = 0; i < getListeCorps().size(); i++) {
+				GradeGenerique gg = getListeCorps().get(i);
+				addZone(getNOM_CK_SELECT_LIGNE_CORPS(i), getCHECKED_OFF());
+				for (int j = 0; j < getListeCorpsCap().size(); j++) {
+					GradeGenerique ggCap = getListeCorpsCap().get(j);
+					if (gg.getCdgeng().toString().equals(ggCap.getCdgeng().toString())) {
+						addZone(getNOM_CK_SELECT_LIGNE_CORPS(i), getCHECKED_ON());
+						break;
+					}
+				}
+			}
+		} else {
+			for (int i = 0; i < getListeCorps().size(); i++) {
+				addZone(getNOM_CK_SELECT_LIGNE_CORPS(i), getCHECKED_OFF());
+			}
+
+		}
+
 	}
 
 	private void initialiseListeTypeCap(HttpServletRequest request) {
@@ -232,6 +264,41 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		} else {
 			setLB_CAP(null);
 		}
+
+		setListeRepresentantCap(getRepresentantDao().listerRepresentantOrderByNom());
+		if (getListeRepresentantCap().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeRepresentant().listIterator(); list.hasNext();) {
+				Representant repre = (Representant) list.next();
+				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
+				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
+						+ " )" };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_REPRE_CAP(aFormat.getListeFormatee());
+		} else {
+			setLB_REPRE_CAP(null);
+		}
+
+		setListeEmployeurCap(getEmployeurDao().listerEmployeur());
+		if (getListeEmployeurCap().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+				Employeur emp = (Employeur) list.next();
+				String ligne[] = { emp.getLibEmployeur() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_EMP_CAP(aFormat.getListeFormatee());
+		} else {
+			setLB_EMP_CAP(null);
+		}
+
 	}
 
 	/**
@@ -285,7 +352,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	private void initialiseListeRepresentant(HttpServletRequest request) throws Exception {
-		setListeRepresentant(getRepresentantDao().listerRepresentant());
+		setListeRepresentant(getRepresentantDao().listerRepresentantOrderByNom());
 		if (getListeRepresentant().size() != 0) {
 			int tailles[] = { 20, 20, 10 };
 			String padding[] = { "G", "G", "G" };
@@ -814,6 +881,26 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_MODIFIER_CAP
 			if (testerParametre(request, getNOM_PB_MODIFIER_CAP())) {
 				return performPB_MODIFIER_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_REPRESENTANT_CAP
+			if (testerParametre(request, getNOM_PB_AJOUTER_REPRESENTANT_CAP())) {
+				return performPB_AJOUTER_REPRESENTANT_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_REPRESENTANT_CAP
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_REPRESENTANT_CAP())) {
+				return performPB_SUPPRIMER_REPRESENTANT_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_EMPLOYEUR_CAP
+			if (testerParametre(request, getNOM_PB_AJOUTER_EMPLOYEUR_CAP())) {
+				return performPB_AJOUTER_EMPLOYEUR_CAP(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_EMPLOYEUR_CAP
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP())) {
+				return performPB_SUPPRIMER_EMPLOYEUR_CAP(request);
 			}
 
 		}
@@ -2085,6 +2172,10 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_REF_CAP(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DESCRIPTION_CAP(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TYPE_CAP_SELECT(), Const.ZERO);
+		setLB_REPRE_CAP_MULTI(null);
+		setLB_EMP_CAP_MULTI(null);
+		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
 
 		setListeEmployeurCap(null);
 		setListeRepresentantCap(null);
@@ -2195,30 +2286,6 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				}
 				setListeCorpsCap(listeCorps);
 
-				// on alimente la liste des employeurs
-				setListeEmployeurCap(null);
-				ArrayList<Employeur> listeEmp = new ArrayList<Employeur>();
-				for (int i = 0; i < getListeEmployeur().size(); i++) {
-					// on recupère la ligne concernée
-					Employeur emp = (Employeur) getListeEmployeur().get(i);
-					if (getVAL_CK_SELECT_LIGNE_EMPLOYEUR(i).equals(getCHECKED_ON())) {
-						listeEmp.add(emp);
-					}
-				}
-				setListeEmployeurCap(listeEmp);
-
-				// on alimente la liste des représentants
-				setListeRepresentantCap(null);
-				ArrayList<Representant> listeRepre = new ArrayList<Representant>();
-				for (int i = 0; i < getListeRepresentant().size(); i++) {
-					// on recupère la ligne concernée
-					Representant repr = (Representant) getListeRepresentant().get(i);
-					if (getVAL_CK_SELECT_LIGNE_REPRESENTANT(i).equals(getCHECKED_ON())) {
-						listeRepre.add(repr);
-					}
-				}
-				setListeRepresentantCap(listeRepre);
-
 				if (!performControlerSaisieCap(request))
 					return false;
 
@@ -2272,13 +2339,13 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 				// on ajoute les employeurs CAP
 				for (int i = 0; i < getListeEmployeurCap().size(); i++) {
-					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(), capAjoute.getIdCap());
+					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(), capAjoute.getIdCap(), i);
 				}
 				setListeEmployeurCap(null);
 
 				// on ajoute les représentants CAP
 				for (int i = 0; i < getListeRepresentantCap().size(); i++) {
-					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(), capAjoute.getIdCap());
+					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(), capAjoute.getIdCap(), i);
 				}
 				setListeRepresentantCap(null);
 
@@ -2467,44 +2534,6 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE_EMPLOYEUR Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_CK_SELECT_LIGNE_EMPLOYEUR(int i) {
-		return "NOM_CK_SELECT_LIGNE_EMPLOYEUR_" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE_EMPLOYEUR Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	public String getVAL_CK_SELECT_LIGNE_EMPLOYEUR(int i) {
-		return getZone(getNOM_CK_SELECT_LIGNE_EMPLOYEUR(i));
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_SELECT_LIGNE_REPRESENTANT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_CK_SELECT_LIGNE_REPRESENTANT(int i) {
-		return "NOM_CK_SELECT_LIGNE_REPRESENTANT_" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_SELECT_LIGNE_REPRESENTANT Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	public String getVAL_CK_SELECT_LIGNE_REPRESENTANT(int i) {
-		return getZone(getNOM_CK_SELECT_LIGNE_REPRESENTANT(i));
-	}
-
 	public EmployeurCapDao getEmployeurCapDao() {
 		return employeurCapDao;
 	}
@@ -2651,6 +2680,9 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
 
+			int ligneTypeCap = getListeTypeCap().indexOf(cap.getTypeCap());
+			addZone(getNOM_LB_TYPE_CAP_SELECT(), String.valueOf(ligneTypeCap));
+
 			// on affiche la liste des employeurs CAP
 			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
 			ArrayList<Employeur> listeTempEmp = new ArrayList<Employeur>();
@@ -2661,15 +2693,19 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			}
 			setListeEmployeurCap(listeTempEmp);
 			// Afiichage des employeurs deja présent
-			for (int i = 0; i < getListeEmployeur().size(); i++) {
-				Employeur emp = getListeEmployeur().get(i);
-				for (int j = 0; j < getListeEmployeurCap().size(); j++) {
-					Employeur empCap = getListeEmployeurCap().get(j);
-					if (emp.getIdEmployeur().toString().equals(empCap.getIdEmployeur().toString())) {
-						addZone(getNOM_CK_SELECT_LIGNE_EMPLOYEUR(i), getCHECKED_ON());
-						break;
-					}
+			if (getListeEmployeurCap().size() != 0) {
+				int tailles[] = { 70 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+					Employeur emp = (Employeur) list.next();
+					String ligne[] = { emp.getLibEmployeur() };
+
+					aFormat.ajouteLigne(ligne);
 				}
+				setLB_EMP_CAP_MULTI(aFormat.getListeFormatee());
+			} else {
+				setLB_EMP_CAP_MULTI(null);
 			}
 
 			// on affiche la liste des représentant CAP
@@ -2682,15 +2718,21 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			}
 			setListeRepresentantCap(listeTempRepre);
 			// Afiichage des représentants deja présent
-			for (int i = 0; i < getListeRepresentant().size(); i++) {
-				Representant repr = getListeRepresentant().get(i);
-				for (int j = 0; j < getListeRepresentantCap().size(); j++) {
-					Representant reprCap = getListeRepresentantCap().get(j);
-					if (repr.getIdRepresentant().toString().equals(reprCap.getIdRepresentant().toString())) {
-						addZone(getNOM_CK_SELECT_LIGNE_REPRESENTANT(i), getCHECKED_ON());
-						break;
-					}
+			if (getListeRepresentantCap().size() != 0) {
+				int tailles[] = { 70 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+					Representant repre = (Representant) list.next();
+					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
+					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
+							+ " )" };
+
+					aFormat.ajouteLigne(ligne);
 				}
+				setLB_REPRE_CAP_MULTI(aFormat.getListeFormatee());
+			} else {
+				setLB_REPRE_CAP_MULTI(null);
 			}
 
 			// on affiche la liste des corps CAP
@@ -2705,6 +2747,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			// Afiichage des corps deja présent
 			for (int i = 0; i < getListeCorps().size(); i++) {
 				GradeGenerique gg = getListeCorps().get(i);
+				addZone(getNOM_CK_SELECT_LIGNE_CORPS(i), getCHECKED_OFF());
 				for (int j = 0; j < getListeCorpsCap().size(); j++) {
 					GradeGenerique ggCap = getListeCorpsCap().get(j);
 					if (gg.getCdgeng().toString().equals(ggCap.getCdgeng().toString())) {
@@ -2784,5 +2827,467 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	public void setListeTypeCap(ArrayList<String> listeTypeCap) {
 		this.listeTypeCap = listeTypeCap;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REPRESENTANT_CAP
+	 * Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_REPRESENTANT_CAP() {
+		return "NOM_PB_SUPPRIMER_REPRESENTANT_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_REPRESENTANT_CAP(HttpServletRequest request) throws Exception {
+
+		// Suppression du dernier representant de la liste
+
+		if (getListeRepresentantCap() != null && getListeRepresentantCap().size() != 0) {
+			Representant niv = (Representant) getListeRepresentantCap().get(getListeRepresentantCap().size() - 1);
+			getListeRepresentantCap().remove(niv);
+
+			if (getListeRepresentantCap().size() != 0) {
+				int tailles[] = { 70 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+					Representant repre = (Representant) list.next();
+					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
+					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
+							+ " )" };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_REPRE_CAP_MULTI(aFormat.getListeFormatee());
+			} else {
+				setLB_REPRE_CAP_MULTI(null);
+			}
+
+		}
+
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_REPRESENTANT_CAP
+	 * Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_REPRESENTANT_CAP() {
+		return "NOM_PB_AJOUTER_REPRESENTANT_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public boolean performPB_AJOUTER_REPRESENTANT_CAP(HttpServletRequest request) throws Exception {
+		// Récupération du niveau d'étude à ajouter
+
+		int indiceRepr = (Services.estNumerique(getVAL_LB_REPRE_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_REPRE_CAP_SELECT()) : -1);
+
+		if (indiceRepr > 0) {
+			Representant n = (Representant) getListeRepresentant().get(indiceRepr);
+
+			if (n != null) {
+				ArrayList<Representant> existant = getListeRepresentantCap();
+				boolean exist = false;
+				for (int i = 0; i < existant.size(); i++) {
+					Representant reprExist = existant.get(i);
+					if (reprExist.getIdRepresentant().equals(n.getIdRepresentant())) {
+						exist = true;
+						break;
+					}
+				}
+				if (!exist) {
+					existant.add(n);
+				}
+				setListeRepresentantCap(existant);
+			}
+		}
+		if (getListeRepresentantCap().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+				Representant repre = (Representant) list.next();
+				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
+				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
+						+ " )" };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_REPRE_CAP_MULTI(aFormat.getListeFormatee());
+		} else {
+			setLB_REPRE_CAP_MULTI(null);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_REPRE_CAP Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private String[] getLB_REPRE_CAP() {
+		if (LB_REPRE_CAP == null)
+			LB_REPRE_CAP = initialiseLazyLB();
+		return LB_REPRE_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private void setLB_REPRE_CAP(String[] newLB_REPRE_CAP) {
+		LB_REPRE_CAP = newLB_REPRE_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_REPRE_CAP Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_REPRE_CAP() {
+		return "NOM_LB_REPRE_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_REPRE_CAP_SELECT Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_REPRE_CAP_SELECT() {
+		return "NOM_LB_REPRE_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String[] getVAL_LB_REPRE_CAP() {
+		return getLB_REPRE_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_REPRE_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getVAL_LB_REPRE_CAP_SELECT() {
+		return getZone(getNOM_LB_REPRE_CAP_SELECT());
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getVAL_LB_REPRE_CAP_MULTI_SELECT() {
+		return getZone(getNOM_LB_REPRE_CAP_MULTI_SELECT());
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_REPRE_CAP_MULTI_SELECT Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_REPRE_CAP_MULTI_SELECT() {
+		return "NOM_LB_REPRE_CAP_MULTI_SELECT";
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_REPRE_CAP_MULTI Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_REPRE_CAP_MULTI() {
+		return "NOM_LB_REPRE_CAP_MULTI";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_REPRE_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String[] getVAL_LB_REPRE_CAP_MULTI() {
+		return getLB_REPRE_CAP_MULTI();
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_REPRE_CAP_MULTI Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private String[] getLB_REPRE_CAP_MULTI() {
+		if (LB_REPRE_CAP_MULTI == null)
+			LB_REPRE_CAP_MULTI = initialiseLazyLB();
+		return LB_REPRE_CAP_MULTI;
+	}
+
+	/**
+	 * Setter de la liste: LB_REPRE_CAP_MULTI Date de création : (08/07/11
+	 * 09:13:07)
+	 * 
+	 * 
+	 */
+	private void setLB_REPRE_CAP_MULTI(String[] newLB_REPRE_CAP_MULTI) {
+		LB_REPRE_CAP_MULTI = newLB_REPRE_CAP_MULTI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMP_CAP Date de création
+	 * : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_EMP_CAP() {
+		return "NOM_LB_EMP_CAP";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_EMPLOYEUR_CAP Date
+	 * de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP() {
+		return "NOM_PB_SUPPRIMER_EMPLOYEUR_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_EMPLOYEUR_CAP(HttpServletRequest request) throws Exception {
+
+		// Suppression du dernier employeur de la liste
+
+		if (getListeEmployeurCap() != null && getListeEmployeurCap().size() != 0) {
+			Employeur niv = (Employeur) getListeEmployeurCap().get(getListeEmployeurCap().size() - 1);
+			getListeEmployeurCap().remove(niv);
+
+			if (getListeEmployeurCap().size() != 0) {
+				int tailles[] = { 70 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+					Employeur emp = (Employeur) list.next();
+					String ligne[] = { emp.getLibEmployeur() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_EMP_CAP_MULTI(aFormat.getListeFormatee());
+			} else {
+				setLB_EMP_CAP_MULTI(null);
+			}
+
+		}
+
+		return true;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_EMP_CAP Date de création
+	 * : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private String[] getLB_EMP_CAP() {
+		if (LB_EMP_CAP == null)
+			LB_EMP_CAP = initialiseLazyLB();
+		return LB_EMP_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private void setLB_EMP_CAP(String[] newLB_EMP_CAP) {
+		LB_EMP_CAP = newLB_EMP_CAP;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_EMPLOYEUR_CAP Date
+	 * de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_EMPLOYEUR_CAP() {
+		return "NOM_PB_AJOUTER_EMPLOYEUR_CAP";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
+	 * 
+	 * 
+	 */
+	public boolean performPB_AJOUTER_EMPLOYEUR_CAP(HttpServletRequest request) throws Exception {
+		// Récupération de l'employeur à ajouter
+
+		int indiceEmp = (Services.estNumerique(getVAL_LB_EMP_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_EMP_CAP_SELECT()) : -1);
+
+		if (indiceEmp > 0) {
+			Employeur n = (Employeur) getListeEmployeur().get(indiceEmp);
+
+			if (n != null) {
+				ArrayList<Employeur> existant = getListeEmployeurCap();
+				boolean exist = false;
+				for (int i = 0; i < existant.size(); i++) {
+					Employeur empExist = existant.get(i);
+					if (empExist.getIdEmployeur().equals(n.getIdEmployeur())) {
+						exist = true;
+						break;
+					}
+				}
+				if (!exist) {
+					existant.add(n);
+				}
+				setListeEmployeurCap(existant);
+			}
+		}
+		if (getListeEmployeurCap().size() != 0) {
+			int tailles[] = { 70 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+				Employeur emp = (Employeur) list.next();
+				String ligne[] = { emp.getLibEmployeur() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_EMP_CAP_MULTI(aFormat.getListeFormatee());
+		} else {
+			setLB_EMP_CAP_MULTI(null);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getVAL_LB_EMP_CAP_SELECT() {
+		return getZone(getNOM_LB_EMP_CAP_SELECT());
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_EMP_CAP_SELECT Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_EMP_CAP_SELECT() {
+		return "NOM_LB_EMP_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_EMP_CAP Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String[] getVAL_LB_EMP_CAP() {
+		return getLB_EMP_CAP();
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_EMP_CAP_MULTI Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	private String[] getLB_EMP_CAP_MULTI() {
+		if (LB_EMP_CAP_MULTI == null)
+			LB_EMP_CAP_MULTI = initialiseLazyLB();
+		return LB_EMP_CAP_MULTI;
+	}
+
+	/**
+	 * Setter de la liste: LB_EMP_CAP_MULTI Date de création : (08/07/11
+	 * 09:13:07)
+	 * 
+	 * 
+	 */
+	private void setLB_EMP_CAP_MULTI(String[] newLB_EMP_CAP_MULTI) {
+		LB_EMP_CAP_MULTI = newLB_EMP_CAP_MULTI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_EMP_CAP_MULTI Date de
+	 * création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_EMP_CAP_MULTI() {
+		return "NOM_LB_EMP_CAP_MULTI";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getVAL_LB_EMP_CAP_MULTI_SELECT() {
+		return getZone(getNOM_LB_EMP_CAP_MULTI_SELECT());
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_EMP_CAP_MULTI_SELECT Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String getNOM_LB_EMP_CAP_MULTI_SELECT() {
+		return "NOM_LB_EMP_CAP_MULTI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_EMP_CAP_MULTI Date de création : (08/07/11 09:13:07)
+	 * 
+	 * 
+	 */
+	public String[] getVAL_LB_EMP_CAP_MULTI() {
+		return getLB_EMP_CAP_MULTI();
 	}
 }
