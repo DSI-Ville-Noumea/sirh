@@ -56,7 +56,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private String anneeSelect;
 
 	private ArrayList listeAvct;
-	private ArrayList listeAvisCAP;
+	private ArrayList listeAvisCAPMinMoyMax;
+	private ArrayList listeAvisCAPFavDefav;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -142,6 +143,10 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				// on cherche la camapagne correspondante
 				String avisSHD = Const.CHAINE_VIDE;
 				MotifAvancement motif = null;
+
+				if (av.getIdAgent().equals("9004980")) {
+					System.out.println("ici");
+				}
 				try {
 					CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(annee));
 					// on cherche l'eae correspondant ainsi que l'eae evaluation
@@ -150,6 +155,12 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
 						if (av.getIdMotifAvct().equals("7")) {
 							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation.getPropositionAvancement();
+						} else if (av.getIdMotifAvct().equals("5")) {
+							avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
+									: eaeEvaluation.getAvisRevalorisation() == 1 ? "FAV" : "DEFAV";
+						} else if (av.getIdMotifAvct().equals("4")) {
+							avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
+									: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
 						}
 						// motif Avct
 						if (av.getIdMotifAvct() != null) {
@@ -165,19 +176,27 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				if (av.getIdAvisCAP() == null) {
 					if (!avisSHD.equals(Const.CHAINE_VIDE)) {
 						if (avisSHD.equals("MAXI")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("3"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("3"))));
 						} else if (avisSHD.equals("MOY")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
 						} else if (avisSHD.equals("MINI")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("1"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("1"))));
+						} else if (avisSHD.equals("FAV")) {
+							addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
+						} else if (avisSHD.equals("DEFAV")) {
+							addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("5"))));
 						}
+
 					} else {
-						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 					}
 
 				} else {
 					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
-							: String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+							: String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+					addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
+							: String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
 				}
 
 			}
@@ -281,25 +300,36 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Si liste avisCAP vide alors affectation
-		if (getListeAvisCAP() == null || getListeAvisCAP().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCap(getTransaction());
-			setListeAvisCAP(avis);
+		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
+			ArrayList avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
+			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 7 };
 			String[] champs = { "libLongAvisCAP" };
 			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee());
 
 			// remplissage de la hashTable
-			for (int i = 0; i < getListeAvisCAP().size(); i++) {
-				AvisCap ac = (AvisCap) getListeAvisCAP().get(i);
+			for (int i = 0; i < getListeAvisCAPMinMoyMax().size(); i++) {
+				AvisCap ac = (AvisCap) getListeAvisCAPMinMoyMax().get(i);
+				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+			}
+		}
+
+		// Si liste avisCAP vide alors affectation
+		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
+			ArrayList avis = AvisCap.listerAvisCapFavDefav(getTransaction());
+			setListeAvisCAPFavDefav(avis);
+
+			int[] tailles = { 7 };
+			String[] champs = { "libLongAvisCAP" };
+			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee());
+
+			// remplissage de la hashTable
+			for (int i = 0; i < getListeAvisCAPFavDefav().size(); i++) {
+				AvisCap ac = (AvisCap) getListeAvisCAPFavDefav().get(i);
 				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
 			}
 
-			String[] listeClasse = new String[2];
-			listeClasse[0] = ("favorable");
-			listeClasse[1] = ("défavorable");
-
-			setLB_AVIS_CAP_CLASSE(listeClasse);
 		}
 
 		// Si liste medecins vide alors affectation
@@ -511,24 +541,44 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					avct.setEtat(EnumEtatAvancement.SGC.getValue());
 				}
 			}
-			// on traite l'avis CAP
-			int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(i)) : -1);
-			if (indiceAvisCap != -1) {
-				String idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCAP();
-				avct.setIdAvisCAP(idAvisCap);
+			if (avct.getIdAgent().equals("9004980")) {
+				System.out.println("ici");
 			}
-			// on traite l'odre de merite
-			// on test si "moyenne" choisi alors on remete à vide ordre du
-			// mérite
-			if (indiceAvisCap == 1) {
-				avct.setOrdreMerite(null);
-			} else {
-				String ordre = getVAL_EF_ORDRE_MERITE(i);
-				if (!ordre.equals(Const.CHAINE_VIDE)) {
-					avct.setOrdreMerite(ordre);
+			if (avct.getIdMotifAvct() != null) {
+				if (avct.getIdMotifAvct().equals("7")) {
+					// on traite l'avis CAP
+					int indiceAvisCapMinMoyMax = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(i)) ? Integer
+							.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(i)) : -1);
+					if (indiceAvisCapMinMoyMax != -1) {
+						String idAvisCap = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMax)).getIdAvisCAP();
+						avct.setIdAvisCAP(idAvisCap);
+						// on traite l'odre de merite
+						// on test si "moyenne" choisi alors on remete à vide
+						// ordre du
+						// mérite
+						if (indiceAvisCapMinMoyMax != 1) {
+							String ordre = getVAL_EF_ORDRE_MERITE(i);
+							if (!ordre.equals(Const.CHAINE_VIDE)) {
+								avct.setOrdreMerite(ordre);
+							} else {
+								avct.setOrdreMerite(null);
+							}
+						} else {
+							avct.setOrdreMerite(null);
+						}
+					}
 				} else {
+					int indiceAvisCapFavDefav = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) ? Integer
+							.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) : -1);
+					if (indiceAvisCapFavDefav != -1) {
+						String idAvisCap = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefav)).getIdAvisCAP();
+						avct.setIdAvisCAP(idAvisCap);
+					}
 					avct.setOrdreMerite(null);
 				}
+			} else {
+				avct.setIdAvisCAP(null);
+				avct.setOrdreMerite(null);
 			}
 
 			avct.modifierAvancement(getTransaction());
@@ -872,24 +922,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_USER_VALID_SEF(int i) {
 		return getZone(getNOM_ST_USER_VALID_SEF(i));
-	}
-
-	/**
-	 * Getter de la liste des avis CAP.
-	 * 
-	 * @return listeAvisCAP
-	 */
-	private ArrayList getListeAvisCAP() {
-		return listeAvisCAP;
-	}
-
-	/**
-	 * Setter de la liste des avis CAP.
-	 * 
-	 * @param listeAvisCAP
-	 */
-	private void setListeAvisCAP(ArrayList listeAvisCAP) {
-		this.listeAvisCAP = listeAvisCAP;
 	}
 
 	/**
@@ -1280,5 +1312,21 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
 		this.listeFiliere = listeFiliere;
+	}
+
+	public ArrayList getListeAvisCAPMinMoyMax() {
+		return listeAvisCAPMinMoyMax;
+	}
+
+	public void setListeAvisCAPMinMoyMax(ArrayList listeAvisCAPMinMoyMax) {
+		this.listeAvisCAPMinMoyMax = listeAvisCAPMinMoyMax;
+	}
+
+	public ArrayList getListeAvisCAPFavDefav() {
+		return listeAvisCAPFavDefav;
+	}
+
+	public void setListeAvisCAPFavDefav(ArrayList listeAvisCAPFavDefav) {
+		this.listeAvisCAPFavDefav = listeAvisCAPFavDefav;
 	}
 }
