@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -50,6 +51,12 @@ function setfocus(nom)
 			<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=70px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
+			<BR/><BR/>
+			<span class="sigp2" style="width:75px">Filière : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width=200px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+			</SELECT>
+			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Changer" name="<%=process.getNOM_PB_CHANGER_ANNEE()%>">
 		</FIELDSET>
 		
@@ -95,13 +102,20 @@ function setfocus(nom)
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 								<% if (process.getVAL_CK_VALID_SEF(indiceAvct).equals(process.getCHECKED_ON())){ %>
-								<td>
-									<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste" >
-											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
-									</SELECT>
+								<td>								
+									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%} else{%>&nbsp;
+									<%} %>
 								</td>
 								<td>
-									<%if(avct.getIdAvisCAP()!=null && avct.getIdMotifAvct()!=null){%>
+									<%if(avct.getIdAvisCAP()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
 										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
@@ -112,13 +126,20 @@ function setfocus(nom)
 									<%} %>
 								</td>								
 								<%}else{%>
-								<td>
-									<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP(indiceAvct) %>" class="sigp2-liste" >
-											<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP(indiceAvct), process.getVAL_LB_AVIS_CAP_SELECT(indiceAvct)) %>
-									</SELECT>
+								<td>								
+									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else{%>&nbsp;
+									<%} %>
 								</td>
 								<td>
-									<%if(avct.getIdAvisCAP()!=null && avct.getIdMotifAvct()!=null){%>
+									<%if(avct.getIdAvisCAP()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
 										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
@@ -130,7 +151,10 @@ function setfocus(nom)
 								</td>							
 								<%} %>
 								
-								<td><INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
+								<td>
+								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
+								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>
 								
 							</tr>

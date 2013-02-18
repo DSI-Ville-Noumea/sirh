@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
+import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
@@ -42,7 +44,11 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private String[] LB_ANNEE;
-	private String[] LB_AVIS_CAP;
+	private String[] LB_AVIS_CAP_AD;
+	private String[] LB_AVIS_CAP_CLASSE;
+	private String[] LB_FILIERE;
+
+	private ArrayList<FiliereGrade> listeFiliere;
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
@@ -93,8 +99,16 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
+
+			// Recuperation filiere
+			FiliereGrade filiere = null;
+			int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
+			if (indiceFiliere > 0) {
+				filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
+			}
+
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
@@ -151,20 +165,19 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				if (av.getIdAvisCAP() == null) {
 					if (!avisSHD.equals(Const.CHAINE_VIDE)) {
 						if (avisSHD.equals("MAXI")) {
-							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("3"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("3"))));
 						} else if (avisSHD.equals("MOY")) {
-							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
 						} else if (avisSHD.equals("MINI")) {
-							addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("1"))));
+							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("1"))));
 						}
 					} else {
-						addZone(getNOM_LB_AVIS_CAP_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get("2"))));
 					}
 
 				} else {
-					addZone(getNOM_LB_AVIS_CAP_SELECT(i),
-							av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP()
-									.indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
+							: String.valueOf(getListeAvisCAP().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
 				}
 
 			}
@@ -274,13 +287,36 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 			int[] tailles = { 7 };
 			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP(new FormateListe(tailles, avis, champs).getListeFormatee());
+			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee());
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAP().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAP().get(i);
 				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
 			}
+
+			String[] listeClasse = new String[2];
+			listeClasse[0] = ("favorable");
+			listeClasse[1] = ("défavorable");
+
+			setLB_AVIS_CAP_CLASSE(listeClasse);
+		}
+
+		// Si liste medecins vide alors affectation
+		if (getListeFiliere() == null || getListeFiliere().size() == 0) {
+			setListeFiliere(FiliereGrade.listerFiliereGrade(getTransaction()));
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
+				FiliereGrade fili = (FiliereGrade) list.next();
+				String ligne[] = { fili.getLibFiliere() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_FILIERE(aFormat.getListeFormatee(true));
+
 		}
 	}
 
@@ -476,7 +512,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				}
 			}
 			// on traite l'avis CAP
-			int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_SELECT(i)) : -1);
+			int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(i)) ? Integer.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(i)) : -1);
 			if (indiceAvisCap != -1) {
 				String idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCAP();
 				avct.setIdAvisCAP(idAvisCap);
@@ -861,18 +897,18 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
-	private String[] getLB_AVIS_CAP(int i) {
-		if (LB_AVIS_CAP == null)
-			LB_AVIS_CAP = initialiseLazyLB();
-		return LB_AVIS_CAP;
+	private String[] getLB_AVIS_CAP_AD(int i) {
+		if (LB_AVIS_CAP_AD == null)
+			LB_AVIS_CAP_AD = initialiseLazyLB();
+		return LB_AVIS_CAP_AD;
 	}
 
 	/**
-	 * Setter de la liste: LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * Setter de la liste: LB_AVIS_CAP_AD Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	private void setLB_AVIS_CAP(String[] newLB_AVIS_CAP) {
-		LB_AVIS_CAP = newLB_AVIS_CAP;
+	private void setLB_AVIS_CAP_AD(String[] newLB_AVIS_CAP_AD) {
+		LB_AVIS_CAP_AD = newLB_AVIS_CAP_AD;
 	}
 
 	/**
@@ -888,11 +924,11 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AVIS_CAP_SELECT Date de création : (21/11/11 09:55:36)
+	 * NOM_LB_AVIS_CAP_AD_SELECT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_LB_AVIS_CAP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_" + i + "_SELECT";
+	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
+		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT";
 	}
 
 	/**
@@ -900,8 +936,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * la JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getVAL_LB_AVIS_CAP_SELECT(int i) {
-		return getZone(getNOM_LB_AVIS_CAP_SELECT(i));
+	public String getVAL_LB_AVIS_CAP_AD_SELECT(int i) {
+		return getZone(getNOM_LB_AVIS_CAP_AD_SELECT(i));
 	}
 
 	/**
@@ -909,8 +945,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_LB_AVIS_CAP(int i) {
-		return "NOM_LB_AVIS_CAP_" + i;
+	public String getNOM_LB_AVIS_CAP_AD(int i) {
+		return "NOM_LB_AVIS_CAP_AD_" + i;
 	}
 
 	/**
@@ -918,8 +954,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String[] getVAL_LB_AVIS_CAP(int i) {
-		return getLB_AVIS_CAP(i);
+	public String[] getVAL_LB_AVIS_CAP_AD(int i) {
+		return getLB_AVIS_CAP_AD(i);
 	}
 
 	/**
@@ -1125,5 +1161,124 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setListeImpression(ArrayList<CadreEmploi> listeImpression) {
 		this.listeImpression = listeImpression;
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_AVIS_CAP_CLASSE_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
+		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_AVIS_CAP_CLASSE_SELECT(int i) {
+		return getZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i));
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AVIS_CAP Date de création
+	 * : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_AVIS_CAP_CLASSE(int i) {
+		return "NOM_LB_AVIS_CAP_CLASSE_" + i;
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_AVIS_CAP Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_AVIS_CAP_CLASSE(int i) {
+		return getLB_AVIS_CAP_CLASSE(i);
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_AVIS_CAP Date de création
+	 * : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_AVIS_CAP_CLASSE(int i) {
+		if (LB_AVIS_CAP_CLASSE == null)
+			LB_AVIS_CAP_CLASSE = initialiseLazyLB();
+		return LB_AVIS_CAP_CLASSE;
+	}
+
+	/**
+	 * Setter de la liste: LB_AVIS_CAP_CLASSE Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	private void setLB_AVIS_CAP_CLASSE(String[] newLB_AVIS_CAP_CLASSE) {
+		LB_AVIS_CAP_CLASSE = newLB_AVIS_CAP_CLASSE;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_FILIERE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_FILIERE() {
+		if (LB_FILIERE == null)
+			LB_FILIERE = initialiseLazyLB();
+		return LB_FILIERE;
+	}
+
+	/**
+	 * Setter de la liste: LB_FILIERE Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_FILIERE(String[] newLB_FILIERE) {
+		LB_FILIERE = newLB_FILIERE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_FILIERE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_FILIERE() {
+		return "NOM_LB_FILIERE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_FILIERE_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_FILIERE_SELECT() {
+		return "NOM_LB_FILIERE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_FILIERE Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_FILIERE() {
+		return getLB_FILIERE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_FILIERE Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_FILIERE_SELECT() {
+		return getZone(getNOM_LB_FILIERE_SELECT());
+	}
+
+	public ArrayList<FiliereGrade> getListeFiliere() {
+		return listeFiliere == null ? new ArrayList<FiliereGrade>() : listeFiliere;
+	}
+
+	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
+		this.listeFiliere = listeFiliere;
 	}
 }

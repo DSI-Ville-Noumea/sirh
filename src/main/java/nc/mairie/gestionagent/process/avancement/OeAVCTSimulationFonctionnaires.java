@@ -464,11 +464,13 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 							// calcul les 3 dates sinon on calcul juste la date
 							// moyenne
 							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
-								avct.setIdMotifAvct(grd.getCodeTava());
+								//TODO
+								//avct.setIdMotifAvct(grd.getCodeTava());
+								avct.setIdMotifAvct(null);
 								MotifAvancement motif = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
 								if (!motif.getIdMotifAvct().equals(avct.getIdMotifAvct())) {
-									avct.setDateAvctMaxi(null);
-									avct.setDateAvctMini(null);
+									avct.setDateAvctMaxi(Const.DATE_NULL);
+									avct.setDateAvctMini(Const.DATE_NULL);
 								}
 							} else {
 								avct.setIdMotifAvct(null);
