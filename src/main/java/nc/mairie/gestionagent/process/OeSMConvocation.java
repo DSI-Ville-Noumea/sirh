@@ -11,6 +11,8 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
@@ -20,6 +22,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -36,6 +39,7 @@ import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.domain.metier.hsct.SPABSEN;
+import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
@@ -43,6 +47,8 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.TreeHierarchy;
+import nc.mairie.utils.VariablesActivite;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -61,6 +67,8 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private String[] LB_MOIS;
 	private String[] LB_MEDECIN;
 	private String[] LB_HEURE_RDV;
+	private String[] LB_RELANCE;
+	private String[] LB_MOTIF;
 
 	private String[] listeMois;
 	private Hashtable<String, String> hashMois;
@@ -84,10 +92,14 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private String urlFichier;
 
 	private SuiviMedicalDao suiviMedDao;
-
 	private MotifVisiteMedDao motifVisiteMedDao;
-
 	private SPABSENDao spabsenDao;
+
+	public static final int STATUT_RECHERCHER_AGENT = 1;
+	private ArrayList listeServices;
+	private ArrayList<String> listeRelance;
+	private ArrayList<MotifVisiteMed> listeMotif;
+	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	public SuiviMedicalDao getSuiviMedDao() {
 		return suiviMedDao;
@@ -135,19 +147,61 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		}
 		initialiseDao();
 
+		initialiseListeService();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
-		// Initialisation de la liste de suivi medicaux
-		if (getListeSuiviMed() == null || getListeSuiviMed().size() == 0) {
-			int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois)));
-			afficheListeSuiviMed();
-			// pour les documents
+		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			performPB_RECHERCHER(request);
+		}
+		// Initialisation de la liste des documents suivi medicaux
+		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
 			setListeDocuments(listerDocumentsSM());
 			afficheListeDocuments();
 
+		}
+	}
+
+	private void initialiseListeService() throws Exception {
+		// Si la liste des services est nulle
+		if (getListeServices() == null || getListeServices().size() == 0) {
+			ArrayList services = Service.listerServiceActif(getTransaction());
+			setListeServices(services);
+
+			// Tri par codeservice
+			Collections.sort(getListeServices(), new Comparator<Object>() {
+				public int compare(Object o1, Object o2) {
+					Service s1 = (Service) o1;
+					Service s2 = (Service) o2;
+					return (s1.getCodService().compareTo(s2.getCodService()));
+				}
+			});
+
+			// alim de la hTree
+			hTree = new Hashtable<String, TreeHierarchy>();
+			TreeHierarchy parent = null;
+			for (int i = 0; i < getListeServices().size(); i++) {
+				Service serv = (Service) getListeServices().get(i);
+
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
+					continue;
+
+				// recherche du supérieur
+				String codeService = serv.getCodService();
+				while (codeService.endsWith("A")) {
+					codeService = codeService.substring(0, codeService.length() - 1);
+				}
+				codeService = codeService.substring(0, codeService.length() - 1);
+				codeService = Services.rpad(codeService, 4, "A");
+				parent = hTree.get(codeService);
+				int indexParent = (parent == null ? 0 : parent.getIndex());
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
+
+			}
 		}
 	}
 
@@ -311,6 +365,21 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					return performPB_VISUALISATION(request, i);
 				}
 			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT())) {
+				return performPB_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -322,6 +391,39 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * médical.
 	 */
 	private void initialiseListeDeroulante() throws Exception {
+
+		// Si liste motif vide alors affectation
+		if (getLB_MOTIF() == LBVide) {
+			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
+			setListeMotif(listeMotif);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = listeMotif.listIterator(); list.hasNext();) {
+				MotifVisiteMed motif = (MotifVisiteMed) list.next();
+				String ligne[] = { motif.getLibMotifVM() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_MOTIF(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
+		}
+
+		// Si liste relance vide alors affectation
+		if (getLB_RELANCE() == LBVide) {
+			ArrayList<String> listeRelance = new ArrayList<String>();
+			listeRelance.add("oui");
+			listeRelance.add("non");
+			setListeRelance(listeRelance);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = listeRelance.listIterator(); list.hasNext();) {
+				String relance = (String) list.next();
+				String ligne[] = { relance };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_RELANCE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_RELANCE_SELECT(), Const.ZERO);
+		}
+
 		// Si liste mois vide alors affectation
 		if (getLB_MOIS() == LBVide) {
 			Integer moisCourant = Integer.parseInt(Services.dateDuJour().substring(3, 5)) - 1;
@@ -461,9 +563,36 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		if (indiceMois != -1) {
-			// SuiviMedicalDao getSuiviMedDao() = new SuiviMedicalDao();
+			// recupération motif
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			String motif = Const.CHAINE_VIDE;
+			if (indiceMotif > 0) {
+				motif = getListeMotif().get(indiceMotif - 1).getIdMotifVM().toString();
+			}
+
+			// recupération relance
+			int indiceRelance = (Services.estNumerique(getVAL_LB_RELANCE_SELECT()) ? Integer.parseInt(getVAL_LB_RELANCE_SELECT()) : -1);
+			String relance = Const.CHAINE_VIDE;
+			if (indiceRelance > 0) {
+				relance = getListeRelance().get(indiceRelance - 1);
+			}
+
+			// recuperation agent
+			AgentNW agent = null;
+			if (getVAL_ST_AGENT().length() != 0) {
+				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			}
+
+			// Recherche des eae de la campagne en fonction du service
+			ArrayList<String> listeSousService = null;
+			if (getVAL_ST_CODE_SERVICE().length() != 0) {
+				// on recupere les sous-service du service selectionne
+				Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
+				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			}
+
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois)));
+					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif));
 			afficheListeSuiviMed();
 			// getSuiviMedDao().detruitDao();
 			// pour les documents
@@ -518,7 +647,8 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			performCalculSuiviMedical(moisChoisi, anneeChoisi);
 
 			// Affichage de la liste
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi));
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
+					Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -3059,4 +3189,293 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			return res;
 		}
 	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT() {
+		return "NOM_ST_AGENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT() {
+		return getZone(getNOM_ST_AGENT());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
+	 * création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT() {
+		return "NOM_PB_RECHERCHER_AGENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT, true);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
+	 * création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		// On enlève le service selectionnée
+		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getNOM_ST_CODE_SERVICE() {
+		return "NOM_ST_CODE_SERVICE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getVAL_ST_CODE_SERVICE() {
+		return getZone(getNOM_ST_CODE_SERVICE());
+	}
+
+	/**
+	 * Retourne la liste des services.
+	 * 
+	 * @return listeServices
+	 */
+	public ArrayList getListeServices() {
+		return listeServices;
+	}
+
+	/**
+	 * Met à jour la liste des services.
+	 * 
+	 * @param listeServices
+	 */
+	private void setListeServices(ArrayList listeServices) {
+		this.listeServices = listeServices;
+	}
+
+	/**
+	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Service.
+	 * 
+	 * @return hTree
+	 */
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_RELANCE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_RELANCE() {
+		if (LB_RELANCE == null)
+			LB_RELANCE = initialiseLazyLB();
+		return LB_RELANCE;
+	}
+
+	/**
+	 * Setter de la liste: LB_RELANCE Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_RELANCE(String[] newLB_RELANCE) {
+		LB_RELANCE = newLB_RELANCE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_RELANCE Date de création
+	 * : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_RELANCE() {
+		return "NOM_LB_RELANCE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_RELANCE_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_RELANCE_SELECT() {
+		return "NOM_LB_RELANCE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_RELANCE Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_RELANCE() {
+		return getLB_RELANCE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_RELANCE Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_RELANCE_SELECT() {
+		return getZone(getNOM_LB_RELANCE_SELECT());
+	}
+
+	public ArrayList<String> getListeRelance() {
+		return listeRelance == null ? new ArrayList<String>() : listeRelance;
+	}
+
+	public void setListeRelance(ArrayList<String> listeRelance) {
+		this.listeRelance = listeRelance;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_MOTIF() {
+		if (LB_MOTIF == null)
+			LB_MOTIF = initialiseLazyLB();
+		return LB_MOTIF;
+	}
+
+	/**
+	 * Setter de la liste: LB_MOTIF Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_MOTIF(String[] newLB_MOTIF) {
+		LB_MOTIF = newLB_MOTIF;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_MOTIF() {
+		return "NOM_LB_MOTIF";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_MOTIF_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_MOTIF_SELECT() {
+		return "NOM_LB_MOTIF_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_MOTIF Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_MOTIF() {
+		return getLB_MOTIF();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_MOTIF Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_MOTIF_SELECT() {
+		return getZone(getNOM_LB_MOTIF_SELECT());
+	}
+
+	public ArrayList<MotifVisiteMed> getListeMotif() {
+		return listeMotif;
+	}
+
+	public void setListeMotif(ArrayList<MotifVisiteMed> listeMotif) {
+		this.listeMotif = listeMotif;
+	}
+
 }

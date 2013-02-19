@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
+import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.mapper.metier.suiviMedical.SuiviMedicalRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
@@ -126,8 +128,34 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	}
 
 	@Override
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "!= ?";
+	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, AgentNW agent,
+			ArrayList<String> listeSousService, String relance, String motifVM) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "!= ? ";
+		if (agent != null) {
+			sql += " and " + CHAMP_ID_AGENT + "=" + agent.getIdAgent() + " ";
+		}
+
+		if (!relance.equals(Const.CHAINE_VIDE)) {
+			if (relance.equals("oui")) {
+				sql += " and " + CHAMP_NB_VISITES_RATEES + " > 10";
+			} else {
+				sql += " and " + CHAMP_NB_VISITES_RATEES + " = 0 ";
+			}
+		}
+
+		if (!motifVM.equals(Const.CHAINE_VIDE)) {
+			sql += " and " + CHAMP_ID_MOTIF_VM + " = " + motifVM + " ";
+
+		}
+		if (listeSousService != null) {
+			String list = Const.CHAINE_VIDE;
+			for (String codeServ : listeSousService) {
+				list += "'" + codeServ + "',";
+			}
+			if (!list.equals(Const.CHAINE_VIDE))
+				list = list.substring(0, list.length() - 1);
+			sql += " and (" + CHAMP_ID_SERVI + " in (" + list + ")) ";
+		}
 
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 

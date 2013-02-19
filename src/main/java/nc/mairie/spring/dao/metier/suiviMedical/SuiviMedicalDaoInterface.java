@@ -3,13 +3,15 @@ package nc.mairie.spring.dao.metier.suiviMedical;
 import java.util.ArrayList;
 import java.util.Date;
 
+import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
 public interface SuiviMedicalDaoInterface {
 
 	public ArrayList<SuiviMedical> listerSuiviMedical() throws Exception;
 
-	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee) throws Exception;
+	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, AgentNW agent,
+			ArrayList<String> listeSousService, String relance, String motifVM) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat) throws Exception;
 
