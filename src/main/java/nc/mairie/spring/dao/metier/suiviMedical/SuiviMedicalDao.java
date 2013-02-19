@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.mapper.metier.suiviMedical.SuiviMedicalRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
@@ -129,7 +128,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, AgentNW agent,
-			ArrayList<String> listeSousService, String relance, String motifVM) throws Exception {
+			ArrayList<String> listeSousService, String relance, String motifVM, String etat) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "!= ? ";
 		if (agent != null) {
 			sql += " and " + CHAMP_ID_AGENT + "=" + agent.getIdAgent() + " ";
@@ -145,8 +144,12 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
 		if (!motifVM.equals(Const.CHAINE_VIDE)) {
 			sql += " and " + CHAMP_ID_MOTIF_VM + " = " + motifVM + " ";
-
 		}
+
+		if (!etat.equals(Const.CHAINE_VIDE)) {
+			sql += " and " + CHAMP_ETAT + " = '" + etat + "' ";
+		}
+
 		if (listeSousService != null) {
 			String list = Const.CHAINE_VIDE;
 			for (String codeServ : listeSousService) {
@@ -159,7 +162,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
 		ArrayList<SuiviMedical> listeSuiviMedical = new ArrayList<SuiviMedical>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { mois, annee, EnumEtatSuiviMed.EFFECTUE.getValue() });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { mois, annee, EnumEtatSuiviMed.EFFECTUE.getCode() });
 		for (Map row : rows) {
 			SuiviMedical sm = new SuiviMedical();
 			// logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " +

@@ -11,7 +11,7 @@ public interface SuiviMedicalDaoInterface {
 	public ArrayList<SuiviMedical> listerSuiviMedical() throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, AgentNW agent,
-			ArrayList<String> listeSousService, String relance, String motifVM) throws Exception;
+			ArrayList<String> listeSousService, String relance, String motifVM, String etat) throws Exception;
 
 	public ArrayList<SuiviMedical> listerSuiviMedicalNonEffectue(Integer mois, Integer annee, String etat) throws Exception;
 

@@ -140,8 +140,12 @@
 				<%=process.forComboHTML(process.getVAL_LB_RELANCE(), process.getVAL_LB_RELANCE_SELECT()) %>
 			</SELECT>			
 			<span class="sigp2" style="width:75px">Motif : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>" style="width=150px;margin-right:10px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>" style="width=200px;margin-right:10px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+			</SELECT>
+			<span class="sigp2" style="width:40px">Etat : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT() %>" style="width=150px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT()) %>
 			</SELECT>
 			<BR/><BR/>
           	
@@ -194,11 +198,11 @@
 								<td><%=process.getVAL_ST_NB_VISITES_RATEES(indiceSM)%></td>	
 								<td>
 								<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceSM)%>">
-				    			<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getValue())){ %>
+				    			<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
 				    				<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceSM)%>">
 				    			<%} %>
 				    			</td>	
-				    			<%if(process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getValue())){ %>
+				    			<%if(process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.TRAVAIL.getCode())){ %>
 				    			<td>&nbsp;</td>					
 								<td>&nbsp;</td>					
 								<td>&nbsp;</td>	
@@ -210,26 +214,26 @@
 								</td>
 								<%}else{ %>
 				    			<td>
-									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue()) ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_MEDECIN(indiceSM) %>" class="sigp2-liste">
+									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_MEDECIN(indiceSM) %>" class="sigp2-liste">
 										<%=process.forComboHTML(process.getVAL_LB_MEDECIN(indiceSM), process.getVAL_LB_MEDECIN_SELECT(indiceSM)) %>
 									</SELECT>
 								</td>										
 								<td>
-									<input <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
-									<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue())&&!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue())){ %>
+									<input <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
+									<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())&&!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())){ %>
 									<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>', 'dd/mm/y');">
 									<%} %>
 								</td>				
 								<td>
-									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue())  ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_HEURE_RDV(indiceSM) %>" class="sigp2-liste">
+									<SELECT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_HEURE_RDV(indiceSM) %>" class="sigp2-liste">
 										<%=process.forComboHTML(process.getVAL_LB_HEURE_RDV(indiceSM), process.getVAL_LB_HEURE_RDV_SELECT(indiceSM)) %>
 									</SELECT>
 								</td>	
 								<td>
-									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue())  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validConvoque("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%> >
+									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validConvoque("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_CONVOC(indiceSM),process.getVAL_CK_A_IMPRIMER_CONVOC(indiceSM))%> >
 								</td>		
 								<td>
-									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue()) || (!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getValue()) && !process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getValue()))  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validAccomp("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%> >
+									<INPUT <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode()) || (!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode()) && !process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode()))  ?  "disabled='disabled'" : "" %> type="checkbox" onClick='validAccomp("<%=indiceSM %>")' <%= process.forCheckBoxHTML(process.getNOM_CK_A_IMPRIMER_ACCOMP(indiceSM),process.getVAL_CK_A_IMPRIMER_ACCOMP(indiceSM))%> >
 								</td>
 				    			<%} %>	
 				    			<td style="display: none;">

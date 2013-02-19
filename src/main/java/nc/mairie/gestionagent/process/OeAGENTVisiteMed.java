@@ -281,7 +281,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoqué
 		ArrayList listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
-				EnumEtatSuiviMed.CONVOQUE.getValue(), EnumEtatSuiviMed.PLANIFIE.getValue(), EnumEtatSuiviMed.ACCOMP.getValue());
+				EnumEtatSuiviMed.CONVOQUE.getCode(), EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
 			// medicale
@@ -1018,7 +1018,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 									Integer.valueOf(getAgentCourant().getIdAgent()), sm.getMois(), sm.getAnnee());
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
-								smModif.setEtat(EnumEtatSuiviMed.EFFECTUE.getValue());
+								smModif.setEtat(EnumEtatSuiviMed.EFFECTUE.getCode());
 								// on passe toutes ces lignes à l'état effectué
 								getSuiviMedDao().modifierSuiviMedicalTravail(smModif.getIdSuiviMed(), smModif);
 							}
@@ -3219,7 +3219,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				// créer de VM
 				try {
 					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
-					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getValue())) {
+					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 						// "ERR091",
 						// "Une convocation est en attente, vous ne pouvez pas créer de visite médicale avec ce motif.");
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR091"));

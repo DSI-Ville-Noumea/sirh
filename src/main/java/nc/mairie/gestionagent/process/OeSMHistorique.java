@@ -82,7 +82,7 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 			setListeHistoSuiviMed(getSuiviMedDao().listerHistoriqueSuiviMedical(getAnneeSelectionne(indiceAnnee), getMoisSelectionne(indiceMois),
-					EnumEtatSuiviMed.CONVOQUE.getValue(), EnumEtatSuiviMed.ACCOMP.getValue(), EnumEtatSuiviMed.EFFECTUE.getValue()));
+					EnumEtatSuiviMed.CONVOQUE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode(), EnumEtatSuiviMed.EFFECTUE.getCode()));
 			afficheListeHistoSuiviMed();
 		}
 	}
@@ -113,7 +113,7 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVM()).getLibMotifVM());
 			// RG-SVM-15
 			// si SM effectué alors on prend les infos de la VM
-			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getValue())) {
+			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed().toString(), sm.getIdAgent()
 						.toString());
 				Medecin medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
@@ -130,7 +130,7 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			}
 			addZone(getNOM_ST_HEURE_RDV(i), sm.getHeureProchaineVisite() != null ? sm.getHeureProchaineVisite() : Const.CHAINE_VIDE);
 			// on cherche si il y a une VM
-			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getValue())) {
+			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed().toString(), sm.getIdAgent()
 						.toString());
 				if (getTransaction().isErreur()) {
@@ -144,7 +144,7 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			} else {
 				addZone(getNOM_ST_AVIS(i), "&nbsp;");
 			}
-			addZone(getNOM_ST_EFFECTUE(i), sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getValue()) ? "Oui" : "Non");
+			addZone(getNOM_ST_EFFECTUE(i), sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode()) ? "Oui" : "Non");
 		}
 	}
 

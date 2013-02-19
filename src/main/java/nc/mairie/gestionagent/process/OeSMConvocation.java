@@ -69,6 +69,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private String[] LB_HEURE_RDV;
 	private String[] LB_RELANCE;
 	private String[] LB_MOTIF;
+	private String[] LB_ETAT;
 
 	private String[] listeMois;
 	private Hashtable<String, String> hashMois;
@@ -99,6 +100,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private ArrayList listeServices;
 	private ArrayList<String> listeRelance;
 	private ArrayList<MotifVisiteMed> listeMotif;
+	private ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	public SuiviMedicalDao getSuiviMedDao() {
@@ -293,9 +295,9 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), Const.ZERO);
 			}
 			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i),
-					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getValue()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getValue()) ? getCHECKED_ON()
+					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON()
 							: getCHECKED_OFF());
-			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), sm.getEtat());
 		}
 	}
@@ -392,11 +394,26 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeDeroulante() throws Exception {
 
+		// Si liste etat vide alors affectation
+		if (getLB_ETAT() == LBVide) {
+			ArrayList<EnumEtatSuiviMed> listeEtat = EnumEtatSuiviMed.getValues();
+			setListeEnumEtatSuiviMed(listeEtat);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = listeEtat.listIterator(); list.hasNext();) {
+				EnumEtatSuiviMed etat = (EnumEtatSuiviMed) list.next();
+				String ligne[] = { etat.getValue() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ETAT(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
+		}
+
 		// Si liste motif vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
 			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
 			setListeMotif(listeMotif);
-			int[] tailles = { 15 };
+			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator list = listeMotif.listIterator(); list.hasNext();) {
 				MotifVisiteMed motif = (MotifVisiteMed) list.next();
@@ -563,6 +580,13 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 		if (indiceMois != -1) {
+			// récupération de l'état
+			int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
+			String etat = Const.CHAINE_VIDE;
+			if (indiceEtat > 0) {
+				etat = getListeEnumEtatSuiviMed().get(indiceEtat - 1).getCode();
+			}
+
 			// recupération motif
 			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			String motif = Const.CHAINE_VIDE;
@@ -592,7 +616,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif));
+					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif, etat));
 			afficheListeSuiviMed();
 			// getSuiviMedDao().detruitDao();
 			// pour les documents
@@ -638,7 +662,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// mois et de l'année
 			// SuiviMedicalDao getSuiviMedDao() = new SuiviMedicalDao();
 			try {
-				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getValue(), moisChoisi, anneeChoisi);
+				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(), moisChoisi, anneeChoisi);
 			} catch (Exception e) {
 				logger.error("Problème dans la suppression des suivi medicaux" + new Date());
 			}
@@ -648,7 +672,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 			// Affichage de la liste
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
-					Const.CHAINE_VIDE));
+					Const.CHAINE_VIDE, Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -746,7 +770,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
-			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 			sm.setMois(moisChoisi);
 			sm.setAnnee(anneeChoisi);
 			sm.setRelance(0);
@@ -766,7 +790,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				// si non , on supprime la ligne existante pour recréer
 				// la
 				// nouvelle
-				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
@@ -858,7 +882,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
-					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 					sm.setMois(moisChoisi);
 					sm.setAnnee(anneeChoisi);
 					sm.setRelance(0);
@@ -878,7 +902,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						// si non , on supprime la ligne existante pour recréer
 						// la
 						// nouvelle
-						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
 									"dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
@@ -976,7 +1000,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
-					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 					sm.setMois(moisChoisi);
 					sm.setAnnee(anneeChoisi);
 					sm.setRelance(0);
@@ -996,7 +1020,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						// si non , on supprime la ligne existante pour recréer
 						// la
 						// nouvelle
-						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
 									"dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
@@ -1093,7 +1117,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
-					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 					sm.setMois(moisChoisi);
 					sm.setAnnee(anneeChoisi);
 					sm.setRelance(0);
@@ -1113,7 +1137,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						// si non , on supprime la ligne existante pour recréer
 						// la
 						// nouvelle
-						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
 									"dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
@@ -1176,7 +1200,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
-			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 			sm.setMois(moisChoisi);
 			sm.setAnnee(anneeChoisi);
 			sm.setRelance(0);
@@ -1196,7 +1220,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				// si non , on supprime la ligne existante pour recréer
 				// la
 				// nouvelle
-				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
@@ -1224,7 +1248,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		int nbCas8 = 0;
 		try {
 			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao().listerSuiviMedicalNonEffectue(moisChoisi, anneeChoisi,
-					EnumEtatSuiviMed.CONVOQUE.getValue());
+					EnumEtatSuiviMed.CONVOQUE.getCode());
 			for (int i = 0; i < listeSMCas8.size(); i++) {
 				// on crée une nouvelle ligne avec les memes informations
 				// sauf pour le statut et le service on le remet à jour
@@ -1264,7 +1288,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 				sm.setIdMedecin(null);
 				sm.setDateProchaineVisite(null);
-				sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+				sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 				sm.setMois(moisChoisi);
 				sm.setAnnee(anneeChoisi);
 				// on flag cette ligne en relance afin qu'on puisse la mettre de
@@ -1286,7 +1310,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					// si non , on supprime la ligne existante pour recréer
 					// la
 					// nouvelle
-					if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+					if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 						String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 						String datePrevision = sm.getDatePrevisionVisite().toString();
 						if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
@@ -1352,7 +1376,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
-					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+					sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 					sm.setMois(moisChoisi);
 					sm.setAnnee(anneeChoisi);
 					sm.setRelance(0);
@@ -1373,7 +1397,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						// si non , on supprime la ligne existante pour recréer
 						// la
 						// nouvelle
-						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
 									"dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
@@ -1434,7 +1458,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
-			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 			sm.setMois(moisChoisi);
 			sm.setAnnee(anneeChoisi);
 			sm.setRelance(0);
@@ -1452,7 +1476,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				// si oui alors on ne crée pas de nouvelle ligne
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
-				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
@@ -1511,7 +1535,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
-			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getValue());
+			sm.setEtat(EnumEtatSuiviMed.TRAVAIL.getCode());
 			sm.setMois(moisChoisi);
 			sm.setAnnee(anneeChoisi);
 			sm.setRelance(0);
@@ -1529,7 +1553,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				// si oui alors on ne crée pas de nouvelle ligne
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
-				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
@@ -1987,7 +2011,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(indiceEltAModifier), EnumEtatSuiviMed.PLANIFIE.getValue());
+		addZone(getNOM_ST_ETAT(indiceEltAModifier), EnumEtatSuiviMed.PLANIFIE.getCode());
 		addZone(getVAL_CK_A_IMPRIMER_CONVOC(indiceEltAModifier), Const.CHAINE_VIDE);
 		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(indiceEltAModifier), Const.CHAINE_VIDE);
 
@@ -2017,7 +2041,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(indiceEltASuprimer), EnumEtatSuiviMed.TRAVAIL.getValue());
+		addZone(getNOM_ST_ETAT(indiceEltASuprimer), EnumEtatSuiviMed.TRAVAIL.getCode());
 		addZone(getNOM_ST_DATE_PROCHAIN_RDV(indiceEltASuprimer), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_HEURE_RDV_SELECT(indiceEltASuprimer), Const.ZERO);
 		addZone(getNOM_LB_MEDECIN_SELECT(indiceEltASuprimer), Const.ZERO);
@@ -2053,6 +2077,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		// nouvelles valeurs
 		setListeSuiviMed(null);
 		setListeDocuments(null);
+		performPB_RECHERCHER(request);
 		return true;
 	}
 
@@ -2060,7 +2085,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		// on controle les champs
 		for (int i = 0; i < getListeSuiviMed().size(); i++) {
 			// si la ligne n'est pas en etat travail
-			if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+			if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				String dateRDV = getVAL_ST_DATE_PROCHAIN_RDV(i);
 				String agentConcerne = getVAL_ST_MATR(i) + " ( " + getVAL_ST_AGENT(i) + " ) ";
 				// si la date du prochain RDV est vide
@@ -2090,7 +2115,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				}
 
 				// si la date du prochain RDV est inférieur à la date du jour
-				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getValue()) && !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getValue())
+				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) && !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
 						&& Services.compareDates(dateRDV, Services.dateDuJour()) < 0) {
 					// "ERR302",
 					// "La date du prochain RDV pour l'agent @ doit être supérieure ou égale à la date du jour"
@@ -2216,6 +2241,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_IMPRIMER_LISTE_VISITE(HttpServletRequest request) throws Exception {
+		performPB_RECHERCHER(request);
 		return true;
 	}
 
@@ -2268,7 +2294,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
 			// si l'etat de la ligne est 'convoque'
-			if (sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getValue())) {
+			if (sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
 				if (getVAL_CK_A_IMPRIMER_ACCOMP(i).equals(getCHECKED_ON())) {
 					// RG-SVM-12.4
 					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
@@ -2279,7 +2305,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 							// alors on edite EDIT_SVM-5
 							smCCAImprimer.add(sm);
 						}
-						sm.setEtat(EnumEtatSuiviMed.ACCOMP.getValue());
+						sm.setEtat(EnumEtatSuiviMed.ACCOMP.getCode());
 						getSuiviMedDao().modifierSuiviMedicalTravail(sm.getIdSuiviMed(), sm);
 						nbConvocImpr++;
 					} else {
@@ -2321,6 +2347,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					+ getAnneeSelectionne(indiceMois) + ".xml";
 			creerModeleDocumentSVM5(smCCAImprimer, repModeles, destination);
 		}
+		performPB_RECHERCHER(request);
 		return true;
 	}
 
@@ -2374,7 +2401,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
 			// si l'etat de la ligne n'est pas deja 'imprimé' et que la colonne
 			// imprimée est cochée
-			if (!sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getValue())) {
+			if (!sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
 				if (getVAL_CK_A_IMPRIMER_CONVOC(i).equals(getCHECKED_ON())) {
 					// RG-SVM-10.3
 					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
@@ -2385,7 +2412,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 							// alors on edite EDIT_SVM-2
 							smCCAImprimer.add(sm);
 						}
-						sm.setEtat(EnumEtatSuiviMed.CONVOQUE.getValue());
+						sm.setEtat(EnumEtatSuiviMed.CONVOQUE.getCode());
 						getSuiviMedDao().modifierSuiviMedicalTravail(sm.getIdSuiviMed(), sm);
 						nbConvocImpr++;
 					} else {
@@ -2427,6 +2454,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 					+ getAnneeSelectionne(indiceMois) + ".xml";
 			creerModeleDocumentSVM2(smCCAImprimer, repModeles, destination);
 		}
+		performPB_RECHERCHER(request);
 		return true;
 	}
 
@@ -3106,7 +3134,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
 			sm.setEtat(getVAL_ST_ETAT(i));
-			if (getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getValue())) {
+			if (getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				sm.setHeureProchaineVisite(null);
 				sm.setDateProchaineVisite(null);
 				sm.setIdMedecin(null);
@@ -3476,6 +3504,69 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	public void setListeMotif(ArrayList<MotifVisiteMed> listeMotif) {
 		this.listeMotif = listeMotif;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_ETAT() {
+		if (LB_ETAT == null)
+			LB_ETAT = initialiseLazyLB();
+		return LB_ETAT;
+	}
+
+	/**
+	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_ETAT(String[] newLB_ETAT) {
+		LB_ETAT = newLB_ETAT;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_ETAT() {
+		return "NOM_LB_ETAT";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_ETAT_SELECT() {
+		return "NOM_LB_ETAT_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_ETAT() {
+		return getLB_ETAT();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_ETAT_SELECT() {
+		return getZone(getNOM_LB_ETAT_SELECT());
+	}
+
+	public ArrayList<EnumEtatSuiviMed> getListeEnumEtatSuiviMed() {
+		return listeEnumEtatSuiviMed == null ? new ArrayList<EnumEtatSuiviMed>() : listeEnumEtatSuiviMed;
+	}
+
+	public void setListeEnumEtatSuiviMed(ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed) {
+		this.listeEnumEtatSuiviMed = listeEnumEtatSuiviMed;
 	}
 
 }
