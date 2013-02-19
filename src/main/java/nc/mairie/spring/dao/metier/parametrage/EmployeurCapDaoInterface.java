@@ -3,7 +3,6 @@ package nc.mairie.spring.dao.metier.parametrage;
 import java.util.ArrayList;
 
 import nc.mairie.spring.domain.metier.parametrage.EmployeurCap;
-import nc.mairie.spring.domain.metier.parametrage.Representant;
 
 public interface EmployeurCapDaoInterface {
 

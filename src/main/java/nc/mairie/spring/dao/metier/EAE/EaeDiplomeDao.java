@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeDiplome;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeDiplomeDao implements EaeDiplomeDaoInterface {
-
-	private Logger logger = LoggerFactory.getLogger(EaeDiplomeDao.class);
 
 	public static final String NOM_TABLE = "EAE_DIPLOME";
 

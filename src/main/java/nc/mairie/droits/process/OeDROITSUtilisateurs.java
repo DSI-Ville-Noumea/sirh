@@ -41,9 +41,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	private String ACTION_CREATION = "Création d'un utilisateur.";
 
 	public String ACTION_SUPPRESSION_CONSULT = "Suppression d'un utilisateur de SIRH Consultation.";
-	private String ACTION_MODIFICATION_CONSULT = "Modification d'un utilisateur de SIRH Consultation.";
-	private String ACTION_CREATION_CONSULT = "Création d'un utilisateur de SIRH Consultation.";
-
+	
 	public String focus = null;
 	private Utilisateur utilisateurCourant;
 	public Hashtable<String, TreeHierarchy> hTree = null;

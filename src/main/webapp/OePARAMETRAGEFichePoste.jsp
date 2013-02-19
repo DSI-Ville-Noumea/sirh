@@ -38,7 +38,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Entités géographiques</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_ENTITE_GEO() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_ENTITE_GEO(), process.getVAL_LB_ENTITE_GEO_SELECT()) %>
@@ -87,7 +87,7 @@
 			
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Titres de poste</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_TITRE() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_TITRE(), process.getVAL_LB_TITRE_SELECT()) %>
@@ -123,7 +123,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Types d'avantage en nature</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_TYPE_AVANTAGE() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_AVANTAGE(), process.getVAL_LB_TYPE_AVANTAGE_SELECT()) %>
@@ -162,7 +162,7 @@
 			
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Natures d'avantage en nature</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_NATURE_AVANTAGE() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_NATURE_AVANTAGE(), process.getVAL_LB_NATURE_AVANTAGE_SELECT()) %>
@@ -204,7 +204,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Types de délégation</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_TYPE_DELEGATION() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_DELEGATION(), process.getVAL_LB_TYPE_DELEGATION_SELECT()) %>
@@ -243,7 +243,7 @@
 			
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Types de régime</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_TYPE_REGIME() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_REGIME(), process.getVAL_LB_TYPE_REGIME_SELECT()) %>
@@ -285,7 +285,7 @@
 			<div style="width:100%">
 	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">NFA</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_NFA() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_NFA(), process.getVAL_LB_NFA_SELECT()) %>
@@ -330,7 +330,7 @@
 			</FIELDSET>
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Ecoles</legend>
-				<span class="sigp2-titre" align="center" colspan="2">
+				<span class="sigp2-titre" >
 				<SELECT name="<%= process.getNOM_LB_ECOLE() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_ECOLE(), process.getVAL_LB_ECOLE_SELECT()) %>

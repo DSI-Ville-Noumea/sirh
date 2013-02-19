@@ -22,7 +22,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
 import nc.mairie.gestionagent.servlets.ServletAgent;

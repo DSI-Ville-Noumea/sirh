@@ -28,7 +28,6 @@ import nc.mairie.metier.agent.PAAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
-import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.MotifAffectation;
@@ -2159,7 +2158,6 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
 		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
 		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
 		String titrePoste = tp.getLibTitrePoste();
 		String lieuPoste = eg.getLibEntiteGeo();
 		String libService = s.getLibService();
