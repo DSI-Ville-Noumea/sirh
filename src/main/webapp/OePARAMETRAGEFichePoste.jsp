@@ -53,7 +53,7 @@
             	<br>	            
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_ENTITE_GEO())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_ENTITE_GEO() %>" size="35" type="text" value="<%= process.getVAL_EF_ENTITE_GEO() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_ENTITE_GEO() %>" size="35" type="text" value="<%= process.getVAL_EF_ENTITE_GEO() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />						
 					<label class="sigp2Mandatory" Style="width:50px">Ecole:</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ENTITE_GEO_ECOLE() %>">
