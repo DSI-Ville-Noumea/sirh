@@ -1,5 +1,7 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
@@ -378,6 +381,14 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
+			}
+
+
+			// Si clic sur le bouton PB_CONSULTER_TABLEAU
+			for (int i = 0; i < getListeImpression().size(); i++) {
+				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU(i))) {
+					return performPB_CONSULTER_TABLEAU(request, i);
+				}
 			}
 
 		}
@@ -1173,6 +1184,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+	
 		return true;
 	}
 
