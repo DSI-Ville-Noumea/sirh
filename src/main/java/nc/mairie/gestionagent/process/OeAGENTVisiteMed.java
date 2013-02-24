@@ -956,7 +956,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 					return false;
 				}
 
-				Medecin medecin = (Medecin) getListeMedecin().get(numLigneMedecin - 1);
+				Medecin medecin = (Medecin) getListeMedecin().get(numLigneMedecin);
 
 				int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIF_SELECT()))
 						: -1);
