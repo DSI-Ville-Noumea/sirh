@@ -66,6 +66,12 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 		initialiseListeService();
 
+		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+		}
+
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
