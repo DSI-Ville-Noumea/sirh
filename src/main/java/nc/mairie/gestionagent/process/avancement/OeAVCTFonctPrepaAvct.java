@@ -16,6 +16,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
+import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
@@ -158,6 +159,8 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
+			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
@@ -177,8 +180,8 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ACC_J(i), av.getACCJour() + " <br> " + av.getNouvACCJour());
 			addZone(getNOM_ST_GRADE(i),
 					av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-			String libGrade = av.getLibelleGrade().equals(Const.CHAINE_VIDE) ? "&nbsp;" : av.getLibelleGrade();
-			String libNouvGrade = av.getLibNouvGrade().equals(Const.CHAINE_VIDE) ? "&nbsp;" : av.getLibNouvGrade();
+			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
+			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
@@ -508,7 +511,7 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 		// on enregistre
 		commitTransaction();
 		// on remet la liste à vide afin qu'elle soit de nouveau initialisée
-		setListeAvct(null);
+		performPB_FILTRER(request);
 		return true;
 	}
 

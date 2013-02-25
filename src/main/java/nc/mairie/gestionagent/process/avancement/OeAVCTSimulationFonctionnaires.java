@@ -409,7 +409,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 
 					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant
 							.getCodeGrade());
-					avct.setLibNouvGrade(gradeSuivant.getLibGrade());
+					//avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCodeCadre(gradeActuel.getCodeCadre());
 
 					avct.setDateArrete("01/01/" + annee);
@@ -457,7 +457,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade());
+							//avct.setLibelleGrade(grd.getLibGrade());
 
 							// on prend l'id motif de la colonne CDTAVA du grade
 							// si CDTAVA correspond à AVANCEMENT DIFF alors on

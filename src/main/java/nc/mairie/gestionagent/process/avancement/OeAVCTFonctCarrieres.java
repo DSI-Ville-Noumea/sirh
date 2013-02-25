@@ -65,6 +65,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
 				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+				Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
+				Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
@@ -73,8 +75,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_GRADE(i),
 						av.getGrade() + " <br> "
 								+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
-				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
+				String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
+				String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
@@ -437,7 +439,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		avct.setNouvACCJour(String.valueOf((nbJoursRestantsACC % 365) % 30));
 
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-		avct.setLibNouvGrade(gradeSuivant.getLibGrade());
+		//avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 
 		avct.modifierAvancement(getTransaction());
 

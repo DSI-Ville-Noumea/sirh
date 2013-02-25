@@ -153,7 +153,7 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
-								<td>&nbsp;</td>
+								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>

@@ -17,6 +17,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
+import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
@@ -124,6 +125,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
+			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
@@ -131,8 +134,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 			addZone(getNOM_ST_GRADE(i),
 					av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-			String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
-			String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
+			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
+			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
@@ -152,10 +155,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			// on cherche la camapagne correspondante
 			String avisSHD = Const.CHAINE_VIDE;
 			MotifAvancement motif = null;
-
-			if (av.getIdAgent().equals("9004980")) {
-				System.out.println("ici");
-			}
 			try {
 				CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(getAnneeSelect()));
 				// on cherche l'eae correspondant ainsi que l'eae evaluation
@@ -198,7 +197,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 				} else {
 					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
-					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
+					addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 				}
 
 			} else {
@@ -659,7 +658,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		// on enregistre
 		commitTransaction();
 		// on remet la liste à vide afin qu'elle soit de nouveau initialisée
-		setListeAvct(null);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -831,7 +830,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * @return listeAvct
 	 */
 	public ArrayList<AvancementFonctionnaires> getListeAvct() {
-		return listeAvct==null ? new ArrayList<AvancementFonctionnaires>() : listeAvct;
+		return listeAvct == null ? new ArrayList<AvancementFonctionnaires>() : listeAvct;
 	}
 
 	/**

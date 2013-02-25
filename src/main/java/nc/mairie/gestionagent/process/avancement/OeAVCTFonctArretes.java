@@ -9,11 +9,21 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
+import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.EAE.EAEDao;
+import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
+import nc.mairie.spring.domain.metier.EAE.EAE;
+import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -21,6 +31,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -40,6 +52,10 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
+
+	private EAEDao eaeDao;
+	private EaeEvaluationDao eaeEvaluationDao;
+	private CampagneEAEDao campagneEAEDao;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -63,6 +79,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
@@ -80,23 +98,68 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		}
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getEaeDao() == null) {
+			setEaeDao((EAEDao) context.getBean("eaeDao"));
+		}
+
+		if (getEaeEvaluationDao() == null) {
+			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+		}
+
+		if (getCampagneEAEDao() == null) {
+			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+		}
+	}
+
 	private void afficheListeAvancement() throws Exception {
 		for (int i = 0; i < getListeAvct().size(); i++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
+			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_GRADE(i),
 					av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-			String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
-			String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
+			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
+			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
 					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+			// motif avancement
+			MotifAvancement motifVDN = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+			// avis SHD
+			String avisSHD = "&nbsp;";
+			try {
+				CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(getAnneeSelect()));
+				// on cherche l'eae correspondant ainsi que l'eae evaluation
+				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(av.getIdAgent()), campagneEAE.getIdCampagneEAE());
+				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
+					EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
+					if (gradeAgent.getCodeTava().equals("7")) {
+						avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation.getPropositionAvancement();
+					} else if (gradeAgent.getCodeTava().equals("5")) {
+						avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
+								: eaeEvaluation.getAvisRevalorisation() == 1 ? "FAV" : "DEFAV";
+					} else if (gradeAgent.getCodeTava().equals("4")) {
+						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
+								: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
+					}
+				}
+			} catch (Exception e) {
+				// pas de campagne pour cette année
+			}
+			// avis VDN
+			String avisVDN = av.getAvisSHD() == null ? "&nbsp;" : av.getAvisSHD();
+			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCodeMotifAvct()) + " <br> " + avisSHD + " <br> " + avisVDN);
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
@@ -386,6 +449,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		}
 		// on enregistre
 		commitTransaction();
+
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -531,6 +596,24 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_ETAT(int i) {
 		return getZone(getNOM_ST_ETAT(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_MOTIF_AVCT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_MOTIF_AVCT(int i) {
+		return "NOM_ST_MOTIF_AVCT_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_MOTIF_AVCT
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_MOTIF_AVCT(int i) {
+		return getZone(getNOM_ST_MOTIF_AVCT(i));
 	}
 
 	/**
@@ -890,5 +973,29 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
 		this.listeFiliere = listeFiliere;
+	}
+
+	public CampagneEAEDao getCampagneEAEDao() {
+		return campagneEAEDao;
+	}
+
+	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
+		this.campagneEAEDao = campagneEAEDao;
+	}
+
+	public EAEDao getEaeDao() {
+		return eaeDao;
+	}
+
+	public void setEaeDao(EAEDao eaeDao) {
+		this.eaeDao = eaeDao;
+	}
+
+	public EaeEvaluationDao getEaeEvaluationDao() {
+		return eaeEvaluationDao;
+	}
+
+	public void setEaeEvaluationDao(EaeEvaluationDao eaeEvaluationDao) {
+		this.eaeEvaluationDao = eaeEvaluationDao;
 	}
 }
