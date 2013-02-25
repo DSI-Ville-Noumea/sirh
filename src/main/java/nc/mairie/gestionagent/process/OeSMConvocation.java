@@ -606,7 +606,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 			}
 
-			// Recherche des eae de la campagne en fonction du service
+			// recuperation du service
 			ArrayList<String> listeSousService = null;
 			if (getVAL_ST_CODE_SERVICE().length() != 0) {
 				// on recupere les sous-service du service selectionne

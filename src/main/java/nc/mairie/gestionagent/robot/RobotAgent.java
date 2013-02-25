@@ -329,6 +329,12 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 
 		// Classe OeSMConvocation
 		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		
+		// Classe OeAVCTFonctPrepaAvct
+		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		
+		// Classe OeAVCTFonctPrepaCAP
+		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + OeAVCTFonctPrepaCAP.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// pour la recherche d'un agent
 		// données perso

@@ -57,7 +57,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE_IMPRIME.getValue() + "')";
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, null, null, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);

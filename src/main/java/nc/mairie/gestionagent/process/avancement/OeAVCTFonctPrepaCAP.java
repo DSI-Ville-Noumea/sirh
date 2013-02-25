@@ -1,9 +1,9 @@
 package nc.mairie.gestionagent.process.avancement;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
@@ -37,6 +37,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 import org.springframework.context.ApplicationContext;
@@ -46,19 +47,24 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
+
+	public static final int STATUT_RECHERCHER_AGENT = 1;
+
 	private String[] LB_ANNEE;
 	private String[] LB_AVIS_CAP_AD;
 	private String[] LB_AVIS_CAP_CLASSE;
 	private String[] LB_FILIERE;
 
 	private ArrayList<FiliereGrade> listeFiliere;
+	private ArrayList<Service> listeServices;
+	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
 	private String[] listeAnnee;
 	private String anneeSelect;
 
-	private ArrayList listeAvct;
+	private ArrayList<AvancementFonctionnaires> listeAvct;
 	private ArrayList listeAvisCAPMinMoyMax;
 	private ArrayList listeAvisCAPFavDefav;
 
@@ -98,114 +104,151 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
+		initialiseListeService();
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+		}
+
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct() == null || getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
-			String annee = (String) getListeAnnee()[indiceAnnee];
-
-			// Recuperation filiere
-			FiliereGrade filiere = null;
-			int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
-			if (indiceFiliere > 0) {
-				filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
-			}
-
-			String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere));
-
-			for (int i = 0; i < getListeAvct().size(); i++) {
-				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
-				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
-
-				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
-				addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
-				addZone(getNOM_ST_GRADE(i),
-						av.getGrade() + " <br> "
-								+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
-				String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
-				String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
-				addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
-
-				addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
-				addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-						+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
-
-				addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
-				addZone(getNOM_ST_ETAT(i), av.getEtat());
-				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
-				String user = av.getUserVerifSEF() == null ? "&nbsp;" : av.getUserVerifSEF();
-				String heure = av.getHeureVerifSEF() == null ? "&nbsp;" : av.getHeureVerifSEF();
-				String date = av.getDateVerifSEF() == null ? "&nbsp;" : av.getDateVerifSEF();
-				addZone(getNOM_ST_USER_VALID_SEF(i), user + " <br> " + date + " <br> " + heure);
-				addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : av.getOrdreMerite());
-
-				// avis SHD
-				// on cherche la camapagne correspondante
-				String avisSHD = Const.CHAINE_VIDE;
-				MotifAvancement motif = null;
-
-				if (av.getIdAgent().equals("9004980")) {
-					System.out.println("ici");
-				}
-				try {
-					CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(annee));
-					// on cherche l'eae correspondant ainsi que l'eae evaluation
-					EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(av.getIdAgent()), campagneEAE.getIdCampagneEAE());
-					if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
-						EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
-						if (av.getIdMotifAvct().equals("7")) {
-							avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation.getPropositionAvancement();
-						} else if (av.getIdMotifAvct().equals("5")) {
-							avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
-									: eaeEvaluation.getAvisRevalorisation() == 1 ? "FAV" : "DEFAV";
-						} else if (av.getIdMotifAvct().equals("4")) {
-							avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
-									: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
-						}
-						// motif Avct
-						if (av.getIdMotifAvct() != null) {
-							motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
-						}
-					}
-				} catch (Exception e) {
-					// pas de campagne pour cette année
-				}
-				addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>" + avisSHD);
-
-				// duree VDN
-				if (av.getIdAvisCAP() == null) {
-					if (!avisSHD.equals(Const.CHAINE_VIDE)) {
-						if (avisSHD.equals("MAXI")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("3"))));
-						} else if (avisSHD.equals("MOY")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
-						} else if (avisSHD.equals("MINI")) {
-							addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("1"))));
-						} else if (avisSHD.equals("FAV")) {
-							addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
-						} else if (avisSHD.equals("DEFAV")) {
-							addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("5"))));
-						}
-
-					} else {
-						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
-						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
-					}
-
-				} else {
-					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
-							: String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
-					addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
-							: String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
-				}
-
-			}
 		}
 
 		initialiseTableauImpression();
+	}
+
+	private void afficheListeAvancement() throws Exception {
+		for (int i = 0; i < getListeAvct().size(); i++) {
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+
+			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
+			addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
+			addZone(getNOM_ST_GRADE(i),
+					av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
+			String libGrade = av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade();
+			String libNouvGrade = av.getLibNouvGrade() == null ? "&nbsp;" : av.getLibNouvGrade();
+			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
+
+			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
+			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
+					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+
+			addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_ST_ETAT(i), av.getEtat());
+			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
+			String user = av.getUserVerifSEF() == null ? "&nbsp;" : av.getUserVerifSEF();
+			String heure = av.getHeureVerifSEF() == null ? "&nbsp;" : av.getHeureVerifSEF();
+			String date = av.getDateVerifSEF() == null ? "&nbsp;" : av.getDateVerifSEF();
+			addZone(getNOM_ST_USER_VALID_SEF(i), user + " <br> " + date + " <br> " + heure);
+			addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : av.getOrdreMerite());
+
+			// avis SHD
+			// on cherche la camapagne correspondante
+			String avisSHD = Const.CHAINE_VIDE;
+			MotifAvancement motif = null;
+
+			if (av.getIdAgent().equals("9004980")) {
+				System.out.println("ici");
+			}
+			try {
+				CampagneEAE campagneEAE = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(getAnneeSelect()));
+				// on cherche l'eae correspondant ainsi que l'eae evaluation
+				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(av.getIdAgent()), campagneEAE.getIdCampagneEAE());
+				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) || eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
+					EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
+					if (av.getIdMotifAvct().equals("7")) {
+						avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation.getPropositionAvancement();
+					} else if (av.getIdMotifAvct().equals("5")) {
+						avisSHD = eaeEvaluation.getAvisRevalorisation() == null ? Const.CHAINE_VIDE
+								: eaeEvaluation.getAvisRevalorisation() == 1 ? "FAV" : "DEFAV";
+					} else if (av.getIdMotifAvct().equals("4")) {
+						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
+								: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
+					}
+					// motif Avct
+					if (av.getIdMotifAvct() != null) {
+						motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+					}
+				}
+			} catch (Exception e) {
+				// pas de campagne pour cette année
+			}
+			addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>" + avisSHD);
+
+			// duree VDN
+			if (av.getIdAvisCAP() == null) {
+				if (!avisSHD.equals(Const.CHAINE_VIDE)) {
+					if (avisSHD.equals("MAXI")) {
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("3"))));
+					} else if (avisSHD.equals("MOY")) {
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
+					} else if (avisSHD.equals("MINI")) {
+						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("1"))));
+					} else if (avisSHD.equals("FAV")) {
+						addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
+					} else if (avisSHD.equals("DEFAV")) {
+						addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("5"))));
+					}
+
+				} else {
+					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
+					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i), String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
+				}
+
+			} else {
+				addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
+						av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAPMinMoyMax()
+								.indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+				addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i), av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE
+						: String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get(av.getIdAvisCAP()))));
+			}
+
+		}
+	}
+
+	private void initialiseListeService() throws Exception {
+		// Si la liste des services est nulle
+		if (getListeServices() == null || getListeServices().size() == 0) {
+			ArrayList services = Service.listerServiceActif(getTransaction());
+			setListeServices(services);
+
+			// Tri par codeservice
+			Collections.sort(getListeServices(), new Comparator<Object>() {
+				public int compare(Object o1, Object o2) {
+					Service s1 = (Service) o1;
+					Service s2 = (Service) o2;
+					return (s1.getCodService().compareTo(s2.getCodService()));
+				}
+			});
+
+			// alim de la hTree
+			hTree = new Hashtable<String, TreeHierarchy>();
+			TreeHierarchy parent = null;
+			for (int i = 0; i < getListeServices().size(); i++) {
+				Service serv = (Service) getListeServices().get(i);
+
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
+					continue;
+
+				// recherche du supérieur
+				String codeService = serv.getCodService();
+				while (codeService.endsWith("A")) {
+					codeService = codeService.substring(0, codeService.length() - 1);
+				}
+				codeService = codeService.substring(0, codeService.length() - 1);
+				codeService = Services.rpad(codeService, 4, "A");
+				parent = hTree.get(codeService);
+				int indexParent = (parent == null ? 0 : parent.getIndex());
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
+
+			}
+		}
 	}
 
 	private void initialiseTableauImpression() throws Exception {
@@ -368,9 +411,9 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				return performPB_ANNULER(request);
 			}
 
-			// Si clic sur le bouton PB_CHANGER_ANNEE
-			if (testerParametre(request, getNOM_PB_CHANGER_ANNEE())) {
-				return performPB_CHANGER_ANNEE(request);
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
 			}
 
 			// Si clic sur le bouton PB_IMPRIMER
@@ -383,12 +426,26 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
-
 			// Si clic sur le bouton PB_CONSULTER_TABLEAU
 			for (int i = 0; i < getListeImpression().size(); i++) {
 				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU(i))) {
 					return performPB_CONSULTER_TABLEAU(request, i);
 				}
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT())) {
+				return performPB_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 
 		}
@@ -452,32 +509,35 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CHANGER_ANNEE Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_PB_CHANGER_ANNEE() {
-		return "NOM_PB_CHANGER_ANNEE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
-	 * 
-	 */
-	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
 		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
-		if (!annee.equals(getAnneeSelect())) {
-			setListeAvct(null);
-			setAnneeSelect(annee);
+		setAnneeSelect(annee);
+
+		// Recuperation filiere
+		FiliereGrade filiere = null;
+		int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
+		if (indiceFiliere > 0) {
+			filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
 		}
+
+		// recuperation agent
+		AgentNW agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+		}
+
+		// recuperation du service
+		ArrayList<String> listeSousService = null;
+		if (getVAL_ST_CODE_SERVICE().length() != 0) {
+			// on recupere les sous-service du service selectionne
+			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
+			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
+		}
+
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='" + EnumEtatAvancement.SEF.getValue() + "')";
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
+
+		afficheListeAvancement();
 		return true;
 	}
 
@@ -770,8 +830,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvct
 	 */
-	public ArrayList getListeAvct() {
-		return listeAvct;
+	public ArrayList<AvancementFonctionnaires> getListeAvct() {
+		return listeAvct==null ? new ArrayList<AvancementFonctionnaires>() : listeAvct;
 	}
 
 	/**
@@ -779,7 +839,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvct
 	 */
-	private void setListeAvct(ArrayList listeAvct) {
+	private void setListeAvct(ArrayList<AvancementFonctionnaires> listeAvct) {
 		this.listeAvct = listeAvct;
 	}
 
@@ -1184,7 +1244,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-	
+
 		return true;
 	}
 
@@ -1340,5 +1400,167 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setListeAvisCAPFavDefav(ArrayList listeAvisCAPFavDefav) {
 		this.listeAvisCAPFavDefav = listeAvisCAPFavDefav;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT() {
+		return "NOM_ST_AGENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT() {
+		return getZone(getNOM_ST_AGENT());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
+	 * création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT() {
+		return "NOM_PB_RECHERCHER_AGENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT, true);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
+	 * création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		// On enlève le service selectionnée
+		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getNOM_ST_CODE_SERVICE() {
+		return "NOM_ST_CODE_SERVICE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getVAL_ST_CODE_SERVICE() {
+		return getZone(getNOM_ST_CODE_SERVICE());
+	}
+
+	/**
+	 * Retourne la liste des services.
+	 * 
+	 * @return listeServices
+	 */
+	public ArrayList getListeServices() {
+		return listeServices;
+	}
+
+	/**
+	 * Met à jour la liste des services.
+	 * 
+	 * @param listeServices
+	 */
+	private void setListeServices(ArrayList listeServices) {
+		this.listeServices = listeServices;
+	}
+
+	/**
+	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Service.
+	 * 
+	 * @return hTree
+	 */
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
 	}
 }

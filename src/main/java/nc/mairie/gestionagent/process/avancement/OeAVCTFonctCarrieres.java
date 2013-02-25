@@ -60,7 +60,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
@@ -345,7 +345,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	private void calculAccBm(AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap) throws Exception {
+	private void calculAccBm(AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap)
+			throws Exception {
 		// calcul BM/ACC applicables
 		int nbJoursBM = 0;
 		int nbJoursACC = 0;

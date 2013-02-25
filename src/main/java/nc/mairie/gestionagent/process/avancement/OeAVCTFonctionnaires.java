@@ -69,7 +69,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
