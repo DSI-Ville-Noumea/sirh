@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -165,6 +167,23 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
+		}
+
+		// Si liste medecins vide alors affectation
+		if (getListeFiliere() == null || getListeFiliere().size() == 0) {
+			setListeFiliere(FiliereGrade.listerFiliereGrade(getTransaction()));
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
+				FiliereGrade fili = (FiliereGrade) list.next();
+				String ligne[] = { fili.getLibFiliere() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_FILIERE(aFormat.getListeFormatee(true));
+
 		}
 	}
 
