@@ -89,7 +89,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Si liste avancements vide alors initialisation.
-		if (getListeAvct() == null || getListeAvct().size() == 0) {
+		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
 		}
 	}
@@ -318,8 +318,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 			int[] tailles = { 7 };
 			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee());
-			setLB_AVIS_CAP_AD_EMP(new FormateListe(tailles, avis, champs).getListeFormatee());
+			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			setLB_AVIS_CAP_AD_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPMinMoyMax().size(); i++) {
@@ -335,8 +335,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 			int[] tailles = { 7 };
 			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee());
-			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs).getListeFormatee());
+			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPFavDefav().size(); i++) {
@@ -1160,7 +1160,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_CLASSE_SELECT_" + i;
 	}
 
 	/**
@@ -1216,7 +1216,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_AD_SELECT_" + i;
 	}
 
 	/**
@@ -1298,7 +1298,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_EMP_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_CLASSE_EMP_SELECT_" + i;
 	}
 
 	/**
@@ -1354,7 +1354,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_EMP_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_AD_EMP_SELECT_" + i;
 	}
 
 	/**
@@ -1463,7 +1463,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_PB_SET_DATE_AVCT(int i) {
-		return "NOM_PB_SET_DATE_AVCT" + i;
+		return "NOM_PB_SET_DATE_AVCT_" + i;
 	}
 
 	/**
@@ -1473,13 +1473,13 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, int i) throws Exception {
-		if (getVAL_CK_VALID_ARR(i).equals(getCHECKED_ON())) {
-			AvancementFonctionnaires avct = getListeAvct().get(i);
+	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, int indiceElemen) throws Exception {
+		AvancementFonctionnaires avct = getListeAvct().get(indiceElemen);
+		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
-				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(i)) : -1);
+				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceElemen)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceElemen)) : -1);
 				if (indiceAvisCapMinMoyMaxEmp != -1) {
 					String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp)).getLibCourtAvisCAP().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
@@ -1490,27 +1490,27 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 					} else if (idAvisEmp.equals("MAX")) {
 						dateAvctFinale = avct.getDateAvctMaxi();
 					}
-					addZone(getNOM_ST_DATE_AVCT_FINALE(i), dateAvctFinale);
+					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), dateAvctFinale);
 				}
 			} else {
 				// on récupere l'avis Emp
-				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(i)) : -1);
+				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceElemen)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceElemen)) : -1);
 				if (indiceAvisCapFavDefavEmp != -1) {
 					String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp)).getLibCourtAvisCAP().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
 					if (idAvisEmp.equals("FAV")) {
 						dateAvctFinale = avct.getDateAvctMoy();
 					}
-					addZone(getNOM_ST_DATE_AVCT_FINALE(i), dateAvctFinale);
+					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), dateAvctFinale);
 				}
 			}
 			// on met la date de CAP
 			String dateCAP = getVAL_ST_DATE_CAP_GLOBALE();
-			addZone(getNOM_ST_DATE_CAP(i), dateCAP);
+			addZone(getNOM_ST_DATE_CAP(indiceElemen), dateCAP);
 		} else {
-			addZone(getNOM_ST_DATE_AVCT_FINALE(i), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_DATE_CAP(i), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_DATE_CAP(indiceElemen), Const.CHAINE_VIDE);
 		}
 
 		return true;

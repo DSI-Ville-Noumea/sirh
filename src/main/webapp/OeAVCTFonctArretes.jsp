@@ -148,7 +148,6 @@ function reduireHierarchy() {
 					</thead>
 					<tbody>
 					<%
-					if (process.getListeAvct()!=null){
 						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
 							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(indiceAvct);
 					%>
@@ -239,7 +238,6 @@ function reduireHierarchy() {
 							</tr>
 					<%
 						}
-					}
 					%>
 					</tbody>
 				</table>

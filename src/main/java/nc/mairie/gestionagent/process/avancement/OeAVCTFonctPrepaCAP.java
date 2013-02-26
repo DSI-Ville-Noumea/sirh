@@ -611,7 +611,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					avct.setEtat(EnumEtatAvancement.SGC.getValue());
 				}
 			}
-			
+
 			if (avct.getIdMotifAvct() != null) {
 				if (avct.getIdMotifAvct().equals("7")) {
 					// on traite l'avis CAP
@@ -1028,7 +1028,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_AD_SELECT_" + i;
 	}
 
 	/**
@@ -1230,7 +1230,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_PB_CONSULTER_TABLEAU(int i) {
-		return "NOM_PB_CONSULTER_TABLEAU" + i;
+		return "NOM_PB_CONSULTER_TABLEAU_" + i;
 	}
 
 	/**
@@ -1270,7 +1270,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT";
+		return "NOM_LB_AVIS_CAP_CLASSE_SELECT" + i;
 	}
 
 	/**
