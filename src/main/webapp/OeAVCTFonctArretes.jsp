@@ -1,8 +1,11 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.enums.EnumEtatAvancement"%>
+<%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
+<%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -17,7 +20,7 @@
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
-<script type="text/javascript" src="js/avancement.js"></script>
+<script type="text/javascript" src="js/avancementArr.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
@@ -112,6 +115,10 @@ function reduireHierarchy() {
 					</script>
 				</div>
           	<BR/>
+          	<span class="sigp2" style="width:100px">Date de la CAP : </span>
+			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CAP_GLOBALE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CAP_GLOBALE() %>" >
+			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CAP_GLOBALE()%>', 'dd/mm/y');">
+			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 		</FIELDSET>
 		
@@ -136,13 +143,14 @@ function reduireHierarchy() {
 							<th>Verif SGC</th>	
 							<th>Date Avct</th>
 							<th>A imprimer</th>	
-							<th>Imprimé le <br> A <br> PAR</th>							
+							<th>Imprimé le <br> A <br> PAR</th>						
 						</tr>
 					</thead>
 					<tbody>
 					<%
 					if (process.getListeAvct()!=null){
 						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(indiceAvct);
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -154,13 +162,80 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
+								<% if (process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) || process.getVAL_CK_VALID_ARR_IMPR(indiceAvct).equals(process.getCHECKED_ON())){ %>
+								<td>								
+									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%} else{%>&nbsp;
+									<%} %>
+									<br/>							
+									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%} else{%>&nbsp;
+									<%} %>
+								</td>
+								<td>
+									<textarea readonly="readonly" rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
+								</td>
+								<%}else{%>
+								<td>								
+									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else{%>&nbsp;
+									<%} %>	
+									<br/>							
+									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else{%>&nbsp;
+									<%} %>
+								</td>
+								<td>
+									<textarea rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
+								</td>
+								<%} %>
+								<td>
+									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue())){%>	
+									<INPUT style="visibility: hidden;" type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
+									<%}else{%>
+									<INPUT style="visibility: visible;"type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
+									<%} %>
+									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
+								</td>
+								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
+								<td>								
+									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
+									<INPUT style="visibility: visible;" type="checkbox" onClick='validArrImpr("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
+									<%}else{%>
+									<INPUT style="visibility: hidden;" type="checkbox" onClick='validArrImpr("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
+									<%} %>
+								</td>
+								<td><%=process.getVAL_ST_USER_VALID_ARR_IMPR(indiceAvct)%></td>
+								
 							</tr>
 					<%
 						}

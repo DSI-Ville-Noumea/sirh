@@ -489,7 +489,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
 				} else {
-					avct.setEtat(EnumEtatAvancement.ARRETE_IMPRIME.getValue());
+					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
 				}
 				// on traite le numero et la date d'arreté
 				avct.setDateArrete(getVAL_ST_DATE_ARRETE(i));

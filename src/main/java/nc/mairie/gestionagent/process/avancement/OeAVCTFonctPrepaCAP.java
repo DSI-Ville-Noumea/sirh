@@ -611,9 +611,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					avct.setEtat(EnumEtatAvancement.SGC.getValue());
 				}
 			}
-			if (avct.getIdAgent().equals("9004980")) {
-				System.out.println("ici");
-			}
+			
 			if (avct.getIdMotifAvct() != null) {
 				if (avct.getIdMotifAvct().equals("7")) {
 					// on traite l'avis CAP
