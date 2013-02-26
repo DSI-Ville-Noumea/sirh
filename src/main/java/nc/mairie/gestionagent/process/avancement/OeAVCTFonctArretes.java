@@ -1160,7 +1160,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_SELECT_" + i;
+		return "NOM_LB_AVIS_CAP_CLASSE_" + i+"_SELECT_";
 	}
 
 	/**
@@ -1216,7 +1216,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_SELECT_" + i;
+		return "NOM_LB_AVIS_CAP_AD_" + i+"_SELECT_";
 	}
 
 	/**
@@ -1298,7 +1298,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_EMP_SELECT_" + i;
+		return "NOM_LB_AVIS_CAP_CLASSE_EMP_" + i+"_SELECT_";
 	}
 
 	/**
@@ -1354,7 +1354,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_EMP_SELECT_" + i;
+		return "NOM_LB_AVIS_CAP_AD_EMP_" + i+"_SELECT_";
 	}
 
 	/**
