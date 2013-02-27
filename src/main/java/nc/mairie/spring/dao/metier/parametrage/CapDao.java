@@ -80,4 +80,11 @@ public class CapDao implements CapDaoInterface {
 				+ "=? where " + CHAMP_ID_CAP + "=?";
 		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap, idCap });
 	}
+
+	@Override
+	public Cap chercherCapByCodeCap(String codeCap) throws Exception {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? ";
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new CapRowMapper());
+		return c;
+	}
 }

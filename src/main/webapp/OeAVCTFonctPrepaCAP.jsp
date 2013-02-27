@@ -276,7 +276,7 @@ function reduireHierarchy() {
 							<tr>
 								<td><%=process.getVAL_ST_CODE_CAP(indiceImpr)%></td>
 								<td><%=process.getVAL_ST_CADRE_EMPLOI(indiceImpr)%></td>
-								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU(indiceImpr)%>"></td>
+								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU(indiceImpr,process.getVAL_ST_CODE_CAP(indiceImpr),process.getVAL_ST_CADRE_EMPLOI(indiceImpr))%>"></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_TAB(indiceImpr),process.getVAL_CK_TAB(indiceImpr))%>></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_EAE(indiceImpr),process.getVAL_CK_EAE(indiceImpr))%>></td>								
 								<td><%=process.getVAL_ST_USER_IMPRESSION(indiceImpr)%></td>
@@ -301,7 +301,8 @@ function reduireHierarchy() {
 			<BR/>
 		</FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
-		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">					
+		<%=process.getUrlFichier()%>
 	</FORM>
 </BODY>
 </HTML>

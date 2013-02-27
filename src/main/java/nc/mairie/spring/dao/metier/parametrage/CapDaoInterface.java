@@ -16,4 +16,6 @@ public interface CapDaoInterface {
 
 	public Cap chercherCap(String codeCap, String refCap) throws Exception;
 
+	public Cap chercherCapByCodeCap(String codeCap) throws Exception;
+
 }

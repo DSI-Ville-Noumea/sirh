@@ -1,5 +1,8 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
@@ -41,13 +45,27 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
 public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
+
+	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctPrepaCAP.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
@@ -427,8 +445,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_CONSULTER_TABLEAU
 			for (int i = 0; i < getListeImpression().size(); i++) {
-				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU(i))) {
-					return performPB_CONSULTER_TABLEAU(request, i);
+				if (testerParametre(request, getNOM_PB_CONSULTER_TABLEAU(i, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i)))) {
+					return performPB_CONSULTER_TABLEAU(request, getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i));
 				}
 			}
 
@@ -1224,12 +1242,33 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_CADRE_EMPLOI(i));
 	}
 
+	private void verifieRepertoire(String codTypeDoc) {
+		// on verifie déjà que le repertoire source existe
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+
+		File dossierParent = new File(repPartage);
+		if (!dossierParent.exists()) {
+			dossierParent.mkdir();
+		}
+		File ssDossier = new File(repPartage + codTypeDoc + "/");
+		if (!ssDossier.exists()) {
+			ssDossier.mkdir();
+		}
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_TABLEAU Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_PB_CONSULTER_TABLEAU(int i) {
+	public String getNOM_PB_CONSULTER_TABLEAU(int i, String indiceCap, String indiceCadreEmp) {
 		return "NOM_PB_CONSULTER_TABLEAU_" + i;
 	}
 
@@ -1240,9 +1279,116 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+	public boolean performPB_CONSULTER_TABLEAU(HttpServletRequest request, String indiceCap, String indiceCadreEmploi) throws Exception {
+		verifieRepertoire("Avancement");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		String destination = repPartage + "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
+		// on receupere la CAP et le cadre Emploi
+		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+		CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), indiceCadreEmploi);
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR182",
+			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+			return false;
+		}
 
+		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), Integer.valueOf(cadre.getIdCadreEmploi()), "PDF");
+		if (!saveFileToRemoteFileSystem(fileAsBytes, destination)) {
+			// "ERR182",
+			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+			return false;
+		}
 		return true;
+	}
+
+	public byte[] getTabAvctCapReportAsByteArray(int idCap, int idCadreEmploi, String format) throws Exception {
+
+		ClientResponse response = createAndFireRequest(idCap, idCadreEmploi, format);
+
+		return readResponseAsByteArray(response, format);
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response, String format) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
+	public ClientResponse createAndFireRequest(int idCap, int idCadreEmploi, String format) {
+		String urlWSTableauAvctCAP = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_TABLEAU_AVCT_CAP") + "?idCap=" + idCap
+				+ "&idCadreEmploi=" + idCadreEmploi;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWSTableauAvctCAP);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject pdfFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			pdfFile = fsManager.resolveFile(String.format("%s", filename));
+			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (pdfFile != null) {
+				try {
+					pdfFile.close();
+					setURLFichier(getScriptOuverture(filename));
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			setURLFichier(null);
+			logger.error(String.format("An error occured while writing the report file to the following path  : " + filename + " : " + e));
+			return false;
+		}
+		return true;
+	}
+
+	private String urlFichier;
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
 	}
 
 	/**
