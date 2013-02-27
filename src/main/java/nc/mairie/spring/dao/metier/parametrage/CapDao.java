@@ -35,7 +35,7 @@ public class CapDao implements CapDaoInterface {
 
 	@Override
 	public ArrayList<Cap> listerCap() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_ID_CAP;
 
 		ArrayList<Cap> listeCap = new ArrayList<Cap>();
 
