@@ -92,7 +92,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public String ACTION_MODIFICATION = "2";
 
 	private ArrayList<GradeGenerique> listeCorps;
-
+	public String focus = null;
+	
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -472,6 +473,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
@@ -498,6 +501,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_CODE_MOTIF(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
@@ -529,8 +534,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs d'avancement"));
 		}
 
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
-
 	}
 
 	/**
@@ -579,6 +584,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
 		}
 
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
@@ -1070,6 +1076,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_ANNULER_EMPLOYEUR(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_EMPLOYEUR(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_EMPLOYEUR());
 		return true;
 	}
 
@@ -1096,6 +1103,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_TITRE_EMPLOYEUR(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_EMPLOYEUR());
 		return true;
 	}
 
@@ -1127,6 +1135,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "employeurs"));
 		}
 
+		setFocus(getNOM_PB_ANNULER_EMPLOYEUR());
 		return true;
 
 	}
@@ -1170,6 +1179,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ACTION_EMPLOYEUR(), Const.CHAINE_VIDE);
 		}
 
+		setFocus(getNOM_PB_ANNULER_EMPLOYEUR());
 		return true;
 	}
 
@@ -1355,6 +1365,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_ANNULER_REPRESENTANT(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_REPRESENTANT());
 		return true;
 	}
 
@@ -1382,6 +1394,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_PRENOM_REPRESENTANT(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_REPRESENTANT());
 		return true;
 	}
 
@@ -1419,6 +1433,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "représentants"));
 		}
 
+		setFocus(getNOM_PB_ANNULER_REPRESENTANT());
 		return true;
 
 	}
@@ -1468,6 +1483,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
 		}
 
+		setFocus(getNOM_PB_ANNULER_REPRESENTANT());
 		return true;
 	}
 
@@ -1754,6 +1770,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_ANNULER_DELIBERATION(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_DELIBERATION(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_DELIBERATION());
 		return true;
 	}
 
@@ -1782,6 +1800,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_TYPE_DELIBERATION_SELECT(), Const.ZERO);
 
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_DELIBERATION());
 		return true;
 	}
 
@@ -1819,6 +1838,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "délibérations"));
 		}
 
+		setFocus(getNOM_PB_ANNULER_DELIBERATION());
 		return true;
 
 	}
@@ -1875,6 +1895,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ACTION_DELIBERATION(), Const.CHAINE_VIDE);
 		}
 
+		setFocus(getNOM_PB_ANNULER_DELIBERATION());
 		return true;
 	}
 
@@ -2872,6 +2893,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		}
 
+		setFocus(getDefaultFocus());
 		return true;
 	}
 
@@ -2935,6 +2957,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 
 		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
+		setFocus(getDefaultFocus());
 		return true;
 	}
 
@@ -3114,6 +3137,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		}
 
+		setFocus(getDefaultFocus());
 		return true;
 	}
 
@@ -3196,6 +3220,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		}
 
 		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
+		setFocus(getDefaultFocus());
 		return true;
 	}
 
@@ -3289,5 +3314,27 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	 */
 	public String[] getVAL_LB_EMP_CAP_MULTI() {
 		return getLB_EMP_CAP_MULTI();
+	}
+
+
+	/**
+	 * @return Renvoie focus.
+	 */
+	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
+		return focus;
+	}
+
+	public String getDefaultFocus() {
+		return getNOM_PB_ANNULER_CAP();
+	}
+
+	/**
+	 * @param focus focus à définir.
+	 */
+	public void setFocus(String focus) {
+		this.focus = focus;
 	}
 }
