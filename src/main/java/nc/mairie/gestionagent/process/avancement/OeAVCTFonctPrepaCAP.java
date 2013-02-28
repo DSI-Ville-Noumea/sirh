@@ -22,6 +22,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
@@ -29,6 +30,7 @@ import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
@@ -94,6 +96,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private CampagneEAEDao campagneEAEDao;
 	private CapDao capDao;
 	private CorpsCapDao corpsCapDao;
+	private AvancementCapPrintJobDao avancementCapPrintJobDao;
 
 	private Hashtable<Cap, ArrayList<CadreEmploi>> hashListeImpression;
 	ArrayList<CadreEmploi> listeImpression = new ArrayList<CadreEmploi>();
@@ -301,7 +304,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					listeTempCadreEmp.add(cadreEmp);
 					addZone(getNOM_ST_CODE_CAP(k), cap.getCodeCap());
 					addZone(getNOM_ST_CADRE_EMPLOI(k), cadreEmp.getLibCadreEmploi());
-					addZone(getNOM_ST_USER_IMPRESSION(k), "&nbsp;");
+					addZone(getNOM_CK_TAB(k), getCHECKED_OFF());
+					addZone(getNOM_CK_EAE(k), getCHECKED_OFF());
 					k++;
 				}
 
@@ -333,6 +337,10 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 		if (getCorpsCapDao() == null) {
 			setCorpsCapDao((CorpsCapDao) context.getBean("corpsCapDao"));
+		}
+
+		if (getAvancementCapPrintJobDao() == null) {
+			setAvancementCapPrintJobDao((AvancementCapPrintJobDao) context.getBean("avancementCapPrintJobDao"));
 		}
 	}
 
@@ -575,6 +583,55 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		AgentNW agent = null;
+		if (!user.getUserName().equals("nicno85")) {
+			// on recupere l'id de l'agent
+			Siidma ag = Siidma.chercherSiidma(getTransaction(), user.getUserName());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "ERR183",
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), ag.getNomatr());
+		} else {
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+
+		for (int i = 0; i < getListeImpression().size(); i++) {
+			if (getVAL_CK_TAB(i).equals(getCHECKED_ON())) {
+				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR182",
+					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+					return false;
+				}
+				// on crée l'entrée dans la table du job
+				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()), user.getUserName(), cap.getIdCap(),
+						cap.getCodeCap(), Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false);
+
+			}
+			if (getVAL_CK_EAE(i).equals(getCHECKED_ON())) {
+				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR182",
+					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+					return false;
+				}
+				// on crée l'entrée dans la table du job
+				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()), user.getUserName(), cap.getIdCap(),
+						cap.getCodeCap(), Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true);
+
+			}
+		}
 		return true;
 	}
 
@@ -1189,24 +1246,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_USER_IMPRESSION Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_USER_IMPRESSION(int i) {
-		return "NOM_ST_USER_IMPRESSION_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone :
-	 * ST_USER_IMPRESSION Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_USER_IMPRESSION(int i) {
-		return getZone(getNOM_ST_USER_IMPRESSION(i));
-	}
-
-	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_CAP Date de
 	 * création : (21/11/11 09:55:36)
 	 * 
@@ -1705,5 +1744,13 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 */
 	public Hashtable<String, TreeHierarchy> getHTree() {
 		return hTree;
+	}
+
+	public AvancementCapPrintJobDao getAvancementCapPrintJobDao() {
+		return avancementCapPrintJobDao;
+	}
+
+	public void setAvancementCapPrintJobDao(AvancementCapPrintJobDao avancementCapPrintJobDao) {
+		this.avancementCapPrintJobDao = avancementCapPrintJobDao;
 	}
 }

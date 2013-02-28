@@ -265,7 +265,6 @@ function reduireHierarchy() {
 							<th>Tableau + EAEs<br> 							
 								<INPUT type="checkbox" name="CHECK_ALL_EAE" onClick='activeEae("<%=process.getListeImpression().size() %>")'>
 							</th>
-							<th>Imprimé par</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -279,7 +278,6 @@ function reduireHierarchy() {
 								<td align="center" ><INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_TABLEAU(indiceImpr,process.getVAL_ST_CODE_CAP(indiceImpr),process.getVAL_ST_CADRE_EMPLOI(indiceImpr))%>"></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_TAB(indiceImpr),process.getVAL_CK_TAB(indiceImpr))%>></td>
 								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_EAE(indiceImpr),process.getVAL_CK_EAE(indiceImpr))%>></td>								
-								<td><%=process.getVAL_ST_USER_IMPRESSION(indiceImpr)%></td>
 								
 							</tr>
 					<%
@@ -292,12 +290,15 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonctImpr').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [null,null,null,null,null,null],
-							"sDom": '<"H"fl>t<"F"iT>',
-							"bPaginate": false,
+							"aoColumns": [null,null,null,null,null],
+							"sDom": '<"H"fl>t<"F"i>',
+							"aaSorting": [[ 0, "asc" ]],
+							"bPaginate": false
 					    });
 					} );
 				</script>
+				<BR/><BR/>
+				<INPUT type="submit" class="sigp2-Bouton-200" value="Envoyer à l'impression" name="<%=process.getNOM_PB_IMPRIMER()%>">
 			<BR/>
 		</FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
