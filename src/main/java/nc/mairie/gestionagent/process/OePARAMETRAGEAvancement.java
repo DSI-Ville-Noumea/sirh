@@ -93,7 +93,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 	private ArrayList<GradeGenerique> listeCorps;
 	public String focus = null;
-	
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -1525,16 +1525,10 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION)) {
 
 			for (Representant repre : getListeRepresentant()) {
-				if (repre.getNomRepresentant().equals(getVAL_EF_NOM_REPRESENTANT())) {
+				if (repre.getNomRepresentant().trim().equals(getVAL_EF_NOM_REPRESENTANT().toUpperCase().trim()) && repre.getPrenomRepresentant().trim().equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un représentant", "ce nom"));
-					return false;
-				}
-				if (repre.getPrenomRepresentant().equals(getVAL_EF_PRENOM_REPRESENTANT())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un représentant", "ce prénom"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
 					return false;
 				}
 			}
@@ -3316,7 +3310,6 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		return getLB_EMP_CAP_MULTI();
 	}
 
-
 	/**
 	 * @return Renvoie focus.
 	 */
@@ -3332,7 +3325,8 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * @param focus focus à définir.
+	 * @param focus
+	 *            focus à définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
