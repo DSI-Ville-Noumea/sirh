@@ -308,7 +308,7 @@
 					</table>
 					</div>				
 					<br/>
-					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Employeurs : </span>
+					<span class="sigp2Mandatory" style="position:relative;width:120px;"> Employeurs : </span>
 					<span >
 						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP()%>" style="margin-bottom:5px">
 					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_EMP_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_EMPLOYEUR_CAP() %>")'>
@@ -321,7 +321,7 @@
 					</SELECT>
 					<br/><br/>
 					<br/>
-					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Représentants : </span>
+					<span class="sigp2Mandatory" style="position:relative;width:120px;"> Représentants : </span>
 					<span >
 						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>" style="margin-bottom:5px">
 					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REPRE_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_REPRESENTANT_CAP() %>")'>

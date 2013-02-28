@@ -151,8 +151,6 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void initialiseListeCorpsCap(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-
 		// Afiichage des corps deja présent
 		if (getListeCorpsCap().size() > 0) {
 			for (int i = 0; i < getListeCorps().size(); i++) {
@@ -278,7 +276,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_REPRE_CAP(aFormat.getListeFormatee());
+			setLB_REPRE_CAP(aFormat.getListeFormatee(true));
 		} else {
 			setLB_REPRE_CAP(null);
 		}
@@ -294,7 +292,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_EMP_CAP(aFormat.getListeFormatee());
+			setLB_EMP_CAP(aFormat.getListeFormatee(true));
 		} else {
 			setLB_EMP_CAP(null);
 		}
@@ -2901,7 +2899,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		int indiceRepr = (Services.estNumerique(getVAL_LB_REPRE_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_REPRE_CAP_SELECT()) : -1);
 
 		if (indiceRepr > 0) {
-			Representant n = (Representant) getListeRepresentant().get(indiceRepr);
+			Representant n = (Representant) getListeRepresentant().get(indiceRepr - 1);
 
 			if (n != null) {
 				ArrayList<Representant> existant = getListeRepresentantCap();
@@ -2936,6 +2934,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			setLB_REPRE_CAP_MULTI(null);
 		}
 
+		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
 		return true;
 	}
 
@@ -3163,7 +3162,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		int indiceEmp = (Services.estNumerique(getVAL_LB_EMP_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_EMP_CAP_SELECT()) : -1);
 
 		if (indiceEmp > 0) {
-			Employeur n = (Employeur) getListeEmployeur().get(indiceEmp);
+			Employeur n = (Employeur) getListeEmployeur().get(indiceEmp - 1);
 
 			if (n != null) {
 				ArrayList<Employeur> existant = getListeEmployeurCap();
@@ -3196,6 +3195,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			setLB_EMP_CAP_MULTI(null);
 		}
 
+		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
 		return true;
 	}
 
