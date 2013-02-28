@@ -291,7 +291,7 @@ function reduireHierarchy() {
 					    $('#tabAvctFonctImpr').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [null,null,null,null,null],
-							"sDom": '<"H"fl>t<"F"i>',
+							"sDom": '<"H"l>t<"F"i>',
 							"aaSorting": [[ 0, "asc" ]],
 							"bPaginate": false
 					    });
@@ -299,6 +299,52 @@ function reduireHierarchy() {
 				</script>
 				<BR/><BR/>
 				<INPUT type="submit" class="sigp2-Bouton-200" value="Envoyer à l'impression" name="<%=process.getNOM_PB_IMPRIMER()%>">
+			<BR/>
+		</FIELDSET>
+		<BR/>
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+		    <legend class="sigp2Legend">Impressions</legend>
+		    <BR/>
+				<table class="display" id="tabAvctFonctImprJob">
+					<thead>
+						<tr>
+							<th>Code CAP</th>
+							<th>Cadre Emploi</th>
+							<th>User</th>
+							<th>Date</th>
+							<th>Etat</th>
+							<th>Avec EAEs</th>
+						</tr>
+					</thead>
+					<tbody>
+					<%
+						for (int indiceImpr = 0;indiceImpr<process.getListeAvancementCapPrintJob().size();indiceImpr++){
+					%>
+							<tr>
+								<td><%=process.getVAL_ST_CODE_CAP_JOB(indiceImpr)%></td>
+								<td><%=process.getVAL_ST_CADRE_EMPLOI_JOB(indiceImpr)%></td>
+								<td align="center" ><%=process.getVAL_ST_USER_JOB(indiceImpr)%></td>
+								<td align="center" ><%=process.getVAL_ST_DATE_JOB(indiceImpr)%></td>
+								<td align="center" ><%=process.getVAL_ST_ETAT_JOB(indiceImpr)%></td>
+								<td align="center" ><%=process.getVAL_ST_TYPE_JOB(indiceImpr)%></td>								
+							</tr>
+					<%
+						}					
+					%>
+					</tbody>
+				</table>
+				<script type="text/javascript">
+					$(document).ready(function() {
+					    $('#tabAvctFonctImprJob').dataTable({
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"aoColumns": [null,null,null,null,null,null],
+							"sDom": '<"H"l>t<"F"i>',
+							"aaSorting": [[ 3, "desc" ]],
+							"bPaginate": false
+					    });
+					} );
+				</script>
+				<BR/><BR/>
 			<BR/>
 		</FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">

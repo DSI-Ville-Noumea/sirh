@@ -36,6 +36,7 @@ import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
@@ -101,6 +102,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private Hashtable<Cap, ArrayList<CadreEmploi>> hashListeImpression;
 	ArrayList<CadreEmploi> listeImpression = new ArrayList<CadreEmploi>();
 
+	private ArrayList<AvancementCapPrintJob> listeAvancementCapPrintJob;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -140,6 +143,22 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		}
 
 		initialiseTableauImpression();
+		initialiseTableauImpressionJob();
+	}
+
+	private void initialiseTableauImpressionJob() throws Exception {
+		// TODO Auto-generated method stub
+		setListeAvancementCapPrintJob(getAvancementCapPrintJobDao().listerAvancementCapPrintJob());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		for (int i = 0; i < getListeAvancementCapPrintJob().size(); i++) {
+			AvancementCapPrintJob job = (AvancementCapPrintJob) getListeAvancementCapPrintJob().get(i);
+			addZone(getNOM_ST_CODE_CAP_JOB(i), job.getCodeCap());
+			addZone(getNOM_ST_CADRE_EMPLOI_JOB(i), job.getLibCadreEmploi());
+			addZone(getNOM_ST_USER_JOB(i), job.getLogin());
+			addZone(getNOM_ST_DATE_JOB(i), sdf.format(job.getDateSubmission()));
+			addZone(getNOM_ST_ETAT_JOB(i), job.getStatut() == null ? "en attente" : job.getStatut());
+			addZone(getNOM_ST_TYPE_JOB(i), job.isEaes() ? "oui" : Const.CHAINE_VIDE);
+		}
 	}
 
 	private void afficheListeAvancement() throws Exception {
@@ -272,6 +291,10 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void initialiseTableauImpression() throws Exception {
+		for (int i = 0; i < getListeImpression().size(); i++) {
+			addZone(getNOM_CK_TAB(i), getCHECKED_OFF());
+			addZone(getNOM_CK_EAE(i), getCHECKED_OFF());
+		}
 
 		// Si liste impression
 		if (getListeImpression().size() == 0) {
@@ -1752,5 +1775,121 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 	public void setAvancementCapPrintJobDao(AvancementCapPrintJobDao avancementCapPrintJobDao) {
 		this.avancementCapPrintJobDao = avancementCapPrintJobDao;
+	}
+
+	public ArrayList<AvancementCapPrintJob> getListeAvancementCapPrintJob() {
+		return listeAvancementCapPrintJob == null ? new ArrayList<AvancementCapPrintJob>() : listeAvancementCapPrintJob;
+	}
+
+	public void setListeAvancementCapPrintJob(ArrayList<AvancementCapPrintJob> listeAvancementCapPrintJob) {
+		this.listeAvancementCapPrintJob = listeAvancementCapPrintJob;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_CAP_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_CODE_CAP_JOB(int i) {
+		return "NOM_ST_CODE_CAP_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_CAP_JOB
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_CODE_CAP_JOB(int i) {
+		return getZone(getNOM_ST_CODE_CAP_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CADRE_EMPLOI_JOB
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_CADRE_EMPLOI_JOB(int i) {
+		return "NOM_ST_CADRE_EMPLOI_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_CADRE_EMPLOI_JOB Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_CADRE_EMPLOI_JOB(int i) {
+		return getZone(getNOM_ST_CADRE_EMPLOI_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_USER_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_USER_JOB(int i) {
+		return "NOM_ST_USER_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_USER_JOB Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_USER_JOB(int i) {
+		return getZone(getNOM_ST_USER_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE_JOB(int i) {
+		return "NOM_ST_DATE_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_JOB Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE_JOB(int i) {
+		return getZone(getNOM_ST_DATE_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_ETAT_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_ETAT_JOB(int i) {
+		return "NOM_ST_ETAT_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ETAT_JOB Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_ETAT_JOB(int i) {
+		return getZone(getNOM_ST_ETAT_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_TYPE_JOB(int i) {
+		return "NOM_ST_TYPE_JOB_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOB Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_TYPE_JOB(int i) {
+		return getZone(getNOM_ST_TYPE_JOB(i));
 	}
 }
