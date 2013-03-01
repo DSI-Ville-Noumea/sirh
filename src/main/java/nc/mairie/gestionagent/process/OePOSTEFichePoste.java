@@ -3488,16 +3488,18 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		// Init missions
 		setMission(Const.CHAINE_VIDE);
 		if (getFichePosteCourante() != null) {
-			if (getFichePosteCourante().getMissions() != null && getFichePosteCourante().getMissions().length() != 0)
+			if (getFichePosteCourante().getMissions() != null && getFichePosteCourante().getMissions().length() != 0) {
 				setMission(getMission() + " " + getFichePosteCourante().getMissions());
-			if (getEmploiPrimaire() != null) {
-				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
-					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
+			} else {
+				if (getEmploiPrimaire() != null) {
+					if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
+						setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
+					}
 				}
-			}
-			if (getEmploiSecondaire() != null) {
-				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
-					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
+				if (getEmploiSecondaire() != null) {
+					if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
+						setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
+					}
 				}
 			}
 		}
