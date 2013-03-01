@@ -338,7 +338,7 @@ function reduireHierarchy() {
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [null,null,null,null,null,null],
 							"sDom": '<"H"l>t<"F"i>',
-							"aaSorting": [[ 3, "desc" ]],
+							"aaSorting": [],
 							"bPaginate": false
 					    });
 					} );
