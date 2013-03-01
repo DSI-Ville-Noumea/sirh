@@ -156,8 +156,9 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void afficheListeAvancement() throws Exception {
-		for (int i = 0; i < getListeAvct().size(); i++) {
-			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
@@ -436,12 +437,16 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 		String heureAction = sdf.format(new Date());
 		String dateJour = Services.dateDuJour();
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer idAvct = Integer.valueOf(avct.getIdAvct());
+			if (avct.getIdAgent().equals("9003296")) {
+				System.out.println("ici");
+			}
 			// on fait les modifications
 			// on traite l'etat
-			if (getVAL_CK_VALID_SGC(i).equals(getCHECKED_ON())) {
+			if (getVAL_CK_VALID_SGC(idAvct).equals(getCHECKED_ON())) {
 				// si la ligne est cochée
 				// on regarde si l'etat est deja SGC
 				// --> oui on ne modifie pas le user

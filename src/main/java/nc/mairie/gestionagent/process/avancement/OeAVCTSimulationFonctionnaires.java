@@ -409,7 +409,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 
 					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant
 							.getCodeGrade());
-					//avct.setLibNouvGrade(gradeSuivant.getLibGrade());
+					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCodeCadre(gradeActuel.getCodeCadre());
 
 					avct.setDateArrete("01/01/" + annee);
@@ -457,21 +457,19 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 							avct.setGrade(grd.getCodeGrade());
-							//avct.setLibelleGrade(grd.getLibGrade());
+							// avct.setLibelleGrade(grd.getLibGrade());
 
 							// on prend l'id motif de la colonne CDTAVA du grade
 							// si CDTAVA correspond à AVANCEMENT DIFF alors on
 							// calcul les 3 dates sinon on calcul juste la date
 							// moyenne
 							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
-								// TODO
-								// avct.setIdMotifAvct(grd.getCodeTava());
-								avct.setIdMotifAvct(null);
+								avct.setIdMotifAvct(grd.getCodeTava());
 								MotifAvancement motif = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
-								// if
-								// (!motif.getIdMotifAvct().equals(avct.getIdMotifAvct()))
-								// {
-								if (!motif.getIdMotifAvct().equals(grd.getCodeTava())) {
+								if (!motif.getIdMotifAvct().equals(avct.getIdMotifAvct())) {
+									// if
+									// (!motif.getIdMotifAvct().equals(grd.getCodeTava()))
+									// {
 
 									avct.setDateAvctMaxi(Const.DATE_NULL);
 									avct.setDateAvctMini(Const.DATE_NULL);
