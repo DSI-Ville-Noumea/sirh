@@ -160,11 +160,11 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 								<% if (process.getVAL_CK_VALID_SEF(indiceAvct).equals(process.getCHECKED_ON())){ %>
 								<td>								
-									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+									<%if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+									<%}else if( avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -172,7 +172,7 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getIdAvisCAP()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
+									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
 										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
@@ -184,11 +184,11 @@ function reduireHierarchy() {
 								</td>								
 								<%}else{%>
 								<td>								
-									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+									<%if( avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
 										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -196,7 +196,7 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getIdAvisCAP()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
+									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
 										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
@@ -209,7 +209,7 @@ function reduireHierarchy() {
 								<%} %>
 								
 								<td>
-								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+								<%if(avct.getAvisSHD()!=null && (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("5"))){ %>
 								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
 								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>

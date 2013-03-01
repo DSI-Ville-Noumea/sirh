@@ -211,13 +211,13 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
 					}
-					// motif Avct
-					if (av.getIdMotifAvct() != null) {
-						motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
-					}
 				}
 			} catch (Exception e) {
 				// pas de campagne pour cette année
+			}
+			// motif Avct
+			if (av.getIdMotifAvct() != null) {
+				motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
 			}
 			addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>" + avisSHD);
 
