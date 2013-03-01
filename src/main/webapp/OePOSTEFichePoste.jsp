@@ -331,7 +331,7 @@
 					    <legend class="sigp2Legend">Activités</legend>
 					    <span class="sigp2Mandatory" style="width:150px"> Ajouter une activité : </span>
 							<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-					            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE()%>" style="margin-bottom:5px;">
+					            <INPUT  tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE()%>" style="margin-bottom:5px;">
 
 							</span>
 						<BR/><BR/>

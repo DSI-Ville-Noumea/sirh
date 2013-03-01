@@ -1303,7 +1303,13 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (getVAL_EF_MISSIONS().length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "missions"));
-			setFocus(getNOM_EF_MISSIONS());
+			setFocus(getNOM_PB_RECHERCHER());
+			return false;
+		}
+		if (getVAL_EF_MISSIONS().length() > 2000) {
+			//"ERR119", "La mission ne doit pas dépasser 2000 caractères."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR119"));
+			setFocus(getNOM_PB_RECHERCHER());
 			return false;
 		}
 
