@@ -162,8 +162,9 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void afficheListeAvancement() throws Exception {
-		for (int i = 0; i < getListeAvct().size(); i++) {
-			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
@@ -680,12 +681,13 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		String heureAction = sdf.format(new Date());
 		String dateJour = Services.dateDuJour();
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
-			if (getVAL_CK_VALID_SEF(i).equals(getCHECKED_ON())) {
+			if (getVAL_CK_VALID_SEF(idAvct).equals(getCHECKED_ON())) {
 				// si la ligne est cochée
 				// on regarde si l'etat est deja SEF
 				// --> oui on ne modifie pas le user
@@ -713,8 +715,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			if (avct.getIdMotifAvct() != null) {
 				if (avct.getIdMotifAvct().equals("7")) {
 					// on traite l'avis CAP
-					int indiceAvisCapMinMoyMax = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(i)) ? Integer
-							.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(i)) : -1);
+					int indiceAvisCapMinMoyMax = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
+							.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 					if (indiceAvisCapMinMoyMax != -1) {
 						String idAvisCap = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMax)).getIdAvisCAP();
 						avct.setIdAvisCAP(idAvisCap);
@@ -723,7 +725,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						// ordre du
 						// mérite
 						if (indiceAvisCapMinMoyMax != 1) {
-							String ordre = getVAL_EF_ORDRE_MERITE(i);
+							String ordre = getVAL_EF_ORDRE_MERITE(idAvct);
 							if (!ordre.equals(Const.CHAINE_VIDE)) {
 								avct.setOrdreMerite(ordre);
 							} else {
@@ -734,8 +736,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						}
 					}
 				} else {
-					int indiceAvisCapFavDefav = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) ? Integer
-							.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) : -1);
+					int indiceAvisCapFavDefav = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
+							.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
 					if (indiceAvisCapFavDefav != -1) {
 						String idAvisCap = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefav)).getIdAvisCAP();
 						avct.setIdAvisCAP(idAvisCap);

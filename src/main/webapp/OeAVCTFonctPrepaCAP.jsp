@@ -143,9 +143,9 @@ function reduireHierarchy() {
 					</thead>
 					<tbody>
 					<%
-					if (process.getListeAvct()!=null){
-						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
-							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(indiceAvct);
+						for (int i = 0;i<process.getListeAvct().size();i++){
+							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(i);
+							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -216,8 +216,7 @@ function reduireHierarchy() {
 								
 							</tr>
 					<%
-						}
-					}
+						}					
 					%>
 					</tbody>
 				</table>

@@ -95,8 +95,9 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void afficheListeAvancement() throws Exception {
-		for (int i = 0; i < getListeAvct().size(); i++) {
-			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
@@ -535,13 +536,14 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		String heureAction = sdf.format(new Date());
 		String dateJour = Services.dateDuJour();
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
 
-			if (getVAL_CK_VALID_ARR(i).equals(getCHECKED_ON())) {
+			if (getVAL_CK_VALID_ARR(idAvct).equals(getCHECKED_ON())) {
 				// si la ligne est cochée
 				// on regarde si l'etat est deja ARR
 				// --> oui on ne modifie pas le user
@@ -569,39 +571,39 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on traite l'avis CAP
-				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(i)) : -1);
+				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxCap != -1) {
 					String idAvisArr = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxCap)).getIdAvisCAP();
 					avct.setIdAvisArr(idAvisArr);
 				}
 				// on traite l'avis Emp
-				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(i)) : -1);
+				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxEmp != -1) {
 					String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp)).getIdAvisCAP();
 					avct.setIdAvisEmp(idAvisEmp);
 				}
 			} else {
 				// on traite l'avis CAP
-				int indiceAvisCapFavDefavCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(i)) : -1);
+				int indiceAvisCapFavDefavCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavCap != -1) {
 					String idAvisArr = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavCap)).getIdAvisCAP();
 					avct.setIdAvisArr(idAvisArr);
 				}
 				// on traite l'avis Emp
-				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(i)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(i)) : -1);
+				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavEmp != -1) {
 					String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp)).getIdAvisCAP();
 					avct.setIdAvisEmp(idAvisEmp);
 				}
 			}
-			avct.setObservationArr(getVAL_ST_OBSERVATION(i));
+			avct.setObservationArr(getVAL_ST_OBSERVATION(idAvct));
 
 			// on sauvegarde la date de CAP
-			String dateCap = getVAL_ST_DATE_CAP(i);
+			String dateCap = getVAL_ST_DATE_CAP(idAvct);
 			avct.setDateCap(dateCap.equals(Const.CHAINE_VIDE) ? Const.DATE_NULL : dateCap);
 
 			avct.modifierAvancement(getTransaction());

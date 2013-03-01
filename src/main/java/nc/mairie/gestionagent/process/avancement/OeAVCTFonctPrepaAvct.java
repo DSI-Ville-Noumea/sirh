@@ -441,9 +441,6 @@ public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 			// on recupère la ligne concernée
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
-			if (avct.getIdAgent().equals("9003296")) {
-				System.out.println("ici");
-			}
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_SGC(idAvct).equals(getCHECKED_ON())) {
