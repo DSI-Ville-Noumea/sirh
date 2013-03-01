@@ -28,7 +28,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	private String[] listeAnnee;
 	private String anneeSelect;
 
-	private ArrayList listeAvct;
+	private ArrayList<AvancementFonctionnaires> listeAvct;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -56,14 +56,15 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		initialiseListeDeroulante();
 
 		// Si liste avancements vide alors initialisation.
-		if (getListeAvct() == null || getListeAvct().size() == 0) {
+		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null));
 
-			for (int i = 0; i < getListeAvct().size(); i++) {
-				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+			for (int j = 0; j < getListeAvct().size(); j++) {
+				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+				Integer i = Integer.valueOf(av.getIdAvct());
 				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 				Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 				Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
@@ -253,9 +254,10 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on recupere les lignes qui sont cochées pour affecter
 		int nbAgentAffectes = 0;
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
@@ -480,9 +482,10 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
@@ -725,8 +728,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvct
 	 */
-	public ArrayList getListeAvct() {
-		return listeAvct;
+	public ArrayList<AvancementFonctionnaires> getListeAvct() {
+		return listeAvct==null ? new ArrayList<AvancementFonctionnaires>() : listeAvct;
 	}
 
 	/**
@@ -734,7 +737,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvct
 	 */
-	private void setListeAvct(ArrayList listeAvct) {
+	private void setListeAvct(ArrayList<AvancementFonctionnaires> listeAvct) {
 		this.listeAvct = listeAvct;
 	}
 

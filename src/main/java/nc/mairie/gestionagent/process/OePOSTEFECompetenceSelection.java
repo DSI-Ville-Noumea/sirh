@@ -20,14 +20,14 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
 	/**
 	 * @return Returns the listeCompetences.
 	 */
-	public ArrayList getListeCompetences() {
+	public ArrayList<Competence> getListeCompetences() {
 		return listeCompetences;
 	}
 
 	/**
 	 * @param listeCompetences The listeCompetences to set.
 	 */
-	public void setListeCompetences(ArrayList listeCompetences) {
+	public void setListeCompetences(ArrayList<Competence> listeCompetences) {
 		this.listeCompetences = listeCompetences;
 	}
 
@@ -60,8 +60,9 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
 
 			//Affectation de la liste	
 			setListeCompetences(new ArrayList<Competence>());
-			for (int i = 0; i < aListe.size(); i++) {
-				Competence competence = (Competence) aListe.get(i);
+			for (int j = 0; j < aListe.size(); j++) {
+				Competence competence = (Competence) aListe.get(j);
+				Integer i = Integer.valueOf(competence.getIdCompetence());
 				if (competence != null) {
 					getListeCompetences().add(competence);
 					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence());
@@ -144,9 +145,10 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList listCompSelect = new ArrayList();
-		for (int i = 0; i < getListeCompetences().size(); i++) {
+		for (int j = 0; j < getListeCompetences().size(); j++) {
 			//on recupère la ligne concernée
-			Competence comp = (Competence) getListeCompetences().get(i);
+			Competence comp = (Competence) getListeCompetences().get(j);
+			Integer i = Integer.valueOf(comp.getIdCompetence());
 			//si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listCompSelect.add(comp);

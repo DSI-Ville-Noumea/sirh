@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.agent.AgentNW"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -101,8 +102,9 @@ function SelectLigne(id,tailleTableau)
 				</thead>
 				<tbody>
 				<%
-				if (process.getListeEvaluateurs()!=null){
-					for (int indiceActeur = 0;indiceActeur<process.getListeEvaluateurs().size();indiceActeur++){
+					for (int i = 0;i<process.getListeEvaluateurs().size();i++){
+						AgentNW ag = process.getListeEvaluateurs().get(i);
+						Integer indiceActeur = Integer.valueOf(ag.getIdAgent());
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_AGENT(indiceActeur)%></td>
@@ -111,7 +113,6 @@ function SelectLigne(id,tailleTableau)
 						</tr>						
 				<%
 					}
-				}
 				%>
 				</tbody>
 			</table>

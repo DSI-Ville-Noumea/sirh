@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.avancement.AvancementContractuels"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -101,8 +102,9 @@ function reduireHierarchy() {
 					</thead>
 					<tbody>
 					<%
-					if (process.getListeAvct()!=null){
-						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+						for (int i = 0;i<process.getListeAvct().size();i++){
+							AvancementContractuels avct = process.getListeAvct().get(i);
+							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -118,9 +120,9 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_INM(indiceAvct)%></td>						
 								<td><%=process.getVAL_ST_INA(indiceAvct)%></td>	
 								<% if (process.getVAL_CK_AFFECTER(indiceAvct).equals(process.getCHECKED_ON())){ %>
-									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
+									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct.toString() %>")'></td>								
 									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
-									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
+									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct.toString() %>")'></td>
 									<td>
 										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
 											type="text" value="<%= process.getVAL_EF_NUM_ARRETE(indiceAvct) %>">
@@ -178,7 +180,6 @@ function reduireHierarchy() {
 							</tr>
 					<%
 						}
-					}
 					%>
 					</tbody>
 				</table>

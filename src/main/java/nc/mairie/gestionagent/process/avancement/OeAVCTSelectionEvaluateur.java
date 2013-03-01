@@ -58,8 +58,9 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	}
 
 	private void afficheListe(HttpServletRequest request) {
-		for (int i = 0; i < getListeEvaluateurs().size(); i++) {
-			AgentNW agent = (AgentNW) getListeEvaluateurs().get(i);
+		for (int j = 0; j< getListeEvaluateurs().size(); j++) {
+			AgentNW agent = (AgentNW) getListeEvaluateurs().get(j);
+			Integer i = Integer.valueOf(agent.getIdAgent());
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent()+ " " + agent.getPrenomAgent());
 			if (getListeEvaluateursExistant().contains(agent))
@@ -68,8 +69,9 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	}
 
 	private void afficheListeEvalPossible(HttpServletRequest request) {
-		for (int i = 0; i < getListeEvaluateursPossible().size(); i++) {
-			AgentNW agent = (AgentNW) getListeEvaluateursPossible().get(i);
+		for (int j = 0; j < getListeEvaluateursPossible().size(); j++) {
+			AgentNW agent = (AgentNW) getListeEvaluateursPossible().get(j);
+			Integer i = Integer.valueOf(agent.getIdAgent());
 			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
@@ -126,9 +128,10 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
 		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
-		for (int i = 0; i < getListeEvaluateurs().size(); i++) {
+		for (int j = 0; j < getListeEvaluateurs().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListeEvaluateurs().get(i);
+			AgentNW ag = (AgentNW) getListeEvaluateurs().get(j);
+			Integer i = Integer.valueOf(ag.getIdAgent());
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);

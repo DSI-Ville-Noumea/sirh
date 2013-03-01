@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.avancement.AvancementConvCol"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -80,8 +81,9 @@ document.formu.elements[nom].focus();
 				</thead>
 				<tbody>
 				<%
-				if (process.getListeAvct()!=null){
-					for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+					for (int i = 0;i<process.getListeAvct().size();i++){
+						AvancementConvCol avct = process.getListeAvct().get(i);
+						Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -152,7 +154,6 @@ document.formu.elements[nom].focus();
 						</tr>
 				<%
 					}
-				}
 				%>
 				</tbody>
 			</table>

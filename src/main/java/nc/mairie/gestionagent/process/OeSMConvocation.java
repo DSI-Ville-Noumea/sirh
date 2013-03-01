@@ -262,8 +262,9 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void afficheListeSuiviMed() throws ParseException, Exception {
-		for (int i = 0; i < getListeSuiviMed().size(); i++) {
-			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
+		for (int j = 0; j < getListeSuiviMed().size(); j++) {
+			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
+			Integer i = Integer.valueOf(sm.getIdSuiviMed());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
@@ -1675,13 +1676,13 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		this.listeMois = strings;
 	}
 
-	public ArrayList getListeSuiviMed() {
+	public ArrayList<SuiviMedical> getListeSuiviMed() {
 		if (listeSuiviMed == null)
 			return new ArrayList();
 		return listeSuiviMed;
 	}
 
-	public void setListeSuiviMed(ArrayList listeSuiviMed) {
+	public void setListeSuiviMed(ArrayList<SuiviMedical> listeSuiviMed) {
 		this.listeSuiviMed = listeSuiviMed;
 	}
 
@@ -2082,7 +2083,9 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	private boolean performControlerSaisie() throws ParseException {
 		// on controle les champs
-		for (int i = 0; i < getListeSuiviMed().size(); i++) {
+		for (int j = 0; j < getListeSuiviMed().size(); j++) {
+			SuiviMedical sm = getListeSuiviMed().get(j);
+			Integer i = Integer.valueOf(sm.getIdSuiviMed());
 			// si la ligne n'est pas en etat travail
 			if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				String dateRDV = getVAL_ST_DATE_PROCHAIN_RDV(i);
@@ -2289,9 +2292,10 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		// on recupere les lignes qui sont cochées pour imprimer
 		ArrayList<SuiviMedical> smFonctionnaireAImprimer = new ArrayList<SuiviMedical>();
 		ArrayList<SuiviMedical> smCCAImprimer = new ArrayList<SuiviMedical>();
-		for (int i = 0; i < getListeSuiviMed().size(); i++) {
+		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
-			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
+			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
+			Integer i = Integer.valueOf(sm.getIdSuiviMed());
 			// si l'etat de la ligne est 'convoque'
 			if (sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
 				if (getVAL_CK_A_IMPRIMER_ACCOMP(i).equals(getCHECKED_ON())) {
@@ -2395,9 +2399,10 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		// on recupere les lignes qui sont cochées pour imprimer
 		ArrayList<SuiviMedical> smFonctionnaireAImprimer = new ArrayList<SuiviMedical>();
 		ArrayList<SuiviMedical> smCCAImprimer = new ArrayList<SuiviMedical>();
-		for (int i = 0; i < getListeSuiviMed().size(); i++) {
+		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
-			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
+			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
+			Integer i = Integer.valueOf(sm.getIdSuiviMed());
 			// si l'etat de la ligne n'est pas deja 'imprimé' et que la colonne
 			// imprimée est cochée
 			if (!sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
@@ -3129,9 +3134,10 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	private void sauvegardeTableau() throws Exception {
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeSuiviMed().size(); i++) {
+		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
-			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(i);
+			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
+			Integer i = Integer.valueOf(sm.getIdSuiviMed());
 			sm.setEtat(getVAL_ST_ETAT(i));
 			if (getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				sm.setHeureProchaineVisite(null);

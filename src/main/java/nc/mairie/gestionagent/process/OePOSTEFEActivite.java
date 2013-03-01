@@ -24,7 +24,7 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 	public String ACTION_CONSULTATION = "Consulter";
 
 
-	private ArrayList listeActivite;
+	private ArrayList<Activite> listeActivite;
 
 	private Activite activiteCourante;
 
@@ -55,8 +55,9 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 		if (getListeActivite() == null || getListeActivite().size() == 0) {
 			setListeActivite(Activite.listerActivite(getTransaction(), true));
 
-			for (int i = 0; i < getListeActivite().size(); i++) {
-				Activite activite = (Activite) getListeActivite().get(i);
+			for (int j = 0; j < getListeActivite().size(); j++) {
+				Activite activite = (Activite) getListeActivite().get(j);
+				Integer i = Integer.valueOf(activite.getIdActivite());
 				if (activite != null) {
 					addZone(getNOM_ST_ID_ACTI(i), activite.getIdActivite());
 					addZone(getNOM_ST_LIB_ACTI(i), activite.getNomActivite());
@@ -165,7 +166,7 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 	 * Retourne la liste des activites.
 	 * @return listeActivite ArrayList(Activite)
 	 */
-	public ArrayList getListeActivite() {
+	public ArrayList<Activite> getListeActivite() {
 		return listeActivite;
 	}
 
@@ -173,7 +174,7 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 	 * Met à jour la liste des activités.
 	 * @param listeActivite ArrayList(Activite)
 	 */
-	private void setListeActivite(ArrayList listeActivite) {
+	private void setListeActivite(ArrayList<Activite> listeActivite) {
 		this.listeActivite = listeActivite;
 	}
 
@@ -449,12 +450,13 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_MODIFIER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Activite acti = null;
-		for (int i = 0; i < getListeActivite().size(); i++) {
+		for (int j = 0; j < getListeActivite().size(); j++) {
+			//on recupère la ligne concernée
+			acti = (Activite) getListeActivite().get(j);
+			Integer i = Integer.valueOf(acti.getIdActivite());
 			//si l'etat de la ligne n'est pas deja 'affecte' et que la colonne affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
-				//on recupère la ligne concernée
-				acti = (Activite) getListeActivite().get(i);
 				break;
 			}
 		}
@@ -490,12 +492,13 @@ public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_SUPPRIMER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Activite acti = null;
-		for (int i = 0; i < getListeActivite().size(); i++) {
+		for (int j= 0; j < getListeActivite().size(); j++) {
+			//on recupère la ligne concernée
+			acti = (Activite) getListeActivite().get(j);
+			Integer i = Integer.valueOf(acti.getIdActivite());
 			//si l'etat de la ligne n'est pas deja 'affecte' et que la colonne affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
-				//on recupère la ligne concernée
-				acti = (Activite) getListeActivite().get(i);
 				break;
 			}
 		}

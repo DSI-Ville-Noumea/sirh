@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.avancement.AvancementFonctionnaires"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -77,8 +78,9 @@ function setfocus(nom)
 					</thead>
 					<tbody>
 					<%
-					if (process.getListeAvct()!=null){
-						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+						for (int i = 0;i<process.getListeAvct().size();i++){
+							AvancementFonctionnaires avct = process.getListeAvct().get(i);
+							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -97,7 +99,6 @@ function setfocus(nom)
 							</tr>
 					<%
 						}
-					}
 					%>
 					</tbody>
 				</table>

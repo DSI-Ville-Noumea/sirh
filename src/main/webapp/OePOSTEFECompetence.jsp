@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.poste.Competence"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
@@ -62,7 +63,9 @@ document.formu.elements[nom].focus();
 				<tbody>
 				<%
 				if (process.getListeCompetence()!=null){
-					for (int indiceComp = 0;indiceComp<process.getListeCompetence().size();indiceComp++){
+					for (int i = 0;i<process.getListeCompetence().size();i++){
+						Competence comp = process.getListeCompetence().get(i);
+						Integer indiceComp = Integer.valueOf(comp.getIdCompetence());
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_COMP(indiceComp)%></td>

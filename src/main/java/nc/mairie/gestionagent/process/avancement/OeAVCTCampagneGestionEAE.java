@@ -697,8 +697,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		for (int i = 0; i < getListeEAE().size(); i++) {
-			EAE eae = (EAE) getListeEAE().get(i);
+		for (int p = 0; p < getListeEAE().size(); p++) {
+			EAE eae = (EAE) getListeEAE().get(p);
+			Integer i = eae.getIdEAE();
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
 			try {
 				EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
@@ -3419,9 +3420,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		setMessage(Const.CHAINE_VIDE);
 		// on recupere les lignes qui sont cochées pour mettre à jour
 		int nbEae = 0;
-		for (int i = 0; i < getListeEAE().size(); i++) {
+		for (int j = 0; j < getListeEAE().size(); j++) {
 			// on recupère la ligne concernée
-			EAE eae = (EAE) getListeEAE().get(i);
+			EAE eae = (EAE) getListeEAE().get(j);
+			Integer i = eae.getIdEAE();
 			// si la colonne mettre à jour est cochée
 			if (getVAL_CK_VALID_MAJ(i).equals(getCHECKED_ON())) {
 				setEaeCourant(eae);

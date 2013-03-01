@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical"%>
 <%@page import="nc.mairie.enums.EnumEtatSuiviMed"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -184,7 +185,9 @@
 					<tbody>
 					<%
 					if (process.getListeSuiviMed()!=null){
-						for (int indiceSM = 0;indiceSM<process.getListeSuiviMed().size();indiceSM++){
+						for (int i = 0;i<process.getListeSuiviMed().size();i++){
+							SuiviMedical sm = process.getListeSuiviMed().get(i);
+							Integer indiceSM = Integer.valueOf(sm.getIdSuiviMed());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_SM(indiceSM)%></td>

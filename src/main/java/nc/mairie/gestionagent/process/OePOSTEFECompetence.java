@@ -75,12 +75,13 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_MODIFIER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Competence comp = null;
-		for (int i = 0; i < getListeCompetence().size(); i++) {
+		for (int j = 0; j < getListeCompetence().size(); j++) {
+			//on recupère la ligne concernée
+			comp = (Competence) getListeCompetence().get(j);
+			Integer i = Integer.valueOf(comp.getIdCompetence());
 			//si l'etat de la ligne n'est pas deja 'affecte' et que la colonne affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
-				//on recupère la ligne concernée
-				comp = (Competence) getListeCompetence().get(i);
 				break;
 			}
 		}
@@ -116,12 +117,13 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_SUPPRIMER(HttpServletRequest request) throws Exception {
 		boolean auMoinsUneligneSelect = false;
 		Competence comp = null;
-		for (int i = 0; i < getListeCompetence().size(); i++) {
+		for (int j = 0; j < getListeCompetence().size(); j++) {
+			//on recupère la ligne concernée
+			comp = (Competence) getListeCompetence().get(j);
+			Integer i = Integer.valueOf(comp.getIdCompetence());
 			//si l'etat de la ligne n'est pas deja 'affecte' et que la colonne affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				auMoinsUneligneSelect = true;
-				//on recupère la ligne concernée
-				comp = (Competence) getListeCompetence().get(i);
 				break;
 			}
 		}
@@ -250,8 +252,9 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 
 			setListeCompetence(Competence.listerCompetenceAvecType(getTransaction(), getTypeCompetenceCourant().getIdTypeCompetence()));
 
-			for (int i = 0; i < getListeCompetence().size(); i++) {
-				Competence competence = (Competence) getListeCompetence().get(i);
+			for (int j = 0; j < getListeCompetence().size(); j++) {
+				Competence competence = (Competence) getListeCompetence().get(j);
+				Integer i = Integer.valueOf(competence.getIdCompetence());
 				if (competence != null) {
 					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence());
 					addZone(getNOM_ST_LIB_COMP(i), competence.getNomCompetence());
@@ -383,7 +386,7 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 	 * Retourne la liste des compétences.
 	 * @return listeCompetence ArrayList(Competence)
 	 */
-	public ArrayList getListeCompetence() {
+	public ArrayList<Competence> getListeCompetence() {
 		return listeCompetence;
 	}
 
@@ -391,7 +394,7 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 	 * Met à jour la liste des compétences
 	 * @param listeCompetence ArrayList(Competence)
 	 */
-	private void setListeCompetence(ArrayList listeCompetence) {
+	private void setListeCompetence(ArrayList<Competence> listeCompetence) {
 		this.listeCompetence = listeCompetence;
 	}
 

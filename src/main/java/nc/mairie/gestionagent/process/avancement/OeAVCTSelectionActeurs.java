@@ -17,7 +17,7 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 	public String focus = null;
 
 	public ArrayList<AgentNW> getListeActeurs() {
-		return listeActeurs;
+		return listeActeurs==null ? new ArrayList<AgentNW>() : listeActeurs;
 	}
 
 	public void setListeActeurs(ArrayList<AgentNW> listeActeurs) {
@@ -32,7 +32,7 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-		if (getListeActeurs() == null) {
+		if (getListeActeurs().size()==0) {
 			ArrayList xcludeListe = (ArrayList) VariablesActivite.recuperer(this, "LISTEACTEURS");
 			ArrayList aListe = new ArrayList();
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), "DD");
@@ -40,8 +40,10 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 
 			// Affectation de la liste
 			setListeActeurs(new ArrayList<AgentNW>());
-			for (int i = 0; i < aListe.size(); i++) {
-				AgentNW agent = (AgentNW) aListe.get(i);
+			for (int j = 0; j < aListe.size(); j++) {
+				AgentNW agent = (AgentNW) aListe.get(j);
+				Integer i = Integer.valueOf(agent.getIdAgent());
+				
 				if (agent != null) {
 					getListeActeurs().add(agent);
 					addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
@@ -122,9 +124,10 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
-		for (int i = 0; i < getListeActeurs().size(); i++) {
+		for (int j = 0; j < getListeActeurs().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListeActeurs().get(i);
+			AgentNW ag = (AgentNW) getListeActeurs().get(j);
+			Integer i = Integer.valueOf(ag.getIdAgent());
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);

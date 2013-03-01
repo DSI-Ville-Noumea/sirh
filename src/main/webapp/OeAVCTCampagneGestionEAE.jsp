@@ -161,8 +161,9 @@ function reduireHierarchy() {
 					</tr>
 				</thead>
 				<tbody>
-				<%for (int indiceAvct = 0;indiceAvct<process.getListeEAE().size();indiceAvct++){
-				EAE eae = process.getListeEAE().get(indiceAvct);
+				<%for (int i = 0;i<process.getListeEAE().size();i++){
+				EAE eae = process.getListeEAE().get(i);
+				Integer indiceAvct = eae.getIdEAE();
 				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
 				%>
 						<tr>

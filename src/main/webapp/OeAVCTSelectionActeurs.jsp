@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.agent.AgentNW"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -46,8 +47,9 @@ document.formu.elements[nom].focus();
 				</thead>
 				<tbody>
 				<%
-				if (process.getListeActeurs()!=null){
-					for (int indiceActeur = 0;indiceActeur<process.getListeActeurs().size();indiceActeur++){
+					for (int i = 0;i<process.getListeActeurs().size();i++){
+						AgentNW ag = process.getListeActeurs().get(i);
+						Integer indiceActeur = Integer.valueOf(ag.getIdAgent());
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_AGENT(indiceActeur)%></td>
@@ -56,7 +58,6 @@ document.formu.elements[nom].focus();
 						</tr>						
 				<%
 					}
-				}
 				%>
 				</tbody>
 			</table>

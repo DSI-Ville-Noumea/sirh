@@ -19,14 +19,14 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
 	/**
 	 * @return Returns the listeActivites.
 	 */
-	public ArrayList getListeActivites() {
+	public ArrayList<Activite> getListeActivites() {
 		return listeActivites;
 	}
 
 	/**
 	 * @param listeActivites The listeActivites to set.
 	 */
-	public void setListeActivites(ArrayList listeActivites) {
+	public void setListeActivites(ArrayList<Activite> listeActivites) {
 		this.listeActivites = listeActivites;
 	}
 
@@ -48,8 +48,9 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
 
 			//Affectation de la liste	
 			setListeActivites(new ArrayList<Activite>());
-			for (int i = 0; i < aListe.size(); i++) {
-				Activite activite = (Activite) aListe.get(i);
+			for (int j = 0; j < aListe.size(); j++) {
+				Activite activite = (Activite) aListe.get(j);
+				Integer i = Integer.valueOf(activite.getIdActivite());
 				if (activite != null) {
 					getListeActivites().add(activite);
 					addZone(getNOM_ST_ID_ACTI(i), activite.getIdActivite());
@@ -133,9 +134,10 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList listActiSelect = new ArrayList();
-		for (int i = 0; i < getListeActivites().size(); i++) {
+		for (int j = 0; j < getListeActivites().size(); j++) {
 			//on recupère la ligne concernée
-			Activite acti = (Activite) getListeActivites().get(i);
+			Activite acti = (Activite) getListeActivites().get(j);
+			Integer i = Integer.valueOf(acti.getIdActivite());
 			//si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listActiSelect.add(acti);
