@@ -48,7 +48,7 @@ document.formu.elements[nom].focus();
 				<%
 				if (process.getListeCompetences()!=null){
 					for (int i = 0;i<process.getListeCompetences().size();i++){
-						Competence comp = process.getListeCompetence().get(i);
+						Competence comp = process.getListeCompetences().get(i);
 						Integer indiceComp = Integer.valueOf(comp.getIdCompetence());
 				%>
 						<tr>
