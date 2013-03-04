@@ -3,6 +3,8 @@ package nc.mairie.gestionagent.process;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -2999,6 +3001,34 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
+
+	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
+		boolean resultat = false;
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		// on verifie que les repertoires existent
+		verifieRepertoire(codTypeDoc);
+
+		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
+
+		FileInputStream in = new FileInputStream(f);
+
+		try {
+			FileOutputStream out = new FileOutputStream(newFile);
+			try {
+				byte[] byteBuffer = new byte[in.available()];
+				int s = in.read(byteBuffer);
+				out.write(byteBuffer);
+				out.flush();
+				resultat = true;
+			} finally {
+				out.close();
+			}
+		} finally {
+			in.close();
+		}
+
+		return resultat;
+	}
 	private boolean creeDocument(HttpServletRequest request, VisiteMedicale vm) throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
@@ -3017,8 +3047,12 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		upload = uploadFichier(fichierUpload, nom, codTypeDoc);
-
+		//upload = uploadFichier(fichierUpload, nom, codTypeDoc);
+		if (extension.equals(".pdf")) {
+			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
+		} else {
+			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
+		}
 		if (!upload)
 			return false;
 
