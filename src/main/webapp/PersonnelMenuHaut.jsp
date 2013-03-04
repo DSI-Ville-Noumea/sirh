@@ -100,7 +100,11 @@ String affAvctArr =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVC
 if (affAvctArr.equals("TRUE")){ %>
 menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctArretes", "arretes", "Avancement des fonctionnaires", true, false,"AVCT/ARRETES"));
 <%}%>
-//menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"AVCT/CARRIERES"));
+<% 
+String affAvctCarr =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT_CARR");
+if (affAvctCarr.equals("TRUE")){ %>
+menuAVCTAvancementFonctionnaire.ajouterFils(new Lien("AVCTFonctCarrieres", "carr", "Avancement des fonctionnaires", true, false,"AVCT/CARRIERES"));
+<%}%>
 document.write(menuAVCTAvancementFonctionnaire.afficher());
 
 var menuAVCTAvancementContractuels = new MenuHaut("Module_avct_simulationContractuels");

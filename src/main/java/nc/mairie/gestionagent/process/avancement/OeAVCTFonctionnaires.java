@@ -110,9 +110,9 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 								: getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
 				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-				addZone(getNOM_CK_AFFECTER(i),
+				/*addZone(getNOM_CK_AFFECTER(i),
 						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-								: getCHECKED_OFF());
+								: getCHECKED_OFF());*/
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 
@@ -571,7 +571,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
-					avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
+					//avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
 				} else if (getVAL_CK_PROJET_ARRETE(i).equals(getCHECKED_ON())) {
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				} else if (getVAL_CK_VALID_DRH(i).equals(getCHECKED_ON())) {
