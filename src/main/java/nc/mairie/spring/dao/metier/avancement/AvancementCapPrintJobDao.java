@@ -26,6 +26,7 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 	public static final String CHAMP_DATE_SUBMISSION = "DATE_SUBMISSION";
 	public static final String CHAMP_DATE_STATUT = "DATE_STATUT";
 	public static final String CHAMP_STATUT = "STATUT";
+	public static final String CHAMP_JOB_ID = "JOB_ID";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -70,6 +71,7 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 			job.setDateSubmission((Date) row.get(CHAMP_DATE_SUBMISSION));
 			job.setDateStatut((Date) row.get(CHAMP_DATE_STATUT));
 			job.setStatut((String) row.get(CHAMP_STATUT));
+			job.setJobId((String) row.get(CHAMP_JOB_ID));
 			listeAvancementCapPrintJob.add(job);
 		}
 

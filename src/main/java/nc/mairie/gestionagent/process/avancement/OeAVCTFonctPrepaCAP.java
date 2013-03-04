@@ -158,6 +158,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_DATE_JOB(i), sdf.format(job.getDateSubmission()));
 			addZone(getNOM_ST_ETAT_JOB(i), job.getStatut() == null ? "en attente" : job.getStatut());
 			addZone(getNOM_ST_TYPE_JOB(i), job.isEaes() ? "oui" : Const.CHAINE_VIDE);
+			addZone(getNOM_ST_JOB_ID(i), job.getJobId() == null ? Const.CHAINE_VIDE : job.getJobId());
 		}
 	}
 
@@ -1893,5 +1894,23 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_TYPE_JOB(int i) {
 		return getZone(getNOM_ST_TYPE_JOB(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_JOB Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_JOB_ID(int i) {
+		return "NOM_ST_JOB_ID_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_JOB Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_JOB_ID(int i) {
+		return getZone(getNOM_ST_JOB_ID(i));
 	}
 }

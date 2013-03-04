@@ -313,6 +313,7 @@ function reduireHierarchy() {
 							<th>Date</th>
 							<th>Etat</th>
 							<th>Avec EAEs</th>
+							<th>Job ID</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -325,7 +326,8 @@ function reduireHierarchy() {
 								<td align="center" ><%=process.getVAL_ST_USER_JOB(indiceImpr)%></td>
 								<td align="center" ><%=process.getVAL_ST_DATE_JOB(indiceImpr)%></td>
 								<td align="center" ><%=process.getVAL_ST_ETAT_JOB(indiceImpr)%></td>
-								<td align="center" ><%=process.getVAL_ST_TYPE_JOB(indiceImpr)%></td>								
+								<td align="center" ><%=process.getVAL_ST_TYPE_JOB(indiceImpr)%></td>	
+								<td ><%=process.getVAL_ST_JOB_ID(indiceImpr)%></td>								
 							</tr>
 					<%
 						}					
@@ -336,7 +338,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonctImprJob').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [null,null,null,null,null,null],
+							"aoColumns": [null,null,null,null,null,null,null],
 							"sDom": '<"H"l>t<"F"i>',
 							"aaSorting": [],
 							"bPaginate": false
