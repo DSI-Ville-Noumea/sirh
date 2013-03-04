@@ -268,7 +268,6 @@ function reduireHierarchy() {
 					</thead>
 					<tbody>
 					<%
-					if (process.getListeImpression()!=null){
 						for (int indiceImpr = 0;indiceImpr<process.getListeImpression().size();indiceImpr++){
 					%>
 							<tr>
@@ -281,7 +280,6 @@ function reduireHierarchy() {
 							</tr>
 					<%
 						}
-					}
 					%>
 					</tbody>
 				</table>
