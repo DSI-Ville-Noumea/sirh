@@ -301,6 +301,9 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		// Classe OeAGENTRecherche
 		navigation.put(OeAGENTRecherche.class.getName() + OeAGENTRecherche.STATUT_ETAT_CIVIL, OeAGENTEtatCivil.class.getName());
 
+		// ///////////////////
+		//AVANCEMENT        //
+		// ///////////////////
 		// Classe OeAVCTSimulationConvCol
 		navigation.put(OeAVCTSimulationConvCol.class.getName() + OeAVCTSimulationConvCol.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
@@ -311,6 +314,14 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		// Classe OeAVCTSimulationFonctionnaires
 		navigation.put(OeAVCTSimulationFonctionnaires.class.getName() + OeAVCTSimulationFonctionnaires.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
+		// Classe OeAVCTFonctPrepaAvct
+		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTFonctPrepaCAP
+		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + OeAVCTFonctPrepaCAP.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTFonctArretes
+		navigation.put(OeAVCTFonctArretes.class.getName() + OeAVCTFonctArretes.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTCampagnePlanification
 		navigation.put(OeAVCTCampagnePlanification.class.getName() + OeAVCTCampagnePlanification.STATUT_RECHERCHER_AGENT,
@@ -327,17 +338,11 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
+		// ///////////////////
+		//SUIVI MEDICAL     //
+		// ///////////////////
 		// Classe OeSMConvocation
 		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		
-		// Classe OeAVCTFonctPrepaAvct
-		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		
-		// Classe OeAVCTFonctPrepaCAP
-		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + OeAVCTFonctPrepaCAP.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		
-		// Classe OeAVCTFonctArretes
-		navigation.put(OeAVCTFonctArretes.class.getName() + OeAVCTFonctArretes.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// pour la recherche d'un agent
 		// données perso
