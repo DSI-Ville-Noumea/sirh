@@ -395,8 +395,9 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_CONSULTER_TABLEAU
 			for (int i = 0; i < getListeAvct().size(); i++) {
-				if (testerParametre(request, getNOM_PB_SET_DATE_AVCT(i))) {
-					return performPB_SET_DATE_AVCT(request, i);
+				AvancementFonctionnaires avct = getListeAvct().get(i);
+				if (testerParametre(request, getNOM_PB_SET_DATE_AVCT(Integer.valueOf(avct.getIdAvct())))) {
+					return performPB_SET_DATE_AVCT(request, avct.getIdAvct());
 				}
 			}
 
@@ -1475,9 +1476,26 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, int indiceElemen) throws Exception {
-		AvancementFonctionnaires avct = getListeAvct().get(indiceElemen);
+	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, String idAvct) throws Exception {
+		
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
+		int indiceElemen = Integer.valueOf(idAvct);
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
+			//on verifie si la date de CAP est remplie
+			// date de debut obligatoire
+			if ((Const.CHAINE_VIDE).equals(getVAL_ST_DATE_CAP_GLOBALE())) {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de cap"));
+				return false;
+			}
+
+			// format date de debut
+			if (!Services.estUneDate(getVAL_ST_DATE_CAP_GLOBALE())) {
+				// "ERR007",
+				// "La date @ est incorrecte. Elle doit être au format date."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de cap"));
+				return false;
+			}
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceElemen)) ? Integer
