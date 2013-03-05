@@ -33,7 +33,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// on recupere les evaluateurs deja present
-		ArrayList<AgentNW> listDep= new ArrayList<AgentNW>();
+		ArrayList<AgentNW> listDep = new ArrayList<AgentNW>();
 		if (isFirst()) {
 			listDep = (ArrayList) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
 			VariablesActivite.enlever(this, "LISTEEVALUATEUR");
@@ -42,7 +42,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 			setListeDepart(listeBis);
 			setFirst(false);
 		}
-		recupereEvaluateur(request,listDep);
+		recupereEvaluateur(request, listDep);
 		afficheListe(request);
 		addZone(getNOM_RG_RECHERCHE(), getNOM_RB_RECH_NOM());
 
@@ -58,11 +58,11 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	}
 
 	private void afficheListe(HttpServletRequest request) {
-		for (int j = 0; j< getListeEvaluateurs().size(); j++) {
+		for (int j = 0; j < getListeEvaluateurs().size(); j++) {
 			AgentNW agent = (AgentNW) getListeEvaluateurs().get(j);
 			Integer i = Integer.valueOf(agent.getIdAgent());
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
-			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent()+ " " + agent.getPrenomAgent());
+			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			if (getListeEvaluateursExistant().contains(agent))
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 		}
@@ -178,8 +178,9 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 
 			// Si clic sur le bouton PB_OK
 			for (int i = 0; i < getListeEvaluateursPossible().size(); i++) {
-				if (testerParametre(request, getNOM_PB_OK(i))) {
-					return performPB_OK(request, i);
+				AgentNW ag = getListeEvaluateursPossible().get(i);
+				if (testerParametre(request, getNOM_PB_OK(Integer.valueOf(ag.getIdAgent())))) {
+					return performPB_OK(request, Integer.valueOf(ag.getIdAgent()));
 				}
 			}
 		}
@@ -492,10 +493,10 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	 * setStatut(STATUT,Message d'erreur) Date de création : (01/01/03 09:35:10)
 	 * 
 	 */
-	public boolean performPB_OK(HttpServletRequest request, int elemSelection) throws Exception {
+	public boolean performPB_OK(HttpServletRequest request, Integer idAgent) throws Exception {
 
-		AgentNW agent = (AgentNW) getListeEvaluateursPossible().get(elemSelection);
-		if (getVAL_CK_SELECT_LIGNE_POSSIBLE(elemSelection).equals(getCHECKED_ON())) {
+		AgentNW agent = AgentNW.chercherAgent(getTransaction(), idAgent.toString());
+		if (getVAL_CK_SELECT_LIGNE_POSSIBLE(idAgent).equals(getCHECKED_ON())) {
 			getListeEvaluateursPossible().remove(agent);
 			getListeEvaluateurs().add(agent);
 			afficheListeEvalPossible(request);
@@ -510,7 +511,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 	}
 
 	public ArrayList<AgentNW> getListeDepart() {
-		return listeDepart ==null ? new ArrayList<AgentNW>() : listeDepart;
+		return listeDepart == null ? new ArrayList<AgentNW>() : listeDepart;
 	}
 
 	public void setListeDepart(ArrayList<AgentNW> listeDepart) {

@@ -71,8 +71,9 @@ function SelectLigne(id,tailleTableau)
 	           	<div style="overflow: auto;height: 150px;width:1030px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:1010px;">
 					<%
-					int indiceAgent = 0;
 							for (int i = 0;i<process.getListeEvaluateursPossible().size();i++){
+								AgentNW ag = process.getListeEvaluateursPossible().get(i);
+								Integer indiceAgent = Integer.valueOf(ag.getIdAgent());
 					%>
 						<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeEvaluateursPossible().size()%>)" >
 							<td style="display:none;"><%=process.getVAL_ST_ID_AGENT_POSSIBLE(indiceAgent)%></td>
@@ -81,7 +82,6 @@ function SelectLigne(id,tailleTableau)
 							<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_OK(indiceAgent)%>" value="x"></td>
 						</tr>
 					<%
-						indiceAgent++;
 					}%>
 					</table>	
 				</div>

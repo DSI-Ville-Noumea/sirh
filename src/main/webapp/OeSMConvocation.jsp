@@ -187,7 +187,7 @@
 					if (process.getListeSuiviMed()!=null){
 						for (int i = 0;i<process.getListeSuiviMed().size();i++){
 							SuiviMedical sm = process.getListeSuiviMed().get(i);
-							Integer indiceSM = Integer.valueOf(sm.getIdSuiviMed());
+							Integer indiceSM = sm.getIdSuiviMed();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_SM(indiceSM)%></td>

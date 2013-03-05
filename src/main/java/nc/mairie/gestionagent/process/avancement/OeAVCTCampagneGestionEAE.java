@@ -3248,6 +3248,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
 
+		performPB_FILTRER(request);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}

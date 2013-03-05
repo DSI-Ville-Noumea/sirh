@@ -349,15 +349,17 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_MODIFIER
 			for (int i = 0; i < getListeSuiviMed().size(); i++) {
-				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
-					return performPB_MODIFIER(request, i);
+				SuiviMedical sm = getListeSuiviMed().get(i);
+				if (testerParametre(request, getNOM_PB_MODIFIER(sm.getIdSuiviMed()))) {
+					return performPB_MODIFIER(request, sm.getIdSuiviMed());
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER
 			for (int i = 0; i < getListeSuiviMed().size(); i++) {
-				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
-					return performPB_SUPPRIMER(request, i);
+				SuiviMedical sm = getListeSuiviMed().get(i);
+				if (testerParametre(request, getNOM_PB_SUPPRIMER(sm.getIdSuiviMed()))) {
+					return performPB_SUPPRIMER(request, sm.getIdSuiviMed());
 				}
 			}
 
@@ -2005,15 +2007,15 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * RG_AG_CA_A07
 	 */
-	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+	public boolean performPB_MODIFIER(HttpServletRequest request, int idSm) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		setStatut(STATUT_MEME_PROCESS);
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(indiceEltAModifier), EnumEtatSuiviMed.PLANIFIE.getCode());
-		addZone(getVAL_CK_A_IMPRIMER_CONVOC(indiceEltAModifier), Const.CHAINE_VIDE);
-		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(indiceEltAModifier), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.PLANIFIE.getCode());
+		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
+		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -2035,18 +2037,18 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * RG_AG_CA_A08
 	 */
-	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
+	public boolean performPB_SUPPRIMER(HttpServletRequest request, int idSm) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 		setStatut(STATUT_MEME_PROCESS);
 
 		// on change l'etat juste pour l'affichage
-		addZone(getNOM_ST_ETAT(indiceEltASuprimer), EnumEtatSuiviMed.TRAVAIL.getCode());
-		addZone(getNOM_ST_DATE_PROCHAIN_RDV(indiceEltASuprimer), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_HEURE_RDV_SELECT(indiceEltASuprimer), Const.ZERO);
-		addZone(getNOM_LB_MEDECIN_SELECT(indiceEltASuprimer), Const.ZERO);
-		addZone(getVAL_CK_A_IMPRIMER_CONVOC(indiceEltASuprimer), Const.CHAINE_VIDE);
-		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(indiceEltASuprimer), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ETAT(idSm), EnumEtatSuiviMed.TRAVAIL.getCode());
+		addZone(getNOM_ST_DATE_PROCHAIN_RDV(idSm), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_HEURE_RDV_SELECT(idSm), Const.ZERO);
+		addZone(getNOM_LB_MEDECIN_SELECT(idSm), Const.ZERO);
+		addZone(getVAL_CK_A_IMPRIMER_CONVOC(idSm), Const.CHAINE_VIDE);
+		addZone(getVAL_CK_A_IMPRIMER_ACCOMP(idSm), Const.CHAINE_VIDE);
 
 		return true;
 	}

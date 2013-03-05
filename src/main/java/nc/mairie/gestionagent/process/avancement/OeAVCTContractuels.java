@@ -57,7 +57,7 @@ public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
 		initialiseListeDeroulante();
 
 		// Si liste avancements vide alors initialisation.
-		if ( getListeAvct().size() == 0) {
+		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
@@ -68,11 +68,16 @@ public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
 				Integer i = Integer.valueOf(av.getIdAvct());
 				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 				FichePoste fp = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), av.getNumFP());
-				TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+				TitrePoste tp = null;
+				if (fp != null && fp.getIdTitrePoste() != null) {
+					tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+					if(getTransaction().isErreur())
+						getTransaction().traiterErreur();
+				}
 
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche());
-				addZone(getNOM_ST_FP(i), av.getNumFP() + " <br> " + tp.getLibTitrePoste());
+				addZone(getNOM_ST_FP(i), av.getNumFP() + " <br> " + (tp == null ? "&nbsp;" : tp.getLibTitrePoste()));
 				addZone(getNOM_ST_PA(i), av.getPa());
 				addZone(getNOM_ST_CATEGORIE(i), av.getCodeCadre());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
@@ -262,7 +267,7 @@ public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on recupere les lignes qui sont cochées pour affecter
 		int nbAgentAffectes = 0;
-		for (int j = 0; j< getListeAvct().size(); j++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementContractuels avct = (AvancementContractuels) getListeAvct().get(j);
 			Integer i = Integer.valueOf(avct.getIdAvct());
