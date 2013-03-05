@@ -941,22 +941,25 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_GERER_EVALUATEUR
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_GERER_EVALUATEUR(i))) {
-					return performPB_GERER_EVALUATEUR(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_GERER_EVALUATEUR(eae.getIdEAE()))) {
+					return performPB_GERER_EVALUATEUR(request, eae.getIdEAE());
 				}
 			}
 
 			// Si clic sur le bouton PB_RECHERCHER_AGENT
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT(i))) {
-					return performPB_RECHERCHER_AGENT(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT(eae.getIdEAE()))) {
+					return performPB_RECHERCHER_AGENT(request, eae.getIdEAE());
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(i))) {
-					return performPB_SUPPRIMER_RECHERCHER_AGENT(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT(eae.getIdEAE()))) {
+					return performPB_SUPPRIMER_RECHERCHER_AGENT(request, eae.getIdEAE());
 				}
 			}
 
@@ -967,8 +970,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_VALID_EAE
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_VALID_EAE(i))) {
-					return performPB_VALID_EAE(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_VALID_EAE(eae.getIdEAE()))) {
+					return performPB_VALID_EAE(request, eae.getIdEAE());
 				}
 			}
 
@@ -979,22 +983,25 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_DEFINALISE_EAE
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_DEFINALISE_EAE(i))) {
-					return performPB_DEFINALISE_EAE(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_DEFINALISE_EAE(eae.getIdEAE()))) {
+					return performPB_DEFINALISE_EAE(request, eae.getIdEAE());
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPP_EAE
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_SUPP_EAE(i))) {
-					return performPB_SUPP_EAE(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_SUPP_EAE(eae.getIdEAE()))) {
+					return performPB_SUPP_EAE(request, eae.getIdEAE());
 				}
 			}
 
 			// Si clic sur le bouton PB_DESUPP_EAE
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_DESUPP_EAE(i))) {
-					return performPB_DESUPP_EAE(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_DESUPP_EAE(eae.getIdEAE()))) {
+					return performPB_DESUPP_EAE(request, eae.getIdEAE());
 				}
 			}
 
@@ -1020,8 +1027,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
 			// Si clic sur le bouton PB_CONSULTER_DOC
 			for (int i = 0; i < getListeEAE().size(); i++) {
-				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(i))) {
-					return performPB_CONSULTER_DOC(request, i);
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(eae.getIdEAE()))) {
+					return performPB_CONSULTER_DOC(request, eae.getIdEAE());
 				}
 			}
 
@@ -1065,11 +1073,11 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_GERER_EVALUATEUR(HttpServletRequest request, int elementEae) throws Exception {
+	public boolean performPB_GERER_EVALUATEUR(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 		ArrayList listeEval = new ArrayList();
 
-		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
+		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
 		ArrayList<EaeEvaluateur> listeEvalEAE = getEaeEvaluateurDao().listerEvaluateurEAE(eaeCourant.getIdEAE());
 
@@ -1571,13 +1579,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
-	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request, int elem) throws Exception {
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
 		// On met l'agent courant en var d'activité
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
 
-		EAE eaeCourant = (EAE) getListeEAE().get(elem);
+		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
@@ -1610,10 +1618,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request, int elemSupp) throws Exception {
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 		// On enlève l'agent selectionnée
-		EAE eaeSelection = getListeEAE().get(elemSupp);
+		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
 		eaeSelection.setIdDelegataire(null);
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEAE(), eaeSelection.getIdDelegataire());
 		// si EAE d'un détaché alors on repasse le statut a "NA"
@@ -2955,14 +2963,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_VALID_EAE(HttpServletRequest request, int elementEae) throws Exception {
+	public boolean performPB_VALID_EAE(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
+		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
-		if (getVAL_CK_VALID_EAE(elementEae).equals(getCHECKED_ON())) {
+		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
 
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
@@ -3152,9 +3160,9 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_DEFINALISE_EAE(HttpServletRequest request, int elementEae) throws Exception {
+	public boolean performPB_DEFINALISE_EAE(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		EAE eaeCourant = (EAE) getListeEAE().get(elementEae);
+		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
 
 		getEaeCourant().setEtat(EnumEtatEAE.EN_COURS.getCode());
@@ -3189,13 +3197,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
-	public boolean performPB_SUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+	public boolean performPB_SUPP_EAE(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
+		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
 		// on supprime tous les evaluateurs existants
 		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(eaeSelection.getIdEAE());
 		for (int i = 0; i < evaluateursExistants.size(); i++) {
@@ -3229,13 +3237,13 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
-	public boolean performPB_DESUPP_EAE(HttpServletRequest request, int indiceEltASupp) throws Exception {
+	public boolean performPB_DESUPP_EAE(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		EAE eaeSelection = getListeEAE().get(indiceEltASupp);
+		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
 		// on met à jour le statut de l'EAE
 		eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 		getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
@@ -3465,7 +3473,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
-	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int idEae) throws Exception {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -3473,7 +3481,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 		logger.info("Rep stock : " + repertoireStockage);
 
 		// Récup de l'EAE courant
-		EAE eae = (EAE) getListeEAE().get(indiceEltAConsulter);
+		EAE eae = getEaeDao().chercherEAE(idEae);
 		String finalisation = getEaeFinalisationDao().chercherDernierDocumentFinalise(eae.getIdEAE());
 		// on affiche le document
 		logger.info("Script : " + getScriptOuverture(repertoireStockage + finalisation));
