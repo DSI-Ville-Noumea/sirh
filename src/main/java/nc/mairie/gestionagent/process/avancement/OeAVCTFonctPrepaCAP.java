@@ -1348,7 +1348,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		verifieRepertoire("Avancement");
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		String destination = repPartage + "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
+		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
 		// on receupere la CAP et le cadre Emploi
 		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
 		CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), indiceCadreEmploi);
@@ -1361,7 +1361,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		}
 
 		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), Integer.valueOf(cadre.getIdCadreEmploi()), "PDF");
-		if (!saveFileToRemoteFileSystem(fileAsBytes, destination)) {
+		if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 			// "ERR182",
 			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
@@ -1412,14 +1412,14 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		return response;
 	}
 
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String filename) throws Exception {
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
 
 		BufferedOutputStream bos = null;
 		FileObject pdfFile = null;
 
 		try {
 			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s", filename));
+			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
 			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
 			IOUtils.write(fileAsBytes, bos);
 			IOUtils.closeQuietly(bos);
@@ -1427,14 +1427,15 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			if (pdfFile != null) {
 				try {
 					pdfFile.close();
-					setURLFichier(getScriptOuverture(filename));
+					String repLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+					setURLFichier(getScriptOuverture(repLecture + filename));
 				} catch (FileSystemException e) {
 					// ignore the exception
 				}
 			}
 		} catch (Exception e) {
 			setURLFichier(null);
-			logger.error(String.format("An error occured while writing the report file to the following path  : " + filename + " : " + e));
+			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
 			return false;
 		}
 		return true;
