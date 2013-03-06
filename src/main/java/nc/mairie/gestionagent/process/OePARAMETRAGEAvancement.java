@@ -2470,18 +2470,21 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getZone(getNOM_EF_REF_CAP()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "référence"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 		// Verification code cap not null
 		if (getZone(getNOM_EF_CODE_CAP()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 		// Verification description not null
 		if (getZone(getNOM_EF_DESCRIPTION_CAP()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "description"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 
@@ -2491,6 +2494,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeEmployeurCap() == null || getListeEmployeurCap().size() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Employeurs"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 
@@ -2500,6 +2504,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeRepresentantCap() == null || getListeRepresentantCap().size() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Représentants"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 
@@ -2509,6 +2514,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 		if (getListeCorpsCap() == null || getListeCorpsCap().size() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Corps"));
+			setFocus(getDefaultFocus());
 			return false;
 		}
 		return true;
@@ -2527,6 +2533,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
+					setFocus(getDefaultFocus());
 					return false;
 				}
 			}
@@ -2539,6 +2546,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une CAP", "ce code"));
+					setFocus(getDefaultFocus());
 					return false;
 				}
 			}

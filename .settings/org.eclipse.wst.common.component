@@ -4,9 +4,6 @@
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="sirh_api-2.14.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sirh_api/sirh_api">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="framework-1.5.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/framework/framework">
             <dependency-type>uses</dependency-type>
         </dependent-module>
