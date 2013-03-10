@@ -225,7 +225,7 @@ function reduireHierarchy() {
 							<%} %>
 							</td>
 							<td>							
-							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
+							<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && (eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode()) ||eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) )){ %>
 								<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceAvct)%>">	
 							<%} %>
 							</td>
