@@ -1129,7 +1129,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT_";
+		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT";
 	}
 
 	/**
@@ -1482,7 +1482,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT_";
+		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT";
 	}
 
 	/**

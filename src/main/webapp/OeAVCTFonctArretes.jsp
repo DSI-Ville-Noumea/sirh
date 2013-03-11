@@ -227,6 +227,9 @@ function reduireHierarchy() {
 									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
+								<td>
+									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+								</td>
 								<td>								
 									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
 									<INPUT style="visibility: visible;" type="checkbox" onClick='validArrImpr("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>

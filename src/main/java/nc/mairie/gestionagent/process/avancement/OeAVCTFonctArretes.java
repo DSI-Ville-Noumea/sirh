@@ -127,6 +127,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
+			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_ARR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_ARR_IMPR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue()) ? getCHECKED_ON()
 					: getCHECKED_OFF());
@@ -569,7 +570,14 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 				}
 
 			}
-
+			// on traite la regularisation
+			if (getVAL_CK_REGUL_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+				avct.setRegularisation(true);
+			} else {
+				avct.setRegularisation(false);
+			}
+			
+			
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on traite l'avis CAP
 				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
@@ -1163,7 +1171,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_" + i+"_SELECT_";
+		return "NOM_LB_AVIS_CAP_CLASSE_" + i + "_SELECT";
 	}
 
 	/**
@@ -1219,7 +1227,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_" + i+"_SELECT_";
+		return "NOM_LB_AVIS_CAP_AD_" + i + "_SELECT";
 	}
 
 	/**
@@ -1301,7 +1309,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_CLASSE_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_CLASSE_EMP_" + i+"_SELECT_";
+		return "NOM_LB_AVIS_CAP_CLASSE_EMP_" + i + "_SELECT";
 	}
 
 	/**
@@ -1357,7 +1365,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_AVIS_CAP_AD_EMP_SELECT(int i) {
-		return "NOM_LB_AVIS_CAP_AD_EMP_" + i+"_SELECT_";
+		return "NOM_LB_AVIS_CAP_AD_EMP_" + i + "_SELECT";
 	}
 
 	/**
@@ -1443,6 +1451,24 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_REGUL_ARR_IMPR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_REGUL_ARR_IMPR(int i) {
+		return "NOM_CK_REGUL_ARR_IMPR_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_REGUL_SGC_ARR Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_REGUL_ARR_IMPR(int i) {
+		return getZone(getNOM_CK_REGUL_ARR_IMPR(i));
+	}
+
+	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_USER_VALID_SGC_ARR
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
@@ -1477,13 +1503,14 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, String idAvct) throws Exception {
-		
+
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
 		int indiceElemen = Integer.valueOf(idAvct);
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
-			//on verifie si la date de CAP est remplie
+			// on verifie si la date de CAP est remplie
 			// date de debut obligatoire
 			if ((Const.CHAINE_VIDE).equals(getVAL_ST_DATE_CAP_GLOBALE())) {
+				addZone(getNOM_CK_VALID_ARR(indiceElemen), getCHECKED_OFF());
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de cap"));
 				return false;
@@ -1491,6 +1518,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 			// format date de debut
 			if (!Services.estUneDate(getVAL_ST_DATE_CAP_GLOBALE())) {
+				addZone(getNOM_CK_VALID_ARR(indiceElemen), getCHECKED_OFF());
 				// "ERR007",
 				// "La date @ est incorrecte. Elle doit être au format date."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de cap"));
