@@ -318,7 +318,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			ArrayList avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
 			setListeAvisCAPMinMoyMax(avis);
 
-			int[] tailles = { 7 };
+			int[] tailles = { 15 };
 			String[] champs = { "libLongAvisCAP" };
 			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 			setLB_AVIS_CAP_AD_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));
@@ -335,7 +335,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			ArrayList avis = AvisCap.listerAvisCapFavDefav(getTransaction());
 			setListeAvisCAPFavDefav(avis);
 
-			int[] tailles = { 7 };
+			int[] tailles = { 15 };
 			String[] champs = { "libLongAvisCAP" };
 			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));

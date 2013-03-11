@@ -115,13 +115,16 @@ function reduireHierarchy() {
 					</script>
 				</div>
           	<BR/>
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
+		</FIELDSET>
+		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		    <legend class="sigp2Legend">Date de la CAP</legend>
           	<span class="sigp2Mandatory" style="width:100px">Date de la CAP : </span>
 			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CAP_GLOBALE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CAP_GLOBALE() %>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CAP_GLOBALE()%>', 'dd/mm/y');">
 			<BR/><BR/>
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 		</FIELDSET>
-		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des avancements des fonctionnaires</legend>
 			<BR/>
