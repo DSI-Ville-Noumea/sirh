@@ -173,7 +173,7 @@ function reduireHierarchy() {
 								</td>
 								<td>
 									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
-										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
+										<%if(avct.getIdMotifAvct().equals("7") && avct.getIdAvisCAP().equals("1")){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										&nbsp;
@@ -197,7 +197,7 @@ function reduireHierarchy() {
 								</td>
 								<td>
 									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
-										<%if(avct.getIdMotifAvct().equals("7") && (avct.getIdAvisCAP().equals("1")||avct.getIdAvisCAP().equals("3"))){%>
+										<%if(avct.getIdMotifAvct().equals("7") && avct.getIdAvisCAP().equals("1")){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										<INPUT style="visibility: hidden;" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">

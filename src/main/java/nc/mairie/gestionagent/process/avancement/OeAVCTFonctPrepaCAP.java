@@ -725,7 +725,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						// on test si "moyenne" choisi alors on remete à vide
 						// ordre du
 						// mérite
-						if (indiceAvisCapMinMoyMax != 1) {
+						if (indiceAvisCapMinMoyMax ==0) {
 							String ordre = getVAL_EF_ORDRE_MERITE(idAvct);
 							if (!ordre.equals(Const.CHAINE_VIDE)) {
 								avct.setOrdreMerite(ordre);
