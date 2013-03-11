@@ -2433,7 +2433,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			// pour l'anciennete on met le resultat en nb de jours
 			if (carrCours != null && carrCours.getDateDebut() != null) {
 				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
-				evalAModif.setAncienneteEchelonJours(nbJours);
+				evalAModif.setAncienneteEchelonJours(nbJours>0 ? nbJours - 1 : 0);
 			}
 
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
