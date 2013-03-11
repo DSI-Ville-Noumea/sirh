@@ -217,7 +217,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 				// pas de campagne pour cette année
 			}
 			// motif Avct
-			if (av.getIdMotifAvct() != null) {
+			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
 				motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
 			}
 			addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>" + avisSHD);

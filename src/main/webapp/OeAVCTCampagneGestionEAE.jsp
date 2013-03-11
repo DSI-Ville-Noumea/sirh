@@ -210,10 +210,13 @@ function reduireHierarchy() {
 								<INPUT type="checkbox" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_MAJ(indiceAvct),process.getVAL_CK_VALID_MAJ(indiceAvct))%>>
 							<%} %>
 							</td>
-							<td><%=process.getVAL_ST_CONTROLE_PAR(indiceAvct)%>
+							<td align="center"><%=process.getVAL_ST_CONTROLE_PAR(indiceAvct)%><BR/>
 								<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
 								<INPUT <%=eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? "disabled='disabled'" : "" %>type="checkbox" onclick='executeBouton("<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>")' <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_EAE(indiceAvct),process.getVAL_CK_VALID_EAE(indiceAvct))%> >
 								<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_VALID_EAE(indiceAvct)%>">		
+								<%} %>
+								<%if( process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() &&eae!=null && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+								<INPUT title="dé-contôlé EAE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DEVALID_EAE(indiceAvct)%>">
 								<%} %>
 							</td>	
 							<td>

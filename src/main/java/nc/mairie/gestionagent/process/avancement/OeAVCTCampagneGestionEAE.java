@@ -976,6 +976,14 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_DEVALID_EAE
+			for (int i = 0; i < getListeEAE().size(); i++) {
+				EAE eae = getListeEAE().get(i);
+				if (testerParametre(request, getNOM_PB_DEVALID_EAE(eae.getIdEAE()))) {
+					return performPB_DEVALID_EAE(request, eae.getIdEAE());
+				}
+			}
+
 			// Si clic sur le bouton PB_METRE_A_JOUR_EAE
 			if (testerParametre(request, getNOM_PB_METTRE_A_JOUR_EAE())) {
 				return performPB_METTRE_A_JOUR_EAE(request);
@@ -2433,7 +2441,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			// pour l'anciennete on met le resultat en nb de jours
 			if (carrCours != null && carrCours.getDateDebut() != null) {
 				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
-				evalAModif.setAncienneteEchelonJours(nbJours>0 ? nbJours - 1 : 0);
+				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			}
 
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
@@ -3044,6 +3052,62 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(), getEaeCourant().getHeureControle(),
 					getEaeCourant().getUserControle(), getEaeCourant().getEtat());
 		}
+		// on reinitialise l'affichage du tableau
+		performPB_FILTRER(request);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_PB_CREER_EAE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_PB_DEVALID_EAE(int i) {
+		return "NOM_PB_DEVALID_EAE" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public boolean performPB_DEVALID_EAE(HttpServletRequest request, int idEae) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
+		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
+		setEaeCourant(eaeCourant);
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		String heureAction = sdf.format(new Date());
+
+		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
+				.getAnnee().toString(), evalue.getIdAgent().toString());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "INF500",
+			// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
+			setMessage(MessageUtils.getMessage("INF500"));
+			return false;
+		}
+
+		avct.setIdMotifAvct(null);
+		avct.setAvisSHD(null);
+
+		avct.modifierAvancement(getTransaction());
+
+		// tout s'est bien passé
+		commitTransaction();
+
+		// on met à jour le statut de l'EAE
+		getEaeCourant().setEtat(EnumEtatEAE.FINALISE.getCode());
+		getEaeCourant().setDateControle(new Date());
+		getEaeCourant().setHeureControle(heureAction);
+		getEaeCourant().setUserControle(user.getUserName());
+		getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(), getEaeCourant().getHeureControle(),
+				getEaeCourant().getUserControle(), getEaeCourant().getEtat());
+
 		// on reinitialise l'affichage du tableau
 		performPB_FILTRER(request);
 		return true;
