@@ -2960,6 +2960,20 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
+		
+		//on gere les corps deja selctionné
+		setListeCorpsCap(null);
+		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
+		for (int i = 0; i < getListeCorps().size(); i++) {
+			// on recupère la ligne concernée
+			GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
+			if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
+				listeCorps.add(gg);
+			}
+		}
+		setListeCorpsCap(listeCorps);
+		
+		
 		return true;
 	}
 
@@ -3223,6 +3237,18 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
+		
+		//on gere les corps deja selectionnés
+		setListeCorpsCap(null);
+		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
+		for (int i = 0; i < getListeCorps().size(); i++) {
+			// on recupère la ligne concernée
+			GradeGenerique gg = (GradeGenerique) getListeCorps().get(i);
+			if (getVAL_CK_SELECT_LIGNE_CORPS(i).equals(getCHECKED_ON())) {
+				listeCorps.add(gg);
+			}
+		}
+		setListeCorpsCap(listeCorps);
 		return true;
 	}
 
