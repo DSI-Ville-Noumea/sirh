@@ -132,7 +132,7 @@ function reduireHierarchy() {
 					<thead>
 						<tr>
 							<th>NumAvct</th>
-							<th>Dir.<br> Sect.</th>
+							<th>Dir. <br> Sect.</th>
 							<th>Nom <br> Prénom <br> Matr</th>
 							<th>Cat <br> Filière</th>
 							<th>Carr Simu</th>
@@ -145,6 +145,7 @@ function reduireHierarchy() {
 							<th>Observations</th>
 							<th>Verif SGC</th>	
 							<th>Date Avct</th>
+							<th>Regul.</th>
 							<th>A imprimer</th>	
 							<th>Imprimé le <br> A <br> PAR</th>						
 						</tr>
@@ -231,7 +232,11 @@ function reduireHierarchy() {
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>
+									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+									<%}else{ %>
+									<INPUT style="visibility: hidden;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+									<%} %>
 								</td>
 								<td>								
 									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
@@ -257,7 +262,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,

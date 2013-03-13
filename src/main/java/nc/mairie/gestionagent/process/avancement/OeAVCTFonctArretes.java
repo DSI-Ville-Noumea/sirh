@@ -1505,7 +1505,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, String idAvct) throws Exception {
 
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
-		int indiceElemen = Integer.valueOf(idAvct);
+		Integer indiceElemen = Integer.valueOf(idAvct);
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
 			// on verifie si la date de CAP est remplie
 			// date de debut obligatoire
