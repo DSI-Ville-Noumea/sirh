@@ -20,7 +20,6 @@
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
-<script type="text/javascript" src="js/eae.js"></script>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -53,7 +52,7 @@ function reduireHierarchy() {
 	hier = 	document.getElementById('treeHierarchy');
 	hier.style.display='none';
 }
-</SCRIPT>
+</SCRIPT>					
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean
@@ -61,6 +60,27 @@ function reduireHierarchy() {
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+	<script type="text/javascript">
+	function activeMAJ() {						
+			<%
+			for (int j = 0;j<process.getListeEAE().size();j++){
+				EAE eae = process.getListeEAE().get(j);
+				Integer i = eae.getIdEAE();
+			%>
+			var box = document.formu.elements['NOM_CK_VALID_MAJ_'+<%=i %>];  		
+	  		if(document.formu.elements['CHECK_ALL_MAJ'].checked ){
+	  			if(box!=null && !box.disabled){			
+					box.checked=true; 
+				}			
+	  		}else{
+	  			if(box!=null && !box.disabled){		
+					box.checked=false; 
+				}
+			}
+			<%}%>
+}
+</script>
+
 	<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
@@ -153,7 +173,7 @@ function reduireHierarchy() {
 						<th>Etat <br> Crée le <br> Finalisé le <br> Contrôlé le</th>
 						<th>Dé-finaliser EAE</th>
 						<th>Mettre à jour EAE
-								<INPUT type="checkbox" name="CHECK_ALL_MAJ" onClick='activeMAJ("<%=process.getListeEAE().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_MAJ" onClick='activeMAJ()'>
 						</th>
 						<th>Contrôlé par</th>
 						<th>Supp EAE</th>
@@ -240,7 +260,7 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,
