@@ -23,7 +23,6 @@
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
-<script type="text/javascript" src="js/suiviMed.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 <SCRIPT language="JavaScript">
@@ -73,6 +72,44 @@
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+		<script type="text/javascript">
+	function activeImprimerConvoc() {						
+			<%
+			for (int j = 0;j<process.getListeSuiviMed().size();j++){
+				SuiviMedical sm = process.getListeSuiviMed().get(j);
+				Integer i = sm.getIdSuiviMed();
+			%>
+			var box = document.formu.elements['NOM_CK_A_IMPRIMER_CONVOC_'+<%=i %>];  		
+	  		if(document.formu.elements['CHECK_ALL_IMPRIMER_CONVOC'].checked){
+	  			if(box!=null && !box.disabled){	
+					box.checked=true;  
+				}			
+		  	}else{
+	  			if(box!=null && !box.disabled){	
+					box.checked=false;	
+				}		
+			}
+			<%}%>
+}
+	function activeImprimerAccomp() {						
+		<%
+		for (int j = 0;j<process.getListeSuiviMed().size();j++){
+			SuiviMedical sm = process.getListeSuiviMed().get(j);
+			Integer i = sm.getIdSuiviMed();
+		%>
+		var box = document.formu.elements['NOM_CK_A_IMPRIMER_ACCOMP_'+<%=i %>];  		
+  		if(document.formu.elements['CHECK_ALL_IMPRIMER_ACCOMP'].checked){
+  			if(box!=null && !box.disabled){	
+				box.checked=true;  
+			}			
+	  	}else{
+  			if(box!=null && !box.disabled){	
+				box.checked=false;	
+			}		
+		}
+		<%}%>
+}
+</script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<% if (!process.convocationsEnErreur.equals("")){ %>
 		 <FIELDSET style="border-color : red red red red;">
@@ -178,10 +215,10 @@
 							<th>Date prochain RDV</th>
 							<th>Heure prochain RDV</th>
 							<th>Imprimer convoc.							
-								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_CONVOC" onClick='activeImprimerConvoc("<%=process.getListeSuiviMed().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_CONVOC" onClick='activeImprimerConvoc()'>
 							</th>
 							<th>Imprimer accomp.
-								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_ACCOMP" onClick='activeImprimerAccomp("<%=process.getListeSuiviMed().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_IMPRIMER_ACCOMP" onClick='activeImprimerAccomp()'>
 							</th>
 							<th style="display: none;" >Etat</th>
 						</tr>
@@ -257,7 +294,7 @@
 					$(document).ready(function() {
 					    $('#tabSuiviMed').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"bPaginate": false,
 							"oTableTools": {
