@@ -69,6 +69,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private String[] LB_RELANCE;
 	private String[] LB_MOTIF;
 	private String[] LB_ETAT;
+	private String[] LB_STATUT;
 
 	private String[] listeMois;
 	private Hashtable<String, String> hashMois;
@@ -98,6 +99,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private ArrayList listeServices;
 	private ArrayList<String> listeRelance;
+	private ArrayList<String> listeStatut;
 	private ArrayList<MotifVisiteMed> listeMotif;
 	private ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed;
 	public Hashtable<String, TreeHierarchy> hTree = null;
@@ -411,6 +413,24 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
 		}
 
+		// Si liste statut vide alors affectation
+		if (getLB_STATUT() == LBVide) {
+			ArrayList<String> listeStatut = new ArrayList<String>();
+			listeStatut.add("F");
+			listeStatut.add("C");
+			listeStatut.add("CC");
+			setListeStatut(listeStatut);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = listeStatut.listIterator(); list.hasNext();) {
+				String statut = (String) list.next();
+				String ligne[] = { statut };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_STATUT(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_STATUT_SELECT(), Const.ZERO);
+		}
+
 		// Si liste motif vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
 			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
@@ -603,6 +623,13 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				relance = getListeRelance().get(indiceRelance - 1);
 			}
 
+			// recupération statut
+			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+			String statut = Const.CHAINE_VIDE;
+			if (indiceStatut > 0) {
+				statut = getListeStatut().get(indiceStatut - 1);
+			}
+
 			// recuperation agent
 			AgentNW agent = null;
 			if (getVAL_ST_AGENT().length() != 0) {
@@ -618,7 +645,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			}
 
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif, etat));
+					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif, etat, statut));
 			afficheListeSuiviMed();
 			// getSuiviMedDao().detruitDao();
 			// pour les documents
@@ -674,7 +701,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 			// Affichage de la liste
 			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
-					Const.CHAINE_VIDE, Const.CHAINE_VIDE));
+					Const.CHAINE_VIDE, Const.CHAINE_VIDE,Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -3574,6 +3601,69 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	public void setListeEnumEtatSuiviMed(ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed) {
 		this.listeEnumEtatSuiviMed = listeEnumEtatSuiviMed;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_STATUT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_STATUT() {
+		if (LB_STATUT == null)
+			LB_STATUT = initialiseLazyLB();
+		return LB_STATUT;
+	}
+
+	/**
+	 * Setter de la liste: LB_STATUT Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_STATUT(String[] newLB_STATUT) {
+		LB_STATUT = newLB_STATUT;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_STATUT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_STATUT() {
+		return "NOM_LB_STATUT";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_STATUT_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_STATUT_SELECT() {
+		return "NOM_LB_STATUT_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_STATUT Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_STATUT() {
+		return getLB_STATUT();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_STATUT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_STATUT_SELECT() {
+		return getZone(getNOM_LB_STATUT_SELECT());
+	}
+
+	public ArrayList<String> getListeStatut() {
+		return listeStatut == null ? new ArrayList<String>() : listeStatut;
+	}
+
+	public void setListeStatut(ArrayList<String> listeStatut) {
+		this.listeStatut = listeStatut;
 	}
 
 }

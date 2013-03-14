@@ -128,7 +128,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee, AgentNW agent,
-			ArrayList<String> listeSousService, String relance, String motifVM, String etat) throws Exception {
+			ArrayList<String> listeSousService, String relance, String motifVM, String etat, String statut) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and " + CHAMP_ETAT + "!= ? ";
 		if (agent != null) {
 			sql += " and " + CHAMP_ID_AGENT + "=" + agent.getIdAgent() + " ";
@@ -140,6 +140,11 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			} else {
 				sql += " and " + CHAMP_NB_VISITES_RATEES + " = 0 ";
 			}
+		}
+
+		if (!statut.equals(Const.CHAINE_VIDE)) {
+			sql += " and " + CHAMP_STATUT + " ='" + statut + "' ";
+
 		}
 
 		if (!motifVM.equals(Const.CHAINE_VIDE)) {
