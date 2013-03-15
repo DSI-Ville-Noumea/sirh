@@ -64,6 +64,28 @@ function reduireHierarchy() {
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+<script type="text/javascript">
+	function activeSEF() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+				Integer i = Integer.valueOf(avct.getIdAvct());
+			%>
+			var box = document.formu.elements['NOM_CK_VALID_SEF_' + <%=i%>];
+			if (document.formu.elements['CHECK_ALL_SEF'].checked) {
+				if (box != null && !box.disabled) {
+					box.checked = true;
+					validSEF(<%=i%>);
+				}
+			} else {
+				if (box != null && !box.disabled) {
+					box.checked = false;
+					validSEF(<%=i%>);
+				}
+			}
+			<%}%>
+}
+</script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
@@ -136,7 +158,7 @@ function reduireHierarchy() {
 							<th>Durée VDN</th>	
 							<th>Class. Ordre mérite</th>	
 							<th>Verif SEF <br> 							
-								<INPUT type="checkbox" name="CHECK_ALL_SEF" onClick='activeSEF("<%=process.getListeAvct().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_SEF" onClick='activeSEF()'>
 							</th>
 							<th>Vérifié par</th>
 						</tr>
@@ -229,7 +251,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,

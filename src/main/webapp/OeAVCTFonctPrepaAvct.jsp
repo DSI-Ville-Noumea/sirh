@@ -19,7 +19,6 @@
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
-<script type="text/javascript" src="js/avancementPrepaAVCT.js"></script>
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
@@ -63,6 +62,26 @@ function reduireHierarchy() {
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+<script type="text/javascript">
+	function activeSGC() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+				Integer i = Integer.valueOf(avct.getIdAvct());
+			%>
+			var box = document.formu.elements['NOM_CK_VALID_SGC_'+<%=i%>];  		
+	  		if(document.formu.elements['CHECK_ALL_SGC'].checked ){
+	  			if(box!=null && !box.disabled){			
+					box.checked=true; 
+				}			
+	  		}else{
+	  			if(box!=null && !box.disabled){		
+					box.checked=false; 
+				}
+			}
+			<%}%>
+}
+</script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
@@ -194,7 +213,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({			    						    
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false, "sType": "date-euro"},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false, "sType": "date-euro"},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"aaSorting": [[ 2, "asc" ]],
 							"sScrollY": "375px",

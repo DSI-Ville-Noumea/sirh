@@ -15,23 +15,6 @@ function validSEF(indice) {
 		}
 	}
 }
-// active/Désactive toutes les cases à cocher pour la validation SFG
-function activeSEF(tailleListe) {
-	for (i = 0; i < tailleListe; i++) {
-		var box = document.formu.elements['NOM_CK_VALID_SEF_' + i];
-		if (document.formu.elements['CHECK_ALL_SEF'].checked) {
-			if (box != null && !box.disabled) {
-				box.checked = true;
-				validSEF(i);
-			}
-		} else {
-			if (box != null && !box.disabled) {
-				box.checked = false;
-				validSEF(i);
-			}
-		}
-	}
-}
 
 //active/Désactive la case ordre du mérite
 function activeOrdreMerite(indice) {

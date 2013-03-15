@@ -102,22 +102,3 @@ function activeProjet(tailleListe)
 		}
     }  
 }
-// active/Désactive toutes les cases à cocher pour le projet arrete
-function activeAffecter(tailleListe)
-{
-	for (i=0; i<tailleListe; i++){
-  		var box = document.formu.elements['NOM_CK_AFFECTER_'+i];  
-  		var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+i];  		
-  		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked && boxProjet!=null && boxProjet.checked){
-  			if(box!=null && !box.disabled){	
-				box.checked=true;  
-				validAffecter(i);
-			}			
-	  	}else{
-  			if(box!=null && !box.disabled){	
-				box.checked=false;	 
-				validAffecter(i);
-			}		
-		}
-    }  
-}

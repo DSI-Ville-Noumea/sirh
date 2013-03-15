@@ -39,6 +39,70 @@ document.formu.elements[nom].focus();
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+<script type="text/javascript">
+	function activeDRH() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementConvCol avct = process.getListeAvct().get(j);
+				Integer i = Integer.valueOf(avct.getIdAvct());
+			%>
+			var box = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];  		
+	  		if(document.formu.elements['CHECK_ALL_DRH'].checked ){
+	  			if(box!=null && !box.disabled){			
+					box.checked=true; 
+					validDRH(<%=i%>);  
+				}			
+	  		}else{
+	  			if(box!=null && !box.disabled){		
+					box.checked=false; 
+					validDRH(<%=i%>);
+				}
+			}
+			<%}%>
+}
+	function activeProjet() {						
+		<%
+		for (int j = 0;j<process.getListeAvct().size();j++){
+			AvancementConvCol avct = process.getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
+		%>
+		var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>]; 
+  		var boxDRH = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];   		
+  		if(document.formu.elements['CHECK_ALL_PROJET'].checked && boxDRH!=null && boxDRH.checked){
+  			if(box!=null && !box.disabled){		
+				box.checked=true; 
+				validProjet(<%=i%>);
+			}
+  		}else{
+  			if(box!=null && !box.disabled){	
+				box.checked=false; 
+				validProjet(<%=i%>);
+			}
+		}
+		<%}%>
+}
+	function activeAffecter() {						
+		<%
+		for (int j = 0;j<process.getListeAvct().size();j++){
+			AvancementConvCol avct = process.getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
+		%>
+		var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  
+  		var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>];  		
+  		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked && boxProjet!=null && boxProjet.checked){
+  			if(box!=null && !box.disabled){	
+				box.checked=true;  
+				validAffecter(<%=i%>);
+			}			
+	  	}else{
+  			if(box!=null && !box.disabled){	
+				box.checked=false;	 
+				validAffecter(<%=i%>);
+			}		
+		}
+		<%}%>
+}
+</script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 		
@@ -66,16 +130,16 @@ document.formu.elements[nom].focus();
 						<th>Grade</th>
 						<th>Libéllé</th>
 						<th>Valid. DRH						
-							<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH("<%=process.getListeAvct().size() %>")'>
+							<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH()'>
 						</th>
 						<th>Motif Avct</th>
 						<th>Projet Arrete
-							<INPUT type="checkbox" name="CHECK_ALL_PROJET" onClick='activeProjet("<%=process.getListeAvct().size() %>")'>
+							<INPUT type="checkbox" name="CHECK_ALL_PROJET" onClick='activeProjet()'>
 						</th>
 						<th>Num Arrete</th>
 						<th>Date Arrete</th>
 						<th>Affecter
-							<INPUT type="checkbox" name="CHECK_ALL_AFFECTER" onClick='activeAffecter("<%=process.getListeAvct().size() %>")'>
+							<INPUT type="checkbox" name="CHECK_ALL_AFFECTER" onClick='activeAffecter()'>
 						</th>
 					</tr>
 				</thead>
@@ -161,7 +225,7 @@ document.formu.elements[nom].focus();
 				$(document).ready(function() {
 				    $('#tabAvctConvColl').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"aaSorting": [[ 2, "asc" ]],
