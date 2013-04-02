@@ -147,7 +147,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	}
 
 	private void initialiseTableauImpressionJob() throws Exception {
-		// TODO Auto-generated method stub
 		setListeAvancementCapPrintJob(getAvancementCapPrintJobDao().listerAvancementCapPrintJob());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		for (int i = 0; i < getListeAvancementCapPrintJob().size(); i++) {

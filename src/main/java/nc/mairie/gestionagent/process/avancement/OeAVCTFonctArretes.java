@@ -1,5 +1,8 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +14,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
@@ -28,11 +32,26 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
 public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
+
+	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctArretes.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
@@ -513,7 +532,175 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
+		// on sauvegarde l'état du tableau afin de sauvegarder les
+		// regularisations
+		if (!performPB_VALIDER(request)) {
+			// "ERR184",
+			// "Une erreur est survenue dans la sauvegarde du tableau. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR184"));
+			return false;
+		}
+
+		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
+		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
+
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			if (avct.getIdAgent().equals("9004765")) {
+				System.out.print("ici");
+			}
+			Integer idAvct = Integer.valueOf(avct.getIdAvct());
+			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+				if (avct.getIdMotifAvct().equals("5")) {
+					// on fait une liste des arretes changement classe
+					listeImpressionChangementClasse.add(Integer.valueOf(avct.getIdAgent()));
+				} else if (avct.getIdMotifAvct().equals("7")) {
+					// on fait une liste des arretes avancement diffé
+					listeImpressionAvancementDiff.add(Integer.valueOf(avct.getIdAgent()));
+				} else {
+					continue;
+				}
+			}
+
+		}
+
+		verifieRepertoire("Avancement");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		if (listeImpressionChangementClasse.size() > 0) {
+			String destinationChangementClasse = "Avancement/arretesChangementClasse_" + user.getUserName() + ".doc";
+
+			byte[] fileAsBytes = getArretesReportAsByteArray(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ",""), true, Integer.valueOf(getAnneeSelect()));
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationChangementClasse)) {
+				// "ERR182",
+				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+				return false;
+			}
+
+		}
+		if (listeImpressionAvancementDiff.size() > 0) {
+			String destinationAvctDiff = "Avancement/arretesAvancementDiff_" + user.getUserName() + ".doc";
+
+			byte[] fileAsBytes = getArretesReportAsByteArray(listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ",""), false,
+					Integer.valueOf(getAnneeSelect()));
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationAvctDiff)) {
+				// "ERR182",
+				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+				return false;
+			}
+
+		}
 		return true;
+	}
+
+	private String urlFichier;
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject pdfFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (pdfFile != null) {
+				try {
+					pdfFile.close();
+					String repLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+					setURLFichier(getScriptOuverture(repLecture + filename));
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			setURLFichier(null);
+			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
+			return false;
+		}
+		return true;
+	}
+
+	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct) throws Exception {
+
+		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct);
+
+		return readResponseAsByteArray(response);
+	}
+
+	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct) {
+		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT") + "?isChangementClasse=" + isChangementClasse
+				+ "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWSArretes);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
+	private void verifieRepertoire(String codTypeDoc) {
+		// on verifie déjà que le repertoire source existe
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+
+		File dossierParent = new File(repPartage);
+		if (!dossierParent.exists()) {
+			dossierParent.mkdir();
+		}
+		File ssDossier = new File(repPartage + codTypeDoc + "/");
+		if (!ssDossier.exists()) {
+			ssDossier.mkdir();
+		}
 	}
 
 	/**
@@ -541,6 +728,9 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			if (avct.getIdAgent().equals("9004765")) {
+				System.out.print("ici");
+			}
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
@@ -557,6 +747,19 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 					avct.setHeureVerifArr(heureAction);
 					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
 				}
+				if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+					// si la ligne est cochée
+					// on regarde si l'etat est deja ARR
+					// --> oui on ne modifie pas le user
+					// --> non on passe l'etat à ARR et on met à jour le user
+					if (avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
+						// on sauvegarde qui a fait l'action
+						avct.setUserVerifArrImpr(user.getUserName());
+						avct.setDateVerifArrImpr(dateJour);
+						avct.setHeureVerifArrImpr(heureAction);
+						avct.setEtat(EnumEtatAvancement.ARRETE_IMPRIME.getValue());
+					}
+				}
 			} else {
 				// si la ligne n'est pas cochée
 				// on regarde quel etat son etat
@@ -568,6 +771,16 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 					avct.setHeureVerifArr(heureAction);
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				}
+				// si la ligne n'est pas cochée
+				// on regarde quel etat son etat
+				// --> si ARR_IMPR alors on met à jour le user
+				if (avct.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue())) {
+					// on sauvegarde qui a fait l'action
+					avct.setUserVerifArrImpr(user.getUserName());
+					avct.setDateVerifArrImpr(dateJour);
+					avct.setHeureVerifArrImpr(heureAction);
+					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
+				}
 
 			}
 			// on traite la regularisation
@@ -576,8 +789,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			} else {
 				avct.setRegularisation(false);
 			}
-			
-			
+
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on traite l'avis CAP
 				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
