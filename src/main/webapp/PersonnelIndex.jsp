@@ -54,7 +54,7 @@ var Module_agent = new Dossier("Module_agent", "Agent","AGENT");
 	Module_agent.ajouterFils(new Lien("hsct", "VisiteMedicaleGestion", "HSCT", "Gestion des données HSCT", true));
 	Module_agent.ajouterFils(new Lien("emplois", "AgtEmploisAffectations", "Emplois", "Gestion des emplois d'un agent", true));
 	Module_agent.ajouterFils(new Lien("eltsSalaires", "PAGestion", "Eléments de salaire", "Gestion des éléments de salaire d'un agent", true));
-	Module_agent.ajouterFils(new Lien("eae", "AgtEae", "EAE", "Gestion des EAE d'un agent", true));
+	//Module_agent.ajouterFils(new Lien("eae", "AgtEae", "EAE", "Gestion des EAE d'un agent", true));
 	
 //***************************************************************
 //*               Le module Gestion des avancements
