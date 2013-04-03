@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process.avancement;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +75,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
-	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -107,10 +107,30 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
 		}
 
-		// Si liste avancements vide alors initialisation.
-		if (getListeAvct().size() == 0) {
-			agentEnErreur = Const.CHAINE_VIDE;
+		// Initialisation de la liste des documents suivi medicaux
+		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
+			setListeDocuments(listerDocumentsArretes());
+			afficheListeDocuments();
+
 		}
+	}
+
+	private ArrayList<String> listerDocumentsArretes() throws ParseException {
+		ArrayList<String> res = new ArrayList<String>();
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String docuArreteChangementClasse = repPartage + "Avancement/arretesChangementClasse.doc";
+		String docuArreteAvctDiff = repPartage + "Avancement/arretesAvancementDiff.doc";
+
+		// on verifie l'existance de chaque fichier
+		boolean existsDocuArreteChangementClasse = new File(docuArreteChangementClasse).exists();
+		if (existsDocuArreteChangementClasse) {
+			res.add(docuArreteChangementClasse);
+		}
+		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff).exists();
+		if (existsDocuArreteAvctDiff) {
+			res.add(docuArreteAvctDiff);
+		}
+		return res;
 	}
 
 	private void afficheListeAvancement() throws Exception {
@@ -148,9 +168,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
 			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_ARR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
-			addZone(getNOM_CK_VALID_ARR_IMPR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue()) ? getCHECKED_ON()
-					: getCHECKED_OFF());
-
+			
 			if (av.getIdAvisArr() == null) {
 				if (!av.getIdAvisCAP().equals(Const.CHAINE_VIDE)) {
 					if (av.getIdAvisCAP().equals("3")) {
@@ -212,8 +230,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_DATE_CAP(i), av.getDateCap() == null ? "&nbps;" : av.getDateCap());
 
 			// date avct
-
-			if (av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) || av.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue())) {
+			if (av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
 				if (av.getIdMotifAvct().equals("7")) {
 					// on récupere l'avis Emp
 					int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(i)) ? Integer
@@ -421,6 +438,13 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_VISUALISER pour les documents
+			for (int i = 0; i < getListeDocuments().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
+					return performPB_VISUALISATION(request, i);
+				}
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -507,8 +531,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "'or ETAT='"
-				+ EnumEtatAvancement.ARRETE_IMPRIME.getValue() + "')";
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "')";
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
 
 		afficheListeAvancement();
@@ -532,6 +555,23 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
+
+		verifieRepertoire("Avancement");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+
+		// on supprime les documents existants
+		String docuChangementClasse = "Avancement/arretesChangementClasse.doc";
+		String docuAvctDiff = "Avancement/arretesAvancementDiff.doc";
+		// on verifie l'existance de chaque fichier
+		File chgtClasse = new File(repPartage.substring(8, repPartage.length()) + docuChangementClasse);
+		if (chgtClasse.exists()) {
+			chgtClasse.delete();
+		}
+		File avctDiff = new File(repPartage.substring(8, repPartage.length()) + docuAvctDiff);
+		if (avctDiff.exists()) {
+			avctDiff.delete();
+		}
+
 		// on sauvegarde l'état du tableau afin de sauvegarder les
 		// regularisations
 		if (!performPB_VALIDER(request)) {
@@ -540,15 +580,11 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR184"));
 			return false;
 		}
-
 		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
 		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
 
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
-			if (avct.getIdAgent().equals("9004765")) {
-				System.out.print("ici");
-			}
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
 				if (avct.getIdMotifAvct().equals("5")) {
@@ -561,37 +597,50 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 					continue;
 				}
 			}
+			addZone(getNOM_CK_VALID_ARR_IMPR(idAvct), getCHECKED_OFF());
 
 		}
-
-		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (listeImpressionChangementClasse.size() > 0) {
-			String destinationChangementClasse = "Avancement/arretesChangementClasse_" + user.getUserName() + ".doc";
 
-			byte[] fileAsBytes = getArretesReportAsByteArray(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ",""), true, Integer.valueOf(getAnneeSelect()));
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationChangementClasse)) {
-				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+			try {
+				byte[] fileAsBytes = getArretesReportAsByteArray(listeImpressionChangementClasse.toString().replace("[", "").replace("]", "")
+						.replace(" ", ""), true, Integer.valueOf(getAnneeSelect()));
+
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
+					// "ERR185",
+					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+					return false;
+				}
+			} catch (Exception e) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
 		}
 		if (listeImpressionAvancementDiff.size() > 0) {
-			String destinationAvctDiff = "Avancement/arretesAvancementDiff_" + user.getUserName() + ".doc";
+			try {
 
-			byte[] fileAsBytes = getArretesReportAsByteArray(listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ",""), false,
-					Integer.valueOf(getAnneeSelect()));
-			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationAvctDiff)) {
-				// "ERR182",
-				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+				byte[] fileAsBytes = getArretesReportAsByteArray(
+						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""), false,
+						Integer.valueOf(getAnneeSelect()));
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
+					// "ERR185",
+					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+					return false;
+				}
+			} catch (Exception e) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
 		}
+		setListeDocuments(null);
 		return true;
 	}
 
@@ -633,14 +682,11 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			if (pdfFile != null) {
 				try {
 					pdfFile.close();
-					String repLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-					setURLFichier(getScriptOuverture(repLecture + filename));
 				} catch (FileSystemException e) {
 					// ignore the exception
 				}
 			}
 		} catch (Exception e) {
-			setURLFichier(null);
 			logger.error(String.format("An error occured while writing the report file to the following path  : " + chemin + filename + " : " + e));
 			return false;
 		}
@@ -728,9 +774,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
-			if (avct.getIdAgent().equals("9004765")) {
-				System.out.print("ici");
-			}
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
@@ -757,7 +800,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 						avct.setUserVerifArrImpr(user.getUserName());
 						avct.setDateVerifArrImpr(dateJour);
 						avct.setHeureVerifArrImpr(heureAction);
-						avct.setEtat(EnumEtatAvancement.ARRETE_IMPRIME.getValue());
 					}
 				}
 			} else {
@@ -770,16 +812,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 					avct.setDateVerifArr(dateJour);
 					avct.setHeureVerifArr(heureAction);
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
-				}
-				// si la ligne n'est pas cochée
-				// on regarde quel etat son etat
-				// --> si ARR_IMPR alors on met à jour le user
-				if (avct.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue())) {
-					// on sauvegarde qui a fait l'action
-					avct.setUserVerifArrImpr(user.getUserName());
-					avct.setDateVerifArrImpr(dateJour);
-					avct.setHeureVerifArrImpr(heureAction);
-					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
 				}
 
 			}
@@ -1828,5 +1860,70 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_DATE_CAP(int i) {
 		return getZone(getNOM_ST_DATE_CAP(i));
+	}
+
+	private ArrayList<String> listeDocuments;
+
+	public ArrayList<String> getListeDocuments() {
+		if (listeDocuments == null)
+			return new ArrayList();
+		return listeDocuments;
+	}
+
+	public void setListeDocuments(ArrayList<String> listeDocuments) {
+		this.listeDocuments = listeDocuments;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_NOM_DOC(int i) {
+		return "NOM_ST_NOM_DOC_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_NOM_DOC(int i) {
+		return getZone(getNOM_ST_NOM_DOC(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_VISUALISATION(int i) {
+		return "NOM_PB_VISUALISATION" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+
+		String docSelection = getListeDocuments().get(indiceEltAConsulter);
+		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"), docSelection.length());
+
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement" + nomDoc));
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void afficheListeDocuments() {
+		for (int i = 0; i < getListeDocuments().size(); i++) {
+			String nomDoc = getListeDocuments().get(i);
+			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
+		}
 	}
 }

@@ -55,6 +55,14 @@ function reduireHierarchy() {
 	hier = 	document.getElementById('treeHierarchy');
 	hier.style.display='none';
 }
+//function pour changement couleur arriere plan ligne du tableau
+function SelectLigne(id,tailleTableau)
+{
+	for (i=0; i<tailleTableau; i++){
+ 		document.getElementById(i).className="";
+	} 
+ document.getElementById(id).className="selectLigne";
+}
   
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -223,27 +231,23 @@ function reduireHierarchy() {
 								</td>
 								<%} %>
 								<td>
-									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE_IMPRIME.getValue())){%>	
-									<INPUT style="visibility: hidden;" type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
-									<%}else{%>
 									<INPUT style="visibility: visible;"type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
-									<%} %>
 									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>
-									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
+								<%if(avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON())){ %>
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
-									<%}else{ %>
+								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
-									<%} %>
+								<%} %>
 								</td>
-								<td>								
-									<%if( avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())){%>	
-									<INPUT style="visibility: visible;" type="checkbox" onClick='validArrImpr("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
-									<%}else{%>
-									<INPUT style="visibility: hidden;" type="checkbox" onClick='validArrImpr("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>
-									<%} %>
+								<td>	
+								<%if(avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON())){ %>							
+									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
+								<%}else{ %>
+									<INPUT style="visibility: hidden;" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
+								<%} %>
 								</td>
 								<td><%=process.getVAL_ST_USER_VALID_ARR_IMPR(indiceAvct)%></td>
 								
@@ -253,11 +257,6 @@ function reduireHierarchy() {
 					%>
 					</tbody>
 				</table>
-				<% if (!process.agentEnErreur.equals("")){ %>
-					<span class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
-					<BR/><BR/>
-					<span class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
-				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
@@ -275,7 +274,30 @@ function reduireHierarchy() {
 				</script>
 			<BR/>
 		</FIELDSET>
-
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		<legend class="sigp2Legend">Documents générés</legend>	
+		<br/>
+			<span style="position:relative;width:35px;"></span>
+			<span style="position:relative;text-align: left;">Nom Document</span>
+			<br/>
+			<div style="overflow: auto;height:50px;width:1000px;margin-right: 0px;margin-left: 0px;">
+				<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<%int indiceDoc = 0;
+				if (process.getListeDocuments()!=null){
+				for (int i = 0;i<process.getListeDocuments().size();i++){
+				%>
+					<tr id="<%=indiceDoc%>" onmouseover="SelectLigne(<%=indiceDoc%>,<%=process.getListeDocuments().size()%>)">
+						<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
+							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceDoc)%>">				
+						</td>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceDoc)%></td>
+					</tr>
+				<%indiceDoc++;
+				}
+				}%>
+				</table>	
+			</div>
+		</FIELDSET>
 		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>">

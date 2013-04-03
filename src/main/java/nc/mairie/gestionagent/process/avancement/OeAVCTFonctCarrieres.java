@@ -302,7 +302,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE_IMPRIME.getValue() + "')";
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' )";
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
 
 		afficheListeAvancement();
