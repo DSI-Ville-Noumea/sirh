@@ -139,5 +139,8 @@
 	<bean id="eaeEvolutionDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
+	<bean id="eaeDeveloppementDao" class="nc.mairie.spring.dao.metier.EAE.EaeDeveloppementDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
 
 </beans>

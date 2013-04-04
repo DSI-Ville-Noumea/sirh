@@ -843,7 +843,6 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 			}
 			if (fiche != null && fiche.getIdFichePoste() != null) {
 				// on alimente une liste d'affectation que l'on affiche
-				// TODO
 				ArrayList<Affectation> listeAff = Affectation.listerAffectationAvecFPOrderDatDeb(getTransaction(), fiche);
 				setListeAffectation(listeAff);
 				initialiseListeAff();

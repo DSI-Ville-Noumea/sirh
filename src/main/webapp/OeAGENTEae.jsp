@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.EAE.EaeDeveloppement"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaePlanAction"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaeEvaluateur"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
@@ -197,20 +198,21 @@
 							<% }else {%>
 								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:200px;">Objectifs professionnels : </span>
+								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs professionnels : </span>
+								<br/><br/>
 								<%if(process.getListeObjectifPro().size()>0){ %>
-								<span style="position:relative;width:150px;text-align: left;">Objectif</span>
+								<span style="margin-left:20px;position:relative;width:500px;text-align: left;">Objectif</span>
 								<span style="position:relative;text-align: center;">Mesure</span>
 								<br/>
-								<div style="overflow: auto;height: 50px;width:500px;margin-left: 100px;">
-									<table class="sigp2NewTab" style="text-align:left;width:480px;">
+								<div style="overflow: auto;height: 50px;width:900px;margin-left: 20px;">
+									<table class="sigp2NewTab" style="text-align:left;width:880px;">
 									<%
 									int indiceObjPro = 0;
 										for (int i = 0;i<process.getListeObjectifPro().size();i++){
 											EaePlanAction plan = process.getListeObjectifPro().get(i);
 									%>
 											<tr>
-												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_LIB_OBJ_PRO(indiceObjPro)%></td>
+												<td width="500px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_OBJ_PRO(indiceObjPro)%></td>
 												<td class="sigp2NewTab-liste" style="position:relative;;text-align: left;">&nbsp;<%=process.getVAL_ST_LIB_MESURE_PRO(indiceObjPro)%></td>
 											</tr>
 											<%
@@ -220,19 +222,20 @@
 								</div>	
 								<%} %>				
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:200px;">Objectifs individuels : </span>
+								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs individuels : </span>
+								<br/><br/>
 								<%if(process.getListeObjectifIndi().size()>0){ %>
-								<span style="position:relative;width:150px;text-align: left;">Objectif</span>
+								<span style="margin-left:20px;position:relative;width:150px;text-align: left;">Objectif</span>
 								<br/>
-								<div style="overflow: auto;height: 50px;width:500px;margin-left: 100px;">
-									<table class="sigp2NewTab" style="text-align:left;width:480px;">
+								<div style="overflow: auto;height: 50px;width:900px;margin-left: 20px;">
+									<table class="sigp2NewTab" style="text-align:left;width:880px;">
 									<%
 									int indiceObjIndi = 0;
 										for (int i = 0;i<process.getListeObjectifIndi().size();i++){
 											EaePlanAction plan = process.getListeObjectifIndi().get(i);
 									%>
 											<tr>
-												<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_LIB_OBJ_INDI(indiceObjIndi)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_OBJ_INDI(indiceObjIndi)%></td>
 											</tr>
 											<%
 											indiceObjIndi++;
@@ -248,10 +251,10 @@
 							<% }else {%>
 								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
 							<% } %>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilite géographique : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité géographique : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_GEO()%></span>
 								<BR/><BR/>
-								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilite fonctionnelle : </span>
+								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité fonctionnelle : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_FONCT()%></span>
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Changement de métier : </span>
@@ -315,6 +318,33 @@
 							<% }else {%>
 								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
 							<% } %>
+							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
+								<br/><br/>
+								<%if(process.getListeDeveloppement().size()>0){ %>
+								<span style="margin-left:25px;position:relative;width:120px;text-align: left;">Type</span>
+								<span style="position:relative;width:400px;text-align: left;">Libellé</span>
+								<span style="position:relative;width:90px;text-align: center;">Echeance</span>
+								<span style="position:relative;text-align: center;">Priorité</span>
+								<br/>
+								<div style="overflow: auto;height: 150px;width:900px;margin-left: 20px;">
+									<table class="sigp2NewTab" style="text-align:left;width:680px;">
+									<%
+									int indiceDev = 0;
+										for (int i = 0;i<process.getListeDeveloppement().size();i++){
+									%>
+											<tr>
+												<td width="120px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_TYPE_DEV(indiceDev)%></td>
+												<td width="400px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_DEV(indiceDev)%></td>
+												<td width="90px" class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_ECHEANCE_DEV(indiceDev)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;;text-align: left;">&nbsp;<%=process.getVAL_ST_PRIORISATION_DEV(indiceDev)%></td>
+											</tr>
+											<%
+											indiceDev++;
+									}%>
+									</table>	
+								</div>	
+								<%} %>				
+								<BR/><BR/>
 							</div>
 						<%} %>
 						

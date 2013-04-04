@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.Horaire;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao;
+import nc.mairie.spring.dao.metier.EAE.EaeDeveloppementDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
@@ -24,6 +25,7 @@ import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeCommentaire;
+import nc.mairie.spring.domain.metier.EAE.EaeDeveloppement;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluateur;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
@@ -52,6 +54,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private ArrayList<EaeEvaluateur> listeEvaluateurEae;
 	private ArrayList<EaePlanAction> listeObjectifPro;
 	private ArrayList<EaePlanAction> listeObjectifIndi;
+	private ArrayList<EaeDeveloppement> listeDeveloppement;
 	private EAE eaeCourant;
 
 	private EAEDao eaeDao;
@@ -64,6 +67,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private EaeFinalisationDao eaeFinalisationDao;
 	private EaePlanActionDao eaePlanActionDao;
 	private EaeEvolutionDao eaeEvolutionDao;
+	private EaeDeveloppementDao eaeDeveloppementDao;
 
 	private String urlFichier;
 
@@ -133,8 +137,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				for (int j = 0; j < listeEvaluateur.size(); j++) {
 					EaeEvaluateur eval = listeEvaluateur.get(j);
 					AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
-							+ agentEvaluateur.getNoMatricule() + ") <br/> ";
+					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " (" + agentEvaluateur.getNoMatricule()
+							+ ") <br/> ";
 				}
 
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
@@ -186,6 +190,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		}
 		if (getEaeEvolutionDao() == null) {
 			setEaeEvolutionDao((EaeEvolutionDao) context.getBean("eaeEvolutionDao"));
+		}
+		if (getEaeDeveloppementDao() == null) {
+			setEaeDeveloppementDao((EaeDeveloppementDao) context.getBean("eaeDeveloppementDao"));
 		}
 	}
 
@@ -436,8 +443,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
 			EaeEvaluateur eval = listeEvaluateur.get(j);
 			AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
-					+ agentEvaluateur.getNoMatricule() + ") ";
+			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " (" + agentEvaluateur.getNoMatricule()
+					+ ") ";
 
 			addZone(getNOM_ST_EVALUATEUR_NOM(j), evaluateur.equals(Const.CHAINE_VIDE) ? "non renseigné" : evaluateur);
 			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné" : eval.getFonction());
@@ -460,11 +467,19 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_AVIS_REVALO(), "non renseigné");
 			addZone(getNOM_ST_RAPPORT_CIRCON(), "non renseigné");
 		} else {
+			// commentaire de l'evaluateur
 			if (evaluation.getIdCommEvaluateur() != null) {
 				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommEvaluateur());
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? "non renseigné" : commEvaluateur.getCommentaire());
 			} else {
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), "non renseigné");
+			}
+			// commentaire de l'evaluateur sur le rapport circonstancié
+			if (evaluation.getIdCommAvctEvaluateur() != null) {
+				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommAvctEvaluateur());
+				addZone(getNOM_ST_RAPPORT_CIRCON(), commAvctEvaluateur == null ? "non renseigné" : commAvctEvaluateur.getCommentaire());
+			} else {
+				addZone(getNOM_ST_RAPPORT_CIRCON(), "non renseigné");
 			}
 			addZone(getNOM_ST_NIVEAU(), evaluation.getNiveau() == null ? "non renseigné" : evaluation.getNiveau());
 			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
@@ -475,7 +490,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 							: "défavorable");
 			addZone(getNOM_ST_AVIS_REVALO(), evaluation.getAvisRevalorisation() == null ? "non renseigné"
 					: evaluation.getAvisRevalorisation() == 1 ? "favorable" : "défavorable");
-			addZone(getNOM_ST_RAPPORT_CIRCON(), "non renseigné");
 		}
 
 		// alim zone plan action
@@ -547,6 +561,20 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_DATE_RETRAITE(), evolution.getDateRetraite() == null ? "non renseigné" : evolution.getDateRetraite().toString());
 			addZone(getNOM_ST_AUTRE_PERSP(), evolution.isAutrePerspective() ? "oui" : "non");
 			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? "non renseigné" : evolution.getLibAutrePerspective());
+		}
+
+		if (evolution != null) {
+			// Alim zones developpement
+			ArrayList<EaeDeveloppement> listeDeveloppement = getEaeDeveloppementDao().listerEaeDeveloppementParEvolution(
+					evolution.getIdEaeEvolution());
+			setListeDeveloppement(listeDeveloppement);
+			for (int j = 0; j < listeDeveloppement.size(); j++) {
+				EaeDeveloppement dev = listeDeveloppement.get(j);
+				addZone(getNOM_ST_TYPE_DEV(j), dev.getTypeDeveloppement());
+				addZone(getNOM_ST_LIB_DEV(j), dev.getLibelleDeveloppement());
+				addZone(getNOM_ST_ECHEANCE_DEV(j), new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation().toString());
+			}
 		}
 
 	}
@@ -961,7 +989,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<EaePlanAction> getListeObjectifPro() {
-		return listeObjectifPro;
+		return listeObjectifPro == null ? new ArrayList<EaePlanAction>() : listeObjectifPro;
 	}
 
 	public void setListeObjectifPro(ArrayList<EaePlanAction> listeObjectifPro) {
@@ -1005,11 +1033,19 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<EaePlanAction> getListeObjectifIndi() {
-		return listeObjectifIndi;
+		return listeObjectifIndi == null ? new ArrayList<EaePlanAction>() : listeObjectifIndi;
 	}
 
 	public void setListeObjectifIndi(ArrayList<EaePlanAction> listeObjectifIndi) {
 		this.listeObjectifIndi = listeObjectifIndi;
+	}
+
+	public ArrayList<EaeDeveloppement> getListeDeveloppement() {
+		return listeDeveloppement == null ? new ArrayList<EaeDeveloppement>() : listeDeveloppement;
+	}
+
+	public void setListeDeveloppement(ArrayList<EaeDeveloppement> listeDeveloppement) {
+		this.listeDeveloppement = listeDeveloppement;
 	}
 
 	/**
@@ -1036,6 +1072,14 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	public void setEaeEvolutionDao(EaeEvolutionDao eaeEvolutionDao) {
 		this.eaeEvolutionDao = eaeEvolutionDao;
+	}
+
+	public EaeDeveloppementDao getEaeDeveloppementDao() {
+		return eaeDeveloppementDao;
+	}
+
+	public void setEaeDeveloppementDao(EaeDeveloppementDao eaeDeveloppementDao) {
+		this.eaeDeveloppementDao = eaeDeveloppementDao;
 	}
 
 	/**
@@ -1396,5 +1440,77 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_COM_EVOLUTION() {
 		return getZone(getNOM_ST_COM_EVOLUTION());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_TYPE_DEV(int i) {
+		return "NOM_ST_TYPE_DEV" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DEV Date
+	 * de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_TYPE_DEV(int i) {
+		return getZone(getNOM_ST_TYPE_DEV(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_LIB_DEV(int i) {
+		return "NOM_ST_LIB_DEV" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_DEV Date
+	 * de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_LIB_DEV(int i) {
+		return getZone(getNOM_ST_LIB_DEV(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_ECHEANCE_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_ECHEANCE_DEV(int i) {
+		return "NOM_ST_ECHEANCE_DEV" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ECHEANCE_DEV
+	 * Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_ECHEANCE_DEV(int i) {
+		return getZone(getNOM_ST_ECHEANCE_DEV(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_PRIORISATION_DEV
+	 * Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_PRIORISATION_DEV(int i) {
+		return "NOM_ST_PRIORISATION_DEV" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_PRIORISATION_DEV Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_PRIORISATION_DEV(int i) {
+		return getZone(getNOM_ST_PRIORISATION_DEV(i));
 	}
 }
