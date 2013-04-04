@@ -345,6 +345,14 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			afficheFES();
 			initialiseMission();
 			initialiseInfoEmploi();
+			//si changement de FES, on ajoute la mission à la mission actuelle
+			if (getEmploiSecondaire() != null) {
+				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
+					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 			return;
 		} else {
 			if (getEmploiSecondaire() != null) {
@@ -365,7 +373,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			afficheFEP();
 			initialiseMission();
 			initialiseInfoEmploi();
-			//
+			//si changement de FES, on ajoute la mission à la mission actuelle
 			if (getEmploiPrimaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
