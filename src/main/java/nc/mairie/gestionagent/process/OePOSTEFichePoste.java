@@ -3373,7 +3373,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 		// si il n'y avait pas de niveau etude sur la FDP on affiche celle des
 		// FE
-		if (!trouve) {
+		//ON ENELEVE CETTE PATIE --> JIRA SIRH-305
+		/*if (!trouve) {
 			if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
 				// on recupere les niveau etude de la FEP
 				setListeNiveauFEP(NiveauEtudeFE.listerNiveauEtudeFEAvecFE(getTransaction(), getEmploiPrimaire()));
@@ -3400,7 +3401,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			} else {
 				setListeNiveauFES(new ArrayList());
 			}
-		}
+		}*/
 		String nivEtMulti = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListeTousNiveau().size(); i++) {
 			NiveauEtude nivEt = (NiveauEtude) getListeTousNiveau().get(i);
@@ -3423,7 +3424,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			setListeDiplomeFP(new ArrayList());
 		}
 		// si il n'y avait pas de diplomes sur la FDP on affiche celle des FE
-		if (!trouve) {
+		//ON ENELEVE CETTE PATIE --> JIRA SIRH-305
+		/*if (!trouve) {
 			if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
 				// on recupere les diplomes de la FEP
 				setListeDiplomeFEP(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(), getEmploiPrimaire()));
@@ -3450,7 +3452,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			} else {
 				setListeDiplomeFES(new ArrayList());
 			}
-		}
+		}*/
 		int[] taillesDiplome = { 50 };
 		String[] champsDiplome = { "libDiplomeGenerique" };
 		setLB_DIPLOME_MULTI(new FormateListe(taillesDiplome, getListeTousDiplomes(), champsDiplome).getListeFormatee());
