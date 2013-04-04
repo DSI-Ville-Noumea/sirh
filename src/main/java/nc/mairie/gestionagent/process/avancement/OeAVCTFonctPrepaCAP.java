@@ -164,6 +164,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private void afficheListeAvancement() throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+			if (av.getIdAgent().equals("9003686"))
+				System.out.println("idi");
 			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
@@ -724,7 +726,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 						// on test si "moyenne" choisi alors on remete à vide
 						// ordre du
 						// mérite
-						if (indiceAvisCapMinMoyMax ==0) {
+						if (indiceAvisCapMinMoyMax == 0) {
 							String ordre = getVAL_EF_ORDRE_MERITE(idAvct);
 							if (!ordre.equals(Const.CHAINE_VIDE)) {
 								avct.setOrdreMerite(ordre);
