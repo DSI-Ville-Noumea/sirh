@@ -365,6 +365,14 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			afficheFEP();
 			initialiseMission();
 			initialiseInfoEmploi();
+			//
+			if (getEmploiPrimaire() != null) {
+				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
+					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
+				}
+			}
+
+			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 			return;
 		} else {
 			if (getEmploiPrimaire() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
