@@ -587,7 +587,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct().equals("5")) {
+				if (avct.getIdMotifAvct().equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(Integer.valueOf(avct.getIdAgent()));
 				} else if (avct.getIdMotifAvct().equals("7")) {

@@ -177,7 +177,7 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
 								<% if (process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) || process.getVAL_CK_VALID_ARR_IMPR(indiceAvct).equals(process.getCHECKED_ON())){ %>
 								<td>								
-									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -188,7 +188,7 @@ function SelectLigne(id,tailleTableau)
 									<%} else{%>&nbsp;
 									<%} %>
 									<br/>							
-									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>
+									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -204,7 +204,7 @@ function SelectLigne(id,tailleTableau)
 								</td>
 								<%}else{%>
 								<td>								
-									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -215,7 +215,7 @@ function SelectLigne(id,tailleTableau)
 									<%}else{%>&nbsp;
 									<%} %>	
 									<br/>							
-									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("5")){%>										
+									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
 										</SELECT>
