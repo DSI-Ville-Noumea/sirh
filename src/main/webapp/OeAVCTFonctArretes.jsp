@@ -207,14 +207,14 @@ function SelectLigne(id,tailleTableau)
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>
-								<%if(avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON())){ %>
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()))&& !process.isDefavorable(indiceAvct)){ %>
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%} %>
 								</td>
 								<td>	
-								<%if(avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON())){ %>							
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()))&& !process.isDefavorable(indiceAvct)){ %>							
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									

@@ -216,6 +216,13 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 
+			// Si clic sur le bouton PB_RAFRAICHIR
+			for (int i = 0; i < getListeAvct().size(); i++) {
+				AvancementFonctionnaires avct = getListeAvct().get(i);
+				if (testerParametre(request, getNOM_PB_RAFRAICHIR(Integer.valueOf(avct.getIdAvct())))) {
+					return performPB_RAFRAICHIR(request, avct.getIdAvct());
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -302,7 +309,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' )";
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' ) and avct.ID_AVIS_EMP!= 5 ";
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
 
 		afficheListeAvancement();
@@ -393,8 +400,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
-					// on recupere la derniere carrière dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), avct.getIdAgent(), avct.getAnnee());
+					// on recupere la carrière en cours
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), avct.getIdAgent());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -403,24 +410,25 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						// on traite le numero et la date d'arreté
 						avct.setDateArrete(getVAL_ST_DATE_ARRETE(i));
 						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i));
-						// avct.modifierAvancement(getTransaction());
 
-						// on regarde l'avis CAP selectionné pour determiné la
-						// date de debut de carriere et la date de fin de la
-						// precedente
-
-						String libCourtAvisCap = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisCAP()).getLibCourtAvisCAP();
-						String dateAvct = Const.CHAINE_VIDE;
-						if (libCourtAvisCap.toUpperCase().equals("MIN")) {
-							dateAvct = avct.getDateAvctMini();
-						} else if (libCourtAvisCap.toUpperCase().equals("MOY")) {
-							dateAvct = avct.getDateAvctMoy();
-						} else if (libCourtAvisCap.toUpperCase().equals("MAX")) {
-							dateAvct = avct.getDateAvctMaxi();
+						//pourla date d'avancement
+						String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
+						String dateAvctFinale = Const.ZERO;
+						if (idAvisEmp.equals("MIN")) {
+							dateAvctFinale = avct.getDateAvctMini();
+						} else if (idAvisEmp.equals("MOY")) {
+							dateAvctFinale = avct.getDateAvctMoy();
+						} else if (idAvisEmp.equals("MAX")) {
+							dateAvctFinale = avct.getDateAvctMaxi();
+						} else if (idAvisEmp.equals("FAV")) {
+							dateAvctFinale = avct.getDateAvctMoy();
+						}else{
+							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+							continue;
 						}
 
 						// on ferme cette carriere
-						carr.setDateFin(dateAvct);
+						carr.setDateFin(dateAvctFinale);
 						carr.modifierCarriere(getTransaction(), agentCarr, user);
 
 						// on crée un nouvelle carriere
@@ -428,14 +436,14 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete());
 						nouvelleCarriere.setDateArrete(avct.getDateArrete());
-						nouvelleCarriere.setDateDebut(dateAvct);
+						nouvelleCarriere.setDateDebut(dateAvctFinale);
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						// on calcul Grade - ACC/BM en fonction de l'avis CAP
 						// il est différent du resultat affiché dans le tableau
 						// si AVIS_CAP != MOY
 						// car pour la simulation on prenait comme ref de calcul
 						// la duree MOY
-						calculAccBm(avct, carr, nouvelleCarriere, libCourtAvisCap);
+						calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
 
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
@@ -466,6 +474,9 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
 						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+						//on met un 'S' dans son avancement
+						avct.setCarriereSimu("S");
+						avct.modifierAvancement(getTransaction());						
 					}
 				}
 			}
@@ -496,7 +507,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		int nbJoursBonus = nbJoursBM + nbJoursACC;
 
 		// Calcul date avancement au Grade actuel
-		if (libCourtAvisCap.equals("Min")) {
+		if (libCourtAvisCap.equals("MIN")) {
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
 				avct.setDateAvctMini(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMin()) * 30;
@@ -506,7 +517,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						nbJoursBonus));
 				nbJoursBonus = 0;
 			}
-		} else if (libCourtAvisCap.equals("Moy")) {
+		} else if (libCourtAvisCap.equals("MOY")) {
 			avct.setDureeStandard(gradeActuel.getDureeMoy());
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
@@ -517,7 +528,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						nbJoursBonus));
 				nbJoursBonus = 0;
 			}
-		} else if (libCourtAvisCap.equals("Max")) {
+		} else if (libCourtAvisCap.equals("MAX")) {
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMax()) * 30) {
 				avct.setDateAvctMaxi(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMax()) * 30;
@@ -531,7 +542,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 
 		// Calcul du grade suivant (BM/ACC)
 		Grade gradeSuivant = Grade.chercherGrade(getTransaction(), gradeActuel.getCodeGradeSuivant());
-		if (libCourtAvisCap.equals("Min")) {
+		if (libCourtAvisCap.equals("MIN")) {
 			boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMin()) * 30);
 			while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
 					&& gradeSuivant.getDureeMin() != null && gradeSuivant.getDureeMin().length() > 0) {
@@ -539,7 +550,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
 				isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMin()) * 30);
 			}
-		} else if (libCourtAvisCap.equals("Moy")) {
+		} else if (libCourtAvisCap.equals("MOY")) {
 			boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
 			while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
 					&& gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0) {
@@ -547,7 +558,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
 				isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
 			}
-		} else if (libCourtAvisCap.equals("Max")) {
+		} else if (libCourtAvisCap.equals("MAX")) {
 			boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMax()) * 30);
 			while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
 					&& gradeSuivant.getDureeMax() != null && gradeSuivant.getDureeMax().length() > 0) {
@@ -1227,5 +1238,40 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 
 	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
 		this.listeFiliere = listeFiliere;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RAFRAICHIR Date de création
+	 * : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_PB_RAFRAICHIR(int i) {
+		return "NOM_PB_RAFRAICHIR_" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public boolean performPB_RAFRAICHIR(HttpServletRequest request, String idAvct) throws Exception {
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
+		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), avct.getIdAgent());
+
+		// on regarde si l'agent a une carriere de simulation dejà
+		// saisie
+		// autrement dis si la carriere actuelle a pour datfin 0
+		if (carrEnCours.getDateFin() == null || carrEnCours.getDateFin().equals(Const.ZERO)) {
+			avct.setCarriereSimu(null);
+		} else {
+			avct.setCarriereSimu("S");
+		}
+		avct.modifierAvancement(getTransaction());
+		commitTransaction();
+		
+		performPB_FILTRER(request);
+		return true;
 	}
 }

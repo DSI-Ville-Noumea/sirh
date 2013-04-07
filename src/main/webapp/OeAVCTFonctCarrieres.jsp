@@ -178,7 +178,13 @@ function reduireHierarchy() {
 								<td align="center" ><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td align="center" ><%=process.getVAL_ST_NUM_ARRETE(indiceAvct)%></td>
 								<td align="center" ><%=process.getVAL_ST_DATE_ARRETE(indiceAvct)%></td>
-								<td align="center" ><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>
+								<td align="center" >
+								<%if(avct.getCarriereSimu()==null || !avct.getCarriereSimu().toUpperCase().equals("S")){ %>
+								<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'>
+								<%}else{ %>
+								<INPUT title="rafraichir" type="image" src="images/refresh.png" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_RAFRAICHIR(indiceAvct)%>">
+								<%} %>
+								</td>
 								<td><%=process.getVAL_ST_USER_VALID_CARRIERE(indiceAvct)%></td>
 							</tr>
 					<%
