@@ -174,62 +174,33 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
-								<% if (process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) || process.getVAL_CK_VALID_ARR_IMPR(indiceAvct).equals(process.getCHECKED_ON())){ %>
-								<td>								
-									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>
-										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
-										</SELECT>
-									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
-										</SELECT>
-									<%} else{%>&nbsp;
-									<%} %>
-									<br/>							
-									<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>
-										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
-										</SELECT>
-									<%}else if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceAvct)) %>
-										</SELECT>
-									<%} else{%>&nbsp;
-									<%} %>
-								</td>
-								<td>
-									<textarea readonly="readonly" rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
-								</td>
-								<%}else{%>
+								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>								
 								<td>								
 									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
-										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
 									<%} %>	
 									<br/>							
 									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
-										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
 									<%} %>
 								</td>
 								<td>
-									<textarea rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
+									<textarea <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "readonly='readonly'" : "" %> rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
 								</td>
-								<%} %>
 								<td>
 									<INPUT style="visibility: visible;"type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
 									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
@@ -274,6 +245,11 @@ function SelectLigne(id,tailleTableau)
 				</script>
 			<BR/>
 		</FIELDSET>
+		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Documents générés</legend>	
 		<br/>
@@ -297,11 +273,6 @@ function SelectLigne(id,tailleTableau)
 				}%>
 				</table>	
 			</div>
-		</FIELDSET>
-		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		</FIELDSET>
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENTEVALUE">
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENTEVALUE">

@@ -75,7 +75,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
-
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -168,7 +167,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
 			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_ARR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
-			
+
 			if (av.getIdAvisArr() == null) {
 				if (!av.getIdAvisCAP().equals(Const.CHAINE_VIDE)) {
 					if (av.getIdAvisCAP().equals("3")) {
@@ -777,7 +776,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
-
 			if (getVAL_CK_VALID_ARR(idAvct).equals(getCHECKED_ON())) {
 				// si la ligne est cochée
 				// on regarde si l'etat est deja ARR
@@ -1768,6 +1766,9 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de cap"));
 				return false;
 			}
+			// on sauvegarde le tableau
+			performPB_VALIDER(request);
+			
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceElemen)) ? Integer
