@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.EAE.CampagneEAE"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaeDeveloppement"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaePlanAction"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaeEvaluateur"%>
@@ -73,7 +74,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">&nbsp;
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-				    					<%if(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+				    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE())){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
 				    					<%} %>
 										</td>

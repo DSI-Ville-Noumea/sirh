@@ -1513,4 +1513,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	public String getVAL_ST_PRIORISATION_DEV(int i) {
 		return getZone(getNOM_ST_PRIORISATION_DEV(i));
 	}
+
+	public boolean isCampagneOuverte(Integer idCampagneEAE) throws Exception {
+		return getCampagneEaeDao().chercherCampagneEAE(idCampagneEAE).estOuverte();
+	}
 }
