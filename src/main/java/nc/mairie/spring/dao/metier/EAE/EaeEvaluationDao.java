@@ -173,4 +173,47 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 		}
 		return total;
 	}
+
+	@Override
+	public void modifierCommentaireEvaluateurEaeEvaluation(Integer idEaeEvaluation, Integer idEaeCommentaire) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_EVALUATEUR + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { idEaeCommentaire, idEaeEvaluation });
+	}
+
+	@Override
+	public void modifierNoteEaeEvaluation(Integer idEaeEvaluation, double note) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NOTE_ANNEE + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { note, idEaeEvaluation });
+
+	}
+
+	@Override
+	public void modifierNiveauEaeEvaluation(Integer idEaeEvaluation, String niveau) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NIVEAU + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { niveau, idEaeEvaluation });
+	}
+
+	@Override
+	public void modifierADEaeEvaluation(Integer idEaeEvaluation, String propositionAD) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_PROPOSITION_AVANCEMENT + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { propositionAD, idEaeEvaluation });
+	}
+
+	@Override
+	public void modifierChgtClasseEaeEvaluation(Integer idEaeEvaluation, Integer chgtClasse) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_CHANGEMENT_CLASSE + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { chgtClasse, idEaeEvaluation });
+	}
+
+	@Override
+	public void modifierRevaloEaeEvaluation(Integer idEaeEvaluation, Integer revalorisation) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_REVALORISATION + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { revalorisation, idEaeEvaluation });
+	}
+
+	@Override
+	public void modifierRapportCirconstancieEaeEvaluation(Integer idEaeEvaluation, Integer idEaeRapportCircon) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { idEaeRapportCircon, idEaeEvaluation });
+	}
 }

@@ -39,4 +39,22 @@ public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
 		}
 		return comm;
 	}
+
+	@Override
+	public Integer creerEaeCommentaire(String commentaire) throws Exception {
+
+		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
+		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
+
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_COMMENTAIRE + "," + CHAMP_TEXT + ") VALUES (?, ?)";
+		jdbcTemplate.update(sql, new Object[] { id, commentaire });
+
+		return id;
+	}
+
+	@Override
+	public void modifierEaeCommentaire(Integer idEaeCommentaire, String commentaire) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEXT + " =? where " + CHAMP_ID_EAE_COMMENTAIRE + "=?";
+		jdbcTemplate.update(sql, new Object[] { commentaire, idEaeCommentaire });
+	}
 }

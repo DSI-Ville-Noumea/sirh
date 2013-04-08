@@ -33,6 +33,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -46,7 +47,7 @@ import org.springframework.context.ApplicationContext;
 public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	private String ACTION_MODIFICATION = "Modification d'un EAE.";
+	public String ACTION_MODIFICATION = "Modification d'un EAE.";
 	public String ACTION_CONSULTATION = "Consultation d'un EAE.";
 
 	private AgentNW AgentCourant;
@@ -144,7 +145,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
 				addZone(getNOM_ST_EVALUATEUR(indiceEae), evaluateur.equals(Const.CHAINE_VIDE) ? "&nbsp;" : evaluateur);
 				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae), eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
-				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP.getSectionServ() == null ? "&nbsp;" : eaeFDP.getSectionServ());
+				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
 				addZone(getNOM_ST_STATUT(indiceEae), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()));
 
 				indiceEae++;
@@ -260,6 +261,11 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
 					return performPB_MODIFIER(request, i);
 				}
+			}
+
+			// Si clic sur le bouton PB_VALIDER
+			if (testerParametre(request, getNOM_PB_VALIDER())) {
+				return performPB_VALIDER(request);
 			}
 
 			// gestion navigation
@@ -464,38 +470,90 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		// Alim zone evaluation
 		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
 		if (evaluation == null) {
-			addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), "non renseigné");
+			addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_NIVEAU(), "non renseigné");
+			addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
 			addZone(getNOM_ST_NOTE(), "non renseigné");
 			addZone(getNOM_ST_AVIS_SHD(), "non renseigné");
 			addZone(getNOM_ST_AVCT_DIFF(), "non renseigné");
+			addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
 			addZone(getNOM_ST_CHANGEMENT_CLASSE(), "non renseigné");
+			addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
 			addZone(getNOM_ST_AVIS_REVALO(), "non renseigné");
-			addZone(getNOM_ST_RAPPORT_CIRCON(), "non renseigné");
+			addZone(getNOM_RG_REVA(), getNOM_RB_REVA_FAV());
+			addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 		} else {
 			// commentaire de l'evaluateur
 			if (evaluation.getIdCommEvaluateur() != null) {
 				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommEvaluateur());
-				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? "non renseigné" : commEvaluateur.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getCommentaire());
 			} else {
-				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), "non renseigné");
+				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			}
 			// commentaire de l'evaluateur sur le rapport circonstancié
 			if (evaluation.getIdCommAvctEvaluateur() != null) {
 				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommAvctEvaluateur());
-				addZone(getNOM_ST_RAPPORT_CIRCON(), commAvctEvaluateur == null ? "non renseigné" : commAvctEvaluateur.getCommentaire());
+				addZone(getNOM_ST_RAPPORT_CIRCON(), commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getCommentaire());
 			} else {
-				addZone(getNOM_ST_RAPPORT_CIRCON(), "non renseigné");
+				addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 			}
 			addZone(getNOM_ST_NIVEAU(), evaluation.getNiveau() == null ? "non renseigné" : evaluation.getNiveau());
+			// pour la modif
+			if (evaluation.getNiveau() == null) {
+				addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
+			} else {
+				String niveau = evaluation.getNiveau();
+				if (niveau.equals("NECESSITANT_DES_PROGRES")) {
+					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_PROGR());
+				} else if (niveau.equals("INSUFFISANT")) {
+					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_INSU());
+				} else if (niveau.equals("EXCELLENT")) {
+					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_EXCEL());
+				} else {
+					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
+				}
+			}
+
 			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
 			addZone(getNOM_ST_AVIS_SHD(), evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
 			addZone(getNOM_ST_AVCT_DIFF(), evaluation.getPropositionAvancement() == null ? "non renseigné" : evaluation.getPropositionAvancement());
+			// pour la modif
+			if (evaluation.getPropositionAvancement() == null) {
+				addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
+			} else {
+				if (evaluation.getPropositionAvancement().equals("MINI")) {
+					addZone(getNOM_RG_AD(), getNOM_RB_AD_MIN());
+				} else if (evaluation.getPropositionAvancement().equals("MAXI")) {
+					addZone(getNOM_RG_AD(), getNOM_RB_AD_MAX());
+				} else {
+					addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
+				}
+			}
 			addZone(getNOM_ST_CHANGEMENT_CLASSE(),
 					evaluation.getAvisChangementClasse() == null ? "non renseigné" : evaluation.getAvisChangementClasse() == 1 ? "favorable"
 							: "défavorable");
+			// pour la modif
+			if (evaluation.getAvisChangementClasse() == null) {
+				addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
+			} else {
+				if (evaluation.getAvisRevalorisation() == 0) {
+					addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_DEF());
+				} else {
+					addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
+				}
+			}
 			addZone(getNOM_ST_AVIS_REVALO(), evaluation.getAvisRevalorisation() == null ? "non renseigné"
 					: evaluation.getAvisRevalorisation() == 1 ? "favorable" : "défavorable");
+			// pour la modif
+			if (evaluation.getAvisRevalorisation() == null) {
+				addZone(getNOM_RG_REVA(), getNOM_RB_REVA_FAV());
+			} else {
+				if (evaluation.getAvisRevalorisation() == 0) {
+					addZone(getNOM_RG_REVA(), getNOM_RB_REVA_DEF());
+				} else {
+					addZone(getNOM_RG_REVA(), getNOM_RB_REVA_FAV());
+				}
+			}
 		}
 
 		// alim zone plan action
@@ -597,6 +655,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		// Si pas d'agent courant alors erreur
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
@@ -604,6 +668,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		EAE eaeCourant = (EAE) getListeEae().get(indiceEltAModifier);
 		setEaeCourant(eaeCourant);
 
+		initialiseEae();
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 
@@ -1520,7 +1585,338 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_PRIORISATION_DEV(i));
 	}
 
-	public boolean isCampagneOuverte(Integer idCampagneEAE) throws Exception {	
+	public boolean isCampagneOuverte(Integer idCampagneEAE) throws Exception {
 		return getCampagneEaeDao().chercherCampagneEAE(idCampagneEAE).estOuverte();
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_NIVEAU
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_NIVEAU() {
+		return "NOM_RG_NIVEAU";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_NIVEAU
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_NIVEAU() {
+		return getZone(getNOM_RG_NIVEAU());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_NIVEAU_EXCEL Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_NIVEAU_EXCEL() {
+		return "NOM_RB_NIVEAU_EXCEL";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_NIVEAU_SATIS Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_NIVEAU_SATIS() {
+		return "NOM_RB_NIVEAU_SATIS";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_NIVEAU_PROGR Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_NIVEAU_PROGR() {
+		return "NOM_RB_NIVEAU_PROGR";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_NIVEAU_INSU Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_NIVEAU_INSU() {
+		return "NOM_RB_NIVEAU_INSU";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_REVA
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_REVA() {
+		return "NOM_RG_REVA";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_REVA Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_REVA() {
+		return getZone(getNOM_RG_REVA());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_REVA_FAV Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_REVA_FAV() {
+		return "NOM_RB_REVA_FAV";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_REVA_DEF Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_REVA_DEF() {
+		return "NOM_RB_REVA_DEF";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_CHGT
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_CHGT() {
+		return "NOM_RG_CHGT";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_CHGT Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_CHGT() {
+		return getZone(getNOM_RG_CHGT());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_CHGT_FAV Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_CHGT_FAV() {
+		return "NOM_RB_CHGT_FAV";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_CHGT_DEF Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_CHGT_DEF() {
+		return "NOM_RB_CHGT_DEF";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_AD Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_AD() {
+		return "NOM_RG_AD";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_AD Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_AD() {
+		return getZone(getNOM_RG_AD());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_AD_MIN Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_AD_MIN() {
+		return "NOM_RB_AD_MIN";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_AD_MOY Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_AD_MOY() {
+		return "NOM_RB_AD_MOY";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_AD_MAX Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_AD_MAX() {
+		return "NOM_RB_AD_MAX";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (15/03/11 10:49:55)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_VALIDER() {
+		return "NOM_PB_VALIDER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (15/03/11 10:49:55)
+	 * 
+	 * 
+	 */
+	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		// Si aucune action en cours
+		if (getZone(getNOM_ST_ACTION()).length() == 0) {
+			// "Vous ne pouvez pas valider, il n'y a pas d'action en cours."
+			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
+			return false;
+		}
+
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
+			// vérification de la validité du formulaire
+			if (!performControlerChamps(request))
+				return false;
+
+			EAE eae = getEaeCourant();
+			if (eae != null && eae.getIdEAE() != null) {
+				// TODO
+				/************* PARTIE EVALUATION **********************/
+				EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
+				// commentaire de l'evaluateur
+				if (eval.getIdCommEvaluateur() != null && eval.getIdCommEvaluateur() != 0) {
+					EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommEvaluateur());
+					commEvaluateur.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+					getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(), commEvaluateur.getCommentaire());
+				} else {
+					if (!getVAL_ST_COMMENTAIRE_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
+						EaeCommentaire comm = new EaeCommentaire();
+						comm.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+						Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+						getEaeEvaluationDao().modifierCommentaireEvaluateurEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
+					}
+				}
+
+				// Niveau
+				String niveau = getVAL_RG_NIVEAU();
+				if(niveau.equals(getNOM_RB_NIVEAU_EXCEL())){
+					eval.setNiveau("EXCELLENT");
+				}else if(niveau.equals(getNOM_RB_NIVEAU_SATIS())){
+					eval.setNiveau("SATISFAISANT");
+				}else if(niveau.equals(getNOM_RB_NIVEAU_PROGR())){
+					eval.setNiveau("NECESSITANT_DES_PROGRES");
+				}else{
+					eval.setNiveau("INSUFFISANT");
+				}
+				getEaeEvaluationDao().modifierNiveauEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNiveau());
+
+				//note
+				Float note = Float.parseFloat(getVAL_ST_NOTE().replace(',', '.'));
+				eval.setNoteAnnee(note.doubleValue());
+				getEaeEvaluationDao().modifierNoteEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNoteAnnee());
+				
+				//Avancement Diff
+				String ad = getVAL_RG_AD();
+				if(ad.equals(getNOM_RB_AD_MIN())){
+					eval.setPropositionAvancement("MINI");
+				}else if(ad.equals(getNOM_RB_AD_MAX())){
+					eval.setPropositionAvancement("MAXI");
+				}else{
+					eval.setPropositionAvancement("MOY");
+				}
+				getEaeEvaluationDao().modifierADEaeEvaluation(eval.getIdEaeEvaluation(), eval.getPropositionAvancement());
+				
+				//Changement classe
+				String chgt = getVAL_RG_CHGT();
+				if(chgt.equals(getNOM_RB_CHGT_DEF())){
+					eval.setAvisChangementClasse(0);
+				}else{
+					eval.setAvisChangementClasse(1);
+				}
+				getEaeEvaluationDao().modifierChgtClasseEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisChangementClasse());
+				
+				//Revalorisation
+				String reva = getVAL_RG_REVA();
+				if(reva.equals(getNOM_RB_REVA_DEF())){
+					eval.setAvisRevalorisation(0);
+				}else{
+					eval.setAvisRevalorisation(1);
+				}
+				getEaeEvaluationDao().modifierRevaloEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisRevalorisation());
+				
+				// rapport circonstancié de l'evaluateur
+				if (eval.getIdCommAvctEvaluateur() != null && eval.getIdCommAvctEvaluateur() != 0) {
+					EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommAvctEvaluateur());
+					commAvctEvaluateur.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
+					getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(), commAvctEvaluateur.getCommentaire());
+				} else {
+					if (!getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
+						EaeCommentaire comm = new EaeCommentaire();
+						comm.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
+						Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+						getEaeEvaluationDao().modifierRapportCirconstancieEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
+					}
+				}
+			} else {
+				// TODO on traite l'erreur
+			}
+
+		}
+		return true;
+	}
+
+	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
+		// ********************************************
+		// ///////////////////NOTE/////////////////////
+		// ********************************************
+		if (!Services.estFloat(getVAL_ST_NOTE())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "note"));
+			return false;
+		}
+		Float note = Float.parseFloat(getVAL_ST_NOTE().replace(',', '.'));
+		if (getVAL_ST_NOTE().equals(Const.CHAINE_VIDE) || note == 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "note"));
+			return false;
+		}
+		// si la note n'est pas comprise entre 0 et 20
+		if (0 > note || 20 < note) {
+			// "ERR160", "La note doit être comprise entre 0 et 20.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR160"));
+			return false;
+
+		}
+		// ********************************************
+		// /////////RAPPORT CIRCONSTANCIE//////////////
+		// ********************************************
+		// si min ou max alors rapport circonstancié obligatoire
+		if ((getVAL_RG_AD().equals(getNOM_RB_AD_MIN()) || getVAL_RG_AD().equals(getNOM_RB_AD_MAX()))
+				&& getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
+			// "ERR162",
+			// "Le contenu du rapport circonstancié ne doit pas être vide pour une durée d'avancement minimale ou maximale.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR162"));
+			return false;
+		}
+		if (getVAL_RG_AD().equals(getNOM_RB_AD_MOY()) && !getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
+			// "ERR163",
+			// "Le contenu du rapport circonstancié ne doit pas être rempli pour une durée d'avancement moyenne.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR163"));
+			return false;
+		}
+		return true;
 	}
 }
