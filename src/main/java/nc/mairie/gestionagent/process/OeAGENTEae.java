@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +34,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -49,6 +51,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	public String ACTION_MODIFICATION = "Modification d'un EAE.";
 	public String ACTION_CONSULTATION = "Consultation d'un EAE.";
+
+	private String[] LB_BASE_HORAIRE;
+	private ArrayList<Horaire> listeHoraire;
+	private Hashtable<String, Horaire> hashHoraire;
 
 	private AgentNW AgentCourant;
 	private ArrayList<EAE> listeEae;
@@ -156,6 +162,20 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	private void initialiseListeDeroulante() throws Exception {
 
+		// Si liste base horaire vide alors affectation
+		if (getLB_BASE_HORAIRE() == LBVide) {
+			// ArrayList<Horaire> liste =
+			// Horaire.listerHoraire(getTransaction());
+			ArrayList<Horaire> liste = Horaire.listerHoraireSansNulSansComplet(getTransaction());
+			setListeHoraire(liste);
+
+			int[] tailles = { 30 };
+			String[] champs = { "libHor" };
+			setLB_BASE_HORAIRE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+
+			for (Horaire h : liste)
+				getHashHoraire().put(h.getCdtHor(), h);
+		}
 	}
 
 	private void initialiseDao() {
@@ -574,57 +594,166 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_LIB_OBJ_INDI(j), plan.getObjectif());
 		}
 
+		// TODO
 		// Alim zone Evolution
 		EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
 		if (evolution == null) {
 			addZone(getNOM_ST_MOB_GEO(), "non renseigné");
+			addZone(getNOM_RG_MOB_GEO(), getNOM_RB_MOB_GEO_NON());
 			addZone(getNOM_ST_MOB_FONCT(), "non renseigné");
+			addZone(getNOM_RG_MOB_FONCT(), getNOM_RB_MOB_FONCT_NON());
 			addZone(getNOM_ST_CHANGEMENT_METIER(), "non renseigné");
+			addZone(getNOM_RG_METIER(), getNOM_RB_METIER_NON());
 			addZone(getNOM_ST_DELAI(), "non renseigné");
+			addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
 			addZone(getNOM_ST_MOB_SERV(), "non renseigné");
+			addZone(getNOM_RG_MOB_SERV(), getNOM_RB_MOB_SERV_NON());
 			addZone(getNOM_ST_MOB_DIR(), "non renseigné");
+			addZone(getNOM_RG_MOB_DIR(), getNOM_RB_MOB_DIR_NON());
 			addZone(getNOM_ST_MOB_COLL(), "non renseigné");
-			addZone(getNOM_ST_NOM_COLL(), "non renseigné");
+			addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_NON());
+			addZone(getNOM_ST_NOM_COLL(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_MOB_AUTRE(), "non renseigné");
+			addZone(getNOM_RG_MOB_AUTRE(), getNOM_RB_MOB_AUTRE_NON());
 			addZone(getNOM_ST_CONCOURS(), "non renseigné");
-			addZone(getNOM_ST_NOM_CONCOURS(), "non renseigné");
+			addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_NON());
+			addZone(getNOM_ST_NOM_CONCOURS(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_VAE(), "non renseigné");
-			addZone(getNOM_ST_NOM_VAE(), "non renseigné");
+			addZone(getNOM_RG_VAE(), getNOM_RB_VAE_NON());
+			addZone(getNOM_ST_NOM_VAE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_TPS_PARTIEL(), "non renseigné");
+			addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_NON());
 			addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
 			addZone(getNOM_ST_RETRAITE(), "non renseigné");
-			addZone(getNOM_ST_DATE_RETRAITE(), "non renseigné");
+			addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_NON());
+			addZone(getNOM_ST_DATE_RETRAITE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_AUTRE_PERSP(), "non renseigné");
-			addZone(getNOM_ST_LIB_AUTRE_PERSP(), "non renseigné");
+			addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_NON());
+			addZone(getNOM_ST_LIB_AUTRE_PERSP(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 		} else {
 			if (evolution.getIdComEvolution() != null) {
 				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
-				addZone(getNOM_ST_COM_EVOLUTION(), commEvolution == null ? "non renseigné" : commEvolution.getCommentaire());
+				addZone(getNOM_ST_COM_EVOLUTION(), commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getCommentaire());
 			} else {
-				addZone(getNOM_ST_COM_EVOLUTION(), "non renseigné");
+				addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 			}
 			addZone(getNOM_ST_MOB_GEO(), evolution.isMobiliteGeo() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isMobiliteGeo()) {
+				addZone(getNOM_RG_MOB_GEO(), getNOM_RB_MOB_GEO_NON());
+			} else {
+				addZone(getNOM_RG_MOB_GEO(), getNOM_RB_MOB_GEO_OUI());
+			}
 			addZone(getNOM_ST_MOB_FONCT(), evolution.isMobiliteFonct() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isMobiliteFonct()) {
+				addZone(getNOM_RG_MOB_FONCT(), getNOM_RB_MOB_FONCT_NON());
+			} else {
+				addZone(getNOM_RG_MOB_FONCT(), getNOM_RB_MOB_FONCT_OUI());
+			}
 			addZone(getNOM_ST_CHANGEMENT_METIER(), evolution.isChangementMetier() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isChangementMetier()) {
+				addZone(getNOM_RG_METIER(), getNOM_RB_METIER_NON());
+			} else {
+				addZone(getNOM_RG_METIER(), getNOM_RB_METIER_OUI());
+			}
 			addZone(getNOM_ST_DELAI(), evolution.getDelaiEnvisage() == null ? "non renseigné" : evolution.getDelaiEnvisage());
+			// pour la modif
+			if (evolution.getDelaiEnvisage() == null) {
+				addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
+			} else {
+				if (evolution.getDelaiEnvisage().equals("ENTRE1ET2ANS")) {
+					addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_2());
+				} else if (evolution.getDelaiEnvisage().equals("MOINS1AN")) {
+					addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_1());
+				} else {
+					addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
+				}
+			}
 			addZone(getNOM_ST_MOB_SERV(), evolution.isMobiliteService() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isMobiliteService()) {
+				addZone(getNOM_RG_MOB_SERV(), getNOM_RB_MOB_SERV_NON());
+			} else {
+				addZone(getNOM_RG_MOB_SERV(), getNOM_RB_MOB_SERV_OUI());
+			}
 			addZone(getNOM_ST_MOB_DIR(), evolution.isMobiliteDirection() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isMobiliteDirection()) {
+				addZone(getNOM_RG_MOB_DIR(), getNOM_RB_MOB_DIR_NON());
+			} else {
+				addZone(getNOM_RG_MOB_DIR(), getNOM_RB_MOB_DIR_OUI());
+			}
 			addZone(getNOM_ST_MOB_COLL(), evolution.isMobiliteCollectivite() ? "oui" : "non");
-			addZone(getNOM_ST_NOM_COLL(), evolution.getNomCollectivite() == null ? "non renseigné" : evolution.getNomCollectivite());
+			// pour la modif
+			if (!evolution.isMobiliteCollectivite()) {
+				addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_NON());
+			} else {
+				addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_OUI());
+			}
+			addZone(getNOM_ST_NOM_COLL(), evolution.getNomCollectivite() == null ? Const.CHAINE_VIDE : evolution.getNomCollectivite());
 			addZone(getNOM_ST_MOB_AUTRE(), evolution.isMobiliteAutre() ? "oui" : "non");
+			// pour la modif
+			if (!evolution.isMobiliteAutre()) {
+				addZone(getNOM_RG_MOB_AUTRE(), getNOM_RB_MOB_AUTRE_NON());
+			} else {
+				addZone(getNOM_RG_MOB_AUTRE(), getNOM_RB_MOB_AUTRE_OUI());
+			}
 			addZone(getNOM_ST_CONCOURS(), evolution.isConcours() ? "oui" : "non");
-			addZone(getNOM_ST_NOM_CONCOURS(), evolution.getNomConcours() == null ? "non renseigné" : evolution.getNomConcours());
+			// pour la modif
+			if (!evolution.isConcours()) {
+				addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_NON());
+			} else {
+				addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_OUI());
+			}
+			addZone(getNOM_ST_NOM_CONCOURS(), evolution.getNomConcours() == null ? Const.CHAINE_VIDE : evolution.getNomConcours());
 			addZone(getNOM_ST_VAE(), evolution.isVae() ? "oui" : "non");
-			addZone(getNOM_ST_NOM_VAE(), evolution.getNomVae() == null ? "non renseigné" : evolution.getNomVae());
+			// pour la modif
+			if (!evolution.isVae()) {
+				addZone(getNOM_RG_VAE(), getNOM_RB_VAE_NON());
+			} else {
+				addZone(getNOM_RG_VAE(), getNOM_RB_VAE_OUI());
+			}
+			addZone(getNOM_ST_NOM_VAE(), evolution.getNomVae() == null ? Const.CHAINE_VIDE : evolution.getNomVae());
 			addZone(getNOM_ST_TPS_PARTIEL(), evolution.isTempsPartiel() ? "oui" : "non");
-			Horaire tempsPart = Horaire.chercherHoraire(getTransaction(), evolution.getIdSpbhorTpsPartiel().toString());
-			Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
-			addZone(getNOM_ST_POURC_TPS_PARTIEL(), tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
-					+ " - " + String.valueOf(taux.intValue()) + "%");
+			// pour la modif
+			if (!evolution.isTempsPartiel()) {
+				addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_NON());
+			} else {
+				addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_OUI());
+			}
+			// Horaire tempsPart = Horaire.chercherHoraire(getTransaction(),
+			// evolution.getIdSpbhorTpsPartiel().toString());
+			Horaire tempsPart = (Horaire) getHashHoraire().get(evolution.getIdSpbhorTpsPartiel().toString());
+			if (tempsPart != null) {
+				Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
+				int ligneHoraire = getListeHoraire().indexOf(tempsPart);
+				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), String.valueOf(ligneHoraire + 1));
+				addZone(getNOM_ST_POURC_TPS_PARTIEL(), tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
+						+ " - " + String.valueOf(taux.intValue()) + "%");
+			} else {
+				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
+				addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
+			}
+
 			addZone(getNOM_ST_RETRAITE(), evolution.isRetraite() ? "oui" : "non");
-			addZone(getNOM_ST_DATE_RETRAITE(), evolution.getDateRetraite() == null ? "non renseigné" : evolution.getDateRetraite().toString());
+			// pour la modif
+			if (!evolution.isRetraite()) {
+				addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_NON());
+			} else {
+				addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_OUI());
+			}
+			addZone(getNOM_ST_DATE_RETRAITE(), evolution.getDateRetraite() == null ? Const.CHAINE_VIDE : sdf.format(evolution.getDateRetraite()));
 			addZone(getNOM_ST_AUTRE_PERSP(), evolution.isAutrePerspective() ? "oui" : "non");
-			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? "non renseigné" : evolution.getLibAutrePerspective());
+			// pour la modif
+			if (!evolution.isAutrePerspective()) {
+				addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_NON());
+			} else {
+				addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_OUI());
+			}
+			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? Const.CHAINE_VIDE : evolution.getLibAutrePerspective());
 		}
 
 		if (evolution != null) {
@@ -1793,89 +1922,244 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 			EAE eae = getEaeCourant();
 			if (eae != null && eae.getIdEAE() != null) {
-				// TODO
-				/************* PARTIE EVALUATION **********************/
-				EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
-				// commentaire de l'evaluateur
-				if (eval.getIdCommEvaluateur() != null && eval.getIdCommEvaluateur() != 0) {
-					EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommEvaluateur());
-					commEvaluateur.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
-					getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(), commEvaluateur.getCommentaire());
-				} else {
-					if (!getVAL_ST_COMMENTAIRE_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
-						EaeCommentaire comm = new EaeCommentaire();
-						comm.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
-						Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
-						getEaeEvaluationDao().modifierCommentaireEvaluateurEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
-					}
-				}
+				performSauvegardeEvaluation(request, eae);
 
-				// Niveau
-				String niveau = getVAL_RG_NIVEAU();
-				if(niveau.equals(getNOM_RB_NIVEAU_EXCEL())){
-					eval.setNiveau("EXCELLENT");
-				}else if(niveau.equals(getNOM_RB_NIVEAU_SATIS())){
-					eval.setNiveau("SATISFAISANT");
-				}else if(niveau.equals(getNOM_RB_NIVEAU_PROGR())){
-					eval.setNiveau("NECESSITANT_DES_PROGRES");
-				}else{
-					eval.setNiveau("INSUFFISANT");
-				}
-				getEaeEvaluationDao().modifierNiveauEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNiveau());
+				/************* PARTIE PLAN ACTION **********************/
 
-				//note
-				Float note = Float.parseFloat(getVAL_ST_NOTE().replace(',', '.'));
-				eval.setNoteAnnee(note.doubleValue());
-				getEaeEvaluationDao().modifierNoteEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNoteAnnee());
-				
-				//Avancement Diff
-				String ad = getVAL_RG_AD();
-				if(ad.equals(getNOM_RB_AD_MIN())){
-					eval.setPropositionAvancement("MINI");
-				}else if(ad.equals(getNOM_RB_AD_MAX())){
-					eval.setPropositionAvancement("MAXI");
-				}else{
-					eval.setPropositionAvancement("MOY");
-				}
-				getEaeEvaluationDao().modifierADEaeEvaluation(eval.getIdEaeEvaluation(), eval.getPropositionAvancement());
-				
-				//Changement classe
-				String chgt = getVAL_RG_CHGT();
-				if(chgt.equals(getNOM_RB_CHGT_DEF())){
-					eval.setAvisChangementClasse(0);
-				}else{
-					eval.setAvisChangementClasse(1);
-				}
-				getEaeEvaluationDao().modifierChgtClasseEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisChangementClasse());
-				
-				//Revalorisation
-				String reva = getVAL_RG_REVA();
-				if(reva.equals(getNOM_RB_REVA_DEF())){
-					eval.setAvisRevalorisation(0);
-				}else{
-					eval.setAvisRevalorisation(1);
-				}
-				getEaeEvaluationDao().modifierRevaloEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisRevalorisation());
-				
-				// rapport circonstancié de l'evaluateur
-				if (eval.getIdCommAvctEvaluateur() != null && eval.getIdCommAvctEvaluateur() != 0) {
-					EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommAvctEvaluateur());
-					commAvctEvaluateur.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
-					getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(), commAvctEvaluateur.getCommentaire());
-				} else {
-					if (!getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
-						EaeCommentaire comm = new EaeCommentaire();
-						comm.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
-						Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
-						getEaeEvaluationDao().modifierRapportCirconstancieEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
-					}
-				}
+				performSauvegardeEvolution(request, eae);
+
 			} else {
 				// TODO on traite l'erreur
 			}
 
 		}
 		return true;
+	}
+
+	private void performSauvegardeEvolution(HttpServletRequest request, EAE eae) throws Exception {
+		/************* PARTIE EVOLUTION **********************/
+		EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+		// Mobilités
+		String mobGeo = getVAL_RG_MOB_GEO();
+		if (mobGeo.equals(getNOM_RB_MOB_GEO_NON())) {
+			evolution.setMobiliteGeo(false);
+		} else {
+			evolution.setMobiliteGeo(true);
+		}
+		String mobFonct = getVAL_RG_MOB_FONCT();
+		if (mobFonct.equals(getNOM_RB_MOB_FONCT_NON())) {
+			evolution.setMobiliteFonct(false);
+		} else {
+			evolution.setMobiliteFonct(true);
+		}
+		String mobServ = getVAL_RG_MOB_SERV();
+		if (mobServ.equals(getNOM_RB_MOB_SERV_NON())) {
+			evolution.setMobiliteService(false);
+		} else {
+			evolution.setMobiliteService(true);
+		}
+		String mobDir = getVAL_RG_MOB_DIR();
+		if (mobDir.equals(getNOM_RB_MOB_DIR_NON())) {
+			evolution.setMobiliteDirection(false);
+		} else {
+			evolution.setMobiliteDirection(true);
+		}
+		String mobColl = getVAL_RG_MOB_COLL();
+		if (mobColl.equals(getNOM_RB_MOB_COLL_NON())) {
+			evolution.setMobiliteCollectivite(false);
+		} else {
+			evolution.setMobiliteCollectivite(true);
+		}
+		String mobAutre = getVAL_RG_MOB_AUTRE();
+		if (mobAutre.equals(getNOM_RB_MOB_AUTRE_NON())) {
+			evolution.setMobiliteAutre(false);
+		} else {
+			evolution.setMobiliteAutre(true);
+		}
+		getEaeEvolutionDao().modifierMobiliteEaeEvolution(evolution.getIdEaeEvolution(), evolution.isMobiliteGeo(), evolution.isMobiliteFonct(),
+				evolution.isMobiliteService(), evolution.isMobiliteDirection(), evolution.isMobiliteCollectivite(), evolution.isMobiliteAutre());
+
+		// Changement de metier
+		String metier = getVAL_RG_METIER();
+		if (metier.equals(getNOM_RB_METIER_NON())) {
+			evolution.setChangementMetier(false);
+		} else {
+			evolution.setChangementMetier(true);
+		}
+		getEaeEvolutionDao().modifierChangementMetierEaeEvolution(evolution.getIdEaeEvolution(), evolution.isChangementMetier());
+
+		// Delai
+		String delai = getVAL_RG_DELAI();
+		if (delai.equals(getNOM_RB_DELAI_1())) {
+			evolution.setDelaiEnvisage("MOINS1AN");
+		} else if (delai.equals(getNOM_RB_DELAI_2())) {
+			evolution.setDelaiEnvisage("ENTRE1ET2ANS");
+		} else {
+			evolution.setDelaiEnvisage("ENTRE2ET4ANS");
+		}
+		getEaeEvolutionDao().modifierDelaiEaeEvolution(evolution.getIdEaeEvolution(), evolution.getDelaiEnvisage());
+
+		// concours
+		String concours = getVAL_RG_CONCOURS();
+		if (concours.equals(getNOM_RB_CONCOURS_NON())) {
+			evolution.setConcours(false);
+		} else {
+			evolution.setConcours(true);
+		}
+		// vae
+		String vae = getVAL_RG_VAE();
+		if (vae.equals(getNOM_RB_VAE_NON())) {
+			evolution.setVae(false);
+		} else {
+			evolution.setVae(true);
+		}
+		// temps partiel
+		String tpsPartiel = getVAL_RG_TPS_PARTIEL();
+		if (tpsPartiel.equals(getNOM_RB_TPS_PARTIEL_NON())) {
+			evolution.setTempsPartiel(false);
+		} else {
+			evolution.setTempsPartiel(true);
+		}
+		// retraite
+		String retraite = getVAL_RG_RETRAITE();
+		if (retraite.equals(getNOM_RB_RETRAITE_NON())) {
+			evolution.setRetraite(false);
+		} else {
+			evolution.setRetraite(true);
+		}
+		// autres persp
+		String autrePersp = getVAL_RG_AUTRE_PERSP();
+		if (autrePersp.equals(getNOM_RB_AUTRE_PERSP_NON())) {
+			evolution.setAutrePerspective(false);
+		} else {
+			evolution.setAutrePerspective(true);
+		}
+		getEaeEvolutionDao().modifierAutresInfosEaeEvolution(evolution.getIdEaeEvolution(), evolution.isConcours(), evolution.isVae(),
+				evolution.isTempsPartiel(), evolution.isRetraite(), evolution.isAutrePerspective());
+
+		// pour les libelles
+		// collectivite
+		String nomColl = getVAL_ST_NOM_COLL().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NOM_COLL();
+		evolution.setNomCollectivite(nomColl);
+		// concours
+		String nomConcours = getVAL_ST_NOM_CONCOURS().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NOM_CONCOURS();
+		evolution.setNomConcours(nomConcours);
+		// vae
+		String nomVae = getVAL_ST_NOM_VAE().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NOM_VAE();
+		evolution.setNomVae(nomVae);
+		// autre persp
+		String nomAutrePersp = getVAL_ST_LIB_AUTRE_PERSP().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_LIB_AUTRE_PERSP();
+		evolution.setLibAutrePerspective(nomAutrePersp);
+		getEaeEvolutionDao().modifierLibelleEaeEvolution(evolution.getIdEaeEvolution(), evolution.getNomCollectivite(), evolution.getNomConcours(),
+				evolution.getNomVae(), evolution.getLibAutrePerspective());
+
+		// date de la retraite
+		String dateRetraire = getVAL_ST_DATE_RETRAITE().equals(Const.CHAINE_VIDE) ? null : Services.formateDate(getVAL_ST_DATE_RETRAITE());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		evolution.setDateRetraite(dateRetraire != null ? sdf.parse(dateRetraire) : null);
+		getEaeEvolutionDao().modifierDateRetraiteEaeEvolution(evolution.getIdEaeEvolution(), evolution.getDateRetraite());
+
+		// commentaire de l'evolution
+		if (evolution.getIdComEvolution() != null && evolution.getIdComEvolution() != 0) {
+			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
+			commEvolution.setCommentaire(getVAL_ST_COM_EVOLUTION());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommenatire(), commEvolution.getCommentaire());
+		} else {
+			if (!getVAL_ST_COM_EVOLUTION().equals(Const.CHAINE_VIDE)) {
+				EaeCommentaire comm = new EaeCommentaire();
+				comm.setCommentaire(getVAL_ST_COM_EVOLUTION());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				getEaeEvolutionDao().modifierCommentaireEaeEvaluation(evolution.getIdEaeEvolution(), idCree);
+			}
+		}
+
+		// pourcentage temps partiel
+		int numLigneBH = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_SELECT())) : -1);
+		Horaire horaire = numLigneBH > 0 ? (Horaire) getListeHoraire().get(numLigneBH - 1) : null;
+		evolution.setIdSpbhorTpsPartiel(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
+		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(), evolution.getIdSpbhorTpsPartiel());
+		// TODO
+	}
+
+	private void performSauvegardeEvaluation(HttpServletRequest request, EAE eae) throws Exception {
+		/************* PARTIE EVALUATION **********************/
+		EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
+		// commentaire de l'evaluateur
+		if (eval.getIdCommEvaluateur() != null && eval.getIdCommEvaluateur() != 0) {
+			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommEvaluateur());
+			commEvaluateur.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(), commEvaluateur.getCommentaire());
+		} else {
+			if (!getVAL_ST_COMMENTAIRE_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
+				EaeCommentaire comm = new EaeCommentaire();
+				comm.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				getEaeEvaluationDao().modifierCommentaireEvaluateurEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
+			}
+		}
+
+		// Niveau
+		String niveau = getVAL_RG_NIVEAU();
+		if (niveau.equals(getNOM_RB_NIVEAU_EXCEL())) {
+			eval.setNiveau("EXCELLENT");
+		} else if (niveau.equals(getNOM_RB_NIVEAU_SATIS())) {
+			eval.setNiveau("SATISFAISANT");
+		} else if (niveau.equals(getNOM_RB_NIVEAU_PROGR())) {
+			eval.setNiveau("NECESSITANT_DES_PROGRES");
+		} else {
+			eval.setNiveau("INSUFFISANT");
+		}
+		getEaeEvaluationDao().modifierNiveauEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNiveau());
+
+		// note
+		Float note = Float.parseFloat(getVAL_ST_NOTE().replace(',', '.'));
+		eval.setNoteAnnee(note.doubleValue());
+		getEaeEvaluationDao().modifierNoteEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNoteAnnee());
+
+		// Avancement Diff
+		String ad = getVAL_RG_AD();
+		if (ad.equals(getNOM_RB_AD_MIN())) {
+			eval.setPropositionAvancement("MINI");
+		} else if (ad.equals(getNOM_RB_AD_MAX())) {
+			eval.setPropositionAvancement("MAXI");
+		} else {
+			eval.setPropositionAvancement("MOY");
+		}
+		getEaeEvaluationDao().modifierADEaeEvaluation(eval.getIdEaeEvaluation(), eval.getPropositionAvancement());
+
+		// Changement classe
+		String chgt = getVAL_RG_CHGT();
+		if (chgt.equals(getNOM_RB_CHGT_DEF())) {
+			eval.setAvisChangementClasse(0);
+		} else {
+			eval.setAvisChangementClasse(1);
+		}
+		getEaeEvaluationDao().modifierChgtClasseEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisChangementClasse());
+
+		// Revalorisation
+		String reva = getVAL_RG_REVA();
+		if (reva.equals(getNOM_RB_REVA_DEF())) {
+			eval.setAvisRevalorisation(0);
+		} else {
+			eval.setAvisRevalorisation(1);
+		}
+		getEaeEvaluationDao().modifierRevaloEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisRevalorisation());
+
+		// rapport circonstancié de l'evaluateur
+		if (eval.getIdCommAvctEvaluateur() != null && eval.getIdCommAvctEvaluateur() != 0) {
+			EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommAvctEvaluateur());
+			commAvctEvaluateur.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
+			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(), commAvctEvaluateur.getCommentaire());
+		} else {
+			if (!getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
+				EaeCommentaire comm = new EaeCommentaire();
+				comm.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				getEaeEvaluationDao().modifierRapportCirconstancieEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
+			}
+		}
+
 	}
 
 	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
@@ -1917,6 +2201,563 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR163"));
 			return false;
 		}
+		// ********************************************
+		// /////////DATE RETRAITE//////////////
+		// ********************************************
+		// format date de retraite
+		if (!getVAL_ST_DATE_RETRAITE().equals(Const.CHAINE_VIDE) && !Services.estUneDate(getVAL_ST_DATE_RETRAITE())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de retraite"));
+			return false;
+		}
 		return true;
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_MOB_GEO
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_GEO() {
+		return "NOM_RG_MOB_GEO";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_GEO
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_GEO() {
+		return getZone(getNOM_RG_MOB_GEO());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_GEO_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_GEO_OUI() {
+		return "NOM_RB_MOB_GEO_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_GEO_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_GEO_NON() {
+		return "NOM_RB_MOB_GEO_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_MOB_FONCT Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_FONCT() {
+		return "NOM_RG_MOB_FONCT";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_FONCT
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_FONCT() {
+		return getZone(getNOM_RG_MOB_FONCT());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_FONCT_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_FONCT_OUI() {
+		return "NOM_RB_MOB_FONCT_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_FONCT_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_FONCT_NON() {
+		return "NOM_RB_MOB_FONCT_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_MOB_SERV Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_SERV() {
+		return "NOM_RG_MOB_SERV";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_SERV
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_SERV() {
+		return getZone(getNOM_RG_MOB_SERV());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_SERV_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_SERV_OUI() {
+		return "NOM_RB_MOB_SERV_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_SERV_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_SERV_NON() {
+		return "NOM_RB_MOB_SERV_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_MOB_DIR
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_DIR() {
+		return "NOM_RG_MOB_DIR";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_DIR
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_DIR() {
+		return getZone(getNOM_RG_MOB_DIR());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_DIR_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_DIR_OUI() {
+		return "NOM_RB_MOB_DIR_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_DIR_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_DIR_NON() {
+		return "NOM_RB_MOB_DIR_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_MOB_COLL Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_COLL() {
+		return "NOM_RG_MOB_COLL";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_COLL
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_COLL() {
+		return getZone(getNOM_RG_MOB_COLL());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_COLL_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_COLL_OUI() {
+		return "NOM_RB_MOB_COLL_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_COLL_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_COLL_NON() {
+		return "NOM_RB_MOB_COLL_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_MOB_AUTRE Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_MOB_AUTRE() {
+		return "NOM_RG_MOB_AUTRE";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_MOB_AUTRE
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_MOB_AUTRE() {
+		return getZone(getNOM_RG_MOB_AUTRE());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_AUTRE_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_AUTRE_OUI() {
+		return "NOM_RB_MOB_AUTRE_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_MOB_AUTRE_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_MOB_AUTRE_NON() {
+		return "NOM_RB_MOB_AUTRE_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_METIER
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_METIER() {
+		return "NOM_RG_METIER";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_METIER
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_METIER() {
+		return getZone(getNOM_RG_METIER());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_METIER_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_METIER_OUI() {
+		return "NOM_RB_METIER_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_METIER_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_METIER_NON() {
+		return "NOM_RB_METIER_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_DELAI
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_DELAI() {
+		return "NOM_RG_DELAI";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_DELAI
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_DELAI() {
+		return getZone(getNOM_RG_DELAI());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_DELAI_1 Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_DELAI_1() {
+		return "NOM_RB_DELAI_1";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_DELAI_2 Date de création
+	 * : (26/05/22 22:32:22)
+	 * 
+	 */
+	public String getNOM_RB_DELAI_2() {
+		return "NOM_RB_DELAI_2";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_DELAI_4 Date de création
+	 * : (26/05/44 44:34:42)
+	 * 
+	 */
+	public String getNOM_RB_DELAI_4() {
+		return "NOM_RB_DELAI_4";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_CONCOURS Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_CONCOURS() {
+		return "NOM_RG_CONCOURS";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_CONCOURS
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_CONCOURS() {
+		return getZone(getNOM_RG_CONCOURS());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_CONCOURS_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_CONCOURS_OUI() {
+		return "NOM_RB_CONCOURS_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_CONCOURS_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_CONCOURS_NON() {
+		return "NOM_RB_CONCOURS_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_VAE
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_VAE() {
+		return "NOM_RG_VAE";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_VAE Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_VAE() {
+		return getZone(getNOM_RG_VAE());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_VAE_OUI Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_VAE_OUI() {
+		return "NOM_RB_VAE_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_VAE_NON Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_VAE_NON() {
+		return "NOM_RB_VAE_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_TPS_PARTIEL Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_TPS_PARTIEL() {
+		return "NOM_RG_TPS_PARTIEL";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
+	 * RG_TPS_PARTIEL Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_TPS_PARTIEL() {
+		return getZone(getNOM_RG_TPS_PARTIEL());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_TPS_PARTIEL_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_TPS_PARTIEL_OUI() {
+		return "NOM_RB_TPS_PARTIEL_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_TPS_PARTIEL_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_TPS_PARTIEL_NON() {
+		return "NOM_RB_TPS_PARTIEL_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_AUTRE_PERSP Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_AUTRE_PERSP() {
+		return "NOM_RG_AUTRE_PERSP";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
+	 * RG_AUTRE_PERSP Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_AUTRE_PERSP() {
+		return getZone(getNOM_RG_AUTRE_PERSP());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_AUTRE_PERSP_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_AUTRE_PERSP_OUI() {
+		return "NOM_RB_AUTRE_PERSP_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_AUTRE_PERSP_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_AUTRE_PERSP_NON() {
+		return "NOM_RB_AUTRE_PERSP_NON";
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
+	 * RG_RETRAITE Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_RETRAITE() {
+		return "NOM_RG_RETRAITE";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_RETRAITE
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_RETRAITE() {
+		return getZone(getNOM_RG_RETRAITE());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_RETRAITE_OUI Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_RETRAITE_OUI() {
+		return "NOM_RB_RETRAITE_OUI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_RETRAITE_NON Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_RETRAITE_NON() {
+		return "NOM_RB_RETRAITE_NON";
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_BASE_HORAIRE Date de
+	 * création : (05/09/11 14:28:25)
+	 * 
+	 */
+	private String[] getLB_BASE_HORAIRE() {
+		if (LB_BASE_HORAIRE == null)
+			LB_BASE_HORAIRE = initialiseLazyLB();
+		return LB_BASE_HORAIRE;
+	}
+
+	/**
+	 * Setter de la liste: LB_BASE_HORAIRE Date de création : (05/09/11
+	 * 14:28:25)
+	 * 
+	 */
+	private void setLB_BASE_HORAIRE(String[] newLB_BASE_HORAIRE) {
+		LB_BASE_HORAIRE = newLB_BASE_HORAIRE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_BASE_HORAIRE Date de
+	 * création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getNOM_LB_BASE_HORAIRE() {
+		return "NOM_LB_BASE_HORAIRE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_BASE_HORAIRE_SELECT Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getNOM_LB_BASE_HORAIRE_SELECT() {
+		return "NOM_LB_BASE_HORAIRE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_BASE_HORAIRE Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String[] getVAL_LB_BASE_HORAIRE() {
+		return getLB_BASE_HORAIRE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_BASE_HORAIRE Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getVAL_LB_BASE_HORAIRE_SELECT() {
+		return getZone(getNOM_LB_BASE_HORAIRE_SELECT());
+	}
+
+	private ArrayList<Horaire> getListeHoraire() {
+		return listeHoraire;
+	}
+
+	private void setListeHoraire(ArrayList<Horaire> listeHoraire) {
+		this.listeHoraire = listeHoraire;
+	}
+
+	private Hashtable<String, Horaire> getHashHoraire() {
+		if (hashHoraire == null)
+			hashHoraire = new Hashtable<String, Horaire>();
+		return hashHoraire;
 	}
 }
