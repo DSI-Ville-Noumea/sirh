@@ -255,6 +255,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 					return performPB_VISUALISER_DOC(request, i);
 				}
 			}
+			// Si clic sur le bouton PB_MODIFIER
+			for (int i = 0; i < getListeEae().size(); i++) {
+				if (testerParametre(request, getNOM_PB_MODIFIER(i))) {
+					return performPB_MODIFIER(request, i);
+				}
+			}
 
 			// gestion navigation
 			// Si clic sur le bouton PB_RESET
@@ -1514,7 +1520,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_PRIORISATION_DEV(i));
 	}
 
-	public boolean isCampagneOuverte(Integer idCampagneEAE) throws Exception {
+	public boolean isCampagneOuverte(Integer idCampagneEAE) throws Exception {	
 		return getCampagneEaeDao().chercherCampagneEAE(idCampagneEAE).estOuverte();
 	}
 }

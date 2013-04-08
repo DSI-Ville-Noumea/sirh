@@ -74,7 +74,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">&nbsp;
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-				    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE())){ %>
+				    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
 				    					<%} %>
 										</td>
@@ -83,7 +83,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_ENTRETIEN(indiceEae)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: center;"><%=process.getVAL_ST_SERVICE(indiceEae)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: center;">
-										<%if(eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())){ %>
+										<%if(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 											<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(indiceEae)%>">
 				    					<%}else{ %>
 				    					&nbsp;
