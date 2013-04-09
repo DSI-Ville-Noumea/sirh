@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +24,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
+import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeCommentaire;
@@ -33,6 +35,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
+import nc.mairie.spring.domain.metier.EAE.EaeTypeDeveloppement;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -57,10 +60,17 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	public String ACTION_AJOUT_OBJ_PRO = "Ajout d'un objectif professionnel.";
 	public String ACTION_MODIFICATION_OBJ_PRO = "Modification d'un objectif professionnel.";
 	public String ACTION_SUPPRESSION_OBJ_PRO = "Suppression d'un objectif professionnel.";
+	public String ACTION_AJOUT_DEV = "Ajout d'un développement.";
+	public String ACTION_MODIFICATION_DEV = "Modification d'un développement.";
+	public String ACTION_SUPPRESSION_DEV = "Suppression d'un développement.";
 
 	private String[] LB_BASE_HORAIRE;
 	private ArrayList<Horaire> listeHoraire;
 	private Hashtable<String, Horaire> hashHoraire;
+
+	private String[] LB_TYPE_DEV;
+	private ArrayList<EaeTypeDeveloppement> listeTypeDeveloppement;
+	private Hashtable<String, EaeTypeDeveloppement> hashTypeDeveloppement;
 
 	private AgentNW AgentCourant;
 	private ArrayList<EAE> listeEae;
@@ -71,6 +81,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private EAE eaeCourant;
 	private EaePlanAction objectifIndiCourant;
 	private EaePlanAction objectifProCourant;
+	private EaeDeveloppement developpementCourant;
 
 	private EAEDao eaeDao;
 	private CampagneEAEDao campagneEaeDao;
@@ -83,6 +94,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private EaePlanActionDao eaePlanActionDao;
 	private EaeEvolutionDao eaeEvolutionDao;
 	private EaeDeveloppementDao eaeDeveloppementDao;
+	private EaeTypeDeveloppementDao eaeTypeDeveloppementDao;
 
 	private String urlFichier;
 
@@ -184,6 +196,24 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			for (Horaire h : liste)
 				getHashHoraire().put(h.getCdtHor(), h);
 		}
+
+		// Si liste base type developpement vide alors affectation
+		if (getLB_TYPE_DEV() == LBVide) {
+			ArrayList<EaeTypeDeveloppement> liste = getEaeTypeDeveloppementDao().listerEaeTypeDeveloppement();
+			setListeTypeDeveloppement(liste);
+
+			int[] tailles = { 30 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator list = liste.listIterator(); list.hasNext();) {
+				EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) list.next();
+				String ligne[] = { typeDev.getLibelleTypeDeveloppement() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_DEV(aFormat.getListeFormatee());
+
+			for (EaeTypeDeveloppement h : liste)
+				getHashTypeDeveloppement().put(h.getLibelleTypeDeveloppement(), h);
+		}
 	}
 
 	private void initialiseDao() {
@@ -222,6 +252,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		}
 		if (getEaeDeveloppementDao() == null) {
 			setEaeDeveloppementDao((EaeDeveloppementDao) context.getBean("eaeDeveloppementDao"));
+		}
+		if (getEaeTypeDeveloppementDao() == null) {
+			setEaeTypeDeveloppementDao((EaeTypeDeveloppementDao) context.getBean("eaeTypeDeveloppementDao"));
 		}
 	}
 
@@ -331,7 +364,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				return performPB_RESET(request);
 			}
 
-
 			// Si clic sur le bouton PB_AJOUTER_OBJ_PRO
 			if (testerParametre(request, getNOM_PB_AJOUTER_OBJ_PRO())) {
 				return performPB_AJOUTER_OBJ_PRO(request);
@@ -359,6 +391,37 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_ANNULER_OBJ_PRO
 			if (testerParametre(request, getNOM_PB_ANNULER_OBJ_PRO())) {
 				return performPB_ANNULER_OBJ_PRO(request);
+			}
+
+			//
+
+			// Si clic sur le bouton PB_AJOUTER_DEV
+			if (testerParametre(request, getNOM_PB_AJOUTER_DEV())) {
+				return performPB_AJOUTER_DEV(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_DEV
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_MODIFIER_DEV(i))) {
+					return performPB_MODIFIER_DEV(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_DEV
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_DEV(i))) {
+					return performPB_SUPPRIMER_DEV(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_VALIDER_DEV
+			if (testerParametre(request, getNOM_PB_VALIDER_DEV())) {
+				return performPB_VALIDER_DEV(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_DEV
+			if (testerParametre(request, getNOM_PB_ANNULER_DEV())) {
+				return performPB_ANNULER_DEV(request);
 			}
 
 		}
@@ -832,8 +895,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				EaeDeveloppement dev = listeDeveloppement.get(j);
 				addZone(getNOM_ST_TYPE_DEV(j), dev.getTypeDeveloppement());
 				addZone(getNOM_ST_LIB_DEV(j), dev.getLibelleDeveloppement());
-				addZone(getNOM_ST_ECHEANCE_DEV(j), new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
-				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation().toString());
+				addZone(getNOM_ST_ECHEANCE_DEV(j),
+						dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE : new SimpleDateFormat("dd/MM/yyyy").format(dev
+								.getEcheanceDeveloppement()));
+				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation() == null ? Const.CHAINE_VIDE : dev.getPriorisation().toString());
 			}
 		}
 
@@ -1990,9 +2055,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			EAE eae = getEaeCourant();
 			if (eae != null && eae.getIdEAE() != null) {
 				performSauvegardeEvaluation(request, eae);
-
-				/************* PARTIE PLAN ACTION **********************/
-
 				performSauvegardeEvolution(request, eae);
 
 			} else {
@@ -2956,7 +3018,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_VALIDER_OBJ_INDI(HttpServletRequest request) throws Exception {
 		EAE eae = getEaeCourant();
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_INDI) && !getVAL_ST_LIB_OBJ_INDI().equals(Const.CHAINE_VIDE)) {
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_INDI)) {
+			if (!performControlerChampObjIndi(request)) {
+				return false;
+			}
 			EaePlanAction planActionIndi = new EaePlanAction();
 			planActionIndi.setIdEae(eae.getIdEAE());
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
@@ -2965,6 +3030,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdTypeObjectif(), planActionIndi.getObjectif(),
 					planActionIndi.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_INDI)) {
+			if (!performControlerChampObjIndi(request)) {
+				return false;
+			}
 			EaePlanAction planActionIndi = getObjectifIndiCourant();
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
 			getEaePlanActionDao().modifierEaePlanAction(planActionIndi.getIdEaePlanAction(), planActionIndi.getIdTypeObjectif(),
@@ -2978,6 +3046,15 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		setObjectifProCourant(null);
 		// on nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
+	}
+
+	private boolean performControlerChampObjIndi(HttpServletRequest request) {
+		if (getVAL_ST_LIB_OBJ_INDI().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
 		return true;
 	}
 
@@ -3021,7 +3098,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	public void setObjectifProCourant(EaePlanAction objectifProCourant) {
 		this.objectifProCourant = objectifProCourant;
 	}
-
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_OBJ_PRO Date de
@@ -3137,8 +3213,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_MESURE_PRO Date de
-	 * création : (10/08/11 09:33:52)
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_MESURE_PRO Date
+	 * de création : (10/08/11 09:33:52)
 	 * 
 	 */
 	public String getNOM_ST_LIB_MESURE_PRO() {
@@ -3155,8 +3231,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_VALIDER_OBJ_PRO
-	 * Date de création : (11/02/03 14:20:31)
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_VALIDER_OBJ_PRO Date
+	 * de création : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_VALIDER_OBJ_PRO() {
@@ -3172,7 +3248,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_VALIDER_OBJ_PRO(HttpServletRequest request) throws Exception {
 		EAE eae = getEaeCourant();
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_PRO) && !getVAL_ST_LIB_OBJ_PRO().equals(Const.CHAINE_VIDE)) {
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_PRO)) {
+			if (!performControlerChampObjPro(request)) {
+				return false;
+			}
 			EaePlanAction planActionPro = new EaePlanAction();
 			planActionPro.setIdEae(eae.getIdEAE());
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
@@ -3181,6 +3260,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdTypeObjectif(), planActionPro.getObjectif(),
 					planActionPro.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_PRO)) {
+			if (!performControlerChampObjPro(request)) {
+				return false;
+			}
 			EaePlanAction planActionPro = getObjectifProCourant();
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
@@ -3198,9 +3280,18 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
+	private boolean performControlerChampObjPro(HttpServletRequest request) {
+		if (getVAL_ST_LIB_OBJ_PRO().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+		return true;
+	}
+
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ANNULER_OBJ_PRO
-	 * Date de création : (11/02/03 14:20:31)
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ANNULER_OBJ_PRO Date
+	 * de création : (11/02/03 14:20:31)
 	 * 
 	 */
 	public String getNOM_PB_ANNULER_OBJ_PRO() {
@@ -3221,5 +3312,373 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		// on nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_DEV Date de création
+	 * : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_DEV() {
+		return "NOM_PB_AJOUTER_DEV";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_AJOUTER_DEV(HttpServletRequest request) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		setDeveloppementCourant(null);
+		addZone(getNOM_LB_TYPE_DEV_SELECT(), Const.ZERO);
+		addZone(getNOM_ST_LIB_DEV(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_PRIO_DEV(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_DEV(), Const.CHAINE_VIDE);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_AJOUT_DEV);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_DEV(int i) {
+		return "NOM_PB_MODIFIER_DEV" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_MODIFIER_DEV(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltAModifier);
+		setDeveloppementCourant(dev);
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelleDeveloppement());
+		if (typeDev != null) {
+			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
+			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
+		}
+		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
+		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
+		addZone(getNOM_ST_DATE_DEV(),
+				dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
+						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_DEV);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DEV Date de
+	 * création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_DEV(int i) {
+		return "NOM_PB_SUPPRIMER_DEV" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_DEV(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltASuprimer);
+		setDeveloppementCourant(dev);
+		// TODO
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelleDeveloppement());
+		if (typeDev != null) {
+			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
+			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
+		}
+		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
+		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
+		addZone(getNOM_ST_DATE_DEV(),
+				dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
+						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_DEV);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_VALIDER_OBJ_INDI
+	 * Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER_DEV() {
+		return "NOM_PB_VALIDER_DEV";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_VALIDER_DEV(HttpServletRequest request) throws Exception {
+
+		EAE eae = getEaeCourant();
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_DEV) && !getVAL_ST_LIB_DEV().equals(Const.CHAINE_VIDE)) {
+			if (!performControlerChampDev(request)) {
+				return false;
+			}
+			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+			EaeDeveloppement dev = new EaeDeveloppement();
+			dev.setIdEaeEvolution(evolution.getIdEaeEvolution());
+			dev.setLibelleDeveloppement(getVAL_ST_LIB_DEV());
+			dev.setEcheanceDeveloppement(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
+			dev.setPriorisation(Integer.valueOf(getVAL_ST_PRIO_DEV()));
+			// type developpement
+			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_DEV_SELECT())) : -1);
+			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement().get(numLigneTypeDev) : null;
+			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
+			getEaeDeveloppementDao().creerEaeDeveloppement(dev.getIdEaeEvolution(), dev.getTypeDeveloppement(), dev.getLibelleDeveloppement(),
+					dev.getEcheanceDeveloppement(), dev.getPriorisation());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_DEV)) {
+			if (!performControlerChampDev(request)) {
+				return false;
+			}
+			EaeDeveloppement dev = getDeveloppementCourant();
+			dev.setLibelleDeveloppement(getVAL_ST_LIB_DEV());
+			dev.setEcheanceDeveloppement(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
+			dev.setPriorisation(Integer.valueOf(getVAL_ST_PRIO_DEV()));
+			// type developpement
+			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_DEV_SELECT())) : -1);
+			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement().get(numLigneTypeDev) : null;
+			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
+			getEaeDeveloppementDao().modifierEaeDeveloppement(dev.getIdEaeDeveloppement(), dev.getTypeDeveloppement(), dev.getLibelleDeveloppement(),
+					dev.getEcheanceDeveloppement(), dev.getPriorisation());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_DEV)) {
+			EaeDeveloppement dev = getDeveloppementCourant();
+			getEaeDeveloppementDao().supprimerEaeDeveloppement(dev.getIdEaeDeveloppement());
+		}
+		initialiseEae();
+		setDeveloppementCourant(null);
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
+	}
+
+	private boolean performControlerChampDev(HttpServletRequest request) {
+		if (getVAL_ST_PRIO_DEV().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "priorisation"));
+			return false;
+		}
+		if (!Services.estNumerique(getVAL_ST_PRIO_DEV())) {
+			// "ERR992", "La zone @ doit être numérique."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "priorisation"));
+			return false;
+		}
+		if (getVAL_ST_DATE_DEV().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date d'échéance"));
+			return false;
+		}
+		// format date de dev
+		if (!Services.estUneDate(getVAL_ST_DATE_DEV())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'échéance"));
+			return false;
+		}
+		if (getVAL_ST_LIB_DEV().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_DEV Date de création
+	 * : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER_DEV() {
+		return "NOM_PB_ANNULER_DEV";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_ANNULER_DEV(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setDeveloppementCourant(null);
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_LIB_DEV() {
+		return "NOM_ST_LIB_DEV";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_DEV Date
+	 * de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_LIB_DEV() {
+		return getZone(getNOM_ST_LIB_DEV());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_PRIO_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_PRIO_DEV() {
+		return "NOM_ST_PRIO_DEV";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_PRIO_DEV Date
+	 * de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_PRIO_DEV() {
+		return getZone(getNOM_ST_PRIO_DEV());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DEV Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_DATE_DEV() {
+		return "NOM_ST_DATE_DEV";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DEV Date
+	 * de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_DATE_DEV() {
+		return getZone(getNOM_ST_DATE_DEV());
+	}
+
+	public EaeDeveloppement getDeveloppementCourant() {
+		return developpementCourant;
+	}
+
+	public void setDeveloppementCourant(EaeDeveloppement developpementCourant) {
+		this.developpementCourant = developpementCourant;
+	}
+
+	public EaeTypeDeveloppementDao getEaeTypeDeveloppementDao() {
+		return eaeTypeDeveloppementDao;
+	}
+
+	public void setEaeTypeDeveloppementDao(EaeTypeDeveloppementDao eaeTypeDeveloppementDao) {
+		this.eaeTypeDeveloppementDao = eaeTypeDeveloppementDao;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_TYPE_DEV Date de création
+	 * : (05/09/11 14:28:25)
+	 * 
+	 */
+	private String[] getLB_TYPE_DEV() {
+		if (LB_TYPE_DEV == null)
+			LB_TYPE_DEV = initialiseLazyLB();
+		return LB_TYPE_DEV;
+	}
+
+	/**
+	 * Setter de la liste: LB_TYPE_DEV Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	private void setLB_TYPE_DEV(String[] newLB_TYPE_DEV) {
+		LB_TYPE_DEV = newLB_TYPE_DEV;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE_DEV Date de création
+	 * : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_DEV() {
+		return "NOM_LB_TYPE_DEV";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_TYPE_DEV_SELECT Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_DEV_SELECT() {
+		return "NOM_LB_TYPE_DEV_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_TYPE_DEV Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String[] getVAL_LB_TYPE_DEV() {
+		return getLB_TYPE_DEV();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_TYPE_DEV Date de création : (05/09/11 14:28:25)
+	 * 
+	 */
+	public String getVAL_LB_TYPE_DEV_SELECT() {
+		return getZone(getNOM_LB_TYPE_DEV_SELECT());
+	}
+
+	private ArrayList<EaeTypeDeveloppement> getListeTypeDeveloppement() {
+		return listeTypeDeveloppement;
+	}
+
+	private void setListeTypeDeveloppement(ArrayList<EaeTypeDeveloppement> listeTypeDeveloppement) {
+		this.listeTypeDeveloppement = listeTypeDeveloppement;
+	}
+
+	private Hashtable<String, EaeTypeDeveloppement> getHashTypeDeveloppement() {
+		if (hashTypeDeveloppement == null)
+			hashTypeDeveloppement = new Hashtable<String, EaeTypeDeveloppement>();
+		return hashTypeDeveloppement;
 	}
 }

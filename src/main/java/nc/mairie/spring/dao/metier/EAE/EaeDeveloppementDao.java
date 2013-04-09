@@ -39,8 +39,26 @@ public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
 	}
 
 	@Override
+	public void modifierEaeDeveloppement(Integer idEaeDeveloppement, String typeDeveloppement, String libelleDeveloppement,
+			Date echeanceDeveloppement, Integer priorisation) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TYPE_DEVELOPPEMENT + " =?," + CHAMP_LIBELLE + "=?," + CHAMP_ECHEANCE + "=?,"
+				+ CHAMP_PRIORISATION + "=? where " + CHAMP_ID_EAE_DEVELOPPEMENT + "=?";
+		jdbcTemplate.update(sql, new Object[] { typeDeveloppement, libelleDeveloppement, echeanceDeveloppement, priorisation, idEaeDeveloppement });
+	}
+
+	@Override
+	public void creerEaeDeveloppement(Integer idEaeEvolution, String typeDeveloppement, String libelleDeveloppement, Date echeanceDeveloppement,
+			Integer priorisation) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_DEVELOPPEMENT + "," + CHAMP_ID_EAE_EVOLUTION + "," + CHAMP_LIBELLE + ","
+				+ CHAMP_ECHEANCE + "," + CHAMP_PRIORISATION + "," + CHAMP_TYPE_DEVELOPPEMENT + ") " + "VALUES (" + NOM_SEQUENCE
+				+ ".nextval,?,?,?,?,?)";
+
+		jdbcTemplate.update(sql, new Object[] { idEaeEvolution, libelleDeveloppement, echeanceDeveloppement, priorisation, typeDeveloppement });
+	}
+
+	@Override
 	public ArrayList<EaeDeveloppement> listerEaeDeveloppementParEvolution(Integer idEvolution) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE_EVOLUTION + "=? order by "+CHAMP_PRIORISATION;
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE_EVOLUTION + "=? order by " + CHAMP_PRIORISATION;
 
 		ArrayList<EaeDeveloppement> listeEaeDeveloppement = new ArrayList<EaeDeveloppement>();
 
@@ -54,11 +72,17 @@ public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
 			dev.setLibelleDeveloppement((String) row.get(CHAMP_LIBELLE));
 			dev.setEcheanceDeveloppement((Date) row.get(CHAMP_ECHEANCE));
 			BigDecimal prio = (BigDecimal) row.get(CHAMP_PRIORISATION);
-			dev.setPriorisation(prio.intValue());
+			dev.setPriorisation(prio == null ? null : prio.intValue());
 			dev.setTypeDeveloppement((String) row.get(CHAMP_TYPE_DEVELOPPEMENT));
 
 			listeEaeDeveloppement.add(dev);
 		}
 		return listeEaeDeveloppement;
+	}
+
+	@Override
+	public void supprimerEaeDeveloppement(Integer idEaeDeveloppement) throws Exception {
+		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_EAE_DEVELOPPEMENT + "=?";
+		jdbcTemplate.update(sql, new Object[] { idEaeDeveloppement });
 	}
 }

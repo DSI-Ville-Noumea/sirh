@@ -122,9 +122,9 @@
 								<span id="titreOngletEvolution" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Developpement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Developpement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						
@@ -324,7 +324,7 @@
 								<%if(process.getListeDeveloppement().size()>0){ %>
 								<span style="margin-left:25px;position:relative;width:120px;text-align: left;">Type</span>
 								<span style="position:relative;width:400px;text-align: left;">Libellé</span>
-								<span style="position:relative;width:90px;text-align: center;">Echeance</span>
+								<span style="position:relative;width:90px;text-align: center;">Echéance</span>
 								<span style="position:relative;text-align: center;">Priorité</span>
 								<br/>
 								<div style="overflow: auto;height: 150px;width:900px;margin-left: 20px;">
@@ -347,7 +347,7 @@
 								<%} %>				
 								<BR/><BR/>
 							</div>
-						<%}else if (process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_PRO)){%>
+						<%}else if (process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_DEV)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEV)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_DEV)){%>
 						<div style="margin-left:10px;margin-top:20px;text-align:left;width:900px" align="left">
 							<% if (process.onglet.equals("ONGLET1")) {%>
 								<span id="titreOngletInformations" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
@@ -370,9 +370,9 @@
 								<span id="titreOngletEvolution" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Developpement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Developpement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						
@@ -489,7 +489,7 @@
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">
 									<BR/>	
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
+									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_MESURE_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_MESURE_PRO() %>">				
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_OBJ_PRO()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_PRO()%>">	
@@ -500,7 +500,7 @@
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">	
 									<BR/>	
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
+									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
 									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_MESURE_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_MESURE_PRO() %>">					
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_OBJ_PRO()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_PRO()%>">	
@@ -509,10 +509,10 @@
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_PRO)) {%>	
 								<div>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
-									<INPUT class="sigp2-saisie" maxlength="1000" readonly="readonly" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">
+									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_OBJ_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_PRO() %>">
 									<BR/>	
-									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
-									<INPUT class="sigp2-saisie" maxlength="1000" readonly="readonly" name="<%= process.getNOM_ST_LIB_MESURE_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_MESURE_PRO() %>">						
+									<span class="sigp2" style="margin-left:20px;position:relative;width:50px;">Mesure :</span>
+									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_MESURE_PRO() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_MESURE_PRO() %>">						
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_OBJ_PRO()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_PRO()%>">	
 								</div>										
@@ -564,7 +564,7 @@
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_INDI)) {%>	
 								<div>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
-									<INPUT class="sigp2-saisie" maxlength="1000" readonly="readonly" name="<%= process.getNOM_ST_LIB_OBJ_INDI() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_INDI() %>">				
+									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_OBJ_INDI() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_OBJ_INDI() %>">				
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_OBJ_INDI()%>">
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_OBJ_INDI()%>">	
 								</div>										
@@ -663,19 +663,26 @@
 							<% } %>
 							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
 								<br/><br/>
-								<%if(process.getListeDeveloppement().size()>0){ %>
-								<span style="margin-left:25px;position:relative;width:120px;text-align: left;">Type</span>
+								<span style="margin-left:20px;position:relative;width:9px;"></span>
+				    			<span style="position:relative;width:40px;">
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DEV()%>">
+								</span>
+				    			<span style="position:relative;width:120px;text-align: left;">Type</span>
 								<span style="position:relative;width:400px;text-align: left;">Libellé</span>
-								<span style="position:relative;width:90px;text-align: center;">Echeance</span>
+								<span style="position:relative;width:90px;text-align: center;">Echéance</span>
 								<span style="position:relative;text-align: center;">Priorité</span>
 								<br/>
 								<div style="overflow: auto;height: 150px;width:900px;margin-left: 20px;">
-									<table class="sigp2NewTab" style="text-align:left;width:680px;">
+									<table class="sigp2NewTab" style="text-align:left;width:880px;">
 									<%
 									int indiceDev = 0;
 										for (int i = 0;i<process.getListeDeveloppement().size();i++){
 									%>
 											<tr>
+												<td class="sigp2NewTab-liste" style="position:relative;width:40px;" align="center">
+						    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_DEV(indiceDev)%>">
+						    						<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DEV(indiceDev)%>">
+						    					</td>
 												<td width="120px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_TYPE_DEV(indiceDev)%></td>
 												<td width="400px" class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_DEV(indiceDev)%></td>
 												<td width="90px" class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_ECHEANCE_DEV(indiceDev)%></td>
@@ -685,8 +692,69 @@
 											indiceDev++;
 									}%>
 									</table>	
-								</div>	
-								<%} %>				
+								</div>									
+								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_DEV)) {%>	
+								<div>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Type :</span>
+									<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DEV() %>">
+										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
+									</SELECT>
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
+									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
+									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
+								
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_DEV()%>">
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DEV()%>">	
+								</div>										
+								<%} %>
+								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEV)) {%>	
+								<div>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Type :</span>
+									<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DEV() %>">
+										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
+									</SELECT>
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<INPUT class="sigp2-saisie" maxlength="1000" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">				
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
+									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
+									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
+								
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_DEV()%>">
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DEV()%>">	
+								</div>										
+								<%} %>
+								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_DEV)) {%>	
+								<div>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Type :</span>
+									<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_TYPE_DEV() %>">
+										<%=process.forComboHTML(process.getVAL_LB_TYPE_DEV(), process.getVAL_LB_TYPE_DEV_SELECT()) %>
+									</SELECT>
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Libellé :</span>
+									<INPUT class="sigp2-saisie" maxlength="1000" disabled="disabled" name="<%= process.getNOM_ST_LIB_DEV() %>" size="70" type="text" value="<%= process.getVAL_ST_LIB_DEV() %>">				
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Priorisation :</span>
+									<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
+									<BR/>
+									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
+									<input class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
+									
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_DEV()%>">
+									<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_DEV()%>">	
+								</div>										
+								<%} %>			
 								<BR/><BR/>
 							</div>
 							<BR/><BR/>
