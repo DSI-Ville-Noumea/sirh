@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
+import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Service;
@@ -100,9 +101,11 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 	private void afficheListeHistoSuiviMed() throws ParseException, Exception {
 		for (int i = 0; i < getListeHistoSuiviMed().size(); i++) {
 			SuiviMedical sm = (SuiviMedical) getListeHistoSuiviMed().get(i);
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
+			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat().trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
 			Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
 			if (getTransaction().isErreur()) {
@@ -496,6 +499,24 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_NUM_CAFAT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_NUM_CAFAT(int i) {
+		return "NOM_ST_NUM_CAFAT_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NUM_CAFAT Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_NUM_CAFAT(int i) {
+		return getZone(getNOM_ST_NUM_CAFAT(i));
 	}
 
 	/**
