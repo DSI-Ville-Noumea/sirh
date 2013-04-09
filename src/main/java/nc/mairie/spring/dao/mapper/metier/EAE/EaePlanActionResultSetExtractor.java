@@ -14,6 +14,7 @@ public class EaePlanActionResultSetExtractor implements ResultSetExtractor {
 	public Object extractData(ResultSet rs) throws SQLException {
 		EaePlanAction eaePlanAction = new EaePlanAction();
 		eaePlanAction.setIdEaePlanAction(rs.getInt(EaePlanActionDao.CHAMP_ID_EAE_PLAN_ACTION));
+		eaePlanAction.setIdTypeObjectif(rs.getInt(EaePlanActionDao.CHAMP_ID_EAE_TYPE_OBJECTIF));
 		eaePlanAction.setIdEae(rs.getInt(EaePlanActionDao.CHAMP_ID_EAE));
 		eaePlanAction.setObjectif(rs.getString(EaePlanActionDao.CHAMP_OBJECTIF));
 		eaePlanAction.setMesure(rs.getString(EaePlanActionDao.CHAMP_MESURE));

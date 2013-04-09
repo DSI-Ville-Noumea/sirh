@@ -51,6 +51,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	public String ACTION_MODIFICATION = "Modification d'un EAE.";
 	public String ACTION_CONSULTATION = "Consultation d'un EAE.";
+	public String ACTION_AJOUT_OBJ_INDI = "Ajout d'un objectif individuel.";
+	public String ACTION_MODIFICATION_OBJ_INDI = "Modification d'un objectif individuel.";
+	public String ACTION_SUPPRESSION_OBJ_INDI = "Suppression d'un objectif individuel.";
+	public String ACTION_AJOUT_OBJ_PRO = "Ajout d'un objectif professionnel.";
+	public String ACTION_MODIFICATION_OBJ_PRO = "Modification d'un objectif professionnel.";
+	public String ACTION_SUPPRESSION_OBJ_PRO = "Suppression d'un objectif professionnel.";
 
 	private String[] LB_BASE_HORAIRE;
 	private ArrayList<Horaire> listeHoraire;
@@ -63,6 +69,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private ArrayList<EaePlanAction> listeObjectifIndi;
 	private ArrayList<EaeDeveloppement> listeDeveloppement;
 	private EAE eaeCourant;
+	private EaePlanAction objectifIndiCourant;
+	private EaePlanAction objectifProCourant;
 
 	private EAEDao eaeDao;
 	private CampagneEAEDao campagneEaeDao;
@@ -288,10 +296,69 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
+			// Si clic sur le bouton PB_AJOUTER_OBJ_INDI
+			if (testerParametre(request, getNOM_PB_AJOUTER_OBJ_INDI())) {
+				return performPB_AJOUTER_OBJ_INDI(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_OBJ_INDI
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_MODIFIER_OBJ_INDI(i))) {
+					return performPB_MODIFIER_OBJ_INDI(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_OBJ_INDI
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_OBJ_INDI(i))) {
+					return performPB_SUPPRIMER_OBJ_INDI(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_VALIDER_OBJ_INDI
+			if (testerParametre(request, getNOM_PB_VALIDER_OBJ_INDI())) {
+				return performPB_VALIDER_OBJ_INDI(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_OBJ_INDI
+			if (testerParametre(request, getNOM_PB_ANNULER_OBJ_INDI())) {
+				return performPB_ANNULER_OBJ_INDI(request);
+			}
+
 			// gestion navigation
 			// Si clic sur le bouton PB_RESET
 			if (testerParametre(request, getNOM_PB_RESET())) {
 				return performPB_RESET(request);
+			}
+
+
+			// Si clic sur le bouton PB_AJOUTER_OBJ_PRO
+			if (testerParametre(request, getNOM_PB_AJOUTER_OBJ_PRO())) {
+				return performPB_AJOUTER_OBJ_PRO(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_OBJ_PRO
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_MODIFIER_OBJ_PRO(i))) {
+					return performPB_MODIFIER_OBJ_PRO(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_OBJ_PRO
+			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_OBJ_PRO(i))) {
+					return performPB_SUPPRIMER_OBJ_PRO(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_VALIDER_OBJ_PRO
+			if (testerParametre(request, getNOM_PB_VALIDER_OBJ_PRO())) {
+				return performPB_VALIDER_OBJ_PRO(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_OBJ_PRO
+			if (testerParametre(request, getNOM_PB_ANNULER_OBJ_PRO())) {
+				return performPB_ANNULER_OBJ_PRO(request);
 			}
 
 		}
@@ -2759,5 +2826,400 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		if (hashHoraire == null)
 			hashHoraire = new Hashtable<String, Horaire>();
 		return hashHoraire;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_OBJ_INDI Date de
+	 * création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_OBJ_INDI() {
+		return "NOM_PB_AJOUTER_OBJ_INDI";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_AJOUTER_OBJ_INDI(HttpServletRequest request) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		setObjectifIndiCourant(null);
+		addZone(getNOM_ST_LIB_OBJ_INDI(), Const.CHAINE_VIDE);
+
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_AJOUT_OBJ_INDI);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_OBJ_INDI(int i) {
+		return "NOM_PB_MODIFIER_OBJ_INDI" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_MODIFIER_OBJ_INDI(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaePlanAction plan = getListeObjectifIndi().get(indiceEltAModifier);
+		setObjectifIndiCourant(plan);
+		addZone(getNOM_ST_LIB_OBJ_INDI(), plan.getObjectif());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_OBJ_INDI);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_OBJ_INDI Date de
+	 * création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_OBJ_INDI(int i) {
+		return "NOM_PB_SUPPRIMER_OBJ_INDI" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_OBJ_INDI(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaePlanAction plan = getListeObjectifIndi().get(indiceEltASuprimer);
+		setObjectifIndiCourant(plan);
+		addZone(getNOM_ST_LIB_OBJ_INDI(), plan.getObjectif());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_OBJ_INDI);
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_OBJ_INDI Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_LIB_OBJ_INDI() {
+		return "NOM_ST_LIB_OBJ_INDI";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_OBJ_INDI
+	 * Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_LIB_OBJ_INDI() {
+		return getZone(getNOM_ST_LIB_OBJ_INDI());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_VALIDER_OBJ_INDI
+	 * Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER_OBJ_INDI() {
+		return "NOM_PB_VALIDER_OBJ_INDI";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_VALIDER_OBJ_INDI(HttpServletRequest request) throws Exception {
+		EAE eae = getEaeCourant();
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_INDI) && !getVAL_ST_LIB_OBJ_INDI().equals(Const.CHAINE_VIDE)) {
+			EaePlanAction planActionIndi = new EaePlanAction();
+			planActionIndi.setIdEae(eae.getIdEAE());
+			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
+			planActionIndi.setMesure(null);
+			planActionIndi.setIdTypeObjectif(2);
+			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdTypeObjectif(), planActionIndi.getObjectif(),
+					planActionIndi.getMesure());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_INDI)) {
+			EaePlanAction planActionIndi = getObjectifIndiCourant();
+			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
+			getEaePlanActionDao().modifierEaePlanAction(planActionIndi.getIdEaePlanAction(), planActionIndi.getIdTypeObjectif(),
+					planActionIndi.getObjectif(), planActionIndi.getMesure());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_INDI)) {
+			EaePlanAction planActionIndi = getObjectifIndiCourant();
+			getEaePlanActionDao().supprimerEaePlanAction(planActionIndi.getIdEaePlanAction());
+		}
+		initialiseEae();
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ANNULER_OBJ_INDI
+	 * Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER_OBJ_INDI() {
+		return "NOM_PB_ANNULER_OBJ_INDI";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_ANNULER_OBJ_INDI(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
+	}
+
+	public EaePlanAction getObjectifIndiCourant() {
+		return objectifIndiCourant;
+	}
+
+	public void setObjectifIndiCourant(EaePlanAction objectifIndiCourant) {
+		this.objectifIndiCourant = objectifIndiCourant;
+	}
+
+	public EaePlanAction getObjectifProCourant() {
+		return objectifProCourant;
+	}
+
+	public void setObjectifProCourant(EaePlanAction objectifProCourant) {
+		this.objectifProCourant = objectifProCourant;
+	}
+
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_OBJ_PRO Date de
+	 * création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_OBJ_PRO() {
+		return "NOM_PB_AJOUTER_OBJ_PRO";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_AJOUTER_OBJ_PRO(HttpServletRequest request) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		addZone(getNOM_ST_LIB_OBJ_PRO(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_LIB_MESURE_PRO(), Const.CHAINE_VIDE);
+
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_AJOUT_OBJ_PRO);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_OBJ_PRO(int i) {
+		return "NOM_PB_MODIFIER_OBJ_PRO" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_MODIFIER_OBJ_PRO(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaePlanAction plan = getListeObjectifPro().get(indiceEltAModifier);
+		setObjectifProCourant(plan);
+		addZone(getNOM_ST_LIB_OBJ_PRO(), plan.getObjectif());
+		addZone(getNOM_ST_LIB_MESURE_PRO(), plan.getMesure());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_OBJ_PRO);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_OBJ_PRO Date de
+	 * création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_OBJ_PRO(int i) {
+		return "NOM_PB_SUPPRIMER_OBJ_PRO" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_OBJ_PRO(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		EaePlanAction plan = getListeObjectifPro().get(indiceEltASuprimer);
+		setObjectifProCourant(plan);
+		addZone(getNOM_ST_LIB_OBJ_PRO(), plan.getObjectif());
+		addZone(getNOM_ST_LIB_MESURE_PRO(), plan.getObjectif());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_OBJ_PRO);
+
+		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_OBJ_PRO Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_LIB_OBJ_PRO() {
+		return "NOM_ST_LIB_OBJ_PRO";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_OBJ_PRO
+	 * Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_LIB_OBJ_PRO() {
+		return getZone(getNOM_ST_LIB_OBJ_PRO());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_MESURE_PRO Date de
+	 * création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getNOM_ST_LIB_MESURE_PRO() {
+		return "NOM_ST_LIB_MESURE_PRO";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_MESURE_PRO
+	 * Date de création : (10/08/11 09:33:52)
+	 * 
+	 */
+	public String getVAL_ST_LIB_MESURE_PRO() {
+		return getZone(getNOM_ST_LIB_MESURE_PRO());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_VALIDER_OBJ_PRO
+	 * Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER_OBJ_PRO() {
+		return "NOM_PB_VALIDER_OBJ_PRO";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_VALIDER_OBJ_PRO(HttpServletRequest request) throws Exception {
+		EAE eae = getEaeCourant();
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_AJOUT_OBJ_PRO) && !getVAL_ST_LIB_OBJ_PRO().equals(Const.CHAINE_VIDE)) {
+			EaePlanAction planActionPro = new EaePlanAction();
+			planActionPro.setIdEae(eae.getIdEAE());
+			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
+			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
+			planActionPro.setIdTypeObjectif(1);
+			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdTypeObjectif(), planActionPro.getObjectif(),
+					planActionPro.getMesure());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_PRO)) {
+			EaePlanAction planActionPro = getObjectifProCourant();
+			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
+			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
+			getEaePlanActionDao().modifierEaePlanAction(planActionPro.getIdEaePlanAction(), planActionPro.getIdTypeObjectif(),
+					planActionPro.getObjectif(), planActionPro.getMesure());
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_PRO)) {
+			EaePlanAction planActionPro = getObjectifProCourant();
+			getEaePlanActionDao().supprimerEaePlanAction(planActionPro.getIdEaePlanAction());
+		}
+		initialiseEae();
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_ANNULER_OBJ_PRO
+	 * Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER_OBJ_PRO() {
+		return "NOM_PB_ANNULER_OBJ_PRO";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_ANNULER_OBJ_PRO(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setObjectifIndiCourant(null);
+		setObjectifProCourant(null);
+		// on nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+		return true;
 	}
 }

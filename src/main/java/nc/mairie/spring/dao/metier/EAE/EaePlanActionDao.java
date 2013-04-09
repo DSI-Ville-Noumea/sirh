@@ -49,11 +49,34 @@ public class EaePlanActionDao implements EaePlanActionDaoInterface {
 			plan.setIdEaePlanAction(id.intValue());
 			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
 			plan.setIdEae(idEae.intValue());
+			BigDecimal idTypeObjectif = (BigDecimal) row.get(CHAMP_ID_EAE_TYPE_OBJECTIF);
+			plan.setIdTypeObjectif(idTypeObjectif.intValue());
 			plan.setObjectif((String) row.get(CHAMP_OBJECTIF));
 			plan.setMesure((String) row.get(CHAMP_MESURE));
 
 			listeEaePlanAction.add(plan);
 		}
 		return listeEaePlanAction;
+	}
+
+	@Override
+	public void creerPlanAction(Integer idEae, Integer idTypeObjectif, String objectif, String mesure) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_PLAN_ACTION + "," + CHAMP_ID_EAE + "," + CHAMP_ID_EAE_TYPE_OBJECTIF + ","
+				+ CHAMP_OBJECTIF + "," + CHAMP_MESURE + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?)";
+
+		jdbcTemplate.update(sql, new Object[] { idEae, idTypeObjectif, objectif, mesure });
+	}
+
+	@Override
+	public void supprimerEaePlanAction(Integer idEaePlanAction) throws Exception {
+		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_EAE_PLAN_ACTION + "=?";
+		jdbcTemplate.update(sql, new Object[] { idEaePlanAction });
+	}
+
+	@Override
+	public void modifierEaePlanAction(Integer idEaePlanAction, Integer idTypeObjectif, String objectif, String mesure) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_TYPE_OBJECTIF + " =?," + CHAMP_OBJECTIF + "=?," + CHAMP_MESURE + "=? where "
+				+ CHAMP_ID_EAE_PLAN_ACTION + "=?";
+		jdbcTemplate.update(sql, new Object[] { idTypeObjectif, objectif, mesure, idEaePlanAction });
 	}
 }
