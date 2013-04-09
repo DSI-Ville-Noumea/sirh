@@ -3089,16 +3089,17 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			// "INF500",
 			// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
 			setMessage(MessageUtils.getMessage("INF500"));
-			return false;
 		}
 
-		avct.setIdMotifAvct(null);
-		avct.setAvisSHD(null);
+		if (avct != null && avct.getIdAvct() != null) {
+			avct.setIdMotifAvct(null);
+			avct.setAvisSHD(null);
 
-		avct.modifierAvancement(getTransaction());
+			avct.modifierAvancement(getTransaction());
 
-		// tout s'est bien passé
-		commitTransaction();
+			// tout s'est bien passé
+			commitTransaction();			
+		}
 
 		// on met à jour le statut de l'EAE
 		getEaeCourant().setEtat(EnumEtatEAE.FINALISE.getCode());
