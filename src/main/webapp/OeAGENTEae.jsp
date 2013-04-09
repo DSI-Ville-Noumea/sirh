@@ -456,7 +456,6 @@
 							<% } %>
 								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs professionnels : </span>
 								<br/><br/>
-								<%if(process.getListeObjectifPro().size()>0){ %>
 				    			<span style="margin-left:20px;position:relative;width:9px;"></span>
 				    			<span style="position:relative;width:40px;">
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_OBJ_PRO()%>">
@@ -464,7 +463,7 @@
 								<span style="position:relative;width:500px;text-align: left;">Objectif</span>
 								<span style="position:relative;text-align: center;">Mesure</span>
 								<br/>
-								<div style="overflow: auto;height: 50px;width:900px;margin-left: 20px;">
+								<div style="overflow: auto;height: 80px;width:900px;margin-left: 20px;">
 									<table class="sigp2NewTab" style="text-align:left;width:880px;">
 									<%
 									int indiceObjPro = 0;
@@ -484,7 +483,6 @@
 									}%>
 									</table>	
 								</div>	
-								<%} %>	
 								
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_PRO)) {%>	
 								<div>
@@ -522,7 +520,6 @@
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs individuels : </span>
 								<br/><br/>
-								<%if(process.getListeObjectifIndi().size()>0){ %>
 				    			<span style="margin-left:20px;position:relative;width:9px;"></span>
 				    			<span style="position:relative;width:40px;">
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_OBJ_INDI()%>">
@@ -548,7 +545,6 @@
 									}%>
 									</table>	
 								</div>	
-								<%} %>	
 								<%if(process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_INDI)) {%>	
 								<div>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Libellé :</span>
