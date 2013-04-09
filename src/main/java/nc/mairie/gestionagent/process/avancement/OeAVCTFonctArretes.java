@@ -1768,7 +1768,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			}
 			// on sauvegarde le tableau
 			performPB_VALIDER(request);
-			
+
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceElemen)) ? Integer
@@ -1927,28 +1927,28 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
 		}
 	}
-	public boolean isDefavorable(Integer idAvct) throws Exception{
+
+	public boolean isDefavorable(Integer idAvct) throws Exception {
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct.toString());
-		if(getTransaction().isErreur()){
+		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			return true;
 		}
-		
-		
-		if (avct.getIdMotifAvct().equals("4")) {		
+
+		if (avct.getIdMotifAvct().equals("4")) {
 			// on traite l'avis Emp
 			int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(idAvct)) ? Integer
 					.parseInt(getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(idAvct)) : -1);
 			if (indiceAvisCapFavDefavEmp != -1) {
 				String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp)).getLibCourtAvisCAP();
-				if(idAvisEmp.toUpperCase().equals("DEF")){
+				if (idAvisEmp.toUpperCase().equals("DEF")) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			}
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}

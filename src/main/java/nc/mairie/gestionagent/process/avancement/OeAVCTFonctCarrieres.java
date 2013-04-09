@@ -411,7 +411,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						avct.setDateArrete(getVAL_ST_DATE_ARRETE(i));
 						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i));
 
-						//pourla date d'avancement
+						// pourla date d'avancement
 						String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
 						String dateAvctFinale = Const.ZERO;
 						if (idAvisEmp.equals("MIN")) {
@@ -422,7 +422,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 							dateAvctFinale = avct.getDateAvctMaxi();
 						} else if (idAvisEmp.equals("FAV")) {
 							dateAvctFinale = avct.getDateAvctMoy();
-						}else{
+						} else {
 							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
 							continue;
 						}
@@ -474,9 +474,9 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
 						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
-						//on met un 'S' dans son avancement
+						// on met un 'S' dans son avancement
 						avct.setCarriereSimu("S");
-						avct.modifierAvancement(getTransaction());						
+						avct.modifierAvancement(getTransaction());
 					}
 				}
 			}
@@ -1270,7 +1270,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		}
 		avct.modifierAvancement(getTransaction());
 		commitTransaction();
-		
+
 		performPB_FILTRER(request);
 		return true;
 	}

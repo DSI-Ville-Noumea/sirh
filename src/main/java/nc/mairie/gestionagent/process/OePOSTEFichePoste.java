@@ -42,7 +42,6 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFP;
-import nc.mairie.metier.poste.DiplomeFE;
 import nc.mairie.metier.poste.DiplomeFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FEFP;
@@ -50,7 +49,6 @@ import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.NFA;
-import nc.mairie.metier.poste.NiveauEtudeFE;
 import nc.mairie.metier.poste.NiveauEtudeFP;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
@@ -141,19 +139,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 	// Nouvelle gestion des niveau etude
 	private ArrayList listeTousNiveau;
-	// niveau etude de la fiche emploi primaire
-	private ArrayList listeNiveauFEP;
-	// niveau etude de la fiche emploi secondaire
-	private ArrayList listeNiveauFES;
 	// niveau etude de la fiche poste
 	private ArrayList listeNiveauFP;
 
 	// Nouvelle gestion des diplomes
 	private ArrayList listeTousDiplomes;
-	// diplomes de la fiche emploi primaire
-	private ArrayList listeDiplomeFEP;
-	// diplomes de la fiche emploi secondaire
-	private ArrayList listeDiplomeFES;
 	// diplomes de la fiche poste
 	private ArrayList listeDiplomeFP;
 
@@ -345,7 +335,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			afficheFES();
 			initialiseMission();
 			initialiseInfoEmploi();
-			//si changement de FES, on ajoute la mission à la mission actuelle
+			// si changement de FES, on ajoute la mission à la mission actuelle
 			if (getEmploiSecondaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiSecondaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiSecondaire().getDefinitionEmploi());
@@ -373,7 +363,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			afficheFEP();
 			initialiseMission();
 			initialiseInfoEmploi();
-			//si changement de FES, on ajoute la mission à la mission actuelle
+			// si changement de FES, on ajoute la mission à la mission actuelle
 			if (getEmploiPrimaire() != null) {
 				if (!getMission().toUpperCase().contains(getEmploiPrimaire().getDefinitionEmploi().toUpperCase())) {
 					setMission(getMission() + " " + getEmploiPrimaire().getDefinitionEmploi());
@@ -1144,12 +1134,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		setListeTousDiplomes(new ArrayList());
 
 		setListeNiveauFP(new ArrayList());
-		setListeNiveauFES(new ArrayList());
-		setListeNiveauFEP(new ArrayList());
 
 		setListeDiplomeFP(new ArrayList());
-		setListeDiplomeFES(new ArrayList());
-		setListeDiplomeFEP(new ArrayList());
 
 		setListeActiFP(new ArrayList());
 		setListeActiFES(new ArrayList());
@@ -1323,7 +1309,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 		if (getVAL_EF_MISSIONS().length() > 2000) {
-			//"ERR119", "La mission ne doit pas dépasser 2000 caractères."
+			// "ERR119", "La mission ne doit pas dépasser 2000 caractères."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR119"));
 			setFocus(getNOM_PB_RECHERCHER());
 			return false;
@@ -3374,7 +3360,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		setListeTousDiplomes(new ArrayList());
 
 		// niveau etude
-		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les niveau etude de la FDP
 			setListeNiveauFP(NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante()));
@@ -3382,42 +3367,38 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				NiveauEtudeFP niveauFP = (NiveauEtudeFP) getListeNiveauFP().get(i);
 				NiveauEtude niveau = NiveauEtude.chercherNiveauEtude(getTransaction(), niveauFP.getIdNiveauEtude());
 				getListeTousNiveau().add(niveau);
-				trouve = true;
 			}
 		} else {
 			setListeNiveauFP(new ArrayList());
 		}
 		// si il n'y avait pas de niveau etude sur la FDP on affiche celle des
 		// FE
-		//ON ENELEVE CETTE PATIE --> JIRA SIRH-305
-		/*if (!trouve) {
-			if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
-				// on recupere les niveau etude de la FEP
-				setListeNiveauFEP(NiveauEtudeFE.listerNiveauEtudeFEAvecFE(getTransaction(), getEmploiPrimaire()));
-				for (int i = 0; i < getListeNiveauFEP().size(); i++) {
-					NiveauEtudeFE niveauFE = (NiveauEtudeFE) getListeNiveauFEP().get(i);
-					NiveauEtude niveau = NiveauEtude.chercherNiveauEtude(getTransaction(), niveauFE.getIdNiveauEtude());
-					if (!getListeTousNiveau().contains(niveau)) {
-						getListeTousNiveau().add(niveau);
-					}
-				}
-			} else {
-				setListeNiveauFEP(new ArrayList());
-			}
-			if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
-				// on recupere les niveau etude de la FES
-				setListeNiveauFES(NiveauEtudeFE.listerNiveauEtudeFEAvecFE(getTransaction(), getEmploiSecondaire()));
-				for (int i = 0; i < getListeNiveauFES().size(); i++) {
-					NiveauEtudeFE niveauFE = (NiveauEtudeFE) getListeNiveauFES().get(i);
-					NiveauEtude niveau = NiveauEtude.chercherNiveauEtude(getTransaction(), niveauFE.getIdNiveauEtude());
-					if (!getListeTousNiveau().contains(niveau)) {
-						getListeTousNiveau().add(niveau);
-					}
-				}
-			} else {
-				setListeNiveauFES(new ArrayList());
-			}
-		}*/
+		// ON ENELEVE CETTE PATIE --> JIRA SIRH-305
+		/*
+		 * if (!trouve) { if (getEmploiPrimaire() != null &&
+		 * getEmploiPrimaire().getIdFicheEmploi() != null) { // on recupere les
+		 * niveau etude de la FEP
+		 * setListeNiveauFEP(NiveauEtudeFE.listerNiveauEtudeFEAvecFE
+		 * (getTransaction(), getEmploiPrimaire())); for (int i = 0; i <
+		 * getListeNiveauFEP().size(); i++) { NiveauEtudeFE niveauFE =
+		 * (NiveauEtudeFE) getListeNiveauFEP().get(i); NiveauEtude niveau =
+		 * NiveauEtude.chercherNiveauEtude(getTransaction(),
+		 * niveauFE.getIdNiveauEtude()); if
+		 * (!getListeTousNiveau().contains(niveau)) {
+		 * getListeTousNiveau().add(niveau); } } } else { setListeNiveauFEP(new
+		 * ArrayList()); } if (getEmploiSecondaire() != null &&
+		 * getEmploiSecondaire().getIdFicheEmploi() != null) { // on recupere
+		 * les niveau etude de la FES
+		 * setListeNiveauFES(NiveauEtudeFE.listerNiveauEtudeFEAvecFE
+		 * (getTransaction(), getEmploiSecondaire())); for (int i = 0; i <
+		 * getListeNiveauFES().size(); i++) { NiveauEtudeFE niveauFE =
+		 * (NiveauEtudeFE) getListeNiveauFES().get(i); NiveauEtude niveau =
+		 * NiveauEtude.chercherNiveauEtude(getTransaction(),
+		 * niveauFE.getIdNiveauEtude()); if
+		 * (!getListeTousNiveau().contains(niveau)) {
+		 * getListeTousNiveau().add(niveau); } } } else { setListeNiveauFES(new
+		 * ArrayList()); } }
+		 */
 		String nivEtMulti = Const.CHAINE_VIDE;
 		for (int i = 0; i < getListeTousNiveau().size(); i++) {
 			NiveauEtude nivEt = (NiveauEtude) getListeTousNiveau().get(i);
@@ -3426,7 +3407,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
 
 		// diplome
-		trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les diplomes de la FDP
 			setListeDiplomeFP(DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante()));
@@ -3434,41 +3414,37 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				DiplomeFP diplomeFP = (DiplomeFP) getListeDiplomeFP().get(i);
 				DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), diplomeFP.getIdDiplomeGenerique());
 				getListeTousDiplomes().add(diplome);
-				trouve = true;
 			}
 		} else {
 			setListeDiplomeFP(new ArrayList());
 		}
 		// si il n'y avait pas de diplomes sur la FDP on affiche celle des FE
-		//ON ENELEVE CETTE PATIE --> JIRA SIRH-305
-		/*if (!trouve) {
-			if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
-				// on recupere les diplomes de la FEP
-				setListeDiplomeFEP(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(), getEmploiPrimaire()));
-				for (int i = 0; i < getListeDiplomeFEP().size(); i++) {
-					DiplomeFE diplomeFE = (DiplomeFE) getListeDiplomeFEP().get(i);
-					DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), diplomeFE.getIdDiplomeGenerique());
-					if (!getListeTousDiplomes().contains(diplome)) {
-						getListeTousDiplomes().add(diplome);
-					}
-				}
-			} else {
-				setListeDiplomeFEP(new ArrayList());
-			}
-			if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
-				// on recupere les diplomes de la FES
-				setListeDiplomeFES(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(), getEmploiSecondaire()));
-				for (int i = 0; i < getListeDiplomeFES().size(); i++) {
-					DiplomeFE diplomeFE = (DiplomeFE) getListeDiplomeFES().get(i);
-					DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), diplomeFE.getIdDiplomeGenerique());
-					if (!getListeTousDiplomes().contains(diplome)) {
-						getListeTousDiplomes().add(diplome);
-					}
-				}
-			} else {
-				setListeDiplomeFES(new ArrayList());
-			}
-		}*/
+		// ON ENELEVE CETTE PATIE --> JIRA SIRH-305
+		/*
+		 * if (!trouve) { if (getEmploiPrimaire() != null &&
+		 * getEmploiPrimaire().getIdFicheEmploi() != null) { // on recupere les
+		 * diplomes de la FEP
+		 * setListeDiplomeFEP(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(),
+		 * getEmploiPrimaire())); for (int i = 0; i <
+		 * getListeDiplomeFEP().size(); i++) { DiplomeFE diplomeFE = (DiplomeFE)
+		 * getListeDiplomeFEP().get(i); DiplomeGenerique diplome =
+		 * DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
+		 * diplomeFE.getIdDiplomeGenerique()); if
+		 * (!getListeTousDiplomes().contains(diplome)) {
+		 * getListeTousDiplomes().add(diplome); } } } else {
+		 * setListeDiplomeFEP(new ArrayList()); } if (getEmploiSecondaire() !=
+		 * null && getEmploiSecondaire().getIdFicheEmploi() != null) { // on
+		 * recupere les diplomes de la FES
+		 * setListeDiplomeFES(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(),
+		 * getEmploiSecondaire())); for (int i = 0; i <
+		 * getListeDiplomeFES().size(); i++) { DiplomeFE diplomeFE = (DiplomeFE)
+		 * getListeDiplomeFES().get(i); DiplomeGenerique diplome =
+		 * DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
+		 * diplomeFE.getIdDiplomeGenerique()); if
+		 * (!getListeTousDiplomes().contains(diplome)) {
+		 * getListeTousDiplomes().add(diplome); } } } else {
+		 * setListeDiplomeFES(new ArrayList()); } }
+		 */
 		int[] taillesDiplome = { 50 };
 		String[] champsDiplome = { "libDiplomeGenerique" };
 		setLB_DIPLOME_MULTI(new FormateListe(taillesDiplome, getListeTousDiplomes(), champsDiplome).getListeFormatee());
@@ -6289,22 +6265,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return hashOrigineCompetence;
 	}
 
-	private ArrayList getListeNiveauFEP() {
-		return listeNiveauFEP;
-	}
-
-	private void setListeNiveauFEP(ArrayList listeNiveauFEP) {
-		this.listeNiveauFEP = listeNiveauFEP;
-	}
-
-	private ArrayList getListeNiveauFES() {
-		return listeNiveauFES;
-	}
-
-	private void setListeNiveauFES(ArrayList listeNiveauFES) {
-		this.listeNiveauFES = listeNiveauFES;
-	}
-
 	private ArrayList getListeNiveauFP() {
 		return listeNiveauFP;
 	}
@@ -6319,22 +6279,6 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 	private void setListeTousNiveau(ArrayList listeTousNiveau) {
 		this.listeTousNiveau = listeTousNiveau;
-	}
-
-	private ArrayList getListeDiplomeFEP() {
-		return listeDiplomeFEP;
-	}
-
-	private void setListeDiplomeFEP(ArrayList listeDiplomeFEP) {
-		this.listeDiplomeFEP = listeDiplomeFEP;
-	}
-
-	private ArrayList getListeDiplomeFES() {
-		return listeDiplomeFES;
-	}
-
-	private void setListeDiplomeFES(ArrayList listeDiplomeFES) {
-		this.listeDiplomeFES = listeDiplomeFES;
 	}
 
 	private ArrayList getListeDiplomeFP() {
