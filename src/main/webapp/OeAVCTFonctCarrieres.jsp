@@ -18,7 +18,6 @@
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
-<script type="text/javascript" src="js/avancement.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
@@ -70,18 +69,30 @@ function reduireHierarchy() {
 				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
 				Integer i = Integer.valueOf(avct.getIdAvct());
 			%>
-			var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  
-	  		var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>];  		
-	  		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked && boxProjet!=null && boxProjet.checked){
+			var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  		
+	  		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked){
 	  			if(box!=null && !box.disabled){	
 					box.checked=true;  
+					validAffecter(<%=i%>);
 				}			
 		  	}else{
 	  			if(box!=null && !box.disabled){	
 					box.checked=false;	 
+					validAffecter(<%=i%>);
 				}		
 			}
 			<%}%>
+}
+	function validAffecter(indice) {	
+		  var box = document.formu.elements['NOM_CK_AFFECTER_'+indice];
+		  if (box != null && box.checked)
+		  {
+			document.formu.elements['NOM_ST_NUM_ARRETE_'+indice].disabled = true; 
+		  }
+		  else
+		  { 
+			document.formu.elements['NOM_ST_NUM_ARRETE_'+indice].disabled = false; 
+		  }
 }
 </script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
@@ -137,6 +148,14 @@ function reduireHierarchy() {
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 		</FIELDSET>
 		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		    <legend class="sigp2Legend">Date de l'arrêté</legend>
+          	<span class="sigp2" style="width:100px">Date de l'arrêté : </span>
+			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_ARR_GLOBALE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_ARR_GLOBALE() %>" >
+			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ARR_GLOBALE()%>', 'dd/mm/y');">
+			<BR/><BR/>
+		</FIELDSET>
+		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des avancements des fonctionnaires</legend>
 		    
@@ -183,7 +202,9 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td align="center" ><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
 								<td align="center" ><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
-								<td align="center" ><%=process.getVAL_ST_NUM_ARRETE(indiceAvct)%></td>
+								<td align="center" >
+									<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_NUM_ARRETE(indiceAvct) %>" size="10"  type="text" value="<%= process.getVAL_ST_NUM_ARRETE(indiceAvct) %>" >
+								</td>
 								<td align="center" ><%=process.getVAL_ST_DATE_ARRETE(indiceAvct)%></td>
 								<td align="center" >
 								<%if(avct.getCarriereSimu()==null || !avct.getCarriereSimu().toUpperCase().equals("S")){ %>

@@ -388,6 +388,14 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_AFFECTER(HttpServletRequest request) throws Exception {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+
+		// format date de debut
+		if (!getVAL_ST_DATE_ARR_GLOBALE().equals(Const.CHAINE_VIDE) && !Services.estUneDate(getVAL_ST_DATE_ARR_GLOBALE())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrêté"));
+			return false;
+		}
 		// on recupere les lignes qui sont cochées pour affecter
 		int nbAgentAffectes = 0;
 		for (int j = 0; j < getListeAvct().size(); j++) {
@@ -408,8 +416,9 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 						addZone(getNOM_ST_ETAT(i), avct.getEtat());
 						// on traite le numero et la date d'arreté
-						avct.setDateArrete(getVAL_ST_DATE_ARRETE(i));
-						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i));
+						String dateArr = getVAL_ST_DATE_ARR_GLOBALE();
+						avct.setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? null : dateArr);
+						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NUM_ARRETE(i));
 
 						// pourla date d'avancement
 						String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
@@ -434,8 +443,8 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						// on crée un nouvelle carriere
 						Carriere nouvelleCarriere = new Carriere();
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
-						nouvelleCarriere.setReferenceArrete(avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete());
+						nouvelleCarriere.setReferenceArrete(avct.getNumArrete() == null ? Const.ZERO : avct.getNumArrete());
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : avct.getDateArrete());
 						nouvelleCarriere.setDateDebut(dateAvctFinale);
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						// on calcul Grade - ACC/BM en fonction de l'avis CAP
@@ -486,6 +495,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -621,6 +631,13 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		// format date de debut
+		if (!getVAL_ST_DATE_ARR_GLOBALE().equals(Const.CHAINE_VIDE) && !Services.estUneDate(getVAL_ST_DATE_ARR_GLOBALE())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'arrêté"));
+			return false;
+		}
 		// on sauvegarde l'état du tableau
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
@@ -635,8 +652,10 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
 				}
 				// on traite le numero et la date d'arreté
-				avct.setDateArrete(getVAL_ST_DATE_ARRETE(i));
-				avct.setNumArrete(getVAL_ST_NUM_ARRETE(i));
+				String dateArr = getVAL_ST_DATE_ARR_GLOBALE();
+				avct.setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? null : dateArr);
+				avct.setNumArrete(getVAL_ST_NUM_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NUM_ARRETE(i));
+
 			}
 			avct.modifierAvancement(getTransaction());
 			if (getTransaction().isErreur())
@@ -644,6 +663,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 		}
 		// on enregistre
 		commitTransaction();
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -787,6 +807,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 	 * ST_DATE_ARRETE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
+
 	public String getVAL_ST_DATE_ARRETE(int i) {
 		return getZone(getNOM_ST_DATE_ARRETE(i));
 	}
@@ -1273,5 +1294,23 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 
 		performPB_FILTRER(request);
 		return true;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_ARR Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE_ARR_GLOBALE() {
+		return "NOM_ST_DATE_ARR_GLOBALE_";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ARR Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE_ARR_GLOBALE() {
+		return getZone(getNOM_ST_DATE_ARR_GLOBALE());
 	}
 }

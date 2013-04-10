@@ -412,8 +412,8 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCodeCadre(gradeActuel.getCodeCadre());
 
-					avct.setDateArrete("01/01/" + annee);
-					avct.setNumArrete(annee);
+					//avct.setDateArrete("01/01/" + annee);
+					//avct.setNumArrete(annee);
 
 					// IBA,INM,INA
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
