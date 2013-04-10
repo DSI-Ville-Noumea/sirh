@@ -527,7 +527,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 						nbJoursBonus));
 				nbJoursBonus = 0;
 			}
-		} else if (libCourtAvisCap.equals("MOY")) {
+		} else if (libCourtAvisCap.equals("MOY")||libCourtAvisCap.equals("FAV")) {
 			avct.setDureeStandard(gradeActuel.getDureeMoy());
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
@@ -560,7 +560,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 				gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
 				isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMin()) * 30);
 			}
-		} else if (libCourtAvisCap.equals("MOY")) {
+		} else if (libCourtAvisCap.equals("MOY")||libCourtAvisCap.equals("FAV")) {
 			boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
 			while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
 					&& gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0) {

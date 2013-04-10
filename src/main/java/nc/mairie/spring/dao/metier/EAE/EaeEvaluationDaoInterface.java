@@ -25,4 +25,6 @@ public interface EaeEvaluationDaoInterface {
 	public void modifierRevaloEaeEvaluation(Integer idEaeEvaluation, Integer revalorisation) throws Exception;
 
 	public void modifierRapportCirconstancieEaeEvaluation(Integer idEaeEvaluation, Integer idEaeRapportCircon) throws Exception;
+
+	public void modifierAvisSHDEaeEvaluation(Integer idEaeEvaluation, String avis_shd) throws Exception;
 }

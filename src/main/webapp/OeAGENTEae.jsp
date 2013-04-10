@@ -429,7 +429,11 @@
 								<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_NOTE() %>" size="5" type="text"  value="<%= process.getVAL_ST_NOTE() %>">
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis Evaluateur : </span>
-								<span class="sigp2-saisie"><%=process.getVAL_ST_AVIS_SHD()%></span>
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_MIN())%>>Minimale
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_MOY())%>>Moyenne
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_MAX())%>>Maximale
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_FAV())%>>Favorable
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SHD(),process.getNOM_RB_SHD_DEFAV())%>>Défavorable
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avancement différencié : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AD(),process.getNOM_RB_AD_MIN())%>>Minimale

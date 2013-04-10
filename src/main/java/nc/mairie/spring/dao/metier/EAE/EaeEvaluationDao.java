@@ -216,4 +216,10 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { idEaeRapportCircon, idEaeEvaluation });
 	}
+
+	@Override
+	public void modifierAvisSHDEaeEvaluation(Integer idEaeEvaluation, String avis_shd) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_SHD+ " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { avis_shd, idEaeEvaluation });
+	}
 }

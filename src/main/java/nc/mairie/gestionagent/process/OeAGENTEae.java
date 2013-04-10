@@ -625,6 +625,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
 			addZone(getNOM_ST_NOTE(), "non renseigné");
 			addZone(getNOM_ST_AVIS_SHD(), "non renseigné");
+			addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
 			addZone(getNOM_ST_AVCT_DIFF(), "non renseigné");
 			addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
 			addZone(getNOM_ST_CHANGEMENT_CLASSE(), "non renseigné");
@@ -663,9 +664,27 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
 				}
 			}
+			// TODO
 
 			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
 			addZone(getNOM_ST_AVIS_SHD(), evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
+			// pour la modif
+			if (evaluation.getAvis_shd() == null) {
+				addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
+			} else {
+				if (evaluation.getAvis_shd().equals("Durée minimale")) {
+					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MIN());
+				} else if (evaluation.getAvis_shd().equals("Durée maximale")) {
+					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MAX());
+				} else if (evaluation.getAvis_shd().equals("Durée moyenne")) {
+					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
+				} else if (evaluation.getAvis_shd().equals("Favorable")) {
+					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_FAV());
+				} else if (evaluation.getAvis_shd().equals("Défavorable")) {
+					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_DEFAV());
+				}
+			}
+
 			addZone(getNOM_ST_AVCT_DIFF(), evaluation.getPropositionAvancement() == null ? "non renseigné" : evaluation.getPropositionAvancement());
 			// pour la modif
 			if (evaluation.getPropositionAvancement() == null) {
@@ -686,7 +705,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			if (evaluation.getAvisChangementClasse() == null) {
 				addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
 			} else {
-				if (evaluation.getAvisRevalorisation() == 0) {
+				if (evaluation.getAvisChangementClasse() == 0) {
 					addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_DEF());
 				} else {
 					addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
@@ -724,7 +743,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_LIB_OBJ_INDI(j), plan.getObjectif());
 		}
 
-		// TODO
 		// Alim zone Evolution
 		EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
 		if (evolution == null) {
@@ -2208,7 +2226,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		Horaire horaire = numLigneBH > 0 ? (Horaire) getListeHoraire().get(numLigneBH - 1) : null;
 		evolution.setIdSpbhorTpsPartiel(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
 		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(), evolution.getIdSpbhorTpsPartiel());
-		// TODO
 	}
 
 	private void performSauvegardeEvaluation(HttpServletRequest request, EAE eae) throws Exception {
@@ -2245,6 +2262,21 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		Float note = Float.parseFloat(getVAL_ST_NOTE().replace(',', '.'));
 		eval.setNoteAnnee(note.doubleValue());
 		getEaeEvaluationDao().modifierNoteEaeEvaluation(eval.getIdEaeEvaluation(), eval.getNoteAnnee());
+
+		// Avis SHD
+		String shd = getVAL_RG_SHD();
+		if (shd.equals(getNOM_RB_SHD_MIN())) {
+			eval.setAvis_shd("Durée minimale");
+		} else if (shd.equals(getNOM_RB_SHD_MAX())) {
+			eval.setAvis_shd("Durée maximale");
+		} else if (shd.equals(getNOM_RB_SHD_MOY())) {
+			eval.setAvis_shd("Durée moyenne");
+		} else if (shd.equals(getNOM_RB_SHD_FAV())) {
+			eval.setAvis_shd("Favorable");
+		} else if (shd.equals(getNOM_RB_SHD_DEFAV())) {
+			eval.setAvis_shd("Défavorable");
+		}
+		getEaeEvaluationDao().modifierAvisSHDEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvis_shd());
 
 		// Avancement Diff
 		String ad = getVAL_RG_AD();
@@ -3409,7 +3441,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltASuprimer);
 		setDeveloppementCourant(dev);
-		// TODO
 		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelleDeveloppement());
 		if (typeDev != null) {
 			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
@@ -3680,5 +3711,68 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		if (hashTypeDeveloppement == null)
 			hashTypeDeveloppement = new Hashtable<String, EaeTypeDeveloppement>();
 		return hashTypeDeveloppement;
+	}
+
+	/**
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_SHD
+	 * Date de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RG_SHD() {
+		return "NOM_RG_SHD";
+	}
+
+	/**
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_SHD Date
+	 * de création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getVAL_RG_SHD() {
+		return getZone(getNOM_RG_SHD());
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SHD_MIN Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_SHD_MIN() {
+		return "NOM_RB_SHD_MIN";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SHD_MOY Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_SHD_MOY() {
+		return "NOM_RB_SHD_MOY";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SHD_MAX Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_SHD_MAX() {
+		return "NOM_RB_SHD_MAX";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SHD_FAV Date de création
+	 * : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_SHD_FAV() {
+		return "NOM_RB_SHD_FAV";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SHD_DEFAV Date de
+	 * création : (26/05/11 11:31:12)
+	 * 
+	 */
+	public String getNOM_RB_SHD_DEFAV() {
+		return "NOM_RB_SHD_DEFAV";
 	}
 }
