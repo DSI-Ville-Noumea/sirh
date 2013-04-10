@@ -664,7 +664,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 					addZone(getNOM_RG_NIVEAU(), getNOM_RB_NIVEAU_SATIS());
 				}
 			}
-			// TODO
 
 			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
 			addZone(getNOM_ST_AVIS_SHD(), evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
