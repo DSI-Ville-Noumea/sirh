@@ -1952,7 +1952,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				} else {
 					fpModif.setFonction(tp.getLibTitrePoste());
 				}
-				if (modifDateFonction) {
+				if (modifDateFonction && evalue != null && evalue.getIdEaeEvalue() != null) {
 					// on cherche toutes les affectations sur la FDP
 					// on prend la date la plus ancienne
 					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fpPrincipale,
@@ -3098,7 +3098,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			avct.modifierAvancement(getTransaction());
 
 			// tout s'est bien passé
-			commitTransaction();			
+			commitTransaction();
 		}
 
 		// on met à jour le statut de l'EAE
