@@ -157,7 +157,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				EaeEvalue evalue = (EaeEvalue) listeEAEEvalue.get(i);
 				EAE eae = getEaeDao().chercherEAE(evalue.getIdEae());
 				listeEAE.add(eae);
-				EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(evalue.getIdEae(), true);
+				EaeFichePoste eaeFDP = null;
+				try {
+					eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(evalue.getIdEae(), true);
+				} catch (Exception e) {
+					// on ne fait rien
+				}
 				CampagneEAE camp = getCampagneEaeDao().chercherCampagneEAE(eae.getIdCampagneEAE());
 				ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(evalue.getIdEae());
 				String evaluateur = Const.CHAINE_VIDE;
@@ -171,7 +176,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
 				addZone(getNOM_ST_EVALUATEUR(indiceEae), evaluateur.equals(Const.CHAINE_VIDE) ? "&nbsp;" : evaluateur);
 				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae), eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
-				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
+				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP==null ? "&nbsp;": eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
 				addZone(getNOM_ST_STATUT(indiceEae), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()));
 
 				indiceEae++;
