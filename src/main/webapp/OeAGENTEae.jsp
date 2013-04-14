@@ -65,7 +65,9 @@
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<%
+						<%
+						nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+			
 							int indiceEae = 0;
 								for (int i = 0;i<process.getListeEae().size();i++){
 									EAE eae = process.getListeEae().get(i);
@@ -74,8 +76,12 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">&nbsp;
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-				    					<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+				    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
+				    					<%}else{ %>
+											<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+												<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
+					    					<%} %>
 				    					<%} %>
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: center;"><%=process.getVAL_ST_ANNEE(indiceEae)%></td>
