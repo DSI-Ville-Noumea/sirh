@@ -20,7 +20,6 @@
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
-<script type="text/javascript" src="js/avancementArr.js"></script>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
@@ -180,7 +179,11 @@ function SelectLigne(id,tailleTableau)
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+										<SELECT disabled='disabled'name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>									
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)&& avct.getIdMotifAvct().equals("7")){ %>
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -188,12 +191,16 @@ function SelectLigne(id,tailleTableau)
 									<%} %>	
 									<br/>							
 									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
-										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE_EMP(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_EMP_SELECT(indiceAvct)) %>
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_EMP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD_EMP(indiceAvct) %>" class="sigp2-liste" >
-												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD_EMP(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_EMP_SELECT(indiceAvct)) %>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
+										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
 									<%} %>
@@ -202,7 +209,7 @@ function SelectLigne(id,tailleTableau)
 									<textarea <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "readonly='readonly'" : "" %> rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
 								</td>
 								<td>
-									<INPUT style="visibility: visible;"type="checkbox" onClick='validArr("<%=indiceAvct %>");executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
+									<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
 									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
