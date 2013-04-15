@@ -530,6 +530,10 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				// on crée les FDP et activites/competences
 				// logger.info("Req Oracle : chercherEAE (celui crée )");
 				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
+				setEaeCourant(eaeCree);
+				// on met les données dans EAE-evalué
+				// logger.info("Req Oracle : Insert table EAE-evalué");
+				performCreerEvalue(request, a, true, false, true);
 				// on met les données dans EAE-FichePoste
 				// logger.info("Req Oracle : Insert table EAE_FDP");
 				performCreerFichePostePrincipale(request, fpPrincipale, eaeCree, true, true);
@@ -540,11 +544,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 				performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
 				performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
 				performCreerCompetencesFichePosteSecondaire(request, fpSecondaire);
-				setEaeCourant(eaeCree);
 				// logger.info("Req AS400 : chercherAgent");
-				// on met les données dans EAE-evalué
-				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a, true, false, true);
 				// on met les données dans EAE-Diplome
 				// logger.info("Req Oracle : Insert table EAE-Diplome");
 				performCreerDiplome(request, a);
