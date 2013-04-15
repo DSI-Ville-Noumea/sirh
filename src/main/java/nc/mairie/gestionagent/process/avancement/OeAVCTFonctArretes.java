@@ -163,7 +163,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCodeMotifAvct()) + " <br> " + avisSHD + " <br> " + avisVDN);
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
-			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
 			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_CK_VALID_ARR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
@@ -1150,24 +1149,6 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 */
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CARRIERE_SIMU Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_CARRIERE_SIMU(int i) {
-		return "NOM_ST_CARRIERE_SIMU_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CARRIERE_SIMU
-	 * Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_CARRIERE_SIMU(int i) {
-		return getZone(getNOM_ST_CARRIERE_SIMU(i));
 	}
 
 	/**

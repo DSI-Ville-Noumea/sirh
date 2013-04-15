@@ -187,7 +187,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 			addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
-			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			String user = av.getUserVerifSEF() == null ? "&nbsp;" : av.getUserVerifSEF();
 			String heure = av.getHeureVerifSEF() == null ? "&nbsp;" : av.getHeureVerifSEF();
 			String date = av.getDateVerifSEF() == null ? "&nbsp;" : av.getDateVerifSEF();
@@ -212,6 +211,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 					} else if (av.getIdMotifAvct().equals("4")) {
 						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
+					}else if (av.getIdMotifAvct().equals("6")) {
+						avisSHD = "MOY";
 					}
 				}
 			} catch (Exception e) {
@@ -737,6 +738,9 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 							avct.setOrdreMerite(null);
 						}
 					}
+				}else if(avct.getIdMotifAvct().equals("6")){
+					avct.setIdAvisCAP("2");
+					avct.setOrdreMerite(null);
 				} else {
 					int indiceAvisCapFavDefav = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
 							.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
@@ -1040,23 +1044,6 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		this.anneeSelect = newAnneeSelect;
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CARRIERE_SIMU Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_CARRIERE_SIMU(int i) {
-		return "NOM_ST_CARRIERE_SIMU_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CARRIERE_SIMU
-	 * Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_CARRIERE_SIMU(int i) {
-		return getZone(getNOM_ST_CARRIERE_SIMU(i));
-	}
 
 	/**
 	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :

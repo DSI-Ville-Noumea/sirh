@@ -149,7 +149,6 @@ function reduireHierarchy() {
 							<th>Dir. <br> Sect.</th>
 							<th>Nom <br> Prénom <br> Matr</th>
 							<th>Cat <br> Filière</th>
-							<th>Carr Simu</th>
 							<th>Code grade <br> Ancien <br> Nouveau</th>
 							<th>Libellé grade <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ancien&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br> Nouveau</th>
 							<th>Date début</th>
@@ -174,7 +173,6 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CATEGORIE(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_CARRIERE_SIMU(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_DEBUT(indiceAvct)%></td>
@@ -187,6 +185,10 @@ function reduireHierarchy() {
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else if( avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
+										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -212,6 +214,10 @@ function reduireHierarchy() {
 										</SELECT>
 									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
 										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
+										<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
+										</SELECT>
+									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
@@ -231,7 +237,7 @@ function reduireHierarchy() {
 								<%} %>
 								
 								<td>
-								<%if(avct.getAvisSHD()!=null && (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("4"))){ %>
+								<%if(avct.getAvisSHD()!=null && (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("4")|| avct.getIdMotifAvct().equals("6"))){ %>
 								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
 								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>
@@ -251,7 +257,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
