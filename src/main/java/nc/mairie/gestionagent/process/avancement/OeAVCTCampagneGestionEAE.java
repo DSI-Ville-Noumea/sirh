@@ -2993,6 +2993,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
 			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
 			MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
+			MotifAvancement motifTitu = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "TITULARISATION");
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
 			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
 					.getAnnee().toString(), evalue.getIdAgent().toString());
@@ -3025,6 +3026,8 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 									avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
 								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
 									avct.setAvisSHD(eval.getPropositionAvancement());
+								} else if (typeAvct.equals(motifTitu.getIdMotifAvct())) {
+									avct.setAvisSHD("MOY");
 								} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
 									avct.setAvisSHD(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
 								} else {

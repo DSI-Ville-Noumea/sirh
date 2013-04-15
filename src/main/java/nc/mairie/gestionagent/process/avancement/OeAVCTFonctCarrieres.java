@@ -354,7 +354,7 @@ public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
 			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) ? getCHECKED_ON()
 					: getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
-			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
+			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : "oui");
 
 		}
 	}
