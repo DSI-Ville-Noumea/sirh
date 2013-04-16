@@ -66,6 +66,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
+import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
 import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
 
@@ -194,6 +195,10 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		} else if (activite.equals("AVCTCampagneTableauBord")) {
 			return new OeAVCTCampagneTableauBord();
 		}
+		//TEST
+		 else if (activite.equals("AVCTTest")) {
+				return new OeAVCTTest();
+			}
 		// Module SUIVI MEDICAL
 		else if (activite.equals("SMConvocation")) {
 			return new OeSMConvocation();

@@ -80,9 +80,9 @@ menuAgentEltsSalaires.ajouterFils(new Lien("ChargeGestion", "CHARGES", "Gestion 
 menuAgentEltsSalaires.ajouterFils(new Lien("PrimeGestion", "PRIMES", "Gestion des primes", true, false,"AGENT/SALAIRE/PRIME"));
 document.write(menuAgentEltsSalaires.afficher());
 
-//var menuAgentEAE = new MenuHaut("Module_agent_eae");
-//menuAgentEAE.ajouterFils(new Lien("AgtEae", "EAE", "Gestion des EAE", true, false,"AGENT/EAE/EAE"));
-//document.write(menuAgentEAE.afficher());
+/*var menuAgentEAE = new MenuHaut("Module_agent_eae");
+menuAgentEAE.ajouterFils(new Lien("AgtEae", "EAE", "Gestion des EAE", true, false,"AGENT/EAE/EAE"));
+document.write(menuAgentEAE.afficher());*/
 
 //***************************************************************
 //*               Le menu haut Gestion des avancements
@@ -110,6 +110,11 @@ document.write(menuAVCTAvancementFonctionnaire.afficher());
 var menuAVCTAvancementContractuels = new MenuHaut("Module_avct_simulationContractuels");
 menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTSimulationContractuels", "SIMU CONTRACTUELS", "Simulation pour les contractuels", true, false,"AVCT/SIMU"));
 menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTContractuels", "CONTRACTUELS", "Avancement des contractuels", true, false,"AVCT/CONTR"));
+<% 
+String affTest =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_TEST");
+if (affTest.equals("TRUE")){ %>
+menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTTest", "test", "Page de test", true, false,"AVCT/TEST"));
+<%}%>
 document.write(menuAVCTAvancementContractuels.afficher());
 
 var menuAVCTAvancementConvCol = new MenuHaut("Module_avct_simulationConvCol");

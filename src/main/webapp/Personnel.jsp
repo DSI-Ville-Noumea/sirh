@@ -82,6 +82,7 @@
 		listeDroits.add("AVCTCampagnePlanification");
 		listeDroits.add("AVCTCampagneGestionEAE");
 		listeDroits.add("AVCTCampagneTableauBord");
+		listeDroits.add("AVCTTest");
 		
 		/*Module SUIVI MEDICAL*/
 		listeDroits.add("SMConvocation");
