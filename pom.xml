@@ -85,6 +85,18 @@
 	</distributionManagement>
 
 	<dependencies>
+		<!-- sirh_api -->
+		<dependency>
+			<groupId>nc.mairie</groupId>
+			<artifactId>sirh_api</artifactId>
+			<version>2.18</version>
+		</dependency>
+		<!-- JSON -->
+		<dependency>
+			<groupId>net.sf.flexjson</groupId>
+			<artifactId>flexjson</artifactId>
+			<version>3.0</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -95,12 +107,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
-		<!-- sirh_api -->
-		<dependency>
-			<groupId>nc.mairie</groupId>
-			<artifactId>sirh_api</artifactId>
-			<version>2.18</version>
 		</dependency>
 		<!-- pour les logs -->
 		<dependency>
@@ -138,7 +144,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName>
+		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName> 
 		<plugins>
 			<!--<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
 				<configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 

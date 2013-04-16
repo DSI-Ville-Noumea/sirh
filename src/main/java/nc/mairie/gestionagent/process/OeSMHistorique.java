@@ -101,6 +101,9 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 	private void afficheListeHistoSuiviMed() throws ParseException, Exception {
 		for (int i = 0; i < getListeHistoSuiviMed().size(); i++) {
 			SuiviMedical sm = (SuiviMedical) getListeHistoSuiviMed().get(i);
+			if(sm.getIdAgent()==9002588){
+				System.out.println("ici");
+			}
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
@@ -119,8 +122,11 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed().toString(), sm.getIdAgent()
 						.toString());
-				Medecin medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
-				addZone(getNOM_ST_MEDECIN(i), vm.getIdMedecin() != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
+				Medecin medecin = null;
+				if (vm.getIdMedecin() != null) {
+					medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
+				}
+				addZone(getNOM_ST_MEDECIN(i), medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
 						+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i), vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : vm.getDateDerniereVisite());
 			} else {
