@@ -195,8 +195,12 @@
 			<INPUT type="submit" class="sigp2-Bouton-250" value="Calculer pour le mois sélectionné" name="<%=process.getNOM_PB_CALCULER()%>">
 		</FIELDSET>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:530px;">
-		    <legend class="sigp2Legend">Gestion des prévisions</legend>
-			<BR/>
+		    <BR/>
+			<legend class="sigp2Legend">Gestion des prévisions</legend>
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>">
+			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>">
+			<BR/><BR/>
 			<div>
 				<table class="display" id="tabSuiviMed">
 					<thead>
@@ -297,7 +301,7 @@
 					    $('#tabSuiviMed').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,null,null,null,null,null,null,null,null,null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},null],
-							"sDom": '<"H"fl>t<"F"iT>',
+							"sDom": '<"H"flT>t<"F"iT>',
 							"bPaginate": false,
 							"oTableTools": {
 								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"suiviMedical","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
@@ -308,12 +312,6 @@
 				</script>
 			</div>
 			<BR/>
-		</FIELDSET>
-
-		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
-			<INPUT type="submit" class="sigp2-Bouton-200" value="Générer les convocations" name="<%=process.getNOM_PB_IMPRIMER_CONVOCATIONS()%>">
-			<INPUT type="submit" class="sigp2-Bouton-250" value="Générer les lettres d'accompagnement" name="<%=process.getNOM_PB_IMPRIMER_LETTRES_ACCOMPAGNEMENTS()%>">
 		</FIELDSET>
 
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
