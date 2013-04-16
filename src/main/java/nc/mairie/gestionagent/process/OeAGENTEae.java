@@ -176,7 +176,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
 				addZone(getNOM_ST_EVALUATEUR(indiceEae), evaluateur.equals(Const.CHAINE_VIDE) ? "&nbsp;" : evaluateur);
 				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae), eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
-				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP==null ? "&nbsp;": eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
+				addZone(getNOM_ST_SERVICE(indiceEae),
+						eaeFDP == null ? "&nbsp;" : eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
 				addZone(getNOM_ST_STATUT(indiceEae), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()));
 
 				indiceEae++;
@@ -2080,7 +2081,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				performSauvegardeEvolution(request, eae);
 
 			} else {
-				// TODO on traite l'erreur
+				// "ERR164",
+				// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+				return false;
 			}
 
 		}

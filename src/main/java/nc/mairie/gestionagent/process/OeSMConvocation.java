@@ -2353,7 +2353,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-4
 							smFonctionnaireAImprimer.add(sm);
-						} else if (sm.getStatut().equals("CC")) {
+						} else if (sm.getStatut().equals("CC")||sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-5
 							smCCAImprimer.add(sm);
 						}
@@ -2461,7 +2461,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-1
 							smFonctionnaireAImprimer.add(sm);
-						} else if (sm.getStatut().equals("CC")) {
+						} else if (sm.getStatut().equals("CC")||sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-2
 							smCCAImprimer.add(sm);
 						}
