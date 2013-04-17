@@ -728,45 +728,45 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 		// CAS N°1 : A la demande de l'agent ou du service
 		logger.info("Calcul cas1 : A la demande de l'agent ou du service");
-		perfomrCalculCas1(moisChoisi, anneeChoisi);
+		performCalculCas1(moisChoisi, anneeChoisi);
 
 		// CAS N°2 : Visite Réguliere
 		logger.info("Calcul cas2 : Visite Réguliere");
-		perfomrCalculCas2(moisChoisi, anneeChoisi);
+		performCalculCas2(moisChoisi, anneeChoisi);
 
 		// CAS N°3 : AT avec ITT>15jours
 		logger.info("Calcul cas3 :  AT avec ITT>15jours");
-		perfomrCalculCas3(moisChoisi, anneeChoisi);
+		performCalculCas3(moisChoisi, anneeChoisi);
 
 		// CAS N°4 : Maladie > 1 mois
 		logger.info("Calcul cas4 : Maladie > 1 mois");
-		perfomrCalculCas4(moisChoisi, anneeChoisi);
+		performCalculCas4(moisChoisi, anneeChoisi);
 
 		// CAS N°5 : Longue maladie
 		logger.info("Calcul cas5 : Longue maladie");
-		perfomrCalculCas5(moisChoisi, anneeChoisi);
+		performCalculCas5(moisChoisi, anneeChoisi);
 
 		// CAS N°6 : Visite Nouvel arrivant
 		logger.info("Calcul cas6 : Visite Nouvel arrivant");
-		perfomrCalculCas6(moisChoisi, anneeChoisi);
+		performCalculCas6(moisChoisi, anneeChoisi);
 
 		// CAS N°7 : Changement de PA
 		logger.info("Calcul cas7 : Changement de PA");
-		perfomrCalculCas7(moisChoisi, anneeChoisi);
+		performCalculCas7(moisChoisi, anneeChoisi);
 
 		// CAS N°8 : CONVOCATION NON EXECUTEE
 		logger.info("Calcul cas8 : CONVOCATION NON EXECUTEE");
-		perfomrCalculCas8(moisChoisi, anneeChoisi);
+		performCalculCas8(moisChoisi, anneeChoisi);
 
 		// CAS N°9 : AGENT SANS VISITES MEDICALES
 		logger.info("Calcul cas9 : AGENT SANS VISITES MEDICALES");
-		perfomrCalculCas9(moisChoisi, anneeChoisi);
+		performCalculCas9(moisChoisi, anneeChoisi);
 
 		logger.info("FIN DES CALCULS");
 
 	}
 
-	private void perfomrCalculCas9(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas9(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°9 : AGENT SANS VISITES MEDICALES
 		// on liste tous les agents sans visites medicales
 		// avec une PA active à la date du jour
@@ -775,6 +775,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 		for (int i = 0; i < listeSMCas9.size(); i++) {
 			AgentNW agent = listeSMCas9.get(i);
+			//on regarde que la PA est active
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			if (getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+				continue;
+			}else{
+				if (pa==null){
+					continue;
+				}
+			}
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
@@ -843,7 +853,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 9 : " + nbCas9);
 	}
 
-	private void perfomrCalculCas5(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas5(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°5 : Longue maladie
 		// on liste toutes les absences (SPABSEN) de type MA pourle mois et
 		// l'année donnée
@@ -855,6 +865,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 90
 			for (int i = 0; i < listeMatriculeSMCas5.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas5.get(i);
+				//on regarde que la PA est active
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				if (getTransaction().isErreur()){
+					getTransaction().traiterErreur();
+					continue;
+				}else{
+					if (pa==null){
+						continue;
+					}
+				}
 				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(nomatrAgent, "MA", "LM",
 						moisChoisi, anneeChoisi);
 				Integer compteurJoursMA = 0;
@@ -961,7 +981,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb cas 5 : " + nbCas5);
 	}
 
-	private void perfomrCalculCas4(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas4(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°4 : Maladie > 1 mois
 		// on liste toutes les absences (SPABSEN) de type MA pourle mois et
 		// l'année donnée
@@ -973,6 +993,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 30
 			for (int i = 0; i < listeMatriculeSMCas4.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas4.get(i);
+				//on regarde que la PA est active
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				if (getTransaction().isErreur()){
+					getTransaction().traiterErreur();
+					continue;
+				}else{
+					if (pa==null){
+						continue;
+					}
+				}
 				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "MA", moisChoisi,
 						anneeChoisi);
 				Integer compteurJoursMA = 0;
@@ -1078,7 +1108,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 4 : " + nbCas4);
 	}
 
-	private void perfomrCalculCas3(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas3(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°3 : AT avec ITT>15jours
 		// on liste toutes les absences (SPABSEN) de type AT pourle mois et
 		// l'année donnée
@@ -1090,6 +1120,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 15
 			for (int i = 0; i < listeMatriculeSMCas3.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas3.get(i);
+				//on regarde que la PA est active
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				if (getTransaction().isErreur()){
+					getTransaction().traiterErreur();
+					continue;
+				}else{
+					if (pa==null){
+						continue;
+					}
+				}
 				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "AT", moisChoisi,
 						anneeChoisi);
 				Integer compteurJoursITT = 0;
@@ -1195,7 +1235,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 3 : " + nbCas3);
 	}
 
-	private void perfomrCalculCas1(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas1(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°1 : A la demande de l'agent ou du service
 		// on liste toutes les visites medicales du type "a la demande..."
 		Medecin m = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
@@ -1207,6 +1247,17 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
+			//on regarde que la PA est active
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			if (getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+				continue;
+			}else{
+				if (pa==null){
+					continue;
+				}
+			}
+			
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
@@ -1273,7 +1324,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 1 : " + nbCas1);
 	}
 
-	private void perfomrCalculCas8(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas8(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°8 : CONVOCATION NON EXECUTEE
 		// on liste tous les suivi médicaux de type "CONVOQUE" du mois précédent
 		int nbCas8 = 0;
@@ -1287,6 +1338,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 				// on crée la nouvelle ligne
 				SuiviMedical sm = new SuiviMedical();
 				AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), smAncien.getNomatr().toString());
+				//on regarde que la PA est active
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+				if (getTransaction().isErreur()){
+					getTransaction().traiterErreur();
+					continue;
+				}else{
+					if (pa==null){
+						continue;
+					}
+				}
 				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
@@ -1366,7 +1427,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 8 : " + nbCas8);
 	}
 
-	private void perfomrCalculCas7(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas7(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°7 : Changement de PA
 		// on liste toutes les PA hors-effectif
 		// on vérifie qu'il y a bien une PA normale apres cette PA hors-effectif
@@ -1457,7 +1518,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 7 : " + nbCas7);
 	}
 
-	private void perfomrCalculCas6(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas6(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°6 : Visite Nouvel arrivant
 		// on liste tous les nouveaux arrivant
 		ArrayList<AgentNW> listeAgentCas6 = AgentNW.listerAgentNouveauxArrivant(getTransaction(), moisChoisi, anneeChoisi);
@@ -1465,6 +1526,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		for (int i = 0; i < listeAgentCas6.size(); i++) {
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = listeAgentCas6.get(i);
+			//on regarde que la PA est active
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			if (getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+				continue;
+			}else{
+				if (pa==null){
+					continue;
+				}
+			}
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
@@ -1529,7 +1600,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 		logger.info("Nb de cas 6 : " + nbCas6);
 	}
 
-	private void perfomrCalculCas2(Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	private void performCalculCas2(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°2 : Visite Réguliere
 		// on liste toutes les visites medicales
 		// dont la dateVM + durée validitéVM = mois et année choisie du calcul
@@ -1540,6 +1611,16 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
+			//on regarde que la PA est active
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			if (getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+				continue;
+			}else{
+				if (pa==null){
+					continue;
+				}
+			}
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
