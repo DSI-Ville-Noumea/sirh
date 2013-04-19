@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -23,6 +24,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
+import nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
@@ -34,6 +36,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
+import nc.mairie.spring.domain.metier.EAE.EaeFinalisation;
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
 import nc.mairie.spring.domain.metier.EAE.EaeTypeDeveloppement;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -44,6 +47,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 import org.springframework.context.ApplicationContext;
+
+import com.oreilly.servlet.MultipartRequest;
 
 /**
  * Process OeAGENTDIPLOMEGestion Date de création : (11/02/03 14:20:31)
@@ -63,6 +68,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	public String ACTION_AJOUT_DEV = "Ajout d'un développement.";
 	public String ACTION_MODIFICATION_DEV = "Modification d'un développement.";
 	public String ACTION_SUPPRESSION_DEV = "Suppression d'un développement.";
+	public String ACTION_DOCUMENT = "Documents.";
+	public String ACTION_DOCUMENT_CREATION = "Création d'un document.";
 
 	private String[] LB_BASE_HORAIRE;
 	private ArrayList<Horaire> listeHoraire;
@@ -82,6 +89,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private EaePlanAction objectifIndiCourant;
 	private EaePlanAction objectifProCourant;
 	private EaeDeveloppement developpementCourant;
+	private ArrayList<EaeFinalisation> listeDocuments;
 
 	private EAEDao eaeDao;
 	private CampagneEAEDao campagneEaeDao;
@@ -95,8 +103,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private EaeEvolutionDao eaeEvolutionDao;
 	private EaeDeveloppementDao eaeDeveloppementDao;
 	private EaeTypeDeveloppementDao eaeTypeDeveloppementDao;
+	private EaeNumIncrementDocumentDao eaeNumIncrementDocumentDao;
 
 	private String urlFichier;
+	public boolean isImporting = false;
+	public MultipartRequest multi = null;
+	public File fichierUpload = null;
 
 	public String focus = null;
 
@@ -112,6 +124,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			setEaeCourant(null);
+			multi = null;
+			isImporting = false;
 		}
 
 		// Vérification des droits d'accès.
@@ -262,6 +277,9 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		if (getEaeTypeDeveloppementDao() == null) {
 			setEaeTypeDeveloppementDao((EaeTypeDeveloppementDao) context.getBean("eaeTypeDeveloppementDao"));
 		}
+		if (getEaeNumIncrementDocumentDao() == null) {
+			setEaeNumIncrementDocumentDao((EaeNumIncrementDocumentDao) context.getBean("eaeNumIncrementDocumentDao"));
+		}
 	}
 
 	/**
@@ -308,8 +326,17 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
+		String JSP = null;
+		if (null == request.getParameter("JSP")) {
+			if (multi != null) {
+				JSP = multi.getParameter("JSP");
+			}
+		} else {
+			JSP = request.getParameter("JSP");
+		}
+
 		// Si on arrive de la JSP alors on traite le get
-		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+		if (JSP != null && JSP.equals(getJSP())) {
 
 			// Si clic sur le bouton PB_CONSULTER
 			for (int i = 0; i < getListeEae().size(); i++) {
@@ -428,6 +455,30 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			// Si clic sur le bouton PB_ANNULER_DEV
 			if (testerParametre(request, getNOM_PB_ANNULER_DEV())) {
 				return performPB_ANNULER_DEV(request);
+			}
+
+			// Si clic sur le bouton PB_DOCUMENT
+			for (int i = 0; i < getListeEae().size(); i++) {
+				if (testerParametre(request, getNOM_PB_DOCUMENT(i))) {
+					return performPB_DOCUMENT(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_CONSULTER_DOC
+			for (int i = 0; i < getListeDocuments().size(); i++) {
+				if (testerParametre(request, getNOM_PB_CONSULTER_DOC(i))) {
+					return performPB_CONSULTER_DOC(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_CREER_DOC
+			if (testerParametre(request, getNOM_PB_CREER_DOC())) {
+				return performPB_CREER_DOC(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_DOCUMENT_CREATION
+			if (testerParametre(request, getNOM_PB_VALIDER_DOCUMENT_CREATION())) {
+				return performPB_VALIDER_DOCUMENT_CREATION(request);
 			}
 
 		}
@@ -1036,7 +1087,10 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
-		// addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setEaeCourant(null);
+		multi = null;
+		isImporting = false;
 		return true;
 	}
 
@@ -3782,5 +3836,373 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getNOM_RB_SHD_DEFAV() {
 		return "NOM_RB_SHD_DEFAV";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_DOCUMENT(int i) {
+		return "NOM_PB_DOCUMENT" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_DOCUMENT(HttpServletRequest request, int indiceEltDocument) throws Exception {
+
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// Récup de l'eae courant
+		EAE eaeCourant = (EAE) getListeEae().get(indiceEltDocument);
+		setEaeCourant(eaeCourant);
+
+		// init des documents EAE de l'agent
+		initialiseListeDocuments(request);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
+	 * 10:55:12)
+	 * 
+	 * @param newListeDocuments
+	 *            ArrayList
+	 */
+	private void setListeDocuments(ArrayList<EaeFinalisation> newListeDocuments) {
+		listeDocuments = newListeDocuments;
+	}
+
+	public ArrayList<EaeFinalisation> getListeDocuments() {
+		if (listeDocuments == null) {
+			listeDocuments = new ArrayList<EaeFinalisation>();
+		}
+		return listeDocuments;
+	}
+
+	/**
+	 * Initialisation de la liste des eaes
+	 * 
+	 */
+	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
+
+		// Recherche des documents de l'agent
+		ArrayList<EaeFinalisation> listeDocAgent = getEaeFinalisationDao().listerDocumentFinalise(getEaeCourant().getIdEAE());
+		setListeDocuments(listeDocAgent);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		int indiceDocEae = 0;
+		if (getListeDocuments() != null) {
+			for (int i = 0; i < getListeDocuments().size(); i++) {
+				EaeFinalisation doc = (EaeFinalisation) getListeDocuments().get(i);
+
+				addZone(getNOM_ST_NOM_DOC(indiceDocEae), doc.getIdGedDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceDocEae), sdf.format(doc.getDateFinalisation()));
+				addZone(getNOM_ST_COMMENTAIRE(indiceDocEae), doc.getCommentaire());
+
+				indiceDocEae++;
+			}
+		}
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_NOM_DOC(int i) {
+		return "NOM_ST_NOM_DOC" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_NOM_DOC(int i) {
+		return getZone(getNOM_ST_NOM_DOC(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_DATE_DOC(int i) {
+		return "NOM_ST_DATE_DOC" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_DATE_DOC(int i) {
+		return getZone(getNOM_ST_DATE_DOC(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_COMMENTAIRE(int i) {
+		return "NOM_ST_COMMENTAIRE" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
+	 * Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_COMMENTAIRE(int i) {
+		return getZone(getNOM_ST_COMMENTAIRE(i));
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_DOC(int i) {
+		return "NOM_PB_CONSULTER_DOC" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		// Si pas d'agent courant alors erreur
+		if (getAgentCourant() == null) {
+			// "ERR004","Vous devez d'abord rechercher un agent"
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
+			return false;
+		}
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("URL_SHAREPOINT_GED_VERSION");
+
+		// Récup du document courant
+		EaeFinalisation finalisation = (EaeFinalisation) getListeDocuments().get(indiceEltAConsulter);
+		// on affiche le document
+		setURLFichier(getScriptOuverture(repertoireStockage + finalisation.getIdGedDocument() + "&version=" + finalisation.getVersionGedDocument()
+				+ ".0"));
+
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de création :
+	 * (17/10/11 13:46:25)
+	 * 
+	 */
+	public String getNOM_PB_CREER_DOC() {
+		return "NOM_PB_CREER_DOC";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
+	 * 
+	 */
+	public boolean performPB_CREER_DOC(HttpServletRequest request) throws Exception {
+
+		// init des documents courant
+		addZone(getNOM_EF_COMMENTAIRE(), Const.CHAINE_VIDE);
+
+		isImporting = true;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT_CREATION);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_EF_COMMENTAIRE() {
+		return "NOM_EF_COMMENTAIRE";
+	}
+
+	public String getVAL_EF_COMMENTAIRE() {
+		return getZone(getNOM_EF_COMMENTAIRE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
+	 * de création : (11/10/11 08:38:48)
+	 * 
+	 */
+	public String getNOM_EF_LIENDOCUMENT() {
+		return "NOM_EF_LIENDOCUMENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
+	 * 
+	 */
+	public String getVAL_EF_LIENDOCUMENT() {
+		return getZone(getNOM_EF_LIENDOCUMENT());
+	}
+
+	public String getNOM_PB_VALIDER_DOCUMENT_CREATION() {
+		return "NOM_PB_VALIDER_DOCUMENT_CREATION";
+	}
+
+	private boolean performControlerSaisieDocument(HttpServletRequest request) throws Exception {
+		addZone(getNOM_EF_LIENDOCUMENT(), fichierUpload != null ? fichierUpload.getPath() : Const.CHAINE_VIDE);
+		addZone(getNOM_EF_COMMENTAIRE(), multi.getParameter(getNOM_EF_COMMENTAIRE()));
+
+		boolean result = true;
+		// parcourir
+		if (fichierUpload == null || fichierUpload.getPath().equals(Const.CHAINE_VIDE)) {
+			// ERR002:La zone parcourir est obligatoire.
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "parcourir"));
+			result &= false;
+		}
+
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		if (!extension.equals(".pdf")) {
+			// "ERR165", "Le fichier doit être au format PDF."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
+			result &= false;
+		}
+		return result;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
+	 * 
+	 */
+	public boolean performPB_VALIDER_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
+		// on sauvegarde le nom du fichier parcourir
+		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
+			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT());
+		}
+		// Contrôle des champs
+		if (!performControlerSaisieDocument(request))
+			return false;
+
+		EAE eae = getEaeCourant();
+
+		if (!creeDocument(request, eae)) {
+			return false;
+		}
+
+		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT);
+
+		// on met à jour le tableau des documents
+		initialiseListeDocuments(request);
+
+		return true;
+	}
+
+	private boolean creeDocument(HttpServletRequest request, EAE eae) throws Exception {
+		// on recupere le fichier mis dans le repertoire temporaire
+		if (fichierUpload == null) {
+			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
+			return false;
+		}
+		ArrayList<EaeEvaluateur> premierEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
+		Integer numIncrement = getEaeNumIncrementDocumentDao().chercherEaeNumIncrement();
+
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String nom = "EAE_" + premierEvaluateur.get(0).getIdAgent() + "_" + eae.getIdEAE() + "_" + numIncrement.toString() + extension;
+
+		// on upload le fichier
+		boolean upload = false;
+		if (extension.equals(".pdf")) {
+			upload = uploadFichierPDF(fichierUpload, nom);
+		}
+		if (!upload) {
+			// "ERR164",
+			// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+			return false;
+		}
+
+		// on supprime le fichier temporaire
+		fichierUpload.delete();
+		isImporting = false;
+		fichierUpload = null;
+
+		return true;
+	}
+
+	private boolean uploadFichierPDF(File f, String nomFichier) throws Exception {
+		boolean resultat = false;
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		// TODO CHANGER LE REPERTOIRE
+
+		/*
+		 * File newFile = new File(repPartage + "/" + nomFichier);
+		 * 
+		 * FileInputStream in = new FileInputStream(f);
+		 * 
+		 * try { FileOutputStream out = new FileOutputStream(newFile); try {
+		 * byte[] byteBuffer = new byte[in.available()]; int s =
+		 * in.read(byteBuffer); out.write(byteBuffer); out.flush(); resultat =
+		 * true; } finally { out.close(); } } finally { in.close(); }
+		 */
+
+		return resultat;
+	}
+
+	public EaeNumIncrementDocumentDao getEaeNumIncrementDocumentDao() {
+		return eaeNumIncrementDocumentDao;
+	}
+
+	public void setEaeNumIncrementDocumentDao(EaeNumIncrementDocumentDao eaeNumIncrementDocumentDao) {
+		this.eaeNumIncrementDocumentDao = eaeNumIncrementDocumentDao;
+	}
+
+	/**
+	 * Méthode qui teste si un paramètre se trouve dans le formulaire
+	 */
+	public boolean testerParametre(HttpServletRequest request, String param) {
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+	}
+
+	/**
+	 * Process incoming requests for information*
+	 * 
+	 * @param request
+	 *            Object that encapsulates the request to the servlet
+	 */
+	public boolean recupererPreControles(HttpServletRequest request) throws Exception {
+		String type = request.getHeader("Content-Type");
+		String repTemp = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
+		String JSP = null;
+		multi = null;
+
+		if (type != null && type.indexOf("multipart/form-data") != -1) {
+			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
+			JSP = multi.getParameter("JSP");
+		} else {
+			JSP = request.getParameter("JSP");
+		}
+		return true;
 	}
 }

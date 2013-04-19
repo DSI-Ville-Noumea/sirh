@@ -9,7 +9,6 @@
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
 	
-	<jsp:useBean class="nc.mairie.gestionagent.process.OeAGENTEae" id="process" scope="session"></jsp:useBean>
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
@@ -46,10 +45,11 @@
 		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
+	<jsp:useBean class="nc.mairie.gestionagent.process.OeAGENTEae" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 <%if(process.getAgentCourant() !=null){ %>
-	<FORM name="formu" method="POST" class="sigp2-titre">
+	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%>  method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Gestion des entretiens annuels d'évaluation de l'agent</legend>
@@ -82,7 +82,8 @@
 											<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 												<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
 					    					<%} %>
-				    					<%} %>
+				    					<%} %>									
+											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceEae)%>">
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: center;"><%=process.getVAL_ST_ANNEE(indiceEae)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR(indiceEae)%></td>
@@ -769,10 +770,61 @@
 							</div>
 							<BR/><BR/>
 							<INPUT type="submit" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100">
-						<%} %>
+						<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
+									<span style="position:relative;width:35px;">
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+									</span>
+									<span style="margin-left:5px;position:relative;width:90px;text-align: center;">Date</span> 
+									<span style="position:relative;width:200px;text-align: left;">Nom</span> 
+									<span style="position:relative;text-align: left">Commentaire</span> 
+								
+									<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+										<table class="sigp2NewTab" style="text-align:left;width:980px;">
+										<%
+										int indiceActes = 0;
+										if (process.getListeDocuments()!=null){
+											for (int i = 0;i<process.getListeDocuments().size();i++){
+											%>
+											<tr>
+												<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">
+													<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceActes)%>">
+													<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceActes)%>">	
+												</td>
+												<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+												<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
+											</tr>
+										<%
+											indiceActes++;
+											}
+										}
+										%>
+										</table>	
+									</div>	
+									<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
+									<div>		
+										<span class="sigp2" style="width:130px;" >Commentaire :</span><INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
+										<BR/>
+										<BR/>
+										<span class="sigp2Mandatory" style="width:130px;">Fichier : </span> 
+										<% if(process.fichierUpload == null){ %>
+										<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+										<%}else{ %>
+										<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+										<% }%>
+										<br />
+									</div>
+									<div style="text-align: center">
+										<BR/><BR/>
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_RESET()%>">
+									</div>
+								<%}%>
+						<%} %>						
 						
 					</FIELDSET>
-				<%} %>
+			
+		<%} %>		
 		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	
 		<%=process.getUrlFichier()%>
 		</FORM>

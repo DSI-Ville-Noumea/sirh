@@ -145,5 +145,8 @@
 	<bean id="eaeTypeDeveloppementDao" class="nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao">
 		<property name="dataSource" ref="dataSourceOracle" />
 	</bean>
+	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
 
 </beans>

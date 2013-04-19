@@ -19,6 +19,7 @@ public class EaeFinalisationResultSetExtractor implements ResultSetExtractor {
 		finalisation.setIdAgent(rs.getInt(EaeFinalisationDao.CHAMP_ID_AGENT));
 		finalisation.setIdGedDocument(rs.getString(EaeFinalisationDao.CHAMP_ID_GED_DOCUMENT));
 		finalisation.setVersionGedDocument(rs.getString(EaeFinalisationDao.CHAMP_VERSION_GED_DOCUMENT));
+		finalisation.setCommentaire(rs.getString(EaeFinalisationDao.CHAMP_COMMENTAIRE));
 
 		return finalisation;
 	}
