@@ -26,4 +26,6 @@ public interface EaeEvolutionDaoInterface {
 	public void modifierCommentaireEaeEvaluation(Integer idEaeEvolution, Integer idCree) throws Exception;
 
 	public void modifierPourcTpsPartielEaeEvolution(Integer idEaeEvolution, Integer idSpbhorTpsPartiel) throws Exception;
+
+	public void creerEaeEvolution(EaeEvolution evolution) throws Exception;
 }

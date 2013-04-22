@@ -54,12 +54,8 @@ public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 	@Override
 	public EaeEvolution chercherEaeEvolution(Integer idEAE) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? ";
-		EaeEvolution evol = null;
-		try {
-			evol = (EaeEvolution) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvolutionRowMapper());
-		} catch (Exception e) {
-			System.out.println("ici" + e);
-		}
+		EaeEvolution evol = (EaeEvolution) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvolutionRowMapper());
+
 		return evol;
 	}
 
@@ -116,5 +112,13 @@ public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 	public void modifierPourcTpsPartielEaeEvolution(Integer idEaeEvolution, Integer idSpbhorTpsPartiel) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEMPS_PARTIEL_ID_SPBHOR + " =? where " + CHAMP_ID_EAE_EVOLUTION + "=?";
 		jdbcTemplate.update(sql, new Object[] { idSpbhorTpsPartiel, idEaeEvolution });
+	}
+
+	@Override
+	public void creerEaeEvolution(EaeEvolution evolution) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_EVOLUTION + "," + CHAMP_ID_EAE + ") " + "VALUES (" + NOM_SEQUENCE
+				+ ".nextval,?)";
+
+		jdbcTemplate.update(sql, new Object[] { evolution.getIdEae() });
 	}
 }

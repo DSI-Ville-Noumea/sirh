@@ -403,14 +403,14 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_MODIFIER_OBJ_PRO
-			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+			for (int i = 0; i < getListeObjectifPro().size(); i++) {
 				if (testerParametre(request, getNOM_PB_MODIFIER_OBJ_PRO(i))) {
 					return performPB_MODIFIER_OBJ_PRO(request, i);
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_OBJ_PRO
-			for (int i = 0; i < getListeObjectifIndi().size(); i++) {
+			for (int i = 0; i < getListeObjectifPro().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_OBJ_PRO(i))) {
 					return performPB_SUPPRIMER_OBJ_PRO(request, i);
 				}
@@ -800,42 +800,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Alim zone Evolution
-		EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
-		if (evolution == null) {
-			addZone(getNOM_ST_MOB_GEO(), "non renseigné");
-			addZone(getNOM_RG_MOB_GEO(), getNOM_RB_MOB_GEO_NON());
-			addZone(getNOM_ST_MOB_FONCT(), "non renseigné");
-			addZone(getNOM_RG_MOB_FONCT(), getNOM_RB_MOB_FONCT_NON());
-			addZone(getNOM_ST_CHANGEMENT_METIER(), "non renseigné");
-			addZone(getNOM_RG_METIER(), getNOM_RB_METIER_NON());
-			addZone(getNOM_ST_DELAI(), "non renseigné");
-			addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
-			addZone(getNOM_ST_MOB_SERV(), "non renseigné");
-			addZone(getNOM_RG_MOB_SERV(), getNOM_RB_MOB_SERV_NON());
-			addZone(getNOM_ST_MOB_DIR(), "non renseigné");
-			addZone(getNOM_RG_MOB_DIR(), getNOM_RB_MOB_DIR_NON());
-			addZone(getNOM_ST_MOB_COLL(), "non renseigné");
-			addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_NON());
-			addZone(getNOM_ST_NOM_COLL(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_MOB_AUTRE(), "non renseigné");
-			addZone(getNOM_RG_MOB_AUTRE(), getNOM_RB_MOB_AUTRE_NON());
-			addZone(getNOM_ST_CONCOURS(), "non renseigné");
-			addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_NON());
-			addZone(getNOM_ST_NOM_CONCOURS(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_VAE(), "non renseigné");
-			addZone(getNOM_RG_VAE(), getNOM_RB_VAE_NON());
-			addZone(getNOM_ST_NOM_VAE(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_TPS_PARTIEL(), "non renseigné");
-			addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_NON());
-			addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
-			addZone(getNOM_ST_RETRAITE(), "non renseigné");
-			addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_NON());
-			addZone(getNOM_ST_DATE_RETRAITE(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_AUTRE_PERSP(), "non renseigné");
-			addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_NON());
-			addZone(getNOM_ST_LIB_AUTRE_PERSP(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
-		} else {
+		try {
+			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
 			if (evolution.getIdComEvolution() != null) {
 				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
 				addZone(getNOM_ST_COM_EVOLUTION(), commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getCommentaire());
@@ -958,9 +924,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_OUI());
 			}
 			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? Const.CHAINE_VIDE : evolution.getLibAutrePerspective());
-		}
 
-		if (evolution != null) {
 			// Alim zones developpement
 			ArrayList<EaeDeveloppement> listeDeveloppement = getEaeDeveloppementDao().listerEaeDeveloppementParEvolution(
 					evolution.getIdEaeEvolution());
@@ -974,6 +938,40 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 								.getEcheanceDeveloppement()));
 				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation() == null ? Const.CHAINE_VIDE : dev.getPriorisation().toString());
 			}
+		} catch (Exception e) {
+			addZone(getNOM_ST_MOB_GEO(), "non renseigné");
+			addZone(getNOM_RG_MOB_GEO(), getNOM_RB_MOB_GEO_NON());
+			addZone(getNOM_ST_MOB_FONCT(), "non renseigné");
+			addZone(getNOM_RG_MOB_FONCT(), getNOM_RB_MOB_FONCT_NON());
+			addZone(getNOM_ST_CHANGEMENT_METIER(), "non renseigné");
+			addZone(getNOM_RG_METIER(), getNOM_RB_METIER_NON());
+			addZone(getNOM_ST_DELAI(), "non renseigné");
+			addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
+			addZone(getNOM_ST_MOB_SERV(), "non renseigné");
+			addZone(getNOM_RG_MOB_SERV(), getNOM_RB_MOB_SERV_NON());
+			addZone(getNOM_ST_MOB_DIR(), "non renseigné");
+			addZone(getNOM_RG_MOB_DIR(), getNOM_RB_MOB_DIR_NON());
+			addZone(getNOM_ST_MOB_COLL(), "non renseigné");
+			addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_NON());
+			addZone(getNOM_ST_NOM_COLL(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_MOB_AUTRE(), "non renseigné");
+			addZone(getNOM_RG_MOB_AUTRE(), getNOM_RB_MOB_AUTRE_NON());
+			addZone(getNOM_ST_CONCOURS(), "non renseigné");
+			addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_NON());
+			addZone(getNOM_ST_NOM_CONCOURS(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_VAE(), "non renseigné");
+			addZone(getNOM_RG_VAE(), getNOM_RB_VAE_NON());
+			addZone(getNOM_ST_NOM_VAE(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_TPS_PARTIEL(), "non renseigné");
+			addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_NON());
+			addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
+			addZone(getNOM_ST_RETRAITE(), "non renseigné");
+			addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_NON());
+			addZone(getNOM_ST_DATE_RETRAITE(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_AUTRE_PERSP(), "non renseigné");
+			addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_NON());
+			addZone(getNOM_ST_LIB_AUTRE_PERSP(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 		}
 
 	}
@@ -1087,6 +1085,30 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
+		// addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// setEaeCourant(null);
+		// multi = null;
+		// isImporting = false;
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_PERMIS Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER() {
+		return "NOM_PB_ANNULER";
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
+	 */
+	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		setEaeCourant(null);
 		multi = null;
@@ -2132,7 +2154,12 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			EAE eae = getEaeCourant();
 			if (eae != null && eae.getIdEAE() != null) {
 				performSauvegardeEvaluation(request, eae);
-				performSauvegardeEvolution(request, eae);
+				if (!performSauvegardeEvolution(request, eae)) {
+					// "ERR164",
+					// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+					return false;
+				}
 
 			} else {
 				// "ERR164",
@@ -2142,12 +2169,25 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			}
 
 		}
+
+		//"INF501", "L'EAE a été correctement sauvegardé."
+		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF501"));
 		return true;
 	}
 
-	private void performSauvegardeEvolution(HttpServletRequest request, EAE eae) throws Exception {
+	private boolean performSauvegardeEvolution(HttpServletRequest request, EAE eae) throws Exception {
 		/************* PARTIE EVOLUTION **********************/
-		EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+		EaeEvolution evolution = null;
+		try {
+			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+		} catch (Exception e) {
+			evolution = new EaeEvolution();
+			evolution.setIdEae(eae.getIdEAE());
+			getEaeEvolutionDao().creerEaeEvolution(evolution);
+			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+			// TODO crée l'évolution
+		}
+
 		// Mobilités
 		String mobGeo = getVAL_RG_MOB_GEO();
 		if (mobGeo.equals(getNOM_RB_MOB_GEO_NON())) {
@@ -2288,6 +2328,8 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 		Horaire horaire = numLigneBH > 0 ? (Horaire) getListeHoraire().get(numLigneBH - 1) : null;
 		evolution.setIdSpbhorTpsPartiel(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
 		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(), evolution.getIdSpbhorTpsPartiel());
+		return true;
+
 	}
 
 	private void performSauvegardeEvaluation(HttpServletRequest request, EAE eae) throws Exception {

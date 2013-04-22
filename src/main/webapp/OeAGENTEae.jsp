@@ -55,7 +55,7 @@
 				    <legend class="sigp2Legend">Gestion des entretiens annuels d'évaluation de l'agent</legend>
 				    <br/>
 				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:50px;"></span>
+				    <span style="position:relative;width:60px;"></span>
 				    <span style="position:relative;width:45px;text-align: center;">Année</span>
 					<span style="position:relative;width:250px;text-align: center;">Evaluateur</span>
 					<span style="position:relative;width:90px;text-align: center;">Date de l'entretien</span>
@@ -73,7 +73,7 @@
 									EAE eae = process.getListeEae().get(i);
 							%>
 									<tr id="<%=indiceEae%>" onmouseover="SelectLigne(<%=indiceEae%>,<%=process.getListeEae().size()%>)">
-										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">&nbsp;
+										<td class="sigp2NewTab-liste" style="position:relative;width:60px;" align="center">&nbsp;
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
 				    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
@@ -821,7 +821,7 @@
 									<div style="text-align: center">
 										<BR/><BR/>
 										<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION()%>">
-										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_RESET()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 									</div>
 								<%}%>
 						<%} %>						
