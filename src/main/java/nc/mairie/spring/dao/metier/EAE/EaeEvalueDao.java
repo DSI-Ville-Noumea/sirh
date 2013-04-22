@@ -86,7 +86,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	@Override
 	public ArrayList<EaeEvalue> listerEaeEvalueSans2012(Integer idAgent) throws Exception {
 		String sql = "select ev.* from " + NOM_TABLE + " ev inner join EAE e on e.id_eae=ev." + CHAMP_ID_EAE
-				+ " inner join EAE_CAMPAGNE_EAE c on e.id_camapagne_eae=c.id_camapgne_eae where  ev." + CHAMP_ID_AGENT + "=? and c.ANNEE!=2012";
+				+ " inner join EAE_CAMPAGNE_EAE c on e.id_campagne_eae=c.id_campagne_eae where  ev." + CHAMP_ID_AGENT + "=? and c.ANNEE!=2012";
 
 		ArrayList<EaeEvalue> listeEaeEvalue = new ArrayList<EaeEvalue>();
 
