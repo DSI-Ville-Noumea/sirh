@@ -162,7 +162,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeEae(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des EAE de l'agent
-		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalue(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalueSans2012(Integer.valueOf(getAgentCourant().getIdAgent()));
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 

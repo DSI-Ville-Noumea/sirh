@@ -19,6 +19,6 @@ public interface EaeEvalueDaoInterface {
 
 	public EaeEvalue chercherEaeEvalue(Integer idEae) throws Exception;
 
-	public ArrayList<EaeEvalue> listerEaeEvalue(Integer idAgent) throws Exception;
+	public ArrayList<EaeEvalue> listerEaeEvalueSans2012(Integer idAgent) throws Exception;
 
 }
