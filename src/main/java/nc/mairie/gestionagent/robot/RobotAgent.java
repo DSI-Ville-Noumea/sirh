@@ -195,10 +195,10 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		} else if (activite.equals("AVCTCampagneTableauBord")) {
 			return new OeAVCTCampagneTableauBord();
 		}
-		//TEST
-		 else if (activite.equals("AVCTTest")) {
-				return new OeAVCTTest();
-			}
+		// TEST
+		else if (activite.equals("AVCTTest")) {
+			return new OeAVCTTest();
+		}
 		// Module SUIVI MEDICAL
 		else if (activite.equals("SMConvocation")) {
 			return new OeSMConvocation();
@@ -307,7 +307,7 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		navigation.put(OeAGENTRecherche.class.getName() + OeAGENTRecherche.STATUT_ETAT_CIVIL, OeAGENTEtatCivil.class.getName());
 
 		// ///////////////////
-		//AVANCEMENT        //
+		// AVANCEMENT //
 		// ///////////////////
 		// Classe OeAVCTSimulationConvCol
 		navigation.put(OeAVCTSimulationConvCol.class.getName() + OeAVCTSimulationConvCol.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
@@ -346,8 +346,11 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + OeAVCTCampagneGestionEAE.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
+		// Classe OeAVCTTest
+		navigation.put(OeAVCTTest.class.getName() + OeAVCTTest.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
 		// ///////////////////
-		//SUIVI MEDICAL     //
+		// SUIVI MEDICAL //
 		// ///////////////////
 		// Classe OeSMConvocation
 		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());

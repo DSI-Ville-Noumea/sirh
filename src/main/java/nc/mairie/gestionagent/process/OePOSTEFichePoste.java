@@ -63,6 +63,13 @@ import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -79,6 +86,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -116,57 +124,60 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private String[] LB_NIVEAU_ETUDE;
 
 	// nouvelle liste suite remaniement fdp/activites
-	private ArrayList listeToutesActi;
+	private ArrayList<Activite> listeToutesActi;
 	// activites de la fiche emploi primaire
-	private ArrayList listeActiFEP;
+	private ArrayList<Activite> listeActiFEP;
 	// activites de la fiche emploi secondaire
-	private ArrayList listeActiFES;
+	private ArrayList<Activite> listeActiFES;
 	// activites de la fiche poste
-	private ArrayList listeActiFP;
+	private ArrayList<ActiviteFP> listeActiFP;
 	// activites de la fiche poste ajouté
-	private ArrayList listeAjoutActiFP;
+	private ArrayList<Activite> listeAjoutActiFP;
 
 	// nouvelle liste suite remaniement fdp/compétences
-	private ArrayList listeToutesComp;
+	private ArrayList<Competence> listeToutesComp;
 	// competences de la fiche emploi primaire
-	private ArrayList listeCompFEP;
+	private ArrayList<Competence> listeCompFEP;
 	// competences de la fiche emploi secondaire
-	private ArrayList listeCompFES;
+	private ArrayList<Competence> listeCompFES;
 	// competences de la fiche poste
-	private ArrayList listeCompFP;
+	private ArrayList<CompetenceFP> listeCompFP;
 	// competences de la fiche poste ajouté
-	private ArrayList listeAjoutCompFP;
+	private ArrayList<Competence> listeAjoutCompFP;
 
 	// Nouvelle gestion des niveau etude
-	private ArrayList listeTousNiveau;
+	private ArrayList<NiveauEtude> listeTousNiveau;
 	// niveau etude de la fiche poste
-	private ArrayList listeNiveauFP;
+	private ArrayList<NiveauEtudeFP> listeNiveauFP;
 
 	// Nouvelle gestion des diplomes
-	private ArrayList listeTousDiplomes;
+	private ArrayList<DiplomeGenerique> listeTousDiplomes;
 	// diplomes de la fiche poste
-	private ArrayList listeDiplomeFP;
+	private ArrayList<DiplomeFP> listeDiplomeFP;
 
 	// pour les liste deroulante
-	private ArrayList listeNiveauEtude;
-	private ArrayList listeDiplome;
+	private ArrayList<NiveauEtude> listeNiveauEtude;
+	private ArrayList<DiplomeGenerique> listeDiplome;
 
-	private ArrayList listeBudget;
-	private ArrayList listeStatut;
-	private ArrayList listeTitre;
-	private ArrayList listeGrade;
-	private ArrayList listeLocalisation;
-	private ArrayList listeAvantage;
-	private ArrayList listeAvantageAAjouter;
-	private ArrayList listeAvantageASupprimer;
-	private ArrayList listeDelegation;
-	private ArrayList listeDelegationAAjouter;
-	private ArrayList listeDelegationASupprimer;
-	private ArrayList listeRegime;
-	private ArrayList listeRegimeAAjouter;
-	private ArrayList listeRegimeASupprimer;
-	private ArrayList listeServices;
-	private ArrayList listeHoraire;
+	private ArrayList<Budget> listeBudget;
+	private ArrayList<StatutFP> listeStatut;
+	private ArrayList<TitrePoste> listeTitre;
+	private ArrayList<Grade> listeGrade;
+	private ArrayList<EntiteGeo> listeLocalisation;
+	private ArrayList<AvantageNature> listeAvantage;
+	private ArrayList<AvantageNature> listeAvantageAAjouter;
+	private ArrayList<AvantageNature> listeAvantageASupprimer;
+	private ArrayList<Delegation> listeDelegation;
+	private ArrayList<Delegation> listeDelegationAAjouter;
+	private ArrayList<Delegation> listeDelegationASupprimer;
+	private ArrayList<RegimeIndemnitaire> listeRegime;
+	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
+	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
+	private ArrayList<PrimePointage> listePrimePointage;
+	private ArrayList<PrimePointage> listePrimePointageAAjouter;
+	private ArrayList<PrimePointage> listePrimePointageASupprimer;
+	private ArrayList<Service> listeServices;
+	private ArrayList<Horaire> listeHoraire;
 	private String observation;
 	private String mission;
 
@@ -211,6 +222,10 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private boolean changementFEAutorise = true;
 	public boolean estFDPInactive = false;
 
+	private PrimePointageDao primePointageDao;
+	private PrimePointageAffDao primePointageAffDao;
+	private PrimePointageFPDao primePointageFPDao;
+
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
 	/**
@@ -239,6 +254,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
+		initialiseDao();
 		initialiseListeDeroulante();
 		initialiseListeService();
 
@@ -390,6 +406,21 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 			setFocus(getNOM_EF_RECHERCHE());
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getPrimePointageDao() == null) {
+			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
+		}
+		if (getPrimePointageAffDao() == null) {
+			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
+		}
+		if (getPrimePointageFPDao() == null) {
+			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
 		}
 	}
 
@@ -610,7 +641,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -663,7 +694,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste type budget vide alors affectation
 		if (getLB_BUDGET() == LBVide) {
-			ArrayList budget = Budget.listerBudget(getTransaction());
+			ArrayList<Budget> budget = Budget.listerBudget(getTransaction());
 			setListeBudget(budget);
 
 			int[] tailles = { 20 };
@@ -673,7 +704,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
-			ArrayList statut = StatutFP.listerStatutFP(getTransaction());
+			ArrayList<StatutFP> statut = StatutFP.listerStatutFP(getTransaction());
 			setListeStatut(statut);
 
 			int[] tailles = { 20 };
@@ -684,7 +715,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste localisation vide alors affectation
 		if (getLB_LOC() == LBVide) {
-			ArrayList loc = EntiteGeo.listerEntiteGeo(getTransaction());
+			ArrayList<EntiteGeo> loc = EntiteGeo.listerEntiteGeo(getTransaction());
 			setListeLocalisation(loc);
 
 			int[] tailles = { 100 };
@@ -694,7 +725,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste titre poste vide alors affectation
 		if (getLB_TITRE_POSTE() == LBVide) {
-			ArrayList titre = TitrePoste.listerTitrePoste(getTransaction());
+			ArrayList<TitrePoste> titre = TitrePoste.listerTitrePoste(getTransaction());
 			setListeTitre(titre);
 
 			int[] tailles = { 100 };
@@ -704,7 +735,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste grade vide alors affectation
 		if (getLB_GRADE() == LBVide) {
-			ArrayList grade = Grade.listerGradeInitialActif(getTransaction());
+			ArrayList<Grade> grade = Grade.listerGradeInitialActif(getTransaction());
 			setListeGrade(grade);
 
 			int[] tailles = { 100 };
@@ -714,7 +745,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste niveau etude vide alors affectation
 		if (getLB_NIVEAU_ETUDE() == LBVide) {
-			ArrayList niveau = NiveauEtude.listerNiveauEtude(getTransaction());
+			ArrayList<NiveauEtude> niveau = NiveauEtude.listerNiveauEtude(getTransaction());
 			setListeNiveauEtude(niveau);
 
 			int[] tailles = { 15 };
@@ -724,7 +755,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste diplomes vide alors affectation
 		if (getLB_DIPLOME() == LBVide) {
-			ArrayList dipl = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
+			ArrayList<DiplomeGenerique> dipl = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
 			setListeDiplome(dipl);
 
 			int[] tailles = { 100 };
@@ -734,7 +765,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si liste diplomes vide alors affectation
 		if (getLB_REGLEMENTAIRE() == LBVide) {
-			ArrayList hor = Horaire.listerHoraire(getTransaction());
+			ArrayList<Horaire> hor = Horaire.listerHoraire(getTransaction());
 			setListeHoraire(hor);
 
 			int[] tailles = { 100 };
@@ -758,7 +789,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	private void initialiseCompetence() throws Exception {
 
 		// on fait une liste de toutes les competences
-		setListeToutesComp(new ArrayList());
+		setListeToutesComp(new ArrayList<Competence>());
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les competences de la FDP
@@ -780,7 +811,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				}
 			}
 		} else {
-			setListeCompFP(new ArrayList());
+			setListeCompFP(new ArrayList<CompetenceFP>());
 		}
 
 		// on recupere les competences des differentes FE
@@ -803,7 +834,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				}
 			}
 		} else {
-			setListeCompFEP(new ArrayList());
+			setListeCompFEP(new ArrayList<Competence>());
 		}
 
 		if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
@@ -826,11 +857,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 
 		} else {
-			setListeCompFES(new ArrayList());
+			setListeCompFES(new ArrayList<Competence>());
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
-		ArrayList listeCompSelect = (ArrayList) VariablesActivite.recuperer(this, "COMPETENCE");
+		ArrayList<Competence> listeCompSelect = (ArrayList<Competence>) VariablesActivite.recuperer(this, "COMPETENCE");
 
 		if (listeCompSelect != null && listeCompSelect.size() != 0) {
 			if (getListeAjoutCompFP() != null) {
@@ -842,7 +873,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				Competence c = (Competence) getListeAjoutCompFP().get(i);
 				if (c != null) {
 					if (getListeToutesComp() == null)
-						setListeToutesComp(new ArrayList());
+						setListeToutesComp(new ArrayList<Competence>());
 					if (!getListeToutesComp().contains(c)) {
 						getListeToutesComp().add(c);
 						getHashOrigineCompetence().put(c.getIdCompetence(), "FDP");
@@ -851,7 +882,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 
 		} else {
-			setListeAjoutCompFP(new ArrayList());
+			setListeAjoutCompFP(new ArrayList<Competence>());
 		}
 
 		// Si liste competences vide alors initialisation.
@@ -924,15 +955,16 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseSpecificites() throws Exception {
 		// Avantages en nature
-		setListeAvantage((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE));
+		setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE));
 		if (getListeAvantage() != null && getListeAvantage().size() > 0) {
-			setListeAvantageAAjouter((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT));
-			setListeAvantageASupprimer((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR));
+			setListeAvantageAAjouter((ArrayList<AvantageNature>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT));
+			setListeAvantageASupprimer((ArrayList<AvantageNature>) VariablesActivite
+					.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			setListeAvantage(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
 		}
 		if (getListeAvantage() != null) {
-			for (ListIterator list = getListeAvantage().listIterator(); list.hasNext();) {
+			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
@@ -945,15 +977,15 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Délégations
-		setListeDelegation((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION));
+		setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION));
 		if (getListeDelegation() != null && getListeDelegation().size() > 0) {
-			setListeDelegationAAjouter((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT));
-			setListeDelegationASupprimer((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR));
+			setListeDelegationAAjouter((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT));
+			setListeDelegationASupprimer((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			setListeDelegation(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
 		}
 		if (getListeDelegation() != null) {
-			for (ListIterator list = getListeDelegation().listIterator(); list.hasNext();) {
+			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
 					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
@@ -963,21 +995,34 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Régimes indemnitaires
-		setListeRegime((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN));
+		setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN));
 		if (getListeRegime() != null && getListeRegime().size() > 0) {
-			setListeRegimeAAjouter((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT));
-			setListeRegimeASupprimer((ArrayList) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR));
+			setListeRegimeAAjouter((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT));
+			setListeRegimeASupprimer((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			setListeRegime(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
 		}
 		if (getListeRegime() != null) {
-			for (ListIterator list = getListeRegime().listIterator(); list.hasNext();) {
+			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
 					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(), aReg.getIdTypeRegIndemn());
 					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn(), typReg);
 				}
 			}
+		}
+
+		// Primes pointage
+		setListePrimePointage((ArrayList<PrimePointage>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
+		if (getListePrimePointage() != null && getListePrimePointage().size() > 0) {
+			setListePrimePointageAAjouter((ArrayList<PrimePointage>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT));
+			setListePrimePointageASupprimer((ArrayList<PrimePointage>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR));
+		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
+			setListePrimePointage(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 	}
 
@@ -990,7 +1035,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		// Avantages en nature
 		int indiceAvantage = 0;
 		if (getListeAvantage() != null) {
-			for (ListIterator list = getListeAvantage().listIterator(); list.hasNext();) {
+			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
 
@@ -1008,7 +1053,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		// Délégations
 		int indiceDelegation = 0;
 		if (getListeDelegation() != null) {
-			for (ListIterator list = getListeDelegation().listIterator(); list.hasNext();) {
+			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
 
@@ -1025,7 +1070,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		// Régimes indemnitaires
 		int indiceRegime = 0;
 		if (getListeRegime() != null) {
-			for (ListIterator list = getListeRegime().listIterator(); list.hasNext();) {
+			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
 
@@ -1036,6 +1081,19 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
 				}
 				indiceRegime++;
+			}
+		}
+
+		// Prime de pointage
+		int indicePrime = 0;
+		if (getListePrimePointage() != null) {
+			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
+				PrimePointage aReg = (PrimePointage) list.next();
+				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getIdRubrique().toString());
+				if (aReg != null) {
+					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibRubrique());
+				}
+				indicePrime++;
 			}
 		}
 	}
@@ -1129,23 +1187,23 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		setListeAvantage(null);
 		setListeDelegation(null);
 		setListeRegime(null);
+		setListePrimePointage(null);
 
-		setListeTousNiveau(new ArrayList());
-		setListeTousDiplomes(new ArrayList());
+		setListeTousNiveau(new ArrayList<NiveauEtude>());
+		setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
 
-		setListeNiveauFP(new ArrayList());
+		setListeNiveauFP(new ArrayList<NiveauEtudeFP>());
+		setListeDiplomeFP(new ArrayList<DiplomeFP>());
 
-		setListeDiplomeFP(new ArrayList());
+		setListeActiFP(new ArrayList<ActiviteFP>());
+		setListeActiFES(new ArrayList<Activite>());
+		setListeActiFEP(new ArrayList<Activite>());
+		setListeAjoutActiFP(new ArrayList<Activite>());
 
-		setListeActiFP(new ArrayList());
-		setListeActiFES(new ArrayList());
-		setListeActiFEP(new ArrayList());
-		setListeAjoutActiFP(new ArrayList());
-
-		setListeCompFP(new ArrayList());
-		setListeCompFES(new ArrayList());
-		setListeCompFEP(new ArrayList());
-		setListeAjoutCompFP(new ArrayList());
+		setListeCompFP(new ArrayList<CompetenceFP>());
+		setListeCompFES(new ArrayList<Competence>());
+		setListeCompFEP(new ArrayList<Competence>());
+		setListeAjoutCompFP(new ArrayList<Competence>());
 	}
 
 	/**
@@ -1599,7 +1657,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 		}
 		// on supprime tous les diplome de la FDP
-		ArrayList diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante());
+		ArrayList<DiplomeFP> diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante());
 		if (diplomeFPExistant != null && diplomeFPExistant.size() > 0) {
 			for (int i = 0; i < diplomeFPExistant.size(); i++) {
 				DiplomeFP diplomeFP = (DiplomeFP) diplomeFPExistant.get(i);
@@ -1612,7 +1670,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		diplomeFP.creerDiplomeFP(getTransaction());
 
 		// on supprime tous les niveau etude de la FDP
-		ArrayList niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante());
+		ArrayList<NiveauEtudeFP> niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante());
 		if (niveauFPExistant != null && niveauFPExistant.size() > 0) {
 			for (int i = 0; i < niveauFPExistant.size(); i++) {
 				NiveauEtudeFP niveauFP = (NiveauEtudeFP) niveauFPExistant.get(i);
@@ -1985,6 +2043,37 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				}
 			}
 
+			// Sauvegarde des nouvelles primes de pointage et suppression des
+			// anciens
+			for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
+				try {
+					PrimePointage regIndemn = (PrimePointage) getListePrimePointageAAjouter().get(i);
+					Integer idCree = getPrimePointageDao().creerPrimePointage(regIndemn.getIdRubrique());
+					PrimePointageFP riFP = new PrimePointageFP();
+					riFP.setIdFichePoste(Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
+					riFP.setIdPrimePointage(idCree);
+					getPrimePointageFPDao().creerPrimePointageFP(riFP.getIdPrimePointage(), riFP.getIdFichePoste());
+				} catch (Exception e) {
+					getTransaction().declarerErreur(" Au moins une prime de pointage n'a pu être créé.");
+					return false;
+				}
+			}
+			for (int i = 0; i < getListePrimePointageASupprimer().size(); i++) {
+				try {
+					PrimePointage ri = (PrimePointage) getListePrimePointageASupprimer().get(i);
+					PrimePointageFP riFP = new PrimePointageFP();
+					riFP.setIdFichePoste(Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
+					riFP.setIdPrimePointage(ri.getIdPrimePointage());
+					getPrimePointageFPDao().supprimerPrimePointageFP(riFP.getIdFichePoste(), riFP.getIdPrimePointage());
+					if (!(getPrimePointageAffDao().listerPrimePointageAffAvecPP(ri.getIdPrimePointage()).size() > 0)) {
+						getPrimePointageDao().supprimerPrimePointage(ri.getIdPrimePointage());
+					}
+				} catch (Exception e) {
+					getTransaction().declarerErreur("Au moins une prime de pointage n'a pu être supprimé.");
+					return false;
+				}
+			}
+
 			// COMMIT
 			commitTransaction();
 
@@ -2004,6 +2093,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR);
 
 			// si la FDP est affectée à un agent, alors on sauvegarde la fiche
 			// de poste
@@ -2026,15 +2118,14 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 
 		// appel WS mise à jour Abre FDP
-		if (!miseAJourArbreFDP()) {
-			// "ERR970",
-			// "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
-			if (getTransaction().isErreur())
-				getTransaction().traiterErreur();
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
-			messageInf = "";
-			return false;
-		}
+		// TODO
+		/*
+		 * if (!miseAJourArbreFDP()) { // "ERR970", //
+		 * "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
+		 * if (getTransaction().isErreur()) getTransaction().traiterErreur();
+		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
+		 * messageInf = ""; return false; }
+		 */
 		return true;
 	}
 
@@ -2715,7 +2806,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 			if (d != null) {
 				if (getListeTousDiplomes() == null)
-					setListeTousDiplomes(new ArrayList());
+					setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
 
 				if (!getListeTousDiplomes().contains(d)) {
 					getListeTousDiplomes().add(d);
@@ -2761,7 +2852,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 			if (n != null) {
 				if (getListeTousNiveau() == null)
-					setListeTousNiveau(new ArrayList());
+					setListeTousNiveau(new ArrayList<NiveauEtude>());
 
 				if (!getListeTousNiveau().contains(n)) {
 					getListeTousNiveau().add(n);
@@ -3038,43 +3129,43 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_LB_TITRE_POSTE_SELECT());
 	}
 
-	private ArrayList getListeBudget() {
+	private ArrayList<Budget> getListeBudget() {
 		return listeBudget;
 	}
 
-	private void setListeBudget(ArrayList listeBudget) {
+	private void setListeBudget(ArrayList<Budget> listeBudget) {
 		this.listeBudget = listeBudget;
 	}
 
-	private ArrayList getListeGrade() {
+	private ArrayList<Grade> getListeGrade() {
 		return listeGrade;
 	}
 
-	private void setListeGrade(ArrayList listeGrade) {
+	private void setListeGrade(ArrayList<Grade> listeGrade) {
 		this.listeGrade = listeGrade;
 	}
 
-	private ArrayList getListeLocalisation() {
+	private ArrayList<EntiteGeo> getListeLocalisation() {
 		return listeLocalisation;
 	}
 
-	private void setListeLocalisation(ArrayList listeLocalisation) {
+	private void setListeLocalisation(ArrayList<EntiteGeo> listeLocalisation) {
 		this.listeLocalisation = listeLocalisation;
 	}
 
-	private ArrayList getListeStatut() {
+	private ArrayList<StatutFP> getListeStatut() {
 		return listeStatut;
 	}
 
-	private void setListeStatut(ArrayList listeStatut) {
+	private void setListeStatut(ArrayList<StatutFP> listeStatut) {
 		this.listeStatut = listeStatut;
 	}
 
-	public ArrayList getListeTitre() {
+	public ArrayList<TitrePoste> getListeTitre() {
 		return listeTitre;
 	}
 
-	private void setListeTitre(ArrayList listeTitre) {
+	private void setListeTitre(ArrayList<TitrePoste> listeTitre) {
 		this.listeTitre = listeTitre;
 	}
 
@@ -3200,7 +3291,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 	private void initialiseActivites() throws Exception {
 		// on fait une liste de toutes les activites
-		setListeToutesActi(new ArrayList());
+		setListeToutesActi(new ArrayList<Activite>());
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les activites de la FDP
@@ -3222,7 +3313,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				}
 			}
 		} else {
-			setListeActiFP(new ArrayList());
+			setListeActiFP(new ArrayList<ActiviteFP>());
 		}
 
 		// on recupere les activites des differentes FE
@@ -3245,7 +3336,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				}
 			}
 		} else {
-			setListeActiFEP(new ArrayList());
+			setListeActiFEP(new ArrayList<Activite>());
 		}
 
 		if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
@@ -3268,11 +3359,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 
 		} else {
-			setListeActiFES(new ArrayList());
+			setListeActiFES(new ArrayList<Activite>());
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
-		ArrayList listeActiSelect = (ArrayList) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
+		ArrayList<Activite> listeActiSelect = (ArrayList<Activite>) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
 		if (listeActiSelect != null && listeActiSelect.size() != 0) {
 			if (getListeAjoutActiFP() != null) {
 				getListeAjoutActiFP().addAll(listeActiSelect);
@@ -3283,7 +3374,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				Activite a = (Activite) getListeAjoutActiFP().get(i);
 				if (a != null) {
 					if (getListeToutesActi() == null)
-						setListeToutesActi(new ArrayList());
+						setListeToutesActi(new ArrayList<Activite>());
 					if (!getListeToutesActi().contains(a)) {
 						getListeToutesActi().add(a);
 						getHashOrigineActivite().put(a.getIdActivite(), "FDP");
@@ -3292,7 +3383,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			}
 
 		} else {
-			setListeAjoutActiFP(new ArrayList());
+			setListeAjoutActiFP(new ArrayList<Activite>());
 		}
 
 		// Si liste activites vide alors initialisation.
@@ -3355,9 +3446,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 
 	private void initialiseInfoEmploi() throws Exception {
 		// on fait une liste de toutes les niveau etude
-		setListeTousNiveau(new ArrayList());
+		setListeTousNiveau(new ArrayList<NiveauEtude>());
 		// on fait une liste de toutes les diplomes
-		setListeTousDiplomes(new ArrayList());
+		setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
 
 		// niveau etude
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
@@ -3369,7 +3460,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				getListeTousNiveau().add(niveau);
 			}
 		} else {
-			setListeNiveauFP(new ArrayList());
+			setListeNiveauFP(new ArrayList<NiveauEtudeFP>());
 		}
 		// si il n'y avait pas de niveau etude sur la FDP on affiche celle des
 		// FE
@@ -3416,7 +3507,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 				getListeTousDiplomes().add(diplome);
 			}
 		} else {
-			setListeDiplomeFP(new ArrayList());
+			setListeDiplomeFP(new ArrayList<DiplomeFP>());
 		}
 		// si il n'y avait pas de diplomes sur la FDP on affiche celle des FE
 		// ON ENELEVE CETTE PATIE --> JIRA SIRH-305
@@ -3684,7 +3775,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER_ACTIVITE(HttpServletRequest request) throws Exception {
-		ArrayList listeToutesActi = new ArrayList();
+		ArrayList<Activite> listeToutesActi = new ArrayList<Activite>();
 		if (getListeToutesActi() != null) {
 			listeToutesActi.addAll(getListeToutesActi());
 		}
@@ -3712,7 +3803,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_SAVOIR(HttpServletRequest request) throws Exception {
-		ArrayList listeToutesCompSavoir = new ArrayList();
+		ArrayList<Competence> listeToutesCompSavoir = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (int i = 0; i < getListeToutesComp().size(); i++) {
 				Competence c = (Competence) getListeToutesComp().get(i);
@@ -3745,7 +3836,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_SAVOIR_FAIRE(HttpServletRequest request) throws Exception {
-		ArrayList listeToutesCompSavoirFaire = new ArrayList();
+		ArrayList<Competence> listeToutesCompSavoirFaire = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (int i = 0; i < getListeToutesComp().size(); i++) {
 				Competence c = (Competence) getListeToutesComp().get(i);
@@ -3778,7 +3869,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_COMPORTEMENT(HttpServletRequest request) throws Exception {
-		ArrayList listeToutesCompComportement = new ArrayList();
+		ArrayList<Competence> listeToutesCompComportement = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (int i = 0; i < getListeToutesComp().size(); i++) {
 				Competence c = (Competence) getListeToutesComp().get(i);
@@ -3829,7 +3920,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -3838,7 +3929,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 
@@ -3862,11 +3953,11 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return "NOM_EF_SERVICE";
 	}
 
-	private ArrayList getListeHoraire() {
+	private ArrayList<Horaire> getListeHoraire() {
 		return listeHoraire;
 	}
 
-	private void setListeHoraire(ArrayList listeHoraire) {
+	private void setListeHoraire(ArrayList<Horaire> listeHoraire) {
 		this.listeHoraire = listeHoraire;
 	}
 
@@ -3896,6 +3987,8 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION, getListeDelegation());
 		if (getListeRegime() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN, getListeRegime());
+		if (getListePrimePointage() != null)
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointage());
 
 		setStatut(STATUT_SPECIFICITES, true);
 		return true;
@@ -4000,9 +4093,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvantage
 	 */
-	public ArrayList getListeAvantage() {
+	public ArrayList<AvantageNature> getListeAvantage() {
 		if (listeAvantage == null)
-			listeAvantage = new ArrayList();
+			listeAvantage = new ArrayList<AvantageNature>();
 		return listeAvantage;
 	}
 
@@ -4011,7 +4104,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvantage
 	 */
-	private void setListeAvantage(ArrayList listeAvantage) {
+	private void setListeAvantage(ArrayList<AvantageNature> listeAvantage) {
 		this.listeAvantage = listeAvantage;
 	}
 
@@ -4020,9 +4113,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvantageAAjouter
 	 */
-	private ArrayList getListeAvantageAAjouter() {
+	private ArrayList<AvantageNature> getListeAvantageAAjouter() {
 		if (listeAvantageAAjouter == null)
-			listeAvantageAAjouter = new ArrayList();
+			listeAvantageAAjouter = new ArrayList<AvantageNature>();
 		return listeAvantageAAjouter;
 	}
 
@@ -4032,7 +4125,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * @param listeAvantageAAjouter
 	 *            listeAvantageAAjouter à définir
 	 */
-	private void setListeAvantageAAjouter(ArrayList listeAvantageAAjouter) {
+	private void setListeAvantageAAjouter(ArrayList<AvantageNature> listeAvantageAAjouter) {
 		this.listeAvantageAAjouter = listeAvantageAAjouter;
 	}
 
@@ -4041,9 +4134,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvantageASupprimer
 	 */
-	private ArrayList getListeAvantageASupprimer() {
+	private ArrayList<AvantageNature> getListeAvantageASupprimer() {
 		if (listeAvantageASupprimer == null)
-			listeAvantageASupprimer = new ArrayList();
+			listeAvantageASupprimer = new ArrayList<AvantageNature>();
 		return listeAvantageASupprimer;
 	}
 
@@ -4052,7 +4145,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvantageASupprimer
 	 */
-	private void setListeAvantageASupprimer(ArrayList listeAvantageASupprimer) {
+	private void setListeAvantageASupprimer(ArrayList<AvantageNature> listeAvantageASupprimer) {
 		this.listeAvantageASupprimer = listeAvantageASupprimer;
 	}
 
@@ -4061,9 +4154,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDelegation
 	 */
-	public ArrayList getListeDelegation() {
+	public ArrayList<Delegation> getListeDelegation() {
 		if (listeDelegation == null)
-			listeDelegation = new ArrayList();
+			listeDelegation = new ArrayList<Delegation>();
 		return listeDelegation;
 	}
 
@@ -4073,7 +4166,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * @param listeDelegation
 	 *            listeDelegation à définir
 	 */
-	private void setListeDelegation(ArrayList listeDelegation) {
+	private void setListeDelegation(ArrayList<Delegation> listeDelegation) {
 		this.listeDelegation = listeDelegation;
 	}
 
@@ -4082,9 +4175,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDelegationAAjouter
 	 */
-	private ArrayList getListeDelegationAAjouter() {
+	private ArrayList<Delegation> getListeDelegationAAjouter() {
 		if (listeDelegationAAjouter == null)
-			listeDelegationAAjouter = new ArrayList();
+			listeDelegationAAjouter = new ArrayList<Delegation>();
 		return listeDelegationAAjouter;
 	}
 
@@ -4093,7 +4186,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeDelegationAAjouter
 	 */
-	private void setListeDelegationAAjouter(ArrayList listeDelegationAAjouter) {
+	private void setListeDelegationAAjouter(ArrayList<Delegation> listeDelegationAAjouter) {
 		this.listeDelegationAAjouter = listeDelegationAAjouter;
 	}
 
@@ -4102,9 +4195,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDelegationASupprimer
 	 */
-	private ArrayList getListeDelegationASupprimer() {
+	private ArrayList<Delegation> getListeDelegationASupprimer() {
 		if (listeDelegationASupprimer == null)
-			listeDelegationASupprimer = new ArrayList();
+			listeDelegationASupprimer = new ArrayList<Delegation>();
 		return listeDelegationASupprimer;
 	}
 
@@ -4113,7 +4206,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeDelegationASupprimer
 	 */
-	private void setListeDelegationASupprimer(ArrayList listeDelegationASupprimer) {
+	private void setListeDelegationASupprimer(ArrayList<Delegation> listeDelegationASupprimer) {
 		this.listeDelegationASupprimer = listeDelegationASupprimer;
 	}
 
@@ -4122,9 +4215,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeRegime
 	 */
-	public ArrayList getListeRegime() {
+	public ArrayList<RegimeIndemnitaire> getListeRegime() {
 		if (listeRegime == null)
-			listeRegime = new ArrayList();
+			listeRegime = new ArrayList<RegimeIndemnitaire>();
 		return listeRegime;
 	}
 
@@ -4133,7 +4226,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeRegime
 	 */
-	private void setListeRegime(ArrayList listeRegime) {
+	private void setListeRegime(ArrayList<RegimeIndemnitaire> listeRegime) {
 		this.listeRegime = listeRegime;
 	}
 
@@ -4142,9 +4235,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeRegimeAAjouter
 	 */
-	private ArrayList getListeRegimeAAjouter() {
+	private ArrayList<RegimeIndemnitaire> getListeRegimeAAjouter() {
 		if (listeRegimeAAjouter == null)
-			listeRegimeAAjouter = new ArrayList();
+			listeRegimeAAjouter = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeAAjouter;
 	}
 
@@ -4153,7 +4246,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeRegimeAAjouter
 	 */
-	private void setListeRegimeAAjouter(ArrayList listeRegimeAAjouter) {
+	private void setListeRegimeAAjouter(ArrayList<RegimeIndemnitaire> listeRegimeAAjouter) {
 		this.listeRegimeAAjouter = listeRegimeAAjouter;
 	}
 
@@ -4162,9 +4255,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeRegimeASupprimer
 	 */
-	private ArrayList getListeRegimeASupprimer() {
+	private ArrayList<RegimeIndemnitaire> getListeRegimeASupprimer() {
 		if (listeRegimeASupprimer == null)
-			listeRegimeASupprimer = new ArrayList();
+			listeRegimeASupprimer = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeASupprimer;
 	}
 
@@ -4173,8 +4266,68 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeRegimeASupprimer
 	 */
-	private void setListeRegimeASupprimer(ArrayList listeRegimeASupprimer) {
+	private void setListeRegimeASupprimer(ArrayList<RegimeIndemnitaire> listeRegimeASupprimer) {
 		this.listeRegimeASupprimer = listeRegimeASupprimer;
+	}
+
+	/**
+	 * Retourne la liste des PrimePointageIndemnitaire.
+	 * 
+	 * @return listePrimePointage
+	 */
+	public ArrayList<PrimePointage> getListePrimePointage() {
+		if (listePrimePointage == null)
+			listePrimePointage = new ArrayList<PrimePointage>();
+		return listePrimePointage;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire.
+	 * 
+	 * @param listePrimePointage
+	 */
+	private void setListePrimePointage(ArrayList<PrimePointage> listePrimePointage) {
+		this.listePrimePointage = listePrimePointage;
+	}
+
+	/**
+	 * Retourne la liste des PrimePointageIndemnitaire à ajouter.
+	 * 
+	 * @return listePrimePointageAAjouter
+	 */
+	private ArrayList<PrimePointage> getListePrimePointageAAjouter() {
+		if (listePrimePointageAAjouter == null)
+			listePrimePointageAAjouter = new ArrayList<PrimePointage>();
+		return listePrimePointageAAjouter;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire à ajouter.
+	 * 
+	 * @param listePrimePointageAAjouter
+	 */
+	private void setListePrimePointageAAjouter(ArrayList<PrimePointage> listePrimePointageAAjouter) {
+		this.listePrimePointageAAjouter = listePrimePointageAAjouter;
+	}
+
+	/**
+	 * Retourne la liste des PrimePointageIndemnitaire à supprimer.
+	 * 
+	 * @return listePrimePointageASupprimer
+	 */
+	private ArrayList<PrimePointage> getListePrimePointageASupprimer() {
+		if (listePrimePointageASupprimer == null)
+			listePrimePointageASupprimer = new ArrayList<PrimePointage>();
+		return listePrimePointageASupprimer;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire à supprimer.
+	 * 
+	 * @param listePrimePointageASupprimer
+	 */
+	private void setListePrimePointageASupprimer(ArrayList<PrimePointage> listePrimePointageASupprimer) {
+		this.listePrimePointageASupprimer = listePrimePointageASupprimer;
 	}
 
 	/**
@@ -5500,9 +5653,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeActiFEP
 	 */
-	public ArrayList getListeActiFEP() {
+	public ArrayList<Activite> getListeActiFEP() {
 		if (listeActiFEP == null) {
-			listeActiFEP = new ArrayList();
+			listeActiFEP = new ArrayList<Activite>();
 		}
 		return listeActiFEP;
 	}
@@ -5512,7 +5665,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeActiFEP
 	 */
-	public void setListeActiFEP(ArrayList listeActiFEP) {
+	public void setListeActiFEP(ArrayList<Activite> listeActiFEP) {
 		this.listeActiFEP = listeActiFEP;
 	}
 
@@ -5521,9 +5674,9 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeActiFES
 	 */
-	public ArrayList getListeActiFES() {
+	public ArrayList<Activite> getListeActiFES() {
 		if (listeActiFES == null) {
-			listeActiFES = new ArrayList();
+			listeActiFES = new ArrayList<Activite>();
 		}
 		return listeActiFES;
 	}
@@ -5533,7 +5686,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeActiFES
 	 */
-	public void setListeActiFES(ArrayList listeActiFES) {
+	public void setListeActiFES(ArrayList<Activite> listeActiFES) {
 		this.listeActiFES = listeActiFES;
 	}
 
@@ -6052,27 +6205,27 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_CK_SELECT_LIGNE_ACTI(i));
 	}
 
-	public ArrayList getListeToutesActi() {
+	public ArrayList<Activite> getListeToutesActi() {
 		return listeToutesActi;
 	}
 
-	private void setListeToutesActi(ArrayList listeToutesActi) {
+	private void setListeToutesActi(ArrayList<Activite> listeToutesActi) {
 		this.listeToutesActi = listeToutesActi;
 	}
 
-	private ArrayList getListeActiFP() {
+	private ArrayList<ActiviteFP> getListeActiFP() {
 		return listeActiFP;
 	}
 
-	private void setListeActiFP(ArrayList listeActiFP) {
+	private void setListeActiFP(ArrayList<ActiviteFP> listeActiFP) {
 		this.listeActiFP = listeActiFP;
 	}
 
-	private ArrayList getListeAjoutActiFP() {
+	private ArrayList<Activite> getListeAjoutActiFP() {
 		return listeAjoutActiFP;
 	}
 
-	private void setListeAjoutActiFP(ArrayList listeAjoutActiFP) {
+	private void setListeAjoutActiFP(ArrayList<Activite> listeAjoutActiFP) {
 		this.listeAjoutActiFP = listeAjoutActiFP;
 	}
 
@@ -6103,58 +6256,58 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_LIB_ORIGINE_ACTI(i));
 	}
 
-	private ArrayList getListeCompFEP() {
+	private ArrayList<Competence> getListeCompFEP() {
 		if (listeCompFEP == null) {
-			listeCompFEP = new ArrayList();
+			listeCompFEP = new ArrayList<Competence>();
 		}
 		return listeCompFEP;
 	}
 
-	private void setListeCompFEP(ArrayList listeCompFEP) {
+	private void setListeCompFEP(ArrayList<Competence> listeCompFEP) {
 		this.listeCompFEP = listeCompFEP;
 	}
 
-	private ArrayList getListeCompFES() {
+	private ArrayList<Competence> getListeCompFES() {
 		if (listeCompFES == null) {
-			listeCompFES = new ArrayList();
+			listeCompFES = new ArrayList<Competence>();
 		}
 		return listeCompFES;
 	}
 
-	private void setListeCompFES(ArrayList listeCompFES) {
+	private void setListeCompFES(ArrayList<Competence> listeCompFES) {
 		this.listeCompFES = listeCompFES;
 	}
 
-	private ArrayList getListeCompFP() {
+	private ArrayList<CompetenceFP> getListeCompFP() {
 		if (listeCompFP == null) {
-			listeCompFP = new ArrayList();
+			listeCompFP = new ArrayList<CompetenceFP>();
 		}
 		return listeCompFP;
 	}
 
-	private void setListeCompFP(ArrayList listeCompFP) {
+	private void setListeCompFP(ArrayList<CompetenceFP> listeCompFP) {
 		this.listeCompFP = listeCompFP;
 	}
 
-	public ArrayList getListeToutesComp() {
+	public ArrayList<Competence> getListeToutesComp() {
 		if (listeToutesComp == null) {
-			listeToutesComp = new ArrayList();
+			listeToutesComp = new ArrayList<Competence>();
 		}
 		return listeToutesComp;
 	}
 
-	private void setListeToutesComp(ArrayList listeToutesComp) {
+	private void setListeToutesComp(ArrayList<Competence> listeToutesComp) {
 		this.listeToutesComp = listeToutesComp;
 	}
 
-	private ArrayList getListeAjoutCompFP() {
+	private ArrayList<Competence> getListeAjoutCompFP() {
 		if (listeAjoutCompFP == null) {
-			listeAjoutCompFP = new ArrayList();
+			listeAjoutCompFP = new ArrayList<Competence>();
 		}
 		return listeAjoutCompFP;
 	}
 
-	private void setListeAjoutCompFP(ArrayList listeAjoutCompFP) {
+	private void setListeAjoutCompFP(ArrayList<Competence> listeAjoutCompFP) {
 		this.listeAjoutCompFP = listeAjoutCompFP;
 	}
 
@@ -6265,51 +6418,51 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		return hashOrigineCompetence;
 	}
 
-	private ArrayList getListeNiveauFP() {
+	private ArrayList<NiveauEtudeFP> getListeNiveauFP() {
 		return listeNiveauFP;
 	}
 
-	private void setListeNiveauFP(ArrayList listeNiveauFP) {
+	private void setListeNiveauFP(ArrayList<NiveauEtudeFP> listeNiveauFP) {
 		this.listeNiveauFP = listeNiveauFP;
 	}
 
-	private ArrayList getListeTousNiveau() {
+	private ArrayList<NiveauEtude> getListeTousNiveau() {
 		return listeTousNiveau;
 	}
 
-	private void setListeTousNiveau(ArrayList listeTousNiveau) {
+	private void setListeTousNiveau(ArrayList<NiveauEtude> listeTousNiveau) {
 		this.listeTousNiveau = listeTousNiveau;
 	}
 
-	private ArrayList getListeDiplomeFP() {
+	private ArrayList<DiplomeFP> getListeDiplomeFP() {
 		return listeDiplomeFP;
 	}
 
-	private void setListeDiplomeFP(ArrayList listeDiplomeFP) {
+	private void setListeDiplomeFP(ArrayList<DiplomeFP> listeDiplomeFP) {
 		this.listeDiplomeFP = listeDiplomeFP;
 	}
 
-	private ArrayList getListeTousDiplomes() {
+	private ArrayList<DiplomeGenerique> getListeTousDiplomes() {
 		return listeTousDiplomes;
 	}
 
-	private void setListeTousDiplomes(ArrayList listeTousDiplomes) {
+	private void setListeTousDiplomes(ArrayList<DiplomeGenerique> listeTousDiplomes) {
 		this.listeTousDiplomes = listeTousDiplomes;
 	}
 
-	private ArrayList getListeDiplome() {
+	private ArrayList<DiplomeGenerique> getListeDiplome() {
 		return listeDiplome;
 	}
 
-	private void setListeDiplome(ArrayList listeDiplome) {
+	private void setListeDiplome(ArrayList<DiplomeGenerique> listeDiplome) {
 		this.listeDiplome = listeDiplome;
 	}
 
-	private ArrayList getListeNiveauEtude() {
+	private ArrayList<NiveauEtude> getListeNiveauEtude() {
 		return listeNiveauEtude;
 	}
 
-	private void setListeNiveauEtude(ArrayList listeNiveauEtude) {
+	private void setListeNiveauEtude(ArrayList<NiveauEtude> listeNiveauEtude) {
 		this.listeNiveauEtude = listeNiveauEtude;
 	}
 
@@ -6474,6 +6627,26 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
+	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_PP_RUBR Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 * 
+	 */
+	public String getNOM_ST_PP_RUBR(int i) {
+		return "NOM_ST_PP_RUBR" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 * 
+	 */
+	public String getVAL_ST_PP_RUBR(int i) {
+		return getZone(getNOM_ST_PP_RUBR(i));
+	}
+
+	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_REMPLACEMENT Date
 	 * de création : (13/07/11 09:49:02)
 	 * 
@@ -6498,6 +6671,30 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_REMPLACEMENT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	public PrimePointageDao getPrimePointageDao() {
+		return primePointageDao;
+	}
+
+	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
+		this.primePointageDao = primePointageDao;
+	}
+
+	public PrimePointageAffDao getPrimePointageAffDao() {
+		return primePointageAffDao;
+	}
+
+	public void setPrimePointageAffDao(PrimePointageAffDao primePointageAffDao) {
+		this.primePointageAffDao = primePointageAffDao;
+	}
+
+	public PrimePointageFPDao getPrimePointageFPDao() {
+		return primePointageFPDao;
+	}
+
+	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
+		this.primePointageFPDao = primePointageFPDao;
 	}
 
 }

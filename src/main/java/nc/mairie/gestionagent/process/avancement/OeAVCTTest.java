@@ -1,8 +1,22 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.metier.Const;
+import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.avancement.AvancementContractuels;
+import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
+import nc.mairie.utils.MairieUtils;
+import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
-
-	private Logger logger = LoggerFactory.getLogger(OeAVCTTest.class);
+	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -26,6 +39,23 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
+		// ----------------------------------//
+		// Vérification des droits d'accès. //
+		// ----------------------------------//
+		if (MairieUtils.estInterdit(request, getNomEcran())) {
+			// "ERR190",
+			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
+			throw new Exception();
+		}
+		
+	}
+
+	/**
+	 * Getter du nom de l'écran (pour la gestion des droits)
+	 */
+	public String getNomEcran() {
+		return "ECR-AVCT-TEST";
 	}
 
 	/**

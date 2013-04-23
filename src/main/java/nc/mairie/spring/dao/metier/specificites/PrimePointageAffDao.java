@@ -1,6 +1,12 @@
 package nc.mairie.spring.dao.metier.specificites;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource;
+
+import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -35,4 +41,22 @@ public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_AFFECTATION + "=? and " + CHAMP_ID_PRIME_POINTAGE + "=?";
 		jdbcTemplate.update(sql, new Object[] { idAffectation, idPrimePointage });
 	}
+
+	@Override
+	public ArrayList<PrimePointageAff> listerPrimePointageAffAvecPP(Integer idPrimePointage) {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_PRIME_POINTAGE + "=?";
+
+		ArrayList<PrimePointageAff> listePrimePointageAff = new ArrayList<PrimePointageAff>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idPrimePointage });
+		for (Map row : rows) {
+			PrimePointageAff primePointage = new PrimePointageAff();
+			primePointage.setIdPrimePointage((Integer) row.get(CHAMP_ID_PRIME_POINTAGE));
+			primePointage.setIdAffectation((Integer) row.get(CHAMP_ID_AFFECTATION));
+			listePrimePointageAff.add(primePointage);
+		}
+
+		return listePrimePointageAff;
+	}
+
 }

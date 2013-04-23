@@ -525,6 +525,31 @@
 							<%} %>
 							<BR/><BR/>
 						</div>
+						<div align="left" style="float:left;width:980px">
+							<span class="sigp2" style="text-align:left;width:900;"><u>Primes(s) de pointage</u></span>
+							<%if(process.getListePrimePointage()!= null && process.getListePrimePointage().size()>0){ %>
+							<br/><br/>
+							<span style="margin-left:5px;position:relative;text-align: left;">Rubrique</span>
+							<br/>
+							<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
+									<table class="sigp2NewTab" style="text-align:left;width:980px;">
+										<%
+										int indicePrime = 0;
+										if (process.getListePrimePointage()!=null){
+											for (int i = 0;i<process.getListePrimePointage().size();i++){
+										%>
+												<tr>
+													<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_PP_RUBR(indicePrime)%></td>
+												</tr>
+												<%
+												indicePrime++;
+											}
+										}%>
+									</table>	
+							</div>
+							<%} %>
+							<BR/><BR/>
+						</div>
 						<BR/>
 						<% if (!process.estFDPInactive && process.isAfficherModifSpecificites()){ %>
 							<INPUT type="submit" value="Modifier Spécificités" name="<%=process.getNOM_PB_MODIFIER_SPECIFICITES()%>" class="sigp2-Bouton-200">

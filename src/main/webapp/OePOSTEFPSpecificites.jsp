@@ -45,6 +45,8 @@ document.formu.elements[nom].focus();
 					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Délégation
 					<span style="width:5px"></span>
 					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Régime indemnitaire
+					<span style="width:5px"></span>
+					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_PP())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Prime pointage
 				</span>
 				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 		    </div>
@@ -81,6 +83,21 @@ document.formu.elements[nom].focus();
 				<BR/>
 	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DELEGATION()%>">
 	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION()%>">
+			</div>
+			<%} else if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_PP())){ %>
+			<div align="left" style="float:left;width:100%;">
+				<span class="sigp2" style="text-align:center;">Prime(s) de pointage</span>
+				<br/><br/>
+				<span style="margin-left:5px;position:relative;">Rubrique</span>
+				<br/>
+				<span class="sigp2-titre" align="center" colspan="2">
+					<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_PRIME_POINTAGE() %>" size="6" style="width:90%;font-family : monospace;">
+						<%=process.forComboHTML(process.getVAL_LB_PRIME_POINTAGE(), process.getVAL_LB_PRIME_POINTAGE_SELECT()) %>
+					</SELECT>
+				</span>
+				<BR/>
+	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE()%>">
+	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE()%>">
 			</div>
 			<%} else { %>
 			<div align="left" style="float:left;width:100%;">
@@ -147,6 +164,13 @@ document.formu.elements[nom].focus();
 				<span>
 					<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENT_DELEGATION() %>" size="100"
 						type="text" value="<%= process.getVAL_EF_COMMENT_DELEGATION() %>">
+				</span>
+			<%}else if(process.getVAL_ST_SPECIFICITE().equals(process.SPEC_PRIME_POINTAGE)){ %>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Rubrique : </span>
+				<span>
+					<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_RUBRIQUE_PRIME_POINTAGE() %>" style="width : 530px;">
+					<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE(), process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) %>
+					</SELECT>
 				</span>
 			<%}else { %>
 				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Type : </span>
