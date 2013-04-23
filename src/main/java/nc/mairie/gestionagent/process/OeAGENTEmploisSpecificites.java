@@ -21,11 +21,19 @@ import nc.mairie.metier.specificites.DelegationAFF;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTEmploisSpecificites Date de création : (16/08/11 15:48:02)
@@ -38,6 +46,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	public final String SPEC_AVANTAGE_NATURE = "avantage en nature";
 	public final String SPEC_DELEGATION = "délégation";
 	public final String SPEC_REG_INDEMN = "régime indemnitaire";
+	public final String SPEC_PRIME_POINTAGE = "prime pointage";
 
 	private String[] LB_NATURE_AVANTAGE;
 	private String[] LB_RUBRIQUE_AVANTAGE;
@@ -45,6 +54,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	private String[] LB_TYPE_AVANTAGE;
 	private String[] LB_TYPE_DELEGATION;
 	private String[] LB_TYPE_REGIME;
+	private String[] LB_RUBRIQUE_PRIME_POINTAGE;
 
 	private ArrayList listeAvantageAFF;
 	private ArrayList listeAvantageFP;
@@ -58,6 +68,10 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	private ArrayList listeRegimeFP;
 	private ArrayList listeRegimeAAjouter;
 	private ArrayList listeRegimeASupprimer;
+	private ArrayList listePrimePointageAFF;
+	private ArrayList listePrimePointageFP;
+	private ArrayList listePrimePointageAAjouter;
+	private ArrayList listePrimePointageASupprimer;
 
 	private ArrayList listeTypeAvantage;
 	private ArrayList listeNatureAvantage;
@@ -69,6 +83,10 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	private FichePoste fichePosteCourant;
 	private FichePoste fichePosteSecondaireCourant;
 	private Affectation affectationCourant;
+
+	private PrimePointageDao primePointageDao;
+	private PrimePointageAffDao primePointageAffDao;
+	private PrimePointageFPDao primePointageFPDao;
 
 	public String focus = null;
 
@@ -126,11 +144,27 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			}
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 		initialiseListeSpecificites();
 		if (getVAL_RG_SPECIFICITE() == null || getVAL_RG_SPECIFICITE().length() == 0) {
 			addZone(getNOM_RG_SPECIFICITE(), getNOM_RB_SPECIFICITE_AN());
 			addZone(getNOM_ST_SPECIFICITE(), SPEC_AVANTAGE_NATURE);
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getPrimePointageDao() == null) {
+			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
+		}
+		if (getPrimePointageAffDao() == null) {
+			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
+		}
+		if (getPrimePointageFPDao() == null) {
+			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
 		}
 	}
 
@@ -140,123 +174,69 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * @throws Exception
 	 */
 	private void initialiseListeSpecificites() throws Exception {
-		// Avantages en nature
-		if (getListeAvantageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListeAvantageFP(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
+		initialiseAvantageNature();
+		initialiseDelegation();
+		initialiseRegime();
+		initialisePrimePointage();
+	}
+
+	private void initialisePrimePointage() throws Exception {
+
+		// Primes pointages
+		if (getListePrimePointageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListePrimePointageFP(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getFichePosteSecondaireCourant() != null) {
-				getListeAvantageFP().addAll(
-						AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+				getListePrimePointageFP().addAll(
+						getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteSecondaireCourant().getIdFichePoste())));
 			}
 		}
-		if (getListeAvantageAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListeAvantageAFF(AvantageNature.listerAvantageNatureAvecAFF(getTransaction(), getAffectationCourant().getIdAffectation()));
+
+		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListePrimePointageAFF(getPrimePointageDao().listerPrimePointageAvecAFF(Integer.valueOf(getAffectationCourant().getIdAffectation())));
 		}
-		int indiceAvNat = 0;
-		if (getListeAvantageFP() != null && getListeAvantageFP().size() != 0) {
-			for (int i = 0; i < getListeAvantageFP().size(); i++) {
-				AvantageNature aAvNat = (AvantageNature) getListeAvantageFP().get(i);
-				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
-					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
-					if (getListeAvantageAFF().contains(aAvNat))
-						addZone(getNOM_CK_AVANTAGE(indiceAvNat), getCHECKED_ON());
-					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
-					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
-					if (natAv != null && natAv.getIdNatureAvantage() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+		int indicePrime = 0;
+		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
+			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
+				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
+				if (prime != null) {
+					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+							.toString());
+					if (getListePrimePointageAFF().contains(prime))
+						addZone(getNOM_CK_PRIME_POINTAGE(indicePrime), getCHECKED_ON());
 					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
-					indiceAvNat++;
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
+					indicePrime++;
 				}
 			}
 		}
-		if (getListeAvantageAFF() != null && getListeAvantageAFF().size() != 0) {
-			for (int j = 0; j < getListeAvantageAFF().size(); j++) {
-				AvantageNature aAvNat = (AvantageNature) getListeAvantageAFF().get(j);
-				if (aAvNat != null && !getListeAvantageFP().contains(aAvNat)) {
-					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
-					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
-					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
-					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
-					if (natAv != null && natAv.getIdNatureAvantage() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+		if (getListePrimePointageAFF() != null && getListePrimePointageAFF().size() != 0) {
+			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
+				PrimePointage prime = (PrimePointage) getListePrimePointageAFF().get(j);
+				if (prime != null && !getListePrimePointageFP().contains(prime)) {
+					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+							.toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
-					indiceAvNat++;
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
+					indicePrime++;
 				}
 			}
 		}
-		if (getListeAvantageAAjouter() != null && getListeAvantageAAjouter().size() != 0) {
-			for (int k = 0; k < getListeAvantageAAjouter().size(); k++) {
-				AvantageNature aAvNat = (AvantageNature) getListeAvantageAAjouter().get(k);
-				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
-					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
-					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
-					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
-					if (natAv != null && natAv.getIdNatureAvantage() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+		if (getListePrimePointageAAjouter() != null && getListePrimePointageAAjouter().size() != 0) {
+			for (int k = 0; k < getListePrimePointageAAjouter().size(); k++) {
+				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(k);
+				if (prime != null) {
+					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+							.toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
-					indiceAvNat++;
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
+					indicePrime++;
 				}
 			}
 		}
 
-		// Délégations
-		if (getListeDelegationFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListeDelegationFP(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
-			if (getFichePosteSecondaireCourant() != null) {
-				getListeDelegationFP()
-						.addAll(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
-			}
-		}
-		if (getListeDelegationAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListeDelegationAFF(Delegation.listerDelegationAvecAFF(getTransaction(), getAffectationCourant().getIdAffectation()));
-		}
-		int indiceDel = 0;
-		if (getListeDelegationFP() != null && getListeDelegationFP().size() != 0) {
-			for (int i = 0; i < getListeDelegationFP().size(); i++) {
-				Delegation aDel = (Delegation) getListeDelegationFP().get(i);
-				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
-					if (getListeDelegationAFF().contains(aDel))
-						addZone(getNOM_CK_DELEGATION(indiceDel), getCHECKED_ON());
-					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
-					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
-					indiceDel++;
-				}
-			}
-		}
-		if (getListeDelegationAFF() != null && getListeDelegationAFF().size() != 0) {
-			for (int j = 0; j < getListeDelegationAFF().size(); j++) {
-				Delegation aDel = (Delegation) getListeDelegationAFF().get(j);
-				if (aDel != null && !getListeDelegationFP().contains(aDel)) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
-					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
-					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
-					indiceDel++;
-				}
-			}
-		}
-		if (getListeDelegationAAjouter() != null && getListeDelegationAAjouter().size() != 0) {
-			for (int k = 0; k < getListeDelegationAAjouter().size(); k++) {
-				Delegation aDel = (Delegation) getListeDelegationAAjouter().get(k);
-				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
-					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
-					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
-					indiceDel++;
-				}
-			}
-		}
+	}
 
+	private void initialiseRegime() throws Exception {
 		// Régimes indemnitaires
 		if (getListeRegimeFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListeRegimeFP(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
@@ -316,6 +296,129 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				}
 			}
 		}
+
+	}
+
+	private void initialiseDelegation() throws Exception {
+		// Délégations
+		if (getListeDelegationFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListeDelegationFP(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
+			if (getFichePosteSecondaireCourant() != null) {
+				getListeDelegationFP()
+						.addAll(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+			}
+		}
+		if (getListeDelegationAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListeDelegationAFF(Delegation.listerDelegationAvecAFF(getTransaction(), getAffectationCourant().getIdAffectation()));
+		}
+		int indiceDel = 0;
+		if (getListeDelegationFP() != null && getListeDelegationFP().size() != 0) {
+			for (int i = 0; i < getListeDelegationFP().size(); i++) {
+				Delegation aDel = (Delegation) getListeDelegationFP().get(i);
+				if (aDel != null) {
+					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
+					if (getListeDelegationAFF().contains(aDel))
+						addZone(getNOM_CK_DELEGATION(indiceDel), getCHECKED_ON());
+					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
+					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
+					indiceDel++;
+				}
+			}
+		}
+		if (getListeDelegationAFF() != null && getListeDelegationAFF().size() != 0) {
+			for (int j = 0; j < getListeDelegationAFF().size(); j++) {
+				Delegation aDel = (Delegation) getListeDelegationAFF().get(j);
+				if (aDel != null && !getListeDelegationFP().contains(aDel)) {
+					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
+					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
+					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
+					indiceDel++;
+				}
+			}
+		}
+		if (getListeDelegationAAjouter() != null && getListeDelegationAAjouter().size() != 0) {
+			for (int k = 0; k < getListeDelegationAAjouter().size(); k++) {
+				Delegation aDel = (Delegation) getListeDelegationAAjouter().get(k);
+				if (aDel != null) {
+					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
+					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
+					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
+					indiceDel++;
+				}
+			}
+		}
+
+	}
+
+	private void initialiseAvantageNature() throws Exception {
+		// Avantages en nature
+		if (getListeAvantageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListeAvantageFP(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
+			if (getFichePosteSecondaireCourant() != null) {
+				getListeAvantageFP().addAll(
+						AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+			}
+		}
+		if (getListeAvantageAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+			setListeAvantageAFF(AvantageNature.listerAvantageNatureAvecAFF(getTransaction(), getAffectationCourant().getIdAffectation()));
+		}
+		int indiceAvNat = 0;
+		if (getListeAvantageFP() != null && getListeAvantageFP().size() != 0) {
+			for (int i = 0; i < getListeAvantageFP().size(); i++) {
+				AvantageNature aAvNat = (AvantageNature) getListeAvantageFP().get(i);
+				if (aAvNat != null) {
+					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
+							aAvNat.getIdNatureAvantage());
+					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
+
+					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
+					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
+					if (natAv != null && natAv.getIdNatureAvantage() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
+					indiceAvNat++;
+				}
+			}
+		}
+		if (getListeAvantageAFF() != null && getListeAvantageAFF().size() != 0) {
+			for (int j = 0; j < getListeAvantageAFF().size(); j++) {
+				AvantageNature aAvNat = (AvantageNature) getListeAvantageAFF().get(j);
+				if (aAvNat != null && !getListeAvantageFP().contains(aAvNat)) {
+					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
+							aAvNat.getIdNatureAvantage());
+					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
+					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
+					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
+					if (natAv != null && natAv.getIdNatureAvantage() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
+					indiceAvNat++;
+				}
+			}
+		}
+
+		if (getListeAvantageAAjouter() != null && getListeAvantageAAjouter().size() != 0) {
+			for (int k = 0; k < getListeAvantageAAjouter().size(); k++) {
+				AvantageNature aAvNat = (AvantageNature) getListeAvantageAAjouter().get(k);
+				if (aAvNat != null) {
+					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
+							aAvNat.getIdNatureAvantage());
+					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
+					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
+					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
+					if (natAv != null && natAv.getIdNatureAvantage() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_NATURE(indiceAvNat), natAv.getLibNatureAvantage());
+					if (rubr != null && rubr.getNumRubrique() != null)
+						addZone(getNOM_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat), rubr.getLibRubrique());
+					indiceAvNat++;
+				}
+			}
+		}
 	}
 
 	/**
@@ -348,7 +451,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 		}
 
 		// Si liste rubrique vide alors affectation
-		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
+		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide || getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
 			ArrayList rubrique = Rubrique.listerRubrique7000(getTransaction());
 			setListeRubrique(rubrique);
 
@@ -364,9 +467,11 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				}
 				setLB_RUBRIQUE_AVANTAGE(aFormatRub.getListeFormatee(true));
 				setLB_RUBRIQUE_REGIME(aFormatRub.getListeFormatee(true));
+				setLB_RUBRIQUE_PRIME_POINTAGE(aFormatRub.getListeFormatee(true));
 			} else {
 				setLB_RUBRIQUE_AVANTAGE(null);
 				setLB_RUBRIQUE_REGIME(null);
+				setLB_RUBRIQUE_PRIME_POINTAGE(null);
 			}
 		}
 
@@ -456,6 +561,28 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_PRIME_POINTAGE Date
+	 * de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public String getNOM_PB_AJOUTER_PRIME_POINTAGE() {
+		return "NOM_PB_AJOUTER_PRIME_POINTAGE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_AJOUTER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), ACTION_AJOUTER);
+		addZone(getNOM_ST_SPECIFICITE(), SPEC_PRIME_POINTAGE);
+		return true;
+	}
+
+	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
 	 * (16/08/11 15:48:02)
 	 * 
@@ -473,6 +600,22 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setListeAvantageAFF(null);
+		setListeAvantageFP(null);
+		getListeAvantageAAjouter().clear();
+		getListeAvantageASupprimer().clear();
+		setListeDelegationAFF(null);
+		setListeDelegationFP(null);
+		getListeDelegationAAjouter().clear();
+		getListeDelegationASupprimer().clear();
+		setListePrimePointageAFF(null);
+		setListePrimePointageFP(null);
+		getListePrimePointageAAjouter().clear();
+		getListePrimePointageASupprimer().clear();
+		setListeRegimeAFF(null);
+		setListeRegimeFP(null);
+		getListeRegimeAAjouter().clear();
+		getListeRegimeASupprimer().clear();
 		return true;
 	}
 
@@ -494,14 +637,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 */
 	public boolean performPB_CHANGER_SPECIFICITE(HttpServletRequest request) throws Exception {
 
-		if (getVAL_ST_SPECIFICITE().equals(SPEC_AVANTAGE_NATURE) && getListeAvantageFP() != null) {
-			for (int i = 0; i < getListeAvantageFP().size(); i++) {
-				if (getVAL_CK_AVANTAGE(i).equals(getCHECKED_ON()) && !getListeAvantageAFF().contains(getListeAvantageFP().get(i)))
-					getListeAvantageAFF().add(getListeAvantageFP().get(i));
-				if (getVAL_CK_AVANTAGE(i).equals(getCHECKED_OFF()) && getListeAvantageAFF().contains(getListeAvantageFP().get(i)))
-					getListeAvantageAFF().remove(getListeAvantageFP().get(i));
-			}
-		}
 		if (getVAL_ST_SPECIFICITE().equals(SPEC_DELEGATION) && getListeDelegationFP() != null) {
 			for (int i = 0; i < getListeDelegationFP().size(); i++) {
 				if (getVAL_CK_DELEGATION(i).equals(getCHECKED_ON()) && !getListeDelegationAFF().contains(getListeDelegationFP().get(i)))
@@ -518,6 +653,14 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 					getListeRegimeAFF().remove(getListeRegimeFP().get(i));
 			}
 		}
+		if (getVAL_ST_SPECIFICITE().equals(SPEC_PRIME_POINTAGE) && getListePrimePointageFP() != null) {
+			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
+				if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_ON()) && !getListePrimePointageAFF().contains(getListePrimePointageFP().get(i)))
+					getListePrimePointageAFF().add(getListePrimePointageFP().get(i));
+				if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_OFF()) && getListePrimePointageAFF().contains(getListePrimePointageFP().get(i)))
+					getListePrimePointageAFF().remove(getListePrimePointageFP().get(i));
+			}
+		}
 
 		if (getVAL_RG_SPECIFICITE().equals(getNOM_RB_SPECIFICITE_AN()))
 			addZone(getNOM_ST_SPECIFICITE(), SPEC_AVANTAGE_NATURE);
@@ -525,6 +668,8 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			addZone(getNOM_ST_SPECIFICITE(), SPEC_DELEGATION);
 		else if (getVAL_RG_SPECIFICITE().equals(getNOM_RB_SPECIFICITE_RI()))
 			addZone(getNOM_ST_SPECIFICITE(), SPEC_REG_INDEMN);
+		else if (getVAL_RG_SPECIFICITE().equals(getNOM_RB_SPECIFICITE_PP()))
+			addZone(getNOM_ST_SPECIFICITE(), SPEC_PRIME_POINTAGE);
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
@@ -669,6 +814,52 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_PRIME_POINTAGE
+	 * Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_PRIME_POINTAGE(int i) {
+		return "NOM_PB_SUPPRIMER_PRIME_POINTAGE" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_PRIME_POINTAGE(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
+		// Calcul du nombre de Prime Pointage sélectionnés par l'utilisateur
+		// parmi ceux issus de la fiche de poste
+		int nbPrimePointageFPSelected = 0;
+		for (int i = 0; i < getListePrimePointageAFF().size(); i++) {
+			if (getListePrimePointageFP().contains(getListePrimePointageAFF().get(i)))
+				nbPrimePointageFPSelected++;
+		}
+		// Si la spécificité à supprimer est déjà en base
+		if (indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected < getListePrimePointageAFF().size()) {
+			PrimePointage primePointageASupprimer = (PrimePointage) getListePrimePointageAFF().get(
+					indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected);
+			if (primePointageASupprimer != null) {
+				getListePrimePointageAFF().remove(primePointageASupprimer);
+				getListePrimePointageASupprimer().add(primePointageASupprimer);
+			}
+
+		}
+		// Si la spécificité à supprimer n'est pas encore en base mais vient
+		// d'être ajoutée par l'utilisateur
+		else {
+			PrimePointage primePointageASupprimer = (PrimePointage) getListePrimePointageAAjouter().get(
+					indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size() + nbPrimePointageFPSelected);
+			if (primePointageASupprimer != null) {
+				getListePrimePointageAAjouter().remove(primePointageASupprimer);
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
 	 * (16/08/11 15:48:02)
 	 * 
@@ -742,29 +933,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
 		// Sauvegarde des nouveaux avantages nature et suppression des anciens
-		for (int i = 0; i < getListeAvantageFP().size(); i++) {
-			if (getVAL_CK_AVANTAGE(i).equals(getCHECKED_ON()) && !getListeAvantageAFF().contains(getListeAvantageFP().get(i))) {
-				AvantageNature avNat = (AvantageNature) getListeAvantageFP().get(i);
-				AvantageNatureAFF avNatAFF = new AvantageNatureAFF(getAffectationCourant().getIdAffectation(), avNat.getIdAvantage());
-				avNatAFF.creerAvantageNatureAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être créé.");
-					return false;
-				}
-				getListeAvantageAFF().add(getListeAvantageFP().get(i));
-			}
-			if (getVAL_CK_AVANTAGE(i).equals(getCHECKED_OFF()) && getListeAvantageAFF().contains(getListeAvantageFP().get(i))) {
-				AvantageNature avNat = (AvantageNature) getListeAvantageFP().get(i);
-				AvantageNatureAFF avNatAFF = AvantageNatureAFF.chercherAvantageNatureAFF(getTransaction(),
-						getAffectationCourant().getIdAffectation(), avNat.getIdAvantage());
-				avNatAFF.supprimerAvantageNatureAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être supprimé.");
-					return false;
-				}
-				getListeAvantageAFF().remove(getListeAvantageFP().get(i));
-			}
-		}
 		for (int i = 0; i < getListeAvantageAAjouter().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageAAjouter().get(i);
 			avNat.creerAvantageNature(getTransaction());
@@ -875,6 +1043,60 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			regIndemn.supprimerRegimeIndemnitaire(getTransaction());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être supprimé.");
+				return false;
+			}
+		}
+
+		// Sauvegarde des nouvelles primes de pointage et suppression des
+		// anciens
+		for (int i = 0; i < getListePrimePointageFP().size(); i++) {
+			if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_ON()) && !getListePrimePointageAFF().contains(getListePrimePointageFP().get(i))) {
+				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
+				PrimePointageAff riAFF = new PrimePointageAff();
+				riAFF.setIdAffectation(Integer.valueOf(getAffectationCourant().getIdAffectation()));
+				riAFF.setIdPrimePointage(prime.getIdPrimePointage());
+				try {
+					getPrimePointageAffDao().creerPrimePointageAff(riAFF.getIdPrimePointage(), riAFF.getIdAffectation());
+				} catch (Exception e) {
+					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créé.");
+					return false;
+				}
+				getListePrimePointageAFF().add(getListePrimePointageFP().get(i));
+			}
+			if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_OFF()) && getListePrimePointageAFF().contains(getListePrimePointageFP().get(i))) {
+				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
+				try {
+					getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()),
+							prime.getIdPrimePointage());
+				} catch (Exception e) {
+					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimé.");
+					return false;
+				}
+				getListePrimePointageAFF().remove(getListePrimePointageFP().get(i));
+			}
+		}
+		for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
+			try {
+				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(i);
+				Integer idCree = getPrimePointageDao().creerPrimePointage(prime.getIdRubrique());
+
+				PrimePointageAff riAFF = new PrimePointageAff();
+				riAFF.setIdAffectation(Integer.valueOf(getAffectationCourant().getIdAffectation()));
+				riAFF.setIdPrimePointage(idCree);
+				getPrimePointageAffDao().creerPrimePointageAff(riAFF.getIdPrimePointage(), riAFF.getIdAffectation());
+			} catch (Exception e) {
+				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créé.");
+				return false;
+			}
+		}
+		for (int i = 0; i < getListePrimePointageASupprimer().size(); i++) {
+			try {
+				PrimePointage prime = (PrimePointage) getListePrimePointageASupprimer().get(i);
+				getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()),
+						prime.getIdPrimePointage());
+				getPrimePointageDao().supprimerPrimePointage(prime.getIdPrimePointage());
+			} catch (Exception e) {
+				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimé.");
 				return false;
 			}
 		}
@@ -994,6 +1216,32 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 			// Réinitialisation des champs de saisie
 			viderRegIndemn();
+		} else if (getVAL_ST_SPECIFICITE().equals(SPEC_PRIME_POINTAGE)) {
+			// Contrôle des champs
+			if (!performControlerSaisiePrimePointage(request))
+				return false;
+
+			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+			// Alimentation de l'objet
+			PrimePointage prime = new PrimePointage();
+			prime.setIdRubrique(Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
+
+			if (getListePrimePointageAFF() == null)
+				setListePrimePointageAFF(new ArrayList());
+
+			if (!getListePrimePointageAFF().contains(prime) && !getListePrimePointageFP().contains(prime)
+					&& !getListePrimePointageAAjouter().contains(prime)) {
+				if (getListePrimePointageASupprimer().contains(prime)) {
+					getListePrimePointageASupprimer().remove(prime);
+					getListePrimePointageAFF().add(prime);
+				} else {
+					getListePrimePointageAAjouter().add(prime);
+				}
+			}
+
+			// Réinitialisation des champs de saisie
+			viderPrimePointage();
 		}
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -1389,6 +1637,64 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Getter de la liste avec un lazy initialize : LB_TYPE_PRIME_POINTAGE Date
+	 * de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	private String[] getLB_RUBRIQUE_PRIME_POINTAGE() {
+		if (LB_RUBRIQUE_PRIME_POINTAGE == null)
+			LB_RUBRIQUE_PRIME_POINTAGE = initialiseLazyLB();
+		return LB_RUBRIQUE_PRIME_POINTAGE;
+	}
+
+	/**
+	 * Setter de la liste: LB_RUBRIQUE_PRIME_POINTAGE Date de création :
+	 * (16/08/11 15:48:02)
+	 * 
+	 */
+	private void setLB_RUBRIQUE_PRIME_POINTAGE(String[] newLB_RUBRIQUE_PRIME_POINTAGE) {
+		LB_RUBRIQUE_PRIME_POINTAGE = newLB_RUBRIQUE_PRIME_POINTAGE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_RUBRIQUE_PRIME_POINTAGE
+	 * Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public String getNOM_LB_RUBRIQUE_PRIME_POINTAGE() {
+		return "NOM_LB_RUBRIQUE_PRIME_POINTAGE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT Date de création : (16/08/11
+	 * 15:48:02)
+	 * 
+	 */
+	public String getNOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT() {
+		return "NOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public String[] getVAL_LB_RUBRIQUE_PRIME_POINTAGE() {
+		return getLB_RUBRIQUE_PRIME_POINTAGE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (16/08/11
+	 * 15:48:02)
+	 * 
+	 */
+	public String getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT() {
+		return getZone(getNOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT());
+	}
+
+	/**
 	 * Getter de la liste avec un lazy initialize : LB_TYPE_REGIME Date de
 	 * création : (16/08/11 15:48:02)
 	 * 
@@ -1486,6 +1792,15 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 */
 	public String getNOM_RB_SPECIFICITE_RI() {
 		return "NOM_RB_SPECIFICITE_RI";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_SPECIFICITE_PP Date de
+	 * création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public String getNOM_RB_SPECIFICITE_PP() {
+		return "NOM_RB_SPECIFICITE_PP";
 	}
 
 	/**
@@ -1631,6 +1946,28 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne la liste des régimes indemnitaires à supprimer.
+	 * 
+	 * @return listePrimePointageASupprimer
+	 */
+	private ArrayList getListePrimePointageASupprimer() {
+		if (listePrimePointageASupprimer == null)
+			listePrimePointageASupprimer = new ArrayList();
+		return listePrimePointageASupprimer;
+	}
+
+	/**
+	 * Retourne la liste des régimes indemnitaires à ajouter.
+	 * 
+	 * @return listePrimePointageAAjouter
+	 */
+	public ArrayList getListePrimePointageAAjouter() {
+		if (listePrimePointageAAjouter == null)
+			listePrimePointageAAjouter = new ArrayList();
+		return listePrimePointageAAjouter;
+	}
+
+	/**
 	 * Retourne la liste des natures d'avantage en nature.
 	 * 
 	 * @return listeNatureAvantage
@@ -1721,6 +2058,24 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne la liste des PrimePointageIndemnitaire de l'affectation.
+	 * 
+	 * @return listePrimePointageAFF
+	 */
+	public ArrayList getListePrimePointageAFF() {
+		return listePrimePointageAFF;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire de l'affectation.
+	 * 
+	 * @param listePrimePointageAFF
+	 */
+	private void setListePrimePointageAFF(ArrayList listePrimePointageAFF) {
+		this.listePrimePointageAFF = listePrimePointageAFF;
+	}
+
+	/**
 	 * Contrôle les zones saisies d'un avantage en nature. Date de création :
 	 * (28/07/11)
 	 */
@@ -1808,6 +2163,24 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Contrôle les zones saisies d'un régime indemnitaire. Date de création :
+	 * (29/07/11)
+	 */
+	private boolean performControlerSaisiePrimePointage(HttpServletRequest request) throws Exception {
+
+		// rubrique obligatoire
+		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+		if (indiceRubr < 1) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "rubrique"));
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Retourne la fiche de poste courante.
 	 * 
 	 * @return FichePoste
@@ -1881,24 +2254,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_AVANTAGE Date de création : (17/08/11 14:39:21)
-	 * 
-	 */
-	public String getNOM_CK_AVANTAGE(int i) {
-		return "NOM_CK_AVANTAGE" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_AVANTAGE Date de création : (17/08/11 14:39:21)
-	 * 
-	 */
-	public String getVAL_CK_AVANTAGE(int i) {
-		return getZone(getNOM_CK_AVANTAGE(i));
-	}
-
-	/**
 	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (16/08/11 15:48:02)
 	 * 
@@ -1921,6 +2276,11 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			// Si clic sur le bouton PB_AJOUTER_REGIME
 			if (testerParametre(request, getNOM_PB_AJOUTER_REGIME())) {
 				return performPB_AJOUTER_REGIME(request);
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_PRIME_POINTAGE
+			if (testerParametre(request, getNOM_PB_AJOUTER_PRIME_POINTAGE())) {
+				return performPB_AJOUTER_PRIME_POINTAGE(request);
 			}
 
 			// Si clic sur le bouton PB_ANNULER
@@ -1954,6 +2314,14 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 					- getListeRegimeASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_REGIME(i))) {
 					return performPB_SUPPRIMER_REGIME(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_PRIME_POINTAGE
+			for (int i = getListePrimePointageFP().size(); i < getListePrimePointageFP().size() + getListePrimePointageAFF().size()
+					+ getListePrimePointageAAjouter().size() - getListePrimePointageASupprimer().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPPRIMER_PRIME_POINTAGE(i))) {
+					return performPB_SUPPRIMER_PRIME_POINTAGE(request, i);
 				}
 			}
 
@@ -2172,6 +2540,24 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne pour la JSP le nom de la zone statique :
+	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(int i) {
+		return "NOM_ST_LST_PRIME_POINTAGE_RUBRIQUE" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_LST_PRIME_POINTAGE_RUBRIQUE Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(int i) {
+		return getZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(i));
+	}
+
+	/**
 	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
 	 * CK_DELEGATION Date de création : (18/08/11 10:21:15)
 	 * 
@@ -2205,6 +2591,24 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 */
 	public String getVAL_CK_REGINDEMN(int i) {
 		return getZone(getNOM_CK_REGINDEMN(i));
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
+	 * CK_PRIME_POINTAGE Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_CK_PRIME_POINTAGE(int i) {
+		return "NOM_CK_PRIME_POINTAGE" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_PRIME_POINTAGE Date de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_CK_PRIME_POINTAGE(int i) {
+		return getZone(getNOM_CK_PRIME_POINTAGE(i));
 	}
 
 	/**
@@ -2265,6 +2669,24 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	}
 
 	/**
+	 * Retourne la liste des PrimePointage de la fiche de poste.
+	 * 
+	 * @return listePrimePointageFP
+	 */
+	public ArrayList getListePrimePointageFP() {
+		return listePrimePointageFP;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointage de la fiche de poste.
+	 * 
+	 * @param listePrimePointageFP
+	 */
+	private void setListePrimePointageFP(ArrayList listePrimePointageFP) {
+		this.listePrimePointageFP = listePrimePointageFP;
+	}
+
+	/**
 	 * Vide les champs de saisie de l'avantage en nature.
 	 * 
 	 * @throws Exception
@@ -2298,7 +2720,40 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 		addZone(getNOM_LB_RUBRIQUE_AVANTAGE_SELECT(), "0");
 	}
 
+	/**
+	 * Vide les champs de saisie des primes pointage.
+	 * 
+	 * @throws Exception
+	 */
+	private void viderPrimePointage() throws Exception {
+		addZone(getNOM_LB_RUBRIQUE_PRIME_POINTAGE_SELECT(), Const.ZERO);
+	}
+
 	public String getNomEcran() {
 		return "ECR-AG-EMPLOIS-SPECIFICITES";
+	}
+
+	public PrimePointageDao getPrimePointageDao() {
+		return primePointageDao;
+	}
+
+	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
+		this.primePointageDao = primePointageDao;
+	}
+
+	public PrimePointageAffDao getPrimePointageAffDao() {
+		return primePointageAffDao;
+	}
+
+	public void setPrimePointageAffDao(PrimePointageAffDao primePointageAffDao) {
+		this.primePointageAffDao = primePointageAffDao;
+	}
+
+	public PrimePointageFPDao getPrimePointageFPDao() {
+		return primePointageFPDao;
+	}
+
+	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
+		this.primePointageFPDao = primePointageFPDao;
 	}
 }

@@ -46,6 +46,8 @@ document.formu.elements[nom].focus();
 					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Délégation
 					<span style="width:5px"></span>
 					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Régime indemnitaire
+					<span style="width:5px"></span>
+					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_PP())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Prime pointage
 				</span>
 				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 		    </div>
@@ -70,7 +72,7 @@ document.formu.elements[nom].focus();
 						for (int i = 0;i<process.getListeAvantageFP().size();i++){
 					%>
 							<tr>
-								<td class="sigp2-tabLigne"><INPUT tabindex=""  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AVANTAGE(indiceAvNat),process.getVAL_CK_AVANTAGE(indiceAvNat))%>></td>
+								<td class="sigp2-tabLigne">FP</td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE(indiceAvNat)%></td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT(indiceAvNat)%></td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE(indiceAvNat)%></td>
@@ -243,6 +245,61 @@ document.formu.elements[nom].focus();
 				</table>
 	            <BR/>
 			</div>
+			<%if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_PP())){ %>
+				<div align="left" style="float:left;width:100%;display:block;">
+			<%}else{ %>
+				<div align="left" style="float:left;width:100%;display:none;">
+			<%} %>
+				<br/>
+				<table class="sigp2-tab">
+					<tr>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image" src="images/ajout.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE()%>"></th>
+						<th class="sigp2-tabTitre" width="380px">Rubrique</th>
+					</tr>
+					<%
+					int indicePrimePointage = 0;
+					if (process.getListePrimePointageFP()!=null){
+						for (int i = 0;i<process.getListePrimePointageFP().size();i++){
+					%>
+							<tr>
+								<td class="sigp2-tabLigne"><INPUT tabindex=""  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PRIME_POINTAGE(indicePrimePointage),process.getVAL_CK_PRIME_POINTAGE(indicePrimePointage))%>></td>
+								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
+							</tr>
+							<%
+							indicePrimePointage++;
+						}
+					}
+					if (process.getListePrimePointageAFF()!=null){
+						for (int i = 0;i<process.getListePrimePointageAFF().size();i++){
+							if (!process.getListePrimePointageFP().contains(process.getListePrimePointageAFF().get(i))) {
+					%>
+								<tr>
+									<td class="sigp2-tabLigne" align="center">
+										<INPUT tabindex="" type="image" src="images/suppression.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"  height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE(indicePrimePointage)%>">
+									</td>
+									<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
+								</tr>
+								<%
+								indicePrimePointage++;
+							}
+						}
+					}
+					if (process.getListePrimePointageAAjouter()!=null){
+						for (int i = 0;i<process.getListePrimePointageAAjouter().size();i++){
+					%>
+							<tr>
+								<td class="sigp2-tabLigne" align="center">
+									<INPUT tabindex="" type="image" src="images/suppression.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>"  height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE(indicePrimePointage)%>">
+								</td>
+								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
+							</tr>
+							<%
+							indicePrimePointage++;
+						}
+					} %>
+				</table>
+	            <BR/>
+			</div>
 			<BR/>
 		</FIELDSET>
 		<BR/>
@@ -291,6 +348,14 @@ document.formu.elements[nom].focus();
 					<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENT_DELEGATION() %>" size="100"
 						type="text" value="<%= process.getVAL_EF_COMMENT_DELEGATION() %>">
 				</span>
+			<%}else if(process.getVAL_ST_SPECIFICITE().equals(process.SPEC_PRIME_POINTAGE)){ %>
+				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:120px;">Prime : </span>
+				<span>
+					<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_RUBRIQUE_PRIME_POINTAGE() %>" style="width : 350px;">
+					<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE(), process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) %>
+					</SELECT>
+				</span>
+				<BR/><BR/>
 			<%}else { %>
 				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Type : </span>
 				<span>
