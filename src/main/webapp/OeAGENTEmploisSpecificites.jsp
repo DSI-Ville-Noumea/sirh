@@ -137,7 +137,7 @@ document.formu.elements[nom].focus();
 						for (int i = 0;i<process.getListeDelegationFP().size();i++){
 					%>
 							<tr>
-								<td class="sigp2-tabLigne"><INPUT tabindex=""  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DELEGATION(indiceDel),process.getVAL_CK_DELEGATION(indiceDel))%>></td>
+								<td class="sigp2-tabLigne">FP</td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE(indiceDel)%></td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT(indiceDel)%></td>
 							</tr>
@@ -198,7 +198,7 @@ document.formu.elements[nom].focus();
 						for (int i = 0;i<process.getListeRegimeFP().size();i++){
 					%>
 							<tr>
-								<td class="sigp2-tabLigne"><INPUT tabindex=""  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGINDEMN(indiceRegIndemn),process.getVAL_CK_REGINDEMN(indiceRegIndemn))%>></td>
+								<td class="sigp2-tabLigne">FP</td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE(indiceRegIndemn)%></td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT(indiceRegIndemn)%></td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS(indiceRegIndemn)%></td>
@@ -262,7 +262,7 @@ document.formu.elements[nom].focus();
 						for (int i = 0;i<process.getListePrimePointageFP().size();i++){
 					%>
 							<tr>
-								<td class="sigp2-tabLigne"><INPUT tabindex=""  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PRIME_POINTAGE(indicePrimePointage),process.getVAL_CK_PRIME_POINTAGE(indicePrimePointage))%>></td>
+								<td class="sigp2-tabLigne">FP</td>
 								<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
 							</tr>
 							<%

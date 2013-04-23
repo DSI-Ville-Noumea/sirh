@@ -201,8 +201,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				if (prime != null) {
 					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
 							.toString());
-					if (getListePrimePointageAFF().contains(prime))
-						addZone(getNOM_CK_PRIME_POINTAGE(indicePrime), getCHECKED_ON());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
 					indicePrime++;
@@ -255,8 +253,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				if (aReg != null) {
 					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(), aReg.getIdTypeRegIndemn());
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aReg.getNumRubrique());
-					if (getListeRegimeAFF().contains(aReg))
-						addZone(getNOM_CK_REGINDEMN(indiceReg), getCHECKED_ON());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE(indiceReg), typReg.getLibTypeRegIndemn());
 					addZone(getNOM_ST_LST_REGINDEMN_FORFAIT(indiceReg), aReg.getForfait());
 					addZone(getNOM_ST_LST_REGINDEMN_NB_POINTS(indiceReg), aReg.getNombrePoints());
@@ -317,8 +313,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				Delegation aDel = (Delegation) getListeDelegationFP().get(i);
 				if (aDel != null) {
 					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
-					if (getListeDelegationAFF().contains(aDel))
-						addZone(getNOM_CK_DELEGATION(indiceDel), getCHECKED_ON());
 					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -636,32 +630,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 */
 	public boolean performPB_CHANGER_SPECIFICITE(HttpServletRequest request) throws Exception {
-
-		if (getVAL_ST_SPECIFICITE().equals(SPEC_DELEGATION) && getListeDelegationFP() != null) {
-			for (int i = 0; i < getListeDelegationFP().size(); i++) {
-				if (getVAL_CK_DELEGATION(i).equals(getCHECKED_ON()) && !getListeDelegationAFF().contains(getListeDelegationFP().get(i)))
-					getListeDelegationAFF().add(getListeDelegationFP().get(i));
-				if (getVAL_CK_DELEGATION(i).equals(getCHECKED_OFF()) && getListeDelegationAFF().contains(getListeDelegationFP().get(i)))
-					getListeDelegationAFF().remove(getListeDelegationFP().get(i));
-			}
-		}
-		if (getVAL_ST_SPECIFICITE().equals(SPEC_REG_INDEMN) && getListeRegimeFP() != null) {
-			for (int i = 0; i < getListeRegimeFP().size(); i++) {
-				if (getVAL_CK_REGINDEMN(i).equals(getCHECKED_ON()) && !getListeRegimeAFF().contains(getListeRegimeFP().get(i)))
-					getListeRegimeAFF().add(getListeRegimeFP().get(i));
-				if (getVAL_CK_REGINDEMN(i).equals(getCHECKED_OFF()) && getListeRegimeAFF().contains(getListeRegimeFP().get(i)))
-					getListeRegimeAFF().remove(getListeRegimeFP().get(i));
-			}
-		}
-		if (getVAL_ST_SPECIFICITE().equals(SPEC_PRIME_POINTAGE) && getListePrimePointageFP() != null) {
-			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
-				if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_ON()) && !getListePrimePointageAFF().contains(getListePrimePointageFP().get(i)))
-					getListePrimePointageAFF().add(getListePrimePointageFP().get(i));
-				if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_OFF()) && getListePrimePointageAFF().contains(getListePrimePointageFP().get(i)))
-					getListePrimePointageAFF().remove(getListePrimePointageFP().get(i));
-			}
-		}
-
 		if (getVAL_RG_SPECIFICITE().equals(getNOM_RB_SPECIFICITE_AN()))
 			addZone(getNOM_ST_SPECIFICITE(), SPEC_AVANTAGE_NATURE);
 		else if (getVAL_RG_SPECIFICITE().equals(getNOM_RB_SPECIFICITE_D()))
@@ -956,29 +924,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 		}
 
 		// Sauvegarde des nouvelles Delegation et suppression des anciennes
-		for (int i = 0; i < getListeDelegationFP().size(); i++) {
-			if (getVAL_CK_DELEGATION(i).equals(getCHECKED_ON()) && !getListeDelegationAFF().contains(getListeDelegationFP().get(i))) {
-				Delegation del = (Delegation) getListeDelegationFP().get(i);
-				DelegationAFF delAFF = new DelegationAFF(getAffectationCourant().getIdAffectation(), del.getIdDelegation());
-				delAFF.creerDelegationAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une Delegation n'a pu être créée.");
-					return false;
-				}
-				getListeDelegationAFF().add(getListeDelegationFP().get(i));
-			}
-			if (getVAL_CK_DELEGATION(i).equals(getCHECKED_OFF()) && getListeDelegationAFF().contains(getListeDelegationFP().get(i))) {
-				Delegation del = (Delegation) getListeDelegationFP().get(i);
-				DelegationAFF delAFF = DelegationAFF.chercherDelegationAFF(getTransaction(), getAffectationCourant().getIdAffectation(),
-						del.getIdDelegation());
-				delAFF.supprimerDelegationAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une Delegation n'a pu être supprimée.");
-					return false;
-				}
-				getListeDelegationAFF().remove(getListeDelegationFP().get(i));
-			}
-		}
 		for (int i = 0; i < getListeDelegationAAjouter().size(); i++) {
 			Delegation deleg = (Delegation) getListeDelegationAAjouter().get(i);
 			deleg.creerDelegation(getTransaction());
@@ -1002,29 +947,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 		}
 
 		// Sauvegarde des nouveaux RegimeIndemnitaire et suppression des anciens
-		for (int i = 0; i < getListeRegimeFP().size(); i++) {
-			if (getVAL_CK_REGINDEMN(i).equals(getCHECKED_ON()) && !getListeRegimeAFF().contains(getListeRegimeFP().get(i))) {
-				RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeFP().get(i);
-				RegIndemnAFF riAFF = new RegIndemnAFF(getAffectationCourant().getIdAffectation(), regIndemn.getIdRegIndemn());
-				riAFF.creerRegIndemnAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être créé.");
-					return false;
-				}
-				getListeRegimeAFF().add(getListeRegimeFP().get(i));
-			}
-			if (getVAL_CK_REGINDEMN(i).equals(getCHECKED_OFF()) && getListeRegimeAFF().contains(getListeRegimeFP().get(i))) {
-				RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeFP().get(i);
-				RegIndemnAFF riAFF = RegIndemnAFF.chercherRegIndemnAFF(getTransaction(), getAffectationCourant().getIdAffectation(),
-						regIndemn.getIdRegIndemn());
-				riAFF.supprimerRegIndemnAFF(getTransaction());
-				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être supprimé.");
-					return false;
-				}
-				getListeRegimeAFF().remove(getListeRegimeFP().get(i));
-			}
-		}
 		for (int i = 0; i < getListeRegimeAAjouter().size(); i++) {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeAAjouter().get(i);
 			regIndemn.creerRegimeIndemnitaire(getTransaction());
@@ -1049,32 +971,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Sauvegarde des nouvelles primes de pointage et suppression des
 		// anciens
-		for (int i = 0; i < getListePrimePointageFP().size(); i++) {
-			if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_ON()) && !getListePrimePointageAFF().contains(getListePrimePointageFP().get(i))) {
-				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
-				PrimePointageAff riAFF = new PrimePointageAff();
-				riAFF.setIdAffectation(Integer.valueOf(getAffectationCourant().getIdAffectation()));
-				riAFF.setIdPrimePointage(prime.getIdPrimePointage());
-				try {
-					getPrimePointageAffDao().creerPrimePointageAff(riAFF.getIdPrimePointage(), riAFF.getIdAffectation());
-				} catch (Exception e) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créé.");
-					return false;
-				}
-				getListePrimePointageAFF().add(getListePrimePointageFP().get(i));
-			}
-			if (getVAL_CK_PRIME_POINTAGE(i).equals(getCHECKED_OFF()) && getListePrimePointageAFF().contains(getListePrimePointageFP().get(i))) {
-				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
-				try {
-					getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()),
-							prime.getIdPrimePointage());
-				} catch (Exception e) {
-					getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimé.");
-					return false;
-				}
-				getListePrimePointageAFF().remove(getListePrimePointageFP().get(i));
-			}
-		}
 		for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
 			try {
 				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(i);
@@ -2555,60 +2451,6 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 */
 	public String getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(int i) {
 		return getZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(i));
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_DELEGATION Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_CK_DELEGATION(int i) {
-		return "NOM_CK_DELEGATION" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_DELEGATION Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_CK_DELEGATION(int i) {
-		return getZone(getNOM_CK_DELEGATION(i));
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_REGINDEMN Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_CK_REGINDEMN(int i) {
-		return "NOM_CK_REGINDEMN" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_REGINDEMN Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_CK_REGINDEMN(int i) {
-		return getZone(getNOM_CK_REGINDEMN(i));
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_PRIME_POINTAGE Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getNOM_CK_PRIME_POINTAGE(int i) {
-		return "NOM_CK_PRIME_POINTAGE" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_PRIME_POINTAGE Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
-	public String getVAL_CK_PRIME_POINTAGE(int i) {
-		return getZone(getNOM_CK_PRIME_POINTAGE(i));
 	}
 
 	/**
