@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.diplome.FormationAgent;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class FormationAgentResultSetExtractor implements ResultSetExtractor {
+public class FormationAgentResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

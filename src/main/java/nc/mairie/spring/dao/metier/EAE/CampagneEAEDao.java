@@ -72,7 +72,6 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	public CampagneEAE chercherCampagneEAE(Integer idCampagneEAE) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_EAE + " = ? ";
 
-		@SuppressWarnings("unchecked")
 		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEAE }, new CampagneEAERowMapper());
 
 		return camp;
@@ -118,7 +117,6 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	public CampagneEAE chercherCampagneEAEAnnee(Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + " = ? ";
 
-		@SuppressWarnings("unchecked")
 		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { annee }, new CampagneEAERowMapper());
 
 		return camp;
@@ -127,7 +125,6 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	@Override
 	public CampagneEAE chercherCampagneEAEOuverte() throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_DATE_FIN + " is null ";
-		@SuppressWarnings("unchecked")
 		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new CampagneEAERowMapper());
 		return camp;
 	}

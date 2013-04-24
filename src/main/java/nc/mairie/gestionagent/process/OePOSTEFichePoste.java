@@ -68,7 +68,6 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointage;
-import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;

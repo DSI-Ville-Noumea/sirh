@@ -31,7 +31,6 @@ import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.VisiteMedicale;
-import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;

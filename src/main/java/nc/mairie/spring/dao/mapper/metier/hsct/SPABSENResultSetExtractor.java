@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.hsct.SPABSEN;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class SPABSENResultSetExtractor implements ResultSetExtractor {
+public class SPABSENResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-public class CampagneActeurRowMapper implements RowMapper {
+public class CampagneActeurRowMapper implements RowMapper<Object> {
 
 	@Override
 	public Object mapRow(ResultSet rs, int line) throws SQLException {

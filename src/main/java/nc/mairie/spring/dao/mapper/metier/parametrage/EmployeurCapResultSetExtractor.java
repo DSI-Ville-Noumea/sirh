@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.parametrage.EmployeurCap;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class EmployeurCapResultSetExtractor implements ResultSetExtractor {
+public class EmployeurCapResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

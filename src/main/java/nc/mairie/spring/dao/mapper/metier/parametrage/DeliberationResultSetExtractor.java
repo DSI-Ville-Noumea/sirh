@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class DeliberationResultSetExtractor implements ResultSetExtractor {
+public class DeliberationResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

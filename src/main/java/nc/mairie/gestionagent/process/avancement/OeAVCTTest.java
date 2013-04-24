@@ -1,25 +1,10 @@
 package nc.mairie.gestionagent.process.avancement;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumEtatAvancement;
-import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.avancement.AvancementContractuels;
-import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.TitrePoste;
-import nc.mairie.technique.Services;
-import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.VariablesActivite;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)

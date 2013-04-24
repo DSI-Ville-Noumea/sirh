@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class AvancementCapPrintJobResultSetExtractor implements ResultSetExtractor {
+public class AvancementCapPrintJobResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

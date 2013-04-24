@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class CampagneEAEResultSetExtractor implements ResultSetExtractor {
+public class CampagneEAEResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

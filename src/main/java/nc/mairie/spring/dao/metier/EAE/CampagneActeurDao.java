@@ -49,7 +49,6 @@ public class CampagneActeurDao implements CampagneActeurDaoInterface {
 	public CampagneActeur chercherCampagneActeur(Integer idCampagneAction, Integer idAgent) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_ACTION + " = ? and " + CHAMP_ID_AGENT + "=?";
 
-		@SuppressWarnings("unchecked")
 		CampagneActeur acteur = (CampagneActeur) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneAction, idAgent },
 				new CampagneActeurRowMapper());
 

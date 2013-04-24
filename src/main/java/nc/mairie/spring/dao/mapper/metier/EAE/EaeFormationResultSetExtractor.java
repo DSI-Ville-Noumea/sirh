@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeFormation;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class EaeFormationResultSetExtractor implements ResultSetExtractor {
+public class EaeFormationResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

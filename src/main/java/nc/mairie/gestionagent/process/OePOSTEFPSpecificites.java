@@ -5,8 +5,6 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.config.TypedStringValue;
-
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;

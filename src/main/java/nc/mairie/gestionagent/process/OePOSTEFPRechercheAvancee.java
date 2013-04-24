@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process;
 
-import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -240,8 +239,8 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
-		ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ, statut, idTitre, getVAL_EF_NUM_FICHE_POSTE(),
-				agent);
+		ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ, statut, idTitre,
+				getVAL_EF_NUM_FICHE_POSTE(), agent);
 		setListeFP(fp);
 
 		fillList();
@@ -871,10 +870,10 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 			Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 			Service service = Service.getSection(getTransaction(), fp.getIdServi());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), a.getIdAgent());
-			
+
 			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getCodService() : "&nbsp;");
 			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLibService() : "&nbsp;");
-			addZone(getNOM_ST_AGENT_AFF(i), agent.getNomAgent() + " " +agent.getPrenomAgent() + "(" + agent.getNoMatricule()+")");
+			addZone(getNOM_ST_AGENT_AFF(i), agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNoMatricule() + ")");
 			addZone(getNOM_ST_DATE_DEBUT_AFF(i), a.getDateDebutAff());
 			addZone(getNOM_ST_DATE_FIN_AFF(i),
 					a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());

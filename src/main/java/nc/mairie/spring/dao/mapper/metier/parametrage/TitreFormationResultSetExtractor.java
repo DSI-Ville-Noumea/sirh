@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class TitreFormationResultSetExtractor implements ResultSetExtractor {
+public class TitreFormationResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

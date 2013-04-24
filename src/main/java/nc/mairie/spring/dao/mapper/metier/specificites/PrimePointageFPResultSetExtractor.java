@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class PrimePointageFPResultSetExtractor implements ResultSetExtractor {
+public class PrimePointageFPResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

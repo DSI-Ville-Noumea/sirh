@@ -94,7 +94,6 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedical(Integer idSuiviMed) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_SUIVI_MED + " = ? ";
 
-		@SuppressWarnings("unchecked")
 		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idSuiviMed }, new SuiviMedicalRowMapper());
 
 		return sm;
@@ -253,7 +252,6 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedicalAgentMoisetAnnee(Integer idAgent, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		@SuppressWarnings("unchecked")
 		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, mois, annee }, new SuiviMedicalRowMapper());
 
 		return sm;
@@ -263,7 +261,6 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedicalAgentNomatrMoisetAnnee(Integer noMatr, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		@SuppressWarnings("unchecked")
 		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { noMatr, mois, annee }, new SuiviMedicalRowMapper());
 
 		return sm;
@@ -397,7 +394,6 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID_SUIVI_MED + " in (select max("
 				+ CHAMP_ID_SUIVI_MED + ") from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=" + CHAMP_ID_AGENT + ")";
 
-		@SuppressWarnings("unchecked")
 		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent }, new SuiviMedicalRowMapper());
 
 		return sm;

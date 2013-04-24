@@ -38,7 +38,6 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotifByLib(String lib) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_LIB_MOTIF_VM + " = ? ";
 
-		@SuppressWarnings("unchecked")
 		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { lib }, new MotifVisiteMedRowMapper());
 
 		return motifVM;
@@ -48,7 +47,6 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotif(Integer idMotif) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_MOTIF_VM + " = ? ";
 
-		@SuppressWarnings("unchecked")
 		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { idMotif }, new MotifVisiteMedRowMapper());
 
 		return motifVM;

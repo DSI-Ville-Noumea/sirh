@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.diplome.PermisAgent;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class PermisAgentResultSetExtractor implements ResultSetExtractor {
+public class PermisAgentResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

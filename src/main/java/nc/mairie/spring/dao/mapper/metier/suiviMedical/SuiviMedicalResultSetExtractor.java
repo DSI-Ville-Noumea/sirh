@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class SuiviMedicalResultSetExtractor implements ResultSetExtractor {
+public class SuiviMedicalResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {

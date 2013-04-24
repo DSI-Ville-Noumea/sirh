@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-public class FormationAgentRowMapper implements RowMapper {
+public class FormationAgentRowMapper implements RowMapper<Object> {
 
 	@Override
 	public Object mapRow(ResultSet rs, int line) throws SQLException {

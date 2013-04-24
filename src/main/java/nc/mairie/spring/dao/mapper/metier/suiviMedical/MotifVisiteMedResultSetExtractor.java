@@ -8,7 +8,7 @@ import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-public class MotifVisiteMedResultSetExtractor implements ResultSetExtractor {
+public class MotifVisiteMedResultSetExtractor implements ResultSetExtractor<Object> {
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {
