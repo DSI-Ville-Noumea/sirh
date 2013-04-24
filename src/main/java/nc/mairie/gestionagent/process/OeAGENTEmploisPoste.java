@@ -52,6 +52,11 @@ import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -61,6 +66,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTEmploisPoste Date de création : (03/08/11 17:03:03)
@@ -71,6 +77,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<Delegation> listeDelegation;
 	private ArrayList<RegimeIndemnitaire> listeRegIndemn;
+	private ArrayList<PrimePointage> listePrimePointage;
 	private ArrayList<Competence> listeSavoir;
 	private ArrayList<Competence> listeSavoirFaire;
 	private ArrayList<Competence> listeComportementPro;
@@ -98,6 +105,9 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	public String ACTION_IMPRESSION = "Impression d'un contrat.";
 	private String focus = null;
 	private String urlFichier;
+
+	private PrimePointageDao primePointageDao;
+	private PrimePointageFPDao primePointageFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -132,6 +142,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 				return;
 			}
 		}
+		initialiseDao();
 
 		// Mise à jour de la liste des compétences
 		if (getTypeCompetenceCourant() == null || getTypeCompetenceCourant().getIdTypeCompetence() == null) {
@@ -168,6 +179,18 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 			}
 		} else {
 			alimenterFicheDePoste();
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getPrimePointageDao() == null) {
+			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
+		}
+		if (getPrimePointageFPDao() == null) {
+			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
 		}
 	}
 
@@ -258,6 +281,7 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 		setListeAvantage(null);
 		setListeDelegation(null);
 		setListeRegIndemn(null);
+		setListePrimePointage(null);
 
 		// Avantages en nature
 		if (getListeAvantage().size() == 0) {
@@ -327,6 +351,22 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
 				}
 				indiceRegime++;
+			}
+		}
+
+		// Prime pointage
+		if (getListePrimePointage().size() == 0) {
+			setListePrimePointage(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
+		}
+		int indicePrime = 0;
+		if (getListePrimePointage() != null) {
+			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
+				PrimePointage prime = list.next();
+				if (prime != null) {
+					Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique().toString());
+					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibRubrique());
+				}
+				indicePrime++;
 			}
 		}
 	}
@@ -1074,6 +1114,27 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	 */
 	private void setListeRegIndemn(ArrayList<RegimeIndemnitaire> newListeRegIndemn) {
 		this.listeRegIndemn = newListeRegIndemn;
+	}
+
+	/**
+	 * Retourne la liste des RegimeIndemnitaire.
+	 * 
+	 * @return listePrimePointage
+	 */
+	public ArrayList<PrimePointage> getListePrimePointage() {
+		if (listePrimePointage == null)
+			listePrimePointage = new ArrayList<PrimePointage>();
+		return listePrimePointage;
+	}
+
+	/**
+	 * Met à jour la liste des RegimeIndemnitaire.
+	 * 
+	 * @param newListePrimePointage
+	 *            Nouvelle liste des RegimeIndemnitaire
+	 */
+	private void setListePrimePointage(ArrayList<PrimePointage> newListePrimePointage) {
+		this.listePrimePointage = newListePrimePointage;
 	}
 
 	/**
@@ -2064,6 +2125,40 @@ public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 	 */
 	public String getVAL_ST_REG_NB_PTS(int i) {
 		return getZone(getNOM_ST_REG_NB_PTS(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_PP_RUBR Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getNOM_ST_PP_RUBR(int i) {
+		return "NOM_ST_PP_RUBR" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMPPRO Date
+	 * de création : (18/08/11 10:21:15)
+	 * 
+	 */
+	public String getVAL_ST_PP_RUBR(int i) {
+		return getZone(getNOM_ST_PP_RUBR(i));
+	}
+
+	public PrimePointageDao getPrimePointageDao() {
+		return primePointageDao;
+	}
+
+	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
+		this.primePointageDao = primePointageDao;
+	}
+
+	public PrimePointageFPDao getPrimePointageFPDao() {
+		return primePointageFPDao;
+	}
+
+	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
+		this.primePointageFPDao = primePointageFPDao;
 	}
 
 }
