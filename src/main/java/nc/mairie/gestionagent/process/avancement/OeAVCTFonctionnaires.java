@@ -34,10 +34,10 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 
 	private String[] listeAnnee;
 	private String anneeSelect;
-	private ArrayList listeAvisCAP;
-	private ArrayList listeMotifAvct;
+	private ArrayList<AvisCap> listeAvisCAP;
+	private ArrayList<MotifAvancement> listeMotifAvct;
 
-	private ArrayList listeAvct;
+	private ArrayList<AvancementFonctionnaires> listeAvct;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -142,7 +142,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 		}
 		// Si liste motifs avancement vide alors affectation
 		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
-			ArrayList motif = MotifAvancement.listerMotifAvancementSansRevalo(getTransaction());
+			ArrayList<MotifAvancement> motif = MotifAvancement.listerMotifAvancementSansRevalo(getTransaction());
 			setListeMotifAvct(motif);
 
 			// remplissage de la hashTable
@@ -154,7 +154,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAP() == null || getListeAvisCAP().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCap(getTransaction());
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCap(getTransaction());
 			setListeAvisCAP(avis);
 
 			int[] tailles = { 7 };
@@ -1054,7 +1054,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvisCAP
 	 */
-	private ArrayList getListeAvisCAP() {
+	private ArrayList<AvisCap> getListeAvisCAP() {
 		return listeAvisCAP;
 	}
 
@@ -1063,7 +1063,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvisCAP
 	 */
-	private void setListeAvisCAP(ArrayList listeAvisCAP) {
+	private void setListeAvisCAP(ArrayList<AvisCap> listeAvisCAP) {
 		this.listeAvisCAP = listeAvisCAP;
 	}
 
@@ -1072,7 +1072,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeMotifAvct
 	 */
-	private ArrayList getListeMotifAvct() {
+	private ArrayList<MotifAvancement> getListeMotifAvct() {
 		return listeMotifAvct;
 	}
 
@@ -1081,7 +1081,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeMotifAvct
 	 */
-	private void setListeMotifAvct(ArrayList listeMotifAvct) {
+	private void setListeMotifAvct(ArrayList<MotifAvancement> listeMotifAvct) {
 		this.listeMotifAvct = listeMotifAvct;
 	}
 
@@ -1090,7 +1090,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAvct
 	 */
-	public ArrayList getListeAvct() {
+	public ArrayList<AvancementFonctionnaires> getListeAvct() {
 		return listeAvct;
 	}
 
@@ -1099,7 +1099,7 @@ public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeAvct
 	 */
-	private void setListeAvct(ArrayList listeAvct) {
+	private void setListeAvct(ArrayList<AvancementFonctionnaires> listeAvct) {
 		this.listeAvct = listeAvct;
 	}
 

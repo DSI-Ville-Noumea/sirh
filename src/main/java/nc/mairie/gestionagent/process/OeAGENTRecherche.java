@@ -27,9 +27,9 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 
 	public static final int STATUT_ETAT_CIVIL = 1;
 
-	private ArrayList listeAgent;
+	private ArrayList<AgentNW> listeAgent;
 
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private nc.mairie.metier.agent.AgentNW AgentActivite;
@@ -52,9 +52,9 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList getListeAgent() {
+	public ArrayList<AgentNW> getListeAgent() {
 		if (listeAgent == null) {
-			listeAgent = new ArrayList();
+			listeAgent = new ArrayList<AgentNW>();
 		}
 		return listeAgent;
 	}
@@ -146,7 +146,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -206,7 +206,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList aListe = new ArrayList();
+		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 		// RG_AG_EC_C01
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
@@ -218,7 +218,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 			if (getTransaction().isErreur())
 				return false;
 
-			aListe = new ArrayList();
+			aListe = new ArrayList<AgentNW>();
 			aListe.add(aAgent);
 
 			// Sinon, les agents dont le nom commence par
@@ -311,7 +311,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * @param newAgentActivite
 	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentActivite(nc.mairie.metier.agent.AgentNW newAgentActivite) {
+	private void setAgentActivite(AgentNW newAgentActivite) {
 		AgentActivite = newAgentActivite;
 	}
 
@@ -322,7 +322,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * @param newListeAgent
 	 *            ArrayList
 	 */
-	private void setListeAgent(ArrayList newListeAgent) {
+	private void setListeAgent(ArrayList<AgentNW> newListeAgent) {
 		listeAgent = newListeAgent;
 	}
 
@@ -450,7 +450,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 		// Remplissage de la liste
 		String[] colonnes = { tri };
 		boolean[] ordres = { true };
-		ArrayList a = Services.trier(getListeAgent(), colonnes, ordres);
+		ArrayList<AgentNW> a = Services.trier(getListeAgent(), colonnes, ordres);
 		setListeAgent(a);
 
 		int indiceAgent = 0;
@@ -473,7 +473,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -482,7 +482,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

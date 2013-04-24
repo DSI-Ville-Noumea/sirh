@@ -19,7 +19,7 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private ArrayList listeFichePoste;
+	private ArrayList<FichePoste> listeFichePoste;
 
 	private String focus = null;
 	private boolean advancedSearch = false;
@@ -126,7 +126,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 	/**
 	 * Rempli la liste des fiches de poste trouvées
 	 */
-	private boolean fillList(ArrayList aListe) throws Exception {
+	private boolean fillList(ArrayList<FichePoste> aListe) throws Exception {
 		//Affectation de la liste	
 		setListeFichePoste(aListe);
 
@@ -172,7 +172,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	private boolean rechercheParNumero(HttpServletRequest request) throws Exception {
-		ArrayList aListe = new ArrayList();
+		ArrayList<FichePoste> aListe = new ArrayList<FichePoste>();
 
 		if (isRechercheAffectation()) {
 			//Si la zone est vide alors on prend toutes les FP non affectées
@@ -210,7 +210,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	private boolean rechercheParAgent(HttpServletRequest request) throws Exception {
-		ArrayList aListe = new ArrayList();
+		ArrayList<FichePoste> aListe = new ArrayList<FichePoste>();
 
 		//Si la zone est vide ?
 		if (getVAL_ST_AGENT().length() == 0) {
@@ -234,7 +234,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
      *
 	 */
 	private boolean rechercheParService(HttpServletRequest request) throws Exception {
-		ArrayList aListe = new ArrayList();
+		ArrayList<FichePoste> aListe = new ArrayList<FichePoste>();
 
 		//Si la zone est vide alors on prend tout
 		if (getVAL_ST_SERVICE().length() != 0) {
@@ -324,9 +324,9 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 	 * Retourne la liste des fiches de poste.
 	 * @return ArrayList
 	 */
-	public ArrayList getListeFichePoste() {
+	public ArrayList<FichePoste> getListeFichePoste() {
 		if (listeFichePoste == null)
-			listeFichePoste = new ArrayList();
+			listeFichePoste = new ArrayList<FichePoste>();
 		return listeFichePoste;
 	}
 
@@ -334,7 +334,7 @@ public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
 	 * Met à jour la liste des fiches de poste.
 	 * @param fichePoste la liste des fiches de poste
 	 */
-	private void setListeFichePoste(ArrayList newListeFichePoste) {
+	private void setListeFichePoste(ArrayList<FichePoste> newListeFichePoste) {
 		this.listeFichePoste = newListeFichePoste;
 	}
 

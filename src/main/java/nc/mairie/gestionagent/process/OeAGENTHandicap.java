@@ -71,7 +71,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	public String ACTION_DOCUMENT = "Documents d'une fiche handicap.";
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche handicap.";
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche handicap.";
-	private ArrayList listeDocuments;
+	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
@@ -108,7 +108,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		// Si hashtable des noms de handicap vide
 		// RG_AG_HC_C04
 		if (getHashNomHandicap().size() == 0) {
-			ArrayList listeNomHandicap = NomHandicap.listerNomHandicap(getTransaction());
+			ArrayList<NomHandicap> listeNomHandicap = NomHandicap.listerNomHandicap(getTransaction());
 			setListeNomHandicap(listeNomHandicap);
 
 			int[] tailles = { 40 };
@@ -125,7 +125,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		// Si hashtable des maladies pro vide
 		// RG_AG_HC_C05
 		if (getHashMaladiePro().size() == 0) {
-			ArrayList listeMaladiePro = MaladiePro.listerMaladiePro(getTransaction());
+			ArrayList<MaladiePro> listeMaladiePro = MaladiePro.listerMaladiePro(getTransaction());
 			setListeMaladiePro(listeMaladiePro);
 
 			int[] tailles = { 255 };
@@ -159,7 +159,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeHandicap(HttpServletRequest request) throws Exception {
 		// Recherche des handicaps de l'agent
-		ArrayList listeHandicap = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
+		ArrayList<Handicap> listeHandicap = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
 		setListeHandicap(listeHandicap);
 
 		int indiceHandi = 0;
@@ -168,7 +168,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 				Handicap h = (Handicap) getListeHandicap().get(i);
 				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap());
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
 						h.getIdHandicap());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
@@ -1746,13 +1746,13 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	 * @param newListeDocuments
 	 *            ArrayList
 	 */
-	private void setListeDocuments(ArrayList newListeDocuments) {
+	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
 
-	public ArrayList getListeDocuments() {
+	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}
@@ -1764,7 +1764,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
 				getHandicapCourant().getIdHandicap());
 		setListeDocuments(listeDocAgent);
 
@@ -2361,7 +2361,7 @@ public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
 		// nom de contrat
-		for (Iterator iter = getListeDocuments().iterator(); iter.hasNext();) {
+		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
 			// on supprime l'extension
 			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));

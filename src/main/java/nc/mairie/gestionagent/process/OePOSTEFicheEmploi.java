@@ -54,43 +54,43 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	private String[] LB_NIVEAU_ETUDE;
 	private String[] LB_NIVEAU_ETUDE_MULTI;
 
-	private ArrayList listeAutreAppellationMulti;
-	private ArrayList listeAutreAppellationASupprimer;
-	private ArrayList listeAutreAppellationAAjouter;
-	private ArrayList listeDomaine;
-	private ArrayList listeFamille;
-	private ArrayList listeCategorie;
-	private ArrayList listeCategorieMulti;
-	private ArrayList listeCategorieASupprimer;
-	private ArrayList listeCategorieAAjouter;
-	private ArrayList listeCadresEmploi;
-	private ArrayList listeCadresEmploiMulti;
-	private ArrayList listeCadresEmploiAAjouter;
-	private ArrayList listeCadresEmploiASupprimer;
-	private ArrayList listeNiveauEtude;
-	private ArrayList listeNiveauEtudeMulti;
-	private ArrayList listeNiveauEtudeAAjouter;
-	private ArrayList listeNiveauEtudeASupprimer;
-	private ArrayList listeDiplome;
-	private ArrayList listeDiplomeMulti;
-	private ArrayList listeDiplomeAAjouter;
-	private ArrayList listeDiplomeASupprimer;
-	private ArrayList listeActiPrincMulti;
-	private ArrayList listeActiPrincAAjouter;
-	private ArrayList listeActiPrincASupprimer;
-	private ArrayList listeSavoirMulti;
-	private ArrayList listeSavoirAAjouter;
-	private ArrayList listeSavoirASupprimer;
-	private ArrayList listeSavoirFaireMulti;
-	private ArrayList listeSavoirFaireAAjouter;
-	private ArrayList listeSavoirFaireASupprimer;
-	private ArrayList listeComportementMulti;
-	private ArrayList listeComportementAAjouter;
-	private ArrayList listeComportementASupprimer;
+	private ArrayList<AutreAppellationEmploi> listeAutreAppellationMulti;
+	private ArrayList<AutreAppellationEmploi> listeAutreAppellationASupprimer;
+	private ArrayList<AutreAppellationEmploi> listeAutreAppellationAAjouter;
+	private ArrayList<DomaineEmploi> listeDomaine;
+	private ArrayList<FamilleEmploi> listeFamille;
+	private ArrayList<Categorie> listeCategorie;
+	private ArrayList<Categorie> listeCategorieMulti;
+	private ArrayList<Categorie> listeCategorieASupprimer;
+	private ArrayList<Categorie> listeCategorieAAjouter;
+	private ArrayList<CadreEmploi> listeCadresEmploi;
+	private ArrayList<CadreEmploi> listeCadresEmploiMulti;
+	private ArrayList<CadreEmploi> listeCadresEmploiAAjouter;
+	private ArrayList<CadreEmploi> listeCadresEmploiASupprimer;
+	private ArrayList<NiveauEtude> listeNiveauEtude;
+	private ArrayList<NiveauEtude> listeNiveauEtudeMulti;
+	private ArrayList<NiveauEtude> listeNiveauEtudeAAjouter;
+	private ArrayList<NiveauEtude> listeNiveauEtudeASupprimer;
+	private ArrayList<DiplomeGenerique> listeDiplome;
+	private ArrayList<DiplomeGenerique> listeDiplomeMulti;
+	private ArrayList<DiplomeGenerique> listeDiplomeAAjouter;
+	private ArrayList<DiplomeGenerique> listeDiplomeASupprimer;
+	private ArrayList<Activite> listeActiPrincMulti;
+	private ArrayList<Activite> listeActiPrincAAjouter;
+	private ArrayList<Activite> listeActiPrincASupprimer;
+	private ArrayList<Competence> listeSavoirMulti;
+	private ArrayList<Competence> listeSavoirAAjouter;
+	private ArrayList<Competence> listeSavoirASupprimer;
+	private ArrayList<Competence> listeSavoirFaireMulti;
+	private ArrayList<Competence> listeSavoirFaireAAjouter;
+	private ArrayList<Competence> listeSavoirFaireASupprimer;
+	private ArrayList<Competence> listeComportementMulti;
+	private ArrayList<Competence> listeComportementAAjouter;
+	private ArrayList<Competence> listeComportementASupprimer;
 	private TypeCompetence typeCompetenceCourant;
-	private ArrayList listeCodeRome;
+	private ArrayList<CodeRome> listeCodeRome;
 
-	private nc.mairie.metier.poste.FicheEmploi ficheEmploiCourant;
+	private FicheEmploi ficheEmploiCourant;
 	private boolean suppression;
 	private boolean suppressionLienFE_FP;
 
@@ -752,7 +752,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			return true;
 
 		if (getListeAutreAppellationMulti() == null)
-			setListeAutreAppellationMulti(new ArrayList());
+			setListeAutreAppellationMulti(new ArrayList<AutreAppellationEmploi>());
 		AutreAppellationEmploi aae = new AutreAppellationEmploi(getFicheEmploiCourant().getIdFicheEmploi(), getVAL_EF_AUTRE_APPELLATION());
 		if (!getListeAutreAppellationMulti().contains(aae)) {
 			getListeAutreAppellationMulti().add(aae);
@@ -832,7 +832,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		// Si suppression
 		if (isSuppression()) {
 			if (isSuppressionLienFE_FP()) {
-				ArrayList lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
+				ArrayList<FEFP> lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
 				for (int i = 0; i < lienFE_FP.size(); i++) {
 					FEFP feFp = (FEFP) lienFE_FP.get(i);
 					feFp.supprimerFEFP(getTransaction());
@@ -1297,7 +1297,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
-		ArrayList listeCompSelect = (ArrayList) VariablesActivite.recuperer(this, "COMPETENCE");
+		ArrayList<Competence> listeCompSelect = (ArrayList<Competence>) VariablesActivite.recuperer(this, "COMPETENCE");
 		if (listeCompSelect != null && listeCompSelect.size() != 0) {
 			for (int i = 0; i < listeCompSelect.size(); i++) {
 				Competence comp = (Competence) listeCompSelect.get(i);
@@ -1305,7 +1305,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 					if (comp.getIdTypeCompetence().equals(savoir.getIdTypeCompetence())) {
 						// si c'est un savoir
 						if (getListeSavoirMulti() == null)
-							setListeSavoirMulti(new ArrayList());
+							setListeSavoirMulti(new ArrayList<Competence>());
 						if (!getListeSavoirMulti().contains(comp)) {
 							getListeSavoirMulti().add(comp);
 							if (getListeSavoirASupprimer().contains(comp)) {
@@ -1318,7 +1318,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 					} else if (comp.getIdTypeCompetence().equals(savoirFaire.getIdTypeCompetence())) {
 						// si c'est un savoir faire
 						if (getListeSavoirFaireMulti() == null)
-							setListeSavoirFaireMulti(new ArrayList());
+							setListeSavoirFaireMulti(new ArrayList<Competence>());
 						if (!getListeSavoirFaireMulti().contains(comp)) {
 							getListeSavoirFaireMulti().add(comp);
 							if (getListeSavoirFaireASupprimer().contains(comp)) {
@@ -1331,7 +1331,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 					} else if (comp.getIdTypeCompetence().equals(comportement.getIdTypeCompetence())) {
 						// si c'est un comportement
 						if (getListeComportementMulti() == null)
-							setListeComportementMulti(new ArrayList());
+							setListeComportementMulti(new ArrayList<Competence>());
 						if (!getListeComportementMulti().contains(comp)) {
 							getListeComportementMulti().add(comp);
 							if (getListeComportementASupprimer().contains(comp)) {
@@ -1428,7 +1428,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste domaine vide alors affectation
 		if (getLB_DOMAINE() == LBVide) {
-			ArrayList dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
+			ArrayList<DomaineEmploi> dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
 			setListeDomaine(dom);
 
 			int[] tailles = { 4, 100 };
@@ -1438,7 +1438,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste famille vide alors affectation
 		if (getLB_FAMILLE_EMPLOI() == LBVide) {
-			ArrayList fam = FamilleEmploi.listerFamilleEmploi(getTransaction());
+			ArrayList<FamilleEmploi> fam = FamilleEmploi.listerFamilleEmploi(getTransaction());
 			setListeFamille(fam);
 
 			int[] tailles = { 4, 100 };
@@ -1448,7 +1448,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste categorie vide alors affectation
 		if (getLB_CATEGORIE() == LBVide) {
-			ArrayList cat = Categorie.listerCategorie(getTransaction());
+			ArrayList<Categorie> cat = Categorie.listerCategorie(getTransaction());
 			setListeCategorie(cat);
 
 			int[] tailles = { 2 };
@@ -1458,7 +1458,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste cadres emploi vide alors affectation
 		if (getLB_CADRE_EMPLOI() == LBVide) {
-			ArrayList cadresE = CadreEmploi.listerCadreEmploi(getTransaction());
+			ArrayList<CadreEmploi> cadresE = CadreEmploi.listerCadreEmploi(getTransaction());
 			setListeCadresEmploi(cadresE);
 
 			int[] tailles = { 100 };
@@ -1468,7 +1468,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste diplomes vide alors affectation
 		if (getLB_NIVEAU_ETUDE() == LBVide) {
-			ArrayList niveau = NiveauEtude.listerNiveauEtude(getTransaction());
+			ArrayList<NiveauEtude> niveau = NiveauEtude.listerNiveauEtude(getTransaction());
 			setListeNiveauEtude(niveau);
 
 			int[] tailles = { 10 };
@@ -1478,7 +1478,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste diplomes vide alors affectation
 		if (getLB_DIPLOME() == LBVide) {
-			ArrayList dipl = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
+			ArrayList<DiplomeGenerique> dipl = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
 			setListeDiplome(dipl);
 
 			int[] tailles = { 100 };
@@ -1488,7 +1488,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		// Si liste code rome vide alors affectation
 		if (getListeCodeRome().size() == 0) {
-			ArrayList codeRome = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> codeRome = CodeRome.listerCodeRome(getTransaction());
 			setListeCodeRome(codeRome);
 		}
 	}
@@ -1612,7 +1612,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
 		}
 		// on recupere les activites selectionnées dans l'ecran de selection
-		ArrayList listeActiSelect = (ArrayList) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
+		ArrayList<Activite> listeActiSelect = (ArrayList<Activite>) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
 		if (listeActiSelect != null && listeActiSelect.size() != 0) {
 			for (int i = 0; i < listeActiSelect.size(); i++) {
 				Activite a = (Activite) listeActiSelect.get(i);
@@ -1740,7 +1740,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCadresEmploi ArrayList(CadreEmploi)
 	 */
-	private ArrayList getListeCadresEmploi() {
+	private ArrayList<CadreEmploi> getListeCadresEmploi() {
 		return listeCadresEmploi;
 	}
 
@@ -1750,7 +1750,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeCadresEmploi
 	 *            ArrayList(CadreEmploi)
 	 */
-	private void setListeCadresEmploi(ArrayList listeCadresEmploi) {
+	private void setListeCadresEmploi(ArrayList<CadreEmploi> listeCadresEmploi) {
 		this.listeCadresEmploi = listeCadresEmploi;
 	}
 
@@ -1783,7 +1783,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 			if (c != null) {
 				if (getListeCadresEmploiMulti() == null)
-					setListeCadresEmploiMulti(new ArrayList());
+					setListeCadresEmploiMulti(new ArrayList<CadreEmploi>());
 
 				if (!getListeCadresEmploiMulti().contains(c)) {
 					getListeCadresEmploiMulti().add(c);
@@ -1803,7 +1803,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCadresEmploiMulti ArrayList(CadreEmploi)
 	 */
-	private ArrayList getListeCadresEmploiMulti() {
+	private ArrayList<CadreEmploi> getListeCadresEmploiMulti() {
 		return listeCadresEmploiMulti;
 	}
 
@@ -1813,7 +1813,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeCadresEmploiMulti
 	 *            ArrayList(CadreEmploi)
 	 */
-	private void setListeCadresEmploiMulti(ArrayList listeCadresEmploiMulti) {
+	private void setListeCadresEmploiMulti(ArrayList<CadreEmploi> listeCadresEmploiMulti) {
 		this.listeCadresEmploiMulti = listeCadresEmploiMulti;
 	}
 
@@ -1822,7 +1822,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ficheEmploiCourant FicheEmploi
 	 */
-	private nc.mairie.metier.poste.FicheEmploi getFicheEmploiCourant() {
+	private FicheEmploi getFicheEmploiCourant() {
 		return ficheEmploiCourant;
 	}
 
@@ -1832,7 +1832,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param ficheEmploiCourant
 	 *            FicheEmploi
 	 */
-	private void setFicheEmploiCourant(nc.mairie.metier.poste.FicheEmploi ficheEmploiCourant) {
+	private void setFicheEmploiCourant(FicheEmploi ficheEmploiCourant) {
 		this.ficheEmploiCourant = ficheEmploiCourant;
 	}
 
@@ -1864,7 +1864,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 			if (c != null) {
 				if (getListeCategorieMulti() == null)
-					setListeCategorieMulti(new ArrayList());
+					setListeCategorieMulti(new ArrayList<Categorie>());
 
 				if (!getListeCategorieMulti().contains(c)) {
 					getListeCategorieMulti().add(c);
@@ -1908,7 +1908,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 			if (d != null) {
 				if (getListeDiplomeMulti() == null)
-					setListeDiplomeMulti(new ArrayList());
+					setListeDiplomeMulti(new ArrayList<DiplomeGenerique>());
 
 				if (!getListeDiplomeMulti().contains(d)) {
 					getListeDiplomeMulti().add(d);
@@ -1952,7 +1952,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 			if (n != null) {
 				if (getListeNiveauEtudeMulti() == null)
-					setListeNiveauEtudeMulti(new ArrayList());
+					setListeNiveauEtudeMulti(new ArrayList<NiveauEtude>());
 
 				if (!getListeNiveauEtudeMulti().contains(n)) {
 					getListeNiveauEtudeMulti().add(n);
@@ -2150,7 +2150,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCategorie ArrayList
 	 */
-	private ArrayList getListeCategorie() {
+	private ArrayList<Categorie> getListeCategorie() {
 		return listeCategorie;
 	}
 
@@ -2160,7 +2160,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeCategorie
 	 *            ArrayList(Categorie)
 	 */
-	private void setListeCategorie(ArrayList listeCategorie) {
+	private void setListeCategorie(ArrayList<Categorie> listeCategorie) {
 		this.listeCategorie = listeCategorie;
 	}
 
@@ -2169,7 +2169,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCategorieMulti ArrayList
 	 */
-	private ArrayList getListeCategorieMulti() {
+	private ArrayList<Categorie> getListeCategorieMulti() {
 		return listeCategorieMulti;
 	}
 
@@ -2179,7 +2179,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeCategorieMulti
 	 *            ArrayList(Categorie)
 	 */
-	private void setListeCategorieMulti(ArrayList listeCategorieMulti) {
+	private void setListeCategorieMulti(ArrayList<Categorie> listeCategorieMulti) {
 		this.listeCategorieMulti = listeCategorieMulti;
 	}
 
@@ -2291,7 +2291,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDiplome ArrayList(Diplome)
 	 */
-	private ArrayList getListeDiplome() {
+	private ArrayList<DiplomeGenerique> getListeDiplome() {
 		return listeDiplome;
 	}
 
@@ -2301,7 +2301,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeDiplome
 	 *            ArrayList(Diplome)
 	 */
-	private void setListeDiplome(ArrayList listeDiplome) {
+	private void setListeDiplome(ArrayList<DiplomeGenerique> listeDiplome) {
 		this.listeDiplome = listeDiplome;
 	}
 
@@ -2310,7 +2310,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDiplomeMulti ArrayList(Diplome)
 	 */
-	private ArrayList getListeDiplomeMulti() {
+	private ArrayList<DiplomeGenerique> getListeDiplomeMulti() {
 		return listeDiplomeMulti;
 	}
 
@@ -2320,7 +2320,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeDiplomeMulti
 	 *            ArrayList(Diplome)
 	 */
-	private void setListeDiplomeMulti(ArrayList listeDiplomeMulti) {
+	private void setListeDiplomeMulti(ArrayList<DiplomeGenerique> listeDiplomeMulti) {
 		this.listeDiplomeMulti = listeDiplomeMulti;
 	}
 
@@ -2329,7 +2329,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeNiveauEtude ArrayList(NiveauEtude)
 	 */
-	private ArrayList getListeNiveauEtude() {
+	private ArrayList<NiveauEtude> getListeNiveauEtude() {
 		return listeNiveauEtude;
 	}
 
@@ -2339,7 +2339,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeNiveauEtude
 	 *            ArrayList(NiveauEtude)
 	 */
-	private void setListeNiveauEtude(ArrayList listeNiveauEtude) {
+	private void setListeNiveauEtude(ArrayList<NiveauEtude> listeNiveauEtude) {
 		this.listeNiveauEtude = listeNiveauEtude;
 	}
 
@@ -2348,7 +2348,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeNiveauEtudeMulti ArrayList(NiveauEtude)
 	 */
-	private ArrayList getListeNiveauEtudeMulti() {
+	private ArrayList<NiveauEtude> getListeNiveauEtudeMulti() {
 		return listeNiveauEtudeMulti;
 	}
 
@@ -2358,7 +2358,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeNiveauEtudeMulti
 	 *            ArrayList(NiveauEtude)
 	 */
-	private void setListeNiveauEtudeMulti(ArrayList listeNiveauEtudeMulti) {
+	private void setListeNiveauEtudeMulti(ArrayList<NiveauEtude> listeNiveauEtudeMulti) {
 		this.listeNiveauEtudeMulti = listeNiveauEtudeMulti;
 	}
 
@@ -2367,7 +2367,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDomaine ArrayList(DomaineEmploi)
 	 */
-	private ArrayList getListeDomaine() {
+	private ArrayList<DomaineEmploi> getListeDomaine() {
 		return listeDomaine;
 	}
 
@@ -2377,7 +2377,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeDomaine
 	 *            ArrayList(DomaineEmploi)
 	 */
-	private void setListeDomaine(ArrayList listeDomaine) {
+	private void setListeDomaine(ArrayList<DomaineEmploi> listeDomaine) {
 		this.listeDomaine = listeDomaine;
 	}
 
@@ -2386,7 +2386,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeFamille ArrayList(FamilleEmploi)
 	 */
-	private ArrayList getListeFamille() {
+	private ArrayList<FamilleEmploi> getListeFamille() {
 		return listeFamille;
 	}
 
@@ -2396,7 +2396,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeFamille
 	 *            ArrayList(FamilleEmploi)
 	 */
-	private void setListeFamille(ArrayList listeFamille) {
+	private void setListeFamille(ArrayList<FamilleEmploi> listeFamille) {
 		this.listeFamille = listeFamille;
 	}
 
@@ -2555,7 +2555,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAutreAppellationMulti ArrayList(AutreAppellation)
 	 */
-	private ArrayList getListeAutreAppellationMulti() {
+	private ArrayList<AutreAppellationEmploi> getListeAutreAppellationMulti() {
 		return listeAutreAppellationMulti;
 	}
 
@@ -2565,7 +2565,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeAutreAppellationMulti
 	 *            ArrayList(AutreAppellation)
 	 */
-	private void setListeAutreAppellationMulti(ArrayList listeAutreAppellationMulti) {
+	private void setListeAutreAppellationMulti(ArrayList<AutreAppellationEmploi> listeAutreAppellationMulti) {
 		this.listeAutreAppellationMulti = listeAutreAppellationMulti;
 	}
 
@@ -2645,9 +2645,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAutreAppellationASupprimer ArrayList(AutreAppellationEmploi)
 	 */
-	private ArrayList getListeAutreAppellationASupprimer() {
+	private ArrayList<AutreAppellationEmploi> getListeAutreAppellationASupprimer() {
 		if (listeAutreAppellationASupprimer == null)
-			listeAutreAppellationASupprimer = new ArrayList();
+			listeAutreAppellationASupprimer = new ArrayList<AutreAppellationEmploi>();
 		return listeAutreAppellationASupprimer;
 	}
 
@@ -2656,9 +2656,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeAutreAppellationAAjouter
 	 */
-	private ArrayList getListeAutreAppellationAAjouter() {
+	private ArrayList<AutreAppellationEmploi> getListeAutreAppellationAAjouter() {
 		if (listeAutreAppellationAAjouter == null)
-			listeAutreAppellationAAjouter = new ArrayList();
+			listeAutreAppellationAAjouter = new ArrayList<AutreAppellationEmploi>();
 		return listeAutreAppellationAAjouter;
 	}
 
@@ -2667,9 +2667,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCadresEmploiAAjouter
 	 */
-	private ArrayList getListeCadresEmploiAAjouter() {
+	private ArrayList<CadreEmploi> getListeCadresEmploiAAjouter() {
 		if (listeCadresEmploiAAjouter == null)
-			listeCadresEmploiAAjouter = new ArrayList();
+			listeCadresEmploiAAjouter = new ArrayList<CadreEmploi>();
 		return listeCadresEmploiAAjouter;
 	}
 
@@ -2678,9 +2678,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCadresEmploiASupprimer
 	 */
-	private ArrayList getListeCadresEmploiASupprimer() {
+	private ArrayList<CadreEmploi> getListeCadresEmploiASupprimer() {
 		if (listeCadresEmploiASupprimer == null)
-			listeCadresEmploiASupprimer = new ArrayList();
+			listeCadresEmploiASupprimer = new ArrayList<CadreEmploi>();
 		return listeCadresEmploiASupprimer;
 	}
 
@@ -2689,9 +2689,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCategorieAAjouter
 	 */
-	private ArrayList getListeCategorieAAjouter() {
+	private ArrayList<Categorie> getListeCategorieAAjouter() {
 		if (listeCategorieAAjouter == null)
-			listeCategorieAAjouter = new ArrayList();
+			listeCategorieAAjouter = new ArrayList<Categorie>();
 		return listeCategorieAAjouter;
 	}
 
@@ -2700,9 +2700,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeCategorieASupprimer
 	 */
-	private ArrayList getListeCategorieASupprimer() {
+	private ArrayList<Categorie> getListeCategorieASupprimer() {
 		if (listeCategorieASupprimer == null)
-			listeCategorieASupprimer = new ArrayList();
+			listeCategorieASupprimer = new ArrayList<Categorie>();
 		return listeCategorieASupprimer;
 	}
 
@@ -2711,9 +2711,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDiplomeAAjouter
 	 */
-	private ArrayList getListeDiplomeAAjouter() {
+	private ArrayList<DiplomeGenerique> getListeDiplomeAAjouter() {
 		if (listeDiplomeAAjouter == null)
-			listeDiplomeAAjouter = new ArrayList();
+			listeDiplomeAAjouter = new ArrayList<DiplomeGenerique>();
 		return listeDiplomeAAjouter;
 	}
 
@@ -2722,9 +2722,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeDiplomeASupprimer
 	 */
-	private ArrayList getListeDiplomeASupprimer() {
+	private ArrayList<DiplomeGenerique> getListeDiplomeASupprimer() {
 		if (listeDiplomeASupprimer == null)
-			listeDiplomeASupprimer = new ArrayList();
+			listeDiplomeASupprimer = new ArrayList<DiplomeGenerique>();
 		return listeDiplomeASupprimer;
 	}
 
@@ -2733,9 +2733,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeNiveauEtudeAAjouter
 	 */
-	private ArrayList getListeNiveauEtudeAAjouter() {
+	private ArrayList<NiveauEtude> getListeNiveauEtudeAAjouter() {
 		if (listeNiveauEtudeAAjouter == null)
-			listeNiveauEtudeAAjouter = new ArrayList();
+			listeNiveauEtudeAAjouter = new ArrayList<NiveauEtude>();
 		return listeNiveauEtudeAAjouter;
 	}
 
@@ -2744,9 +2744,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeNiveauEtudeASupprimer
 	 */
-	private ArrayList getListeNiveauEtudeASupprimer() {
+	private ArrayList<NiveauEtude> getListeNiveauEtudeASupprimer() {
 		if (listeNiveauEtudeASupprimer == null)
-			listeNiveauEtudeASupprimer = new ArrayList();
+			listeNiveauEtudeASupprimer = new ArrayList<NiveauEtude>();
 		return listeNiveauEtudeASupprimer;
 	}
 
@@ -2929,7 +2929,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_ACTIVITE_PRINC(HttpServletRequest request) throws Exception {
 		// RG_PE_FE_A05
-		ArrayList listeToutesActi = new ArrayList();
+		ArrayList<Activite> listeToutesActi = new ArrayList<Activite>();
 		if (getListeActiPrincMulti() != null) {
 			listeToutesActi.addAll(getListeActiPrincMulti());
 		}
@@ -2976,9 +2976,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeActiPrincAAjouter ArrayList
 	 */
-	private ArrayList getListeActiPrincAAjouter() {
+	private ArrayList<Activite> getListeActiPrincAAjouter() {
 		if (listeActiPrincAAjouter == null)
-			listeActiPrincAAjouter = new ArrayList();
+			listeActiPrincAAjouter = new ArrayList<Activite>();
 		return listeActiPrincAAjouter;
 	}
 
@@ -2987,9 +2987,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeActiPrincASupprimer ArrayList
 	 */
-	private ArrayList getListeActiPrincASupprimer() {
+	private ArrayList<Activite> getListeActiPrincASupprimer() {
 		if (listeActiPrincASupprimer == null)
-			listeActiPrincASupprimer = new ArrayList();
+			listeActiPrincASupprimer = new ArrayList<Activite>();
 		return listeActiPrincASupprimer;
 	}
 
@@ -2998,9 +2998,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeActiPrincMulti ArrayList
 	 */
-	public ArrayList getListeActiPrincMulti() {
+	public ArrayList<Activite> getListeActiPrincMulti() {
 		if (listeActiPrincMulti == null)
-			listeActiPrincMulti = new ArrayList();
+			listeActiPrincMulti = new ArrayList<Activite>();
 		return listeActiPrincMulti;
 	}
 
@@ -3010,7 +3010,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeActiPrincMulti
 	 *            ArrayList
 	 */
-	private void setListeActiPrincMulti(ArrayList listeActiPrincMulti) {
+	private void setListeActiPrincMulti(ArrayList<Activite> listeActiPrincMulti) {
 		this.listeActiPrincMulti = listeActiPrincMulti;
 	}
 
@@ -3019,9 +3019,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirAAjouter ArrayList
 	 */
-	private ArrayList getListeSavoirAAjouter() {
+	private ArrayList<Competence> getListeSavoirAAjouter() {
 		if (listeSavoirAAjouter == null)
-			listeSavoirAAjouter = new ArrayList();
+			listeSavoirAAjouter = new ArrayList<Competence>();
 		return listeSavoirAAjouter;
 	}
 
@@ -3030,9 +3030,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirASupprimer ArrayList
 	 */
-	private ArrayList getListeSavoirASupprimer() {
+	private ArrayList<Competence> getListeSavoirASupprimer() {
 		if (listeSavoirASupprimer == null)
-			listeSavoirASupprimer = new ArrayList();
+			listeSavoirASupprimer = new ArrayList<Competence>();
 		return listeSavoirASupprimer;
 	}
 
@@ -3041,9 +3041,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirMulti ArrayList
 	 */
-	public ArrayList getListeSavoirMulti() {
+	public ArrayList<Competence> getListeSavoirMulti() {
 		if (listeSavoirMulti == null)
-			listeSavoirMulti = new ArrayList();
+			listeSavoirMulti = new ArrayList<Competence>();
 		return listeSavoirMulti;
 	}
 
@@ -3053,7 +3053,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeSavoirMulti
 	 *            ArrayList
 	 */
-	private void setListeSavoirMulti(ArrayList listeSavoirMulti) {
+	private void setListeSavoirMulti(ArrayList<Competence> listeSavoirMulti) {
 		this.listeSavoirMulti = listeSavoirMulti;
 	}
 
@@ -3062,9 +3062,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirFaireAAjouter ArrayList
 	 */
-	private ArrayList getListeSavoirFaireAAjouter() {
+	private ArrayList<Competence> getListeSavoirFaireAAjouter() {
 		if (listeSavoirFaireAAjouter == null)
-			listeSavoirFaireAAjouter = new ArrayList();
+			listeSavoirFaireAAjouter = new ArrayList<Competence>();
 		return listeSavoirFaireAAjouter;
 	}
 
@@ -3073,9 +3073,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirFaireASupprimer ArrayList
 	 */
-	private ArrayList getListeSavoirFaireASupprimer() {
+	private ArrayList<Competence> getListeSavoirFaireASupprimer() {
 		if (listeSavoirFaireASupprimer == null)
-			listeSavoirFaireASupprimer = new ArrayList();
+			listeSavoirFaireASupprimer = new ArrayList<Competence>();
 		return listeSavoirFaireASupprimer;
 	}
 
@@ -3084,9 +3084,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSavoirFaireMulti ArrayList
 	 */
-	public ArrayList getListeSavoirFaireMulti() {
+	public ArrayList<Competence> getListeSavoirFaireMulti() {
 		if (listeSavoirFaireMulti == null)
-			listeSavoirFaireMulti = new ArrayList();
+			listeSavoirFaireMulti = new ArrayList<Competence>();
 		return listeSavoirFaireMulti;
 	}
 
@@ -3096,7 +3096,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeSavoirFaireMulti
 	 *            ArrayList
 	 */
-	private void setListeSavoirFaireMulti(ArrayList listeSavoirFaireMulti) {
+	private void setListeSavoirFaireMulti(ArrayList<Competence> listeSavoirFaireMulti) {
 		this.listeSavoirFaireMulti = listeSavoirFaireMulti;
 	}
 
@@ -3105,9 +3105,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeComportementAAjouter ArrayList
 	 */
-	private ArrayList getListeComportementAAjouter() {
+	private ArrayList<Competence> getListeComportementAAjouter() {
 		if (listeComportementAAjouter == null)
-			listeComportementAAjouter = new ArrayList();
+			listeComportementAAjouter = new ArrayList<Competence>();
 		return listeComportementAAjouter;
 	}
 
@@ -3116,9 +3116,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeComportementASupprimer ArrayList
 	 */
-	private ArrayList getListeComportementASupprimer() {
+	private ArrayList<Competence> getListeComportementASupprimer() {
 		if (listeComportementASupprimer == null)
-			listeComportementASupprimer = new ArrayList();
+			listeComportementASupprimer = new ArrayList<Competence>();
 		return listeComportementASupprimer;
 	}
 
@@ -3127,9 +3127,9 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeComportementMulti ArrayList
 	 */
-	public ArrayList getListeComportementMulti() {
+	public ArrayList<Competence> getListeComportementMulti() {
 		if (listeComportementMulti == null)
-			listeComportementMulti = new ArrayList();
+			listeComportementMulti = new ArrayList<Competence>();
 		return listeComportementMulti;
 	}
 
@@ -3139,7 +3139,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 * @param listeComportementMulti
 	 *            ArrayList
 	 */
-	private void setListeComportementMulti(ArrayList listeComportementMulti) {
+	private void setListeComportementMulti(ArrayList<Competence> listeComportementMulti) {
 		this.listeComportementMulti = listeComportementMulti;
 	}
 
@@ -3519,7 +3519,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		// RG_PE_FE_A03
 		if (getFicheEmploiCourant() != null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setSuppression(true);
-			ArrayList lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
+			ArrayList<FEFP> lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
 			if (lienFE_FP.size() > 0) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("INF105", getFicheEmploiCourant().getRefMairie()));
 				setSuppressionLienFE_FP(true);
@@ -3605,7 +3605,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_SAVOIR(HttpServletRequest request) throws Exception {
 		// RG_PE_FE_A05
-		ArrayList listeToutesCompSavoir = new ArrayList();
+		ArrayList<Competence> listeToutesCompSavoir = new ArrayList<Competence>();
 		if (getListeSavoirMulti() != null) {
 			listeToutesCompSavoir.addAll(getListeSavoirMulti());
 		}
@@ -3633,7 +3633,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_SAVOIR_FAIRE(HttpServletRequest request) throws Exception {
 		// RG_PE_FE_A05
-		ArrayList listeToutesCompSavoirFaire = new ArrayList();
+		ArrayList<Competence> listeToutesCompSavoirFaire = new ArrayList<Competence>();
 		if (getListeSavoirFaireMulti() != null) {
 			listeToutesCompSavoirFaire.addAll(getListeSavoirFaireMulti());
 		}
@@ -3661,7 +3661,7 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_COMPETENCE_COMPORTEMENT(HttpServletRequest request) throws Exception {
 		// RG_PE_FE_A05
-		ArrayList listeToutesCompCOmportement = new ArrayList();
+		ArrayList<Competence> listeToutesCompCOmportement = new ArrayList<Competence>();
 		if (getListeComportementMulti() != null) {
 			listeToutesCompCOmportement.addAll(getListeComportementMulti());
 		}
@@ -3921,13 +3921,13 @@ public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_ST_LIB_COMP_PRO(i));
 	}
 
-	public ArrayList getListeCodeRome() {
+	public ArrayList<CodeRome> getListeCodeRome() {
 		if (listeCodeRome == null)
-			listeCodeRome = new ArrayList();
+			listeCodeRome = new ArrayList<CodeRome>();
 		return listeCodeRome;
 	}
 
-	private void setListeCodeRome(ArrayList listeCodeRome) {
+	private void setListeCodeRome(ArrayList<CodeRome> listeCodeRome) {
 		this.listeCodeRome = listeCodeRome;
 	}
 }

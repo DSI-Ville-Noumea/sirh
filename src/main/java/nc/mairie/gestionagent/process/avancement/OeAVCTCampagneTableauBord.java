@@ -26,13 +26,13 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess {
 
-	private ArrayList listeTableauBord;
+	private ArrayList<EaeFichePoste> listeTableauBord;
 
 	private EAEDao eaeDao;
 	private CampagneEAEDao campagneEAEDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeFichePosteDao eaeFichePosteDao;
-	
+
 	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneTableauBord.class);
 
 	/**
@@ -143,7 +143,8 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 		try {
 			CampagneEAE campEnCours = getCampagneEAEDao().chercherCampagneEAEOuverte();
 			// on determine les section différentes
-			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao().listerEaeFichePosteGrouperParDirectionSection(campEnCours.getIdCampagneEAE());
+			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao().listerEaeFichePosteGrouperParDirectionSection(
+					campEnCours.getIdCampagneEAE());
 			Integer nbNonAff = 0;
 			Integer nbNonDeb = 0;
 			Integer nbCree = 0;
@@ -223,7 +224,7 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 			setListeTableauBord(listeDirectionSection);
 
 		} catch (Exception e) {
-			logger.error("Exception :" +e.getMessage());
+			logger.error("Exception :" + e.getMessage());
 			// "ERR212",
 			// "Aucune campagne n'est ouverte. Le calcul ne s'effectue que sur une campagne ouverte."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR212"));
@@ -509,13 +510,13 @@ public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess 
 		return getZone(getNOM_ST_CHANGEMENT_CLASSE(i));
 	}
 
-	public ArrayList getListeTableauBord() {
+	public ArrayList<EaeFichePoste> getListeTableauBord() {
 		if (listeTableauBord == null)
-			return new ArrayList();
+			return new ArrayList<EaeFichePoste>();
 		return listeTableauBord;
 	}
 
-	public void setListeTableauBord(ArrayList listeTableauBord) {
+	public void setListeTableauBord(ArrayList<EaeFichePoste> listeTableauBord) {
 		this.listeTableauBord = listeTableauBord;
 	}
 

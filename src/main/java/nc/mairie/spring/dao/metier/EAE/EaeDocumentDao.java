@@ -78,7 +78,7 @@ public class EaeDocumentDao implements EaeDocumentDaoInterface {
 		}
 
 		ArrayList<EaeDocument> listeEaeDocument = new ArrayList<EaeDocument>();
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeDocument docu = new EaeDocument();
 			logger.info("List doc campagne EAE : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_DOCUMENT);

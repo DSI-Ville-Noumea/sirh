@@ -55,7 +55,7 @@ public class EaeEvaluateurDao implements EaeEvaluateurDaoInterface {
 		ArrayList<EaeEvaluateur> listeEaeEvaluateur = new ArrayList<EaeEvaluateur>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeEvaluateur eval = new EaeEvaluateur();
 			// logger.debug("List evaluateurs : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_EVALUATEUR);

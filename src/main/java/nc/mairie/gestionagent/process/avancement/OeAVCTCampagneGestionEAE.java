@@ -104,7 +104,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private ArrayList<String> listeStatut;
 	private ArrayList<String> listeCAP;
 	private ArrayList<String> listeDetache;
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private CampagneEAE campagneCourante;
@@ -205,7 +205,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -845,7 +845,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setListeCampagneEAE(listeCamp);
 			int[] tailles = { 5 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeCamp.listIterator(); list.hasNext();) {
+			for (ListIterator<CampagneEAE> list = listeCamp.listIterator(); list.hasNext();) {
 				CampagneEAE camp = (CampagneEAE) list.next();
 				String ligne[] = { camp.getAnnee().toString() };
 				aFormat.ajouteLigne(ligne);
@@ -859,7 +859,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setListeEnumEtatEAE(listeEtat);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeEtat.listIterator(); list.hasNext();) {
+			for (ListIterator<EnumEtatEAE> list = listeEtat.listIterator(); list.hasNext();) {
 				EnumEtatEAE etat = (EnumEtatEAE) list.next();
 				String ligne[] = { etat.getValue() };
 				aFormat.ajouteLigne(ligne);
@@ -875,7 +875,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setListeDetache(listeDetache);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeDetache.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeDetache.listIterator(); list.hasNext();) {
 				String detache = (String) list.next();
 				String ligne[] = { detache };
 				aFormat.ajouteLigne(ligne);
@@ -893,7 +893,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setListeStatut(listeStatut);
 			int[] tailles = { 25 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeStatut.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeStatut.listIterator(); list.hasNext();) {
 				String statut = (String) list.next();
 				String ligne[] = { statut };
 				aFormat.ajouteLigne(ligne);
@@ -909,7 +909,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 			setListeCAP(listeCAP);
 			int[] tailles = { 5 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeCAP.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeCAP.listIterator(); list.hasNext();) {
 				String cap = (String) list.next();
 				String ligne[] = { cap };
 				aFormat.ajouteLigne(ligne);
@@ -1083,7 +1083,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 */
 	public boolean performPB_GERER_EVALUATEUR(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
-		ArrayList listeEval = new ArrayList();
+		ArrayList<AgentNW> listeEval = new ArrayList<AgentNW>();
 
 		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
@@ -2751,7 +2751,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -2760,7 +2760,7 @@ public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

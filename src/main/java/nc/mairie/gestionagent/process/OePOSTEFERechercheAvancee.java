@@ -23,10 +23,10 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	private String[] LB_FAMILLE_EMPLOI;
 	private String[] LB_DOMAINE_EMPLOI;
 
-	private ArrayList listeDomaineEmploi;
-	private ArrayList listeFamilleEmploi;
-	private ArrayList listeFE;
-	private ArrayList listeCodeRome;
+	private ArrayList<DomaineEmploi> listeDomaineEmploi;
+	private ArrayList<FamilleEmploi> listeFamilleEmploi;
+	private ArrayList<FicheEmploi> listeFE;
+	private ArrayList<CodeRome> listeCodeRome;
 
 	public String focus = null;
 
@@ -50,7 +50,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste famille vide alors affectation
 		if (getLB_FAMILLE_EMPLOI() == LBVide) {
-			ArrayList fam = FamilleEmploi.listerFamilleEmploi(getTransaction());
+			ArrayList<FamilleEmploi> fam = FamilleEmploi.listerFamilleEmploi(getTransaction());
 			setListeFamilleEmploi(fam);
 
 			int[] tailles = { 4, 100 };
@@ -59,7 +59,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 		}
 		// Si liste domaine vide alors affectation
 		if (getLB_DOMAINE_EMPLOI() == LBVide) {
-			ArrayList dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
+			ArrayList<DomaineEmploi> dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
 			setListeDomaineEmploi(dom);
 
 			int[] tailles = { 4, 100 };
@@ -69,7 +69,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 
 		// Si liste code rome vide alors affectation
 		if (getListeCodeRome().size() == 0) {
-			ArrayList codeRome = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> codeRome = CodeRome.listerCodeRome(getTransaction());
 			setListeCodeRome(codeRome);
 		}
 	}
@@ -202,9 +202,9 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Getter liste Fiche emploi
 	 * @return listeFE
 	 */
-	public ArrayList getListeFE() {
+	public ArrayList<FicheEmploi> getListeFE() {
 		if (listeFE == null)
-			listeFE = new ArrayList();
+			listeFE = new ArrayList<FicheEmploi>();
 		return listeFE;
 	}
 
@@ -212,7 +212,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Setter liste Fiche emploi
 	 * @param listeFE
 	 */
-	private void setListeFE(ArrayList listeFE) {
+	private void setListeFE(ArrayList<FicheEmploi> listeFE) {
 		this.listeFE = listeFE;
 	}
 
@@ -220,7 +220,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Getter de la liste des domaines emploi
 	 * @return ArrayList
 	 */
-	private ArrayList getListeDomaineEmploi() {
+	private ArrayList<DomaineEmploi> getListeDomaineEmploi() {
 		return listeDomaineEmploi;
 	}
 
@@ -228,7 +228,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Setter de la liste des domaines emploi
 	 * @param listeDomaineEmploi
 	 */
-	private void setListeDomaineEmploi(ArrayList listeDomaineEmploi) {
+	private void setListeDomaineEmploi(ArrayList<DomaineEmploi> listeDomaineEmploi) {
 		this.listeDomaineEmploi = listeDomaineEmploi;
 	}
 
@@ -236,7 +236,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Getter de la liste des familles emploi
 	 * @return ArrayList
 	 */
-	private ArrayList getListeFamilleEmploi() {
+	private ArrayList<FamilleEmploi> getListeFamilleEmploi() {
 		return listeFamilleEmploi;
 	}
 
@@ -244,7 +244,7 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * Setter de la liste des familles emploi
 	 * @param listeFamilleEmploi
 	 */
-	private void setListeFamilleEmploi(ArrayList listeFamilleEmploi) {
+	private void setListeFamilleEmploi(ArrayList<FamilleEmploi> listeFamilleEmploi) {
 		this.listeFamilleEmploi = listeFamilleEmploi;
 	}
 
@@ -603,13 +603,13 @@ public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess 
 		return true;
 	}
 
-	public ArrayList getListeCodeRome() {
+	public ArrayList<CodeRome> getListeCodeRome() {
 		if (listeCodeRome == null)
-			listeCodeRome = new ArrayList();
+			listeCodeRome = new ArrayList<CodeRome>();
 		return listeCodeRome;
 	}
 
-	private void setListeCodeRome(ArrayList listeCodeRome) {
+	private void setListeCodeRome(ArrayList<CodeRome> listeCodeRome) {
 		this.listeCodeRome = listeCodeRome;
 	}
 }

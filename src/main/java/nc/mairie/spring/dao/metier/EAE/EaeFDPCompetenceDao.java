@@ -50,7 +50,7 @@ public class EaeFDPCompetenceDao implements EaeFDPCompetenceDaoInterface {
 		ArrayList<EaeFDPCompetence> listeEaeFDPComp = new ArrayList<EaeFDPCompetence>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEaeFichePoste });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFDPCompetence comp = new EaeFDPCompetence();
 			// logger.debug("List competences : " + row.toString());
 			BigDecimal idComp = (BigDecimal) row.get(CHAMP_ID_EAE_FDP_COMPETENCE);

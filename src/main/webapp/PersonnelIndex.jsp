@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -8,7 +9,7 @@
 
 <%
 nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
-java.util.ArrayList droits = aUser.getListeDroits();
+ArrayList<String> droits = aUser.getListeDroits();
 
 String res = 	"<script language=\"javascript\">\n"+
 		"var listeDroits = new Array(\n";

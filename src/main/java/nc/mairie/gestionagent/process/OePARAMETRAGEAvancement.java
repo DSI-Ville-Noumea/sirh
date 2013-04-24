@@ -184,7 +184,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeCap().listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = getListeTypeCap().listIterator(); list.hasNext();) {
 				String type = (String) list.next();
 				String ligne[] = { type };
 
@@ -202,7 +202,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCorps().listIterator(); list.hasNext();) {
+			for (ListIterator<GradeGenerique> list = getListeCorps().listIterator(); list.hasNext();) {
 				GradeGenerique gg = (GradeGenerique) list.next();
 				String ligne[] = { gg.getLibGradeGenerique() };
 
@@ -253,7 +253,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 10, 15, 10 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCap().listIterator(); list.hasNext();) {
+			for (ListIterator<Cap> list = getListeCap().listIterator(); list.hasNext();) {
 				Cap cap = (Cap) list.next();
 				String ligne[] = { cap.getCodeCap(), cap.getTypeCap(), cap.getRefCap() };
 
@@ -269,7 +269,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeRepresentant().listIterator(); list.hasNext();) {
+			for (ListIterator<Representant> list = getListeRepresentant().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
 				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
 				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
@@ -287,7 +287,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+			for (ListIterator<Employeur> list = getListeEmployeurCap().listIterator(); list.hasNext();) {
 				Employeur emp = (Employeur) list.next();
 				String ligne[] = { emp.getLibEmployeur() };
 
@@ -311,7 +311,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 40, 10 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeMotif().listIterator(); list.hasNext();) {
+			for (ListIterator<MotifAvancement> list = getListeMotif().listIterator(); list.hasNext();) {
 				MotifAvancement ma = (MotifAvancement) list.next();
 				String ligne[] = { ma.getLibMotifAvct(), ma.getCodeMotifAvct() };
 
@@ -333,7 +333,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 50, 90 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEmployeur().listIterator(); list.hasNext();) {
+			for (ListIterator<Employeur> list = getListeEmployeur().listIterator(); list.hasNext();) {
 				Employeur emp = (Employeur) list.next();
 				String ligne[] = { emp.getLibEmployeur(), emp.getTitreEmployeur() };
 
@@ -356,7 +356,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 20, 20, 10 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeRepresentant().listIterator(); list.hasNext();) {
+			for (ListIterator<Representant> list = getListeRepresentant().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
 				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
 				String ligne[] = { repre.getNomRepresentant(), repre.getPrenomRepresentant(), typeRepre.getLibTypeRepresentant() };
@@ -381,7 +381,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeRepresentant().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeRepresentant> list = getListeTypeRepresentant().listIterator(); list.hasNext();) {
 				TypeRepresentant type = (TypeRepresentant) list.next();
 				String ligne[] = { type.getLibTypeRepresentant() };
 
@@ -409,7 +409,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeDeliberation().listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = getListeTypeDeliberation().listIterator(); list.hasNext();) {
 				String type = (String) list.next();
 				String ligne[] = { type };
 
@@ -433,7 +433,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 10, 20, 70 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDeliberation().listIterator(); list.hasNext();) {
+			for (ListIterator<Deliberation> list = getListeDeliberation().listIterator(); list.hasNext();) {
 				Deliberation delib = (Deliberation) list.next();
 				String ligne[] = { delib.getCodeDeliberation(), delib.getTypeDeliberation(), delib.getLibDeliberation() };
 
@@ -2718,7 +2718,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
-				for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+				for (ListIterator<Employeur> list = getListeEmployeurCap().listIterator(); list.hasNext();) {
 					Employeur emp = (Employeur) list.next();
 					String ligne[] = { emp.getLibEmployeur() };
 
@@ -2743,7 +2743,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
-				for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+				for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 					Representant repre = (Representant) list.next();
 					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
 					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
@@ -2880,7 +2880,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
-				for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+				for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 					Representant repre = (Representant) list.next();
 					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
 					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
@@ -2945,7 +2945,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeRepresentantCap().listIterator(); list.hasNext();) {
+			for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
 				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
 				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
@@ -3140,7 +3140,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 				int tailles[] = { 70 };
 				String padding[] = { "G" };
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
-				for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+				for (ListIterator<Employeur> list = getListeEmployeurCap().listIterator(); list.hasNext();) {
 					Employeur emp = (Employeur) list.next();
 					String ligne[] = { emp.getLibEmployeur() };
 
@@ -3224,7 +3224,7 @@ public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEmployeurCap().listIterator(); list.hasNext();) {
+			for (ListIterator<Employeur> list = getListeEmployeurCap().listIterator(); list.hasNext();) {
 				Employeur emp = (Employeur) list.next();
 				String ligne[] = { emp.getLibEmployeur() };
 

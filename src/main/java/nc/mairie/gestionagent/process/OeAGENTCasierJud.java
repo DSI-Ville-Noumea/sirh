@@ -26,8 +26,8 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'un extrait.";
 	private String ACTION_CREATION = "Création d'un extrait.";
 
-	private nc.mairie.metier.agent.AgentNW agentCourant;
-	private ArrayList listeCasierJud;
+	private AgentNW agentCourant;
+	private ArrayList<CasierJudiciaire> listeCasierJud;
 	private CasierJudiciaire casierJudiciaireCourant;
 	public String focus = null;
 
@@ -77,7 +77,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeCasierJudAgent(HttpServletRequest request) throws Exception {
 
 		//Recherche des extraits de casier judiciaire de l'agent
-		ArrayList a = CasierJudiciaire.listerCasierJudiciaireAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<CasierJudiciaire> a = CasierJudiciaire.listerCasierJudiciaireAvecAgent(getTransaction(), getAgentCourant());
 		setListeCasierJud(a);
 
 		int indiceCasierJud = 0;
@@ -486,7 +486,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	 * Retourne la liste des extraits de casier judiciaire de l'agent.
 	 * @return ArrayList
 	 */
-	public ArrayList getListeCasierJud() {
+	public ArrayList<CasierJudiciaire> getListeCasierJud() {
 		return listeCasierJud;
 	}
 
@@ -494,7 +494,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	 * Met à jour la liste des extraits de casier judiciaire de l'agent.
 	 * @param listeCasierJud
 	 */
-	private void setListeCasierJud(ArrayList listeCasierJud) {
+	private void setListeCasierJud(ArrayList<CasierJudiciaire> listeCasierJud) {
 		this.listeCasierJud = listeCasierJud;
 	}
 

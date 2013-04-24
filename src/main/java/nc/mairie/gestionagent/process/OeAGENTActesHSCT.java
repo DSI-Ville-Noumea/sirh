@@ -56,15 +56,15 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 
-	private ArrayList listeDocuments;
+	private ArrayList<Document> listeDocuments;
 	private String[] LB_TYPE_DOCUMENT;
-	private ArrayList listeTypeDocument;
+	private ArrayList<TypeDocument> listeTypeDocument;
 	private String[] LB_AT;
-	private ArrayList listeAT;
+	private ArrayList<AccidentTravail> listeAT;
 	private String[] LB_VM;
-	private ArrayList listeVM;
+	private ArrayList<VisiteMedicale> listeVM;
 	private String[] LB_HANDI;
-	private ArrayList listeHANDI;
+	private ArrayList<Handicap> listeHANDI;
 
 	public String ACTION_SUPPRESSION = "Suppression d'un document";
 	public String ACTION_CREATION = "Choix du fichier à ajouter";
@@ -124,7 +124,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
-			ArrayList td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "HSCT");
+			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "HSCT");
 			TypeDocument typeVide = new TypeDocument();
 			td.add(0, typeVide);
 			setListeTypeDocument(td);
@@ -134,11 +134,11 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_VM() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList c = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(), getAgentCourant());
+				ArrayList<VisiteMedicale> c = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(), getAgentCourant());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 30, 30 };
 					FormateListe aFormat = new FormateListe(tailles);
-					for (ListIterator list = c.listIterator(); list.hasNext();) {
+					for (ListIterator<VisiteMedicale> list = c.listIterator(); list.hasNext();) {
 						VisiteMedicale vm = (VisiteMedicale) list.next();
 						Medecin medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
 						Recommandation recom = Recommandation.chercherRecommandation(getTransaction(), vm.getIdRecommandation());
@@ -154,11 +154,11 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_HANDI() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList c = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
+				ArrayList<Handicap> c = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					for (ListIterator list = c.listIterator(); list.hasNext();) {
+					for (ListIterator<Handicap> list = c.listIterator(); list.hasNext();) {
 						Handicap handi = (Handicap) list.next();
 						NomHandicap nomHandi = NomHandicap.chercherNomHandicap(getTransaction(), handi.getIdTypeHandicap());
 						String ligne[] = { handi.getDateDebutHandicap(), nomHandi.getNomTypeHandicap() };
@@ -173,11 +173,11 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_AT() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList c = AccidentTravail.listerAccidentTravailAgent(getTransaction(), getAgentCourant());
+				ArrayList<AccidentTravail> c = AccidentTravail.listerAccidentTravailAgent(getTransaction(), getAgentCourant());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					for (ListIterator list = c.listIterator(); list.hasNext();) {
+					for (ListIterator<AccidentTravail> list = c.listIterator(); list.hasNext();) {
 						AccidentTravail acci = (AccidentTravail) list.next();
 						TypeAT tAt = TypeAT.chercherTypeAT(getTransaction(), acci.getIdTypeAT());
 						String ligne[] = { acci.getDateAT(), tAt.getDescTypeAT() };
@@ -487,7 +487,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
 		// nom de contrat
-		for (Iterator iter = getListeDocuments().iterator(); iter.hasNext();) {
+		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
 			// on supprime l'extension
 			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));
@@ -646,13 +646,13 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	 * @param newListeDocuments
 	 *            ArrayList
 	 */
-	private void setListeDocuments(ArrayList newListeDocuments) {
+	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
 
-	public ArrayList getListeDocuments() {
+	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}
@@ -664,7 +664,7 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), Const.CHAINE_VIDE, "HSCT");
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), Const.CHAINE_VIDE, "HSCT");
 		setListeDocuments(listeDocAgent);
 
 		int indiceActe = 0;
@@ -745,14 +745,14 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_TYPE_DOCUMENT_SELECT";
 	}
 
-	private ArrayList getListeTypeDocument() {
+	private ArrayList<TypeDocument> getListeTypeDocument() {
 		if (listeTypeDocument == null) {
-			listeTypeDocument = new ArrayList();
+			listeTypeDocument = new ArrayList<TypeDocument>();
 		}
 		return listeTypeDocument;
 	}
 
-	private void setListeTypeDocument(ArrayList newListeTypeDocument) {
+	private void setListeTypeDocument(ArrayList<TypeDocument> newListeTypeDocument) {
 		listeTypeDocument = newListeTypeDocument;
 	}
 
@@ -1302,14 +1302,14 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_AT_SELECT";
 	}
 
-	private ArrayList getListeAT() {
+	private ArrayList<AccidentTravail> getListeAT() {
 		if (listeAT == null) {
-			listeAT = new ArrayList();
+			listeAT = new ArrayList<AccidentTravail>();
 		}
 		return listeAT;
 	}
 
-	private void setListeAT(ArrayList newListeAT) {
+	private void setListeAT(ArrayList<AccidentTravail> newListeAT) {
 		listeAT = newListeAT;
 	}
 
@@ -1339,14 +1339,14 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_VM_SELECT";
 	}
 
-	private ArrayList getListeVM() {
+	private ArrayList<VisiteMedicale> getListeVM() {
 		if (listeVM == null) {
-			listeVM = new ArrayList();
+			listeVM = new ArrayList<VisiteMedicale>();
 		}
 		return listeVM;
 	}
 
-	private void setListeVM(ArrayList newListeVM) {
+	private void setListeVM(ArrayList<VisiteMedicale> newListeVM) {
 		listeVM = newListeVM;
 	}
 
@@ -1376,14 +1376,14 @@ public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_HANDI_SELECT";
 	}
 
-	private ArrayList getListeHANDI() {
+	private ArrayList<Handicap> getListeHANDI() {
 		if (listeHANDI == null) {
-			listeHANDI = new ArrayList();
+			listeHANDI = new ArrayList<Handicap>();
 		}
 		return listeHANDI;
 	}
 
-	private void setListeHANDI(ArrayList newListeHANDI) {
+	private void setListeHANDI(ArrayList<Handicap> newListeHANDI) {
 		listeHANDI = newListeHANDI;
 	}
 

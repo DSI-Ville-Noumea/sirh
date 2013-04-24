@@ -87,8 +87,8 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private String anneeSelect;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
-	private ArrayList listeAvisCAPMinMoyMax;
-	private ArrayList listeAvisCAPFavDefav;
+	private ArrayList<AvisCap> listeAvisCAPMinMoyMax;
+	private ArrayList<AvisCap> listeAvisCAPFavDefav;
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
@@ -258,7 +258,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -314,7 +314,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 			}
 
-			Enumeration nb = getHashListeImpression().keys();
+			Enumeration<Cap> nb = getHashListeImpression().keys();
 			ArrayList<Cap> listeTemp = new ArrayList<Cap>();
 			while (nb.hasMoreElements()) {
 				Cap cap = (Cap) nb.nextElement();
@@ -399,7 +399,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
 			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 7 };
@@ -415,7 +415,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCapFavDefav(getTransaction());
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapFavDefav(getTransaction());
 			setListeAvisCAPFavDefav(avis);
 
 			int[] tailles = { 7 };
@@ -437,7 +437,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
+			for (ListIterator<FiliereGrade> list = getListeFiliere().listIterator(); list.hasNext();) {
 				FiliereGrade fili = (FiliereGrade) list.next();
 				String ligne[] = { fili.getLibFiliere() };
 
@@ -1583,19 +1583,19 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 		this.listeFiliere = listeFiliere;
 	}
 
-	public ArrayList getListeAvisCAPMinMoyMax() {
+	public ArrayList<AvisCap> getListeAvisCAPMinMoyMax() {
 		return listeAvisCAPMinMoyMax;
 	}
 
-	public void setListeAvisCAPMinMoyMax(ArrayList listeAvisCAPMinMoyMax) {
+	public void setListeAvisCAPMinMoyMax(ArrayList<AvisCap> listeAvisCAPMinMoyMax) {
 		this.listeAvisCAPMinMoyMax = listeAvisCAPMinMoyMax;
 	}
 
-	public ArrayList getListeAvisCAPFavDefav() {
+	public ArrayList<AvisCap> getListeAvisCAPFavDefav() {
 		return listeAvisCAPFavDefav;
 	}
 
-	public void setListeAvisCAPFavDefav(ArrayList listeAvisCAPFavDefav) {
+	public void setListeAvisCAPFavDefav(ArrayList<AvisCap> listeAvisCAPFavDefav) {
 		this.listeAvisCAPFavDefav = listeAvisCAPFavDefav;
 	}
 
@@ -1738,7 +1738,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -1747,7 +1747,7 @@ public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

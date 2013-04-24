@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process.avancement;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.rmi.ServerError;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,8 +71,8 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private ArrayList<AvancementFonctionnaires> listeAvct;
-	private ArrayList listeAvisCAPMinMoyMax;
-	private ArrayList listeAvisCAPFavDefav;
+	private ArrayList<AvisCap> listeAvisCAPMinMoyMax;
+	private ArrayList<AvisCap> listeAvisCAPFavDefav;
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
 
@@ -271,7 +272,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -340,7 +341,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeFiliere().listIterator(); list.hasNext();) {
+			for (ListIterator<FiliereGrade> list = getListeFiliere().listIterator(); list.hasNext();) {
 				FiliereGrade fili = (FiliereGrade) list.next();
 				String ligne[] = { fili.getLibFiliere() };
 
@@ -352,7 +353,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
 			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 15 };
@@ -369,7 +370,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
-			ArrayList avis = AvisCap.listerAvisCapFavDefav(getTransaction());
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapFavDefav(getTransaction());
 			setListeAvisCAPFavDefav(avis);
 
 			int[] tailles = { 15 };
@@ -1290,7 +1291,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -1299,7 +1300,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 
@@ -1505,19 +1506,19 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 		LB_AVIS_CAP_AD = newLB_AVIS_CAP_AD;
 	}
 
-	public ArrayList getListeAvisCAPMinMoyMax() {
+	public ArrayList<AvisCap> getListeAvisCAPMinMoyMax() {
 		return listeAvisCAPMinMoyMax;
 	}
 
-	public void setListeAvisCAPMinMoyMax(ArrayList listeAvisCAPMinMoyMax) {
+	public void setListeAvisCAPMinMoyMax(ArrayList<AvisCap> listeAvisCAPMinMoyMax) {
 		this.listeAvisCAPMinMoyMax = listeAvisCAPMinMoyMax;
 	}
 
-	public ArrayList getListeAvisCAPFavDefav() {
+	public ArrayList<AvisCap> getListeAvisCAPFavDefav() {
 		return listeAvisCAPFavDefav;
 	}
 
-	public void setListeAvisCAPFavDefav(ArrayList listeAvisCAPFavDefav) {
+	public void setListeAvisCAPFavDefav(ArrayList<AvisCap> listeAvisCAPFavDefav) {
 		this.listeAvisCAPFavDefav = listeAvisCAPFavDefav;
 	}
 
@@ -1978,7 +1979,7 @@ public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<String> getListeDocuments() {
 		if (listeDocuments == null)
-			return new ArrayList();
+			return new ArrayList<String>();
 		return listeDocuments;
 	}
 

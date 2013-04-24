@@ -56,28 +56,28 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	private String[] LB_TYPE_REGIME;
 	private String[] LB_RUBRIQUE_PRIME_POINTAGE;
 
-	private ArrayList listeAvantageAFF;
-	private ArrayList listeAvantageFP;
-	private ArrayList listeAvantageAAjouter;
-	private ArrayList listeAvantageASupprimer;
-	private ArrayList listeDelegationAFF;
-	private ArrayList listeDelegationFP;
-	private ArrayList listeDelegationAAjouter;
-	private ArrayList listeDelegationASupprimer;
-	private ArrayList listeRegimeAFF;
-	private ArrayList listeRegimeFP;
-	private ArrayList listeRegimeAAjouter;
-	private ArrayList listeRegimeASupprimer;
-	private ArrayList listePrimePointageAFF;
-	private ArrayList listePrimePointageFP;
-	private ArrayList listePrimePointageAAjouter;
-	private ArrayList listePrimePointageASupprimer;
+	private ArrayList<AvantageNature> listeAvantageAFF;
+	private ArrayList<AvantageNature> listeAvantageFP;
+	private ArrayList<AvantageNature> listeAvantageAAjouter;
+	private ArrayList<AvantageNature> listeAvantageASupprimer;
+	private ArrayList<Delegation> listeDelegationAFF;
+	private ArrayList<Delegation> listeDelegationFP;
+	private ArrayList<Delegation> listeDelegationAAjouter;
+	private ArrayList<Delegation> listeDelegationASupprimer;
+	private ArrayList<RegimeIndemnitaire> listeRegimeAFF;
+	private ArrayList<RegimeIndemnitaire> listeRegimeFP;
+	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
+	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
+	private ArrayList<PrimePointage> listePrimePointageAFF;
+	private ArrayList<PrimePointage> listePrimePointageFP;
+	private ArrayList<PrimePointage> listePrimePointageAAjouter;
+	private ArrayList<PrimePointage> listePrimePointageASupprimer;
 
-	private ArrayList listeTypeAvantage;
-	private ArrayList listeNatureAvantage;
-	private ArrayList listeRubrique;
-	private ArrayList listeTypeDelegation;
-	private ArrayList listeTypeRegIndemn;
+	private ArrayList<TypeAvantage> listeTypeAvantage;
+	private ArrayList<NatureAvantage> listeNatureAvantage;
+	private ArrayList<Rubrique> listeRubrique;
+	private ArrayList<TypeDelegation> listeTypeDelegation;
+	private ArrayList<TypeRegIndemn> listeTypeRegIndemn;
 
 	private AgentNW agentCourant;
 	private FichePoste fichePosteCourant;
@@ -126,7 +126,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			ArrayList affActives = Affectation.listerAffectationActiveAvecAgent(getTransaction(), getAgentCourant());
+			ArrayList<Affectation> affActives = Affectation.listerAffectationActiveAvecAgent(getTransaction(), getAgentCourant());
 			if (affActives.size() == 1) {
 				setAffectationCourant((Affectation) affActives.get(0));
 				// Recherche des informations à afficher
@@ -424,7 +424,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste type avantage vide alors affectation
 		if (getLB_TYPE_AVANTAGE() == LBVide) {
-			ArrayList typeAvantage = TypeAvantage.listerTypeAvantage(getTransaction());
+			ArrayList<TypeAvantage> typeAvantage = TypeAvantage.listerTypeAvantage(getTransaction());
 			setListeTypeAvantage(typeAvantage);
 
 			int[] tailles = { 50 };
@@ -434,7 +434,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Si liste nature avantage vide alors affectation
 		if (getLB_NATURE_AVANTAGE() == LBVide) {
-			ArrayList natureAvantage = NatureAvantage.listerNatureAvantage(getTransaction());
+			ArrayList<NatureAvantage> natureAvantage = NatureAvantage.listerNatureAvantage(getTransaction());
 			NatureAvantage natAvVide = new NatureAvantage();
 			natureAvantage.add(0, natAvVide);
 			setListeNatureAvantage(natureAvantage);
@@ -446,13 +446,13 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Si liste rubrique vide alors affectation
 		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide || getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
-			ArrayList rubrique = Rubrique.listerRubrique7000(getTransaction());
+			ArrayList<Rubrique> rubrique = Rubrique.listerRubrique7000(getTransaction());
 			setListeRubrique(rubrique);
 
 			if (getListeRubrique() != null && getListeRubrique().size() != 0) {
 				int taillesRub[] = { 68 };
 				FormateListe aFormatRub = new FormateListe(taillesRub);
-				for (ListIterator list = getListeRubrique().listIterator(); list.hasNext();) {
+				for (ListIterator<Rubrique> list = getListeRubrique().listIterator(); list.hasNext();) {
 					Rubrique aRub = (Rubrique) list.next();
 					if (aRub != null) {
 						String ligne[] = { aRub.getNumRubrique() + " - " + aRub.getLibRubrique() };
@@ -471,7 +471,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Si liste type délégation vide alors affectation
 		if (getLB_TYPE_DELEGATION() == LBVide) {
-			ArrayList typeDelegation = TypeDelegation.listerTypeDelegation(getTransaction());
+			ArrayList<TypeDelegation> typeDelegation = TypeDelegation.listerTypeDelegation(getTransaction());
 			setListeTypeDelegation(typeDelegation);
 
 			int[] tailles = { 30 };
@@ -481,7 +481,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 
 		// Si liste type régime vide alors affectation
 		if (getLB_TYPE_REGIME() == LBVide) {
-			ArrayList typeRegime = TypeRegIndemn.listerTypeRegIndemn(getTransaction());
+			ArrayList<TypeRegIndemn> typeRegime = TypeRegIndemn.listerTypeRegIndemn(getTransaction());
 			setListeTypeRegIndemn(typeRegime);
 			int[] tailles = { 20 };
 			String[] champs = { "libTypeRegIndemn" };
@@ -972,15 +972,19 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 		// Sauvegarde des nouvelles primes de pointage et suppression des
 		// anciens
 		for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
+			Integer idCree = null;
 			try {
 				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(i);
-				Integer idCree = getPrimePointageDao().creerPrimePointage(prime.getIdRubrique());
+				idCree = getPrimePointageDao().creerPrimePointage(prime.getIdRubrique());
 
 				PrimePointageAff riAFF = new PrimePointageAff();
 				riAFF.setIdAffectation(Integer.valueOf(getAffectationCourant().getIdAffectation()));
 				riAFF.setIdPrimePointage(idCree);
 				getPrimePointageAffDao().creerPrimePointageAff(riAFF.getIdPrimePointage(), riAFF.getIdAffectation());
 			} catch (Exception e) {
+				if (idCree != null) {
+					getPrimePointageDao().supprimerPrimePointage(idCree);
+				}
 				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créé.");
 				return false;
 			}
@@ -1042,7 +1046,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				avNat.setNumRubrique(((Rubrique) getListeRubrique().get(indiceRubAvantage - 1)).getNumRubrique());
 
 			if (getListeAvantageAFF() == null)
-				setListeAvantageAFF(new ArrayList());
+				setListeAvantageAFF(new ArrayList<AvantageNature>());
 
 			if (!getListeAvantageAFF().contains(avNat) && !getListeAvantageFP().contains(avNat) && !getListeAvantageAAjouter().contains(avNat)) {
 				if (getListeAvantageASupprimer().contains(avNat)) {
@@ -1069,7 +1073,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation)).getIdTypeDelegation());
 
 			if (getListeDelegationAFF() == null)
-				setListeDelegationAFF(new ArrayList());
+				setListeDelegationAFF(new ArrayList<Delegation>());
 
 			if (!getListeDelegationAFF().contains(deleg) && !getListeDelegationFP().contains(deleg) && !getListeDelegationAAjouter().contains(deleg)) {
 				if (getListeDelegationASupprimer().contains(deleg)) {
@@ -1099,7 +1103,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 				regIndemn.setNumRubrique(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique());
 
 			if (getListeRegimeAFF() == null)
-				setListeRegimeAFF(new ArrayList());
+				setListeRegimeAFF(new ArrayList<RegimeIndemnitaire>());
 
 			if (!getListeRegimeAFF().contains(regIndemn) && !getListeRegimeFP().contains(regIndemn) && !getListeRegimeAAjouter().contains(regIndemn)) {
 				if (getListeRegimeASupprimer().contains(regIndemn)) {
@@ -1124,7 +1128,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 			prime.setIdRubrique(Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
 
 			if (getListePrimePointageAFF() == null)
-				setListePrimePointageAFF(new ArrayList());
+				setListePrimePointageAFF(new ArrayList<PrimePointage>());
 
 			if (!getListePrimePointageAFF().contains(prime) && !getListePrimePointageFP().contains(prime)
 					&& !getListePrimePointageAAjouter().contains(prime)) {
@@ -1726,7 +1730,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeTypeDelegation
 	 */
-	private ArrayList getListeTypeDelegation() {
+	private ArrayList<TypeDelegation> getListeTypeDelegation() {
 		return listeTypeDelegation;
 	}
 
@@ -1735,7 +1739,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeTypeDelegation
 	 */
-	private void setListeTypeDelegation(ArrayList listeTypeDelegation) {
+	private void setListeTypeDelegation(ArrayList<TypeDelegation> listeTypeDelegation) {
 		this.listeTypeDelegation = listeTypeDelegation;
 	}
 
@@ -1744,7 +1748,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeTypeRegIndemn
 	 */
-	private ArrayList getListeTypeRegIndemn() {
+	private ArrayList<TypeRegIndemn> getListeTypeRegIndemn() {
 		return listeTypeRegIndemn;
 	}
 
@@ -1753,7 +1757,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeTypeRegIndemn
 	 */
-	private void setListeTypeRegIndemn(ArrayList listeTypeRegIndemn) {
+	private void setListeTypeRegIndemn(ArrayList<TypeRegIndemn> listeTypeRegIndemn) {
 		this.listeTypeRegIndemn = listeTypeRegIndemn;
 	}
 
@@ -1762,7 +1766,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeTypeAvantage
 	 */
-	private ArrayList getListeTypeAvantage() {
+	private ArrayList<TypeAvantage> getListeTypeAvantage() {
 		return listeTypeAvantage;
 	}
 
@@ -1771,7 +1775,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeTypeAvantage
 	 */
-	private void setListeTypeAvantage(ArrayList listeTypeAvantage) {
+	private void setListeTypeAvantage(ArrayList<TypeAvantage> listeTypeAvantage) {
 		this.listeTypeAvantage = listeTypeAvantage;
 	}
 
@@ -1780,9 +1784,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeAvantageAAjouter
 	 */
-	public ArrayList getListeAvantageAAjouter() {
+	public ArrayList<AvantageNature> getListeAvantageAAjouter() {
 		if (listeAvantageAAjouter == null)
-			listeAvantageAAjouter = new ArrayList();
+			listeAvantageAAjouter = new ArrayList<AvantageNature>();
 		return listeAvantageAAjouter;
 	}
 
@@ -1791,9 +1795,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeAvantageASupprimer
 	 */
-	private ArrayList getListeAvantageASupprimer() {
+	private ArrayList<AvantageNature> getListeAvantageASupprimer() {
 		if (listeAvantageASupprimer == null)
-			listeAvantageASupprimer = new ArrayList();
+			listeAvantageASupprimer = new ArrayList<AvantageNature>();
 		return listeAvantageASupprimer;
 	}
 
@@ -1802,9 +1806,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeDelegationAAjouter
 	 */
-	public ArrayList getListeDelegationAAjouter() {
+	public ArrayList<Delegation> getListeDelegationAAjouter() {
 		if (listeDelegationAAjouter == null)
-			listeDelegationAAjouter = new ArrayList();
+			listeDelegationAAjouter = new ArrayList<Delegation>();
 		return listeDelegationAAjouter;
 	}
 
@@ -1813,9 +1817,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeDelegationASupprimer
 	 */
-	private ArrayList getListeDelegationASupprimer() {
+	private ArrayList<Delegation> getListeDelegationASupprimer() {
 		if (listeDelegationASupprimer == null)
-			listeDelegationASupprimer = new ArrayList();
+			listeDelegationASupprimer = new ArrayList<Delegation>();
 		return listeDelegationASupprimer;
 	}
 
@@ -1824,9 +1828,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeRegimeAAjouter
 	 */
-	public ArrayList getListeRegimeAAjouter() {
+	public ArrayList<RegimeIndemnitaire> getListeRegimeAAjouter() {
 		if (listeRegimeAAjouter == null)
-			listeRegimeAAjouter = new ArrayList();
+			listeRegimeAAjouter = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeAAjouter;
 	}
 
@@ -1835,9 +1839,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeRegimeASupprimer
 	 */
-	private ArrayList getListeRegimeASupprimer() {
+	private ArrayList<RegimeIndemnitaire> getListeRegimeASupprimer() {
 		if (listeRegimeASupprimer == null)
-			listeRegimeASupprimer = new ArrayList();
+			listeRegimeASupprimer = new ArrayList<RegimeIndemnitaire>();
 		return listeRegimeASupprimer;
 	}
 
@@ -1846,9 +1850,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
-	private ArrayList getListePrimePointageASupprimer() {
+	private ArrayList<PrimePointage> getListePrimePointageASupprimer() {
 		if (listePrimePointageASupprimer == null)
-			listePrimePointageASupprimer = new ArrayList();
+			listePrimePointageASupprimer = new ArrayList<PrimePointage>();
 		return listePrimePointageASupprimer;
 	}
 
@@ -1857,9 +1861,9 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
-	public ArrayList getListePrimePointageAAjouter() {
+	public ArrayList<PrimePointage> getListePrimePointageAAjouter() {
 		if (listePrimePointageAAjouter == null)
-			listePrimePointageAAjouter = new ArrayList();
+			listePrimePointageAAjouter = new ArrayList<PrimePointage>();
 		return listePrimePointageAAjouter;
 	}
 
@@ -1868,7 +1872,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeNatureAvantage
 	 */
-	private ArrayList getListeNatureAvantage() {
+	private ArrayList<NatureAvantage> getListeNatureAvantage() {
 		return listeNatureAvantage;
 	}
 
@@ -1877,7 +1881,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeRubrique
 	 */
-	private ArrayList getListeRubrique() {
+	private ArrayList<Rubrique> getListeRubrique() {
 		return listeRubrique;
 	}
 
@@ -1886,7 +1890,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeNatureAvantage
 	 */
-	private void setListeNatureAvantage(ArrayList listeNatureAvantage) {
+	private void setListeNatureAvantage(ArrayList<NatureAvantage> listeNatureAvantage) {
 		this.listeNatureAvantage = listeNatureAvantage;
 	}
 
@@ -1895,7 +1899,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeRubrique
 	 */
-	private void setListeRubrique(ArrayList listeRubrique) {
+	private void setListeRubrique(ArrayList<Rubrique> listeRubrique) {
 		this.listeRubrique = listeRubrique;
 	}
 
@@ -1904,7 +1908,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeAvantageAFF
 	 */
-	public ArrayList getListeAvantageAFF() {
+	public ArrayList<AvantageNature> getListeAvantageAFF() {
 		return listeAvantageAFF;
 	}
 
@@ -1913,7 +1917,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeAvantageAFF
 	 */
-	private void setListeAvantageAFF(ArrayList listeAvantageAFF) {
+	private void setListeAvantageAFF(ArrayList<AvantageNature> listeAvantageAFF) {
 		this.listeAvantageAFF = listeAvantageAFF;
 	}
 
@@ -1922,7 +1926,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeDelegationAFF
 	 */
-	public ArrayList getListeDelegationAFF() {
+	public ArrayList<Delegation> getListeDelegationAFF() {
 		return listeDelegationAFF;
 	}
 
@@ -1931,7 +1935,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeDelegationAFF
 	 */
-	private void setListeDelegationAFF(ArrayList listeDelegationAFF) {
+	private void setListeDelegationAFF(ArrayList<Delegation> listeDelegationAFF) {
 		this.listeDelegationAFF = listeDelegationAFF;
 	}
 
@@ -1940,7 +1944,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeRegimeAFF
 	 */
-	public ArrayList getListeRegimeAFF() {
+	public ArrayList<RegimeIndemnitaire> getListeRegimeAFF() {
 		return listeRegimeAFF;
 	}
 
@@ -1949,7 +1953,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listeRegimeAFF
 	 */
-	private void setListeRegimeAFF(ArrayList listeRegimeAFF) {
+	private void setListeRegimeAFF(ArrayList<RegimeIndemnitaire> listeRegimeAFF) {
 		this.listeRegimeAFF = listeRegimeAFF;
 	}
 
@@ -1958,7 +1962,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listePrimePointageAFF
 	 */
-	public ArrayList getListePrimePointageAFF() {
+	public ArrayList<PrimePointage> getListePrimePointageAFF() {
 		return listePrimePointageAFF;
 	}
 
@@ -1967,7 +1971,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listePrimePointageAFF
 	 */
-	private void setListePrimePointageAFF(ArrayList listePrimePointageAFF) {
+	private void setListePrimePointageAFF(ArrayList<PrimePointage> listePrimePointageAFF) {
 		this.listePrimePointageAFF = listePrimePointageAFF;
 	}
 
@@ -2458,7 +2462,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeAvantageFP
 	 */
-	public ArrayList getListeAvantageFP() {
+	public ArrayList<AvantageNature> getListeAvantageFP() {
 		return listeAvantageFP;
 	}
 
@@ -2468,7 +2472,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * @param listeAvantageFP
 	 *            listeAvantageFP à définir
 	 */
-	private void setListeAvantageFP(ArrayList listeAvantageFP) {
+	private void setListeAvantageFP(ArrayList<AvantageNature> listeAvantageFP) {
 		this.listeAvantageFP = listeAvantageFP;
 	}
 
@@ -2477,7 +2481,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeDelegationFP
 	 */
-	public ArrayList getListeDelegationFP() {
+	public ArrayList<Delegation> getListeDelegationFP() {
 		return listeDelegationFP;
 	}
 
@@ -2487,7 +2491,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * @param listeDelegationFP
 	 *            listeDelegationFP à définir
 	 */
-	private void setListeDelegationFP(ArrayList listeDelegationFP) {
+	private void setListeDelegationFP(ArrayList<Delegation> listeDelegationFP) {
 		this.listeDelegationFP = listeDelegationFP;
 	}
 
@@ -2496,7 +2500,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listeRegimeFP
 	 */
-	public ArrayList getListeRegimeFP() {
+	public ArrayList<RegimeIndemnitaire> getListeRegimeFP() {
 		return listeRegimeFP;
 	}
 
@@ -2506,7 +2510,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * @param listeRegimeFP
 	 *            listeRegimeFP à définir
 	 */
-	private void setListeRegimeFP(ArrayList listeRegimeFP) {
+	private void setListeRegimeFP(ArrayList<RegimeIndemnitaire> listeRegimeFP) {
 		this.listeRegimeFP = listeRegimeFP;
 	}
 
@@ -2515,7 +2519,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @return listePrimePointageFP
 	 */
-	public ArrayList getListePrimePointageFP() {
+	public ArrayList<PrimePointage> getListePrimePointageFP() {
 		return listePrimePointageFP;
 	}
 
@@ -2524,7 +2528,7 @@ public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess
 	 * 
 	 * @param listePrimePointageFP
 	 */
-	private void setListePrimePointageFP(ArrayList listePrimePointageFP) {
+	private void setListePrimePointageFP(ArrayList<PrimePointage> listePrimePointageFP) {
 		this.listePrimePointageFP = listePrimePointageFP;
 	}
 

@@ -91,7 +91,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 		ArrayList<EaeEvalue> listeEaeEvalue = new ArrayList<EaeEvalue>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeEvalue evalue = new EaeEvalue();
 			// logger.debug("List evalue : " + row.toString());
 			BigDecimal idEAEEvalue = (BigDecimal) row.get(CHAMP_ID_EAE_EVALUE);

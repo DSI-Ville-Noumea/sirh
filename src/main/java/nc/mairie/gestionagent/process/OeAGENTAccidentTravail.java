@@ -69,7 +69,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	public String ACTION_DOCUMENT = "Documents d'une fiche AT.";
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche AT.";
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche AT.";
-	private ArrayList listeDocuments;
+	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
@@ -115,7 +115,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		// Si hashtable des types d'accident de travail vide
 		// RG_AG_AT_C01
 		if (getHashTypeAT().size() == 0) {
-			ArrayList listeTypeAT = TypeAT.listerTypeAT(getTransaction());
+			ArrayList<TypeAT> listeTypeAT = TypeAT.listerTypeAT(getTransaction());
 			setListeTypeAT(listeTypeAT);
 
 			int[] tailles = { 40 };
@@ -133,7 +133,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		// RG_AG_AT_C02
 
 		if (getHashSiegeLesion().size() == 0) {
-			ArrayList listeSiegeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
+			ArrayList<SiegeLesion> listeSiegeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
 			setListeSiegeLesion(listeSiegeLesion);
 
 			int[] tailles = { 40 };
@@ -166,7 +166,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
-		ArrayList listeAT = AccidentTravail.listerAccidentTravailAgent(getTransaction(), getAgentCourant());
+		ArrayList<AccidentTravail> listeAT = AccidentTravail.listerAccidentTravailAgent(getTransaction(), getAgentCourant());
 		setListeAT(listeAT);
 
 		int indiceAcc = 0;
@@ -176,7 +176,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAT());
 				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
 						at.getIdAT());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
@@ -1131,13 +1131,13 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	 * @param newListeDocuments
 	 *            ArrayList
 	 */
-	private void setListeDocuments(ArrayList newListeDocuments) {
+	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
 
-	public ArrayList getListeDocuments() {
+	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}
@@ -1149,7 +1149,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
 				getAccidentTravailCourant().getIdAT());
 		setListeDocuments(listeDocAgent);
 
@@ -1764,7 +1764,7 @@ public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
 		// nom de contrat
-		for (Iterator iter = getListeDocuments().iterator(); iter.hasNext();) {
+		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
 			// on supprime l'extension
 			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));

@@ -39,7 +39,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	public String focus = null;
@@ -106,7 +106,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -301,7 +301,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 					getTransaction().traiterErreur();
 				// on regarde si il y a d'autre carrieres avec le meme grade
 				// si oui on prend la carriere plus lointaine
-				ArrayList listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), a.getNoMatricule(), carr.getCodeGrade());
+				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), a.getNoMatricule(), carr.getCodeGrade());
 				if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 					carr = (Carriere) listeCarrMemeGrade.get(0);
 				}
@@ -639,7 +639,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -648,7 +648,7 @@ public class OeAVCTSimulationFonctionnaires extends nc.mairie.technique.BasicPro
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

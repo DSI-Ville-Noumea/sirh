@@ -193,7 +193,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 			setListeCampagneEAE(listeCamp);
 			int[] tailles = { 5 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeCamp.listIterator(); list.hasNext();) {
+			for (ListIterator<CampagneEAE> list = listeCamp.listIterator(); list.hasNext();) {
 				CampagneEAE camp = (CampagneEAE) list.next();
 				String ligne[] = { camp.getAnnee().toString() };
 				aFormat.ajouteLigne(ligne);
@@ -1212,7 +1212,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	 * RG_PE_FE_A05
 	 */
 	public boolean performPB_AJOUTER_DESTINATAIRE(HttpServletRequest request) throws Exception {
-		ArrayList listeDesti = new ArrayList();
+		ArrayList<AgentNW> listeDesti = new ArrayList<AgentNW>();
 		if (getListeDestinataireMulti() != null) {
 			listeDesti.addAll(getListeDestinataireMulti());
 		}
@@ -1271,7 +1271,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 	 */
 	public ArrayList<AgentNW> getListeDestinataireMulti() {
 		if (listeDestinataireMulti == null)
-			listeDestinataireMulti = new ArrayList();
+			listeDestinataireMulti = new ArrayList<AgentNW>();
 		return listeDestinataireMulti;
 	}
 
@@ -1323,7 +1323,7 @@ public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProces
 		}
 		// on recupere les Destinataire selectionnées dans l'ecran de
 		// selection
-		ArrayList listeDestinataireSelect = (ArrayList) VariablesActivite.recuperer(this, "ACTEURS");
+		ArrayList<AgentNW> listeDestinataireSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "ACTEURS");
 		if (listeDestinataireSelect != null && listeDestinataireSelect.size() != 0) {
 			for (int i = 0; i < listeDestinataireSelect.size(); i++) {
 				AgentNW a = (AgentNW) listeDestinataireSelect.get(i);

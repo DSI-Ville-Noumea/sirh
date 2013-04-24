@@ -14,7 +14,7 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProcess {
-	private ArrayList listeCompetences;
+	private ArrayList<Competence> listeCompetences;
 	public String focus = null;
 
 	/**
@@ -42,10 +42,10 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		if (getListeCompetences() == null) {
-			ArrayList xcludeListeSavoir = (ArrayList) VariablesActivite.recuperer(this, "LISTECOMPETENCESAVOIR");
-			ArrayList xcludeListeSavoirFaire = (ArrayList) VariablesActivite.recuperer(this, "LISTECOMPETENCESAVOIRFAIRE");
-			ArrayList xcludeListeComportement = (ArrayList) VariablesActivite.recuperer(this, "LISTECOMPETENCECOMPORTEMENT");
-			ArrayList aListe = new ArrayList();
+			ArrayList<Competence> xcludeListeSavoir = (ArrayList<Competence>) VariablesActivite.recuperer(this, "LISTECOMPETENCESAVOIR");
+			ArrayList<Competence> xcludeListeSavoirFaire = (ArrayList<Competence>) VariablesActivite.recuperer(this, "LISTECOMPETENCESAVOIRFAIRE");
+			ArrayList<Competence> xcludeListeComportement = (ArrayList<Competence>) VariablesActivite.recuperer(this, "LISTECOMPETENCECOMPORTEMENT");
+			ArrayList<Competence> aListe = new ArrayList<Competence>();
 
 			if (xcludeListeSavoir != null) {
 				aListe = Competence.listerCompetenceAvecType(getTransaction(), EnumTypeCompetence.SAVOIR.getCode());
@@ -109,7 +109,7 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
 	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs avec l2
 	 * fonctionne uniquement avec une liste l1 n'ayant pas 2 elements identiques
 	 */
-	public static ArrayList elim_doubure_competences(ArrayList l1, ArrayList l2) {
+	public static ArrayList<Competence> elim_doubure_competences(ArrayList<Competence> l1, ArrayList<Competence> l2) {
 		if (null == l1)
 			return null;
 
@@ -144,7 +144,7 @@ public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProce
      *
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
-		ArrayList listCompSelect = new ArrayList();
+		ArrayList<Competence> listCompSelect = new ArrayList<Competence>();
 		for (int j = 0; j < getListeCompetences().size(); j++) {
 			//on recupère la ligne concernée
 			Competence comp = (Competence) getListeCompetences().get(j);

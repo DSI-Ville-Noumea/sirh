@@ -49,7 +49,7 @@ public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 		ArrayList<EaeFDPActivite> listeEaeFDPActivite = new ArrayList<EaeFDPActivite>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEaeFichePoste });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFDPActivite acti = new EaeFDPActivite();
 			// logger.debug("List activites : " + row.toString());
 			BigDecimal idActi = (BigDecimal) row.get(CHAMP_ID_EAE_FDP_ACTIVITE);

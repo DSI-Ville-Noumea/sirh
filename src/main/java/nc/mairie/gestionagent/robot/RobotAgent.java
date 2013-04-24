@@ -251,7 +251,7 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 	 * 
 	 * @return Hashtable
 	 */
-	protected Hashtable initialiseNavigation() {
+	protected Hashtable<String, String> initialiseNavigation() {
 
 		Hashtable<String, String> navigation = new Hashtable<String, String>();
 

@@ -63,7 +63,7 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 		ArrayList<EaeFinalisation> listeEaeFinalisation = new ArrayList<EaeFinalisation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFinalisation dev = new EaeFinalisation();
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_FINALISATION);
 			dev.setIdEaeFinalisation(id.intValue());

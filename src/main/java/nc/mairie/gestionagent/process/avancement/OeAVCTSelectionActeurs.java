@@ -33,8 +33,8 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		if (getListeActeurs().size()==0) {
-			ArrayList xcludeListe = (ArrayList) VariablesActivite.recuperer(this, "LISTEACTEURS");
-			ArrayList aListe = new ArrayList();
+			ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEACTEURS");
+			ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), "DD");
 			aListe = elim_doubure_acteurs(aListe, xcludeListe);
 
@@ -60,7 +60,7 @@ public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs avec l2
 	 * fonctionne uniquement avec une liste l1 n'ayant pas 2 elements identiques
 	 */
-	public static ArrayList elim_doubure_acteurs(ArrayList l1, ArrayList l2) {
+	public static ArrayList<AgentNW> elim_doubure_acteurs(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
 		if (null == l1)
 			return null;
 

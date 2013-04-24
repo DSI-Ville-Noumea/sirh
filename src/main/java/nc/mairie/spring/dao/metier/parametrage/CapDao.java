@@ -40,7 +40,7 @@ public class CapDao implements CapDaoInterface {
 		ArrayList<Cap> listeCap = new ArrayList<Cap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Cap cap = new Cap();
 			cap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
 			cap.setCodeCap((String) row.get(CHAMP_CODE_CAP));

@@ -37,7 +37,7 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 		ArrayList<TitreFormation> listeTitreFormation = new ArrayList<TitreFormation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			TitreFormation titre = new TitreFormation();
 			titre.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
 			titre.setLibTitreFormation((String) row.get(CHAMP_LIB_TITRE_FORMATION));

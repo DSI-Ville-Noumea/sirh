@@ -24,7 +24,7 @@ public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
 	public String ACTION_MODIFICATION = "Modifier";
 	public String ACTION_AJOUT = "Ajouter";
 
-	private ArrayList listeCompetence;
+	private ArrayList<Competence> listeCompetence;
 	private Competence competenceCourant;
 	private TypeCompetence typeCompetenceCourant;
 

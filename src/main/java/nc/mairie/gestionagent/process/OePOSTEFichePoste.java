@@ -68,6 +68,7 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.FormateListe;
@@ -2046,18 +2047,23 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 			// Sauvegarde des nouvelles primes de pointage et suppression des
 			// anciens
 			for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
+				Integer idCree = null;
 				try {
 					PrimePointage regIndemn = (PrimePointage) getListePrimePointageAAjouter().get(i);
-					Integer idCree = getPrimePointageDao().creerPrimePointage(regIndemn.getIdRubrique());
+					idCree = getPrimePointageDao().creerPrimePointage(regIndemn.getIdRubrique());
 					PrimePointageFP riFP = new PrimePointageFP();
 					riFP.setIdFichePoste(Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 					riFP.setIdPrimePointage(idCree);
 					getPrimePointageFPDao().creerPrimePointageFP(riFP.getIdPrimePointage(), riFP.getIdFichePoste());
 				} catch (Exception e) {
+					if (idCree != null) {
+						getPrimePointageDao().supprimerPrimePointage(idCree);
+					}
 					getTransaction().declarerErreur(" Au moins une prime de pointage n'a pu être créé.");
 					return false;
 				}
 			}
+
 			for (int i = 0; i < getListePrimePointageASupprimer().size(); i++) {
 				try {
 					PrimePointage ri = (PrimePointage) getListePrimePointageASupprimer().get(i);
@@ -2118,14 +2124,15 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 		}
 
 		// appel WS mise à jour Abre FDP
-		// TODO
-		/*
-		 * if (!miseAJourArbreFDP()) { // "ERR970", //
-		 * "Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
-		 * if (getTransaction().isErreur()) getTransaction().traiterErreur();
-		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
-		 * messageInf = ""; return false; }
-		 */
+		if (!miseAJourArbreFDP()) {
+			// "ERR970","Une erreur est survenue lors de la mise à jour de l'arbre des Fiche de poste. Merci de contacter le responsable du projet car celà engendre un soucis sur le Kiosque RH."
+			if (getTransaction().isErreur())
+				getTransaction().traiterErreur();
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
+			messageInf = "";
+			return false;
+		}
+
 		return true;
 	}
 
@@ -3549,7 +3556,7 @@ public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
 	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
 	 *         elements identiques
 	 */
-	public static ArrayList elim_doubure_activites(ArrayList l1, ArrayList l2) {
+	public static ArrayList<Activite> elim_doubure_activites(ArrayList<Activite> l1, ArrayList<Activite> l2) {
 		if (null == l1)
 			return null;
 

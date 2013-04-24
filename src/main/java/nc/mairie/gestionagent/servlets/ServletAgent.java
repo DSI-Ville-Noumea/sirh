@@ -119,7 +119,7 @@ public class ServletAgent extends Frontale {
 		UserAppli aUserAppli = getUserAppli(request);
 
 		Transaction t = new Transaction(getUserAppli(request));
-		ArrayList autorisations = Autorisation.listerAutorisationAvecUtilisateur(t, aUserAppli.getUserName());
+		ArrayList<Autorisation> autorisations = Autorisation.listerAutorisationAvecUtilisateur(t, aUserAppli.getUserName());
 		t.rollbackTransaction();
 
 		Autorisation a;

@@ -55,18 +55,18 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	private String[] LB_SITUATION;
 	private String[] LB_TCONTACT;
 	private String[] LB_TYPE_SERVICE;
-	private ArrayList listeCollectivite;
-	private ArrayList listeCommuneDomNoumea;
-	private ArrayList listeCommuneDomAutre;
-	private ArrayList listeCommuneBP;
-	private ArrayList listeSituation;
-	private ArrayList listeBanqueGuichet;
-	private ArrayList listeTypeServiceMilitaire;
+	private ArrayList<Collectivite> listeCollectivite;
+	private ArrayList<CommunePostal> listeCommuneDomNoumea;
+	private ArrayList<CommunePostal> listeCommuneDomAutre;
+	private ArrayList<CommunePostal> listeCommuneBP;
+	private ArrayList<SituationFamiliale> listeSituation;
+	private ArrayList<BanqueGuichet> listeBanqueGuichet;
+	private ArrayList<EtatServiceMilitaire> listeTypeServiceMilitaire;
 	private String[] listeNationalite;
 	private nc.mairie.metier.agent.AgentNW agentCourant;
 	private String lieuNaissance;
 	private Pays paysNaissanceCourant;
-	private java.lang.Object commNaissanceCourant;
+	private Object commNaissanceCourant;
 	private VoieQuartier voieQuartierCourant;
 	private CommunePostal communeDomCourant;
 	private CommunePostal communeBPCourant;
@@ -84,7 +84,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	public String ACTION_SUPPRESSION = "Suppression d'un contact.<FONT color='red'><div align='right'> Veuillez valider votre choix.</div></FONT>";
 	private String ACTION_MODIFICATION = "Modification.";
 	private String ACTION_CREATION = "Création.";
-	private ArrayList listeTypeContact;
+	private ArrayList<TypeContact> listeTypeContact;
 	public String messageDesign = Const.CHAINE_VIDE;
 
 	public boolean diffusableModifiable = true;
@@ -267,7 +267,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		if (creation) {
 			String dateNaiss = Services.formateDateInternationale(getVAL_EF_DATE_NAISSANCE());
 
-			ArrayList listAgent = AgentNW.listerAgentHomonyme(getTransaction(), getAgentCourant().getNomUsage(), getAgentCourant().getPrenomUsage(),
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentHomonyme(getTransaction(), getAgentCourant().getNomUsage(), getAgentCourant().getPrenomUsage(),
 					dateNaiss);
 			listAgent.remove(getAgentCourant());
 			if (listAgent.size() > 0) {
@@ -899,7 +899,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 						}
 					}
 					if (!dejaLigneDirecte) {
-						ArrayList contactExist = ContactNW.listerContactAgentAvecTypeContact(getTransaction(), getAgentCourant(),
+						ArrayList<ContactNW> contactExist = ContactNW.listerContactAgentAvecTypeContact(getTransaction(), getAgentCourant(),
 								EnumTypeContact.LIGNE_DIRECTE.getCode());
 						if (contactExist != null && contactExist.size() > 0) {
 							dejaLigneDirecte = true;
@@ -2186,7 +2186,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// Si liste collectivité vide alors affectation
 		// RG_AG_EC_A01
 		if (getLB_COLLECTIVITE() == LBVide) {
-			ArrayList col = Collectivite.listerCollectivite(getTransaction());
+			ArrayList<Collectivite> col = Collectivite.listerCollectivite(getTransaction());
 			setListeCollectivite(col);
 
 			int[] tailles = { 40 };
@@ -2207,7 +2207,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// Si liste situation vide alors affectation
 		// RG_AG_EC_A03
 		if (getLB_SITUATION() == LBVide) {
-			ArrayList sf = SituationFamiliale.listerSituationFamiliale(getTransaction());
+			ArrayList<SituationFamiliale> sf = SituationFamiliale.listerSituationFamiliale(getTransaction());
 			setListeSituation(sf);
 
 			int[] tailles = { 12 };
@@ -2226,8 +2226,8 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 
 		// Si liste commune domicile vide alors affectation
 		if (getLB_COMMUNE_DOM() == LBVide) {
-			ArrayList cpn = CommunePostal.listerCommunePostalNoumea(getTransaction());
-			ArrayList cpa = CommunePostal.listerCommunePostalHorsNoumea(getTransaction());
+			ArrayList<CommunePostal> cpn = CommunePostal.listerCommunePostalNoumea(getTransaction());
+			ArrayList<CommunePostal> cpa = CommunePostal.listerCommunePostalHorsNoumea(getTransaction());
 
 			CommunePostal commVide = new CommunePostal();
 			cpn.add(0, commVide);
@@ -2238,8 +2238,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 
 		// Si liste commune BP vide alors affectation
 		if (getLB_COMMUNE_BP() == LBVide) {
-			ArrayList a = null;
-			a = CommunePostal.listerCommunePostalAvecCodCommuneCommencant(getTransaction(), "988");
+			ArrayList<CommunePostal> a = CommunePostal.listerCommunePostalAvecCodCommuneCommencant(getTransaction(), "988");
 			CommunePostal commVide = new CommunePostal();
 			a.add(0, commVide);
 			setListeCommuneBP(a);
@@ -2292,7 +2291,8 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 
 		addZone(getNOM_LB_CIVILITE_SELECT(), getAgentCourant().getCivilite());
 
-		addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
+		addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getNomAgent() + " "
+				+ getAgentCourant().getPrenomAgent());
 		addZone(getNOM_ST_SEXE(),
 				(getAgentCourant().getCivilite().equals(EnumCivilite.M.getCode()) ? EnumSexe.MASCULIN.getValue() : EnumSexe.FEMININ.getValue()));
 		addZone(getNOM_EF_NOM_PATRONYMIQUE(), getAgentCourant().getNomPatronymique());
@@ -2405,7 +2405,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// si liste des banques/guichets vide alors
 		// RG_AG_EC_A05
 		if (getLB_BANQUE_GUICHET() == LBVide) {
-			ArrayList a = BanqueGuichet.listerBanqueGuichet(getTransaction());
+			ArrayList<BanqueGuichet> a = BanqueGuichet.listerBanqueGuichet(getTransaction());
 			a.add(0, null);
 			setListeBanqueGuichet(a);
 			int tailles[] = { 5, 1, 5 };
@@ -2452,7 +2452,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// Init de la liste des villes de l'adresse
 		int[] tailles = { 5, 12 };
 		String[] champs = { "codCodePostal", "libCommune" };
-		ArrayList listeCommunes = null;
+		ArrayList<CommunePostal> listeCommunes = null;
 		if (getVAL_RG_VILLE_DOMICILE().equals(getNOM_RB_VILLE_DOMICILE_NOUMEA())) {
 			listeCommunes = getListeCommuneDomNoumea();
 		} else {
@@ -2515,7 +2515,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// Si la liste des Types de Service vide alors
 		// RG_AG_EC_A06
 		if (getLB_TYPE_SERVICE() == LBVide) {
-			ArrayList esm = EtatServiceMilitaire.listerEtatServiceMilitaire(getTransaction());
+			ArrayList<EtatServiceMilitaire> esm = EtatServiceMilitaire.listerEtatServiceMilitaire(getTransaction());
 			setListeTypeServiceMilitaire(esm);
 			int tailles[] = { 20 };
 			String colonnes[] = { "libEtatService" };
@@ -2556,7 +2556,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		// Si liste des type de contact vide
 		// RG_AG_EC_A07
 		if (getLB_TCONTACT() == LBVide) {
-			ArrayList a = TypeContact.listerTypeContact(getTransaction());
+			ArrayList<TypeContact> a = TypeContact.listerTypeContact(getTransaction());
 			setListeTypeContact(a);
 
 			int[] tailles = { 50 };
@@ -2564,7 +2564,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 			setLB_TCONTACT(new FormateListe(tailles, a, champs).getListeFormatee());
 
 			// Remplissage de la hashtable des types de contacts.
-			for (ListIterator list = a.listIterator(); list.hasNext();) {
+			for (ListIterator<TypeContact> list = a.listIterator(); list.hasNext();) {
 				TypeContact aTypeContact = (TypeContact) list.next();
 				getHashTypeContact().put(aTypeContact.getCodTypeContact(), aTypeContact);
 			}
@@ -2576,7 +2576,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeContact(HttpServletRequest request) throws Exception {
 
-		ArrayList a = ContactNW.listerContactAgent(getTransaction(), getAgentCourant());
+		ArrayList<ContactNW> a = ContactNW.listerContactAgent(getTransaction(), getAgentCourant());
 		setListeContact(a);
 
 		afficheListeContact();
@@ -2593,11 +2593,11 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 				ContactNW aContact = (ContactNW) getListeContact().get(i);
 				TypeContact aType = TypeContact.chercherTypeContact(getTransaction(), aContact.getIdTypeContact());
 
-				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibTypeContact().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType
-						.getLibTypeContact());
+				addZone(getNOM_ST_TYPE_CONTACT(indiceContact),
+						aType.getLibTypeContact().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType.getLibTypeContact());
 				addZone(getNOM_ST_DIFFUSABLE_CONTACT(indiceContact), aContact.isDiffusable() ? "Diffusable" : "Non diffusable");
-				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact), aContact.getDescription().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: aContact.getDescription());
+				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact),
+						aContact.getDescription().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aContact.getDescription());
 				addZone(getNOM_ST_PRIORITAIRE_CONTACT(indiceContact), aContact.isPrioritaire() ? "Prioritaire" : "Non prioritaire");
 
 				indiceContact++;
@@ -2738,9 +2738,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeSituation() {
+	private ArrayList<SituationFamiliale> getListeSituation() {
 		if (listeSituation == null) {
-			listeSituation = new ArrayList();
+			listeSituation = new ArrayList<SituationFamiliale>();
 		}
 		return listeSituation;
 	}
@@ -2752,7 +2752,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * @param newListeSituation
 	 *            ArrayList
 	 */
-	private void setListeSituation(ArrayList newListeSituation) {
+	private void setListeSituation(ArrayList<SituationFamiliale> newListeSituation) {
 		listeSituation = newListeSituation;
 	}
 
@@ -2775,9 +2775,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeBanqueGuichet() {
+	private ArrayList<BanqueGuichet> getListeBanqueGuichet() {
 		if (listeBanqueGuichet == null) {
-			listeBanqueGuichet = new ArrayList();
+			listeBanqueGuichet = new ArrayList<BanqueGuichet>();
 		}
 		return listeBanqueGuichet;
 	}
@@ -2789,7 +2789,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * @param newListeBanqueGuichet
 	 *            ArrayList
 	 */
-	private void setListeBanqueGuichet(ArrayList newListeBanqueGuichet) {
+	private void setListeBanqueGuichet(ArrayList<BanqueGuichet> newListeBanqueGuichet) {
 		listeBanqueGuichet = newListeBanqueGuichet;
 	}
 
@@ -3083,9 +3083,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeCommuneDomNoumea() {
+	private ArrayList<CommunePostal> getListeCommuneDomNoumea() {
 		if (listeCommuneDomNoumea == null) {
-			listeCommuneDomNoumea = new ArrayList();
+			listeCommuneDomNoumea = new ArrayList<CommunePostal>();
 		}
 		return listeCommuneDomNoumea;
 	}
@@ -3097,7 +3097,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * @param newListeCommuneDomNoumea
 	 *            ArrayList
 	 */
-	private void setListeCommuneDomNoumea(ArrayList newListeCommuneDomNoumea) {
+	private void setListeCommuneDomNoumea(ArrayList<CommunePostal> newListeCommuneDomNoumea) {
 		this.listeCommuneDomNoumea = newListeCommuneDomNoumea;
 	}
 
@@ -3107,9 +3107,9 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeCommuneDomAutre() {
+	private ArrayList<CommunePostal> getListeCommuneDomAutre() {
 		if (listeCommuneDomAutre == null) {
-			listeCommuneDomAutre = new ArrayList();
+			listeCommuneDomAutre = new ArrayList<CommunePostal>();
 		}
 		return listeCommuneDomAutre;
 	}
@@ -3121,7 +3121,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * @param newListeCommuneDomAutre
 	 *            ArrayList
 	 */
-	private void setListeCommuneDomAutre(ArrayList newListeCommuneDomAutre) {
+	private void setListeCommuneDomAutre(ArrayList<CommunePostal> newListeCommuneDomAutre) {
 		this.listeCommuneDomAutre = newListeCommuneDomAutre;
 	}
 
@@ -3188,7 +3188,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeTypeServiceMilitaire() {
+	private ArrayList<EtatServiceMilitaire> getListeTypeServiceMilitaire() {
 		return listeTypeServiceMilitaire;
 	}
 
@@ -3199,7 +3199,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * @param newListeTypeServiceMilitaire
 	 *            ArrayList
 	 */
-	private void setListeTypeServiceMilitaire(ArrayList newListeTypeServiceMilitaire) {
+	private void setListeTypeServiceMilitaire(ArrayList<EtatServiceMilitaire> newListeTypeServiceMilitaire) {
 		this.listeTypeServiceMilitaire = newListeTypeServiceMilitaire;
 	}
 
@@ -3319,7 +3319,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		return contactCourant;
 	}
 
-	private void setListeContact(ArrayList newListeContact) {
+	private void setListeContact(ArrayList<ContactNW> newListeContact) {
 		listeContact = newListeContact;
 	}
 
@@ -3329,14 +3329,14 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 		return listeContact;
 	}
 
-	private ArrayList getListeTypeContact() {
+	private ArrayList<TypeContact> getListeTypeContact() {
 		if (listeTypeContact == null) {
-			listeTypeContact = new ArrayList();
+			listeTypeContact = new ArrayList<TypeContact>();
 		}
 		return listeTypeContact;
 	}
 
-	private void setListeTypeContact(ArrayList newListeTypeContact) {
+	private void setListeTypeContact(ArrayList<TypeContact> newListeTypeContact) {
 		listeTypeContact = newListeTypeContact;
 	}
 
@@ -3684,7 +3684,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return
 	 */
-	private ArrayList getListeCommuneBP() {
+	private ArrayList<CommunePostal> getListeCommuneBP() {
 		return listeCommuneBP;
 	}
 
@@ -3693,7 +3693,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeCommuneBP
 	 */
-	private void setListeCommuneBP(ArrayList listeCommuneBP) {
+	private void setListeCommuneBP(ArrayList<CommunePostal> listeCommuneBP) {
 		this.listeCommuneBP = listeCommuneBP;
 	}
 
@@ -3870,7 +3870,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeCollectivite() {
+	private ArrayList<Collectivite> getListeCollectivite() {
 		return listeCollectivite;
 	}
 
@@ -3879,7 +3879,7 @@ public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeCollectivite
 	 */
-	private void setListeCollectivite(ArrayList listeCollectivite) {
+	private void setListeCollectivite(ArrayList<Collectivite> listeCollectivite) {
 		this.listeCollectivite = listeCollectivite;
 	}
 

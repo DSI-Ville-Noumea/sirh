@@ -43,12 +43,12 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 
 	private AgentNW agentCourant;
 	private LienEnfantNWAgentNW lienEnfantAgentCourant;
-	private ArrayList listeEnfants;
+	private ArrayList<EnfantNW> listeEnfants;
 	private ArrayList<Scolarite> listeScolarites;
 	private EnfantNW enfantCourant;
 	private Scolarite scolariteCourant;
 	private Pays paysNaissance;
-	private java.lang.Object communeNaissance;
+	private Object communeNaissance;
 	private AgentNW autreParentCourant;
 	private LienEnfantNWAgentNW lienEnfantAutreParent;
 
@@ -151,7 +151,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Récup des lien parent
-		ArrayList liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
+		ArrayList<LienEnfantNWAgentNW> liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
 		setAutreParentCourant(null);
 
 		if (liens.size() > 2) {
@@ -210,7 +210,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Récup des lien parent
-		ArrayList liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
+		ArrayList<LienEnfantNWAgentNW> liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
 		boolean estACharge = false;
 		setAutreParentCourant(null);
 
@@ -366,9 +366,9 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList getListeEnfants() {
+	public ArrayList<EnfantNW> getListeEnfants() {
 		if (listeEnfants == null) {
-			listeEnfants = new ArrayList();
+			listeEnfants = new ArrayList<EnfantNW>();
 		}
 		return listeEnfants;
 	}
@@ -767,7 +767,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeEnfants(HttpServletRequest request) throws Exception {
 
 		// Recherche des enfants de l'agent
-		ArrayList a = EnfantNW.listerEnfantAgent(getTransaction(), getAgentCourant());
+		ArrayList<EnfantNW> a = EnfantNW.listerEnfantAgent(getTransaction(), getAgentCourant());
 		setListeEnfants(a);
 
 		int indiceEnfant = 0;
@@ -1225,7 +1225,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 
 		// Verif enfant pas déjà existant (même nom, prénom, date de Naissance)
 		String dateNaiss = Services.formateDateInternationale(Services.formateDate(getVAL_EF_DATE_NAISS()));
-		ArrayList listEnfant = EnfantNW.listerEnfantHomonyme(getTransaction(), getVAL_EF_NOM(), getVAL_EF_PRENOM(), dateNaiss);
+		ArrayList<EnfantNW> listEnfant = EnfantNW.listerEnfantHomonyme(getTransaction(), getVAL_EF_NOM(), getVAL_EF_PRENOM(), dateNaiss);
 		if (getTransaction().isErreur()) {
 			getTransaction().declarerErreur(getTransaction().traiterErreur());
 			return false;
@@ -1328,7 +1328,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 			return false;
 
 		// Liste des scolarites
-		ArrayList scolaritesActuelles = Scolarite.listerScolariteEnfant(getTransaction(), getEnfantCourant().getId_enfant());
+		ArrayList<Scolarite> scolaritesActuelles = Scolarite.listerScolariteEnfant(getTransaction(), getEnfantCourant().getId_enfant());
 		for (int i = 0; i < scolaritesActuelles.size(); i++) {
 			Scolarite scol = (Scolarite) scolaritesActuelles.get(i);
 			if (!getListeScolarites().contains(scol)) {
@@ -1440,7 +1440,7 @@ public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
 	 * @param newListeEnfants
 	 *            ArrayList
 	 */
-	private void setListeEnfants(ArrayList newListeEnfants) {
+	private void setListeEnfants(ArrayList<EnfantNW> newListeEnfants) {
 		listeEnfants = newListeEnfants;
 	}
 

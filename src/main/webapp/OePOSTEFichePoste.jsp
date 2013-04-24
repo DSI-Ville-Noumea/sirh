@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
@@ -61,7 +62,7 @@
 			}
 		</SCRIPT>
 		<%
-		java.util.ArrayList listeTitres = process.getListeTitre();
+		ArrayList<TitrePoste> listeTitres = process.getListeTitre();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableTitres = new Array(\n";
@@ -90,7 +91,7 @@
 		<%@ include file="BanniereErreur.jsp" %>
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>" />
-			<fieldset class="sigp2Fieldset" style="width:1030px"/>
+			<fieldset class="sigp2Fieldset" style="width:1030px">
 				<legend class="sigp2Legend">Actions</legend>
 				<span class="sigp2Mandatory"> Recherche : </span>
 				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE() %>" style="margin-right:10px;">
@@ -102,7 +103,7 @@
 
 			<% if (!process.ACTION_RECHERCHE.equals(process.getVAL_ST_ACTION())){ %>
 
-				<fieldset class="sigp2Fieldset" style="width:1030px"/>
+				<fieldset class="sigp2Fieldset" style="width:1030px">
 					<legend class="sigp2Legend">Fiche de poste</legend>
 					
 						<% if ((process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) || process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) && process.getEmploiPrimaire() == null){ %>

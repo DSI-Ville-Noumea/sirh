@@ -1594,7 +1594,7 @@ public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}

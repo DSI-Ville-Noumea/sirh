@@ -68,7 +68,7 @@ public class RepresentantDao implements RepresentantDaoInterface {
 		ArrayList<Representant> listeRepresentant = new ArrayList<Representant>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Representant repre = new Representant();
 			repre.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
 			repre.setIdTypeRepresentant((Integer) row.get(CHAMP_ID_TYPE_REPRESENTANT));

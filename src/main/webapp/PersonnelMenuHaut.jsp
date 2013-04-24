@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <html>
 <head>
@@ -10,7 +11,7 @@
 
 <%
 nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
-java.util.ArrayList droits = aUser.getListeDroits();
+ArrayList<String> droits = aUser.getListeDroits();
 
 String res = 	"<script language=\"javascript\">\n"+
 		"var listeDroits = new Array(\n";

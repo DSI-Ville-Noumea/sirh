@@ -78,7 +78,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeMotif().listIterator(); list.hasNext();) {
+			for (ListIterator<MotifRecrutement> list = getListeMotif().listIterator(); list.hasNext();) {
 				MotifRecrutement mr = (MotifRecrutement) list.next();
 				String ligne[] = { mr.getLibMotifRecrut() };
 
@@ -101,7 +101,7 @@ public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeNonRec().listIterator(); list.hasNext();) {
+			for (ListIterator<MotifNonRecrutement> list = getListeNonRec().listIterator(); list.hasNext();) {
 				MotifNonRecrutement mr = (MotifNonRecrutement) list.next();
 				String ligne[] = { mr.getLibMotifNonRecrut() };
 

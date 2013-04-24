@@ -101,9 +101,6 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 	private void afficheListeHistoSuiviMed() throws ParseException, Exception {
 		for (int i = 0; i < getListeHistoSuiviMed().size(); i++) {
 			SuiviMedical sm = (SuiviMedical) getListeHistoSuiviMed().get(i);
-			if(sm.getIdAgent()==9002588){
-				System.out.println("ici");
-			}
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
@@ -443,13 +440,13 @@ public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
 		this.listeMois = strings;
 	}
 
-	public ArrayList getListeHistoSuiviMed() {
+	public ArrayList<SuiviMedical> getListeHistoSuiviMed() {
 		if (listeHistoSuiviMed == null)
-			return new ArrayList();
+			return new ArrayList<SuiviMedical>();
 		return listeHistoSuiviMed;
 	}
 
-	public void setListeHistoSuiviMed(ArrayList listeHistoSuiviMed) {
+	public void setListeHistoSuiviMed(ArrayList<SuiviMedical> listeHistoSuiviMed) {
 		this.listeHistoSuiviMed = listeHistoSuiviMed;
 	}
 

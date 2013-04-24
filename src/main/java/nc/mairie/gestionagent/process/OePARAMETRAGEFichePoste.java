@@ -98,7 +98,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des écoles vide
 		if (getHashEntiteEcole().size() == 0) {
-			ArrayList a = Ecole.listerEcole(getTransaction());
+			ArrayList<Ecole> a = Ecole.listerEcole(getTransaction());
 			setListeEntiteEcole(a);
 			initialiseListeEntiteGeoEcole(request);
 			// remplissage de la hashTable
@@ -133,7 +133,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 5, 70 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEntite().listIterator(); list.hasNext();) {
+			for (ListIterator<EntiteGeo> list = getListeEntite().listIterator(); list.hasNext();) {
 				EntiteGeo eg = (EntiteGeo) list.next();
 				String ligne[] = { eg.getCdEcol(), eg.getLibEntiteGeo() };
 
@@ -154,7 +154,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 6, 40 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEntiteEcole().listIterator(); list.hasNext();) {
+			for (ListIterator<Ecole> list = getListeEntiteEcole().listIterator(); list.hasNext();) {
 				Ecole ecole = (Ecole) list.next();
 				String ligne[] = { ecole.getCdecol(), ecole.getLiecol() };
 
@@ -177,7 +177,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTitrePoste().listIterator(); list.hasNext();) {
+			for (ListIterator<TitrePoste> list = getListeTitrePoste().listIterator(); list.hasNext();) {
 				TitrePoste tp = (TitrePoste) list.next();
 				String ligne[] = { tp.getLibTitrePoste() };
 
@@ -200,7 +200,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeAvantage().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeAvantage> list = getListeTypeAvantage().listIterator(); list.hasNext();) {
 				TypeAvantage ta = (TypeAvantage) list.next();
 				String ligne[] = { ta.getLibTypeAvantage() };
 
@@ -223,7 +223,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeNatureAvantage().listIterator(); list.hasNext();) {
+			for (ListIterator<NatureAvantage> list = getListeNatureAvantage().listIterator(); list.hasNext();) {
 				NatureAvantage na = (NatureAvantage) list.next();
 				String ligne[] = { na.getLibNatureAvantage() };
 
@@ -246,7 +246,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeDelegation().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeDelegation> list = getListeTypeDelegation().listIterator(); list.hasNext();) {
 				TypeDelegation td = (TypeDelegation) list.next();
 				String ligne[] = { td.getLibTypeDelegation() };
 
@@ -269,7 +269,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeRegime().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeRegIndemn> list = getListeTypeRegime().listIterator(); list.hasNext();) {
 				TypeRegIndemn tr = (TypeRegIndemn) list.next();
 				String ligne[] = { tr.getLibTypeRegIndemn() };
 
@@ -291,7 +291,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 6, 5 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeNFA().listIterator(); list.hasNext();) {
+			for (ListIterator<NFA> list = getListeNFA().listIterator(); list.hasNext();) {
 				NFA nfa = (NFA) list.next();
 				String ligne[] = { nfa.getCodeService(), nfa.getNFA() };
 
@@ -312,7 +312,7 @@ public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 6, 40 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeEcole().listIterator(); list.hasNext();) {
+			for (ListIterator<Ecole> list = getListeEcole().listIterator(); list.hasNext();) {
 				Ecole ecole = (Ecole) list.next();
 				String ligne[] = { ecole.getCdecol(), ecole.getLiecol() };
 

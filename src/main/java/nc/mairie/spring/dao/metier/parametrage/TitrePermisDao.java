@@ -37,7 +37,7 @@ public class TitrePermisDao implements TitrePermisDaoInterface {
 		ArrayList<TitrePermis> listeTitrePermis = new ArrayList<TitrePermis>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			TitrePermis titre = new TitrePermis();
 			titre.setIdTitrePermis((Integer) row.get(CHAMP_ID_PERMIS));
 			titre.setLibTitrePermis((String) row.get(CHAMP_LIB_PERMIS));

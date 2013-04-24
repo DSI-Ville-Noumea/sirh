@@ -30,11 +30,11 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	private String[] LB_GROUPES_AUTRES;
 	private String[] LB_GROUPES_UTILISATEUR;
 
-	private ArrayList listeUtilisateur;
-	private ArrayList listeGroupesAutres;
-	private ArrayList listeGroupesUtilisateur;
-	private ArrayList listeGroupesAAjouter;
-	private ArrayList listeGroupesARetirer;
+	private ArrayList<Utilisateur> listeUtilisateur;
+	private ArrayList<Groupe> listeGroupesAutres;
+	private ArrayList<Groupe> listeGroupesUtilisateur;
+	private ArrayList<Groupe> listeGroupesAAjouter;
+	private ArrayList<Groupe> listeGroupesARetirer;
 
 	public String ACTION_SUPPRESSION = "Suppression d'un utilisateur.";
 	private String ACTION_MODIFICATION = "Modification d'un utilisateur.";
@@ -45,7 +45,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	public String focus = null;
 	private Utilisateur utilisateurCourant;
 	public Hashtable<String, TreeHierarchy> hTree = null;
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -98,7 +98,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 			for (int i = 0; i < getListeUtilisateur().size(); i++) {
 				Utilisateur u = (Utilisateur) getListeUtilisateur().get(i);
 				String listeGroupes = Const.CHAINE_VIDE;
-				ArrayList groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(), u.getIdUtilisateur());
+				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(), u.getIdUtilisateur());
 				for (int j = 0; j < groupesUtilisateur.size(); j++) {
 					listeGroupes += j == 0 ? ((Groupe) groupesUtilisateur.get(j)).getLibGroupe() : ", "
 							+ ((Groupe) groupesUtilisateur.get(j)).getLibGroupe();
@@ -772,7 +772,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeUtilisateur
 	 */
-	public ArrayList getListeUtilisateur() {
+	public ArrayList<Utilisateur> getListeUtilisateur() {
 		return listeUtilisateur;
 	}
 
@@ -781,7 +781,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeUtilisateur
 	 */
-	private void setListeUtilisateur(ArrayList listeUtilisateur) {
+	private void setListeUtilisateur(ArrayList<Utilisateur> listeUtilisateur) {
 		this.listeUtilisateur = listeUtilisateur;
 	}
 
@@ -808,9 +808,9 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeGroupesUtilisateur
 	 */
-	private ArrayList getListeGroupesUtilisateur() {
+	private ArrayList<Groupe> getListeGroupesUtilisateur() {
 		if (listeGroupesUtilisateur == null)
-			listeGroupesUtilisateur = new ArrayList();
+			listeGroupesUtilisateur = new ArrayList<Groupe>();
 		return listeGroupesUtilisateur;
 	}
 
@@ -819,7 +819,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeGroupesUtilisateur
 	 */
-	private void setListeGroupesUtilisateur(ArrayList listeGroupesUtilisateur) {
+	private void setListeGroupesUtilisateur(ArrayList<Groupe> listeGroupesUtilisateur) {
 		this.listeGroupesUtilisateur = listeGroupesUtilisateur;
 	}
 
@@ -829,7 +829,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeGroupesAutres
 	 */
-	private ArrayList getListeGroupesAutres() {
+	private ArrayList<Groupe> getListeGroupesAutres() {
 		return listeGroupesAutres;
 	}
 
@@ -839,7 +839,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeGroupesAutres
 	 */
-	private void setListeGroupesAutres(ArrayList listeGroupesAutres) {
+	private void setListeGroupesAutres(ArrayList<Groupe> listeGroupesAutres) {
 		this.listeGroupesAutres = listeGroupesAutres;
 	}
 
@@ -848,9 +848,9 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeGroupesAAjouter
 	 */
-	private ArrayList getListeGroupesAAjouter() {
+	private ArrayList<Groupe> getListeGroupesAAjouter() {
 		if (listeGroupesAAjouter == null)
-			listeGroupesAAjouter = new ArrayList();
+			listeGroupesAAjouter = new ArrayList<Groupe>();
 		return listeGroupesAAjouter;
 	}
 
@@ -859,9 +859,9 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeGroupesARetirer
 	 */
-	private ArrayList getListeGroupesARetirer() {
+	private ArrayList<Groupe> getListeGroupesARetirer() {
 		if (listeGroupesARetirer == null)
-			listeGroupesARetirer = new ArrayList();
+			listeGroupesARetirer = new ArrayList<Groupe>();
 		return listeGroupesARetirer;
 	}
 
@@ -870,7 +870,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeGroupesAAjouter
 	 */
-	private void setListeGroupesAAjouter(ArrayList listeGroupesAAjouter) {
+	private void setListeGroupesAAjouter(ArrayList<Groupe> listeGroupesAAjouter) {
 		this.listeGroupesAAjouter = listeGroupesAAjouter;
 	}
 
@@ -879,7 +879,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeGroupesARetirer
 	 */
-	private void setListeGroupesARetirer(ArrayList listeGroupesARetirer) {
+	private void setListeGroupesARetirer(ArrayList<Groupe> listeGroupesARetirer) {
 		this.listeGroupesARetirer = listeGroupesARetirer;
 	}
 
@@ -1002,7 +1002,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -1052,7 +1052,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -1061,7 +1061,7 @@ public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

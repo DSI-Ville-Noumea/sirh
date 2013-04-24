@@ -38,7 +38,7 @@ public class EmployeurDao implements EmployeurDaoInterface {
 		ArrayList<Employeur> listeEmployeur = new ArrayList<Employeur>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Employeur employeur = new Employeur();
 			employeur.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
 			employeur.setLibEmployeur((String) row.get(CHAMP_LIB_EMPLOYEUR));

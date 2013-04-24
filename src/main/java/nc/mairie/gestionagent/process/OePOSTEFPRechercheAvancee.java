@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process;
 
+import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,10 +30,10 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	private String[] LB_TITRE_POSTE;
 	private String[] LB_STATUT;
 
-	private ArrayList listeStatut;
-	private ArrayList listeTitre;
-	private ArrayList listeServices;
-	private ArrayList listeFP;
+	private ArrayList<StatutFP> listeStatut;
+	private ArrayList<TitrePoste> listeTitre;
+	private ArrayList<Service> listeServices;
+	private ArrayList<FichePoste> listeFP;
 	private ArrayList<Affectation> listeAffectation;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
@@ -68,7 +69,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
-			ArrayList statut = StatutFP.listerStatutFP(getTransaction());
+			ArrayList<StatutFP> statut = StatutFP.listerStatutFP(getTransaction());
 			setListeStatut(statut);
 
 			int[] tailles = { 20 };
@@ -78,7 +79,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 
 		// Si liste localisation vide alors affectation
 		if (getLB_TITRE_POSTE() == LBVide) {
-			ArrayList titre = TitrePoste.listerTitrePoste(getTransaction());
+			ArrayList<TitrePoste> titre = TitrePoste.listerTitrePoste(getTransaction());
 			setListeTitre(titre);
 
 			int[] tailles = { 100 };
@@ -95,7 +96,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -239,7 +240,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
-		ArrayList fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ, statut, idTitre, getVAL_EF_NUM_FICHE_POSTE(),
+		ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ, statut, idTitre, getVAL_EF_NUM_FICHE_POSTE(),
 				agent);
 		setListeFP(fp);
 
@@ -428,7 +429,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList getListeTitre() {
+	public ArrayList<TitrePoste> getListeTitre() {
 		return listeTitre;
 	}
 
@@ -437,7 +438,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @param listeTitre
 	 */
-	private void setListeTitre(ArrayList listeTitre) {
+	private void setListeTitre(ArrayList<TitrePoste> listeTitre) {
 		this.listeTitre = listeTitre;
 	}
 
@@ -446,7 +447,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeStatut() {
+	private ArrayList<StatutFP> getListeStatut() {
 		return listeStatut;
 	}
 
@@ -455,7 +456,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @param listeStatut
 	 */
-	private void setListeStatut(ArrayList listeStatut) {
+	private void setListeStatut(ArrayList<StatutFP> listeStatut) {
 		this.listeStatut = listeStatut;
 	}
 
@@ -486,7 +487,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -495,7 +496,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 
@@ -541,9 +542,9 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return listeFP
 	 */
-	public ArrayList getListeFP() {
+	public ArrayList<FichePoste> getListeFP() {
 		if (listeFP == null)
-			listeFP = new ArrayList();
+			listeFP = new ArrayList<FichePoste>();
 		return listeFP;
 	}
 
@@ -552,7 +553,7 @@ public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @param listeFP
 	 */
-	private void setListeFP(ArrayList listeFP) {
+	private void setListeFP(ArrayList<FichePoste> listeFP) {
 		this.listeFP = listeFP;
 	}
 

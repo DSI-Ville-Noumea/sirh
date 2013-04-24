@@ -38,7 +38,7 @@ public class PrimePointageDao implements PrimePointageDaoInterface {
 		ArrayList<PrimePointage> listePrimePointage = new ArrayList<PrimePointage>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idFDP });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			PrimePointage primePointage = new PrimePointage();
 			primePointage.setIdPrimePointage((Integer) row.get(CHAMP_ID_PRIME_POINTAGE));
 			BigDecimal rubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);
@@ -57,7 +57,7 @@ public class PrimePointageDao implements PrimePointageDaoInterface {
 		ArrayList<PrimePointage> listePrimePointage = new ArrayList<PrimePointage>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAff });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			PrimePointage primePointage = new PrimePointage();
 			primePointage.setIdPrimePointage((Integer) row.get(CHAMP_ID_PRIME_POINTAGE));
 			BigDecimal rubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);

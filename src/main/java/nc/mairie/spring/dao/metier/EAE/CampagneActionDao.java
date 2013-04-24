@@ -48,7 +48,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 		ArrayList<CampagneAction> listeCampagneAction = new ArrayList<CampagneAction>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CampagneAction camp = new CampagneAction();
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());
@@ -102,7 +102,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 		ArrayList<CampagneAction> listeCampagneAction = new ArrayList<CampagneAction>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CampagneAction camp = new CampagneAction();
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());

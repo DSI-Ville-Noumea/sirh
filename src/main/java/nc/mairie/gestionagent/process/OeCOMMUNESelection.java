@@ -24,13 +24,13 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	private String origine;
 
 	// Pourla France
-	private ArrayList listeCommune;
+	private ArrayList<CommuneDepartement> listeCommune;
 
 	// Pour l'étranger
 
-	private ArrayList listePays = new ArrayList();
+	private ArrayList<Pays> listePays = new ArrayList<Pays>();
 	private Hashtable<Pays, ArrayList<?>> hashPaysCommuneEtrangere = new Hashtable<Pays, ArrayList<?>>();
-	private ArrayList listeCommunePays;
+	private ArrayList<CommuneEtrangere> listeCommunePays;
 	private Pays paysCourant;
 
 	public boolean estPaysSelectionne = false;
@@ -55,9 +55,9 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList getListePays() {
+	public ArrayList<Pays> getListePays() {
 		if (listePays == null) {
-			listePays = new ArrayList();
+			listePays = new ArrayList<Pays>();
 		}
 		return listePays;
 	}
@@ -141,7 +141,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 
-		ArrayList aListe = new ArrayList();
+		ArrayList<Pays> aListe = new ArrayList<Pays>();
 		setListeCommunePays(null);
 		setListePays(null);
 
@@ -187,7 +187,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	 * @param newListePays
 	 *            ArrayList
 	 */
-	private void setListePays(ArrayList newListePays) {
+	private void setListePays(ArrayList<Pays> newListePays) {
 		listePays = newListePays;
 	}
 
@@ -275,7 +275,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 			return false;
 		}
 
-		ArrayList aListe = new ArrayList();
+		ArrayList<CommuneDepartement> aListe = new ArrayList<CommuneDepartement>();
 
 		// Si numérique alors recherche de la commune
 		if (Services.estNumerique(zone)) {
@@ -338,9 +338,9 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList getListeCommune() {
+	public ArrayList<CommuneDepartement> getListeCommune() {
 		if (listeCommune == null) {
-			listeCommune = new ArrayList();
+			listeCommune = new ArrayList<CommuneDepartement>();
 		}
 		return listeCommune;
 	}
@@ -352,7 +352,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 	 * @param newListeCommune
 	 *            ArrayList
 	 */
-	private void setListeCommune(ArrayList newListeCommune) {
+	private void setListeCommune(ArrayList<CommuneDepartement> newListeCommune) {
 		listeCommune = newListeCommune;
 	}
 
@@ -614,7 +614,7 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 		}
 
 		// Recup des villes
-		ArrayList lesCommunes = (ArrayList) getHashPaysCommuneEtrangere().get(aPays);
+		ArrayList<CommuneEtrangere> lesCommunes = (ArrayList<CommuneEtrangere>) getHashPaysCommuneEtrangere().get(aPays);
 
 		setListeCommunePays(lesCommunes);
 		estPaysSelectionne = true;
@@ -674,14 +674,14 @@ public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
 		this.paysCourant = paysCourant;
 	}
 
-	public ArrayList getListeCommunePays() {
+	public ArrayList<CommuneEtrangere> getListeCommunePays() {
 		if (listeCommunePays == null) {
-			listeCommunePays = new ArrayList();
+			listeCommunePays = new ArrayList<CommuneEtrangere>();
 		}
 		return listeCommunePays;
 	}
 
-	private void setListeCommunePays(ArrayList listeCommunePays) {
+	private void setListeCommunePays(ArrayList<CommuneEtrangere> listeCommunePays) {
 		this.listeCommunePays = listeCommunePays;
 	}
 }

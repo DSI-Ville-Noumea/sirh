@@ -74,9 +74,9 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	private TypeContrat typeContratCourant;
 	private Motif motifCourant;
 	private ArrayList<Contrat> listeContrat;
-	private ArrayList listeTypeContrat;
+	private ArrayList<TypeContrat> listeTypeContrat;
 	private Hashtable<String, TypeContrat> hashTypeContrat;
-	private ArrayList listeMotif;
+	private ArrayList<Motif> listeMotif;
 	private Hashtable<String, Motif> hashMotif;
 	private Contrat contratCourant;
 	private Contrat contratReference;
@@ -388,7 +388,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		if (!getContratCourant().isAvenant()) {
 
 			boolean rgOK = true;
-			ArrayList lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+			ArrayList<Contrat> lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
 			for (int i = 0; i < lc.size(); i++) {
 				Contrat c = (Contrat) lc.get(i);
 				if (!c.getIdContrat().equals(getContratCourant().getIdContrat())) {
@@ -897,7 +897,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeContratsAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des contrats de l'agent
-		ArrayList lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<Contrat> lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
 		setListeContrat(lc);
 
 		int indiceContrat = 0;
@@ -983,7 +983,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeTypeContrat(HttpServletRequest request) throws Exception {
 		// Si liste des type de contrat vide
 		if (getLB_TYPE_CONTRAT() == LBVide) {
-			ArrayList a = TypeContrat.listerTypeContrat(getTransaction());
+			ArrayList<TypeContrat> a = TypeContrat.listerTypeContrat(getTransaction());
 			setListeTypeContrat(a);
 
 			int[] tailles = { 5 };
@@ -1012,7 +1012,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		// Si liste des motifs vide
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList a = Motif.listerMotif(getTransaction());
+			ArrayList<Motif> a = Motif.listerMotif(getTransaction());
 			setListeMotif(a);
 
 			int[] tailles = { 50 };
@@ -1102,7 +1102,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * @param listeContrat
 	 *            ArrayList
 	 */
-	private void setListeContrat(ArrayList listeContrat) {
+	private void setListeContrat(ArrayList<Contrat> listeContrat) {
 		this.listeContrat = listeContrat;
 	}
 
@@ -1130,7 +1130,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeMotif() {
+	private ArrayList<Motif> getListeMotif() {
 		return listeMotif;
 	}
 
@@ -1139,7 +1139,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeMotif
 	 */
-	private void setListeMotif(ArrayList listeMotif) {
+	private void setListeMotif(ArrayList<Motif> listeMotif) {
 		this.listeMotif = listeMotif;
 	}
 
@@ -1148,7 +1148,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeTypeContrat() {
+	private ArrayList<TypeContrat> getListeTypeContrat() {
 		return listeTypeContrat;
 	}
 
@@ -1157,7 +1157,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeTypeContrat
 	 */
-	private void setListeTypeContrat(ArrayList listeTypeContrat) {
+	private void setListeTypeContrat(ArrayList<TypeContrat> listeTypeContrat) {
 		this.listeTypeContrat = listeTypeContrat;
 	}
 
@@ -1517,9 +1517,9 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 		}
 
 		// on récupère les diplomes de l'agent
-		ArrayList diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
+		ArrayList<DiplomeAgent> diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
 		String listeDiplome = Const.CHAINE_VIDE;
-		for (Iterator iter = diplomesAgent.iterator(); iter.hasNext();) {
+		for (Iterator<DiplomeAgent> iter = diplomesAgent.iterator(); iter.hasNext();) {
 			DiplomeAgent da = (DiplomeAgent) iter.next();
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
 			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
@@ -1553,7 +1553,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 			commNaiss = Commune.chercherCommune(getTransaction(), a.getCodeCommuneNaissanceFr()).getLibCommune();
 		}
 		int nbEnftCharge = 0;
-		for (Iterator iter = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecAgent(getTransaction(), a).iterator(); iter.hasNext();) {
+		for (Iterator<LienEnfantNWAgentNW> iter = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecAgent(getTransaction(), a).iterator(); iter.hasNext();) {
 			LienEnfantNWAgentNW element = (LienEnfantNWAgentNW) iter.next();
 			if (element.isEnfantACharge()) {
 				nbEnftCharge = nbEnftCharge + 1;

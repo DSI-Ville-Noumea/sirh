@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.poste.TitrePoste"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
@@ -60,7 +61,7 @@
 		}
 		</SCRIPT>
 		<%
-		java.util.ArrayList listeTitres = process.getListeTitre();
+		ArrayList<TitrePoste> listeTitres = process.getListeTitre();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableTitres = new Array(\n";

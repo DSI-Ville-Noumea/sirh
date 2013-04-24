@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.parametrage.CodeRome"%>
 <HTML>
 	<jsp:useBean class="nc.mairie.gestionagent.process.OePOSTEFERechercheAvancee" id="process" scope="session"></jsp:useBean>
@@ -39,7 +40,7 @@
 		
 		</SCRIPT>	
 		<%
-		java.util.ArrayList listeCodeRome = process.getListeCodeRome();
+		ArrayList<CodeRome> listeCodeRome = process.getListeCodeRome();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableCodeRome = new Array(\n";

@@ -37,7 +37,7 @@ public class TypeRepresentantDao implements TypeRepresentantDaoInterface {
 		ArrayList<TypeRepresentant> listeTypeRepresentant = new ArrayList<TypeRepresentant>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			TypeRepresentant typeRepresentant = new TypeRepresentant();
 			typeRepresentant.setIdTypeRepresentant((Integer) row.get(CHAMP_ID_TYPE_REPRESENTANT));
 			typeRepresentant.setLibTypeRepresentant((String) row.get(CHAMP_LIB_TYPE_REPRESENTANT));

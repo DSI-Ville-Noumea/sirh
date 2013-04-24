@@ -13,7 +13,7 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess {
-	private ArrayList listeActivites;
+	private ArrayList<Activite> listeActivites;
 	public String focus = null;
 
 	/**
@@ -40,8 +40,8 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		if (getListeActivites() == null) {
-			ArrayList xcludeListe = (ArrayList) VariablesActivite.recuperer(this, "LISTEACTIVITE");
-			ArrayList aListe = new ArrayList();
+			ArrayList<Activite> xcludeListe = (ArrayList<Activite>) VariablesActivite.recuperer(this, "LISTEACTIVITE");
+			ArrayList<Activite> aListe = new ArrayList<Activite>();
 
 			aListe = Activite.listerActivite(getTransaction(), true);
 			aListe = elim_doubure_activites(aListe, xcludeListe);
@@ -97,7 +97,7 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
 	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs avec l2
 	 * fonctionne uniquement avec une liste l1 n'ayant pas 2 elements identiques
 	 */
-	public static ArrayList elim_doubure_activites(ArrayList l1, ArrayList l2) {
+	public static ArrayList<Activite> elim_doubure_activites(ArrayList<Activite> l1, ArrayList<Activite> l2) {
 		if (null == l1)
 			return null;
 
@@ -133,7 +133,7 @@ public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess
      *
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
-		ArrayList listActiSelect = new ArrayList();
+		ArrayList<Activite> listActiSelect = new ArrayList<Activite>();
 		for (int j = 0; j < getListeActivites().size(); j++) {
 			//on recupère la ligne concernée
 			Activite acti = (Activite) getListeActivites().get(j);

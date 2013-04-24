@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.metier.specificites.Rubrique"%>
@@ -44,7 +45,7 @@
 		
 		</SCRIPT>
 		<%
-		java.util.ArrayList listeRubriques = process.getListeRubriques();
+		ArrayList<Rubrique> listeRubriques = process.getListeRubriques();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableRubriques = new Array(\n";

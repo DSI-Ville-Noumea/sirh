@@ -42,7 +42,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 		ArrayList<PermisAgent> listePermisAgent = new ArrayList<PermisAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			PermisAgent permis = new PermisAgent();
 			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID_PERMIS_AGENT));
 			permis.setIdPermis((Integer) row.get(CHAMP_ID_PERMIS));
@@ -93,7 +93,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 		ArrayList<PermisAgent> listePermisAgent = new ArrayList<PermisAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idPermis });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			PermisAgent permis = new PermisAgent();
 			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID_PERMIS_AGENT));
 			permis.setIdPermis((Integer) row.get(CHAMP_ID_PERMIS));

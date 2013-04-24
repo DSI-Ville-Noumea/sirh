@@ -69,7 +69,7 @@ public class CampagneActeurDao implements CampagneActeurDaoInterface {
 		ArrayList<CampagneActeur> listeCampagneActeur = new ArrayList<CampagneActeur>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneAction });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CampagneActeur camp = new CampagneActeur();
 			logger.info("List Campagne Acteur : " + row.toString());
 			BigDecimal idCampActeur = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTEUR);

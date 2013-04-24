@@ -49,7 +49,7 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 		ArrayList<EmployeurCap> listeEmployeurCap = new ArrayList<EmployeurCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEmployeur });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EmployeurCap employeurCap = new EmployeurCap();
 			employeurCap.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
 			employeurCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
@@ -67,7 +67,7 @@ public class EmployeurCapDao implements EmployeurCapDaoInterface {
 		ArrayList<EmployeurCap> listeEmployeurCap = new ArrayList<EmployeurCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCap });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EmployeurCap employeurCap = new EmployeurCap();
 			employeurCap.setIdEmployeur((Integer) row.get(CHAMP_ID_EMPLOYEUR));
 			employeurCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));

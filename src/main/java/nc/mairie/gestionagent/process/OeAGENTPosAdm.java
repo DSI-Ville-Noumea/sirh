@@ -131,7 +131,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListePA(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
-		ArrayList listePAAgent = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<PositionAdmAgent> listePAAgent = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
 		setListePAAgent(listePAAgent);
 
 		int indicePaAgent = 0;
@@ -439,7 +439,7 @@ public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
 				// Création
 				if (getPaCourante().estPAInactive(getTransaction())) {
 					// RG_AG_PA_C03
-					ArrayList affActive = Affectation.listerAffectationActiveAvecAgent(getTransaction(), getAgentCourant());
+					ArrayList<Affectation> affActive = Affectation.listerAffectationActiveAvecAgent(getTransaction(), getAgentCourant());
 
 					if (affActive.size() > 0) {
 						Affectation active = (Affectation) affActive.get(0);

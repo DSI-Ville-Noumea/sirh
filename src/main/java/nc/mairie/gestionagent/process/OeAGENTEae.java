@@ -225,7 +225,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = liste.listIterator(); list.hasNext();) {
+			for (ListIterator<EaeTypeDeveloppement> list = liste.listIterator(); list.hasNext();) {
 				EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) list.next();
 				String ligne[] = { typeDev.getLibelleTypeDeveloppement() };
 				aFormat.ajouteLigne(ligne);

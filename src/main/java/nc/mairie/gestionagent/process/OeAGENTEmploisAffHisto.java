@@ -18,7 +18,7 @@ import nc.mairie.utils.MessageUtils;
 public class OeAGENTEmploisAffHisto extends nc.mairie.technique.BasicProcess {
 
 	private AgentNW agentCourant;
-	private ArrayList listeHistoAffectation;
+	private ArrayList<AffectationHisto> listeHistoAffectation;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -145,11 +145,11 @@ public class OeAGENTEmploisAffHisto extends nc.mairie.technique.BasicProcess {
 		this.agentCourant = agentCourant;
 	}
 
-	public ArrayList getListeHistoAffectation() {
+	public ArrayList<AffectationHisto> getListeHistoAffectation() {
 		return listeHistoAffectation;
 	}
 
-	private void setListeHistoAffectation(ArrayList listeHistoAffectation) {
+	private void setListeHistoAffectation(ArrayList<AffectationHisto> listeHistoAffectation) {
 		this.listeHistoAffectation = listeHistoAffectation;
 	}
 

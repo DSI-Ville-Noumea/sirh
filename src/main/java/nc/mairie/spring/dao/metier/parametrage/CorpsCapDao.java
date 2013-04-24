@@ -36,7 +36,7 @@ public class CorpsCapDao implements CorpsCapDaoInterface {
 		ArrayList<CorpsCap> listeCorpsCap = new ArrayList<CorpsCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CorpsCap corpsCap = new CorpsCap();
 			corpsCap.setCodeSpgeng((String) row.get(CHAMP_CDGENG));
 			corpsCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
@@ -65,7 +65,7 @@ public class CorpsCapDao implements CorpsCapDaoInterface {
 		ArrayList<CorpsCap> listeCorpsCap = new ArrayList<CorpsCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCap });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CorpsCap corpsCap = new CorpsCap();
 			corpsCap.setCodeSpgeng((String) row.get(CHAMP_CDGENG));
 			corpsCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));

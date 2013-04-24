@@ -57,16 +57,16 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 
-	private ArrayList listeDocuments;
+	private ArrayList<Document> listeDocuments;
 	private String[] LB_TYPE_DOCUMENT;
-	private ArrayList listeTypeDocument;
+	private ArrayList<TypeDocument> listeTypeDocument;
 	private String[] LB_CONTRAT;
-	private ArrayList listeContrat;
+	private ArrayList<Contrat> listeContrat;
 	private String[] LB_AFFECTATION;
-	private ArrayList listeAffectation;
+	private ArrayList<Affectation> listeAffectation;
 	private String[] LB_TYPE_FICHIER_AFFECTATION;
 	private String[] LB_FICHE_POSTE;
-	private ArrayList listeFichePoste;
+	private ArrayList<FichePoste> listeFichePoste;
 
 	public String ACTION_SUPPRESSION = "Suppression d'un document";
 	public String ACTION_CREATION = "Choix du fichier à ajouter";
@@ -133,7 +133,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
-			ArrayList td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
+			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
 			TypeDocument typeVide = new TypeDocument();
 			td.add(0, typeVide);
 			setListeTypeDocument(td);
@@ -143,13 +143,13 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_CONTRAT() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList c = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<Contrat> c = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 8, 12 };
 					FormateListe aFormat = new FormateListe(tailles);
 					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
-					for (ListIterator list = c.listIterator(); list.hasNext();) {
+					for (ListIterator<Contrat> list = c.listIterator(); list.hasNext();) {
 						Contrat contrat = (Contrat) list.next();
 						TypeContrat tc = TypeContrat.chercherTypeContrat(getTransaction(), contrat.getIdTypeContrat());
 						String ligne[] = { contrat.getNumContrat(), tc.getLibTypeContrat(), contrat.getDateDebut() };
@@ -166,13 +166,13 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_AFFECTATION() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<Affectation> aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
 				if (aff.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
 					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
-					for (ListIterator list = aff.listIterator(); list.hasNext();) {
+					for (ListIterator<Affectation> list = aff.listIterator(); list.hasNext();) {
 						Affectation a = (Affectation) list.next();
 						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
 						TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
@@ -190,13 +190,13 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		}
 		if (getLB_FICHE_POSTE() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList listeFp = FichePoste.listerFichePosteAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<FichePoste> listeFp = FichePoste.listerFichePosteAvecAgent(getTransaction(), getAgentCourant());
 				if (listeFp.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
 					String ligneVide[] = { Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE };
 					aFormat.ajouteLigne(ligneVide);
-					for (ListIterator list = listeFp.listIterator(); list.hasNext();) {
+					for (ListIterator<FichePoste> list = listeFp.listIterator(); list.hasNext();) {
 						FichePoste fiche = (FichePoste) list.next();
 						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), fiche.getIdFichePoste());
 						TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
@@ -540,7 +540,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
 		// nom de contrat
-		for (Iterator iter = getListeDocuments().iterator(); iter.hasNext();) {
+		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
 			// on supprime l'extension
 			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));
@@ -721,13 +721,13 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	 * @param newListeDocuments
 	 *            ArrayList
 	 */
-	private void setListeDocuments(ArrayList newListeDocuments) {
+	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
 
-	public ArrayList getListeDocuments() {
+	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}
@@ -739,7 +739,7 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), getVueCourant(),
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), getVueCourant(),
 				"DONNEES PERSONNELLES");
 		setListeDocuments(listeDocAgent);
 
@@ -792,14 +792,14 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_TYPE_DOCUMENT_SELECT";
 	}
 
-	private ArrayList getListeTypeDocument() {
+	private ArrayList<TypeDocument> getListeTypeDocument() {
 		if (listeTypeDocument == null) {
-			listeTypeDocument = new ArrayList();
+			listeTypeDocument = new ArrayList<TypeDocument>();
 		}
 		return listeTypeDocument;
 	}
 
-	private void setListeTypeDocument(ArrayList newListeTypeDocument) {
+	private void setListeTypeDocument(ArrayList<TypeDocument> newListeTypeDocument) {
 		listeTypeDocument = newListeTypeDocument;
 	}
 
@@ -1149,14 +1149,14 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_CONTRAT_SELECT";
 	}
 
-	private ArrayList getListeContrat() {
+	private ArrayList<Contrat> getListeContrat() {
 		if (listeContrat == null) {
-			listeContrat = new ArrayList();
+			listeContrat = new ArrayList<Contrat>();
 		}
 		return listeContrat;
 	}
 
-	private void setListeContrat(ArrayList newListeContrat) {
+	private void setListeContrat(ArrayList<Contrat> newListeContrat) {
 		listeContrat = newListeContrat;
 	}
 
@@ -1199,14 +1199,14 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_FICHE_POSTE_SELECT";
 	}
 
-	private ArrayList getListeFichePoste() {
+	private ArrayList<FichePoste> getListeFichePoste() {
 		if (listeFichePoste == null) {
-			listeFichePoste = new ArrayList();
+			listeFichePoste = new ArrayList<FichePoste>();
 		}
 		return listeFichePoste;
 	}
 
-	private void setListeFichePoste(ArrayList newListeFichePoste) {
+	private void setListeFichePoste(ArrayList<FichePoste> newListeFichePoste) {
 		listeFichePoste = newListeFichePoste;
 	}
 
@@ -1236,14 +1236,14 @@ public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
 		return "NOM_LB_AFFECTATION_SELECT";
 	}
 
-	private ArrayList getListeAffectation() {
+	private ArrayList<Affectation> getListeAffectation() {
 		if (listeAffectation == null) {
-			listeAffectation = new ArrayList();
+			listeAffectation = new ArrayList<Affectation>();
 		}
 		return listeAffectation;
 	}
 
-	private void setListeAffectation(ArrayList newListeAffectation) {
+	private void setListeAffectation(ArrayList<Affectation> newListeAffectation) {
 		listeAffectation = newListeAffectation;
 	}
 

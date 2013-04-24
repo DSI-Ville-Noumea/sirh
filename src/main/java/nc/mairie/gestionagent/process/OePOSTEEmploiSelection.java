@@ -16,7 +16,7 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OePOSTEEmploiSelection extends nc.mairie.technique.BasicProcess {
 
-	private ArrayList listeFicheEmploi = new ArrayList();
+	private ArrayList<FicheEmploi> listeFicheEmploi = new ArrayList<FicheEmploi>();
 
 	public String focus = null;
 
@@ -85,7 +85,7 @@ public class OePOSTEEmploiSelection extends nc.mairie.technique.BasicProcess {
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
 		String zone = getZone(getNOM_EF_RECHERCHE());
 
-		ArrayList eListe = FicheEmploi.listerFicheEmploiavecRefMairie(getTransaction(), zone);
+		ArrayList<FicheEmploi> eListe = FicheEmploi.listerFicheEmploiavecRefMairie(getTransaction(), zone);
 
 		//	Si liste vide alors erreur
 		if (eListe.size() == 0) {
@@ -199,13 +199,13 @@ public class OePOSTEEmploiSelection extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	public ArrayList getListeFicheEmploi() {
+	public ArrayList<FicheEmploi> getListeFicheEmploi() {
 		if (listeFicheEmploi == null)
-			listeFicheEmploi = new ArrayList();
+			listeFicheEmploi = new ArrayList<FicheEmploi>();
 		return listeFicheEmploi;
 	}
 
-	private void setListeFicheEmploi(ArrayList listeFicheEmploi) {
+	private void setListeFicheEmploi(ArrayList<FicheEmploi> listeFicheEmploi) {
 		this.listeFicheEmploi = listeFicheEmploi;
 	}
 

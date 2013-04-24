@@ -25,11 +25,11 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 
 	private String[] LB_TYPE_DROIT;
 
-	private ArrayList listeElement;
-	private ArrayList listeGroupe;
-	private ArrayList listeDroits;
+	private ArrayList<Element> listeElement;
+	private ArrayList<Groupe> listeGroupe;
+	private ArrayList<Droit> listeDroits;
 	private Hashtable<String, String> hashDroit;
-	private ArrayList listeTypeDroits;
+	private ArrayList<TypeDroit> listeTypeDroits;
 	private Hashtable<String, String> hashTypeDroit;
 
 	public String focus = null;
@@ -122,7 +122,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Getter de la liste des éléments.
 	 * @return listeElement
 	 */
-	public ArrayList getListeElement() {
+	public ArrayList<Element> getListeElement() {
 		return listeElement;
 	}
 
@@ -130,7 +130,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Setter de la liste des éléments.
 	 * @param listeElement listeElement à définir
 	 */
-	private void setListeElement(ArrayList listeElement) {
+	private void setListeElement(ArrayList<Element> listeElement) {
 		this.listeElement = listeElement;
 	}
 
@@ -138,7 +138,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Getter de la liste des groupes.
 	 * @return listeGroupe
 	 */
-	public ArrayList getListeGroupe() {
+	public ArrayList<Groupe> getListeGroupe() {
 		return listeGroupe;
 	}
 
@@ -146,7 +146,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Setter de la liste des groupes
 	 * @param listeGroupe
 	 */
-	private void setListeGroupe(ArrayList listeGroupe) {
+	private void setListeGroupe(ArrayList<Groupe> listeGroupe) {
 		this.listeGroupe = listeGroupe;
 	}
 
@@ -256,12 +256,12 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si liste éléments vide alors affectation
 		if (getListeElement() == null || getListeElement().size() == 0) {
-			ArrayList elt = Element.listerElement(getTransaction());
+			ArrayList<Element> elt = Element.listerElement(getTransaction());
 			setListeElement(elt);
 		}
 		// Si liste groupes vide alors affectation
 		if (getListeGroupe() == null || getListeGroupe().size() == 0) {
-			ArrayList gr = Groupe.listerGroupe(getTransaction());
+			ArrayList<Groupe> gr = Groupe.listerGroupe(getTransaction());
 			setListeGroupe(gr);
 		}
 
@@ -270,7 +270,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 			setListeDroits(Droit.listerDroit(getTransaction()));
 
 			//Remplissage de la hashtable des droits.
-			for (ListIterator list = getListeDroits().listIterator(); list.hasNext();) {
+			for (ListIterator<Droit> list = getListeDroits().listIterator(); list.hasNext();) {
 				Droit aDroit = (Droit) list.next();
 				getHashDroit().put(aDroit.getIdElement() + "-" + aDroit.getIdGroupe(), aDroit.getIdTypeDroit() == null ? "0" : aDroit.getIdTypeDroit());
 			}
@@ -285,7 +285,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 			setLB_TYPE_DROIT(new FormateListe(tailles, getListeTypeDroits(), champs).getListeFormatee(true));
 
 			//Remplissage de la hashtable des types de droits (idType, index dans la liste).
-			for (ListIterator list = getListeTypeDroits().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeDroit> list = getListeTypeDroits().listIterator(); list.hasNext();) {
 				TypeDroit aTypeDroit = (TypeDroit) list.next();
 				// indice +1 pour gérer la ligne vide
 				getHashTypeDroit().put(aTypeDroit.getIdTypeDroit(), String.valueOf(getListeTypeDroits().indexOf(aTypeDroit) + 1));
@@ -499,7 +499,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Getter de la liste des droits.
 	 * @return listeDroits
 	 */
-	private ArrayList getListeDroits() {
+	private ArrayList<Droit> getListeDroits() {
 		return listeDroits;
 	}
 
@@ -507,7 +507,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Setter de la liste des droits.
 	 * @param listeDroits
 	 */
-	private void setListeDroits(ArrayList listeDroits) {
+	private void setListeDroits(ArrayList<Droit> listeDroits) {
 		this.listeDroits = listeDroits;
 	}
 
@@ -515,7 +515,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Getter de la liste des types de droits.
 	 * @return listeTypeDroits
 	 */
-	private ArrayList getListeTypeDroits() {
+	private ArrayList<TypeDroit> getListeTypeDroits() {
 		return listeTypeDroits;
 	}
 
@@ -523,7 +523,7 @@ public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 	 * Setter de la liste des types de droits.
 	 * @param listeTypeDroits
 	 */
-	private void setListeTypeDroits(ArrayList listeTypeDroits) {
+	private void setListeTypeDroits(ArrayList<TypeDroit> listeTypeDroits) {
 		this.listeTypeDroits = listeTypeDroits;
 	}
 

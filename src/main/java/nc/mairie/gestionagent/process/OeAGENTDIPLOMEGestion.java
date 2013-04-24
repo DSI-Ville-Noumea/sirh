@@ -100,8 +100,8 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	private Hashtable<String, TitreDiplome> hashTitreDiplome;
 	private Hashtable<String, SpecialiteDiplomeNW> hashSpeDiplome;
 	private ArrayList<DiplomeAgent> listeDiplomesAgent;
-	private ArrayList listeTitreDiplome;
-	private ArrayList listeSpeDiplome;
+	private ArrayList<TitreDiplome> listeTitreDiplome;
+	private ArrayList<SpecialiteDiplomeNW> listeSpeDiplome;
 	private DiplomeAgent diplomeAgentCourant;
 	private TitreDiplome titreDiplomeCourant;
 	private ArrayList<DiplomeAgent> listeEcoles;
@@ -113,8 +113,6 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	private FormationAgent formationAgentCourant;
 	private ArrayList<TitreFormation> listeTitreFormation;
 	private ArrayList<CentreFormation> listeCentreFormation;
-	private TitreFormation titreFormationCourant;
-	private CentreFormation centreFormationCourant;
 
 	private ArrayList<PermisAgent> listePermisAgent;
 	private PermisAgent permisAgentCourant;
@@ -134,7 +132,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return AgentCourant;
 	}
 
@@ -180,7 +178,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 */
 	public ArrayList<DiplomeAgent> getListeDiplomesAgent() {
 		if (listeDiplomesAgent == null) {
-			listeDiplomesAgent = new ArrayList();
+			listeDiplomesAgent = new ArrayList<DiplomeAgent>();
 		}
 		return listeDiplomesAgent;
 	}
@@ -191,9 +189,9 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	private ArrayList getListeTitreDiplome() {
+	private ArrayList<TitreDiplome> getListeTitreDiplome() {
 		if (listeTitreDiplome == null) {
-			listeTitreDiplome = new ArrayList();
+			listeTitreDiplome = new ArrayList<TitreDiplome>();
 		}
 		return listeTitreDiplome;
 	}
@@ -484,8 +482,8 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceFormation), d.getAnneeFormation().toString());
 
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-						"FORM", d.getIdFormation().toString());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
+						"DONNEES PERSONNELLES", "FORM", d.getIdFormation().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -504,7 +502,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDiplomesAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des diplomes de l'agent
-		ArrayList a = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<DiplomeAgent> a = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), getAgentCourant());
 		setListeDiplomesAgent(a);
 
 		int indiceDiplome = 0;
@@ -520,8 +518,8 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_NIVEAU(indiceDiplome), t.getNiveauEtude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude());
 
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-						"DIP", d.getIdDiplome());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
+						"DONNEES PERSONNELLES", "DIP", d.getIdDiplome());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -589,7 +587,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si liste des titres vide
 		if (getLB_TITRE_DIPLOME() == LBVide) {
-			ArrayList a = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> a = TitreDiplome.listerTitreDiplome(getTransaction());
 			setListeTitreDiplome(a);
 
 			int[] tailles = { 70 };
@@ -599,7 +597,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si liste des spécialités vide
 		if (getLB_SPECIALITE_DIPLOME() == LBVide) {
-			ArrayList a = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
+			ArrayList<SpecialiteDiplomeNW> a = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
 			setListeSpeDiplome(a);
 
 			int[] tailles = { 70 };
@@ -609,7 +607,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des titres vide ou statut gestion diplomes
 		if (getHashTitreDiplome().size() == 0) {
-			ArrayList a = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> a = TitreDiplome.listerTitreDiplome(getTransaction());
 			setListeTitreDiplome(a);
 			// remplissage de la hashTable
 			for (int i = 0; i < a.size(); i++) {
@@ -620,7 +618,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des specialites vide
 		if (getHashSpeDiplome().size() == 0) {
-			ArrayList a = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
+			ArrayList<SpecialiteDiplomeNW> a = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
 			setListeSpeDiplome(a);
 			// remplissage de la hashTable
 			for (int i = 0; i < a.size(); i++) {
@@ -635,7 +633,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setListeTitreFormation(listeTitreFormation);
 			int[] tailles = { 70 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeTitreFormation.listIterator(); list.hasNext();) {
+			for (ListIterator<TitreFormation> list = listeTitreFormation.listIterator(); list.hasNext();) {
 				TitreFormation titre = (TitreFormation) list.next();
 				String ligne[] = { titre.getLibTitreFormation() };
 				aFormat.ajouteLigne(ligne);
@@ -659,7 +657,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setListeCentreFormation(listeCentreFormation);
 			int[] tailles = { 70 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeCentreFormation.listIterator(); list.hasNext();) {
+			for (ListIterator<CentreFormation> list = listeCentreFormation.listIterator(); list.hasNext();) {
 				CentreFormation centre = (CentreFormation) list.next();
 				String ligne[] = { centre.getLibCentreFormation() };
 				aFormat.ajouteLigne(ligne);
@@ -686,7 +684,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setListeUniteDuree(listeUniteDuree);
 			int[] tailles = { 10 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeUniteDuree.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeUniteDuree.listIterator(); list.hasNext();) {
 				String unite = (String) list.next();
 				String ligne[] = { unite };
 				aFormat.ajouteLigne(ligne);
@@ -700,7 +698,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 			setListeTitrePermis(listeTitrePermis);
 			int[] tailles = { 25 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeTitrePermis.listIterator(); list.hasNext();) {
+			for (ListIterator<TitrePermis> list = listeTitrePermis.listIterator(); list.hasNext();) {
 				TitrePermis permis = (TitrePermis) list.next();
 				String ligne[] = { permis.getLibTitrePermis() };
 				aFormat.ajouteLigne(ligne);
@@ -1283,7 +1281,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * @param newListeTitreDiplome
 	 *            ArrayList
 	 */
-	private void setListeTitreDiplome(ArrayList newListeTitreDiplome) {
+	private void setListeTitreDiplome(ArrayList<TitreDiplome> newListeTitreDiplome) {
 		listeTitreDiplome = newListeTitreDiplome;
 	}
 
@@ -1296,14 +1294,6 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 */
 	private void setTitreDiplomeCourant(TitreDiplome newTitreDiplomeCourant) {
 		titreDiplomeCourant = newTitreDiplomeCourant;
-	}
-
-	private void setTitreFormationCourant(TitreFormation newTitreFormationCourant) {
-		titreFormationCourant = newTitreFormationCourant;
-	}
-
-	private void setCentreFormationCourant(CentreFormation newCentreFormationCourant) {
-		centreFormationCourant = newCentreFormationCourant;
 	}
 
 	/**
@@ -1423,7 +1413,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeSpeDiplome ArrayList d'objets SpecialiteDiplomeNW
 	 */
-	private ArrayList getListeSpeDiplome() {
+	private ArrayList<SpecialiteDiplomeNW> getListeSpeDiplome() {
 		return listeSpeDiplome;
 	}
 
@@ -1433,7 +1423,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * @param listeSpeDiplome
 	 *            listeSpeDiplome à définir
 	 */
-	private void setListeSpeDiplome(ArrayList listeSpeDiplome) {
+	private void setListeSpeDiplome(ArrayList<SpecialiteDiplomeNW> listeSpeDiplome) {
 		this.listeSpeDiplome = listeSpeDiplome;
 	}
 
@@ -2263,10 +2253,8 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	private boolean initialiseFormationCourant(HttpServletRequest request) throws Exception {
 		FormationAgent f = getFormationAgentCourant();
 		TitreFormation titre = (TitreFormation) getHashTitreFormation().get(f.getIdTitreFormation());
-		setTitreFormationCourant(titre);
 		CentreFormation centre = (CentreFormation) getHashCentreFormation().get(f.getIdCentreFormation());
-		setCentreFormationCourant(centre);
-
+		
 		// Alim zones
 		// Titre formation
 		int ligneTitre = getListeTitreFormation().indexOf(titre);
@@ -3286,8 +3274,8 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_LIMITE_PERMIS(indicePermis), dateLimite);
 
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-						"PERM", p.getIdPermisAgent().toString());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
+						"DONNEES PERSONNELLES", "PERM", p.getIdPermisAgent().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -3744,7 +3732,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}

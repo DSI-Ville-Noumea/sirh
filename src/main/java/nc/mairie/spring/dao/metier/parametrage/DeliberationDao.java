@@ -39,7 +39,7 @@ public class DeliberationDao implements DeliberationDaoInterface {
 		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Deliberation delib = new Deliberation();
 			delib.setIdDeliberation((Integer) row.get(CHAMP_ID_DELIBERATION));
 			delib.setCodeDeliberation((String) row.get(CHAMP_CODE_DELIBERATION));
@@ -76,7 +76,7 @@ public class DeliberationDao implements DeliberationDaoInterface {
 		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { "COMMUNAL" });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Deliberation delib = new Deliberation();
 			delib.setIdDeliberation((Integer) row.get(CHAMP_ID_DELIBERATION));
 			delib.setCodeDeliberation((String) row.get(CHAMP_CODE_DELIBERATION));
@@ -97,7 +97,7 @@ public class DeliberationDao implements DeliberationDaoInterface {
 		ArrayList<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { "TERRITORIAL" });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			Deliberation delib = new Deliberation();
 			delib.setIdDeliberation((Integer) row.get(CHAMP_ID_DELIBERATION));
 			delib.setCodeDeliberation((String) row.get(CHAMP_CODE_DELIBERATION));

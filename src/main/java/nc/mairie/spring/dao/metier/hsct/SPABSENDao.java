@@ -55,7 +55,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		ArrayList<Integer> listeMatricule = new ArrayList<Integer>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { type, mois, anneeChoisi });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			logger.info("List matricule : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			listeMatricule.add(noMat.intValue());
@@ -77,7 +77,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		ArrayList<SPABSEN> listeSPABSEN = new ArrayList<SPABSEN>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, type, mois, anneeChoisi });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			SPABSEN abs = new SPABSEN();
 			logger.info("List SPABSEN par agent : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
@@ -120,7 +120,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		ArrayList<Integer> listeMatricule = new ArrayList<Integer>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { typeMA, typeLM, mois, anneeChoisi });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			logger.info("List matricule : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			listeMatricule.add(noMat.intValue());
@@ -142,7 +142,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 		ArrayList<SPABSEN> listeSPABSEN = new ArrayList<SPABSEN>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, typeMA, typeLM, mois, anneeChoisi });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			SPABSEN abs = new SPABSEN();
 			logger.info("List SPABSEN par agent : " + row.toString());
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);

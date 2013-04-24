@@ -49,7 +49,7 @@ public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 		ArrayList<PrimePointageAff> listePrimePointageAff = new ArrayList<PrimePointageAff>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idPrimePointage });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			PrimePointageAff primePointage = new PrimePointageAff();
 			primePointage.setIdPrimePointage((Integer) row.get(CHAMP_ID_PRIME_POINTAGE));
 			primePointage.setIdAffectation((Integer) row.get(CHAMP_ID_AFFECTATION));

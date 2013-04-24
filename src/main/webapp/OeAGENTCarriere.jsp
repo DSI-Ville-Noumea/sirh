@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.metier.carriere.Grade"%>
@@ -46,7 +47,7 @@
 		
 		</SCRIPT>		
 		<%
-		java.util.ArrayList listeGrades = process.getListeGrade();
+		ArrayList<Grade> listeGrades = process.getListeGrade();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableGrades = new Array(\n";

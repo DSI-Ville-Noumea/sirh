@@ -31,6 +31,7 @@ import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.VisiteMedicale;
+import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
@@ -97,7 +98,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private SPABSENDao spabsenDao;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 	private ArrayList<String> listeRelance;
 	private ArrayList<String> listeStatut;
 	private ArrayList<MotifVisiteMed> listeMotif;
@@ -172,7 +173,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -406,7 +407,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			setListeEnumEtatSuiviMed(listeEtat);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeEtat.listIterator(); list.hasNext();) {
+			for (ListIterator<EnumEtatSuiviMed> list = listeEtat.listIterator(); list.hasNext();) {
 				EnumEtatSuiviMed etat = (EnumEtatSuiviMed) list.next();
 				String ligne[] = { etat.getValue() };
 				aFormat.ajouteLigne(ligne);
@@ -424,7 +425,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			setListeStatut(listeStatut);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeStatut.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeStatut.listIterator(); list.hasNext();) {
 				String statut = (String) list.next();
 				String ligne[] = { statut };
 				aFormat.ajouteLigne(ligne);
@@ -439,7 +440,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			setListeMotif(listeMotif);
 			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeMotif.listIterator(); list.hasNext();) {
+			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
 				MotifVisiteMed motif = (MotifVisiteMed) list.next();
 				String ligne[] = { motif.getLibMotifVM() };
 				aFormat.ajouteLigne(ligne);
@@ -456,7 +457,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			setListeRelance(listeRelance);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeRelance.listIterator(); list.hasNext();) {
+			for (ListIterator<String> list = listeRelance.listIterator(); list.hasNext();) {
 				String relance = (String) list.next();
 				String ligne[] = { relance };
 				aFormat.ajouteLigne(ligne);
@@ -508,7 +509,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 			int[] tailles = { 15 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeMedecin().listIterator(); list.hasNext();) {
+			for (ListIterator<Medecin> list = getListeMedecin().listIterator(); list.hasNext();) {
 				Medecin m = (Medecin) list.next();
 				String ligne[] = { m.getPrenomMedecin() + " " + m.getNomMedecin() };
 
@@ -1790,7 +1791,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<SuiviMedical> getListeSuiviMed() {
 		if (listeSuiviMed == null)
-			return new ArrayList();
+			return new ArrayList<SuiviMedical>();
 		return listeSuiviMed;
 	}
 
@@ -3293,7 +3294,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<String> getListeDocuments() {
 		if (listeDocuments == null)
-			return new ArrayList();
+			return new ArrayList<String>();
 		return listeDocuments;
 	}
 
@@ -3492,7 +3493,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -3501,7 +3502,7 @@ public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

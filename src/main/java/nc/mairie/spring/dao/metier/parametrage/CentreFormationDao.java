@@ -37,7 +37,7 @@ public class CentreFormationDao implements CentreFormationDaoInterface {
 		ArrayList<CentreFormation> listeCentreFormation = new ArrayList<CentreFormation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CentreFormation centre = new CentreFormation();
 			centre.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
 			centre.setLibCentreFormation((String) row.get(CHAMP_LIB_CENTRE_FORMATION));

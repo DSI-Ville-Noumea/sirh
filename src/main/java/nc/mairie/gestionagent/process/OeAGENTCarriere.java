@@ -276,7 +276,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 4, 50, 100 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeGrade().listIterator(); list.hasNext();) {
+			for (ListIterator<Grade> list = getListeGrade().listIterator(); list.hasNext();) {
 				Grade grade = (Grade) list.next();
 				String iban = Const.CHAINE_VIDE;
 				if (Services.estNumerique(grade.getIban())) {
@@ -418,7 +418,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		}
 
 		// si au moins une PA active
-		ArrayList listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
 		boolean uneEstActive = false;
 		for (int i = 0; i < listePA.size(); i++) {
 			PositionAdmAgent posAdm = (PositionAdmAgent) listePA.get(i);
@@ -2472,7 +2472,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 		// on calcul le nouvel INM
 		String nouvINM = String.valueOf(nbPointINM + nbPointCAT);
 		// avec ce nouvel INM on recupere l'iban et l'ina correspondant
-		ArrayList listeBareme = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
+		ArrayList<Bareme> listeBareme = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
 		String Iban = Const.CHAINE_VIDE;
 		String Ina = Const.CHAINE_VIDE;
 		String Inm = Const.CHAINE_VIDE;
@@ -2499,7 +2499,7 @@ public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
 	private void performCalculFonctionnaire(Carriere carr) throws Exception {
 		// on regarde si il y a d'autre carrieres avec le meme grade
 		// si oui on prend la carriere plus lointaine
-		ArrayList listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant().getNoMatricule(), carr.getCodeGrade());
+		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant().getNoMatricule(), carr.getCodeGrade());
 		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 			carr = (Carriere) listeCarrMemeGrade.get(0);
 		}

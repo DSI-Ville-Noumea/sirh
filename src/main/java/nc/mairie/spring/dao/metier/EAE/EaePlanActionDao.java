@@ -43,7 +43,7 @@ public class EaePlanActionDao implements EaePlanActionDaoInterface {
 		ArrayList<EaePlanAction> listeEaePlanAction = new ArrayList<EaePlanAction>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE, idtypeObj });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaePlanAction plan = new EaePlanAction();
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_PLAN_ACTION);
 			plan.setIdEaePlanAction(id.intValue());

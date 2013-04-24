@@ -91,7 +91,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 		ArrayList<EaeFichePoste> listeEAE = new ArrayList<EaeFichePoste>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFichePoste eae = new EaeFichePoste();
 			eae.setDirectionServ((String) row.get(CHAMP_DIRECTION_SERVICE));
 			eae.setSectionServ((String) row.get(CHAMP_SECTION_SERVICE));
@@ -108,7 +108,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 		ArrayList<EaeFichePoste> listeEAE = new ArrayList<EaeFichePoste>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFichePoste eae = new EaeFichePoste();
 			BigDecimal idFDP = (BigDecimal) row.get(CHAMP_ID_EAE_FICHE_POSTE);
 			eae.setIdEaeFichePoste(idFDP.intValue());

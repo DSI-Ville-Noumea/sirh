@@ -56,7 +56,7 @@ public class EAEDao implements EAEDaoInterface {
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { etat, idCampagneEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
@@ -168,7 +168,7 @@ public class EAEDao implements EAEDaoInterface {
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
@@ -236,7 +236,7 @@ public class EAEDao implements EAEDaoInterface {
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { EnumEtatEAE.FINALISE.getCode(),
 				EnumEtatEAE.CONTROLE.getCode(), idCampagneEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);

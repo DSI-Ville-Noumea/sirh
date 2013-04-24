@@ -56,7 +56,7 @@
 
 </SCRIPT>		
 		<%
-		ArrayList listeEcoles = process.getListeEcoles();
+		ArrayList<DiplomeAgent> listeEcoles = process.getListeEcoles();
 		
 		String res = 	"<script language=\"javascript\">\n"+
 				"var availableEcoles = new Array(\n";
@@ -107,7 +107,7 @@
 		<% if (process.onglet.equals("ONGLET1")) {%>
 			<div id="corpsOngletDiplome" title="Diplomes" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
 		<% }else {%>
-			<div id="corpsOngletDiplome" title=""Diplomes"" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+			<div id="corpsOngletDiplome" title="Diplomes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Gestion des diplômes d'un agent</legend>

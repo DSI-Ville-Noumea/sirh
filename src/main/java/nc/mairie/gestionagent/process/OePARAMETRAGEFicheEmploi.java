@@ -75,35 +75,35 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 
 		if (getListeDomaine() == null) {
 			// Recherche des domaines d'activité
-			ArrayList liste = DomaineEmploi.listerDomaineEmploi(getTransaction());
+			ArrayList<DomaineEmploi> liste = DomaineEmploi.listerDomaineEmploi(getTransaction());
 			setListeDomaine(liste);
 			initialiseListeDomaine(request);
 		}
 
 		if (getListeFamille() == null) {
 			// Recherche des domaines d'activité
-			ArrayList liste = FamilleEmploi.listerFamilleEmploi(getTransaction());
+			ArrayList<FamilleEmploi> liste = FamilleEmploi.listerFamilleEmploi(getTransaction());
 			setListeFamille(liste);
 			initialiseListeFamille(request);
 		}
 
 		if (getListeDiplome() == null) {
 			// Recherche des domaines d'activité
-			ArrayList liste = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
+			ArrayList<DiplomeGenerique> liste = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
 			setListeDiplome(liste);
 			initialiseListeDiplome(request);
 		}
 
 		if (getListeCategorie() == null) {
 			// Recherche des categories d'emploi
-			ArrayList liste = Categorie.listerCategorie(getTransaction());
+			ArrayList<Categorie> liste = Categorie.listerCategorie(getTransaction());
 			setListeCategorie(liste);
 			initialiseListeCategorie(request);
 		}
 
 		if (getListeCodeRome() == null) {
 			// Recherche des codes rome d'emploi
-			ArrayList liste = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> liste = CodeRome.listerCodeRome(getTransaction());
 			setListeCodeRome(liste);
 			initialiseListeCodeRome(request);
 		}
@@ -120,7 +120,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 6, 100 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCodeRome().listIterator(); list.hasNext();) {
+			for (ListIterator<CodeRome> list = getListeCodeRome().listIterator(); list.hasNext();) {
 				CodeRome cr = (CodeRome) list.next();
 				String ligne[] = { cr.getLibCodeRome(), cr.getDescCodeRome() };
 
@@ -143,7 +143,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 2, 70 };
 			String padding[] = { "C", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDomaine().listIterator(); list.hasNext();) {
+			for (ListIterator<DomaineEmploi> list = getListeDomaine().listIterator(); list.hasNext();) {
 				DomaineEmploi de = (DomaineEmploi) list.next();
 				String ligne[] = { de.getCodeDomaineEmploi(), de.getLibDomaineEmploi() };
 
@@ -166,7 +166,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 3, 70 };
 			String padding[] = { "C", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeFamille().listIterator(); list.hasNext();) {
+			for (ListIterator<FamilleEmploi> list = getListeFamille().listIterator(); list.hasNext();) {
 				FamilleEmploi f = (FamilleEmploi) list.next();
 				String ligne[] = { f.getCodeFamilleEmploi(), f.getLibFamilleEmploi() };
 
@@ -189,7 +189,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDiplome().listIterator(); list.hasNext();) {
+			for (ListIterator<DiplomeGenerique> list = getListeDiplome().listIterator(); list.hasNext();) {
 				DiplomeGenerique dg = (DiplomeGenerique) list.next();
 				String ligne[] = { dg.libDiplomeGenerique };
 
@@ -211,7 +211,7 @@ public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 20 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCategorie().listIterator(); list.hasNext();) {
+			for (ListIterator<Categorie> list = getListeCategorie().listIterator(); list.hasNext();) {
 				Categorie cat = (Categorie) list.next();
 				String ligne[] = { cat.getLibCategorie() };
 

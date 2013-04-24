@@ -42,7 +42,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		ArrayList<FormationAgent> listeFormationAgent = new ArrayList<FormationAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
 			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
@@ -97,7 +97,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		ArrayList<FormationAgent> listeFormationAgent = new ArrayList<FormationAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idTitreFormation });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
 			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
@@ -118,7 +118,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		ArrayList<FormationAgent> listeFormationAgent = new ArrayList<FormationAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCentreFormation });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
 			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));

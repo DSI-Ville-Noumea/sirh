@@ -37,7 +37,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
-	private ArrayList listeServices;
+	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	public String focus = null;
@@ -105,7 +105,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList services = Service.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -481,7 +481,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 	 * 
 	 * @return listeServices
 	 */
-	public ArrayList getListeServices() {
+	public ArrayList<Service> getListeServices() {
 		return listeServices;
 	}
 
@@ -490,7 +490,7 @@ public class OeAVCTSimulationContractuels extends nc.mairie.technique.BasicProce
 	 * 
 	 * @param listeServices
 	 */
-	private void setListeServices(ArrayList listeServices) {
+	private void setListeServices(ArrayList<Service> listeServices) {
 		this.listeServices = listeServices;
 	}
 

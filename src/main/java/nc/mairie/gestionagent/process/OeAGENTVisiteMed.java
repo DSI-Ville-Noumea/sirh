@@ -95,7 +95,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	public String ACTION_DOCUMENT = "Documents d'une fiche visite médicale.";
 	public String ACTION_DOCUMENT_SUPPRESSION = "Suppression d'un document d'une fiche visite médicale.";
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche visite médicale.";
-	private ArrayList listeDocuments;
+	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
@@ -189,13 +189,13 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si hashtable des medecins vide
 		if (getHashMedecin().size() == 0) {
-			ArrayList listeMedecin = Medecin.listerMedecin(getTransaction());
+			ArrayList<Medecin> listeMedecin = Medecin.listerMedecin(getTransaction());
 			setListeMedecin(listeMedecin);
 
 			int[] tailles = { 40 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, true);
-			for (ListIterator list = getListeMedecin().listIterator(); list.hasNext();) {
+			for (ListIterator<Medecin> list = getListeMedecin().listIterator(); list.hasNext();) {
 				Medecin m = (Medecin) list.next();
 				String ligne[] = { m.getPrenomMedecin() + " " + m.getNomMedecin() };
 
@@ -211,12 +211,12 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		}
 		// Si hashtable des motifs vide
 		if (getHashMotif().size() == 0) {
-			ArrayList listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 
 			int[] tailles = { 40 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator list = listeMotif.listIterator(); list.hasNext();) {
+			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
 				MotifVisiteMed motif = (MotifVisiteMed) list.next();
 				String ligne[] = { motif.getLibMotifVM() };
 				aFormat.ajouteLigne(ligne);
@@ -232,7 +232,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des recommandations vide
 		if (getHashRecommandation().size() == 0) {
-			ArrayList listeRecommandation = Recommandation.listerRecommandation(getTransaction());
+			ArrayList<Recommandation> listeRecommandation = Recommandation.listerRecommandation(getTransaction());
 			setListeRecommandation(listeRecommandation);
 
 			int[] tailles = { 150 };
@@ -248,7 +248,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des types d'inpatitude vide
 		if (getHashTypeInaptitude().size() == 0) {
-			ArrayList listeTypeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
+			ArrayList<TypeInaptitude> listeTypeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
 			setListeTypeInaptitude(listeTypeInaptitude);
 
 			int[] tailles = { 150 };
@@ -278,11 +278,11 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeVisiteMed(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList listeVisiteMed = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(), getAgentCourant());
+		ArrayList<VisiteMedicale> listeVisiteMed = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(), getAgentCourant());
 
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoqué
-		ArrayList listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
+		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
 				EnumEtatSuiviMed.CONVOQUE.getCode(), EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
@@ -330,7 +330,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 					r = (Recommandation) getHashRecommandation().get(vm.getIdRecommandation());
 				}
 				// calcul du nb de docs
-				ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
 						vm.getIdVisite());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
@@ -346,8 +346,8 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				addZone(getNOM_ST_MOTIF(indiceVisite),
 						motif == null || motif.getLibMotifVM().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif.getLibMotifVM());
 				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte" : "Inapte");
-				addZone(getNOM_ST_RECOMMANDATION(indiceVisite), r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: r.getDescRecommandation());
+				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
+						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getDescRecommandation());
 				addZone(getNOM_ST_NB_DOC(indiceVisite), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceVisite++;
@@ -362,7 +362,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList listeInaptitudes = Inaptitude.listerInaptitudeVisite(getTransaction(), getVisiteCourante());
+		ArrayList<Inaptitude> listeInaptitudes = Inaptitude.listerInaptitudeVisite(getTransaction(), getVisiteCourante());
 		setListeInaptitude(listeInaptitudes);
 		int indiceInaptitude = 0;
 		if (getListeInaptitude() != null) {
@@ -370,8 +370,8 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				Inaptitude inapt = (Inaptitude) getListeInaptitude().get(i);
 				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(inapt.getIdTypeInaptitude());
 
-				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude), ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti
-						.getDescTypeInaptitude());
+				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
+						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
 				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), inapt.getDateDebutInaptitude());
 				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee() : Const.ZERO);
 				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois() : Const.ZERO);
@@ -780,14 +780,14 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		return getZone(getNOM_LB_RECOMMANDATION_SELECT());
 	}
 
-	public ArrayList getListeVisites() {
+	public ArrayList<VisiteMedicale> getListeVisites() {
 		if (listeVisites == null) {
-			listeVisites = new ArrayList();
+			listeVisites = new ArrayList<VisiteMedicale>();
 		}
 		return listeVisites;
 	}
 
-	private void setListeVisites(ArrayList listeVisites) {
+	private void setListeVisites(ArrayList<VisiteMedicale> listeVisites) {
 		this.listeVisites = listeVisites;
 	}
 
@@ -1711,7 +1711,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 	public ArrayList<Inaptitude> getListeInaptitude() {
 		if (listeInaptitude == null) {
-			listeInaptitude = new ArrayList();
+			listeInaptitude = new ArrayList<Inaptitude>();
 		}
 		return listeInaptitude;
 	}
@@ -2548,13 +2548,13 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	 * @param newListeDocuments
 	 *            ArrayList
 	 */
-	private void setListeDocuments(ArrayList newListeDocuments) {
+	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
 
-	public ArrayList getListeDocuments() {
+	public ArrayList<Document> getListeDocuments() {
 		if (listeDocuments == null) {
-			listeDocuments = new ArrayList();
+			listeDocuments = new ArrayList<Document>();
 		}
 		return listeDocuments;
 	}
@@ -2566,7 +2566,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
 				getVisiteCourante().getIdVisite());
 		setListeDocuments(listeDocAgent);
 
@@ -2576,8 +2576,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument()
-						);
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
 				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
@@ -3001,7 +3000,6 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-
 	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -3029,6 +3027,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 		return resultat;
 	}
+
 	private boolean creeDocument(HttpServletRequest request, VisiteMedicale vm) throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
@@ -3047,7 +3046,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		//upload = uploadFichier(fichierUpload, nom, codTypeDoc);
+		// upload = uploadFichier(fichierUpload, nom, codTypeDoc);
 		if (extension.equals(".pdf")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		} else {
@@ -3160,7 +3159,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
 		// nom de contrat
-		for (Iterator iter = getListeDocuments().iterator(); iter.hasNext();) {
+		for (Iterator<Document> iter = getListeDocuments().iterator(); iter.hasNext();) {
 			Document doc = (Document) iter.next();
 			// on supprime l'extension
 			String nomDocSansExtension = doc.getNomDocument().substring(0, doc.getNomDocument().indexOf("."));

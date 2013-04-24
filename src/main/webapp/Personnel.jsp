@@ -1,4 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.droits.Droit"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <HTML>
 <HEAD>
@@ -20,7 +22,7 @@
 	
 	nc.mairie.technique.UserAppli aUserAppli = (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
 	
-	java.util.ArrayList listeDroits = aUserAppli.getListeDroits();
+	ArrayList<String> listeDroits = aUserAppli.getListeDroits();
 	
 	if (listeDroits.size() == 0) {
 	

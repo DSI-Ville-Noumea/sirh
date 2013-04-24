@@ -50,7 +50,7 @@ public class EaeDiplomeDao implements EaeDiplomeDaoInterface {
 		ArrayList<EaeDiplome> listeEaeDiplome = new ArrayList<EaeDiplome>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeDiplome dip = new EaeDiplome();
 			// logger.debug("List diplomes : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_DIPLOME);

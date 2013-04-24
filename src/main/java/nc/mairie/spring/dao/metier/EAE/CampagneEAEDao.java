@@ -50,7 +50,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 		ArrayList<CampagneEAE> listeCampagneEAE = new ArrayList<CampagneEAE>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			CampagneEAE camp = new CampagneEAE();
 			logger.info("List campagne EAE : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);

@@ -56,7 +56,7 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 		ArrayList<AvancementCapPrintJob> listeAvancementCapPrintJob = new ArrayList<AvancementCapPrintJob>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			AvancementCapPrintJob job = new AvancementCapPrintJob();
 
 			job.setIdAvancementCapPrintJob((Integer) row.get(CHAMP_ID_AVCT_CAP_PRINT_JOB));

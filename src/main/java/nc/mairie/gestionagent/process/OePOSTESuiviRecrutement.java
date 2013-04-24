@@ -29,8 +29,8 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 
 	private String[] LB_MOTIF_NON_RECRUTEMENT;
 	private String[] LB_MOTIF_RECRUTEMENT;
-	private ArrayList listeMotifRecrutement;
-	private ArrayList listeMotifNonRecrutement;
+	private ArrayList<MotifRecrutement> listeMotifRecrutement;
+	private ArrayList<MotifNonRecrutement> listeMotifNonRecrutement;
 
 	private Recrutement recrutementCourant;
 	public String focus = null;
@@ -784,7 +784,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste motif recrutement vide alors affectation
 		if (getLB_MOTIF_RECRUTEMENT() == LBVide) {
-			ArrayList rec = MotifRecrutement.listerMotifRecrutement(getTransaction());
+			ArrayList<MotifRecrutement> rec = MotifRecrutement.listerMotifRecrutement(getTransaction());
 			setListeMotifRecrutement(rec);
 
 			int[] tailles = { 50 };
@@ -794,7 +794,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 
 		// Si liste motif non recrutement vide alors affectation
 		if (getLB_MOTIF_NON_RECRUTEMENT() == LBVide) {
-			ArrayList nrec = MotifNonRecrutement.listerMotifNonRecrutement(getTransaction());
+			ArrayList<MotifNonRecrutement> nrec = MotifNonRecrutement.listerMotifNonRecrutement(getTransaction());
 			setListeMotifNonRecrutement(nrec);
 
 			int[] tailles = { 50 };
@@ -924,7 +924,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeMotifNonRecrutement
 	 */
-	public ArrayList getListeMotifNonRecrutement() {
+	public ArrayList<MotifNonRecrutement> getListeMotifNonRecrutement() {
 		return listeMotifNonRecrutement;
 	}
 
@@ -933,7 +933,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeMotifNonRecrutement
 	 */
-	private void setListeMotifNonRecrutement(ArrayList listeMotifNonRecrutement) {
+	private void setListeMotifNonRecrutement(ArrayList<MotifNonRecrutement> listeMotifNonRecrutement) {
 		this.listeMotifNonRecrutement = listeMotifNonRecrutement;
 	}
 
@@ -942,7 +942,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return listeMotifRecrutement
 	 */
-	public ArrayList getListeMotifRecrutement() {
+	public ArrayList<MotifRecrutement> getListeMotifRecrutement() {
 		return listeMotifRecrutement;
 	}
 
@@ -951,7 +951,7 @@ public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param listeMotifRecrutement
 	 */
-	private void setListeMotifRecrutement(ArrayList listeMotifRecrutement) {
+	private void setListeMotifRecrutement(ArrayList<MotifRecrutement> listeMotifRecrutement) {
 		this.listeMotifRecrutement = listeMotifRecrutement;
 	}
 }

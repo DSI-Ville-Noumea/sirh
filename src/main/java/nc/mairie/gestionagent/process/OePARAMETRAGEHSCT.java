@@ -89,49 +89,49 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 
 		if (getListeMedecin() == null) {
 			//Recherche des médecins
-			ArrayList listeMedecin = Medecin.listerMedecin(getTransaction());
+			ArrayList<Medecin> listeMedecin = Medecin.listerMedecin(getTransaction());
 			setListeMedecin(listeMedecin);
 			initialiseListeMedecin(request);
 		}
 
 		if (getListeRecommandation() == null) {
 			//Recherche des recommandations
-			ArrayList listeRecommandation = Recommandation.listerRecommandation(getTransaction());
+			ArrayList<Recommandation> listeRecommandation = Recommandation.listerRecommandation(getTransaction());
 			setListeRecommandation(listeRecommandation);
 			initialiseListeRecommandation(request);
 		}
 
 		if (getListeInaptitude() == null) {
 			//Recherche des types d'inaptitude
-			ArrayList listeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
+			ArrayList<TypeInaptitude> listeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
 			setListeInaptitude(listeInaptitude);
 			initialiseListeInaptitude(request);
 		}
 
 		if (getListeAT() == null) {
 			//Recherche des types d'AT
-			ArrayList listeAT = TypeAT.listerTypeAT(getTransaction());
+			ArrayList<TypeAT> listeAT = TypeAT.listerTypeAT(getTransaction());
 			setListeAT(listeAT);
 			initialiseListeAT(request);
 		}
 
 		if (getListeLesion() == null) {
 			//Recherche des des sièges de lésions
-			ArrayList listeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
+			ArrayList<SiegeLesion> listeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
 			setListeLesion(listeLesion);
 			initialiseListeLesion(request);
 		}
 
 		if (getListeMaladie() == null) {
 			//Recherche des des maladies professionnelles
-			ArrayList listeMaladie = MaladiePro.listerMaladiePro(getTransaction());
+			ArrayList<MaladiePro> listeMaladie = MaladiePro.listerMaladiePro(getTransaction());
 			setListeMaladie(listeMaladie);
 			initialiseListeMaladie(request);
 		}
 
 		if (getListeTypeDocument() == null) {
 			//Recherche des types de documents 
-			ArrayList listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),"HSCT");
+			ArrayList<TypeDocument> listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),"HSCT");
 			setListeTypeDocument(listeTypeDocument);
 			initialiseListeTypeDocument(request);
 		}
@@ -148,7 +148,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70};
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeMedecin().listIterator(); list.hasNext();) {
+			for (ListIterator<Medecin> list = getListeMedecin().listIterator(); list.hasNext();) {
 				Medecin m = (Medecin) list.next();
 				String ligne[] = { m.getTitreMedecin()+" "+m.getPrenomMedecin()+" "+ m.getNomMedecin() };
 
@@ -171,7 +171,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeRecommandation().listIterator(); list.hasNext();) {
+			for (ListIterator<Recommandation> list = getListeRecommandation().listIterator(); list.hasNext();) {
 				Recommandation r = (Recommandation) list.next();
 				String ligne[] = { r.getDescRecommandation() };
 				aFormat.ajouteLigne(ligne);
@@ -193,7 +193,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeInaptitude().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeInaptitude> list = getListeInaptitude().listIterator(); list.hasNext();) {
 				TypeInaptitude ti = (TypeInaptitude) list.next();
 				String ligne[] = { ti.getDescTypeInaptitude() };
 
@@ -216,7 +216,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeAT().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeAT> list = getListeAT().listIterator(); list.hasNext();) {
 				TypeAT td = (TypeAT) list.next();
 				String ligne[] = { td.getDescTypeAT() };
 
@@ -239,7 +239,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeLesion().listIterator(); list.hasNext();) {
+			for (ListIterator<SiegeLesion> list = getListeLesion().listIterator(); list.hasNext();) {
 				SiegeLesion sl = (SiegeLesion) list.next();
 				String ligne[] = { sl.getDescSiege() };
 
@@ -262,7 +262,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 30, 255 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeMaladie().listIterator(); list.hasNext();) {
+			for (ListIterator<MaladiePro> list = getListeMaladie().listIterator(); list.hasNext();) {
 				MaladiePro mp = (MaladiePro) list.next();
 				String ligne[] = { mp.getCodeMaladiePro(), mp.getLibMaladiePro() };
 
@@ -2649,7 +2649,7 @@ public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeDocument().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeDocument> list = getListeTypeDocument().listIterator(); list.hasNext();) {
 				TypeDocument type = (TypeDocument) list.next();
 				String ligne[] = { type.getLibTypeDocument() + " - " + type.getCodTypeDocument() };
 

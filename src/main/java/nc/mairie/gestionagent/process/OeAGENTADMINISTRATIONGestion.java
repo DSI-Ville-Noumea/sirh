@@ -30,10 +30,10 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	private String ACTION_MODIFICATION = "Modification d'une administration.";
 	private String ACTION_CREATION = "Création d'une administration.";
 
-	private nc.mairie.metier.agent.AgentNW AgentCourant;
+	private AgentNW AgentCourant;
 	private Hashtable<String, AutreAdministration> hashAdministration;
-	private ArrayList listeAgentAdministrations;
-	private ArrayList listeAdministrations;
+	private ArrayList<AutreAdministrationAgent> listeAgentAdministrations;
+	private ArrayList<AutreAdministration> listeAdministrations;
 	private AutreAdministrationAgent autreAdministrationAgentCourant;
 	private AutreAdministration autreAdministrationCourant;
 	public String focus = null;
@@ -94,9 +94,9 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 10:47:43)
 	 * @return ArrayList
 	 */
-	private ArrayList getListeAdministrations() {
+	private ArrayList<AutreAdministration> getListeAdministrations() {
 		if (listeAdministrations == null) {
-			listeAdministrations = new ArrayList();
+			listeAdministrations = new ArrayList<AutreAdministration>();
 		}
 		return listeAdministrations;
 	}
@@ -106,9 +106,9 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 10:38:02)
 	 * @return ArrayList
 	 */
-	public ArrayList getListeAgentAdministrations() {
+	public ArrayList<AutreAdministrationAgent> getListeAgentAdministrations() {
 		if (listeAgentAdministrations == null) {
-			listeAgentAdministrations = new ArrayList();
+			listeAgentAdministrations = new ArrayList<AutreAdministrationAgent>();
 		}
 		return listeAgentAdministrations;
 	}
@@ -302,7 +302,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	private void initialiseFenetre(HttpServletRequest request) throws Exception {
 
 		//Recherche des administrations de l'agent
-		ArrayList a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<AutreAdministrationAgent> a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(getTransaction(), getAgentCourant());
 		setListeAgentAdministrations(a);
 
 		//Init de la liste des administrations de l'agent
@@ -378,7 +378,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 
 		//Si liste des administrations vide ou si statut gestion admin
 		if (getLB_ADMINISTRATION() == LBVide) {
-			ArrayList a = AutreAdministration.listerAutreAdministration(getTransaction());
+			ArrayList<AutreAdministration> a = AutreAdministration.listerAutreAdministration(getTransaction());
 			setListeAdministrations(a);
 
 			int[] tailles = { 50 };
@@ -386,7 +386,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 			setLB_ADMINISTRATION(new FormateListe(tailles, a, champs).getListeFormatee());
 
 			//Remplissage de la hashtable des types de administrations.
-			for (ListIterator list = a.listIterator(); list.hasNext();) {
+			for (ListIterator<AutreAdministration> list = a.listIterator(); list.hasNext();) {
 				AutreAdministration aAdministration = (AutreAdministration) list.next();
 				getHashAdministration().put(aAdministration.getIdAutreAdmin(), aAdministration);
 			}
@@ -552,7 +552,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 */
 	public boolean performControlerRG() throws Exception {
 
-		for (ListIterator list = getListeAgentAdministrations().listIterator(); list.hasNext();) {
+		for (ListIterator<AutreAdministrationAgent> list = getListeAgentAdministrations().listIterator(); list.hasNext();) {
 			AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) list.next();
 			if (!aAdministrationAgent.getIdAutreAdmin().equals(getAutreAdministrationAgentCourant().getIdAutreAdmin())) {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), aAdministrationAgent.getDateEntree()) >= 0 && Services.compareDates(getVAL_EF_DATE_DEBUT(), aAdministrationAgent.getDateSortie()) <= 0) {
@@ -600,7 +600,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 10:47:43)
 	 * @param newListeAdministrations ArrayList
 	 */
-	private void setListeAdministrations(ArrayList newListeAdministrations) {
+	private void setListeAdministrations(ArrayList<AutreAdministration> newListeAdministrations) {
 		listeAdministrations = newListeAdministrations;
 	}
 
@@ -609,7 +609,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 10:38:02)
 	 * @param newListeAgentAdministrations ArrayList
 	 */
-	private void setListeAgentAdministrations(ArrayList newListeAgentAdministrations) {
+	private void setListeAgentAdministrations(ArrayList<AutreAdministrationAgent> newListeAgentAdministrations) {
 		listeAgentAdministrations = newListeAgentAdministrations;
 	}
 

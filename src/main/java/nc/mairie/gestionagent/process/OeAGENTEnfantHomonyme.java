@@ -21,7 +21,7 @@ import nc.mairie.utils.VariablesActivite;
 public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 	private String[] LB_ENFANT_HOMONYME;
 
-	private ArrayList listeEnfantHomonyme;
+	private ArrayList<EnfantNW> listeEnfantHomonyme;
 
 	private AgentNW agentCourant;
 	private EnfantNW enfantCourant;
@@ -321,7 +321,7 @@ public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 	 * Getter de la liste des enfants homonymes.
 	 * @return listeEnfantHomonyme
 	 */
-	private ArrayList getListeEnfantHomonyme() {
+	private ArrayList<EnfantNW> getListeEnfantHomonyme() {
 		return listeEnfantHomonyme;
 	}
 
@@ -329,7 +329,7 @@ public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 	 * Setter de la liste des enfants homonymes.
 	 * @param listeEnfantHomonyme
 	 */
-	private void setListeEnfantHomonyme(ArrayList listeEnfantHomonyme) {
+	private void setListeEnfantHomonyme(ArrayList<EnfantNW> listeEnfantHomonyme) {
 		this.listeEnfantHomonyme = listeEnfantHomonyme;
 	}
 }

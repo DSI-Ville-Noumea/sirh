@@ -51,7 +51,7 @@ public class EaeFormationDao implements EaeFormationDaoInterface {
 		ArrayList<EaeFormation> listeEaeFormation = new ArrayList<EaeFormation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeFormation form = new EaeFormation();
 			// logger.debug("List diplomes : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_FORMATION);

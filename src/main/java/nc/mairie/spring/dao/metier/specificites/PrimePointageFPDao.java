@@ -25,9 +25,9 @@ public class PrimePointageFPDao implements PrimePointageFPDaoInterface {
 
 	@Override
 	public void creerPrimePointageFP(Integer idPrimePointage, Integer idFichePoste) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_PRIME_POINTAGE + "," + CHAMP_ID_FICHE_POSTE + ") " + "VALUES (?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_PRIME_POINTAGE + ") " + "VALUES (?,?)";
 
-		jdbcTemplate.update(sql, new Object[] { idPrimePointage, idFichePoste });
+		jdbcTemplate.update(sql, new Object[] { idFichePoste, idPrimePointage });
 	}
 
 	@Override

@@ -51,7 +51,7 @@ public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
 		ArrayList<EaeParcoursPro> listeEaeParcoursPro = new ArrayList<EaeParcoursPro>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeParcoursPro parc = new EaeParcoursPro();
 			// logger.debug("List diplomes : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_PARCOURS_PRO);

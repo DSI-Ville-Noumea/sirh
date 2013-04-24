@@ -102,28 +102,28 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 		// Initialisation de la page.//
 		// ---------------------------//
 		if (getListeDiplome() == null) {
-			ArrayList listeDiplome = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> listeDiplome = TitreDiplome.listerTitreDiplome(getTransaction());
 			setListeDiplome(listeDiplome);
 			initialiseListeDiplome(request);
 		}
 
 		if (getListeSpecialite() == null) {
 			// Recherche des spécialités de diplôme
-			ArrayList listeSpecialite = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
+			ArrayList<SpecialiteDiplomeNW> listeSpecialite = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
 			setListeSpecialite(listeSpecialite);
 			initialiseListeSpecialite(request);
 		}
 
 		if (getListeAdmin() == null) {
 			// Recherche des qdministrations
-			ArrayList listeAdmin = AutreAdministration.listerAutreAdministration(getTransaction());
+			ArrayList<AutreAdministration> listeAdmin = AutreAdministration.listerAutreAdministration(getTransaction());
 			setListeAdmin(listeAdmin);
 			initialiseListeAdmin(request);
 		}
 
 		if (getListeTypeDocument() == null) {
 			// Recherche des types de documents
-			ArrayList listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
+			ArrayList<TypeDocument> listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
 			setListeTypeDocument(listeTypeDocument);
 			initialiseListeTypeDocument(request);
 		}
@@ -179,7 +179,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCentreFormation().listIterator(); list.hasNext();) {
+			for (ListIterator<CentreFormation> list = getListeCentreFormation().listIterator(); list.hasNext();) {
 				CentreFormation centre = (CentreFormation) list.next();
 				String ligne[] = { centre.getLibCentreFormation().toUpperCase() };
 
@@ -201,7 +201,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTitrePermis().listIterator(); list.hasNext();) {
+			for (ListIterator<TitrePermis> list = getListeTitrePermis().listIterator(); list.hasNext();) {
 				TitrePermis titre = (TitrePermis) list.next();
 				String ligne[] = { titre.getLibTitrePermis().toUpperCase() };
 
@@ -223,7 +223,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTitreFormation().listIterator(); list.hasNext();) {
+			for (ListIterator<TitreFormation> list = getListeTitreFormation().listIterator(); list.hasNext();) {
 				TitreFormation titre = (TitreFormation) list.next();
 				String ligne[] = { titre.getLibTitreFormation().toUpperCase() };
 
@@ -246,7 +246,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDiplome().listIterator(); list.hasNext();) {
+			for (ListIterator<TitreDiplome> list = getListeDiplome().listIterator(); list.hasNext();) {
 				TitreDiplome td = (TitreDiplome) list.next();
 				String ligne[] = { td.getLibTitreDiplome() };
 
@@ -269,7 +269,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeSpecialite().listIterator(); list.hasNext();) {
+			for (ListIterator<SpecialiteDiplomeNW> list = getListeSpecialite().listIterator(); list.hasNext();) {
 				SpecialiteDiplomeNW sd = (SpecialiteDiplomeNW) list.next();
 				String ligne[] = { sd.getLibSpeDiplome() };
 				aFormat.ajouteLigne(ligne);
@@ -291,7 +291,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeAdmin().listIterator(); list.hasNext();) {
+			for (ListIterator<AutreAdministration> list = getListeAdmin().listIterator(); list.hasNext();) {
 				AutreAdministration admin = (AutreAdministration) list.next();
 				String ligne[] = { admin.getLibAutreAdmin() };
 
@@ -314,7 +314,7 @@ public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess 
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeTypeDocument().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeDocument> list = getListeTypeDocument().listIterator(); list.hasNext();) {
 				TypeDocument type = (TypeDocument) list.next();
 				String ligne[] = { type.getLibTypeDocument() + " - " + type.getCodTypeDocument() };
 

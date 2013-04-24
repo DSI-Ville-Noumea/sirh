@@ -146,7 +146,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		setListeDeliberationComm(listeDelibComm);
 		if (getListeDeliberationComm().size() != 0) {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDeliberationComm().listIterator(); list.hasNext();) {
+			for (ListIterator<Deliberation> list = getListeDeliberationComm().listIterator(); list.hasNext();) {
 				Deliberation delibComm = (Deliberation) list.next();
 
 				String ligne[] = { delibComm.getCodeDeliberation() };
@@ -175,7 +175,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 		setListeDeliberationTerr(listeDelibTerr);
 		if (getListeDeliberationTerr().size() != 0) {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeDeliberationTerr().listIterator(); list.hasNext();) {
+			for (ListIterator<Deliberation> list = getListeDeliberationTerr().listIterator(); list.hasNext();) {
 				Deliberation delibTerr = (Deliberation) list.next();
 
 				String ligne[] = { delibTerr.getCodeDeliberation() };
@@ -318,7 +318,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			int tailles[] = { 40 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator list = getListeCadreEmploi().listIterator(); list.hasNext();) {
+			for (ListIterator<CadreEmploi> list = getListeCadreEmploi().listIterator(); list.hasNext();) {
 				CadreEmploi ce = (CadreEmploi) list.next();
 
 				String ligne[] = { ce.getLibCadreEmploi() };
@@ -338,7 +338,7 @@ public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
 			int taillesCadre[] = { 40 };
 			String paddingCadre[] = { "G" };
 			FormateListe aFormatCadre = new FormateListe(taillesCadre, paddingCadre, false);
-			for (ListIterator list = getListeCadreEmploi().listIterator(); list.hasNext();) {
+			for (ListIterator<CadreEmploi> list = getListeCadreEmploi().listIterator(); list.hasNext();) {
 				CadreEmploi ce = (CadreEmploi) list.next();
 
 				String ligne[] = { ce.getLibCadreEmploi() };

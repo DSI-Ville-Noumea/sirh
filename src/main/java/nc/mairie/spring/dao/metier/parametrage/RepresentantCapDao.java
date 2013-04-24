@@ -49,7 +49,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 		ArrayList<RepresentantCap> listeRepresentantCap = new ArrayList<RepresentantCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idRepresentant });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			RepresentantCap repreCap = new RepresentantCap();
 			repreCap.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
 			repreCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
@@ -67,7 +67,7 @@ public class RepresentantCapDao implements RepresentantCapDaoInterface {
 		ArrayList<RepresentantCap> listeRepresentantCap = new ArrayList<RepresentantCap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCap });
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			RepresentantCap repreCap = new RepresentantCap();
 			repreCap.setIdRepresentant((Integer) row.get(CHAMP_ID_REPRESENTANT));
 			repreCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));

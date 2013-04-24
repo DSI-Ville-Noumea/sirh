@@ -61,7 +61,7 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 		ArrayList<MotifVisiteMed> listeMotifVisiteMed = new ArrayList<MotifVisiteMed>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			MotifVisiteMed motif = new MotifVisiteMed();
 			logger.info("List motif VM : " + row.toString());
 			motif.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));

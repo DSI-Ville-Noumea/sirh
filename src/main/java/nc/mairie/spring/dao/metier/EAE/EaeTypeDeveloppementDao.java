@@ -40,7 +40,7 @@ public class EaeTypeDeveloppementDao implements EaeTypeDeveloppementDaoInterface
 		ArrayList<EaeTypeDeveloppement> listeEaeTypeDeveloppement = new ArrayList<EaeTypeDeveloppement>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
+		for (Map<String, Object> row : rows) {
 			EaeTypeDeveloppement dev = new EaeTypeDeveloppement();
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_TYPE_DEVELOPPEMENT);
 			dev.setIdEaeTypeDeveloppement(id.intValue());

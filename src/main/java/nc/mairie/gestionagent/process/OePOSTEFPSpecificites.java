@@ -1368,7 +1368,7 @@ public class OePOSTEFPSpecificites extends nc.mairie.technique.BasicProcess {
 		if (getListePrimePointage() == null)
 			setListePrimePointage((ArrayList<PrimePointage>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
 		if (getListePrimePointage() != null && getListePrimePointage().size() != 0) {
-			int taillesReg[] = { 10, 20 };
+			int taillesReg[] = { 10, 50 };
 			FormateListe aFormatReg = new FormateListe(taillesReg);
 			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
 				PrimePointage aReg = (PrimePointage) list.next();

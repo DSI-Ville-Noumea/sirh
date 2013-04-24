@@ -35,7 +35,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		// on recupere les evaluateurs deja present
 		ArrayList<AgentNW> listDep = new ArrayList<AgentNW>();
 		if (isFirst()) {
-			listDep = (ArrayList) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
+			listDep = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
 			VariablesActivite.enlever(this, "LISTEEVALUATEUR");
 			setListeDepart(null);
 			ArrayList<AgentNW> listeBis = (ArrayList<AgentNW>) listDep.clone();
@@ -335,7 +335,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList aListe = new ArrayList();
+		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
 			aListe = AgentNW.listerAgentEnActivite(getTransaction());
@@ -361,7 +361,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
 			return false;
 		}
-		ArrayList xcludeListe = getListeEvaluateurs();
+		ArrayList<AgentNW> xcludeListe = getListeEvaluateurs();
 		aListe = elim_doublure_evaluateur(aListe, xcludeListe);
 
 		setListeEvaluateursPossible(null);
@@ -377,7 +377,7 @@ public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess 
 		return true;
 	}
 
-	private ArrayList elim_doublure_evaluateur(ArrayList l1, ArrayList l2) {
+	private ArrayList<AgentNW> elim_doublure_evaluateur(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
 		if (null == l1)
 			return null;
 

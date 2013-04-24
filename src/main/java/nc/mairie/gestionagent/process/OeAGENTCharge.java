@@ -113,7 +113,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 		// RG_AG_CG_C01
 		// RG_AG_CG_C02
 		if (getHashRubriques().size() == 0) {
-			ArrayList listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "C");
+			ArrayList<Rubrique> listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "C");
 			setListeRubriques(listeRubrique);
 
 			// remplissage de la hashTable
@@ -126,7 +126,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 		// Si hashtable des creanciers vide
 		// RG_AG_CG_C03
 		if (getHashCreanciers().size() == 0) {
-			ArrayList listeCreancier = Creancier.listerCreancier(getTransaction());
+			ArrayList<Creancier> listeCreancier = Creancier.listerCreancier(getTransaction());
 			setListeCreancier(listeCreancier);
 
 			int tailles[] = { 50 };
@@ -145,7 +145,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des codes accident du travail vide
 		if (getHashCodesAcci().size() == 0) {
-			ArrayList listeCodesAcci = CodeAcci.listerCodeAcci(getTransaction());
+			ArrayList<CodeAcci> listeCodesAcci = CodeAcci.listerCodeAcci(getTransaction());
 			setListeCodesAcci(listeCodesAcci);
 
 			// remplissage de la hashTable
@@ -157,7 +157,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des codes mutuelle vide
 		if (getHashCodesMutu().size() == 0) {
-			ArrayList listeCodesMutu = CodeMutu.listerCodeMutu(getTransaction());
+			ArrayList<CodeMutu> listeCodesMutu = CodeMutu.listerCodeMutu(getTransaction());
 			setListeCodesMutu(listeCodesMutu);
 
 			// remplissage de la hashTable
@@ -169,7 +169,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des codes logement vide
 		if (getHashCodesLogt().size() == 0) {
-			ArrayList listeCodes = CodeLogt.listerCodeLogt(getTransaction());
+			ArrayList<CodeLogt> listeCodes = CodeLogt.listerCodeLogt(getTransaction());
 			setListeCodesLogt(listeCodes);
 
 			// remplissage de la hashTable
@@ -181,7 +181,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 
 		// Si hashtable des codes logement vide
 		if (getHashCodesChargeLogt().size() == 0) {
-			ArrayList listeCodes = CodeChargeLogt.listerCodeChargeLogt(getTransaction());
+			ArrayList<CodeChargeLogt> listeCodes = CodeChargeLogt.listerCodeChargeLogt(getTransaction());
 			setListeCodesChargeLogt(listeCodes);
 
 			// remplissage de la hashTable
@@ -259,7 +259,7 @@ public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
 	 */
 	private void initialiseListeCharges(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
-		ArrayList listeCharges = Charge.listerChargeAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<Charge> listeCharges = Charge.listerChargeAvecAgent(getTransaction(), getAgentCourant());
 		setListeCharges(listeCharges);
 
 		int indiceCharge = 0;

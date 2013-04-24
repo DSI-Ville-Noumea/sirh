@@ -69,8 +69,8 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	private String[] LB_TEMPS_TRAVAIL;
 	private String[] LB_LISTE_IMPRESSION;
 
-	private ArrayList listeAffectation;
-	private ArrayList listeMotifAffectation;
+	private ArrayList<Affectation> listeAffectation;
+	private ArrayList<MotifAffectation> listeMotifAffectation;
 	private String[] listeTempsTravail;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une affectation";
@@ -706,7 +706,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	public boolean performControlerRG() throws Exception {
 
 		// Vérification du non-chevauchement des dates des affectations
-		for (ListIterator list = getListeAffectation().listIterator(); list.hasNext();) {
+		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
 			if (!aAff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
 				if (aAff.getDateFinAff() != null) {
@@ -1224,7 +1224,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	private void initialiseListeAffectation(HttpServletRequest request) throws Exception {
 
 		// Recherche des affectations de l'agent
-		ArrayList aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<Affectation> aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
 		setListeAffectation(aff);
 
 		boolean affectationActive = false;
@@ -1236,7 +1236,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 				affectationActive = affectationActive || a.isActive();
 				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
 				HistoFichePoste hfp = null;
-				ArrayList listeHistoFP = new ArrayList();
+				ArrayList<HistoFichePoste> listeHistoFP = new ArrayList<HistoFichePoste>();
 				if (a.getDateFinAff() != null && !a.getDateFinAff().equals(Const.CHAINE_VIDE)) {
 					// on cherche la FDP dans histo_fiche_poste
 					listeHistoFP = HistoFichePoste.listerHistoFichePosteDansDate(getTransaction(), a.getIdFichePoste(),
@@ -1324,7 +1324,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		// Si liste motif affectation vide alors affectation
 		// RG_AG_AF_C06
 		if (getLB_MOTIF_AFFECTATION() == LBVide) {
-			ArrayList motifAff = MotifAffectation.listerMotifAffectation(getTransaction());
+			ArrayList<MotifAffectation> motifAff = MotifAffectation.listerMotifAffectation(getTransaction());
 			setListeMotifAffectation(motifAff);
 
 			int[] tailles = { 30 };
@@ -1383,7 +1383,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 * @param listeMotifAffectation
 	 *            Nouvelle liste des motifs d'affectations
 	 */
-	private void setListeMotifAffectation(ArrayList listeMotifAffectation) {
+	private void setListeMotifAffectation(ArrayList<MotifAffectation> listeMotifAffectation) {
 		this.listeMotifAffectation = listeMotifAffectation;
 	}
 
@@ -1392,7 +1392,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return listeAffectation
 	 */
-	public ArrayList getListeAffectation() {
+	public ArrayList<Affectation> getListeAffectation() {
 		return listeAffectation;
 	}
 
@@ -1400,7 +1400,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 * @param listeAffectation
 	 *            listeAffectation à définir
 	 */
-	private void setListeAffectation(ArrayList listeAffectation) {
+	private void setListeAffectation(ArrayList<Affectation> listeAffectation) {
 		this.listeAffectation = listeAffectation;
 	}
 
@@ -1428,7 +1428,7 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 	 * 
 	 * @return listeMotifAffectation
 	 */
-	private ArrayList getListeMotifAffectation() {
+	private ArrayList<MotifAffectation> getListeMotifAffectation() {
 		return listeMotifAffectation;
 	}
 
@@ -2193,9 +2193,9 @@ public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess 
 		String titulaire = civilite + " " + prenom + " " + nom + " (" + a.getNoMatricule() + ") " + dateNaiss + " " + embauche;
 
 		// on récupère les diplomes de l'agent
-		ArrayList diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
+		ArrayList<DiplomeAgent> diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
 		String listeDiplome = Const.CHAINE_VIDE;
-		for (Iterator iter = diplomesAgent.iterator(); iter.hasNext();) {
+		for (Iterator<DiplomeAgent> iter = diplomesAgent.iterator(); iter.hasNext();) {
 			DiplomeAgent da = (DiplomeAgent) iter.next();
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
 			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
