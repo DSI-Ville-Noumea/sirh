@@ -25,6 +25,10 @@ import nc.mairie.utils.MessageUtils;
  * 
  */
 public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_DOMAINE;
 	private String[] LB_CATEGORIE;
 	private String[] LB_CODE_ROME;

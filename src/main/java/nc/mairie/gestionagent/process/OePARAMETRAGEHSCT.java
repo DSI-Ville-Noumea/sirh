@@ -30,6 +30,10 @@ import nc.mairie.utils.MessageUtils;
      *
  */
 public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_AT;
 	private String[] LB_INAPTITUDE;
 	private String[] LB_LESION;

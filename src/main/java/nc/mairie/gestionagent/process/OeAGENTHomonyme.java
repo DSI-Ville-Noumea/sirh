@@ -18,6 +18,10 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OeAGENTHomonyme extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_AGENT_HOMONYME;
 	ArrayList<AgentNW> listeAgtHomonyme;
 

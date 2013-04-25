@@ -27,6 +27,10 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * 
  */
 public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_CLASSE;
 	private String[] LB_ECHELON;
 	private String[] LB_GRADE_GENERIQUE;

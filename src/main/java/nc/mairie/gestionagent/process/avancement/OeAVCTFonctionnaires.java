@@ -26,6 +26,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_ANNEE;
 	private String[] LB_AVIS_CAP;
 

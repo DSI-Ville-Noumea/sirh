@@ -25,6 +25,11 @@ import nc.mairie.utils.TreeHierarchy;
  */
 public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int STATUT_ETAT_CIVIL = 1;
 
 	private ArrayList<AgentNW> listeAgent;

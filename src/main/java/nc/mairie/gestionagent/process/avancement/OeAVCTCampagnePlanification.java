@@ -52,6 +52,10 @@ import com.oreilly.servlet.MultipartRequest;
  * 
  */
 public class OeAVCTCampagnePlanification extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int STATUT_DESTINATAIRE = 2;
 

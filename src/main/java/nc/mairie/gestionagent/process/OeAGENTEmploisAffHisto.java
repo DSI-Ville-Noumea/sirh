@@ -17,6 +17,10 @@ import nc.mairie.utils.MessageUtils;
  */
 public class OeAGENTEmploisAffHisto extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private AgentNW agentCourant;
 	private ArrayList<AffectationHisto> listeHistoAffectation;
 

@@ -20,6 +20,10 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_FAMILLE_EMPLOI;
 	private String[] LB_DOMAINE_EMPLOI;
 

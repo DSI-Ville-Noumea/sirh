@@ -52,6 +52,10 @@ import com.oreilly.servlet.MultipartRequest;
  */
 public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<CampagneEAE> listeCampagne;
 	private CampagneEAE campagneCourante;
 

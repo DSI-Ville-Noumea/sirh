@@ -28,6 +28,11 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * 
  */
 public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	private ArrayList<Prime> listePrimes;

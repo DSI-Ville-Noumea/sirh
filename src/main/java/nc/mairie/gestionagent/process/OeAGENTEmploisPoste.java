@@ -74,6 +74,10 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAGENTEmploisPoste extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<Delegation> listeDelegation;
 	private ArrayList<RegimeIndemnitaire> listeRegIndemn;

@@ -55,6 +55,11 @@ import com.oreilly.servlet.MultipartRequest;
  * 
  */
 public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	public String ACTION_MODIFICATION = "Modification d'un EAE.";
@@ -2185,7 +2190,6 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 			evolution.setIdEae(eae.getIdEAE());
 			getEaeEvolutionDao().creerEaeEvolution(evolution);
 			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
-			// TODO crée l'évolution
 		}
 
 		// Mobilités

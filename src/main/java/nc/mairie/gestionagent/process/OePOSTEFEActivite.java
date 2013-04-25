@@ -18,6 +18,10 @@ import nc.mairie.utils.MessageUtils;
      *
  */
 public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String ACTION_SUPPRESSION = "Supprimer";
 	public String ACTION_MODIFICATION = "Modifier";
 	public String ACTION_AJOUT = "Ajouter";

@@ -23,6 +23,11 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;

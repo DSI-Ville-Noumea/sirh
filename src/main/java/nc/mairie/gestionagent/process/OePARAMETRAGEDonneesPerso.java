@@ -37,6 +37,10 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_DIPLOME;
 	private String[] LB_SPECIALITE;
 	private String[] LB_ADMIN;

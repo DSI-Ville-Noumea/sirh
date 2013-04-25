@@ -9,6 +9,11 @@ import nc.mairie.technique.VariableGlobale;
  */
 public class PersonnelMain extends nc.mairie.technique.BasicProcess {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Commentaire relatif au constructeur DefaultProcess.
 	 */
 	public PersonnelMain() {

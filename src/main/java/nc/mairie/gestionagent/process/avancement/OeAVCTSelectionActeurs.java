@@ -13,6 +13,10 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<AgentNW> listeActeurs;
 	public String focus = null;
 

@@ -18,6 +18,10 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private ArrayList<FichePoste> listeFichePoste;
 

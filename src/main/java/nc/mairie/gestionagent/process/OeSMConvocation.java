@@ -63,6 +63,10 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_MOIS;
 	private String[] LB_MEDECIN;
 	private String[] LB_HEURE_RDV;

@@ -30,6 +30,10 @@ import nc.mairie.utils.MessageUtils;
  * 
  */
 public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_ENTITE_GEO;
 	private String[] LB_ENTITE_ECOLE;
 	private String[] LB_NATURE_AVANTAGE;

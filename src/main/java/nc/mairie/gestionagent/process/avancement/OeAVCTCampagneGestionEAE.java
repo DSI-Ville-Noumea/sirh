@@ -89,6 +89,10 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_EVALUATEUR = 1;
 	public static final int STATUT_RECHERCHER_AGENT = 2;
 	public static final int STATUT_RECHERCHER_AGENT_EVALUATEUR = 3;

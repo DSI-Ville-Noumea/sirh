@@ -26,6 +26,10 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OePOSTEFPSpecificites extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String ACTION_AJOUTER = "Ajouter";
 	public final String ACTION_SUPPRIMER = "Supprimer";
 	public final String SPEC_AVANTAGE_NATURE = "avantage en nature";

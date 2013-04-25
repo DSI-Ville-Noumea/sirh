@@ -30,6 +30,10 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_BAREME;
 	private String[] LB_CLASSE;
 	private String[] LB_ECHELON;

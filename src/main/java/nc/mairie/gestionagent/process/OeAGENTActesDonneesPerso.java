@@ -49,6 +49,11 @@ import com.oreilly.servlet.MultipartRequest;
  * 
  */
 public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	public String focus = null;

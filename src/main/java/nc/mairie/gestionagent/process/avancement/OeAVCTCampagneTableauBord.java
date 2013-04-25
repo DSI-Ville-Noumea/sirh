@@ -26,6 +26,11 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArrayList<EaeFichePoste> listeTableauBord;
 
 	private EAEDao eaeDao;

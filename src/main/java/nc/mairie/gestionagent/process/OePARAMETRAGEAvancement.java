@@ -40,6 +40,10 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_MOTIF;
 	private String[] LB_EMPLOYEUR;
 	private String[] LB_REPRESENTANT;

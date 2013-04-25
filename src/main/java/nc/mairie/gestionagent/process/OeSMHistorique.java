@@ -29,6 +29,10 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_ANNEE;
 	private String[] listeAnnee;
 	private String[] LB_MOIS;

@@ -23,6 +23,11 @@ import nc.mairie.utils.MessageUtils;
  */
 public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String[] LB_TYPE_DROIT;
 
 	private ArrayList<Element> listeElement;

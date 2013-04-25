@@ -38,6 +38,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_COMPETENCE = 3;
 	public static final int STATUT_ACTI_PRINC = 2;
 	public static final int STATUT_SUIVI = 1;

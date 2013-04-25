@@ -27,6 +27,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int STATUT_LIEU_NAISS_FRANCE = 2;
 	public static final int STATUT_LIEU_NAISS_AUTRE = 3;

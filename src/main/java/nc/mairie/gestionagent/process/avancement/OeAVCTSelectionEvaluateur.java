@@ -16,6 +16,10 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<AgentNW> listeEvaluateurs;
 	private ArrayList<AgentNW> listeEvaluateursExistant;
 	private ArrayList<AgentNW> listeEvaluateursPossible;

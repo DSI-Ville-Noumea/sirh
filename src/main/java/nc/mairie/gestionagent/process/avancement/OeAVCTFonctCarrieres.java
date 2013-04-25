@@ -31,6 +31,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeAVCTFonctCarrieres extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private String[] LB_ANNEE;
 	private String[] LB_FILIERE;

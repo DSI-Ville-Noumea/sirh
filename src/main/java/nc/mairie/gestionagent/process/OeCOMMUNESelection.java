@@ -20,6 +20,11 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// Global
 	private String origine;
 

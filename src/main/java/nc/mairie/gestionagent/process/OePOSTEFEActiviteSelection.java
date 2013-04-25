@@ -13,6 +13,10 @@ import nc.mairie.utils.VariablesActivite;
      *
  */
 public class OePOSTEFEActiviteSelection extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Activite> listeActivites;
 	public String focus = null;
 

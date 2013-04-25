@@ -42,6 +42,11 @@ import org.springframework.context.ApplicationContext;
  */
 public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctPrepaAvct.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;

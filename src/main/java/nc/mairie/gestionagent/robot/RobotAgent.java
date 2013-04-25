@@ -78,6 +78,11 @@ import nc.mairie.technique.BasicProcess;
  */
 public class RobotAgent extends nc.mairie.robot.Robot {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Commentaire relatif au constructeur Robot.
 	 */
 	public RobotAgent() {

@@ -52,6 +52,11 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctArretes.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;

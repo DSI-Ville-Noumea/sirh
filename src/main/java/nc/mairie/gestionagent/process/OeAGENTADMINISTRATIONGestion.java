@@ -23,6 +23,11 @@ import nc.mairie.utils.MessageUtils;
      *
  */
 public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String[] LB_ADMINISTRATION;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une administration.";

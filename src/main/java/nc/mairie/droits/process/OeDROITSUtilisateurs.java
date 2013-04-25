@@ -27,6 +27,10 @@ import nc.mairie.utils.TreeHierarchy;
  * 
  */
 public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_GROUPES_AUTRES;
 	private String[] LB_GROUPES_UTILISATEUR;
 

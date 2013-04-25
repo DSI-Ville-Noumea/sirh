@@ -60,6 +60,10 @@ import org.apache.commons.vfs2.VFS;
  * 
  */
 public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHE_FP_SECONDAIRE = 4;
 	public static final int STATUT_HISTORIQUE = 3;
 	public static final int STATUT_VISU_FP = 2;

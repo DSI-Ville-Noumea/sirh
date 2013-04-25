@@ -68,6 +68,11 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctPrepaCAP.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;

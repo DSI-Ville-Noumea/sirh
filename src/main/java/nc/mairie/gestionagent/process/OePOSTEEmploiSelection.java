@@ -16,6 +16,11 @@ import nc.mairie.utils.VariablesActivite;
  */
 public class OePOSTEEmploiSelection extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArrayList<FicheEmploi> listeFicheEmploi = new ArrayList<FicheEmploi>();
 
 	public String focus = null;

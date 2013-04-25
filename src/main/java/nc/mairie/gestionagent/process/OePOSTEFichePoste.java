@@ -94,6 +94,10 @@ import org.springframework.context.ApplicationContext;
  * 
  */
 public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHE = 1;
 	public static final int STATUT_A_DUPLIQUER = 2;
 	public static final int STATUT_DUPLIQUER = 3;

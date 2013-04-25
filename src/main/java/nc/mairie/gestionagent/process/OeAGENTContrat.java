@@ -58,6 +58,10 @@ import org.apache.commons.vfs2.VFS;
  */
 public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String[] LB_MOTIF;
 	private String[] LB_TYPE_CONTRAT;
 

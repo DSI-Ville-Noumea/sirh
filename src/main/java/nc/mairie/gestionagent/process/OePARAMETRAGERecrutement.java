@@ -21,6 +21,11 @@ import nc.mairie.utils.MessageUtils;
      *
  */
 public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String[] LB_MOTIF;
 
 	private ArrayList<MotifRecrutement> listeMotif;

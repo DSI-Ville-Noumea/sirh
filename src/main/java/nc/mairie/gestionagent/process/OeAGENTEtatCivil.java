@@ -41,6 +41,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_AGT_HOMONYME = 8;
 	public static final int STATUT_LIEU_NAISS = 7;
 	public static final int STATUT_VOIE = 6;

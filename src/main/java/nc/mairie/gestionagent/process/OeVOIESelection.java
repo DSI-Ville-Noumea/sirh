@@ -14,6 +14,10 @@ import nc.mairie.utils.MessageUtils;
  * Process OeVOIESelection Date de création : (27/01/03 15:03:41)
  */
 public class OeVOIESelection extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<VoieQuartier> listeVoie;
 	public String focus = null;
 

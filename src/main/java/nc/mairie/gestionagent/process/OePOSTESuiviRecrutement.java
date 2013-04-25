@@ -21,6 +21,10 @@ import nc.mairie.utils.VariablesActivite;
  * 
  */
 public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHE_FP = 2;
 	public static final int STATUT_RECHERCHE_AGENT = 1;
 
