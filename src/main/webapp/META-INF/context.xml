@@ -53,22 +53,6 @@
 		jmxEnabled="true" username="adminwas" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" />
 
-	<!-- <Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
-		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-		validationQuery="select 1 from sysibm.sysdummy1" validationInterval="30000"
-		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
-		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
-		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="opensirh" password="***REMOVED***"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" /> -->
-
-	<!-- Pour les webservices -->
-	<!-- <Resource name="jdbc/SIRHWS" auth="Container" type="javax.sql.DataSource" 
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" 
-		maxWait="10000" initialSize="1" username="sirh" password="sirh" driverClassName="oracle.jdbc.driver.OracleDriver" 
-		url="jdbc:oracle:thin:@DVLP:1521:ORADEV" poolPreparedStatements="true" /> -->
-
 	<!-- Quand SIRH passera sous Oracle -->
 	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
@@ -143,6 +127,7 @@
 	
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->	
 	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED" override="false" value="http://svq-sp/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
+	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION" override="false" value="http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
 	
 	
 	

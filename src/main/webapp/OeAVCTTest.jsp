@@ -33,16 +33,43 @@ document.formu.elements[nom].focus();
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Test json simple</legend>		
+			<span class="sigp2" style="width:60px"><%=process.getJsonSimple() %></span>
 		</FIELDSET>
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Test json liste</legend>		
+		    <legend class="sigp2Legend">Test json liste</legend>	
+		    <table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							if (process.getJsonListe()!=null){
+								for (int i = 0;i<process.getJsonListe().size();i++){
+									String t = process.getJsonListe().get(i);
+							%>
+									<tr>										
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=t %></td>
+									</tr>
+									<%
+								}
+							}%>
+			</table>	
 		</FIELDSET>
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Test json tableau</legend>		
+		    <table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							if (process.getJsonTable()!=null){
+								for (int i = 0;i<process.getJsonTable().size();i++){
+									String t = process.getJsonTable().get(i);
+							%>
+									<tr>										
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=t%></td>
+									</tr>
+									<%
+								}
+							}%>
+			</table>
 		</FIELDSET>
 		
 	    
