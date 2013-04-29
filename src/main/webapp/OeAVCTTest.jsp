@@ -33,7 +33,7 @@ document.formu.elements[nom].focus();
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Test json simple</legend>		
-			<span class="sigp2" style="width:60px"><%=process.getJsonSimple() %></span>
+			<span class="sigp2" style="width:300px"><%=process.getJsonSimple() %></span>
 		</FIELDSET>
 		<BR/>
 		
@@ -71,7 +71,10 @@ document.formu.elements[nom].focus();
 							}%>
 			</table>
 		</FIELDSET>
-		
+		   <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+		    <legend class="sigp2Legend">Test POST json</legend>		
+		    <INPUT type="submit" class="sigp2-Bouton-100" value="POSTER" name="<%=process.getNOM_PB_VALIDER()%>">
+		</FIELDSET>		
 	    
 	</FORM>
 </BODY>

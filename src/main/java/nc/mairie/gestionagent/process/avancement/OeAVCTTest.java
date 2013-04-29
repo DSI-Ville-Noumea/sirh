@@ -5,18 +5,27 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.EaeIdentificationDto;
 import nc.mairie.metier.Const;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
@@ -32,6 +41,7 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 	String jsonSimple;
 	ArrayList<String> jsonTable;
 	ArrayList<String> jsonListe;
+	String jsonDepart;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -40,6 +50,8 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 	 * addZone(getNOMxxx, String); Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
+	private static Pattern p = Pattern.compile("\\((\\d+)([+-]\\d{2})(\\d{2})\\)");
+
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
@@ -64,41 +76,77 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 			System.out.println(line);
 			res += line;
 		}
-		System.out.println(res);
+		setJsonDepart(res);
 
 		JSONParser parser = new JSONParser();
 		Object obj = parser.parse(res);
-
 		JSONObject jsonObject = (JSONObject) obj;
 
 		Long idEae = (Long) jsonObject.get("idEae");
-		System.out.println(idEae.toString());
 
+		// objet simple
 		JSONObject agent = (JSONObject) jsonObject.get("agent");
 		String nomAgent = (String) agent.get("nom");
-		System.out.println(nomAgent);
 		setJsonSimple(idEae.toString() + " " + nomAgent);
-		
+
+		// date
+		String dateEntretien = (String) jsonObject.get("dateEntretien");
+		Date date = jd2d(dateEntretien);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		setJsonSimple(idEae.toString() + " : date Entretien : " + sdf.format(date));
+
+		// liste diplomes
 		JSONArray tab = (JSONArray) jsonObject.get("diplomes");
 		setJsonTable(tab);
-		Iterator<String> iterator = tab.iterator();
-		while (iterator.hasNext()) {
-			System.out.println(iterator.next());
-		}
 
+		// test liste
 		JSONObject position = (JSONObject) jsonObject.get("position");
-		JSONArray listePosition =(JSONArray) position.get("liste");
+		JSONArray listePosition = (JSONArray) position.get("liste");
 		ArrayList<String> liste = new ArrayList<String>();
-		
+
 		int attributeSize = listePosition.size();
-
-
-		for(int j = 0; j < attributeSize; j++){
+		for (int j = 0; j < attributeSize; j++) {
 			JSONObject t = (JSONObject) listePosition.get(j);
 			liste.add((String) t.get("code"));
-		    System.out.println(t.get("code"));
 		}
 		setJsonListe(liste);
+
+		// liste de liste
+		JSONObject statut = (JSONObject) jsonObject.get("statut");
+		JSONObject statut2 = (JSONObject) statut.get("statut");
+		JSONArray listePositionStatut = (JSONArray) statut2.get("liste");
+		ArrayList<String> liste2 = new ArrayList<String>();
+
+		int attributeSize2 = listePositionStatut.size();
+		for (int j = 0; j < attributeSize2; j++) {
+			JSONObject t = (JSONObject) listePositionStatut.get(j);
+			liste2.add((String) t.get("code") + " " + t.get("valeur"));
+		}
+		setJsonListe(liste2);
+
+		// liste des evaluateurs
+		JSONArray evaluateurs = (JSONArray) jsonObject.get("evaluateurs");
+		ArrayList<String> listeEv = new ArrayList<String>();
+
+		int attributeSizeEv = evaluateurs.size();
+		for (int j = 0; j < attributeSizeEv; j++) {
+			JSONObject t = (JSONObject) evaluateurs.get(j);
+			listeEv.add((String) t.get("nom"));
+		}
+		setJsonListe(listeEv);
+	}
+
+	public static Date jd2d(String jsonDateString) {
+		Matcher m = p.matcher(jsonDateString);
+		if (m.find()) {
+			long millis = Long.parseLong(m.group(1));
+			long offsetHours = Long.parseLong(m.group(2));
+			long offsetMinutes = Long.parseLong(m.group(3));
+			if (offsetHours < 0)
+				offsetMinutes *= -1;
+			return new Date(millis + offsetHours * 60l * 60l * 1000l + offsetMinutes * 60l * 1000l);
+		}
+		return null;
 	}
 
 	/**
@@ -118,6 +166,10 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// Si clic sur le bouton PB_VALIDER
+			if (testerParametre(request, getNOM_PB_VALIDER())) {
+				return performPB_VALIDER(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -164,6 +216,62 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 
 	public void setJsonListe(ArrayList<String> jsonListe) {
 		this.jsonListe = jsonListe;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER() {
+		return "NOM_PB_VALIDER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		// on recupere le json de depart
+		EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(getJsonDepart());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		dto.setDateEntretien(sdf.parse("26/03/1985"));
+		String result = dto.serializeInJSON();
+		HttpPost postRequest = new HttpPost("http://172.16.24.131:8085/sirh-eae-ws/evaluation/eaeIdentification?idEae=12417&idAgent=9002990");
+
+		StringEntity input = new StringEntity(result);
+		input.setContentType("application/json");
+		postRequest.setEntity(input);
+
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpResponse response = httpClient.execute(postRequest);
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent()), "UTF-8"));
+
+		String output;
+		StringBuffer totalOutput = new StringBuffer();
+		System.out.println("Output from Server .... \n");
+		while ((output = br.readLine()) != null) {
+			System.out.println(output);
+			totalOutput.append(output);
+		}
+		System.out.println(totalOutput.toString());
+		return true;
+	}
+
+	public String getJsonDepart() {
+		return jsonDepart;
+	}
+
+	public void setJsonDepart(String jsonDepart) {
+		this.jsonDepart = jsonDepart;
 	}
 
 }

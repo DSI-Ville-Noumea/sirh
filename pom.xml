@@ -102,6 +102,16 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.4</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -149,7 +159,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName> 
+		<finalName>sirh##${maven.build.timestamp}-${project.version}</finalName>
 		<plugins>
 			<!--<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
 				<configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
