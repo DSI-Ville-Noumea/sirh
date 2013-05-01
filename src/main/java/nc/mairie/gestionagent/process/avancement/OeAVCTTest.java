@@ -238,7 +238,7 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 		// on recupere le json de depart
 		EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(getJsonDepart());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		dto.setDateEntretien(sdf.parse("26/03/1985"));
+		dto.setDateEntretien(sdf.parse("26/04/1985"));
 		String result = dto.serializeInJSON();
 		HttpPost postRequest = new HttpPost("http://172.16.24.131:8085/sirh-eae-ws/evaluation/eaeIdentification?idEae=12417&idAgent=9002990");
 
@@ -257,9 +257,8 @@ public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
 
 		String output;
 		StringBuffer totalOutput = new StringBuffer();
-		System.out.println("Output from Server .... \n");
+		System.out.println("Output from Server ....");
 		while ((output = br.readLine()) != null) {
-			System.out.println(output);
 			totalOutput.append(output);
 		}
 		System.out.println(totalOutput.toString());
