@@ -118,7 +118,10 @@
 		<!-- <param-value>/mnt/sirh-document/temp/</param-value> -->	
 	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" /> 
-		<!-- <param-value>file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/</param-value> -->		
+		<!-- <param-value>file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/</param-value> -->			
+	<Parameter description="repertoire pour les documents issus des modeles" name="REPERTOIRE_SP" override="false"
+		value="//svq-sp/SIRH/FILEWATCHER_EAE/" /> 
+		<!-- <param-value>/mnt/sirh-document/Document_Associe/</param-value> -->
 		
 	<Parameter description="parametre utile au framework" name="HOST_SGBD" override="false" value="SIRH_DS2" />
 	<Parameter description="parametre pour accès à la DTAARA_CALC" name="HOST_SGBD_PAYE" override="false" value="oldmea" />

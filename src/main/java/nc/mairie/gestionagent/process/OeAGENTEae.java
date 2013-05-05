@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.process;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -2175,7 +2177,7 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 		}
 
-		//"INF501", "L'EAE a été correctement sauvegardé."
+		// "INF501", "L'EAE a été correctement sauvegardé."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF501"));
 		return true;
 	}
@@ -4199,19 +4201,26 @@ public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
 
 	private boolean uploadFichierPDF(File f, String nomFichier) throws Exception {
 		boolean resultat = false;
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		// TODO CHANGER LE REPERTOIRE
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_SP");
 
-		/*
-		 * File newFile = new File(repPartage + "/" + nomFichier);
-		 * 
-		 * FileInputStream in = new FileInputStream(f);
-		 * 
-		 * try { FileOutputStream out = new FileOutputStream(newFile); try {
-		 * byte[] byteBuffer = new byte[in.available()]; int s =
-		 * in.read(byteBuffer); out.write(byteBuffer); out.flush(); resultat =
-		 * true; } finally { out.close(); } } finally { in.close(); }
-		 */
+		File newFile = new File(repPartage + "/" + nomFichier);
+
+		FileInputStream in = new FileInputStream(f);
+
+		try {
+			FileOutputStream out = new FileOutputStream(newFile);
+			try {
+				byte[] byteBuffer = new byte[in.available()];
+				int s = in.read(byteBuffer);
+				out.write(byteBuffer);
+				out.flush();
+				resultat = true;
+			} finally {
+				out.close();
+			}
+		} finally {
+			in.close();
+		}
 
 		return resultat;
 	}
