@@ -99,6 +99,9 @@
 		listeDroits.add("ParamHSCT");
 		listeDroits.add("ParamGrade");
 		listeDroits.add("ParamGradeRef");
+		listeDroits.add("ParamElemSalaire");	
+		listeDroits.add("ParamCarriere");	
+		
 		
 		/*Module GESTION DROITS*/
 		listeDroits.add("DroitsUtilisateur");

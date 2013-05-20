@@ -162,6 +162,10 @@ var menuParametrageAvancement = new MenuHaut("Module_parametres_avancement");
 menuParametrageAvancement.ajouterFils(new Lien("ParamAvancement", "AVANCEMENT", "Gestion des paramètres des avancements", true, false,"PARAM/AVCT"));
 document.write(menuParametrageAvancement.afficher());
 
+var menuParametrageElemSal = new MenuHaut("Module_parametres_elemSal");
+menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramètres des carrières", true, false,"PARAM/CARR"));
+document.write(menuParametrageElemSal.afficher());
+
 </script>
 
 </FORM>

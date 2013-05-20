@@ -29,6 +29,7 @@ import nc.mairie.gestionagent.process.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.OeCOMMUNESelection;
 import nc.mairie.gestionagent.process.OeENFANTGestion;
 import nc.mairie.gestionagent.process.OePARAMETRAGEAvancement;
+import nc.mairie.gestionagent.process.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.OePARAMETRAGEDonneesPerso;
 import nc.mairie.gestionagent.process.OePARAMETRAGEFicheEmploi;
 import nc.mairie.gestionagent.process.OePARAMETRAGEFichePoste;
@@ -233,6 +234,12 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 		// Module PARAMETRAGE - AVANCEMENT
 		else if (activite.equals("ParamAvancement")) {
 			return new OePARAMETRAGEAvancement();
+		}
+		// Module PARAMETRAGE - ELEMENT SALAIRE
+		else if (activite.equals("ParamElemSalaire")) {
+			return new OePARAMETRAGECarriere();
+		}else if (activite.equals("ParamCarriere")) {
+			return new OePARAMETRAGECarriere();
 		}
 		// Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {

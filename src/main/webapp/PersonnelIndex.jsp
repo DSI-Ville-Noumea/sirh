@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <%@page import="java.util.ArrayList"%>
 <HTML>
 <HEAD>
@@ -80,9 +81,13 @@ var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical",
 var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAM");
 	Module_parametres.ajouterFils(new Lien("posteEtEmploi", "ParamFicheEmploi", "Postes & emplois", "Gestion des parametres du module postes et emplois", true));
 	Module_parametres.ajouterFils(new Lien("agent", "ParamDonneesPerso", "Agent", "Gestion des parametres du module agents", true));
-	Module_parametres.ajouterFils(new Lien("grade", "ParamGradeRef", "Grade", "Gestion des grades", true));
-	Module_parametres.ajouterFils(new Lien("avancement", "ParamAvancement", "Avancement", "Gestion des avancements", true));
-	
+	Module_parametres.ajouterFils(new Lien("grade", "ParamGradeRef", "Grade", "Gestion des paramètres des grades", true));
+	Module_parametres.ajouterFils(new Lien("avancement", "ParamAvancement", "Avancement", "Gestion des paramètres des avancements", true));
+<% 
+String affParamElementSalaire =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_PARAM_ELEM_SALAIRE");
+if (affParamElementSalaire.equals("TRUE")){ %>
+	Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
+<%}%>	
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************
