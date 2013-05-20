@@ -91,6 +91,9 @@
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
+	<bean id="spbaseDao" class="nc.mairie.spring.dao.metier.parametrage.SPBASEDao">
+		<property name="dataSource" ref="dataSourceMairie" />
+	</bean>
 	
 	
 	<!-- DAO SIRH ORACLE -->
