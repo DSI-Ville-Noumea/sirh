@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.process;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,9 +30,19 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	private String[] LB_SPBASE;
+	private String[] LB_HEURE_LUNDI;
+	private String[] LB_HEURE_MARDI;
+	private String[] LB_HEURE_MERCREDI;
+	private String[] LB_HEURE_JEUDI;
+	private String[] LB_HEURE_VENDREDI;
+	private String[] LB_HEURE_SAMEDI;
+	private String[] LB_HEURE_DIMANCHE;
+
 	private SPBASEDao spbaseDao;
 	private ArrayList<SPBASE> listeSpbase;
 	private SPBASE spbaseCourant;
+
+	private ArrayList<String> listeHeure;
 
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
@@ -61,6 +73,56 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 		if (getListeSpbase().size() == 0) {
 			initialiseListeSpbase(request);
 		}
+		if (getListeHeure().size() == 0) {
+			initialiseListeHeure(request);
+		}
+
+	}
+
+	private void initialiseListeHeure(HttpServletRequest request) {
+		setListeHeure(new ArrayList<String>());
+		int heureDeb = 3; // heures depart
+		int minuteDeb = 0; // minutes debut
+		int diffFinDeb = 8 * 60; // différence en minute entre le début et
+									// la
+									// fin
+		int interval = 15; // interval en minute
+
+		SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm"); // format
+																		// de
+																		// la
+																		// date
+
+		GregorianCalendar deb = new GregorianCalendar();
+		if (heureDeb > 11) // gestion AM PM
+			deb.set(GregorianCalendar.AM_PM, GregorianCalendar.PM);
+		else
+			deb.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
+		deb.set(GregorianCalendar.HOUR, heureDeb % 12);
+		deb.set(GregorianCalendar.MINUTE, minuteDeb);
+
+		GregorianCalendar fin = (GregorianCalendar) deb.clone();
+		fin.set(GregorianCalendar.MINUTE, diffFinDeb);
+
+		getListeHeure().add(formatDate.format(deb.getTime()));
+		Integer i = 1;
+		while (deb.compareTo(fin) < 0) {
+			deb.add(GregorianCalendar.MINUTE, interval);
+			getListeHeure().add(formatDate.format(deb.getTime()));
+			i++;
+		}
+		String[] a = new String[34];
+		a[0] = "";
+		for (int j = 0; j < getListeHeure().size(); j++) {
+			a[j + 1] = getListeHeure().get(j);
+		}
+		setLB_HEURE_LUNDI(a);
+		setLB_HEURE_MARDI(a);
+		setLB_HEURE_MERCREDI(a);
+		setLB_HEURE_JEUDI(a);
+		setLB_HEURE_VENDREDI(a);
+		setLB_HEURE_SAMEDI(a);
+		setLB_HEURE_DIMANCHE(a);
 
 	}
 
@@ -263,6 +325,16 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_ST_ACTION_SPBASE(), ACTION_CREATION);
 		addZone(getNOM_EF_CODE_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_HEURE_LUNDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_MARDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_JEUDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), Const.ZERO);
+		addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_SPBASE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_SPBASE());
@@ -292,6 +364,70 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 			setSpbaseCourant(base);
 			addZone(getNOM_EF_LIB_SPBASE(), base.getLiBase());
 			addZone(getNOM_EF_CODE_SPBASE(), base.getCdBase());
+			if (base.getNbhLu() != 0) {
+				String heureLundi = getStringHeure(base.getNbhLu());
+				Integer resHeure = getListeHeure().indexOf(heureLundi) + 1;
+				addZone(getNOM_LB_HEURE_LUNDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_LUNDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhMa() != 0) {
+				String heureMardi = getStringHeure(base.getNbhMa());
+				Integer resHeure = getListeHeure().indexOf(heureMardi) + 1;
+				addZone(getNOM_LB_HEURE_MARDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_MARDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhMe() != 0) {
+				String heureMercredi = getStringHeure(base.getNbhMe());
+				Integer resHeure = getListeHeure().indexOf(heureMercredi) + 1;
+				addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhJe() != 0) {
+				String heureJeudi = getStringHeure(base.getNbhJe());
+				Integer resHeure = getListeHeure().indexOf(heureJeudi) + 1;
+				addZone(getNOM_LB_HEURE_JEUDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_JEUDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhVe() != 0) {
+				String heureVendredi = getStringHeure(base.getNbhVe());
+				Integer resHeure = getListeHeure().indexOf(heureVendredi) + 1;
+				addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhSa() != 0) {
+				String heureSamedi = getStringHeure(base.getNbhSa());
+				Integer resHeure = getListeHeure().indexOf(heureSamedi) + 1;
+				addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), Const.ZERO);
+			}
+			if (base.getNbhDi() != 0) {
+				String heureDimanche = getStringHeure(base.getNbhDi());
+				Integer resHeure = getListeHeure().indexOf(heureDimanche) + 1;
+				addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), resHeure.toString());
+			} else {
+				addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), Const.ZERO);
+			}
+
+			if (base.getNbasCH() != 0) {
+				String avantPoint = base.getNbasCH().toString().substring(0, base.getNbasCH().toString().indexOf("."));
+				String apresPoint = base.getNbasCH().toString()
+						.substring(base.getNbasCH().toString().indexOf(".") + 1, base.getNbasCH().toString().length());
+
+				addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint);
+			} else {
+				addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
+
+			}
+
+			addZone(getNOM_EF_BASE_HEBDO_SPBASE(), base.getNbasHH().toString());
 			addZone(getNOM_ST_ACTION_SPBASE(), ACTION_MODIFICATION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases horaires"));
@@ -299,6 +435,20 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_SPBASE());
 		return true;
+	}
+
+	private String getStringHeure(Double nbh) {
+		String res = nbh.toString().replace(".", ":");
+		String avantPoint = res.substring(0, res.indexOf(":"));
+		String apresPoint = res.substring(res.indexOf(":") + 1, res.length());
+
+		if (avantPoint.length() == 1) {
+			res = "0" + res;
+		}
+		if (apresPoint.length() == 1) {
+			res = res + "0";
+		}
+		return res;
 	}
 
 	/**
@@ -371,16 +521,16 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 				setSpbaseCourant(new SPBASE());
 				getSpbaseCourant().setCdBase(getVAL_EF_CODE_SPBASE());
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
+
+				String heureChoisie = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()));
 				// getSpbaseDao().creerSPBASE(getSpbaseCourant().getCdBase(),
 				// getSpbaseCourant().getLiBase());
 				// TODO
 
 				getListeSpbase().add(getSpbaseCourant());
 			} else if (getVAL_ST_ACTION_SPBASE().equals(ACTION_MODIFICATION)) {
-				getSpbaseCourant().setCdBase(getVAL_EF_CODE_SPBASE());
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
-				// getSpbaseDao().modifierSPBASE(getSpbaseCourant().getCdBase(),
-				// getSpbaseCourant().getLiBase());
+				// getSpbaseDao().modifierSPBASE(getSpbaseCourant().getLiBase());
 				// TODO
 				setSpbaseCourant(null);
 			}
@@ -428,6 +578,12 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
 			return false;
 		}
+		// Verification nb heure legale not null
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()).length() == 0 && getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base légale hebdomadaire"));
+			return false;
+		}
 		return true;
 	}
 
@@ -473,5 +629,456 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 
 	public void setSpbaseCourant(SPBASE spbaseCourant) {
 		this.spbaseCourant = spbaseCourant;
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP :
+	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() {
+		return "NOM_EF_BASE_HEBDO_LEG_H_SPBASE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_LEG_H_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() {
+		return getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP :
+	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() {
+		return "NOM_EF_BASE_HEBDO_LEG_M_SPBASE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_LEG_M_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() {
+		return getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_SPBASE
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_BASE_HEBDO_SPBASE() {
+		return "NOM_EF_BASE_HEBDO_SPBASE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_BASE_HEBDO_SPBASE() {
+		return getZone(getNOM_EF_BASE_HEBDO_SPBASE());
+	}
+
+	public ArrayList<String> getListeHeure() {
+		return listeHeure == null ? new ArrayList<String>() : listeHeure;
+	}
+
+	public void setListeHeure(ArrayList<String> listeHeure) {
+		this.listeHeure = listeHeure;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_LUNDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_LUNDI() {
+		if (LB_HEURE_LUNDI == null)
+			LB_HEURE_LUNDI = initialiseLazyLB();
+		return LB_HEURE_LUNDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_LUNDI(String[] newLB_HEURE_LUNDI) {
+		LB_HEURE_LUNDI = newLB_HEURE_LUNDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_LUNDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_LUNDI() {
+		return "NOM_LB_HEURE_LUNDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_LUNDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_LUNDI_SELECT() {
+		return "NOM_LB_HEURE_LUNDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_LUNDI() {
+		return getLB_HEURE_LUNDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_LUNDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_LUNDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_MARDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_MARDI() {
+		if (LB_HEURE_MARDI == null)
+			LB_HEURE_MARDI = initialiseLazyLB();
+		return LB_HEURE_MARDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_MARDI(String[] newLB_HEURE_MARDI) {
+		LB_HEURE_MARDI = newLB_HEURE_MARDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_MARDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_MARDI() {
+		return "NOM_LB_HEURE_MARDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_MARDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_MARDI_SELECT() {
+		return "NOM_LB_HEURE_MARDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_MARDI() {
+		return getLB_HEURE_MARDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_MARDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_MARDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_MERCREDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_MERCREDI() {
+		if (LB_HEURE_MERCREDI == null)
+			LB_HEURE_MERCREDI = initialiseLazyLB();
+		return LB_HEURE_MERCREDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_MERCREDI Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_MERCREDI(String[] newLB_HEURE_MERCREDI) {
+		LB_HEURE_MERCREDI = newLB_HEURE_MERCREDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_MERCREDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_MERCREDI() {
+		return "NOM_LB_HEURE_MERCREDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_MERCREDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_MERCREDI_SELECT() {
+		return "NOM_LB_HEURE_MERCREDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_MERCREDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_MERCREDI() {
+		return getLB_HEURE_MERCREDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_MERCREDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_MERCREDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_MERCREDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_JEUDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_JEUDI() {
+		if (LB_HEURE_JEUDI == null)
+			LB_HEURE_JEUDI = initialiseLazyLB();
+		return LB_HEURE_JEUDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_JEUDI(String[] newLB_HEURE_JEUDI) {
+		LB_HEURE_JEUDI = newLB_HEURE_JEUDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_JEUDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_JEUDI() {
+		return "NOM_LB_HEURE_JEUDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_JEUDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_JEUDI_SELECT() {
+		return "NOM_LB_HEURE_JEUDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_JEUDI() {
+		return getLB_HEURE_JEUDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_JEUDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_JEUDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_VENDREDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_VENDREDI() {
+		if (LB_HEURE_VENDREDI == null)
+			LB_HEURE_VENDREDI = initialiseLazyLB();
+		return LB_HEURE_VENDREDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_VENDREDI Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_VENDREDI(String[] newLB_HEURE_VENDREDI) {
+		LB_HEURE_VENDREDI = newLB_HEURE_VENDREDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_VENDREDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_VENDREDI() {
+		return "NOM_LB_HEURE_VENDREDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_VENDREDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_VENDREDI_SELECT() {
+		return "NOM_LB_HEURE_VENDREDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_VENDREDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_VENDREDI() {
+		return getLB_HEURE_VENDREDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_VENDREDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_VENDREDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_VENDREDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_SAMEDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_SAMEDI() {
+		if (LB_HEURE_SAMEDI == null)
+			LB_HEURE_SAMEDI = initialiseLazyLB();
+		return LB_HEURE_SAMEDI;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_SAMEDI Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_SAMEDI(String[] newLB_HEURE_SAMEDI) {
+		LB_HEURE_SAMEDI = newLB_HEURE_SAMEDI;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_SAMEDI Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_SAMEDI() {
+		return "NOM_LB_HEURE_SAMEDI";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_SAMEDI_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_SAMEDI_SELECT() {
+		return "NOM_LB_HEURE_SAMEDI_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_SAMEDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_SAMEDI() {
+		return getLB_HEURE_SAMEDI();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_SAMEDI Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_SAMEDI_SELECT() {
+		return getZone(getNOM_LB_HEURE_SAMEDI_SELECT());
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_HEURE_DIMANCHE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	private String[] getLB_HEURE_DIMANCHE() {
+		if (LB_HEURE_DIMANCHE == null)
+			LB_HEURE_DIMANCHE = initialiseLazyLB();
+		return LB_HEURE_DIMANCHE;
+	}
+
+	/**
+	 * Setter de la liste: LB_HEURE_DIMANCHE Date de création : (21/11/11
+	 * 09:55:36)
+	 * 
+	 */
+	private void setLB_HEURE_DIMANCHE(String[] newLB_HEURE_DIMANCHE) {
+		LB_HEURE_DIMANCHE = newLB_HEURE_DIMANCHE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_DIMANCHE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_DIMANCHE() {
+		return "NOM_LB_HEURE_DIMANCHE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_HEURE_DIMANCHE_SELECT Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_LB_HEURE_DIMANCHE_SELECT() {
+		return "NOM_LB_HEURE_DIMANCHE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_HEURE_DIMANCHE Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_HEURE_DIMANCHE() {
+		return getLB_HEURE_DIMANCHE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_HEURE_DIMANCHE Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_LB_HEURE_DIMANCHE_SELECT() {
+		return getZone(getNOM_LB_HEURE_DIMANCHE_SELECT());
 	}
 }
