@@ -97,7 +97,8 @@
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">				
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>					
@@ -148,7 +149,8 @@
 					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>

@@ -70,7 +70,7 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 			throw new Exception();
 		}
 		initialiseDao();
-		if (getListeSpbase().size() == 0) {
+		if (getListeSpbase() == null || getListeSpbase().size() == 0) {
 			initialiseListeSpbase(request);
 		}
 		if (getListeHeure().size() == 0) {
@@ -128,7 +128,11 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 
 	private void initialiseListeSpbase(HttpServletRequest request) throws Exception {
 		setListeSpbase(getSpbaseDao().listerSPBASE());
-		if (getListeSpbase().size() != 0) {
+		afficheListeSpbase(request);
+	}
+
+	private void afficheListeSpbase(HttpServletRequest request) {
+		if (getListeSpbase() != null && getListeSpbase().size() != 0) {
 			int tailles[] = { 6, 30 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
@@ -142,6 +146,7 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 		} else {
 			setLB_SPBASE(null);
 		}
+
 	}
 
 	private void initialiseDao() {
@@ -242,7 +247,7 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 	}
 
 	public ArrayList<SPBASE> getListeSpbase() {
-		return listeSpbase == null ? new ArrayList<SPBASE>() : listeSpbase;
+		return listeSpbase;
 	}
 
 	public void setListeSpbase(ArrayList<SPBASE> listeSpbase) {
@@ -334,7 +339,8 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 		addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), Const.ZERO);
 		addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_BASE_HEBDO_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_H_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_M_SPBASE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_SPBASE());
@@ -420,14 +426,28 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 						.substring(base.getNbasCH().toString().indexOf(".") + 1, base.getNbasCH().toString().length());
 
 				addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
-				addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint.length() == 1 ? apresPoint + "0"
+						: apresPoint);
 			} else {
 				addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), Const.CHAINE_VIDE);
 				addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
 
 			}
 
-			addZone(getNOM_EF_BASE_HEBDO_SPBASE(), base.getNbasHH().toString());
+			if (base.getNbasHH() != 0) {
+				String avantPoint = base.getNbasHH().toString().substring(0, base.getNbasHH().toString().indexOf("."));
+				String apresPoint = base.getNbasHH().toString()
+						.substring(base.getNbasHH().toString().indexOf(".") + 1, base.getNbasHH().toString().length());
+
+				addZone(getNOM_EF_BASE_HEBDO_H_SPBASE(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
+				addZone(getNOM_EF_BASE_HEBDO_M_SPBASE(), apresPoint.equals("0") ? Const.CHAINE_VIDE : apresPoint.length() == 1 ? apresPoint + "0"
+						: apresPoint);
+			} else {
+				addZone(getNOM_EF_BASE_HEBDO_H_SPBASE(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_BASE_HEBDO_M_SPBASE(), Const.CHAINE_VIDE);
+
+			}
+
 			addZone(getNOM_ST_ACTION_SPBASE(), ACTION_MODIFICATION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases horaires"));
@@ -521,17 +541,83 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 				setSpbaseCourant(new SPBASE());
 				getSpbaseCourant().setCdBase(getVAL_EF_CODE_SPBASE());
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
+				String heureLundi = Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhLu(getHeureDouble(heureLundi));
+				String heureMardi = Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhMa(getHeureDouble(heureMardi));
+				String heureMercredi = Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhMe(getHeureDouble(heureMercredi));
+				String heureJeudi = Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhJe(getHeureDouble(heureJeudi));
+				String heureVendredi = Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhVe(getHeureDouble(heureVendredi));
+				String heureSamedi = Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhSa(getHeureDouble(heureSamedi));
+				String heureDimanche = Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) - 1);
+				getSpbaseCourant().setNbhDi(getHeureDouble(heureDimanche));
 
-				String heureChoisie = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()));
-				// getSpbaseDao().creerSPBASE(getSpbaseCourant().getCdBase(),
-				// getSpbaseCourant().getLiBase());
-				// TODO
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H_SPBASE().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_H_SPBASE();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M_SPBASE().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_M_SPBASE();
+				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
+				getSpbaseCourant().setNbasCH(getHeureDouble(totalBaseLegale));
 
-				getListeSpbase().add(getSpbaseCourant());
+				// on fait le calcul de la base legale
+				Double nbHeureCalc = getSpbaseCourant().getNbhLu() + getSpbaseCourant().getNbhMa() + getSpbaseCourant().getNbhMe()
+						+ getSpbaseCourant().getNbhJe() + getSpbaseCourant().getNbhVe() + getSpbaseCourant().getNbhSa()
+						+ getSpbaseCourant().getNbhDi();
+				getSpbaseCourant().setNbasHH(nbHeureCalc);
+
+				getSpbaseDao().creerSPBASE(getSpbaseCourant().getCdBase().toUpperCase(), getSpbaseCourant().getLiBase().toUpperCase(),
+						getSpbaseCourant().getNbhLu(), getSpbaseCourant().getNbhMa(), getSpbaseCourant().getNbhMe(), getSpbaseCourant().getNbhJe(),
+						getSpbaseCourant().getNbhVe(), getSpbaseCourant().getNbhSa(), getSpbaseCourant().getNbhDi(), getSpbaseCourant().getNbasCH(),
+						getSpbaseCourant().getNbasHH());
+
 			} else if (getVAL_ST_ACTION_SPBASE().equals(ACTION_MODIFICATION)) {
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
-				// getSpbaseDao().modifierSPBASE(getSpbaseCourant().getLiBase());
-				// TODO
+				String heureLundi = Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhLu(getHeureDouble(heureLundi));
+				String heureMardi = Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhMa(getHeureDouble(heureMardi));
+				String heureMercredi = Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhMe(getHeureDouble(heureMercredi));
+				String heureJeudi = Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhJe(getHeureDouble(heureJeudi));
+				String heureVendredi = Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhVe(getHeureDouble(heureVendredi));
+				String heureSamedi = Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) - 1);
+				getSpbaseCourant().setNbhSa(getHeureDouble(heureSamedi));
+				String heureDimanche = Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) == 0 ? "0:0" : getListeHeure().get(
+						Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) - 1);
+				getSpbaseCourant().setNbhDi(getHeureDouble(heureDimanche));
+
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H_SPBASE().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_H_SPBASE();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M_SPBASE().equals(Const.CHAINE_VIDE) ? "0" : getVAL_EF_BASE_HEBDO_LEG_M_SPBASE();
+				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
+				getSpbaseCourant().setNbasCH(getHeureDouble(totalBaseLegale));
+
+				// on fait le calcul de la base legale
+				Double nbHeureCalc = getSpbaseCourant().getNbhLu() + getSpbaseCourant().getNbhMa() + getSpbaseCourant().getNbhMe()
+						+ getSpbaseCourant().getNbhJe() + getSpbaseCourant().getNbhVe() + getSpbaseCourant().getNbhSa()
+						+ getSpbaseCourant().getNbhDi();
+				getSpbaseCourant().setNbasHH(nbHeureCalc);
+
+				getSpbaseDao().modifierSPBASE(getSpbaseCourant().getCdBase().toUpperCase(), getSpbaseCourant().getLiBase().toUpperCase(),
+						getSpbaseCourant().getNbhLu(), getSpbaseCourant().getNbhMa(), getSpbaseCourant().getNbhMe(), getSpbaseCourant().getNbhJe(),
+						getSpbaseCourant().getNbhVe(), getSpbaseCourant().getNbhSa(), getSpbaseCourant().getNbhDi(), getSpbaseCourant().getNbasCH(),
+						getSpbaseCourant().getNbasHH());
 				setSpbaseCourant(null);
 			}
 
@@ -541,6 +627,12 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_SPBASE());
 		return true;
+	}
+
+	private Double getHeureDouble(String heure) {
+		Double res = Double.valueOf(heure.replace(":", "."));
+
+		return res;
 	}
 
 	private boolean performControlerRegleGestionSPBASE(HttpServletRequest request) {
@@ -584,6 +676,19 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base légale hebdomadaire"));
 			return false;
 		}
+		// Verification nb heure legale numerique
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()).length() != 0 && !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE()))) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures légale"));
+			return false;
+		}
+		// Verification nb heure legale numerique
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()).length() != 0 && !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE()))) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes légale"));
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -668,21 +773,39 @@ public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_SPBASE
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_H_SPBASE
 	 * Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
-	public String getNOM_EF_BASE_HEBDO_SPBASE() {
-		return "NOM_EF_BASE_HEBDO_SPBASE";
+	public String getNOM_EF_BASE_HEBDO_H_SPBASE() {
+		return "NOM_EF_BASE_HEBDO_H_SPBASE";
 	}
 
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_BASE_HEBDO_SPBASE Date de création : (14/09/11 13:52:54)
+	 * EF_BASE_HEBDO_H_SPBASE Date de création : (14/09/11 13:52:54)
 	 * 
 	 */
-	public String getVAL_EF_BASE_HEBDO_SPBASE() {
-		return getZone(getNOM_EF_BASE_HEBDO_SPBASE());
+	public String getVAL_EF_BASE_HEBDO_H_SPBASE() {
+		return getZone(getNOM_EF_BASE_HEBDO_H_SPBASE());
+	}
+
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_BASE_HEBDO_M_SPBASE
+	 * Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getNOM_EF_BASE_HEBDO_M_SPBASE() {
+		return "NOM_EF_BASE_HEBDO_M_SPBASE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_BASE_HEBDO_M_SPBASE Date de création : (14/09/11 13:52:54)
+	 * 
+	 */
+	public String getVAL_EF_BASE_HEBDO_M_SPBASE() {
+		return getZone(getNOM_EF_BASE_HEBDO_M_SPBASE());
 	}
 
 	public ArrayList<String> getListeHeure() {

@@ -74,4 +74,24 @@ public class SPBASEDao implements SPBASEDaoInterface {
 
 		return listeSPBASE;
 	}
+
+	@Override
+	public void creerSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe, Double nbhVe, Double nbhSa,
+			Double nbhDi, Double nbasCH, Double nbasHH) {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CDBASE + "," + CHAMP_LIBASE + "," + CHAMP_NBAHLU + "," + CHAMP_NBAHMA + ","
+				+ CHAMP_NBAHME + "," + CHAMP_NBAHJE + "," + CHAMP_NBAHVE + "," + CHAMP_NBAHSA + "," + CHAMP_NBAHDI + "," + CHAMP_NBASCH + ","
+				+ CHAMP_NBASHH + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { cdBase, liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH, nbasHH });
+
+	}
+
+	@Override
+	public void modifierSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe, Double nbhVe, Double nbhSa,
+			Double nbhDi, Double nbasCH, Double nbasHH) {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIBASE + "=?," + CHAMP_NBAHLU + "=?," + CHAMP_NBAHMA + "=?," + CHAMP_NBAHME + "=?,"
+				+ CHAMP_NBAHJE + "=?," + CHAMP_NBAHVE + "=?," + CHAMP_NBAHSA + "=?," + CHAMP_NBAHDI + "=?," + CHAMP_NBASCH + "=?," + CHAMP_NBASHH
+				+ "=? where " + CHAMP_CDBASE + " =?";
+		jdbcTemplate.update(sql, new Object[] { liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH, nbasHH, cdBase });
+
+	}
 }
