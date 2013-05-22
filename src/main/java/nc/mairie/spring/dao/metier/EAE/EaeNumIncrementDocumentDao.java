@@ -24,8 +24,6 @@ public class EaeNumIncrementDocumentDao implements EaeNumIncrementDocumentDaoInt
 	public Integer chercherEaeNumIncrement() throws Exception {
 		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
-		String sqlAugmenteVersion = "ALTER sequence " + NOM_SEQUENCE + " increment BY 1";
-		jdbcTemplate.update(sqlAugmenteVersion);
 
 		return id;
 	}
