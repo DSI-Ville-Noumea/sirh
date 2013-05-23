@@ -68,7 +68,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private ArrayList<BanqueGuichet> listeBanqueGuichet;
 	private ArrayList<EtatServiceMilitaire> listeTypeServiceMilitaire;
 	private String[] listeNationalite;
-	private nc.mairie.metier.agent.AgentNW agentCourant;
+	private AgentNW agentCourant;
 	private String lieuNaissance;
 	private Pays paysNaissanceCourant;
 	private Object commNaissanceCourant;
