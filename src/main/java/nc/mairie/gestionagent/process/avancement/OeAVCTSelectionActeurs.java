@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.VariablesActivite;
 
 /**
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
  * 
  */
-public class OeAVCTSelectionActeurs extends nc.mairie.technique.BasicProcess {
+public class OeAVCTSelectionActeurs extends BasicProcess {
 
 	/**
 	 * 

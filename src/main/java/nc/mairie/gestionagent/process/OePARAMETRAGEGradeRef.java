@@ -17,6 +17,7 @@ import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.domain.metier.parametrage.Deliberation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -29,7 +30,7 @@ import org.springframework.context.ApplicationContext;
  * Process OePARAMETRAGEGradeRef Date de création : (29/09/11 15:07:35)
  * 
  */
-public class OePARAMETRAGEGradeRef extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEGradeRef extends BasicProcess {
 	/**
 	 * 
 	 */

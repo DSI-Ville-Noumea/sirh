@@ -25,6 +25,7 @@ import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.NiveauEtudeFE;
 import nc.mairie.metier.referentiel.NiveauEtude;
 import nc.mairie.metier.referentiel.TypeCompetence;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
@@ -37,7 +38,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OePOSTEFicheEmploi Date de création : (21/06/11 16:27:37)
  * 
  */
-public class OePOSTEFicheEmploi extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFicheEmploi extends BasicProcess {
 	/**
 	 * 
 	 */

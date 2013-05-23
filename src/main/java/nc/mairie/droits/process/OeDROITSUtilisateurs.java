@@ -15,6 +15,7 @@ import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.droits.Utilisateur;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -26,7 +27,7 @@ import nc.mairie.utils.TreeHierarchy;
  * Process OeDROITSUtilisateurs Date de création : (12/10/11 11:52:50)
  * 
  */
-public class OeDROITSUtilisateurs extends nc.mairie.technique.BasicProcess {
+public class OeDROITSUtilisateurs extends BasicProcess {
 	/**
 	 * 
 	 */

@@ -11,6 +11,7 @@ import nc.mairie.metier.avancement.AvancementContractuels;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -22,7 +23,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTContractuels extends nc.mairie.technique.BasicProcess {
+public class OeAVCTContractuels extends BasicProcess {
 	/**
 	 * 
 	 */

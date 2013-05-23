@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.EaeIdentificationDto;
 import nc.mairie.metier.Const;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -31,7 +32,7 @@ import com.ibm.icu.text.SimpleDateFormat;
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTTest extends nc.mairie.technique.BasicProcess {
+public class OeAVCTTest extends BasicProcess {
 	/**
 	 * 
 	 */

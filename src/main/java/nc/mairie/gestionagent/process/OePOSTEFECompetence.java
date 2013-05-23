@@ -10,6 +10,7 @@ import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFE;
 import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.referentiel.TypeCompetence;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -19,7 +20,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (01/07/11 10:39:25)
      *
  */
-public class OePOSTEFECompetence extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFECompetence extends BasicProcess {
 	/**
 	 * 
 	 */

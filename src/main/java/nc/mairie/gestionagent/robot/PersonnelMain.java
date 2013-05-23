@@ -1,13 +1,14 @@
 package nc.mairie.gestionagent.robot;
 
 import nc.mairie.metier.Const;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 
 /**
  * Insérez la description du type ici.
  * Date de création : (10/01/2003 09:39:40)
  */
-public class PersonnelMain extends nc.mairie.technique.BasicProcess {
+public class PersonnelMain extends BasicProcess {
 	/**
 	 * 
 	 */

@@ -27,6 +27,7 @@ import nc.mairie.metier.hsct.Handicap;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * Process OeAGENTHandicap Date de création : (01/07/11 09:42:08)
  * 
  */
-public class OeAGENTHandicap extends nc.mairie.technique.BasicProcess {
+public class OeAGENTHandicap extends BasicProcess {
 	/**
 	 * 
 	 */

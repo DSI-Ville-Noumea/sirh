@@ -11,6 +11,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.referentiel.AutreAdministration;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -22,7 +23,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (11/02/03 14:20:31)
      *
  */
-public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProcess {
+public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -57,7 +58,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 11:01:39)
 	 * @return nc.mairie.metier.agent.AdministrationAgent
 	 */
-	private nc.mairie.metier.agent.AutreAdministrationAgent getAutreAdministrationAgentCourant() {
+	private AutreAdministrationAgent getAutreAdministrationAgentCourant() {
 		return autreAdministrationAgentCourant;
 	}
 
@@ -66,7 +67,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (11/02/2003 15:15:56)
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return AgentCourant;
 	}
 
@@ -578,7 +579,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (13/02/2003 11:01:39)
 	 * @param newAdministrationAgentCourant nc.mairie.metier.agent.AdministrationAgent
 	 */
-	private void setAutreAdministrationAgentCourant(nc.mairie.metier.agent.AutreAdministrationAgent newAutreAdministrationAgentCourant) {
+	private void setAutreAdministrationAgentCourant(AutreAdministrationAgent newAutreAdministrationAgentCourant) {
 		autreAdministrationAgentCourant = newAutreAdministrationAgentCourant;
 	}
 
@@ -587,7 +588,7 @@ public class OeAGENTADMINISTRATIONGestion extends nc.mairie.technique.BasicProce
 	 *  Date de création : (11/02/2003 15:15:56)
 	 * @param newAgentCourant nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentCourant(nc.mairie.metier.agent.AgentNW newAgentCourant) {
+	private void setAgentCourant(AgentNW newAgentCourant) {
 		AgentCourant = newAgentCourant;
 	}
 

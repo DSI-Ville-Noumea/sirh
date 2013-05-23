@@ -18,6 +18,7 @@ import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.TypeInaptitude;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -29,7 +30,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (15/09/11 08:57:49)
      *
  */
-public class OePARAMETRAGEHSCT extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEHSCT extends BasicProcess {
 	/**
 	 * 
 	 */

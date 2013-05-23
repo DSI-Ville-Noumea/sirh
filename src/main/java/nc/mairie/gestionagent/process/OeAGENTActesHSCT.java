@@ -31,6 +31,7 @@ import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
  * 
  */
-public class OeAGENTActesHSCT extends nc.mairie.technique.BasicProcess {
+public class OeAGENTActesHSCT extends BasicProcess {
 	/**
 	 * 
 	 */

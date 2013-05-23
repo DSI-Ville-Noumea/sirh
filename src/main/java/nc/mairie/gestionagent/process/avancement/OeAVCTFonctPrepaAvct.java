@@ -23,6 +23,7 @@ import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -40,7 +41,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTFonctPrepaAvct extends nc.mairie.technique.BasicProcess {
+public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	/**
 	 * 

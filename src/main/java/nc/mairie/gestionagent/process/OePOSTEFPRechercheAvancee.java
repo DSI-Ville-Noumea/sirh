@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
@@ -24,7 +25,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OePOSTEFPRechercheAvancee Date de création : (13/09/11 08:45:29)
  * 
  */
-public class OePOSTEFPRechercheAvancee extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	/**
 	 * 
 	 */

@@ -42,6 +42,7 @@ import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -59,7 +60,7 @@ import org.apache.commons.vfs2.VFS;
  * Process OeAGENTEmploisAffectation Date de création : (04/08/11 15:20:56)
  * 
  */
-public class OeAGENTEmploisAffectation extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEmploisAffectation extends BasicProcess {
 	/**
 	 * 
 	 */

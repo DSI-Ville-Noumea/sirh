@@ -16,6 +16,7 @@ import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Departement;
 import nc.mairie.metier.commun.Pays;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -26,7 +27,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeENFANTGestion Date de création : (25/03/03 15:33:10)
  * 
  */
-public class OeENFANTGestion extends nc.mairie.technique.BasicProcess {
+public class OeENFANTGestion extends BasicProcess {
 	/**
 	 * 
 	 */

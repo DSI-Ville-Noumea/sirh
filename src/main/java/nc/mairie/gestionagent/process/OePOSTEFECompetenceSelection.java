@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.metier.poste.Competence;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.VariablesActivite;
 
 /**
@@ -13,7 +14,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (03/02/09 14:56:59)
      *
  */
-public class OePOSTEFECompetenceSelection extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFECompetenceSelection extends BasicProcess {
 	/**
 	 * 
 	 */

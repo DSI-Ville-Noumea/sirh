@@ -12,6 +12,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -24,7 +25,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTCampagneTableauBord extends nc.mairie.technique.BasicProcess {
+public class OeAVCTCampagneTableauBord extends BasicProcess {
 
 	/**
 	 * 

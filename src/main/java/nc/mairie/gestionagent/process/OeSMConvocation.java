@@ -41,6 +41,7 @@ import nc.mairie.spring.domain.metier.hsct.SPABSEN;
 import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -61,7 +62,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OeSMConvocation extends nc.mairie.technique.BasicProcess {
+public class OeSMConvocation extends BasicProcess {
 
 	/**
 	 * 

@@ -12,6 +12,7 @@ import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -26,7 +27,7 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * Process OePARAMETRAGEGrade Date de création : (04/10/11 09:04:41)
  * 
  */
-public class OePARAMETRAGEGrade extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEGrade extends BasicProcess {
 	/**
 	 * 
 	 */

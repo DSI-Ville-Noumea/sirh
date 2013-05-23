@@ -10,6 +10,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.avancement.AvancementConvCol;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -21,7 +22,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTConvCol extends nc.mairie.technique.BasicProcess {
+public class OeAVCTConvCol extends BasicProcess {
 	/**
 	 * 
 	 */

@@ -9,6 +9,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
@@ -17,7 +18,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (22/07/11 16:01:21)
      *
  */
-public class OePOSTEFPSelection extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFPSelection extends BasicProcess {
 	/**
 	 * 
 	 */

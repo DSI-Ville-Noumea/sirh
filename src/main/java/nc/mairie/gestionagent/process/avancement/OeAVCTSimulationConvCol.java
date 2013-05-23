@@ -18,6 +18,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -29,7 +30,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
  * 
  */
-public class OeAVCTSimulationConvCol extends nc.mairie.technique.BasicProcess {
+public class OeAVCTSimulationConvCol extends BasicProcess {
 	/**
 	 * 
 	 */

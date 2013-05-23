@@ -10,6 +10,7 @@ import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneDepartement;
 import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Pays;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MessageUtils;
@@ -19,7 +20,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeCOMMUNEESelection Date de création : (24/01/03 15:27:10)
  * 
  */
-public class OeCOMMUNESelection extends nc.mairie.technique.BasicProcess {
+public class OeCOMMUNESelection extends BasicProcess {
 	/**
 	 * 
 	 */

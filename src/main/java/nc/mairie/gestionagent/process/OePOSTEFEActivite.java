@@ -8,6 +8,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.ActiviteFE;
 import nc.mairie.metier.poste.ActiviteFP;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -17,7 +18,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (04/07/11 16:24:13)
      *
  */
-public class OePOSTEFEActivite extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFEActivite extends BasicProcess {
 	/**
 	 * 
 	 */

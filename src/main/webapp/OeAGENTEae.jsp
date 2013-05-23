@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.technique.VariableGlobale"%>
+<%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.CampagneEAE"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaeDeveloppement"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.EaePlanAction"%>
@@ -66,7 +68,7 @@
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 						<%
-						nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+						UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			
 							int indiceEae = 0;
 								for (int i = 0;i<process.getListeEae().size();i++){

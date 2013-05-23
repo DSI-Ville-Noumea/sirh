@@ -11,6 +11,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
 import nc.mairie.spring.domain.metier.parametrage.SPBASE;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -23,7 +24,7 @@ import org.springframework.context.ApplicationContext;
  * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
  * 
  */
-public class OePARAMETRAGECarriere extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGECarriere extends BasicProcess {
 	/**
 	 * 
 	 */

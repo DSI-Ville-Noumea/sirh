@@ -13,6 +13,7 @@ import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -27,7 +28,7 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * Process OeAGENTPrime Date de création : (05/08/11 10:06:07)
  * 
  */
-public class OeAGENTPrime extends nc.mairie.technique.BasicProcess {
+public class OeAGENTPrime extends BasicProcess {
 	/**
 	 * 
 	 */

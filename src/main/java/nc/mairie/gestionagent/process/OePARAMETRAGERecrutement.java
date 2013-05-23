@@ -9,6 +9,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.MotifNonRecrutement;
 import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.Recrutement;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -20,7 +21,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (14/09/11 13:52:54)
      *
  */
-public class OePARAMETRAGERecrutement extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGERecrutement extends BasicProcess {
 	/**
 	 * 
 	 */

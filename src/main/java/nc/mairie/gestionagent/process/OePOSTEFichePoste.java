@@ -70,6 +70,7 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointage;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -93,7 +94,7 @@ import org.springframework.context.ApplicationContext;
  * 
  * 
  */
-public class OePOSTEFichePoste extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFichePoste extends BasicProcess {
 	/**
 	 * 
 	 */

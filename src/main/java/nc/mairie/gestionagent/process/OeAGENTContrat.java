@@ -41,6 +41,7 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -56,7 +57,7 @@ import org.apache.commons.vfs2.VFS;
  * Process OeAGENTContrat Date de création : (16/05/11 09:36:20)
  * 
  */
-public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
+public class OeAGENTContrat extends BasicProcess {
 
 	/**
 	 * 
@@ -74,7 +75,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	public String CHOIX_CONTRAT_O = "Oui";
 	public String CHOIX_CONTRAT_N = "Non";
 
-	private nc.mairie.metier.agent.AgentNW agentCourant;
+	private AgentNW agentCourant;
 	private TypeContrat typeContratCourant;
 	private Motif motifCourant;
 	private ArrayList<Contrat> listeContrat;
@@ -1078,7 +1079,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return AgentNW
 	 */
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -1087,7 +1088,7 @@ public class OeAGENTContrat extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(nc.mairie.metier.agent.AgentNW agentCourant) {
+	private void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

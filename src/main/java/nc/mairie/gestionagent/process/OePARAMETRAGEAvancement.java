@@ -27,6 +27,7 @@ import nc.mairie.spring.domain.metier.parametrage.Representant;
 import nc.mairie.spring.domain.metier.parametrage.RepresentantCap;
 import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -39,7 +40,7 @@ import org.springframework.context.ApplicationContext;
  * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
  * 
  */
-public class OePARAMETRAGEAvancement extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEAvancement extends BasicProcess {
 	/**
 	 * 
 	 */

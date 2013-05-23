@@ -9,6 +9,7 @@ import nc.mairie.metier.parametrage.CodeRome;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.FicheEmploi;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
@@ -19,7 +20,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (13/09/11 08:45:29)
      *
  */
-public class OePOSTEFERechercheAvancee extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFERechercheAvancee extends BasicProcess {
 	/**
 	 * 
 	 */

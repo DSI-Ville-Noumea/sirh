@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.commun.VoieQuartier;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.MairieMessages;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MessageUtils;
@@ -13,7 +14,7 @@ import nc.mairie.utils.MessageUtils;
 /**
  * Process OeVOIESelection Date de création : (27/01/03 15:03:41)
  */
-public class OeVOIESelection extends nc.mairie.technique.BasicProcess {
+public class OeVOIESelection extends BasicProcess {
 	/**
 	 * 
 	 */

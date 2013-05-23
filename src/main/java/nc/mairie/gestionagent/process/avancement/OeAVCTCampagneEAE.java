@@ -32,6 +32,7 @@ import nc.mairie.spring.domain.metier.EAE.CampagneAction;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -50,7 +51,7 @@ import com.oreilly.servlet.MultipartRequest;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTCampagneEAE extends nc.mairie.technique.BasicProcess {
+public class OeAVCTCampagneEAE extends BasicProcess {
 
 	/**
 	 * 

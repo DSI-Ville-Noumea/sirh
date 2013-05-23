@@ -12,6 +12,7 @@ import nc.mairie.metier.droits.Element;
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.metier.droits.GroupeUtilisateur;
 import nc.mairie.metier.droits.TypeDroit;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -21,7 +22,7 @@ import nc.mairie.utils.MessageUtils;
  * Process OeDROITSGestion
  * Date de création : (10/10/11 14:37:55)
  */
-public class OeDROITSGestion extends nc.mairie.technique.BasicProcess {
+public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * 

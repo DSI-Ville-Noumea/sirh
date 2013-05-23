@@ -24,6 +24,7 @@ import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitrePermis;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -36,7 +37,7 @@ import org.springframework.context.ApplicationContext;
  * Process OePARAMETRAGEDonneesPerso Date de création : (14/09/11 15:57:59)
  * 
  */
-public class OePARAMETRAGEDonneesPerso extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	/**
 	 * 
 	 */

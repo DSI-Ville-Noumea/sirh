@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import nc.mairie.gestionagent.robot.MaClasse;
+import nc.mairie.gestionagent.robot.RobotAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.droits.Autorisation;
+import nc.mairie.robot.Robot;
 import nc.mairie.servlets.Frontale;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Transaction;
@@ -79,8 +81,8 @@ public class ServletAgent extends Frontale {
 	/**
 	 * Retourne le robot de navigation de la servlet
 	 */
-	protected nc.mairie.robot.Robot getServletRobot() {
-		return new nc.mairie.gestionagent.robot.RobotAgent();
+	protected Robot getServletRobot() {
+		return new RobotAgent();
 	}
 
 	protected boolean performControleHabilitation(HttpServletRequest request) throws Exception {

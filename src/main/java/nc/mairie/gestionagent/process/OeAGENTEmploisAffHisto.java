@@ -8,6 +8,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.AffectationHisto;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MessageUtils;
 
@@ -15,7 +16,7 @@ import nc.mairie.utils.MessageUtils;
  * Process OeAGENTEmploisAffHisto Date de création : (16/08/11 10:08:01)
  * 
  */
-public class OeAGENTEmploisAffHisto extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	/**
 	 * 

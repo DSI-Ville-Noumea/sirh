@@ -19,6 +19,7 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -29,7 +30,7 @@ import nc.mairie.utils.MessageUtils;
  * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
  * 
  */
-public class OePARAMETRAGEFichePoste extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEFichePoste extends BasicProcess {
 	/**
 	 * 
 	 */

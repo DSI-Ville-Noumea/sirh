@@ -27,6 +27,7 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointage;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -39,7 +40,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAGENTEmploisSpecificites Date de création : (16/08/11 15:48:02)
  * 
  */
-public class OeAGENTEmploisSpecificites extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 	/**
 	 * 

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.robot.PersonnelMain;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -17,7 +18,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (29/09/11 08:36:13)
      *
  */
-public class OeAGENTHomonyme extends nc.mairie.technique.BasicProcess {
+public class OeAGENTHomonyme extends BasicProcess {
 	/**
 	 * 
 	 */

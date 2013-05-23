@@ -28,6 +28,7 @@ import nc.mairie.metier.commun.VoieQuartier;
 import nc.mairie.metier.referentiel.Collectivite;
 import nc.mairie.metier.referentiel.EtatServiceMilitaire;
 import nc.mairie.metier.referentiel.SituationFamiliale;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -40,7 +41,7 @@ import nc.mairie.utils.VariablesActivite;
  * 
  * 
  */
-public class OeAGENTEtatCivil extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEtatCivil extends BasicProcess {
 	/**
 	 * 
 	 */

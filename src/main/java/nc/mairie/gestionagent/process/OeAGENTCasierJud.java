@@ -8,6 +8,7 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.CasierJudiciaire;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -18,7 +19,7 @@ import nc.mairie.utils.MessageUtils;
  * Date de création : (12/05/11 15:48:38)
      *
  */
-public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
+public class OeAGENTCasierJud extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -459,7 +460,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	 * Retourne l'agent courant.
 	 * @return AgentNW
 	 */
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -467,7 +468,7 @@ public class OeAGENTCasierJud extends nc.mairie.technique.BasicProcess {
 	 * Met à jour l'agent courant.
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(nc.mairie.metier.agent.AgentNW agentCourant) {
+	private void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

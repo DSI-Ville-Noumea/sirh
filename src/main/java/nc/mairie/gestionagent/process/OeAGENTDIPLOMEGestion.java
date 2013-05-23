@@ -39,6 +39,7 @@ import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitrePermis;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -58,7 +59,7 @@ import com.oreilly.servlet.MultipartRequest;
  * Process OeAGENTDIPLOMEGestion Date de création : (11/02/03 14:20:31)
  * 
  */
-public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
+public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -341,7 +342,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.diplome.TitreDiplome
 	 */
-	private nc.mairie.metier.parametrage.TitreDiplome getTitreDiplomeCourant() {
+	private TitreDiplome getTitreDiplomeCourant() {
 		return titreDiplomeCourant;
 	}
 
@@ -1243,7 +1244,7 @@ public class OeAGENTDIPLOMEGestion extends nc.mairie.technique.BasicProcess {
 	 * @param newAgentCourant
 	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentCourant(nc.mairie.metier.agent.AgentNW newAgentCourant) {
+	private void setAgentCourant(AgentNW newAgentCourant) {
 		AgentCourant = newAgentCourant;
 	}
 

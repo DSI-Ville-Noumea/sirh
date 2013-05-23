@@ -40,6 +40,7 @@ import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -57,7 +58,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAGENTVisiteMed Date de création : (20/06/11 15:25:51)
  * 
  */
-public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
+public class OeAGENTVisiteMed extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -70,7 +71,7 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 	private String[] LB_MOTIF;
 	private String[] LB_RECOMMANDATION;
 
-	private nc.mairie.metier.agent.AgentNW agentCourant;
+	private AgentNW agentCourant;
 	private VisiteMedicale visiteCourante;
 	private Inaptitude inaptitudeCourante;
 
@@ -574,11 +575,11 @@ public class OeAGENTVisiteMed extends nc.mairie.technique.BasicProcess {
 		return true;
 	}
 
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(nc.mairie.metier.agent.AgentNW agentCourant) {
+	private void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

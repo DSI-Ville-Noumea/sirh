@@ -14,6 +14,7 @@ import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.CategorieFE;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -24,7 +25,7 @@ import nc.mairie.utils.MessageUtils;
  * Process OePARAMETRAGEFicheEmploi Date de création : (09/09/11 11:54:33)
  * 
  */
-public class OePARAMETRAGEFicheEmploi extends nc.mairie.technique.BasicProcess {
+public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	/**
 	 * 
 	 */

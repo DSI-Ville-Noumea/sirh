@@ -1,4 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.technique.VariableGlobale"%>
+<%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
 <html>
@@ -10,7 +12,7 @@
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <%
-nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 ArrayList<String> droits = aUser.getListeDroits();
 
 String res = 	"<script language=\"javascript\">\n"+

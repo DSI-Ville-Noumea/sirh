@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.poste.FicheEmploi;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
@@ -14,7 +15,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (13/07/11 10:23:55)
      *
  */
-public class OePOSTEEmploiSelection extends nc.mairie.technique.BasicProcess {
+public class OePOSTEEmploiSelection extends BasicProcess {
 
 	/**
 	 * 

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
@@ -14,7 +15,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
  * 
  */
-public class OeAVCTSelectionEvaluateur extends nc.mairie.technique.BasicProcess {
+public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	/**
 	 * 

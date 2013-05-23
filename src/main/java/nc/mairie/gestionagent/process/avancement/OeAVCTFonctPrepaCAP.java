@@ -39,6 +39,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -66,7 +67,7 @@ import com.sun.jersey.api.client.WebResource;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTFonctPrepaCAP extends nc.mairie.technique.BasicProcess {
+public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	/**
 	 * 

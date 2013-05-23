@@ -28,6 +28,7 @@ import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OeAGENTAccidentTravail extends nc.mairie.technique.BasicProcess {
+public class OeAGENTAccidentTravail extends BasicProcess {
 	/**
 	 * 
 	 */

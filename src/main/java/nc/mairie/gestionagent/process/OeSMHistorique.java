@@ -17,6 +17,7 @@ import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -28,7 +29,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OeSMHistorique extends nc.mairie.technique.BasicProcess {
+public class OeSMHistorique extends BasicProcess {
 	/**
 	 * 
 	 */

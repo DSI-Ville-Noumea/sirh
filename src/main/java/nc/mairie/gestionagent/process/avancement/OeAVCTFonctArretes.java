@@ -24,6 +24,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -50,7 +51,7 @@ import com.sun.jersey.api.client.WebResource;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTFonctArretes extends nc.mairie.technique.BasicProcess {
+public class OeAVCTFonctArretes extends BasicProcess {
 
 	/**
 	 * 

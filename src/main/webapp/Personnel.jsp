@@ -1,4 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.technique.VariableGlobale"%>
+<%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.metier.droits.Droit"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
@@ -12,7 +14,7 @@
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 </HEAD>
 <%
-	if (!nc.mairie.gestionagent.servlets.ServletAgent.controlerHabilitation(request)) {
+	if (!ServletAgent.controlerHabilitation(request)) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		response.setHeader("WWW-Authenticate","BASIC realm=\"Habilitation HTTP pour la Mairie\"");
 		javax.servlet.ServletContext sc= getServletContext();
@@ -20,7 +22,7 @@
 		rd.forward(request,response);
 	}else{
 	
-	nc.mairie.technique.UserAppli aUserAppli = (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+	UserAppli aUserAppli = (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 	
 	ArrayList<String> listeDroits = aUserAppli.getListeDroits();
 	

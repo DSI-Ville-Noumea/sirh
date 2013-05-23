@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.EnfantNW;
 import nc.mairie.metier.agent.LienEnfantNWAgentNW;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -18,7 +19,7 @@ import nc.mairie.utils.VariablesActivite;
  * Date de création : (03/10/11 14:00:29)
      *
  */
-public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEnfantHomonyme extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -236,7 +237,7 @@ public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 	 * Getter de l'agent courant.
 	 * @return AgentNW
 	 */
-	public nc.mairie.metier.agent.AgentNW getAgentCourant() {
+	public AgentNW getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -244,7 +245,7 @@ public class OeAGENTEnfantHomonyme extends nc.mairie.technique.BasicProcess {
 	 * Setter de l'agent courant.
 	 * @param agentCourant
 	 */
-	public void setAgentCourant(nc.mairie.metier.agent.AgentNW agentCourant) {
+	public void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

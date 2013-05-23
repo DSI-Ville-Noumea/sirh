@@ -1,4 +1,5 @@
-<%nc.mairie.technique.BasicProcess processErr = (nc.mairie.technique.BasicProcess)request.getSession().getAttribute("process"); 
+<%@page import="nc.mairie.technique.BasicProcess"%>
+<%BasicProcess processErr = (BasicProcess)request.getSession().getAttribute("process"); 
 
 if (processErr !=null && processErr.getTransaction() != null && processErr.getTransaction().isErreur()) {
 try {

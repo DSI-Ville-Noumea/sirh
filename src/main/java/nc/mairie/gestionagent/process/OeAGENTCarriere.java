@@ -26,6 +26,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -41,7 +42,7 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * Process OeAGENTCarriere Date de création : (05/09/11 11:31:37)
  * 
  */
-public class OeAGENTCarriere extends nc.mairie.technique.BasicProcess {
+public class OeAGENTCarriere extends BasicProcess {
 	/**
 	 * 
 	 */

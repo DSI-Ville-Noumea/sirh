@@ -11,6 +11,7 @@ import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -20,7 +21,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OePOSTESuiviRecrutement Date de création : (22/07/11 10:17:45)
  * 
  */
-public class OePOSTESuiviRecrutement extends nc.mairie.technique.BasicProcess {
+public class OePOSTESuiviRecrutement extends BasicProcess {
 	/**
 	 * 
 	 */

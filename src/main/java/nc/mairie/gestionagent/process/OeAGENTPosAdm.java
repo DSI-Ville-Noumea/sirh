@@ -15,6 +15,7 @@ import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -29,7 +30,7 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * Process OeAGENTPosAdm Date de création : (04/08/11 09:22:55)
  * 
  */
-public class OeAGENTPosAdm extends nc.mairie.technique.BasicProcess {
+public class OeAGENTPosAdm extends BasicProcess {
 	/**
 	 * 
 	 */

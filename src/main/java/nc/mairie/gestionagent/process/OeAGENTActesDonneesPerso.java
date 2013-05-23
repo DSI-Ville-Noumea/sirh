@@ -30,6 +30,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -48,7 +49,7 @@ import com.oreilly.servlet.MultipartRequest;
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
  * 
  */
-public class OeAGENTActesDonneesPerso extends nc.mairie.technique.BasicProcess {
+public class OeAGENTActesDonneesPerso extends BasicProcess {
 	/**
 	 * 
 	 */

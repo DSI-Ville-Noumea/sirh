@@ -68,6 +68,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
+import nc.mairie.robot.Robot;
 import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
 
@@ -77,7 +78,7 @@ import nc.mairie.technique.BasicProcess;
  * 
  * 
  */
-public class RobotAgent extends nc.mairie.robot.Robot {
+public class RobotAgent extends Robot {
 	/**
 	 * 
 	 */
@@ -106,34 +107,34 @@ public class RobotAgent extends nc.mairie.robot.Robot {
 
 		// Module AGENT - Donnees personnelles
 		if (activite.equals("AgentRecherche")) {
-			return new nc.mairie.gestionagent.process.OeAGENTRecherche();
+			return new OeAGENTRecherche();
 		} else if (activite.equals("AgentCreation") || activite.equals("AgentEtatCivil")) {
-			return new nc.mairie.gestionagent.process.OeAGENTEtatCivil();
+			return new OeAGENTEtatCivil();
 		} else if (activite.equals("AgentDeselection")) {
 			return new PersonnelMain();
 		} else if (activite.equals("EnfantGestion")) {
-			return new nc.mairie.gestionagent.process.OeENFANTGestion();
+			return new OeENFANTGestion();
 		} else if (activite.equals("AdministrationGestion")) {
-			return new nc.mairie.gestionagent.process.OeAGENTADMINISTRATIONGestion();
+			return new OeAGENTADMINISTRATIONGestion();
 		} else if (activite.equals("AgentDiplomeGestion")) {
-			return new nc.mairie.gestionagent.process.OeAGENTDIPLOMEGestion();
+			return new OeAGENTDIPLOMEGestion();
 		} else if (activite.equals("AgentCasierJud")) {
-			return new nc.mairie.gestionagent.process.OeAGENTCasierJud();
+			return new OeAGENTCasierJud();
 		} else if (activite.equals("AgentContrat")) {
-			return new nc.mairie.gestionagent.process.OeAGENTContrat();
+			return new OeAGENTContrat();
 		} else if (activite.equals("AgentActesDonneesPerso")) {
-			return new nc.mairie.gestionagent.process.OeAGENTActesDonneesPerso();
+			return new OeAGENTActesDonneesPerso();
 		}
 
 		// Module AGENT - HSCT
 		else if (activite.equals("HandicapGestion")) {
 			return new OeAGENTHandicap();
 		} else if (activite.equals("VisiteMedicaleGestion")) {
-			return new nc.mairie.gestionagent.process.OeAGENTVisiteMed();
+			return new OeAGENTVisiteMed();
 		} else if (activite.equals("AccidentTravailGestion")) {
 			return new OeAGENTAccidentTravail();
 		} else if (activite.equals("AgentActesHSCT")) {
-			return new nc.mairie.gestionagent.process.OeAGENTActesHSCT();
+			return new OeAGENTActesHSCT();
 		}
 		// Module AGENT - Emplois
 		else if (activite.equals("AgtEmploisAffectations")) {

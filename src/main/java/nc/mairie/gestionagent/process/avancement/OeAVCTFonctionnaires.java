@@ -13,6 +13,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -25,7 +26,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTFonctionnaires extends nc.mairie.technique.BasicProcess {
+public class OeAVCTFonctionnaires extends BasicProcess {
 	/**
 	 * 
 	 */

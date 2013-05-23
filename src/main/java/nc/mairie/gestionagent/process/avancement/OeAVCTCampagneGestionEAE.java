@@ -70,6 +70,7 @@ import nc.mairie.spring.domain.metier.diplome.FormationAgent;
 import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -87,7 +88,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTCampagneGestionEAE extends nc.mairie.technique.BasicProcess {
+public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	/**
 	 * 

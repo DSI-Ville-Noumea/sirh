@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.technique.VariableGlobale"%>
+<%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.metier.droits.Groupe"%>
 <%@page import="nc.mairie.metier.droits.Element"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -105,7 +107,7 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 				<INPUT  <%=MairieUtils.getDisabled(request, process.getNomEcran()) %> tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
 			</div>
 			<%
-			nc.mairie.technique.UserAppli aUser= (nc.mairie.technique.UserAppli)nc.mairie.technique.VariableGlobale.recuperer(request,nc.mairie.technique.VariableGlobale.GLOBAL_USER_APPLI);
+			UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")) {%>
 			<BR/>
 			<div style="position:absolute;top:535px;">

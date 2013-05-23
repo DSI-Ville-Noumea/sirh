@@ -18,6 +18,7 @@ import nc.mairie.metier.agent.CodeMutu;
 import nc.mairie.metier.agent.Creancier;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -33,7 +34,7 @@ import com.ibm.as400.access.QSYSObjectPathName;
  * Process OeAGENTCharge Date de création : (10/08/11 09:33:52)
  * 
  */
-public class OeAGENTCharge extends nc.mairie.technique.BasicProcess {
+public class OeAGENTCharge extends BasicProcess {
 	/**
 	 * 
 	 */

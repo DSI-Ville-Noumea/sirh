@@ -15,6 +15,7 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
@@ -24,7 +25,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OePOSTEFPSpecificites Date de création : (27/07/11 12:13:47)
  * 
  */
-public class OePOSTEFPSpecificites extends nc.mairie.technique.BasicProcess {
+public class OePOSTEFPSpecificites extends BasicProcess {
 
 	/**
 	 * 

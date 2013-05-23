@@ -12,6 +12,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.technique.VariableGlobale;
@@ -23,7 +24,7 @@ import nc.mairie.utils.TreeHierarchy;
  * Process OeAGENTRecherche Date de création : (01/01/03 09:35:10)
  * 
  */
-public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
+public class OeAGENTRecherche extends BasicProcess {
 
 	/**
 	 * 
@@ -37,7 +38,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
-	private nc.mairie.metier.agent.AgentNW AgentActivite;
+	private AgentNW AgentActivite;
 	public String focus = null;
 	private boolean first = true;
 
@@ -47,7 +48,7 @@ public class OeAGENTRecherche extends nc.mairie.technique.BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	private nc.mairie.metier.agent.AgentNW getAgentActivite() {
+	private AgentNW getAgentActivite() {
 		return AgentActivite;
 	}
 

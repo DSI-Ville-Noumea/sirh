@@ -42,6 +42,7 @@ import nc.mairie.spring.domain.metier.EAE.EaeFinalisation;
 import nc.mairie.spring.domain.metier.EAE.EaePlanAction;
 import nc.mairie.spring.domain.metier.EAE.EaeTypeDeveloppement;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -56,7 +57,7 @@ import com.oreilly.servlet.MultipartRequest;
  * Process OeAGENTDIPLOMEGestion Date de création : (11/02/03 14:20:31)
  * 
  */
-public class OeAGENTEae extends nc.mairie.technique.BasicProcess {
+public class OeAGENTEae extends BasicProcess {
 	/**
 	 * 
 	 */
