@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
 	
 	<HEAD>
@@ -33,8 +35,29 @@
 		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Prévisions des visites médicales du travail</legend>
-		
+		<legend class="sigp2Legend">Liste des approbateurs</legend>
+			<span style="position:relative;width:9px;"></span>
+			<span style="position:relative;width:35px;">
+				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+			</span>
+			<span style="position:relative;width:200px;text-align: left;">Agent</span>
+			<span style="position:relative;text-align: left;">Service</span>
+			<br/>
+			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+				<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<%
+				for (int i = 0;i<process.getListeApprobateurs().size();i++){
+				%>
+					<tr>
+						<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
+				    		<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(i)%>">
+				    	</td>
+						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
+						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(i)%></td>
+					</tr>
+				<%}%>
+				</table>	
+			</div>	
         </FIELDSET>
 	</FORM>
 	</BODY>
