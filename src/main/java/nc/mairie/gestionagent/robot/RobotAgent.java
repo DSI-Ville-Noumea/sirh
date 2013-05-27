@@ -49,6 +49,7 @@ import nc.mairie.gestionagent.process.OePOSTEFPSpecificites;
 import nc.mairie.gestionagent.process.OePOSTEFicheEmploi;
 import nc.mairie.gestionagent.process.OePOSTEFichePoste;
 import nc.mairie.gestionagent.process.OePOSTESuiviRecrutement;
+import nc.mairie.gestionagent.process.OePTGDroits;
 import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
@@ -212,6 +213,10 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("SMHistorique")) {
 			return new OeSMHistorique();
 		}
+		// Module POINTAGE
+		else if (activite.equals("PTGDroits")) {
+			return new OePTGDroits();
+		}
 		// Module PARAMETRAGE - Postes et emplois
 		else if (activite.equals("ParamFicheEmploi")) {
 			return new OePARAMETRAGEFicheEmploi();
@@ -239,7 +244,7 @@ public class RobotAgent extends Robot {
 		// Module PARAMETRAGE - ELEMENT SALAIRE
 		else if (activite.equals("ParamElemSalaire")) {
 			return new OePARAMETRAGECarriere();
-		}else if (activite.equals("ParamCarriere")) {
+		} else if (activite.equals("ParamCarriere")) {
 			return new OePARAMETRAGECarriere();
 		}
 		// Module DROITS
@@ -367,6 +372,12 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// Classe OeSMConvocation
 		navigation.put(OeSMConvocation.class.getName() + OeSMConvocation.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+
+		// ///////////////////
+		// POINTAGE //
+		// ///////////////////
+		// Classe OePTGDroits
+		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// pour la recherche d'un agent
 		// données perso

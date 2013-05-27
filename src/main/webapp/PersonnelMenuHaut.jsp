@@ -141,6 +141,13 @@ menuSMConvocation.ajouterFils(new Lien("SMHistorique", "HISTORIQUE", "Historique
 document.write(menuSMConvocation.afficher());
 
 //***************************************************************
+//*               Le menu haut Pointage
+//***************************************************************
+var menuPTG = new MenuHaut("Module_pointage_droitsPointage");
+menuPTG.ajouterFils(new Lien("PTGDroits", "DROITS", "Gestion des droits", true, false,"POINTAGE/DROITS"));
+document.write(menuPTG.afficher());
+
+//***************************************************************
 //*               Le menu haut Paramètres
 //***************************************************************
 var menuParametragePosteEtEmploi = new MenuHaut("Module_parametres_posteEtEmploi");

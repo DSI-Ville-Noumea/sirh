@@ -88,6 +88,9 @@
 		listeDroits.add("AVCTCampagneTableauBord");
 		listeDroits.add("AVCTTest");
 		
+		/*Module POINTAGE*/
+		listeDroits.add("PTGDroits");
+		
 		/*Module SUIVI MEDICAL*/
 		listeDroits.add("SMConvocation");
 		listeDroits.add("SMHistorique");

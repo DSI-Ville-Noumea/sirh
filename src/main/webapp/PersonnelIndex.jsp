@@ -75,7 +75,17 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEME
 //***************************************************************
 var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI_MED");
 	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
+	
 
+//***************************************************************
+//*               Le module Pointage
+//***************************************************************
+<% 
+String affPointage =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_POINTAGE");
+if (affPointage.equals("TRUE")){ %>
+	var Module_pointage = new Dossier("Module_pointage", "Gestion des pointages","POINTAGE");
+	Module_pointage.ajouterFils(new Lien("droitsPointage", "PTGDroits", "Gestion des droits", "Gestion des pointages", true));
+<%}%>
 		
 //***************************************************************
 //*               Le module Paramètres
@@ -101,6 +111,10 @@ menu.ajouterFils(Module_posteEtEmploi);
 menu.ajouterFils(Module_agent);
 menu.ajouterFils(Module_avct);
 menu.ajouterFils(Module_suiviMed);
+<% 
+if (affPointage.equals("TRUE")){ %>
+menu.ajouterFils(Module_pointage);
+<%}%>
 menu.ajouterFils(Module_parametres);
 menu.ajouterFils(Module_gestionDroits);
 
