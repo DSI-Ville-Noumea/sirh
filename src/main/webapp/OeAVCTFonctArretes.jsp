@@ -204,11 +204,15 @@ function SelectLigne(id,tailleTableau)
 									<%} %>
 								</td>
 								<td>
+								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
 									<textarea <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "readonly='readonly'" : "" %> rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
+								<%} %>
 								</td>
 								<td>
+								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
 									<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
 									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
+								<%} %>
 								</td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>

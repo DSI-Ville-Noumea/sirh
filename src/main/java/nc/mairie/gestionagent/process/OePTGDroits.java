@@ -70,6 +70,15 @@ public class OePTGDroits extends BasicProcess {
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
+		
+		//on recupere l'agent ajouté eventuellement
+		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		/*if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
+			addZone(getNOM_ST_ID_AGENT(), agt.getIdAgent());
+		}*/
+		//TODO
 
 		if (getListeApprobateurs().size() == 0) {
 			initialiseApprobateurs(request);
@@ -126,6 +135,11 @@ public class OePTGDroits extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_AJOUTER
+			if (testerParametre(request, getNOM_PB_AJOUTER())) {
+				return performPB_AJOUTER(request);
+			}
 
 		}
 		// Si TAG INPUT non géré par le process
@@ -227,13 +241,11 @@ public class OePTGDroits extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
-		
-		
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
-		videZonesDeSaisie(request);
 
-		setStatut(STATUT_MEME_PROCESS);
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
 	}
 

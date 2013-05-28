@@ -159,7 +159,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
 					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
 			// motif avancement
-			MotifAvancement motifVDN = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+			MotifAvancement motifVDN = null;
+			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
+				motifVDN = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+			}
 			// avis SHD
 			String avisSHD = av.getAvisSHD() == null ? "&nbsp;" : av.getAvisSHD();
 
