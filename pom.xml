@@ -4,7 +4,7 @@
 
 	<groupId>nc.mairie</groupId>
 	<artifactId>SIRH_war</artifactId>
-	<version>1.2.7</version>
+	<version>1.2.8</version>
 	<packaging>war</packaging>
 	<organization>
 		<name>Mairie de Nouméa</name>
@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>nc.mairie</groupId>
 			<artifactId>sirh_api</artifactId>
-			<version>2.20</version>
+			<version>3.0</version>
 		</dependency>
 		<!-- JSON -->
 		<dependency>
