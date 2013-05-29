@@ -13,7 +13,7 @@ public class PrimePointageFPResultSetExtractor implements ResultSetExtractor<Obj
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException {
 		PrimePointageFP prime = new PrimePointageFP();
-		prime.setIdPrimePointage(rs.getInt(PrimePointageFPDao.CHAMP_ID_PRIME_POINTAGE));
+		prime.setNumRubrique(rs.getInt(PrimePointageFPDao.CHAMP_NUM_RUBRIQUE));
 		prime.setIdFichePoste(rs.getInt(PrimePointageFPDao.CHAMP_ID_FICHE_POSTE));
 
 		return prime;

@@ -53,9 +53,10 @@ import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
-import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
+import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
-import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -82,7 +83,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<Delegation> listeDelegation;
 	private ArrayList<RegimeIndemnitaire> listeRegIndemn;
-	private ArrayList<PrimePointage> listePrimePointage;
+	private ArrayList<PrimePointageFP> listePrimePointageFP;
+	private ArrayList<PrimePointageAff> listePrimePointageAff;
 	private ArrayList<Competence> listeSavoir;
 	private ArrayList<Competence> listeSavoirFaire;
 	private ArrayList<Competence> listeComportementPro;
@@ -111,8 +113,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private String focus = null;
 	private String urlFichier;
 
-	private PrimePointageDao primePointageDao;
 	private PrimePointageFPDao primePointageFPDao;
+	private PrimePointageAffDao primePointageAffDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -191,11 +193,11 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
-		if (getPrimePointageDao() == null) {
-			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
-		}
 		if (getPrimePointageFPDao() == null) {
 			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
+		}
+		if (getPrimePointageAffDao() == null) {
+			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
 		}
 	}
 
@@ -286,7 +288,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		setListeAvantage(null);
 		setListeDelegation(null);
 		setListeRegIndemn(null);
-		setListePrimePointage(null);
+		setListePrimePointageFP(null);
+		setListePrimePointageAff(null);
 
 		// Avantages en nature
 		if (getListeAvantage().size() == 0) {
@@ -360,20 +363,26 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 
 		// Prime pointage
-		if (getListePrimePointage().size() == 0) {
-			setListePrimePointage(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
-		}
-		int indicePrime = 0;
-		if (getListePrimePointage() != null) {
-			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
-				PrimePointage prime = list.next();
-				if (prime != null) {
-					Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique().toString());
-					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibRubrique());
-				}
-				indicePrime++;
+		ArrayList<Rubrique> listeTotale = new ArrayList<Rubrique>();
+		if (getListePrimePointageFP().size() == 0) {
+			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
+			for (PrimePointageFP primeFP : getListePrimePointageFP()) {
+				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), primeFP.getNumRubrique().toString());
+				listeTotale.add(rubr);
 			}
 		}
+		if (getListePrimePointageAff().size() == 0) {
+			setListePrimePointageAff(getPrimePointageAffDao().listerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation())));
+			for (PrimePointageAff primeAff : getListePrimePointageAff()) {
+				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), primeAff.getNumRubrique().toString());
+				listeTotale.add(rubr);
+			}
+		}
+		int indicePrime = 0;
+		for (Rubrique list : listeTotale) {
+			addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibRubrique());
+		}
+
 	}
 
 	/**
@@ -1126,10 +1135,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * 
 	 * @return listePrimePointage
 	 */
-	public ArrayList<PrimePointage> getListePrimePointage() {
-		if (listePrimePointage == null)
-			listePrimePointage = new ArrayList<PrimePointage>();
-		return listePrimePointage;
+	public ArrayList<PrimePointageFP> getListePrimePointageFP() {
+		if (listePrimePointageFP == null)
+			listePrimePointageFP = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFP;
 	}
 
 	/**
@@ -1138,8 +1147,29 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * @param newListePrimePointage
 	 *            Nouvelle liste des RegimeIndemnitaire
 	 */
-	private void setListePrimePointage(ArrayList<PrimePointage> newListePrimePointage) {
-		this.listePrimePointage = newListePrimePointage;
+	private void setListePrimePointageFP(ArrayList<PrimePointageFP> newListePrimePointage) {
+		this.listePrimePointageFP = newListePrimePointage;
+	}
+
+	/**
+	 * Retourne la liste des RegimeIndemnitaire.
+	 * 
+	 * @return listePrimePointage
+	 */
+	public ArrayList<PrimePointageAff> getListePrimePointageAff() {
+		if (listePrimePointageAff == null)
+			listePrimePointageAff = new ArrayList<PrimePointageAff>();
+		return listePrimePointageAff;
+	}
+
+	/**
+	 * Met à jour la liste des RegimeIndemnitaire.
+	 * 
+	 * @param newListePrimePointage
+	 *            Nouvelle liste des RegimeIndemnitaire
+	 */
+	private void setListePrimePointageAff(ArrayList<PrimePointageAff> newListePrimePointage) {
+		this.listePrimePointageAff = newListePrimePointage;
 	}
 
 	/**
@@ -2150,20 +2180,20 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		return getZone(getNOM_ST_PP_RUBR(i));
 	}
 
-	public PrimePointageDao getPrimePointageDao() {
-		return primePointageDao;
-	}
-
-	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
-		this.primePointageDao = primePointageDao;
-	}
-
 	public PrimePointageFPDao getPrimePointageFPDao() {
 		return primePointageFPDao;
 	}
 
 	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
 		this.primePointageFPDao = primePointageFPDao;
+	}
+
+	public PrimePointageAffDao getPrimePointageAffDao() {
+		return primePointageAffDao;
+	}
+
+	public void setPrimePointageAffDao(PrimePointageAffDao primePointageAffDao) {
+		this.primePointageAffDao = primePointageAffDao;
 	}
 
 }

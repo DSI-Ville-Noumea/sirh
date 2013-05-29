@@ -14,7 +14,7 @@ import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
-import nc.mairie.spring.domain.metier.specificites.PrimePointage;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -59,9 +59,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private ArrayList<RegimeIndemnitaire> listeRegime;
 	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
 	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
-	private ArrayList<PrimePointage> listePrimePointage;
-	private ArrayList<PrimePointage> listePrimePointageAAjouter;
-	private ArrayList<PrimePointage> listePrimePointageASupprimer;
+	private ArrayList<PrimePointageFP> listePrimePointageFP;
+	private ArrayList<PrimePointageFP> listePrimePointageFPAAjouter;
+	private ArrayList<PrimePointageFP> listePrimePointageFPASupprimer;
 
 	private ArrayList<TypeAvantage> listeTypeAvantage;
 	private ArrayList<NatureAvantage> listeNatureAvantage;
@@ -130,12 +130,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getListeRegimeASupprimer() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR, getListeRegimeASupprimer());
 
-		if (getListePrimePointage() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointage());
-		if (getListePrimePointageAAjouter() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT, getListePrimePointageAAjouter());
-		if (getListePrimePointageASupprimer() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR, getListePrimePointageASupprimer());
+		if (getListePrimePointageFP() != null)
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointageFP());
+		if (getListePrimePointageFPAAjouter() != null)
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT, getListePrimePointageFPAAjouter());
+		if (getListePrimePointageFPASupprimer() != null)
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR, getListePrimePointageFPASupprimer());
 
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
@@ -975,19 +975,19 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	public boolean performPB_SUPPRIMER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
 		// Récupération de la prime pointage à supprimer
 		int indicePrime = (Services.estNumerique(getVAL_LB_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_PRIME_POINTAGE_SELECT()) : -1);
-		if (indicePrime == -1 || getListePrimePointage().size() == 0 || indicePrime > getListePrimePointage().size() - 1) {
+		if (indicePrime == -1 || getListePrimePointageFP().size() == 0 || indicePrime > getListePrimePointageFP().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Primes"));
 			return false;
 		}
-		PrimePointage prime = (PrimePointage) getListePrimePointage().get(indicePrime);
+		PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(indicePrime);
 
 		if (prime != null) {
-			if (getListePrimePointage() != null) {
-				getListePrimePointage().remove(prime);
-				if (getListePrimePointageAAjouter().contains(prime)) {
-					getListePrimePointageAAjouter().remove(prime);
+			if (getListePrimePointageFP() != null) {
+				getListePrimePointageFP().remove(prime);
+				if (getListePrimePointageFPAAjouter().contains(prime)) {
+					getListePrimePointageFPAAjouter().remove(prime);
 				} else {
-					getListePrimePointageASupprimer().add(prime);
+					getListePrimePointageFPASupprimer().add(prime);
 				}
 			}
 		}
@@ -1275,8 +1275,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointage
 	 */
-	private ArrayList<PrimePointage> getListePrimePointage() {
-		return listePrimePointage;
+	private ArrayList<PrimePointageFP> getListePrimePointageFP() {
+		return listePrimePointageFP;
 	}
 
 	/**
@@ -1284,8 +1284,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 * @param listePrimePointage
 	 */
-	private void setListePrimePointage(ArrayList<PrimePointage> listePrimePointage) {
-		this.listePrimePointage = listePrimePointage;
+	private void setListePrimePointageFP(ArrayList<PrimePointageFP> listePrimePointageFP) {
+		this.listePrimePointageFP = listePrimePointageFP;
 	}
 
 	/**
@@ -1368,14 +1368,14 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		}
 
 		// Primes pointage
-		if (getListePrimePointage() == null)
-			setListePrimePointage((ArrayList<PrimePointage>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
-		if (getListePrimePointage() != null && getListePrimePointage().size() != 0) {
+		if (getListePrimePointageFP() == null)
+			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
+		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
 			int taillesReg[] = { 10, 50 };
 			FormateListe aFormatReg = new FormateListe(taillesReg);
-			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
-				PrimePointage aReg = (PrimePointage) list.next();
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getIdRubrique().toString());
+			for (ListIterator<PrimePointageFP> list = getListePrimePointageFP().listIterator(); list.hasNext();) {
+				PrimePointageFP aReg = (PrimePointageFP) list.next();
+				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getNumRubrique().toString());
 				if (aReg != null) {
 					String ligne[] = { rubr.getNumRubrique(), rubr.getLibRubrique() };
 					aFormatReg.ajouteLigne(ligne);
@@ -1601,10 +1601,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
-	private ArrayList<PrimePointage> getListePrimePointageAAjouter() {
-		if (listePrimePointageAAjouter == null)
-			listePrimePointageAAjouter = new ArrayList<PrimePointage>();
-		return listePrimePointageAAjouter;
+	private ArrayList<PrimePointageFP> getListePrimePointageFPAAjouter() {
+		if (listePrimePointageFPAAjouter == null)
+			listePrimePointageFPAAjouter = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFPAAjouter;
 	}
 
 	/**
@@ -1612,10 +1612,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
-	private ArrayList<PrimePointage> getListePrimePointageASupprimer() {
-		if (listePrimePointageASupprimer == null)
-			listePrimePointageASupprimer = new ArrayList<PrimePointage>();
-		return listePrimePointageASupprimer;
+	private ArrayList<PrimePointageFP> getListePrimePointageFPASupprimer() {
+		if (listePrimePointageFPASupprimer == null)
+			listePrimePointageFPASupprimer = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFPASupprimer;
 	}
 
 	/**
@@ -1760,20 +1760,20 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				return false;
 
 			// Alimentation de l'objet
-			PrimePointage regIndemn = new PrimePointage();
+			PrimePointageFP regIndemn = new PrimePointageFP();
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
-			regIndemn.setIdRubrique(indiceRub <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
+			regIndemn.setNumRubrique(indiceRub <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
 
-			if (getListePrimePointage() == null)
-				setListePrimePointage(new ArrayList<PrimePointage>());
+			if (getListePrimePointageFP() == null)
+				setListePrimePointageFP(new ArrayList<PrimePointageFP>());
 
-			if (!getListePrimePointage().contains(regIndemn)) {
-				getListePrimePointage().add(regIndemn);
-				if (getListePrimePointageASupprimer().contains(regIndemn)) {
-					getListePrimePointageASupprimer().remove(regIndemn);
+			if (!getListePrimePointageFP().contains(regIndemn)) {
+				getListePrimePointageFP().add(regIndemn);
+				if (getListePrimePointageFPASupprimer().contains(regIndemn)) {
+					getListePrimePointageFPASupprimer().remove(regIndemn);
 				} else {
-					getListePrimePointageAAjouter().add(regIndemn);
+					getListePrimePointageFPAAjouter().add(regIndemn);
 				}
 			}
 		}

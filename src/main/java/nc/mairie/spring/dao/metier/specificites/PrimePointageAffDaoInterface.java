@@ -6,9 +6,9 @@ import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 
 public interface PrimePointageAffDaoInterface {
 
-	public void creerPrimePointageAff(Integer idPrimePointage, Integer idAffectation);
+	public void creerPrimePointageAff(Integer numRubrique, Integer idAffectation);
 
-	public void supprimerPrimePointageAff(Integer idAffectation, Integer idPrimePointage);
-
-	public ArrayList<PrimePointageAff> listerPrimePointageAffAvecPP(Integer idPrimePointage);
+	public void supprimerPrimePointageAff(Integer idAffectation, Integer numRubrique);
+	
+	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation) ;
 }

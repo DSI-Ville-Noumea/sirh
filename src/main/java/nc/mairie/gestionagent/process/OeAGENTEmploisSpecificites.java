@@ -22,10 +22,9 @@ import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
-import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
-import nc.mairie.spring.domain.metier.specificites.PrimePointage;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
+import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -73,10 +72,10 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	private ArrayList<RegimeIndemnitaire> listeRegimeFP;
 	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
 	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
-	private ArrayList<PrimePointage> listePrimePointageAFF;
-	private ArrayList<PrimePointage> listePrimePointageFP;
-	private ArrayList<PrimePointage> listePrimePointageAAjouter;
-	private ArrayList<PrimePointage> listePrimePointageASupprimer;
+	private ArrayList<PrimePointageAff> listePrimePointageAFF;
+	private ArrayList<PrimePointageFP> listePrimePointageFP;
+	private ArrayList<PrimePointageAff> listePrimePointageAffAAjouter;
+	private ArrayList<PrimePointageAff> listePrimePointageAffASupprimer;
 
 	private ArrayList<TypeAvantage> listeTypeAvantage;
 	private ArrayList<NatureAvantage> listeNatureAvantage;
@@ -89,7 +88,6 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	private FichePoste fichePosteSecondaireCourant;
 	private Affectation affectationCourant;
 
-	private PrimePointageDao primePointageDao;
 	private PrimePointageAffDao primePointageAffDao;
 	private PrimePointageFPDao primePointageFPDao;
 
@@ -162,9 +160,6 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
-		if (getPrimePointageDao() == null) {
-			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
-		}
 		if (getPrimePointageAffDao() == null) {
 			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
 		}
@@ -189,22 +184,22 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 		// Primes pointages
 		if (getListePrimePointageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListePrimePointageFP(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
+			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getFichePosteSecondaireCourant() != null) {
 				getListePrimePointageFP().addAll(
-						getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteSecondaireCourant().getIdFichePoste())));
+						getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteSecondaireCourant().getIdFichePoste())));
 			}
 		}
 
 		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
-			setListePrimePointageAFF(getPrimePointageDao().listerPrimePointageAvecAFF(Integer.valueOf(getAffectationCourant().getIdAffectation())));
+			setListePrimePointageAFF(getPrimePointageAffDao().listerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation())));
 		}
 		int indicePrime = 0;
 		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
 			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
-				PrimePointage prime = (PrimePointage) getListePrimePointageFP().get(i);
+				PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(i);
 				if (prime != null) {
-					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
 							.toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
@@ -214,9 +209,9 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		if (getListePrimePointageAFF() != null && getListePrimePointageAFF().size() != 0) {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
-				PrimePointage prime = (PrimePointage) getListePrimePointageAFF().get(j);
+				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
 				if (prime != null && !getListePrimePointageFP().contains(prime)) {
-					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
 							.toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
@@ -224,11 +219,11 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				}
 			}
 		}
-		if (getListePrimePointageAAjouter() != null && getListePrimePointageAAjouter().size() != 0) {
-			for (int k = 0; k < getListePrimePointageAAjouter().size(); k++) {
-				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(k);
+		if (getListePrimePointageAffAAjouter() != null && getListePrimePointageAffAAjouter().size() != 0) {
+			for (int k = 0; k < getListePrimePointageAffAAjouter().size(); k++) {
+				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffAAjouter().get(k);
 				if (prime != null) {
-					Rubrique rubr = prime.getIdRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getIdRubrique()
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
 							.toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
@@ -609,8 +604,8 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		getListeDelegationASupprimer().clear();
 		setListePrimePointageAFF(null);
 		setListePrimePointageFP(null);
-		getListePrimePointageAAjouter().clear();
-		getListePrimePointageASupprimer().clear();
+		getListePrimePointageAffAAjouter().clear();
+		getListePrimePointageAffASupprimer().clear();
 		setListeRegimeAFF(null);
 		setListeRegimeFP(null);
 		getListeRegimeAAjouter().clear();
@@ -812,21 +807,21 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		// Si la spécificité à supprimer est déjà en base
 		if (indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected < getListePrimePointageAFF().size()) {
-			PrimePointage primePointageASupprimer = (PrimePointage) getListePrimePointageAFF().get(
+			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAFF().get(
 					indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected);
 			if (primePointageASupprimer != null) {
 				getListePrimePointageAFF().remove(primePointageASupprimer);
-				getListePrimePointageASupprimer().add(primePointageASupprimer);
+				getListePrimePointageAffASupprimer().add(primePointageASupprimer);
 			}
 
 		}
 		// Si la spécificité à supprimer n'est pas encore en base mais vient
 		// d'être ajoutée par l'utilisateur
 		else {
-			PrimePointage primePointageASupprimer = (PrimePointage) getListePrimePointageAAjouter().get(
+			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAffAAjouter().get(
 					indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size() + nbPrimePointageFPSelected);
 			if (primePointageASupprimer != null) {
-				getListePrimePointageAAjouter().remove(primePointageASupprimer);
+				getListePrimePointageAffAAjouter().remove(primePointageASupprimer);
 			}
 		}
 		return true;
@@ -976,32 +971,23 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 		// Sauvegarde des nouvelles primes de pointage et suppression des
 		// anciens
-		for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
-			Integer idCree = null;
+		for (int i = 0; i < getListePrimePointageAffAAjouter().size(); i++) {
 			try {
-				PrimePointage prime = (PrimePointage) getListePrimePointageAAjouter().get(i);
-				idCree = getPrimePointageDao().creerPrimePointage(prime.getIdRubrique());
+				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffAAjouter().get(i);
+				getPrimePointageAffDao().creerPrimePointageAff(prime.getNumRubrique(), Integer.valueOf(getAffectationCourant().getIdAffectation()));
 
-				PrimePointageAff riAFF = new PrimePointageAff();
-				riAFF.setIdAffectation(Integer.valueOf(getAffectationCourant().getIdAffectation()));
-				riAFF.setIdPrimePointage(idCree);
-				getPrimePointageAffDao().creerPrimePointageAff(riAFF.getIdPrimePointage(), riAFF.getIdAffectation());
 			} catch (Exception e) {
-				if (idCree != null) {
-					getPrimePointageDao().supprimerPrimePointage(idCree);
-				}
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créé.");
+				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être créée.");
 				return false;
 			}
 		}
-		for (int i = 0; i < getListePrimePointageASupprimer().size(); i++) {
+		for (int i = 0; i < getListePrimePointageAffASupprimer().size(); i++) {
 			try {
-				PrimePointage prime = (PrimePointage) getListePrimePointageASupprimer().get(i);
+				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffASupprimer().get(i);
 				getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()),
-						prime.getIdPrimePointage());
-				getPrimePointageDao().supprimerPrimePointage(prime.getIdPrimePointage());
+						prime.getNumRubrique());
 			} catch (Exception e) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimé.");
+				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimée.");
 				return false;
 			}
 		}
@@ -1129,19 +1115,19 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
 			// Alimentation de l'objet
-			PrimePointage prime = new PrimePointage();
-			prime.setIdRubrique(Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
+			PrimePointageAff prime = new PrimePointageAff();
+			prime.setNumRubrique(Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
 
 			if (getListePrimePointageAFF() == null)
-				setListePrimePointageAFF(new ArrayList<PrimePointage>());
+				setListePrimePointageAFF(new ArrayList<PrimePointageAff>());
 
 			if (!getListePrimePointageAFF().contains(prime) && !getListePrimePointageFP().contains(prime)
-					&& !getListePrimePointageAAjouter().contains(prime)) {
-				if (getListePrimePointageASupprimer().contains(prime)) {
-					getListePrimePointageASupprimer().remove(prime);
+					&& !getListePrimePointageAffAAjouter().contains(prime)) {
+				if (getListePrimePointageAffASupprimer().contains(prime)) {
+					getListePrimePointageAffASupprimer().remove(prime);
 					getListePrimePointageAFF().add(prime);
 				} else {
-					getListePrimePointageAAjouter().add(prime);
+					getListePrimePointageAffAAjouter().add(prime);
 				}
 			}
 
@@ -1855,10 +1841,10 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
-	private ArrayList<PrimePointage> getListePrimePointageASupprimer() {
-		if (listePrimePointageASupprimer == null)
-			listePrimePointageASupprimer = new ArrayList<PrimePointage>();
-		return listePrimePointageASupprimer;
+	private ArrayList<PrimePointageAff> getListePrimePointageAffASupprimer() {
+		if (listePrimePointageAffASupprimer == null)
+			listePrimePointageAffASupprimer = new ArrayList<PrimePointageAff>();
+		return listePrimePointageAffASupprimer;
 	}
 
 	/**
@@ -1866,10 +1852,10 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
-	public ArrayList<PrimePointage> getListePrimePointageAAjouter() {
-		if (listePrimePointageAAjouter == null)
-			listePrimePointageAAjouter = new ArrayList<PrimePointage>();
-		return listePrimePointageAAjouter;
+	public ArrayList<PrimePointageAff> getListePrimePointageAffAAjouter() {
+		if (listePrimePointageAffAAjouter == null)
+			listePrimePointageAffAAjouter = new ArrayList<PrimePointageAff>();
+		return listePrimePointageAffAAjouter;
 	}
 
 	/**
@@ -1967,7 +1953,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageAFF
 	 */
-	public ArrayList<PrimePointage> getListePrimePointageAFF() {
+	public ArrayList<PrimePointageAff> getListePrimePointageAFF() {
 		return listePrimePointageAFF;
 	}
 
@@ -1976,7 +1962,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @param listePrimePointageAFF
 	 */
-	private void setListePrimePointageAFF(ArrayList<PrimePointage> listePrimePointageAFF) {
+	private void setListePrimePointageAFF(ArrayList<PrimePointageAff> listePrimePointageAFF) {
 		this.listePrimePointageAFF = listePrimePointageAFF;
 	}
 
@@ -2224,7 +2210,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 			// Si clic sur le bouton PB_SUPPRIMER_PRIME_POINTAGE
 			for (int i = getListePrimePointageFP().size(); i < getListePrimePointageFP().size() + getListePrimePointageAFF().size()
-					+ getListePrimePointageAAjouter().size() - getListePrimePointageASupprimer().size(); i++) {
+					+ getListePrimePointageAffAAjouter().size() - getListePrimePointageAffASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_PRIME_POINTAGE(i))) {
 					return performPB_SUPPRIMER_PRIME_POINTAGE(request, i);
 				}
@@ -2524,7 +2510,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @return listePrimePointageFP
 	 */
-	public ArrayList<PrimePointage> getListePrimePointageFP() {
+	public ArrayList<PrimePointageFP> getListePrimePointageFP() {
 		return listePrimePointageFP;
 	}
 
@@ -2533,7 +2519,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @param listePrimePointageFP
 	 */
-	private void setListePrimePointageFP(ArrayList<PrimePointage> listePrimePointageFP) {
+	private void setListePrimePointageFP(ArrayList<PrimePointageFP> listePrimePointageFP) {
 		this.listePrimePointageFP = listePrimePointageFP;
 	}
 
@@ -2582,14 +2568,6 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 	public String getNomEcran() {
 		return "ECR-AG-EMPLOIS-SPECIFICITES";
-	}
-
-	public PrimePointageDao getPrimePointageDao() {
-		return primePointageDao;
-	}
-
-	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
-		this.primePointageDao = primePointageDao;
 	}
 
 	public PrimePointageAffDao getPrimePointageAffDao() {

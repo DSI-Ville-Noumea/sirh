@@ -320,7 +320,7 @@ document.formu.elements[nom].focus();
 			</div>
 			<div align="left" style="float:left">
 				<span class="sigp2" style="text-align:left;width:960;"><u>Prime(s) pointage</u></span>
-				<%if(process.getListePrimePointage()!= null && process.getListePrimePointage().size()>0){ %>
+				<%if(process.getListePrimePointageFP()!= null && process.getListePrimePointageFP().size()>0){ %>
 				<br/><br/>
 				<span style="margin-left:5px;position:relative;text-align: left;">Rubrique</span>
 				<br/>
@@ -328,8 +328,8 @@ document.formu.elements[nom].focus();
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<%
 							int indicePrime = 0;
-							if (process.getListePrimePointage()!=null){
-								for (int i = 0;i<process.getListePrimePointage().size();i++){
+							if (process.getListePrimePointageFP()!=null){
+								for (int i = 0;i<process.getListePrimePointageFP().size();i++){
 							%>
 									<tr>
 										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_PP_RUBR(indicePrime)%></td>

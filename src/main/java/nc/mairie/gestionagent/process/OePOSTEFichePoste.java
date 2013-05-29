@@ -65,9 +65,7 @@ import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
-import nc.mairie.spring.dao.metier.specificites.PrimePointageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
-import nc.mairie.spring.domain.metier.specificites.PrimePointage;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -178,9 +176,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<RegimeIndemnitaire> listeRegime;
 	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
 	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
-	private ArrayList<PrimePointage> listePrimePointage;
-	private ArrayList<PrimePointage> listePrimePointageAAjouter;
-	private ArrayList<PrimePointage> listePrimePointageASupprimer;
+	private ArrayList<PrimePointageFP> listePrimePointageFP;
+	private ArrayList<PrimePointageFP> listePrimePointageFPAAjouter;
+	private ArrayList<PrimePointageFP> listePrimePointageFPASupprimer;
 	private ArrayList<Service> listeServices;
 	private ArrayList<Horaire> listeHoraire;
 	private String observation;
@@ -227,7 +225,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private boolean changementFEAutorise = true;
 	public boolean estFDPInactive = false;
 
-	private PrimePointageDao primePointageDao;
 	private PrimePointageAffDao primePointageAffDao;
 	private PrimePointageFPDao primePointageFPDao;
 
@@ -418,9 +415,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
-		if (getPrimePointageDao() == null) {
-			setPrimePointageDao((PrimePointageDao) context.getBean("primePointageDao"));
-		}
 		if (getPrimePointageAffDao() == null) {
 			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
 		}
@@ -1020,14 +1014,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Primes pointage
-		setListePrimePointage((ArrayList<PrimePointage>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
-		if (getListePrimePointage() != null && getListePrimePointage().size() > 0) {
-			setListePrimePointageAAjouter((ArrayList<PrimePointage>) VariablesActivite.recuperer(this,
+		setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
+		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() > 0) {
+			setListePrimePointageFPAAjouter((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT));
-			setListePrimePointageASupprimer((ArrayList<PrimePointage>) VariablesActivite.recuperer(this,
+			setListePrimePointageFPASupprimer((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListePrimePointage(getPrimePointageDao().listerPrimePointageAvecFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
+			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 	}
 
@@ -1091,10 +1085,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Prime de pointage
 		int indicePrime = 0;
-		if (getListePrimePointage() != null) {
-			for (ListIterator<PrimePointage> list = getListePrimePointage().listIterator(); list.hasNext();) {
-				PrimePointage aReg = (PrimePointage) list.next();
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getIdRubrique().toString());
+		if (getListePrimePointageFP() != null) {
+			for (ListIterator<PrimePointageFP> list = getListePrimePointageFP().listIterator(); list.hasNext();) {
+				PrimePointageFP aReg = (PrimePointageFP) list.next();
+				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getNumRubrique().toString());
 				if (aReg != null) {
 					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibRubrique());
 				}
@@ -1192,7 +1186,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setListeAvantage(null);
 		setListeDelegation(null);
 		setListeRegime(null);
-		setListePrimePointage(null);
+		setListePrimePointageFP(null);
 
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
 		setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
@@ -2050,36 +2044,23 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// Sauvegarde des nouvelles primes de pointage et suppression des
 			// anciens
-			for (int i = 0; i < getListePrimePointageAAjouter().size(); i++) {
-				Integer idCree = null;
+			for (int i = 0; i < getListePrimePointageFPAAjouter().size(); i++) {
 				try {
-					PrimePointage regIndemn = (PrimePointage) getListePrimePointageAAjouter().get(i);
-					idCree = getPrimePointageDao().creerPrimePointage(regIndemn.getIdRubrique());
-					PrimePointageFP riFP = new PrimePointageFP();
-					riFP.setIdFichePoste(Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
-					riFP.setIdPrimePointage(idCree);
-					getPrimePointageFPDao().creerPrimePointageFP(riFP.getIdPrimePointage(), riFP.getIdFichePoste());
+					PrimePointageFP primePoint = (PrimePointageFP) getListePrimePointageFPAAjouter().get(i);
+					getPrimePointageFPDao().creerPrimePointageFP(primePoint.getNumRubrique(),
+							Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 				} catch (Exception e) {
-					if (idCree != null) {
-						getPrimePointageDao().supprimerPrimePointage(idCree);
-					}
-					getTransaction().declarerErreur(" Au moins une prime de pointage n'a pu être créé.");
+					getTransaction().declarerErreur(" Au moins une prime de pointage n'a pu être créée.");
 					return false;
 				}
 			}
 
-			for (int i = 0; i < getListePrimePointageASupprimer().size(); i++) {
+			for (int i = 0; i < getListePrimePointageFPASupprimer().size(); i++) {
 				try {
-					PrimePointage ri = (PrimePointage) getListePrimePointageASupprimer().get(i);
-					PrimePointageFP riFP = new PrimePointageFP();
-					riFP.setIdFichePoste(Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
-					riFP.setIdPrimePointage(ri.getIdPrimePointage());
-					getPrimePointageFPDao().supprimerPrimePointageFP(riFP.getIdFichePoste(), riFP.getIdPrimePointage());
-					if (!(getPrimePointageAffDao().listerPrimePointageAffAvecPP(ri.getIdPrimePointage()).size() > 0)) {
-						getPrimePointageDao().supprimerPrimePointage(ri.getIdPrimePointage());
-					}
+					PrimePointageFP ri = (PrimePointageFP) getListePrimePointageFPASupprimer().get(i);
+					getPrimePointageFPDao().supprimerPrimePointageFP(ri.getIdFichePoste(), ri.getNumRubrique());
 				} catch (Exception e) {
-					getTransaction().declarerErreur("Au moins une prime de pointage n'a pu être supprimé.");
+					getTransaction().declarerErreur("Au moins une prime de pointage n'a pu être supprimée.");
 					return false;
 				}
 			}
@@ -3998,8 +3979,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION, getListeDelegation());
 		if (getListeRegime() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN, getListeRegime());
-		if (getListePrimePointage() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointage());
+		if (getListePrimePointageFP() != null)
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointageFP());
 
 		setStatut(STATUT_SPECIFICITES, true);
 		return true;
@@ -4286,10 +4267,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return listePrimePointage
 	 */
-	public ArrayList<PrimePointage> getListePrimePointage() {
-		if (listePrimePointage == null)
-			listePrimePointage = new ArrayList<PrimePointage>();
-		return listePrimePointage;
+	public ArrayList<PrimePointageFP> getListePrimePointageFP() {
+		if (listePrimePointageFP == null)
+			listePrimePointageFP = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFP;
 	}
 
 	/**
@@ -4297,8 +4278,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param listePrimePointage
 	 */
-	private void setListePrimePointage(ArrayList<PrimePointage> listePrimePointage) {
-		this.listePrimePointage = listePrimePointage;
+	private void setListePrimePointageFP(ArrayList<PrimePointageFP> listePrimePointageFP) {
+		this.listePrimePointageFP = listePrimePointageFP;
 	}
 
 	/**
@@ -4306,10 +4287,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return listePrimePointageAAjouter
 	 */
-	private ArrayList<PrimePointage> getListePrimePointageAAjouter() {
-		if (listePrimePointageAAjouter == null)
-			listePrimePointageAAjouter = new ArrayList<PrimePointage>();
-		return listePrimePointageAAjouter;
+	private ArrayList<PrimePointageFP> getListePrimePointageFPAAjouter() {
+		if (listePrimePointageFPAAjouter == null)
+			listePrimePointageFPAAjouter = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFPAAjouter;
 	}
 
 	/**
@@ -4317,8 +4298,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param listePrimePointageAAjouter
 	 */
-	private void setListePrimePointageAAjouter(ArrayList<PrimePointage> listePrimePointageAAjouter) {
-		this.listePrimePointageAAjouter = listePrimePointageAAjouter;
+	private void setListePrimePointageFPAAjouter(ArrayList<PrimePointageFP> listePrimePointageFPAAjouter) {
+		this.listePrimePointageFPAAjouter = listePrimePointageFPAAjouter;
 	}
 
 	/**
@@ -4326,10 +4307,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return listePrimePointageASupprimer
 	 */
-	private ArrayList<PrimePointage> getListePrimePointageASupprimer() {
-		if (listePrimePointageASupprimer == null)
-			listePrimePointageASupprimer = new ArrayList<PrimePointage>();
-		return listePrimePointageASupprimer;
+	private ArrayList<PrimePointageFP> getListePrimePointageFPASupprimer() {
+		if (listePrimePointageFPASupprimer == null)
+			listePrimePointageFPASupprimer = new ArrayList<PrimePointageFP>();
+		return listePrimePointageFPASupprimer;
 	}
 
 	/**
@@ -4337,8 +4318,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param listePrimePointageASupprimer
 	 */
-	private void setListePrimePointageASupprimer(ArrayList<PrimePointage> listePrimePointageASupprimer) {
-		this.listePrimePointageASupprimer = listePrimePointageASupprimer;
+	private void setListePrimePointageFPASupprimer(ArrayList<PrimePointageFP> listePrimePointageFPASupprimer) {
+		this.listePrimePointageFPASupprimer = listePrimePointageFPASupprimer;
 	}
 
 	/**
@@ -6682,14 +6663,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_REMPLACEMENT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
 		return true;
-	}
-
-	public PrimePointageDao getPrimePointageDao() {
-		return primePointageDao;
-	}
-
-	public void setPrimePointageDao(PrimePointageDao primePointageDao) {
-		this.primePointageDao = primePointageDao;
 	}
 
 	public PrimePointageAffDao getPrimePointageAffDao() {

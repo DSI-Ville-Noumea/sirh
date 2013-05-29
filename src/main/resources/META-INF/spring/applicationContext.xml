@@ -77,9 +77,6 @@
 	<bean id="avancementCapPrintJobDao" class="nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao">
 		<property name="dataSource" ref="dataSourceSIRH" />		
 	</bean>
-	<bean id="primePointageDao" class="nc.mairie.spring.dao.metier.specificites.PrimePointageDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
-	</bean>
 	<bean id="primePointageAffDao" class="nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao">
 		<property name="dataSource" ref="dataSourceSIRH" />		
 	</bean>

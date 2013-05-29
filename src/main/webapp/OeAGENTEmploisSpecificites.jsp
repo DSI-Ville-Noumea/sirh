@@ -284,8 +284,8 @@ document.formu.elements[nom].focus();
 							}
 						}
 					}
-					if (process.getListePrimePointageAAjouter()!=null){
-						for (int i = 0;i<process.getListePrimePointageAAjouter().size();i++){
+					if (process.getListePrimePointageAffAAjouter()!=null){
+						for (int i = 0;i<process.getListePrimePointageAffAAjouter().size();i++){
 					%>
 							<tr>
 								<td class="sigp2-tabLigne" align="center">

@@ -527,8 +527,8 @@
 							<BR/><BR/>
 						</div>
 						<div align="left" style="float:left;width:980px">
-							<span class="sigp2" style="text-align:left;width:900;"><u>Primes(s) de pointage</u></span>
-							<%if(process.getListePrimePointage()!= null && process.getListePrimePointage().size()>0){ %>
+							<span class="sigp2" style="text-align:left;width:900;"><u>Prime(s) de pointage</u></span>
+							<%if(process.getListePrimePointageFP()!= null && process.getListePrimePointageFP().size()>0){ %>
 							<br/><br/>
 							<span style="margin-left:5px;position:relative;text-align: left;">Rubrique</span>
 							<br/>
@@ -536,8 +536,8 @@
 									<table class="sigp2NewTab" style="text-align:left;width:980px;">
 										<%
 										int indicePrime = 0;
-										if (process.getListePrimePointage()!=null){
-											for (int i = 0;i<process.getListePrimePointage().size();i++){
+										if (process.getListePrimePointageFP()!=null){
+											for (int i = 0;i<process.getListePrimePointageFP().size();i++){
 										%>
 												<tr>
 													<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_PP_RUBR(indicePrime)%></td>
