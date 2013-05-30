@@ -371,16 +371,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				listeTotale.add(rubr);
 			}
 		}
-		if (getListePrimePointageAff().size() == 0) {
-			setListePrimePointageAff(getPrimePointageAffDao().listerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation())));
-			for (PrimePointageAff primeAff : getListePrimePointageAff()) {
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), primeAff.getNumRubrique().toString());
-				listeTotale.add(rubr);
-			}
-		}
 		int indicePrime = 0;
 		for (Rubrique list : listeTotale) {
 			addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibRubrique());
+			indicePrime++;
 		}
 
 	}

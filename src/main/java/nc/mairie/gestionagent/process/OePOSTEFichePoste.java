@@ -2042,6 +2042,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
+			// COMMIT
+			commitTransaction();
+
 			// Sauvegarde des nouvelles primes de pointage et suppression des
 			// anciens
 			for (int i = 0; i < getListePrimePointageFPAAjouter().size(); i++) {
@@ -2064,9 +2067,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 					return false;
 				}
 			}
-
-			// COMMIT
-			commitTransaction();
 
 			setListeAjoutActiFP(null);
 			initialiseActivites();
