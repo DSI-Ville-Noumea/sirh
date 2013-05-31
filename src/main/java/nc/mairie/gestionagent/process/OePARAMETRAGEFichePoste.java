@@ -947,14 +947,20 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getVAL_ST_ACTION_ENTITE_GEO() != null && getVAL_ST_ACTION_ENTITE_GEO() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_CREATION)) {
-				// on recupere l'école
-				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
-				String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
+				// on recupere l'école (si elle est saisie !)
 				setEntiteGeoCourante(new EntiteGeo());
+				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
+				if (indice != 0) {
+					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
+					getEntiteGeoCourante().setCdEcol(codeEcole);
+				} else {
+					getEntiteGeoCourante().setCdEcol(Const.ZERO);
+				}
+
 				getEntiteGeoCourante().setLibEntiteGeo(getVAL_EF_ENTITE_GEO());
-				getEntiteGeoCourante().setCdEcol(codeEcole);
 				getEntiteGeoCourante().setRidet(Const.ZERO);
 				getEntiteGeoCourante().creerEntiteGeo(getTransaction());
+
 				if (!getTransaction().isErreur())
 					getListeEntite().add(getEntiteGeoCourante());
 			} else if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_SUPPRESSION)) {
@@ -963,12 +969,19 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 					getListeEntite().remove(getEntiteGeoCourante());
 				setEntiteGeoCourante(null);
 			} else if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_MODIFICATION)) {
-				// on recupere l'école
+				// on recupere l'école (si elle est saisie !)
 				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
-				String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
+				if (indice != 0) {
+					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
+					getEntiteGeoCourante().setCdEcol(codeEcole);
+
+				} else {
+					getEntiteGeoCourante().setCdEcol(Const.ZERO);
+				}
+
 				getEntiteGeoCourante().setLibEntiteGeo(getVAL_EF_ENTITE_GEO());
-				getEntiteGeoCourante().setCdEcol(codeEcole);
 				getEntiteGeoCourante().modifierEntiteGeo(getTransaction());
+
 			}
 
 			if (getTransaction().isErreur())
@@ -992,12 +1005,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (getZone(getNOM_EF_ENTITE_GEO()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-		// l'ecole est obligatoire
-		if (getVAL_LB_ENTITE_GEO_ECOLE_SELECT().equals("0")) {
-			// ERR002:La zone @ est obligatoire.
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "école"));
 			return false;
 		}
 
