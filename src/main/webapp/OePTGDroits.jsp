@@ -58,6 +58,11 @@
 				<%}%>
 				</table>	
 			</div>	
+			<BR/><BR/>
+			<div style="width:100%; text-align:center;">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+			</div>
         </FIELDSET>
 	</FORM>
 	</BODY>

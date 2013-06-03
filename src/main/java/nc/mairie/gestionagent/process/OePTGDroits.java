@@ -70,15 +70,14 @@ public class OePTGDroits extends BasicProcess {
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
-		
-		//on recupere l'agent ajouté eventuellement
+
+		// on recupere l'agent ajouté eventuellement
 		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		/*if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-			addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
-			addZone(getNOM_ST_ID_AGENT(), agt.getIdAgent());
-		}*/
-		//TODO
+		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
+			getListeApprobateurs().add(agt);
+			afficheListeApprobateurs();
+		}
 
 		if (getListeApprobateurs().size() == 0) {
 			initialiseApprobateurs(request);
@@ -139,6 +138,23 @@ public class OePTGDroits extends BasicProcess {
 			// Si clic sur le bouton PB_AJOUTER
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
 				return performPB_AJOUTER(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER
+			for (int i = 0; i < getListeApprobateurs().size(); i++) {
+				if (testerParametre(request, getNOM_PB_SUPPRIMER(i))) {
+					return performPB_SUPPRIMER(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_ANNULER
+			if (testerParametre(request, getNOM_PB_ANNULER())) {
+				return performPB_ANNULER(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER
+			if (testerParametre(request, getNOM_PB_VALIDER())) {
+				return performPB_VALIDER(request);
 			}
 
 		}
@@ -282,11 +298,55 @@ public class OePTGDroits extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 
-		// init de la carriere courante
-		/*
-		 * if (!initialiseCarriereCourante(request)) return false;
-		 */
+		if (getListeApprobateurs().contains(agentSelec)) {
+			getListeApprobateurs().remove(agentSelec);
+		}
 
+		afficheListeApprobateurs();
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_VALIDER() {
+		return "NOM_PB_VALIDER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_ANNULER() {
+		return "NOM_PB_ANNULER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		getListeApprobateurs().clear();
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
