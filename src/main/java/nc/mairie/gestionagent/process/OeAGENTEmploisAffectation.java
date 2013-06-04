@@ -272,8 +272,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	private void initialiserFichePoste() throws Exception {
 		// Titre
-		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
-				getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste();
+		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(
+				getTransaction(), getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
 		String direction = Const.CHAINE_VIDE;
@@ -315,8 +315,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	private void initialiserFichePosteSecondaire() throws Exception {
 		// Titre
-		String titreFichePoste = getFichePosteSecondaireCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
-				getFichePosteSecondaireCourant().getIdTitrePoste()).getLibTitrePoste();
+		String titreFichePoste = getFichePosteSecondaireCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(
+				getTransaction(), getFichePosteSecondaireCourant().getIdTitrePoste()).getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteSecondaireCourant().getIdServi());
 		String direction = Const.CHAINE_VIDE;
@@ -1297,7 +1297,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 
 				addZone(getNOM_ST_DIR(indiceAff), direction != null ? direction.getCodService() : "&nbsp;");
-				addZone(getNOM_ST_SERV(indiceAff), service != null ? service.getLibService() : "&nbsp;");
+				addZone(getNOM_ST_SERV(indiceAff), service != null ? service.getLibService() + " ( " + service.getCodService() + " )" : "&nbsp;");
 				addZone(getNOM_ST_DATE_DEBUT(indiceAff), a.getDateDebutAff());
 				addZone(getNOM_ST_DATE_FIN(indiceAff),
 						a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());
