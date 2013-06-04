@@ -85,6 +85,9 @@ String affPointage =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_PO
 if (affPointage.equals("TRUE")){ %>
 	var Module_pointage = new Dossier("Module_pointage", "Gestion des pointages","POINTAGE");
 	Module_pointage.ajouterFils(new Lien("droitsPointage", "PTGDroits", "Gestion des droits", "Gestion des pointages", true));
+	Module_pointage.ajouterFils(new Lien("saisiePointage", "PTGSaisie", "Saisie et approbation", "Gestion des pointages", true));
+	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
+	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
 <%}%>
 		
 //***************************************************************

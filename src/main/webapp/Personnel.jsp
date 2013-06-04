@@ -90,6 +90,14 @@
 		
 		/*Module POINTAGE*/
 		listeDroits.add("PTGDroits");
+		listeDroits.add("PTGSaisie");
+		listeDroits.add("PTGVentilationConvCol");
+		listeDroits.add("PTGVentilationTitu");
+		listeDroits.add("PTGVentilationNonTitu");
+		listeDroits.add("PTGPayeurConvCol");
+		listeDroits.add("PTGPayeurTitu");
+		listeDroits.add("PTGPayeurNonTitu");
+		
 		
 		/*Module SUIVI MEDICAL*/
 		listeDroits.add("SMConvocation");
