@@ -116,9 +116,9 @@ public class OePTGDroits extends BasicProcess {
 			Affectation affCour = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
 			FichePoste fpCour = FichePoste.chercherFichePoste(getTransaction(), affCour.getIdFichePoste());
 			Service servCour = Service.chercherService(getTransaction(), fpCour.getIdServi());
+			
 			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule() + ")");
 			addZone(getNOM_ST_SERVICE(i), servCour.getLibService() + " (" + servCour.getSigleService() + ")");
-
 		}
 
 	}
