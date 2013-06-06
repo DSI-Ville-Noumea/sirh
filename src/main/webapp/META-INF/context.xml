@@ -85,8 +85,8 @@
 		value="http://172.16.24.131:8085/sirhws/avancements/downloadArretes" override="false" />
 		
 		<!-- WS DES POINTAGES -->
-	<Parameter name="SIRH_PTG_WS_URL_DROIT" description="SIRH PTG WS url pour les droits"
-		value="http://172.16.24.131:8085/sirh-ptg-ws/droits/approbateurs" override="false" />
+	<Parameter name="SIRH_PTG_WS" description="SIRH PTG WS url pour les droits"
+		value="http://172.16.24.131:8085/sirh-ptg-ws/" override="false" />
 		
 	<!-- Parametres pour l'affichage des nouveaux modules -->
 	<Parameter name="AFFICHAGE_AVCT_CAP" 	description="Paramètre pour savoir si on affiche l'onglet avancement CAP"

@@ -1,32 +1,32 @@
 package nc.mairie.gestionagent.process;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.ClientResponse;
+
+import flexjson.JSONSerializer;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -45,7 +45,7 @@ public class OePTGDroits extends BasicProcess {
 	public String ACTION_CREATION = "Création d'un approbateur.";
 	public String ACTION_SUPPRESSION = "Suppression d'un approbateur.";
 
-	private ArrayList<AgentNW> listeApprobateurs = new ArrayList<AgentNW>();
+	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
 
 	@Override
 	public String getJSP() {
@@ -75,7 +75,24 @@ public class OePTGDroits extends BasicProcess {
 		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-			getListeApprobateurs().add(agt);
+
+			Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
+			if (getTransaction().isErreur()) {
+				// "ERR400",
+				// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", agt.getIdAgent()));
+				throw new Exception();
+
+			}
+			FichePoste fpCourante = FichePoste.chercherFichePoste(getTransaction(), affCourante.getIdFichePoste());
+			Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
+			AgentWithServiceDto agentDto = new AgentWithServiceDto();
+			agentDto.setIdAgent(Integer.valueOf(agt.getIdAgent()));
+			agentDto.setNom(agt.getNomAgent());
+			agentDto.setPrenom(agt.getPrenomAgent());
+			agentDto.setCodeService(fpCourante.getIdServi());
+			agentDto.setService(serv.getLibService());
+			getListeApprobateurs().add(agentDto);
 			afficheListeApprobateurs();
 		}
 
@@ -87,38 +104,17 @@ public class OePTGDroits extends BasicProcess {
 	}
 
 	private void initialiseApprobateurs(HttpServletRequest request) throws Exception {
-		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS_URL_DROIT");
-		URL url = new URL(urlWS);
-		URLConnection urlc = url.openConnection();
-		BufferedReader bfr = new BufferedReader(new InputStreamReader(urlc.getInputStream(), "UTF-8"));
-		String res = "";
-		String line;
-		while ((line = bfr.readLine()) != null) {
-			res += line;
-		}
-
-		JSONParser parser = new JSONParser();
-		Object obj = parser.parse(res);
-		JSONArray jsonObject = (JSONArray) obj;
-
-		int attributeSizeApp = jsonObject.size();
-		for (int j = 0; j < attributeSizeApp; j++) {
-			JSONObject t = (JSONObject) jsonObject.get(j);
-			Long id = (Long) t.get("idAgent");
-			AgentNW ag = AgentNW.chercherAgent(getTransaction(), id.toString());
-			getListeApprobateurs().add(ag);
-		}
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		setListeApprobateurs((ArrayList<AgentWithServiceDto>) t.getApprobateurs());
 	}
 
 	private void afficheListeApprobateurs() throws Exception {
 		for (int i = 0; i < getListeApprobateurs().size(); i++) {
-			AgentNW ag = getListeApprobateurs().get(i);
-			Affectation affCour = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
-			FichePoste fpCour = FichePoste.chercherFichePoste(getTransaction(), affCour.getIdFichePoste());
-			Service servCour = Service.chercherService(getTransaction(), fpCour.getIdServi());
-			
-			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule() + ")");
-			addZone(getNOM_ST_SERVICE(i), servCour.getLibService() + " (" + servCour.getSigleService() + ")");
+			AgentWithServiceDto ag = getListeApprobateurs().get(i);
+
+			addZone(getNOM_ST_AGENT(i),
+					ag.getNom() + " " + ag.getPrenom() + " (" + ag.getIdAgent().toString().substring(3, ag.getIdAgent().toString().length()) + ")");
+			addZone(getNOM_ST_SERVICE(i), ag.getService() + " (" + ag.getCodeService() + ")");
 		}
 
 	}
@@ -178,11 +174,11 @@ public class OePTGDroits extends BasicProcess {
 		return "ECR-PTG-DROITS";
 	}
 
-	public ArrayList<AgentNW> getListeApprobateurs() {
+	public ArrayList<AgentWithServiceDto> getListeApprobateurs() {
 		return listeApprobateurs;
 	}
 
-	public void setListeApprobateurs(ArrayList<AgentNW> listeApprobateurs) {
+	public void setListeApprobateurs(ArrayList<AgentWithServiceDto> listeApprobateurs) {
 		this.listeApprobateurs = listeApprobateurs;
 	}
 
@@ -265,15 +261,6 @@ public class OePTGDroits extends BasicProcess {
 		return true;
 	}
 
-	private void videZonesDeSaisie(HttpServletRequest request) {
-		/*
-		 * addZone(getNOM_LB_STATUTS_SELECT(), Const.ZERO);
-		 * addZone(getNOM_LB_REGIMES_SELECT(), Const.ZERO);
-		 * addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
-		 */
-
-	}
-
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
 	 * : (05/09/11 11:31:37)
@@ -293,7 +280,7 @@ public class OePTGDroits extends BasicProcess {
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		AgentNW agentSelec = getListeApprobateurs().get(indiceEltASuprimer);
+		AgentWithServiceDto agentSelec = getListeApprobateurs().get(indiceEltASuprimer);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
@@ -324,6 +311,13 @@ public class OePTGDroits extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		List<AgentWithServiceDto> listeEnvoi = getListeApprobateurs();
+		ClientResponse response = t.setApprobateurs(new JSONSerializer().serialize(listeEnvoi));
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			// TODO DECLARER ERREUR
+			return false;
+		}
 
 		return true;
 	}
