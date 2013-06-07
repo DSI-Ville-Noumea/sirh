@@ -314,14 +314,15 @@ public class OePTGDroits extends BasicProcess {
 		if (listeAgentErreur.size() > 0) {
 			String agents = Const.CHAINE_VIDE;
 			for (AgentWithServiceDto agentDtoErreur : listeAgentErreur) {
-				agents += " " + agentDtoErreur.getNom();
+				agents += " - " + agentDtoErreur.getNom() + " " + agentDtoErreur.getPrenom();
 			}
 			// "INF600",
 			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateur : @"
 			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
+			getListeApprobateurs().clear();
 			return false;
 		}
-
+		getListeApprobateurs().clear();
 		return true;
 	}
 
