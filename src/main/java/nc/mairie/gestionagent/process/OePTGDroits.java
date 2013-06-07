@@ -22,9 +22,6 @@ import nc.mairie.utils.VariablesActivite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.ClientResponse;
 
 import flexjson.JSONSerializer;
 
@@ -313,9 +310,15 @@ public class OePTGDroits extends BasicProcess {
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		List<AgentWithServiceDto> listeEnvoi = getListeApprobateurs();
-		ClientResponse response = t.setApprobateurs(new JSONSerializer().serialize(listeEnvoi));
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			// TODO DECLARER ERREUR
+		List<AgentWithServiceDto> listeAgentErreur = t.setApprobateurs(new JSONSerializer().serialize(listeEnvoi));
+		if (listeAgentErreur.size() > 0) {
+			String agents = Const.CHAINE_VIDE;
+			for (AgentWithServiceDto agentDtoErreur : listeAgentErreur) {
+				agents += " " + agentDtoErreur.getNom();
+			}
+			// "INF600",
+			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateur : @"
+			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
 			return false;
 		}
 

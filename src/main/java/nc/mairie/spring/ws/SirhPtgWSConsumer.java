@@ -35,11 +35,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setApprobateurs(String json) {
+	public List<AgentWithServiceDto> setApprobateurs(String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgAgentsApprobateurs);
-
-		return createAndPostRequest(json, url);
+		ClientResponse res = createAndPostRequest(json, url);
+		return readResponseAsList(AgentWithServiceDto.class, res, url);
 
 	}
 
