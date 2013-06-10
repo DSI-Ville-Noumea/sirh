@@ -270,8 +270,17 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 				Service serv = Service.chercherService(getTransaction(), codeService);
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
+
 			// Récupération des agents
-			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Convention collective");
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Convention collective");
+			String listeNomatrAgent = Const.CHAINE_VIDE;
+			for (Carriere carr : listeCarriereActive) {
+				listeNomatrAgent += carr.getNoMatricule() + ",";
+			}
+			if(!listeNomatrAgent.equals(Const.CHAINE_VIDE)){
+				listeNomatrAgent=listeNomatrAgent.substring(0,listeNomatrAgent.length()-1);
+			}
+			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
 		}
 
 		// Parcours des agents

@@ -281,7 +281,16 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
-			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Fonctionnaire");
+			// Récupération des agents
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Fonctionnaire");
+			String listeNomatrAgent = Const.CHAINE_VIDE;
+			for (Carriere carr : listeCarriereActive) {
+				listeNomatrAgent += carr.getNoMatricule() + ",";
+			}
+			if (!listeNomatrAgent.equals(Const.CHAINE_VIDE)) {
+				listeNomatrAgent = listeNomatrAgent.substring(0, listeNomatrAgent.length() - 1);
+			}
+			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
 		}
 		// Parcours des agents
 		for (int i = 0; i < la.size(); i++) {
@@ -418,8 +427,8 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCodeCadre(gradeActuel.getCodeCadre());
 
-					//avct.setDateArrete("01/01/" + annee);
-					//avct.setNumArrete(annee);
+					// avct.setDateArrete("01/01/" + annee);
+					// avct.setNumArrete(annee);
 
 					// IBA,INM,INA
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());

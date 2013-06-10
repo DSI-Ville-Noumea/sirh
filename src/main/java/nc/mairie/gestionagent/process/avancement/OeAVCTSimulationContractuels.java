@@ -274,7 +274,15 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 			}
 
 			// Récupération des agents
-			la = AgentNW.listerAgentEligibleAvct(getTransaction(), annee, listeSousService, "Contractuel");
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Contractuel");
+			String listeNomatrAgent = Const.CHAINE_VIDE;
+			for (Carriere carr : listeCarriereActive) {
+				listeNomatrAgent += carr.getNoMatricule() + ",";
+			}
+			if(!listeNomatrAgent.equals(Const.CHAINE_VIDE)){
+				listeNomatrAgent=listeNomatrAgent.substring(0,listeNomatrAgent.length()-1);
+			}
+			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
 		}
 
 		// Parcours des agents
