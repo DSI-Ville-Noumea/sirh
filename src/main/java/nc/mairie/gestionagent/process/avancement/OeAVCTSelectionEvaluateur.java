@@ -375,7 +375,8 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 			for (AgentNW ag : listeAgentWithNom) {
 				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
 				if (paActive == null || getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+					if (getTransaction().isErreur())
+						getTransaction().traiterErreur();
 					continue;
 				} else {
 					listeAgentEnActivite.add(ag);
@@ -384,7 +385,21 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 			aListe = listeAgentEnActivite;
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			aListe = AgentNW.listerAgentEnActiviteAvecPrenomCommencant(getTransaction(), zone);
+			// on recupere une liste d'agent avec le prénom commencant par...
+			ArrayList<AgentNW> listeAgentWithPrenom = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
+			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			// on parcours cette liste pour ne mettre que les agents en activite
+			for (AgentNW ag : listeAgentWithPrenom) {
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+				if (paActive == null || getTransaction().isErreur()) {
+					if (getTransaction().isErreur())
+						getTransaction().traiterErreur();
+					continue;
+				} else {
+					listeAgentEnActivite.add(ag);
+				}
+			}
+			aListe = listeAgentEnActivite;
 		}
 
 		// Si la liste est vide alors erreur
