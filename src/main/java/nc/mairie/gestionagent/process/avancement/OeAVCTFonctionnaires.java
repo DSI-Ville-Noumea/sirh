@@ -115,9 +115,12 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 								: getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
 				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-				/*addZone(getNOM_CK_AFFECTER(i),
-						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-								: getCHECKED_OFF());*/
+				/*
+				 * addZone(getNOM_CK_AFFECTER(i),
+				 * av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) ||
+				 * av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ?
+				 * getCHECKED_ON() : getCHECKED_OFF());
+				 */
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 
@@ -345,7 +348,8 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la derniere carrière dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), avct.getIdAgent(), avct.getAnnee());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), Integer.valueOf(agentCarr.getNoMatricule()),
+							avct.getAnnee());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -528,7 +532,7 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 		avct.setNouvACCJour(String.valueOf((nbJoursRestantsACC % 365) % 30));
 
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-		//avct.setLibNouvGrade(gradeSuivant.getLibGrade());
+		// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 
 		avct.modifierAvancement(getTransaction());
 
@@ -576,7 +580,7 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
-					//avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
+					// avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
 				} else if (getVAL_CK_PROJET_ARRETE(i).equals(getCHECKED_ON())) {
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				} else if (getVAL_CK_VALID_DRH(i).equals(getCHECKED_ON())) {

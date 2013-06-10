@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
@@ -343,10 +344,22 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			aListe = AgentNW.listerAgentEnActivite(getTransaction());
+			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
+			String liste = Const.CHAINE_VIDE;
+			for (PositionAdmAgent pa : listeNomatrActif) {
+				liste += pa.getNomatr() + ",";
+			}
+			if (!liste.equals(Const.CHAINE_VIDE)) {
+				liste = liste.substring(0, liste.length() - 1);
+			}
+			aListe = AgentNW.listerAgentWithListNomatr(getTransaction(), liste);
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			AgentNW aAgent = AgentNW.chercherAgentEnActivite(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), zone);
+			if (getTransaction().isErreur()) {
+				return false;
+			}
+			AgentNW aAgent = AgentNW.chercherAgentParMatricule(getTransaction(), paAgent.getNomatr());
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur())
 				return false;
@@ -355,7 +368,20 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
-			aListe = AgentNW.listerAgentEnActiviteAvecNomCommencant(getTransaction(), zone);
+			// on recupere une liste d'agent avec le nom commencant par...
+			ArrayList<AgentNW> listeAgentWithNom = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
+			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			// on parcours cette liste pour ne mettre que les agents en activite
+			for (AgentNW ag : listeAgentWithNom) {
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+				if (paActive == null || getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					continue;
+				} else {
+					listeAgentEnActivite.add(ag);
+				}
+			}
+			aListe = listeAgentEnActivite;
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			aListe = AgentNW.listerAgentEnActiviteAvecPrenomCommencant(getTransaction(), zone);

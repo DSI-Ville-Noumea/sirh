@@ -284,7 +284,7 @@ public class OeAVCTContractuels extends BasicProcess {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la derniere carrière dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), avct.getIdAgent(), avct.getAnnee());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
