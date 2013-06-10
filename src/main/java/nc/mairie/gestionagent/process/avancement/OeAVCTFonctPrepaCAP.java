@@ -337,9 +337,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					}
 
 				}
-				//CadreEmploi.listerCadreEmploiCap
 				getHashListeImpression().put(cap, listeCadreEmploi);
-
 			}
 
 			Enumeration<Cap> nb = getHashListeImpression().keys();
