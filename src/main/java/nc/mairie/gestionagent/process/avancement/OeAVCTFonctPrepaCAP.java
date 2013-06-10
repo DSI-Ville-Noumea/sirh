@@ -22,6 +22,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
@@ -38,6 +39,7 @@ import nc.mairie.spring.domain.metier.EAE.EAE;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
+import nc.mairie.spring.domain.metier.parametrage.CorpsCap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -217,7 +219,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					} else if (av.getIdMotifAvct().equals("4")) {
 						avisSHD = eaeEvaluation.getAvisChangementClasse() == null ? Const.CHAINE_VIDE
 								: eaeEvaluation.getAvisChangementClasse() == 1 ? "FAV" : "DEFAV";
-					}else if (av.getIdMotifAvct().equals("6")) {
+					} else if (av.getIdMotifAvct().equals("6")) {
 						avisSHD = "MOY";
 					}
 				}
@@ -315,8 +317,28 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 			for (int i = 0; i < listeCap.size(); i++) {
 				Cap cap = listeCap.get(i);
-				ArrayList<CadreEmploi> listeCadreEmploiCap = CadreEmploi.listerCadreEmploiCap(getTransaction(), cap.getIdCap());
-				getHashListeImpression().put(cap, listeCadreEmploiCap);
+				// TODO
+				ArrayList<CorpsCap> listeCorps = getCorpsCapDao().listerCorpsCapParCap(cap.getIdCap());
+				ArrayList<CadreEmploi> listeCadreEmploi = new ArrayList<CadreEmploi>();
+				for (CorpsCap corps : listeCorps) {
+					// on cherche le cdgeng correspondant
+					GradeGenerique gradeWithCadreEmploi = GradeGenerique.chercherGradeGenerique(getTransaction(), corps.getCodeSpgeng());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						if (gradeWithCadreEmploi.getIdCadreEmploi() != null) {
+							CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gradeWithCadreEmploi.getIdCadreEmploi());
+							if (getTransaction().isErreur())
+								getTransaction().traiterErreur();
+							else {
+								listeCadreEmploi.add(cadreEmp);
+							}
+						}
+					}
+
+				}
+				//CadreEmploi.listerCadreEmploiCap
+				getHashListeImpression().put(cap, listeCadreEmploi);
 
 			}
 
@@ -744,7 +766,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 							avct.setOrdreMerite(null);
 						}
 					}
-				}else if(avct.getIdMotifAvct().equals("6")){
+				} else if (avct.getIdMotifAvct().equals("6")) {
 					avct.setIdAvisCAP("2");
 					avct.setOrdreMerite(null);
 				} else {
@@ -1049,7 +1071,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
 	}
-
 
 	/**
 	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
