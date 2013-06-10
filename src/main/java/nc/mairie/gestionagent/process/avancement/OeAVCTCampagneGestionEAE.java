@@ -449,7 +449,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat sdfSIRH = new SimpleDateFormat("yyyy-MM-dd");
 		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans détachés ");
-		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), sdfMairie.format(new Date()), sdfSIRH.format(new Date()));
+		ArrayList<Carriere> listeCarrierePAActive = Carriere.listerCarriereActiveAvecPA(getTransaction(), sdfMairie.format(new Date()));
+		String listeNomatr = Const.CHAINE_VIDE;
+		for (Carriere carr : listeCarrierePAActive) {
+			listeNomatr += carr.getNoMatricule() + ",";
+		}
+		if (!listeNomatr.equals(Const.CHAINE_VIDE)) {
+			listeNomatr = listeNomatr.substring(0, listeNomatr.length() - 1);
+		}
+		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), listeNomatr, sdfSIRH.format(new Date()));
 		logger.info("Req AS400 : FIN listerAgentEligibleEAE sans détachés : " + la.size());
 
 		// Parcours des agents sans les détachés
@@ -627,7 +635,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 
 		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE détachés ");
-		ArrayList<AgentNW> laSuite = AgentNW.listerAgentDetacheEligibleEAE(getTransaction(), sdfMairie.format(new Date()));
+		ArrayList<Carriere> listeCarrierePAActiveDetache = Carriere.listerCarriereActiveAvecPADetache(getTransaction(), sdfMairie.format(new Date()));
+		String listeNomatrDetache = Const.CHAINE_VIDE;
+		for (Carriere carr : listeCarrierePAActiveDetache) {
+			listeNomatrDetache += carr.getNoMatricule() + ",";
+		}
+		if (!listeNomatrDetache.equals(Const.CHAINE_VIDE)) {
+			listeNomatrDetache = listeNomatrDetache.substring(0, listeNomatrDetache.length() - 1);
+		}
+		ArrayList<AgentNW> laSuite = AgentNW.listerAgentWithListNomatr(getTransaction(), listeNomatrDetache);
 		logger.info("Req AS400 : FIN listerAgentEligibleEAE détachés : " + laSuite.size());
 		// Parcours des agents sans les détachés
 		for (AgentNW a : laSuite) {
