@@ -2401,7 +2401,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 			}
 
-			Carriere carrCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
+			Carriere carrCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -2522,7 +2522,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			// pour la PA
-			PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), ag.getIdAgent());
+			PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), ag.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {

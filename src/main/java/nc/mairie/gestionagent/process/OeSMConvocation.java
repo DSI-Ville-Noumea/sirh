@@ -800,7 +800,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -921,7 +921,7 @@ public class OeSMConvocation extends BasicProcess {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1049,7 +1049,7 @@ public class OeSMConvocation extends BasicProcess {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1176,7 +1176,7 @@ public class OeSMConvocation extends BasicProcess {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1271,7 +1271,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1361,7 +1361,7 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1457,7 +1457,7 @@ public class OeSMConvocation extends BasicProcess {
 					// si c'est bon alors on crée le suiviMedical
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), paSuivante.getNomatr());
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1549,7 +1549,7 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
@@ -1634,7 +1634,7 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), vm.getIdAgent());

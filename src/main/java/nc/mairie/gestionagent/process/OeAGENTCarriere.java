@@ -11,6 +11,7 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.BaseHoraire;
@@ -2408,7 +2409,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		// on lance le calcul de l'avancement prev
 		// on regarde de quelle categorie est l'agent (Fonctionnaire ou
 		// Contractuel)
-		Carriere carr = Carriere.chercherDerniereCarriereAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+		Carriere carr = Carriere.chercherDerniereCarriereAvecAgent(getTransaction(), getAgentCourant());
 		if (carr == null || carr.getCodeCategorie() == null) {
 			// cette personne n'a pas de carriere
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);

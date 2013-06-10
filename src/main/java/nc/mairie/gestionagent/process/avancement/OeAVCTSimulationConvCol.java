@@ -253,7 +253,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		ArrayList<AgentNW> la = new ArrayList<AgentNW>();
 		if (agent != null) {
 			// il faut regarder si cet agent est de type Convention Collective
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -286,7 +286,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		// Parcours des agents
 		for (AgentNW a : la) {
 			// Recuperation de la carriere en cours
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a.getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a);
 			if (getTransaction().isErreur() || carr == null || carr.getDateDebut() == null) {
 				getTransaction().traiterErreur();
 				continue;

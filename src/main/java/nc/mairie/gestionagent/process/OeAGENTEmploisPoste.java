@@ -257,7 +257,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			}
 
 			// Carriere
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 			if (carr != null) {
 				Grade grade = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 				if (getTransaction().isErreur()) {

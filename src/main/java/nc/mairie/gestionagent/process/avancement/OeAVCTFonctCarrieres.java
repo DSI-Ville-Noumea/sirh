@@ -414,7 +414,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la carrière en cours
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), avct.getIdAgent());
+					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCarr);
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -532,7 +532,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						nbJoursBonus));
 				nbJoursBonus = 0;
 			}
-		} else if (libCourtAvisCap.equals("MOY")||libCourtAvisCap.equals("FAV")) {
+		} else if (libCourtAvisCap.equals("MOY") || libCourtAvisCap.equals("FAV")) {
 			avct.setDureeStandard(gradeActuel.getDureeMoy());
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
@@ -565,7 +565,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 				gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
 				isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMin()) * 30);
 			}
-		} else if (libCourtAvisCap.equals("MOY")||libCourtAvisCap.equals("FAV")) {
+		} else if (libCourtAvisCap.equals("MOY") || libCourtAvisCap.equals("FAV")) {
 			boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
 			while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
 					&& gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0) {
@@ -1284,7 +1284,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 	 */
 	public boolean performPB_RAFRAICHIR(HttpServletRequest request, String idAvct) throws Exception {
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
-		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), avct.getIdAgent());
+		AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
+		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 
 		// on regarde si l'agent a une carriere de simulation dejà
 		// saisie
