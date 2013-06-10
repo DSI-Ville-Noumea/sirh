@@ -775,18 +775,26 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°9 : AGENT SANS VISITES MEDICALES
 		// on liste tous les agents sans visites medicales
 		// avec une PA active à la date du jour
-		ArrayList<AgentNW> listeSMCas9 = AgentNW.listerAgentSansVMPAEnCours(getTransaction());
+		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
+		String listeNomatr = Const.CHAINE_VIDE;
+		for (PositionAdmAgent pa : listeAgentActivite) {
+			listeNomatr += pa.getNomatr() + ",";
+		}
+		if (!listeNomatr.equals(Const.CHAINE_VIDE)) {
+			listeNomatr = listeNomatr.substring(0, listeNomatr.length() - 1);
+		}
+		ArrayList<AgentNW> listeSMCas9 = AgentNW.listerAgentSansVMPAEnCours(getTransaction(), listeNomatr);
 		int nbCas9 = 0;
 
 		for (int i = 0; i < listeSMCas9.size(); i++) {
 			AgentNW agent = listeSMCas9.get(i);
-			//on regarde que la PA est active
+			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
-			}else{
-				if (pa==null){
+			} else {
+				if (pa == null) {
 					continue;
 				}
 			}
@@ -870,13 +878,13 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 90
 			for (int i = 0; i < listeMatriculeSMCas5.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas5.get(i);
-				//on regarde que la PA est active
+				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
-				if (getTransaction().isErreur()){
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
-				}else{
-					if (pa==null){
+				} else {
+					if (pa == null) {
 						continue;
 					}
 				}
@@ -998,13 +1006,13 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 30
 			for (int i = 0; i < listeMatriculeSMCas4.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas4.get(i);
-				//on regarde que la PA est active
+				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
-				if (getTransaction().isErreur()){
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
-				}else{
-					if (pa==null){
+				} else {
+					if (pa == null) {
 						continue;
 					}
 				}
@@ -1125,13 +1133,13 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde si il se suivent, que le nombre de jours est > 15
 			for (int i = 0; i < listeMatriculeSMCas3.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas3.get(i);
-				//on regarde que la PA est active
+				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
-				if (getTransaction().isErreur()){
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
-				}else{
-					if (pa==null){
+				} else {
+					if (pa == null) {
 						continue;
 					}
 				}
@@ -1252,17 +1260,17 @@ public class OeSMConvocation extends BasicProcess {
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
-			//on regarde que la PA est active
+			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
-			}else{
-				if (pa==null){
+			} else {
+				if (pa == null) {
 					continue;
 				}
 			}
-			
+
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent.getIdAgent());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
@@ -1343,13 +1351,13 @@ public class OeSMConvocation extends BasicProcess {
 				// on crée la nouvelle ligne
 				SuiviMedical sm = new SuiviMedical();
 				AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), smAncien.getNomatr().toString());
-				//on regarde que la PA est active
+				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
-				if (getTransaction().isErreur()){
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
-				}else{
-					if (pa==null){
+				} else {
+					if (pa == null) {
 						continue;
 					}
 				}
@@ -1531,13 +1539,13 @@ public class OeSMConvocation extends BasicProcess {
 		for (int i = 0; i < listeAgentCas6.size(); i++) {
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = listeAgentCas6.get(i);
-			//on regarde que la PA est active
+			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
-			}else{
-				if (pa==null){
+			} else {
+				if (pa == null) {
 					continue;
 				}
 			}
@@ -1616,13 +1624,13 @@ public class OeSMConvocation extends BasicProcess {
 
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
-			//on regarde que la PA est active
+			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
-			}else{
-				if (pa==null){
+			} else {
+				if (pa == null) {
 					continue;
 				}
 			}
@@ -2439,7 +2447,7 @@ public class OeSMConvocation extends BasicProcess {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-4
 							smFonctionnaireAImprimer.add(sm);
-						} else if (sm.getStatut().equals("CC")||sm.getStatut().equals("C")) {
+						} else if (sm.getStatut().equals("CC") || sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-5
 							smCCAImprimer.add(sm);
 						}
@@ -2547,7 +2555,7 @@ public class OeSMConvocation extends BasicProcess {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-1
 							smFonctionnaireAImprimer.add(sm);
-						} else if (sm.getStatut().equals("CC")||sm.getStatut().equals("C")) {
+						} else if (sm.getStatut().equals("CC") || sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-2
 							smCCAImprimer.add(sm);
 						}
