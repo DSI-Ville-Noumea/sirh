@@ -132,6 +132,12 @@ menuAVCTCampagne.ajouterFils(new Lien("AVCTCampagneGestionEAE", "GESTION EAE", "
 menuAVCTCampagne.ajouterFils(new Lien("AVCTCampagneTableauBord", "TAB EAE", "Tableaux de bord EAE", true, false,"AVCT/TB"));
 document.write(menuAVCTCampagne.afficher());
 
+var menuAVCTMasseSalariale = new MenuHaut("Module_avct_simuMasseSalariale");
+menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalariale", "SIMU FONCT", "Simulation des fonctionnaires", true, false,"AVCT/FONCT"));
+menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeContr", "SIMU CONTR", "Simulation des contractuels", true, false,"AVCT/CONTR"));
+menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeConv", "SIMU CONV", "Simulation des conventions", true, false,"AVCT/CONV"));
+document.write(menuAVCTMasseSalariale.afficher());
+
 //***************************************************************
 //*               Le menu haut Suivi medical
 //***************************************************************

@@ -68,6 +68,12 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEME
 	Module_avct.ajouterFils(new Lien("simulationContractuels", "AVCTSimulationContractuels", "Avancement Contractuels", "Gestion des avancements des contractuels", true));
 	Module_avct.ajouterFils(new Lien("simulationConvCol", "AVCTSimulationConvCol", "Avancement Conventions", "Gestion des avancements des conventions collectives", true));
 	Module_avct.ajouterFils(new Lien("campagneEAE", "AVCTCampagneEAE", "Campagne EAE", "Gestion des campagnes EAE", true));
+	<% 
+	String affSimuMasse =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SIMU");
+	if (affSimuMasse.equals("TRUE")){ %>
+		Module_avct.ajouterFils(new Lien("simuMasseSalariale", "AVCTMasseSalariale", "Simulation masse salariale", "SImulation de la masse salariale", true));
+	<%}%>
+	
 
 
 //***************************************************************

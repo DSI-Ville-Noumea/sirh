@@ -86,6 +86,9 @@
 		listeDroits.add("AVCTCampagnePlanification");
 		listeDroits.add("AVCTCampagneGestionEAE");
 		listeDroits.add("AVCTCampagneTableauBord");
+		listeDroits.add("AVCTMasseSalariale");
+		listeDroits.add("AVCTMasseSalarialeContr");
+		listeDroits.add("AVCTMasseSalarialeConv");
 		listeDroits.add("AVCTTest");
 		
 		/*Module POINTAGE*/

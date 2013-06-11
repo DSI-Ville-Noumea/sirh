@@ -70,6 +70,9 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTFonctArretes;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctCarrieres;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaAvct;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP;
+import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeContractuel;
+import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeConvention;
+import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeFonctionnaire;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionActeurs;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
@@ -209,6 +212,12 @@ public class RobotAgent extends Robot {
 			return new OeAVCTCampagneGestionEAE();
 		} else if (activite.equals("AVCTCampagneTableauBord")) {
 			return new OeAVCTCampagneTableauBord();
+		} else if (activite.equals("AVCTMasseSalariale")) {
+			return new OeAVCTMasseSalarialeFonctionnaire();
+		} else if (activite.equals("AVCTMasseSalarialeContr")) {
+			return new OeAVCTMasseSalarialeContractuel();
+		} else if (activite.equals("AVCTMasseSalarialeConv")) {
+			return new OeAVCTMasseSalarialeConvention();
 		}
 		// TEST
 		else if (activite.equals("AVCTTest")) {
@@ -409,36 +418,36 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAGENTContrat.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCasierJud.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTActesDonneesPerso.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// hsct
 		navigation.put(OeAGENTVisiteMed.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTAccidentTravail.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTHandicap.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTActesHSCT.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// emplois
 		navigation.put(OeAGENTEmploisPoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTEmploisAffectation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTEmploisSpecificites.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// element salaire
 		navigation.put(OeAGENTPosAdm.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTCharge.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAGENTPrime.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// EAE
 		navigation.put(OeAGENTEae.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// autres pages
 		// FE
 		navigation.put(OePOSTEFicheEmploi.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePOSTEFEActivite.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePOSTEFECompetence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// FP
 		navigation.put(OePOSTEFichePoste.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// AVCT
 		navigation.put(OeAVCTContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
@@ -453,11 +462,11 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTCampagnePlanification.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneTableauBord.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// SM - Suivi Medical
 		navigation.put(OeSMConvocation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeSMHistorique.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// POINTAGE
 		navigation.put(OePTGDroits.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGSaisie.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
@@ -477,11 +486,11 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEGradeRef.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEGrade.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// DROITS
 		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// PERSONEL MAIN
 		navigation.put(PersonnelMain.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
