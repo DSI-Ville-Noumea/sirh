@@ -396,6 +396,10 @@ public class RobotAgent extends Robot {
 
 		// Classe OeAVCTTest
 		navigation.put(OeAVCTTest.class.getName() + OeAVCTTest.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		
+		// Classe SIMULATION
+		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + OeAVCTMasseSalarialeContractuel.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// SUIVI MEDICAL //
