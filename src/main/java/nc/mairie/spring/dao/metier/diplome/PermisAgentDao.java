@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class PermisAgentDao implements PermisAgentDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.PERMIS_AGENT";
+	public static final String NOM_TABLE = "PERMIS_AGENT";
 
 	public static final String CHAMP_ID_PERMIS_AGENT = "ID_PERMIS_AGENT";
 	public static final String CHAMP_ID_PERMIS = "ID_PERMIS";

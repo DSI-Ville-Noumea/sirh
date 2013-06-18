@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CentreFormationDao implements CentreFormationDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_CENTRE_FORMATION";
+	public static final String NOM_TABLE = "P_CENTRE_FORMATION";
 
 	public static final String CHAMP_ID_CENTRE_FORMATION = "ID_CENTRE_FORMATION";
 	public static final String CHAMP_LIB_CENTRE_FORMATION = "LIB_CENTRE_FORMATION";

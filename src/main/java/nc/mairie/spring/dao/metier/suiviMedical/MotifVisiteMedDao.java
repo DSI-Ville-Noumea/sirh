@@ -17,7 +17,7 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(MotifVisiteMedDao.class);
 
-	public static final String NOM_TABLE = "SIRH.R_MOTIF_VM";
+	public static final String NOM_TABLE = "R_MOTIF_VM";
 
 	public static final String CHAMP_ID_MOTIF_VM = "ID_MOTIF_VM";
 	public static final String CHAMP_LIB_MOTIF_VM = "LIB_MOTIF_VM";

@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TypeRepresentantDao implements TypeRepresentantDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.R_TYPE_REPRESENTANT";
+	public static final String NOM_TABLE = "R_TYPE_REPRESENTANT";
 
 	public static final String CHAMP_ID_TYPE_REPRESENTANT = "ID_TYPE_REPRESENTANT";
 	public static final String CHAMP_LIB_TYPE_REPRESENTANT = "LIB_TYPE_REPRESENTANT";

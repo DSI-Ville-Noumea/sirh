@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CorpsCapDao implements CorpsCapDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.CORPS_CAP";
+	public static final String NOM_TABLE = "CORPS_CAP";
 
 	public static final String CHAMP_CDGENG = "CDGENG";
 	public static final String CHAMP_ID_CAP = "ID_CAP";

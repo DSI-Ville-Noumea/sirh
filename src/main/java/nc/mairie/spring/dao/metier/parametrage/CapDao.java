@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CapDao implements CapDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_CAP";
+	public static final String NOM_TABLE = "P_CAP";
 
 	public static final String CHAMP_ID_CAP = "ID_CAP";
 	public static final String CHAMP_CODE_CAP = "CODE_CAP";

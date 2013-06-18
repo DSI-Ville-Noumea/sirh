@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TitrePermisDao implements TitrePermisDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_PERMIS";
+	public static final String NOM_TABLE = "P_PERMIS";
 
 	public static final String CHAMP_ID_PERMIS = "ID_PERMIS";
 	public static final String CHAMP_LIB_PERMIS = "LIB_PERMIS";

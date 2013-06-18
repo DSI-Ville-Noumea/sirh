@@ -17,7 +17,7 @@ public class SPABSENDao implements SPABSENDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(SPABSENDao.class);
 
-	public static final String NOM_TABLE = "MAIRIE.SPABSEN";
+	public static final String NOM_TABLE = "SPABSEN";
 
 	public static final String CHAMP_NOMATR = "NOMATR";
 	public static final String CHAMP_TYPE3 = "TYPE3";

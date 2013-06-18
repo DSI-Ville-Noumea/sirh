@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EmployeurDao implements EmployeurDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_EMPLOYEUR";
+	public static final String NOM_TABLE = "P_EMPLOYEUR";
 
 	public static final String CHAMP_ID_EMPLOYEUR = "ID_EMPLOYEUR";
 	public static final String CHAMP_LIB_EMPLOYEUR = "LIB_EMPLOYEUR";

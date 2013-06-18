@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EmployeurCapDao implements EmployeurCapDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.EMPLOYEUR_CAP";
+	public static final String NOM_TABLE = "EMPLOYEUR_CAP";
 
 	public static final String CHAMP_ID_EMPLOYEUR = "ID_EMPLOYEUR";
 	public static final String CHAMP_ID_CAP = "ID_CAP";

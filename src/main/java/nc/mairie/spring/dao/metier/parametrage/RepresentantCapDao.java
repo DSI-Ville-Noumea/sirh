@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RepresentantCapDao implements RepresentantCapDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.REPRESENTANT_CAP";
+	public static final String NOM_TABLE = "REPRESENTANT_CAP";
 
 	public static final String CHAMP_ID_REPRESENTANT = "ID_REPRESENTANT";
 	public static final String CHAMP_ID_CAP = "ID_CAP";

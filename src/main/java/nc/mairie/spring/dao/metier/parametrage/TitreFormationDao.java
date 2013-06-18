@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TitreFormationDao implements TitreFormationDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_TITRE_FORMATION";
+	public static final String NOM_TABLE = "P_TITRE_FORMATION";
 
 	public static final String CHAMP_ID_TITRE_FORMATION = "ID_TITRE_FORMATION";
 	public static final String CHAMP_LIB_TITRE_FORMATION = "LIB_TITRE_FORMATION";

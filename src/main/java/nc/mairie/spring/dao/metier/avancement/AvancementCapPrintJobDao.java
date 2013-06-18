@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.AVCT_CAP_PRINT_JOB";
+	public static final String NOM_TABLE = "AVCT_CAP_PRINT_JOB";
 
 	public static final String CHAMP_ID_AVCT_CAP_PRINT_JOB = "ID_AVCT_CAP_PRINT_JOB";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";

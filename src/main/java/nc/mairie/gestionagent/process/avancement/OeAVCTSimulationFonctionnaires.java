@@ -454,7 +454,15 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 						if (bareme != null && bareme.getInm() != null) {
 							Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
 							GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
-							String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							}
+							String nouvINM = Const.CHAINE_VIDE;
+							if (gg.getNbPointsAvct() == null) {
+								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()));
+							} else {
+								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
+							}
 							// avec ce nouvel INM on recupere l'iban et l'ina
 							// correspondant
 							ArrayList<Bareme> listeBarem = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
@@ -500,7 +508,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 								if (getTransaction().isErreur())
 									getTransaction().traiterErreur();
 
-								if (ggCarr != null && ggCarr.getIdCadreEmploi() != null && ggCarr.getCdfili() != null) {
+								if (ggCarr != null && ggCarr.getCdfili() != null) {
 									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(), ggCarr.getCdfili());
 									avct.setFiliere(fil.getLibFiliere());
 								}

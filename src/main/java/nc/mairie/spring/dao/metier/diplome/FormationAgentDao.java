@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class FormationAgentDao implements FormationAgentDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.FORMATION_AGENT";
+	public static final String NOM_TABLE = "FORMATION_AGENT";
 
 	public static final String CHAMP_ID_FORMATION = "ID_FORMATION";
 	public static final String CHAMP_ID_TITRE_FORMATION = "ID_TITRE_FORMATION";

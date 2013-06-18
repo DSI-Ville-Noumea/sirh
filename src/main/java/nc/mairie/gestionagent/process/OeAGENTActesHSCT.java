@@ -685,6 +685,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicale(getTransaction(), id);
+					if(getTransaction().isErreur()){
+						getTransaction().traiterErreur();
+					}
 					if (vm != null && vm.getDateDerniereVisite() != null) {
 						info = "VM du : " + vm.getDateDerniereVisite();
 					}

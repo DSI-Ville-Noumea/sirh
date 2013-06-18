@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RepresentantDao implements RepresentantDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_REPRESENTANT";
+	public static final String NOM_TABLE = "P_REPRESENTANT";
 
 	public static final String CHAMP_ID_REPRESENTANT = "ID_REPRESENTANT";
 	public static final String CHAMP_ID_TYPE_REPRESENTANT = "ID_TYPE_REPRESENTANT";

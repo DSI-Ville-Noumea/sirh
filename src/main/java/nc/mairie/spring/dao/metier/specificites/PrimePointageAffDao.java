@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.PRIME_POINTAGE_AFF";
+	public static final String NOM_TABLE = "PRIME_POINTAGE_AFF";
 
 	public static final String CHAMP_NUM_RUBRIQUE = "NUM_RUBRIQUE";
 	public static final String CHAMP_ID_AFFECTATION = "ID_AFFECTATION";

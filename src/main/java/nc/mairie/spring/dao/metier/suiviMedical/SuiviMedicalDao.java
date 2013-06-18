@@ -24,7 +24,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(SuiviMedicalDao.class);
 
-	public static final String NOM_TABLE = "SIRH.SUIVI_MEDICAL";
+	public static final String NOM_TABLE = "SUIVI_MEDICAL";
 
 	public static final String CHAMP_ID_SUIVI_MED = "ID_SUIVI_MED";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";

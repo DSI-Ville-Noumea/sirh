@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SPBASEDao implements SPBASEDaoInterface {
 
-	public static final String NOM_TABLE = "MAIRIE.SPBASE";
+	public static final String NOM_TABLE = "SPBASE";
 
 	public static final String CHAMP_CDBASE = "CDBASE";
 	public static final String CHAMP_NBASHH = "NBASHH";

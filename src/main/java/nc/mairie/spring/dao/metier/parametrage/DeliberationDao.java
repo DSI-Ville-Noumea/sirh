@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class DeliberationDao implements DeliberationDaoInterface {
 
-	public static final String NOM_TABLE = "SIRH.P_DELIBERATION";
+	public static final String NOM_TABLE = "P_DELIBERATION";
 
 	public static final String CHAMP_ID_DELIBERATION = "ID_DELIBERATION";
 	public static final String CHAMP_CODE_DELIBERATION = "CODE_DELIBERATION";
