@@ -1,7 +1,6 @@
 package nc.mairie.gestionagent.dto;
 
 import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
 
 public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<AgentWithServiceDto> {
 

@@ -8,8 +8,6 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -22,8 +20,6 @@ public class OePTGVentilationNonTitu extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private Logger logger = LoggerFactory.getLogger(OePTGVentilationNonTitu.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 

@@ -19,8 +19,6 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
@@ -35,8 +33,6 @@ public class OePTGDroits extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private Logger logger = LoggerFactory.getLogger(OePTGDroits.class);
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public String ACTION_CREATION = "Création d'un approbateur.";

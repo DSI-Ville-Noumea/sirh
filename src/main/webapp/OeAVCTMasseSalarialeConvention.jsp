@@ -12,7 +12,7 @@
 <lINK rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-<TITLE>Gestion des avancements des conventions collectives</TITLE>
+<TITLE>Simulation des avancements des conventions collectives</TITLE>
 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
