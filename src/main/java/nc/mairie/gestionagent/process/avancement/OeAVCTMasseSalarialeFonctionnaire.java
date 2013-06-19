@@ -821,6 +821,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 					avct.setDateVerifSEF(Const.DATE_NULL);
 					avct.setDateVerifSGC(Const.DATE_NULL);
+					avct.setNumArrete(annee);
 					avct.creerAvancement(getTransaction());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -894,8 +895,9 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	}
 
 	private void afficherListeAvct(HttpServletRequest request) throws Exception {
-		for (int i = 0; i < getListeAvct().size(); i++) {
-			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
+		for (int j = 0; j < getListeAvct().size(); j++) {
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
@@ -1507,9 +1509,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		// on sauvegarde l'état du tableau
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
 				// on traite l'etat
@@ -1561,9 +1564,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		// on recupere les lignes qui sont cochées pour affecter
 		int nbAgentAffectes = 0;
-		for (int i = 0; i < getListeAvct().size(); i++) {
+		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(i);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {

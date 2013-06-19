@@ -157,7 +157,8 @@ function reduireHierarchy() {
 					<tbody>
 					<%
 					if (process.getListeAvct()!=null){
-						for (int indiceAvct = 0;indiceAvct<process.getListeAvct().size();indiceAvct++){
+						for (int i = 0;i<process.getListeAvct().size();i++){
+							Integer indiceAvct = Integer.valueOf(process.getListeAvct().get(i).getIdAvct());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
