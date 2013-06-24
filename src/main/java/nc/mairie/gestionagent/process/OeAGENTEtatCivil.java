@@ -173,7 +173,6 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		setStatut(STATUT_CONTACT, true);
 
 		addZone(getNOM_ST_ACTION_CONTACT(), ACTION_CREATION);
-
 		addZone(getNOM_EF_LIBELLE_CONTACT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TCONTACT_SELECT(), "0");
 		addZone(getNOM_RG_CONTACT_DIFF(), getNOM_RB_CONTACT_DIFF_NON());
@@ -4142,6 +4141,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	public boolean performPB_SELECT_TCONTACT(HttpServletRequest request) throws Exception {
 		// si ligne directe choisie alors par defaut diffusable="OUI"
 		TypeContact newType = (TypeContact) getListeTypeContact().get(Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
+		setFocus(getNOM_PB_VALIDER_CONTACT());
 		if (newType.getCodTypeContact().equals("6")) {
 			addZone(getNOM_RG_CONTACT_DIFF(), getNOM_RB_CONTACT_DIFF_OUI());
 			diffusableModifiable = false;
@@ -4293,6 +4293,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				: getNOM_RB_CONTACT_PRIORITAIRE_NON());
 
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_VALIDER_CONTACT());
 		return true;
 	}
 

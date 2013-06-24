@@ -243,34 +243,9 @@ document.formu.elements[nom].focus();
 			<%} %>
 		</FIELDSET>
 		
-		<div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
-			<% if (process.onglet.equals("ONGLET1")) {%>
-				<span id="titreOngletBanque" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Coordonnées bancaires&nbsp;</span>&nbsp;&nbsp;
-			<% }else {%>
-				<span id="titreOngletBanque" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Coordonnées bancaires&nbsp;</span>&nbsp;&nbsp;
-			<% } %>
-			<% if (process.onglet.equals("ONGLET2")) {%>
-				<span id="titreOngletServiceNational" class="OngletActif" onclick="afficheOnglet('ONGLET2')">&nbsp;Service national&nbsp;</span>&nbsp;&nbsp;
-			<% }else {%>
-				<span id="titreOngletServiceNational" class="OngletInactif" onclick="afficheOnglet('ONGLET2')">&nbsp;Service national&nbsp;</span>&nbsp;&nbsp;
-			<% } %>
-			<% if (process.onglet.equals("ONGLET3")) {%>
-				<span id="titreOngletCouverture" class="OngletActif" onclick="afficheOnglet('ONGLET3')">&nbsp;Couverture&nbsp;</span>&nbsp;&nbsp;
-			<% }else {%>
-				<span id="titreOngletCouverture" class="OngletInactif" onclick="afficheOnglet('ONGLET3')">&nbsp;Couverture&nbsp;</span>&nbsp;&nbsp;
-			<% } %>
-			<% if (process.onglet.equals("ONGLET4")) {%>
-				<span id="titreOngletContacts" class="OngletActif" onclick="afficheOnglet('ONGLET4')">&nbsp;Contacts&nbsp;</span>&nbsp;&nbsp;
-			<% }else {%>
-				<span id="titreOngletContacts" class="OngletInactif" onclick="afficheOnglet('ONGLET4')">&nbsp;Contacts&nbsp;</span>&nbsp;&nbsp;
-			<% } %>
-		</div>
-		
-		<% if (process.onglet.equals("ONGLET1")) {%>
-			<div id="corpsOngletBanque" title="Coordonnées bancaires" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-		<% }else {%>
-			<div id="corpsOngletBanque" title="Coordonnées bancaires" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-		<% } %>
+			
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+			<legend class="sigp2Legend">Coordonnées bancaires</legend>
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
@@ -306,14 +281,12 @@ document.formu.elements[nom].focus();
 					</TR>
 				</TBODY>
 			</TABLE>
-		</div>
-
-		<% if (process.onglet.equals("ONGLET2")) {%>
-			<div id="corpsOngletServiceNational" title="Service national" class="OngletCorps" margin="10px" style="display:block;margin-right:10px;width:1030px;">
-		<% }else {%>
-			<div id="corpsOngletServiceNational" title="Service national" class="OngletCorps" margin="10px" style="display:none;margin-right:10px;width:1030px;">
-		<% } %>
-				<span class="sigp2">Etat de service : </span>
+		</FIELDSET>	
+		
+		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+			<legend class="sigp2Legend">Service national</legend>
+			<span class="sigp2">Etat de service : </span>
 				<SELECT tabindex="40" class="sigp2-liste" style="margin-right:30px" name="<%= process.getNOM_LB_TYPE_SERVICE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> >
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_SERVICE(), process.getVAL_LB_TYPE_SERVICE_SELECT())%> 
 				</SELECT>
@@ -333,13 +306,11 @@ document.formu.elements[nom].focus();
 				<INPUT tabindex="44" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_FIN() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
 					size="10" type="text" value="<%= process.getVAL_EF_SERVICE_FIN() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_SERVICE_FIN()%>', 'dd/mm/y');">
-			</div>
+		</FIELDSET>	
 		
-		<% if (process.onglet.equals("ONGLET3")) {%>
-			<div id="corpsOngletCouverture" title="Couverture" class="OngletCorps" margin="10px" style="display:block;margin-right:10px;width:1030px;">
-		<% }else {%>
-			<div id="corpsOngletCouverture" title="Couverture" class="OngletCorps" margin="10px" style="display:none;margin-right:10px;width:1030px;">
-		<% } %>
+		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
+			<legend class="sigp2Legend">Couverture</legend>
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
@@ -390,15 +361,10 @@ document.formu.elements[nom].focus();
 					</TR>
 				</TBODY>
 			</TABLE>
-		</div>
+		</FIELDSET>	
 		
-		<% if (process.onglet.equals("ONGLET4")) {%>
-			<div id="corpsOngletContacts" title="Contacts" class="OngletCorps" margin="10px" style="display:block;margin-right:10px;width:1030px;">
-		<% }else {%>
-			<div id="corpsOngletContacts" title="Contacts" class="OngletCorps" margin="10px" style="display:none;margin-right:10px;width:1030px;">
-		<% } %>
-		<BR/>
-	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin-right:10px;width:985px;">
+		
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin-right:10px;width:1030px;">
 		    <legend class="sigp2Legend">Liste des contacts</legend>
 		    <span style="position:relative;width:9px;"></span>
 			<span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_CONTACT()%>"></span>
@@ -426,91 +392,95 @@ document.formu.elements[nom].focus();
 					}%>
 				</table>	
 			</div>
+							<%
+				if (!"".equals(process.getVAL_ST_ACTION_CONTACT())) {
+					%><BR/>
+				    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin-right:10px;width:985px;">
+					    <legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_CONTACT()%></legend>
+					    <br/>
+						<%
+						if (!process.getVAL_ST_ACTION_CONTACT().equals(process.ACTION_SUPPRESSION)) {
+						%>
+							<span class="sigp2" style="width:90px">Type contact :</span>
+							<span class="sigp2" style="width:500px">
+								<SELECT class="sigp2-liste" style="width:200px"<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%=process.getNOM_LB_TCONTACT()%>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_TCONTACT()%>")'>
+									<%=process.forComboHTML(process.getVAL_LB_TCONTACT(), process.getVAL_LB_TCONTACT_SELECT())%>
+								</SELECT>
+							</span>
+							<BR/><BR/>
+							<span class="sigp2" style="width:90px">Contact :</span>
+							<span class="sigp2" style="width:400px">
+								<INPUT class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
+									name="<%= process.getNOM_EF_LIBELLE_CONTACT() %>" size="55" type="text" value="<%= process.getVAL_EF_LIBELLE_CONTACT() %>">
+							</span>
+							<BR/><BR/>
+							<span class="sigp2" style="width:90px">Diffusable :</span>
+							<%if(!process.diffusableModifiable){ %>
+								<span class="sigp2-RadioBouton" style="width:400px">
+									<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
+									<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
+								</span>
+							<%}else{ %>
+								<span class="sigp2-RadioBouton" style="width:400px">
+									<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
+									<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
+								</span>
+							<%} %>
+							<BR/><BR/>
+							<span class="sigp2" style="width:90px">Prioritaire :</span>
+							<%if(!process.prioritaireModifiable){ %>
+							<span class="sigp2-RadioBouton" style="width:400px">
+								<INPUT type="radio"  disabled="disabled" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
+								<INPUT type="radio" disabled="disabled" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
+							</span>
+							<%}else{ %>
+							<span class="sigp2-RadioBouton" style="width:400px">
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
+							</span>
+							<%} %>
+						<%
+						} else {
+						%>
+							<BR/>
+							<span class="sigp2" width="90">Type contact :</span>
+							<span class="sigp2-saisie" width="400"><%=process.getVAL_ST_TCONTACT()%></span>
+							<BR/>
+							<span class="sigp2">Contact :</span>
+							<span width="400" class="sigp2-saisie"><%=process.getVAL_ST_LIBELLE_CONTACT()%></span>
+							<BR/>
+							<span class="sigp2" style="width:90px">Diffusable :</span>
+							<span class="sigp2-RadioBouton" style="width:400px">
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
+							</span>
+							<BR/>
+							<span class="sigp2" style="width:90px">Prioritaire :</span>
+							<span class="sigp2-RadioBouton" style="width:400px">
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
+								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
+							</span>
+						<%}	%>
+						<BR/><BR/>
+						<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CONTACT()%>">
+						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_CONTACT()%>">
+						<BR>
+					</FIELDSET>
+					<%
+					}
+					%>
 		</FIELDSET>
-		<%
-		if (!"".equals(process.getVAL_ST_ACTION_CONTACT())) {
-		%><BR/>
-	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin-right:10px;width:985px;">
-		    <legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_CONTACT()%></legend>
-		    <br/>
-			<%
-			if (!process.getVAL_ST_ACTION_CONTACT().equals(process.ACTION_SUPPRESSION)) {
-			%>
-				<span class="sigp2" style="width:90px">Type contact :</span>
-				<span class="sigp2" style="width:500px">
-					<SELECT class="sigp2-liste" style="width:200px"<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%=process.getNOM_LB_TCONTACT()%>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_TCONTACT()%>")'>
-						<%=process.forComboHTML(process.getVAL_LB_TCONTACT(), process.getVAL_LB_TCONTACT_SELECT())%>
-					</SELECT>
-				</span>
-				<BR/><BR/>
-				<span class="sigp2" style="width:90px">Contact :</span>
-				<span class="sigp2" style="width:400px">
-					<INPUT class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_LIBELLE_CONTACT() %>" size="55" type="text" value="<%= process.getVAL_EF_LIBELLE_CONTACT() %>">
-				</span>
-				<BR/><BR/>
-				<span class="sigp2" style="width:90px">Diffusable :</span>
-				<%if(!process.diffusableModifiable){ %>
-					<span class="sigp2-RadioBouton" style="width:400px">
-						<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
-						<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
-					</span>
-				<%}else{ %>
-					<span class="sigp2-RadioBouton" style="width:400px">
-						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
-						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
-					</span>
-				<%} %>
-				<BR/><BR/>
-				<span class="sigp2" style="width:90px">Prioritaire :</span>
-				<%if(!process.prioritaireModifiable){ %>
-				<span class="sigp2-RadioBouton" style="width:400px">
-					<INPUT type="radio"  disabled="disabled" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
-					<INPUT type="radio" disabled="disabled" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
-				</span>
-				<%}else{ %>
-				<span class="sigp2-RadioBouton" style="width:400px">
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
-				</span>
-				<%} %>
-			<%
-			} else {
-			%>
-				<BR/>
-				<span class="sigp2" width="90">Type contact :</span>
-				<span class="sigp2-saisie" width="400"><%=process.getVAL_ST_TCONTACT()%></span>
-				<BR/>
-				<span class="sigp2">Contact :</span>
-				<span width="400" class="sigp2-saisie"><%=process.getVAL_ST_LIBELLE_CONTACT()%></span>
-				<BR/>
-				<span class="sigp2" style="width:90px">Diffusable :</span>
-				<span class="sigp2-RadioBouton" style="width:400px">
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_OUI())%>>Oui
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_DIFF(),process.getNOM_RB_CONTACT_DIFF_NON())%>>Non
-				</span>
-				<BR/>
-				<span class="sigp2" style="width:90px">Prioritaire :</span>
-				<span class="sigp2-RadioBouton" style="width:400px">
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_OUI())%>>Oui
-					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>  disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_CONTACT_PRIORITAIRE(),process.getNOM_RB_CONTACT_PRIORITAIRE_NON())%>>Non
-				</span>
-			<%}	%>
-			<BR/><BR/>
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CONTACT()%>">
-			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_CONTACT()%>">
-			<BR>
-		</FIELDSET>
-		<%
-		}
-		%>
-		</div>
+		
+
+					
+		
+		
 		<br/><br/>
 		<FIELDSET style="text-align:center;margin:10px;width:1030px;"  class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
 			<span class="sigp2"><INPUT type="submit" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>" class="sigp2-Bouton-100"></span>
 		</FIELDSET>
 		<br>
-		</div>
+	
 		<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_CIVILITE()%>" value="OK">
 		<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE()%>" value="OK">
 		<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_ADRESSE()%>" value="OK">
