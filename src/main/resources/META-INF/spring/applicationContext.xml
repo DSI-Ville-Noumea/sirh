@@ -28,7 +28,6 @@
 		class="nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-
 	<bean id="suiviMedicalDao"
 		class="nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
@@ -81,6 +80,12 @@
 		<property name="dataSource" ref="dataSourceSIRH" />		
 	</bean>
 	<bean id="primePointageFPDao" class="nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao">
+		<property name="dataSource" ref="dataSourceSIRH" />		
+	</bean>
+	<bean id="jourFerieDao" class="nc.mairie.spring.dao.metier.parametrage.JourFerieDao">
+		<property name="dataSource" ref="dataSourceSIRH" />		
+	</bean>
+	<bean id="typeJourFerieDao" class="nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao">
 		<property name="dataSource" ref="dataSourceSIRH" />		
 	</bean>
 

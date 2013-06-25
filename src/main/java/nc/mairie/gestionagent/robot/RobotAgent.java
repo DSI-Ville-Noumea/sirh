@@ -36,6 +36,7 @@ import nc.mairie.gestionagent.process.OePARAMETRAGEFichePoste;
 import nc.mairie.gestionagent.process.OePARAMETRAGEGrade;
 import nc.mairie.gestionagent.process.OePARAMETRAGEGradeRef;
 import nc.mairie.gestionagent.process.OePARAMETRAGEHSCT;
+import nc.mairie.gestionagent.process.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.OePOSTEEmploiSelection;
 import nc.mairie.gestionagent.process.OePOSTEFEActivite;
@@ -276,6 +277,8 @@ public class RobotAgent extends Robot {
 			return new OePARAMETRAGECarriere();
 		} else if (activite.equals("ParamCarriere")) {
 			return new OePARAMETRAGECarriere();
+		} else if (activite.equals("ParamJour")) {
+			return new OePARAMETRAGEJour();
 		}
 		// Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {
@@ -491,6 +494,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEGradeRef.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEGrade.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAvancement.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGECarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// DROITS
 		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());

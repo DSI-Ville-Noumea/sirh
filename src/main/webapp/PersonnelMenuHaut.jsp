@@ -195,6 +195,7 @@ document.write(menuParametrageAvancement.afficher());
 
 var menuParametrageElemSal = new MenuHaut("Module_parametres_elemSal");
 menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestion des paramètres des carrières", true, false,"PARAM/CARR"));
+menuParametrageElemSal.ajouterFils(new Lien("ParamJour", "JOUR", "Gestion des paramètres des jours fériés", true, false,"PARAM/JOUR"));
 document.write(menuParametrageElemSal.afficher());
 
 </script>

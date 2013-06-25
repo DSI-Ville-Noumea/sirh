@@ -116,7 +116,8 @@
 		listeDroits.add("ParamGrade");
 		listeDroits.add("ParamGradeRef");
 		listeDroits.add("ParamElemSalaire");	
-		listeDroits.add("ParamCarriere");	
+		listeDroits.add("ParamCarriere");		
+		listeDroits.add("ParamJour");	
 		
 		
 		/*Module GESTION DROITS*/

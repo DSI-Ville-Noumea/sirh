@@ -107,8 +107,8 @@ var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAM");
 <% 
 String affParamElementSalaire =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_PARAM_ELEM_SALAIRE");
 if (affParamElementSalaire.equals("TRUE")){ %>
-	Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
-<%}%>	
+Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
+<%}%>
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************
