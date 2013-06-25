@@ -83,9 +83,9 @@ menuAgentEltsSalaires.ajouterFils(new Lien("ChargeGestion", "CHARGES", "Gestion 
 menuAgentEltsSalaires.ajouterFils(new Lien("PrimeGestion", "PRIMES", "Gestion des primes", true, false,"AGENT/SALAIRE/PRIME"));
 document.write(menuAgentEltsSalaires.afficher());
 
-/*var menuAgentEAE = new MenuHaut("Module_agent_eae");
+var menuAgentEAE = new MenuHaut("Module_agent_eae");
 menuAgentEAE.ajouterFils(new Lien("AgtEae", "EAE", "Gestion des EAE", true, false,"AGENT/EAE/EAE"));
-document.write(menuAgentEAE.afficher());*/
+document.write(menuAgentEAE.afficher());
 
 //***************************************************************
 //*               Le menu haut Gestion des avancements
