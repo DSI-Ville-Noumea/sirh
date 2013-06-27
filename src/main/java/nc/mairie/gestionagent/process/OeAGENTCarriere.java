@@ -80,7 +80,6 @@ public class OeAGENTCarriere extends BasicProcess {
 	public String ACTION_REOUVERTURE = "Suppression d'une fiche Carrière. Réouverture carrière.";
 	public String ACTION_AVCT_PREV = "Avancement prévisionnel.";
 
-	public boolean baseHorairePointageObligatoire = false;
 	public boolean gradeObligatoire = false;
 	public boolean showIBA = false;
 	public boolean IBAEditable = false;
@@ -777,7 +776,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		// base horaire pointage
 		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-		BaseHoraire bhp = numLigneBHP > 0 ? (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1) : null;
+		if (numLigneBHP == -1 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size())
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire pointage"));
+		BaseHoraire bhp =  (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1) ;
 
 		// base reglement
 		int numLigneBR = (Services.estNumerique(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) ? Integer
@@ -844,7 +845,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setCodeBaseHoraire2(horaire.getCdtHor());
 
 		// basehoraire pointage
-		getCarriereCourante().setCodeBase(bhp != null ? bhp.getCodBaseHoraire() : Const.CHAINE_VIDE);
+		getCarriereCourante().setCodeBase( bhp.getCodBaseHoraire() );
 
 		// baseReglement
 		getCarriereCourante().setModeReglement(baseReg.getModReg());
@@ -883,13 +884,11 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		// base horaire pointage obligatoire
-		if (baseHorairePointageObligatoire) {
-			int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-			if (numLigneBHP <= 0 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire pointage"));
-				return false;
-			}
+		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
+		if (numLigneBHP <= 0 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire pointage"));
+			return false;
 		}
 
 		// date de debut obligatoire
@@ -2047,16 +2046,12 @@ public class OeAGENTCarriere extends BasicProcess {
 	private void initialiseChampObligatoire(StatutCarriere statut) {
 		// RG_AG_CA_C11
 		// RG_AG_CA_C12
-		baseHorairePointageObligatoire = false;
 		gradeObligatoire = true;
 		showDateFin = false;
 
 		switch (Integer.parseInt(statut.getCdCate())) {
 		case 4:
 			gradeObligatoire = false;
-			break;
-		case 7:
-			baseHorairePointageObligatoire = true;
 			break;
 		case 8:
 			showDateFin = true;
@@ -2504,7 +2499,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	private void performCalculFonctionnaire(Carriere carr) throws Exception {
 		// on regarde si il y a d'autre carrieres avec le meme grade
 		// si oui on prend la carriere plus lointaine
-		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant().getNoMatricule(), carr.getCodeGrade());
+		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant().getNoMatricule(),
+				carr.getCodeGrade());
 		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 			carr = (Carriere) listeCarrMemeGrade.get(0);
 		}

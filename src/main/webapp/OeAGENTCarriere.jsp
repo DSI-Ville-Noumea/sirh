@@ -226,7 +226,7 @@
 				
 				<BR/><BR/>
 				
-				<span class="<%= process.baseHorairePointageObligatoire ? "sigp2Mandatory" : "sigp2" %>"  style="margin-left:20px;position:relative;width:150px;">Base horaire pointage :</span>
+				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Base horaire pointage :</span>
 				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>">
 					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
 				</SELECT>
