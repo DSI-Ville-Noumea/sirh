@@ -748,12 +748,12 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		String refArrete = getVAL_EF_REF_ARR();
 
-		String iba = Const.CHAINE_VIDE;
+		String iban = "0000000";
 		if (!Const.CHAINE_VIDE.equals(getVAL_EF_IBA())) {
 			if (Services.estNumerique(getVAL_EF_IBA())) {
-				iba = Services.lpad(getVAL_EF_IBA(), 7, "0");
+				iban = Services.lpad(getVAL_EF_IBA(), 7, "0");
 			} else {
-				iba = getVAL_EF_IBA();
+				iban = getVAL_EF_IBA();
 			}
 		}
 
@@ -806,7 +806,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setBMJour(bmJours);
 		getCarriereCourante().setBMMois(bmMois);
 		getCarriereCourante().setBMAnnee(bmAnnees);
-		getCarriereCourante().setIban(iba);
+		getCarriereCourante().setIban(iban);
 
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 
