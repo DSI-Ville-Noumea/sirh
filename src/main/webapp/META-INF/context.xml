@@ -103,6 +103,8 @@
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_SIMU" 	description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		value="TRUE" override="false" />
+	<Parameter name="AFFICHAGE_SUIVI_MEDICAL" 	description="Paramètre pour savoir si on affiche le module suivi médicale"
+		value="FALSE" override="false" />
 		
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats" name="REPERTOIRE_MODELES_CONTRATS"

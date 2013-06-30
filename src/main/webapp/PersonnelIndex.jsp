@@ -79,8 +79,12 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEME
 //***************************************************************
 //*               Le module Gestion du suivi medical
 //***************************************************************
+<% 
+String affSuiviMed =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SUIVI_MEDICAL");
+if (affSuiviMed.equals("TRUE")){ %>
 var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI_MED");
 	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
+<%}%>
 	
 
 //***************************************************************
@@ -119,7 +123,10 @@ var Module_gestionDroits = new Dossier("Module_gestionDroits", "Gestion des droi
 menu.ajouterFils(Module_posteEtEmploi);
 menu.ajouterFils(Module_agent);
 menu.ajouterFils(Module_avct);
+<% 
+if (affSuiviMed.equals("TRUE")){ %>
 menu.ajouterFils(Module_suiviMed);
+<%}%>
 <% 
 if (affPointage.equals("TRUE")){ %>
 menu.ajouterFils(Module_pointage);
