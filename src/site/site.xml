@@ -31,6 +31,7 @@
 		<menu name="Exploitation">
         	<item name="Mise en PROD" href="exploitation/mise_prod.html"/>
         	<item name="Releases" href="exploitation/releases.html"/>
+        	<item name="Contexts" href="exploitation/context.html"/>
         	<item name="Procédures" href="exploitation/procedures.html"/>
         	<item name="SIRH dans JBoss" href="exploitation/jboss.html"/>
         	<item name="SIRH dans Tomcat" href="exploitation/tomcat.html"/>
