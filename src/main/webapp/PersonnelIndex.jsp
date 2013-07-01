@@ -59,19 +59,35 @@ var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois
 //***************************************************************
 var Module_agent = new Dossier("Module_agent", "Agent","AGENT");
 	Module_agent.ajouterFils(new Lien("donneesPerso", "AgentEtatCivil", "Données personnelles", "Gestion des données personnelles d'un agent", true));
-	Module_agent.ajouterFils(new Lien("hsct", "VisiteMedicaleGestion", "HSCT", "Gestion des données HSCT", true));
+	<% 
+	String affHSCT =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_HSCT");
+	if (affHSCT.equals("TRUE")){ %>
+		Module_agent.ajouterFils(new Lien("hsct", "VisiteMedicaleGestion", "HSCT", "Gestion des données HSCT", true));
+	<%}%>
 	Module_agent.ajouterFils(new Lien("emplois", "AgtEmploisAffectations", "Emplois", "Gestion des emplois d'un agent", true));
 	Module_agent.ajouterFils(new Lien("eltsSalaires", "PAGestion", "Eléments de salaire", "Gestion des éléments de salaire d'un agent", true));
-	Module_agent.ajouterFils(new Lien("eae", "AgtEae", "EAE", "Gestion des EAE d'un agent", true));
+	<% 
+	String affEAEAgent =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_EAE_AGENT");
+	if (affEAEAgent.equals("TRUE")){ %>
+		Module_agent.ajouterFils(new Lien("eae", "AgtEae", "EAE", "Gestion des EAE d'un agent", true));
+	<%}%>
 	
 //***************************************************************
 //*               Le module Gestion des avancements
 //***************************************************************
 var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEMENT");
-	Module_avct.ajouterFils(new Lien("simulationFonctionnaires", "AVCTSimulationFontionnaires", "Avancement Fonctionnaires", "Gestion des avancements des fontionnaires", true));
-	Module_avct.ajouterFils(new Lien("simulationContractuels", "AVCTSimulationContractuels", "Avancement Contractuels", "Gestion des avancements des contractuels", true));
-	Module_avct.ajouterFils(new Lien("simulationConvCol", "AVCTSimulationConvCol", "Avancement Conventions", "Gestion des avancements des conventions collectives", true));
-	Module_avct.ajouterFils(new Lien("campagneEAE", "AVCTCampagneEAE", "Campagne EAE", "Gestion des campagnes EAE", true));
+	<% 
+	String affAvct =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT");
+	if (affAvct.equals("TRUE")){ %>
+		Module_avct.ajouterFils(new Lien("simulationFonctionnaires", "AVCTSimulationFontionnaires", "Avancement Fonctionnaires", "Gestion des avancements des fontionnaires", true));
+		Module_avct.ajouterFils(new Lien("simulationContractuels", "AVCTSimulationContractuels", "Avancement Contractuels", "Gestion des avancements des contractuels", true));
+		Module_avct.ajouterFils(new Lien("simulationConvCol", "AVCTSimulationConvCol", "Avancement Conventions", "Gestion des avancements des conventions collectives", true));
+	<%}%>
+	<% 
+	String affCampagneEAE =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_CAMPAGNE_EAE");
+	if (affCampagneEAE.equals("TRUE")){ %>
+		Module_avct.ajouterFils(new Lien("campagneEAE", "AVCTCampagneEAE", "Campagne EAE", "Gestion des campagnes EAE", true));
+	<%}%>
 	<% 
 	String affSimuMasse =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SIMU");
 	if (affSimuMasse.equals("TRUE")){ %>

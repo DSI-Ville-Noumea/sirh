@@ -107,6 +107,14 @@
 		value="FALSE" override="false" />
 	<Parameter name="AFFICHAGE_FICHE_EMPLOI" 	description="Paramètre pour savoir si on affiche le module fiche emploi"
 		value="FALSE" override="false" />
+	<Parameter name="AFFICHAGE_HSCT" 	description="Paramètre pour savoir si on affiche le module HSCT de l'agent"
+		value="FALSE" override="false" />
+	<Parameter name="AFFICHAGE_EAE_AGENT" 	description="Paramètre pour savoir si on affiche le module EAE de l'agent"
+		value="FALSE" override="false" />
+	<Parameter name="AFFICHAGE_AVCT" 	description="Paramètre pour savoir si on affiche le module Avancement"
+		value="FALSE" override="false" />
+	<Parameter name="AFFICHAGE_CAMPAGNE_EAE" 	description="Paramètre pour savoir si on affiche le module Campagne EAE"
+		value="FALSE" override="false" />
 		
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats" name="REPERTOIRE_MODELES_CONTRATS"
