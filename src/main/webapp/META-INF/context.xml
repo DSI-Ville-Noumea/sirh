@@ -77,16 +77,16 @@
 		
 		<!-- Pour l'arbre des FDP -->
 	<Parameter name="SIRH_WS_URL_ARBRE_FDP" 	description="SIRH WS endpoint url for FichePoste tree"
-		value="http://172.16.24.131:8085/sirhws/fichePostes/rebuildFichePosteTree" override="false" />
+		value="http://172.16.24.19:8085/sirhws/fichePostes/rebuildFichePosteTree" override="false" />
 		<!-- Pour l'edition BIRT des avancements -->
 	<Parameter name="SIRH_WS_URL_TABLEAU_AVCT_CAP" 	description="SIRH WS url pour le tableau des avancements CAP"
-		value="http://172.16.24.131:8085/sirhws/avancements/downloadTableauAvancements" override="false" />
+		value="http://172.16.24.19:8085/sirhws/avancements/downloadTableauAvancements" override="false" />
 	<Parameter name="SIRH_WS_URL_ARRETES_AVCT" 	description="SIRH WS url pour les arretes des avancements"
-		value="http://172.16.24.131:8085/sirhws/avancements/downloadArretes" override="false" />
+		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" override="false" />
 		
 		<!-- WS DES POINTAGES -->
 	<Parameter name="SIRH_PTG_WS" description="SIRH PTG WS url pour les droits"
-		value="http://172.16.24.131:8085/sirh-ptg-ws/" override="false" />
+		value="http://172.16.24.19:8085/sirh-ptg-ws/" override="false" />
 		
 	<!-- Parametres pour l'affichage des nouveaux modules -->
 	<Parameter name="AFFICHAGE_AVCT_CAP" 	description="Paramètre pour savoir si on affiche l'onglet avancement CAP"
