@@ -45,7 +45,11 @@ var menu = new Menu();
 //*               Le module Postes et emplois
 //***************************************************************
 var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois","PE");
-	Module_posteEtEmploi.ajouterFils(new Lien("ficheEmploi", "FEGestion", "Fiche emploi", "Gestion des fiches emploi", true));
+	<% 
+	String affFicheEmploi =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_FICHE_EMPLOI");
+	if (affFicheEmploi.equals("TRUE")){ %>
+		Module_posteEtEmploi.ajouterFils(new Lien("ficheEmploi", "FEGestion", "Fiche emploi", "Gestion des fiches emploi", true));
+	<%}%>
 	Module_posteEtEmploi.ajouterFils(new Lien("fichePoste", "FPGestion", "Fiche de poste", "Gestion des fiches de poste", true));
 	//Module_posteEtEmploi.ajouterFils(new Lien("fichePosteOld", "FPGestionOld", "Fiche de poste", "Gestion des fiches de poste", true));
 	//Module_posteEtEmploi.ajouterFils(new Lien("suiviRecrutement", "SuiviRecrutement", "Recrutement", "Suivi des recrutements", true));
