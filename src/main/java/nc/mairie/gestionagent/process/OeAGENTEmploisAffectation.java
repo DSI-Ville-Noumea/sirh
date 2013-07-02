@@ -24,8 +24,6 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
-import nc.mairie.metier.agent.PAAgent;
-import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.diplome.DiplomeAgent;
@@ -448,8 +446,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getAffectationCourant().modifierAffectation(getTransaction(), user, getAgentCourant(), getFichePosteCourant());
 
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
+				//REDMINE #2423 : on supprime cette regle de gestion pour le moment.
 				// Création PA
-				PositionAdmAgent posAdmAgt = null;
+				/*PositionAdmAgent posAdmAgt = null;
 				if (getAffectationCourant().getDateFinAff().equals(Const.CHAINE_VIDE)) {
 					posAdmAgt = PositionAdmAgent.chercherDernierePositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
 				} else {
@@ -581,7 +580,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							}
 						}
 					}
-				}
+				}*/
 
 				// Création Affectation
 				if (!getAffectationCourant().creerAffectation(getTransaction(), user, getAgentCourant())) {
