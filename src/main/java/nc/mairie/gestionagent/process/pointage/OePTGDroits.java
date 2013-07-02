@@ -38,6 +38,8 @@ public class OePTGDroits extends BasicProcess {
 	public String ACTION_CREATION = "Création d'un approbateur.";
 	public String ACTION_SUPPRESSION = "Suppression d'un approbateur.";
 
+	public boolean majAppro = true;
+
 	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
 
 	@Override
@@ -64,44 +66,56 @@ public class OePTGDroits extends BasicProcess {
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
-		// on recupere l'agent ajouté eventuellement
-		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-
-			Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
-			if (getTransaction().isErreur()) {
-				// "ERR400",
-				// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", agt.getIdAgent()));
-				throw new Exception();
-
-			}
-			FichePoste fpCourante = FichePoste.chercherFichePoste(getTransaction(), affCourante.getIdFichePoste());
-			Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
-			AgentWithServiceDto agentDto = new AgentWithServiceDto();
-			agentDto.setIdAgent(Integer.valueOf(agt.getIdAgent()));
-			agentDto.setNom(agt.getNomAgent());
-			agentDto.setPrenom(agt.getPrenomAgent());
-			agentDto.setCodeService(fpCourante.getIdServi());
-			agentDto.setService(serv.getLibService());
-			getListeApprobateurs().add(agentDto);
-			afficheListeApprobateurs();
-		}
-
-		if (getListeApprobateurs().size() == 0) {
+		if (etatStatut() == STATUT_APPROBATEUR) {
 			initialiseApprobateurs(request);
-			afficheListeApprobateurs();
+		} else {
+			if (isMajAppro()) {
+				SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+				getListeApprobateurs().addAll((ArrayList<AgentWithServiceDto>) t.getApprobateurs());
+			}
 		}
+		afficheListeApprobateurs();
 
 	}
 
 	private void initialiseApprobateurs(HttpServletRequest request) throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		setListeApprobateurs((ArrayList<AgentWithServiceDto>) t.getApprobateurs());
+
+		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "APPROBATEURS");
+		VariablesActivite.enlever(this, "APPROBATEURS");
+
+		if (listeEvaluateurSelect != null && listeEvaluateurSelect.size() > 0) {
+			for (int j = 0; j < listeEvaluateurSelect.size(); j++) {
+				AgentNW agt = listeEvaluateurSelect.get(j);
+				// on cree les approbateurs en base de données
+
+				// on recupere l'agent ajouté eventuellement
+
+				Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
+				if (getTransaction().isErreur()) {
+					// "ERR400", //
+					// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", agt.getIdAgent()));
+					throw new Exception();
+
+				}
+				FichePoste fpCourante = FichePoste.chercherFichePoste(getTransaction(), affCourante.getIdFichePoste());
+				Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
+				AgentWithServiceDto agentDto = new AgentWithServiceDto();
+				agentDto.setIdAgent(Integer.valueOf(agt.getIdAgent()));
+				agentDto.setNom(agt.getNomAgent());
+				agentDto.setPrenom(agt.getPrenomAgent());
+				agentDto.setCodeService(fpCourante.getIdServi());
+				agentDto.setService(serv.getLibService());
+				getListeApprobateurs().add(agentDto);
+
+			}
+
+		}
+
 	}
 
 	private void afficheListeApprobateurs() throws Exception {
+
 		for (int i = 0; i < getListeApprobateurs().size(); i++) {
 			AgentWithServiceDto ag = getListeApprobateurs().get(i);
 
@@ -246,9 +260,9 @@ public class OePTGDroits extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
-
 		setStatut(STATUT_APPROBATEUR, true);
 		return true;
+
 	}
 
 	/**
@@ -280,6 +294,7 @@ public class OePTGDroits extends BasicProcess {
 		}
 
 		afficheListeApprobateurs();
+		setMajAppro(false);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -310,12 +325,13 @@ public class OePTGDroits extends BasicProcess {
 				agents += " - " + agentDtoErreur.getNom() + " " + agentDtoErreur.getPrenom();
 			}
 			// "INF600",
-			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateur : @"
+			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateurs : @"
 			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
 			getListeApprobateurs().clear();
 			return false;
 		}
 		getListeApprobateurs().clear();
+		setMajAppro(true);
 		return true;
 	}
 
@@ -338,7 +354,17 @@ public class OePTGDroits extends BasicProcess {
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		getListeApprobateurs().clear();
+		setMajAppro(true);
+
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public boolean isMajAppro() {
+		return majAppro;
+	}
+
+	public void setMajAppro(boolean majAppro) {
+		this.majAppro = majAppro;
 	}
 }
