@@ -4,63 +4,33 @@ import java.util.Hashtable;
 
 import nc.mairie.droits.process.OeDROITSGestion;
 import nc.mairie.droits.process.OeDROITSUtilisateurs;
-import nc.mairie.gestionagent.process.OeAGENTADMINISTRATIONGestion;
-import nc.mairie.gestionagent.process.OeAGENTAccidentTravail;
-import nc.mairie.gestionagent.process.OeAGENTActesDonneesPerso;
-import nc.mairie.gestionagent.process.OeAGENTActesHSCT;
-import nc.mairie.gestionagent.process.OeAGENTCarriere;
-import nc.mairie.gestionagent.process.OeAGENTCasierJud;
-import nc.mairie.gestionagent.process.OeAGENTCharge;
-import nc.mairie.gestionagent.process.OeAGENTContrat;
-import nc.mairie.gestionagent.process.OeAGENTDIPLOMEGestion;
-import nc.mairie.gestionagent.process.OeAGENTEae;
-import nc.mairie.gestionagent.process.OeAGENTEmploisAffHisto;
-import nc.mairie.gestionagent.process.OeAGENTEmploisAffectation;
-import nc.mairie.gestionagent.process.OeAGENTEmploisPoste;
-import nc.mairie.gestionagent.process.OeAGENTEmploisSpecificites;
-import nc.mairie.gestionagent.process.OeAGENTEnfantHomonyme;
-import nc.mairie.gestionagent.process.OeAGENTEtatCivil;
-import nc.mairie.gestionagent.process.OeAGENTHandicap;
-import nc.mairie.gestionagent.process.OeAGENTHomonyme;
-import nc.mairie.gestionagent.process.OeAGENTPosAdm;
-import nc.mairie.gestionagent.process.OeAGENTPrime;
-import nc.mairie.gestionagent.process.OeAGENTRecherche;
-import nc.mairie.gestionagent.process.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.OeCOMMUNESelection;
 import nc.mairie.gestionagent.process.OeENFANTGestion;
-import nc.mairie.gestionagent.process.OePARAMETRAGEAvancement;
-import nc.mairie.gestionagent.process.OePARAMETRAGECarriere;
-import nc.mairie.gestionagent.process.OePARAMETRAGEDonneesPerso;
-import nc.mairie.gestionagent.process.OePARAMETRAGEFicheEmploi;
-import nc.mairie.gestionagent.process.OePARAMETRAGEFichePoste;
-import nc.mairie.gestionagent.process.OePARAMETRAGEGrade;
-import nc.mairie.gestionagent.process.OePARAMETRAGEGradeRef;
-import nc.mairie.gestionagent.process.OePARAMETRAGEHSCT;
-import nc.mairie.gestionagent.process.OePARAMETRAGEJour;
-import nc.mairie.gestionagent.process.OePARAMETRAGERecrutement;
-import nc.mairie.gestionagent.process.OePOSTEEmploiSelection;
-import nc.mairie.gestionagent.process.OePOSTEFEActivite;
-import nc.mairie.gestionagent.process.OePOSTEFEActiviteSelection;
-import nc.mairie.gestionagent.process.OePOSTEFECompetence;
-import nc.mairie.gestionagent.process.OePOSTEFECompetenceSelection;
-import nc.mairie.gestionagent.process.OePOSTEFERechercheAvancee;
-import nc.mairie.gestionagent.process.OePOSTEFPRechercheAvancee;
-import nc.mairie.gestionagent.process.OePOSTEFPSelection;
-import nc.mairie.gestionagent.process.OePOSTEFPSpecificites;
-import nc.mairie.gestionagent.process.OePOSTEFicheEmploi;
-import nc.mairie.gestionagent.process.OePOSTEFichePoste;
-import nc.mairie.gestionagent.process.OePOSTESuiviRecrutement;
-import nc.mairie.gestionagent.process.OePTGDroits;
-import nc.mairie.gestionagent.process.OePTGPayeurConvCol;
-import nc.mairie.gestionagent.process.OePTGPayeurNonTitu;
-import nc.mairie.gestionagent.process.OePTGPayeurTitu;
-import nc.mairie.gestionagent.process.OePTGSaisie;
-import nc.mairie.gestionagent.process.OePTGVentilationConvCol;
-import nc.mairie.gestionagent.process.OePTGVentilationNonTitu;
-import nc.mairie.gestionagent.process.OePTGVentilationTitu;
 import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
+import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
+import nc.mairie.gestionagent.process.agent.OeAGENTAccidentTravail;
+import nc.mairie.gestionagent.process.agent.OeAGENTActesDonneesPerso;
+import nc.mairie.gestionagent.process.agent.OeAGENTActesHSCT;
+import nc.mairie.gestionagent.process.agent.OeAGENTCarriere;
+import nc.mairie.gestionagent.process.agent.OeAGENTCasierJud;
+import nc.mairie.gestionagent.process.agent.OeAGENTCharge;
+import nc.mairie.gestionagent.process.agent.OeAGENTContrat;
+import nc.mairie.gestionagent.process.agent.OeAGENTDIPLOMEGestion;
+import nc.mairie.gestionagent.process.agent.OeAGENTEae;
+import nc.mairie.gestionagent.process.agent.OeAGENTEmploisAffHisto;
+import nc.mairie.gestionagent.process.agent.OeAGENTEmploisAffectation;
+import nc.mairie.gestionagent.process.agent.OeAGENTEmploisPoste;
+import nc.mairie.gestionagent.process.agent.OeAGENTEmploisSpecificites;
+import nc.mairie.gestionagent.process.agent.OeAGENTEnfantHomonyme;
+import nc.mairie.gestionagent.process.agent.OeAGENTEtatCivil;
+import nc.mairie.gestionagent.process.agent.OeAGENTHandicap;
+import nc.mairie.gestionagent.process.agent.OeAGENTHomonyme;
+import nc.mairie.gestionagent.process.agent.OeAGENTPosAdm;
+import nc.mairie.gestionagent.process.agent.OeAGENTPrime;
+import nc.mairie.gestionagent.process.agent.OeAGENTRecherche;
+import nc.mairie.gestionagent.process.agent.OeAGENTVisiteMed;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneEAE;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.gestionagent.process.avancement.OeAVCTCampagnePlanification;
@@ -80,6 +50,37 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEFicheEmploi;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEFichePoste;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGrade;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGradeRef;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
+import nc.mairie.gestionagent.process.pointage.OePTGDroits;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurNonTitu;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurTitu;
+import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
+import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationNonTitu;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationTitu;
+import nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection;
+import nc.mairie.gestionagent.process.poste.OePOSTEFEActivite;
+import nc.mairie.gestionagent.process.poste.OePOSTEFEActiviteSelection;
+import nc.mairie.gestionagent.process.poste.OePOSTEFECompetence;
+import nc.mairie.gestionagent.process.poste.OePOSTEFECompetenceSelection;
+import nc.mairie.gestionagent.process.poste.OePOSTEFERechercheAvancee;
+import nc.mairie.gestionagent.process.poste.OePOSTEFPRechercheAvancee;
+import nc.mairie.gestionagent.process.poste.OePOSTEFPSelection;
+import nc.mairie.gestionagent.process.poste.OePOSTEFPSpecificites;
+import nc.mairie.gestionagent.process.poste.OePOSTEFicheEmploi;
+import nc.mairie.gestionagent.process.poste.OePOSTEFichePoste;
+import nc.mairie.gestionagent.process.poste.OePOSTESuiviRecrutement;
 import nc.mairie.robot.Robot;
 import nc.mairie.robot.Testeur;
 import nc.mairie.technique.BasicProcess;
@@ -399,11 +400,14 @@ public class RobotAgent extends Robot {
 
 		// Classe OeAVCTTest
 		navigation.put(OeAVCTTest.class.getName() + OeAVCTTest.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// Classe SIMULATION
-		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + OeAVCTMasseSalarialeContractuel.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + OeAVCTMasseSalarialeFonctionnaire.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + OeAVCTMasseSalarialeContractuel.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + OeAVCTMasseSalarialeFonctionnaire.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// SUIVI MEDICAL //
@@ -415,7 +419,7 @@ public class RobotAgent extends Robot {
 		// POINTAGE //
 		// ///////////////////
 		// Classe OePTGDroits
-		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR, OePTGSelectionApprobateur.class.getName());
 
 		// pour la recherche d'un agent
 		// données perso

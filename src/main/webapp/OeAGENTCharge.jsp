@@ -4,7 +4,7 @@
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.metier.specificites.Rubrique"%>
 <HTML>
-	<jsp:useBean class="nc.mairie.gestionagent.process.OeAGENTCharge" id="process" scope="session"></jsp:useBean>	
+	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTCharge" id="process" scope="session"></jsp:useBean>	
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">

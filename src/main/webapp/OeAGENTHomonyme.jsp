@@ -19,7 +19,7 @@ document.formu.elements[nom].click();
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean
- class="nc.mairie.gestionagent.process.OeAGENTHomonyme"
+ class="nc.mairie.gestionagent.process.agent.OeAGENTHomonyme"
  id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple">
 	<%@ include file="BanniereErreur.jsp" %>

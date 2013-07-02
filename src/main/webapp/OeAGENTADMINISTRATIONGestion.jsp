@@ -37,7 +37,7 @@
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
-<jsp:useBean id="process" class="nc.mairie.gestionagent.process.OeAGENTADMINISTRATIONGestion" scope="session"></jsp:useBean>
+<jsp:useBean id="process" class="nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp"%>
 <%if(process.getAgentCourant() !=null){ %>

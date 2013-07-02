@@ -8,7 +8,7 @@
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>
-	<jsp:useBean class="nc.mairie.gestionagent.process.OePOSTEFichePoste" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFichePoste" id="process" scope="session"></jsp:useBean>
 	<HEAD>
 		<TITLE>OePOSTEFichePoste</TITLE>
 		

@@ -6,7 +6,7 @@
 <%@page import="nc.mairie.technique.Services"%>
 <HTML>
 	
-	<jsp:useBean class="nc.mairie.gestionagent.process.OeAGENTCarriere" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTCarriere" id="process" scope="session"></jsp:useBean>
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">

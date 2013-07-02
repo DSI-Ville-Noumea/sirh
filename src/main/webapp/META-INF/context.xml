@@ -41,7 +41,7 @@
 		jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
 		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-		url="jdbc:as400://oldmea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
 	<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
@@ -51,7 +51,7 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="opensirh" password="***REMOVED***" 
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
 	<!-- Quand SIRH passera sous Oracle -->
 	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
@@ -100,7 +100,7 @@
 	<Parameter name="AFFICHAGE_PARAM_ELEM_SALAIRE" 	description="Paramètre pour savoir si on affiche la page de paramétrage des éléments de salaire"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_POINTAGE" 	description="Paramètre pour savoir si on affiche le module pointage"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_SIMU" 	description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_SUIVI_MEDICAL" 	description="Paramètre pour savoir si on affiche le module suivi médicale"
@@ -146,7 +146,7 @@
 		<!-- <param-value>/mnt/sirh-document/Document_Associe/</param-value> -->
 		
 	<Parameter description="parametre utile au framework" name="HOST_SGBD" override="false" value="SIRH_DS2" />
-	<Parameter description="parametre pour accès à la DTAARA_CALC" name="HOST_SGBD_PAYE" override="false" value="oldmea" />
+	<Parameter description="parametre pour accès à la DTAARA_CALC" name="HOST_SGBD_PAYE" override="false" value="robinnw" />
 	<Parameter description="Login pour accès à la DTAARA_CALC" name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
 	<Parameter description="Pws pour accès à la DTAARA_CALC" name="HOST_SGBD_PWD" override="false" value="***REMOVED***" />
 	

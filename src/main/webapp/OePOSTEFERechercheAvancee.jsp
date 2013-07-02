@@ -2,7 +2,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.parametrage.CodeRome"%>
 <HTML>
-	<jsp:useBean class="nc.mairie.gestionagent.process.OePOSTEFERechercheAvancee" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFERechercheAvancee" id="process" scope="session"></jsp:useBean>
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">

@@ -34,7 +34,7 @@ document.formu.elements[nom].focus();
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
-<jsp:useBean class="nc.mairie.gestionagent.process.OePOSTEFECompetence" id="process" scope="session"></jsp:useBean>
+<jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFECompetence" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
