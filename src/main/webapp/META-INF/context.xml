@@ -96,7 +96,7 @@
 	<Parameter name="AFFICHAGE_AVCT_CARR" 	description="Paramètre pour savoir si on affiche l'onglet avancement mise à jour des carrières"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_TEST" 	description="Paramètre pour savoir si on affiche la page de test"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_PARAM_ELEM_SALAIRE" 	description="Paramètre pour savoir si on affiche la page de paramétrage des éléments de salaire"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_POINTAGE" 	description="Paramètre pour savoir si on affiche le module pointage"
@@ -104,17 +104,17 @@
 	<Parameter name="AFFICHAGE_SIMU" 	description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_SUIVI_MEDICAL" 	description="Paramètre pour savoir si on affiche le module suivi médicale"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_FICHE_EMPLOI" 	description="Paramètre pour savoir si on affiche le module fiche emploi"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_HSCT" 	description="Paramètre pour savoir si on affiche le module HSCT de l'agent"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_EAE_AGENT" 	description="Paramètre pour savoir si on affiche le module EAE de l'agent"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_AVCT" 	description="Paramètre pour savoir si on affiche le module Avancement"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_CAMPAGNE_EAE" 	description="Paramètre pour savoir si on affiche le module Campagne EAE"
-		value="FALSE" override="false" />
+		value="TRUE" override="false" />
 		
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats" name="REPERTOIRE_MODELES_CONTRATS"
