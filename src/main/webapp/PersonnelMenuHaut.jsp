@@ -149,10 +149,6 @@ document.write(menuSMConvocation.afficher());
 //***************************************************************
 //*               Le menu haut Pointage
 //***************************************************************
-var menuPTGDroit = new MenuHaut("Module_pointage_droitsPointage");
-menuPTGDroit.ajouterFils(new Lien("PTGDroits", "DROITS", "Gestion des droits", true, false,"POINTAGE/DROITS"));
-document.write(menuPTGDroit.afficher());
-
 var menuPTGVentilation = new MenuHaut("Module_pointage_ventilationPointage");
 menuPTGVentilation.ajouterFils(new Lien("PTGVentilationConvCol", "VENTILATION", "Ventilation et validation", true, false,"POINTAGE/VENT_CC"));
 menuPTGVentilation.ajouterFils(new Lien("PTGVentilationTitu", "VENTILATION", "Ventilation et validation", true, false,"POINTAGE/VENT_TITU"));
