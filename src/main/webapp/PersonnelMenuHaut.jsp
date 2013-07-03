@@ -153,10 +153,6 @@ var menuPTGDroit = new MenuHaut("Module_pointage_droitsPointage");
 menuPTGDroit.ajouterFils(new Lien("PTGDroits", "DROITS", "Gestion des droits", true, false,"POINTAGE/DROITS"));
 document.write(menuPTGDroit.afficher());
 
-var menuPTGSaisie = new MenuHaut("Module_pointage_saisiePointage");
-menuPTGSaisie.ajouterFils(new Lien("PTGSaisie", "SAISIE", "Saisie et approbation", true, false,"POINTAGE/SAISIE"));
-document.write(menuPTGSaisie.afficher());
-
 var menuPTGVentilation = new MenuHaut("Module_pointage_ventilationPointage");
 menuPTGVentilation.ajouterFils(new Lien("PTGVentilationConvCol", "VENTILATION", "Ventilation et validation", true, false,"POINTAGE/VENT_CC"));
 menuPTGVentilation.ajouterFils(new Lien("PTGVentilationTitu", "VENTILATION", "Ventilation et validation", true, false,"POINTAGE/VENT_TITU"));
