@@ -489,6 +489,11 @@ public class OeAGENTEae extends BasicProcess {
 				return performPB_VALIDER_DOCUMENT_CREATION(request);
 			}
 
+			// Si clic sur le bouton PB_ANNULER
+			if (testerParametre(request, getNOM_PB_ANNULER())) {
+				return performPB_ANNULER(request);
+			}
+
 		}
 		// Si pas de retour définit
 		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non géré par le process");
@@ -1121,6 +1126,7 @@ public class OeAGENTEae extends BasicProcess {
 		setEaeCourant(null);
 		multi = null;
 		isImporting = false;
+		fichierUpload = null;
 		return true;
 	}
 
@@ -4255,7 +4261,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");
