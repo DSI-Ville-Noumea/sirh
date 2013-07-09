@@ -1,8 +1,12 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -61,6 +65,11 @@ public class OePTGSaisie extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -80,5 +89,29 @@ public class OePTGSaisie extends BasicProcess {
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-SAISIE";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
+	 */
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+
+		List<ConsultPointageDto> listePointage = t.getVisualisationPointage("20130514", "20130515", null, null, null, null, null);
+		System.out.println("ici : " + listePointage.size());
+		return true;
 	}
 }

@@ -1,11 +1,13 @@
 package nc.mairie.spring.ws;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import flexjson.JSONDeserializer;
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
 
 	@Override
 	public List<AgentWithServiceDto> getApprobateurs() {
@@ -123,8 +126,36 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		String output = response.getEntity(String.class);
 
-		result = new JSONDeserializer<List<T>>().use(null, ArrayList.class).use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass)
+				.deserialize(output);
 
 		return result;
+	}
+
+	@Override
+	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, String codeService, Integer agentFrom, Integer agentTo,
+			Integer idRefEtat, Integer idRefType) {
+
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgVisulaisationPointage);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		parameters.put("from", fromDate);
+		parameters.put("to", toDate);
+		if (codeService != null)
+			parameters.put("codeService", codeService);
+		if (agentFrom != null)
+			parameters.put("agentFrom", agentFrom.toString());
+		if (agentTo != null)
+			parameters.put("agentTo", agentTo.toString());
+		if (idRefEtat != null)
+			parameters.put("etat", idRefEtat.toString());
+		if (idRefType != null)
+			parameters.put("type", idRefType.toString());
+
+		ClientResponse res = createAndFireRequest(parameters, url);
+
+		return readResponseAsList(ConsultPointageDto.class, res, url);
 	}
 }

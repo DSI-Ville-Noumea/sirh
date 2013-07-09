@@ -34,6 +34,7 @@
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
+		<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">
 		
 	</FORM>
 	</BODY>
