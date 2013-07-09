@@ -54,6 +54,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.oreilly.servlet.MultipartRequest;
+
 /**
  * Process OeAGENTVisiteMed Date de création : (20/06/11 15:25:51)
  * 
@@ -105,7 +107,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 	public boolean isImporting = false;
-	public com.oreilly.servlet.MultipartRequest multi = null;
+	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
 	public String focus = null;
@@ -3208,7 +3210,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		multi = null;
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
-			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
+			request.setCharacterEncoding("UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

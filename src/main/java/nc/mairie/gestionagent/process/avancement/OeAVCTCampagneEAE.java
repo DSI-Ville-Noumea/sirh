@@ -1578,7 +1578,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		multi = null;
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
-			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
+			request.setCharacterEncoding("UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

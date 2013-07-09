@@ -40,6 +40,8 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.oreilly.servlet.MultipartRequest;
+
 /**
  * Process OeAGENTHandicap Date de création : (01/07/11 09:42:08)
  * 
@@ -81,7 +83,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	private LienDocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 	public boolean isImporting = false;
-	public com.oreilly.servlet.MultipartRequest multi = null;
+	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
 	/**
@@ -173,8 +175,8 @@ public class OeAGENTHandicap extends BasicProcess {
 				Handicap h = (Handicap) getListeHandicap().get(i);
 				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap());
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
-						h.getIdHandicap());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT",
+						"HANDI", h.getIdHandicap());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -2410,7 +2412,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		multi = null;
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
-			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
+			request.setCharacterEncoding("UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

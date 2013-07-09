@@ -44,6 +44,8 @@ import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.oreilly.servlet.MultipartRequest;
+
 /**
  * Process OeAGENTActesDonneesPerso Date de création : (11/10/11 08:38:48)
  * 
@@ -76,7 +78,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	public String ACTION_CREATION = "Choix du fichier à ajouter";
 
 	public boolean isImporting = false;
-	public com.oreilly.servlet.MultipartRequest multi = null;
+	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 	
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesHSCT.class);
@@ -1106,7 +1108,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		multi = null;
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
-			multi = new com.oreilly.servlet.MultipartRequest(request, repTemp, 10 * 1024 * 1024);
+			request.setCharacterEncoding("UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");
