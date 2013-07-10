@@ -420,6 +420,8 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// Classe OePTGDroits
 		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR, OePTGSelectionApprobateur.class.getName());
+		navigation.put(OePTGSaisie.class.getName() + OePTGSaisie.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGSaisie.class.getName() + OePTGSaisie.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
 
 		// pour la recherche d'un agent
 		// données perso

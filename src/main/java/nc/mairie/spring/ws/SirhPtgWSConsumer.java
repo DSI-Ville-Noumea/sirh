@@ -8,6 +8,8 @@ import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.dto.RefEtatDto;
+import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
+	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
+	private static final String sirhPtgTypesPointage = "filtres/getTypes";
 
 	@Override
 	public List<AgentWithServiceDto> getApprobateurs() {
@@ -142,7 +146,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		parameters.put("from", fromDate);
-		parameters.put("to", toDate);
+		if (toDate != null)
+			parameters.put("to", toDate);
 		if (codeService != null)
 			parameters.put("codeService", codeService);
 		if (agentFrom != null)
@@ -157,5 +162,25 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(parameters, url);
 
 		return readResponseAsList(ConsultPointageDto.class, res, url);
+	}
+
+	@Override
+	public List<RefEtatDto> getEtatsPointage() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgEtatsPointage);
+
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+
+		return readResponseAsList(RefEtatDto.class, res, url);
+	}
+
+	@Override
+	public List<RefTypePointageDto> getTypesPointage() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgTypesPointage);
+
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+
+		return readResponseAsList(RefTypePointageDto.class, res, url);
 	}
 }
