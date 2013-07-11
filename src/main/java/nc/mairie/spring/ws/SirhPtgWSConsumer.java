@@ -137,8 +137,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, String codeService, Integer agentFrom, Integer agentTo,
-			Integer idRefEtat, Integer idRefType) {
+	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat,
+			Integer idRefType) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVisulaisationPointage);
@@ -148,12 +148,16 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		parameters.put("from", fromDate);
 		if (toDate != null)
 			parameters.put("to", toDate);
-		if (codeService != null)
-			parameters.put("codeService", codeService);
-		if (agentFrom != null)
-			parameters.put("agentFrom", agentFrom.toString());
-		if (agentTo != null)
-			parameters.put("agentTo", agentTo.toString());
+		if (idAgents != null) {
+			String csvId = "";
+			for (String id : idAgents) {
+				csvId += id + ",";
+			}
+			if (csvId != "") {
+				csvId = csvId.substring(0, csvId.length() - 1);
+			}
+			parameters.put("idAgents", csvId);
+		}
 		if (idRefEtat != null)
 			parameters.put("etat", idRefEtat.toString());
 		if (idRefType != null)

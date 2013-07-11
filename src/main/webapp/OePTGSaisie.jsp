@@ -74,7 +74,7 @@
 				<%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT()) %>
 			</SELECT>
 			<BR/><BR/>
-			<span class="sigp2Mandatory" style="width:80px">Date fin : </span>
+			<span class="sigp2" style="width:80px">Date fin : </span>
 			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX() %>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
 			<span class="sigp2Mandatory" style="width:80px"></span>

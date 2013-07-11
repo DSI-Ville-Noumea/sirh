@@ -237,7 +237,7 @@ public class OePTGSaisie extends BasicProcess {
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
 		if (!performControlerFiltres()) {
 			// "ERR500",
-			// "Les champs date de début et date de fin sont obligatoires."
+			// "Le champ date de début est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
 			return false;
 		}
@@ -247,11 +247,11 @@ public class OePTGSaisie extends BasicProcess {
 		String dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
 
 		String dateFin = getVAL_ST_DATE_MAX();
-		String dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
-
-		String service = getVAL_ST_CODE_SERVICE();
-		if (service.equals(Const.CHAINE_VIDE)) {
-			service = null;
+		String dateMax = null;
+		if (!dateFin.equals(Const.CHAINE_VIDE)) {
+			dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
+		} else {
+			dateMax = dateMin;
 		}
 		// etat
 		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
@@ -265,12 +265,45 @@ public class OePTGSaisie extends BasicProcess {
 		if (numType != -1 && numType != 0) {
 			type = (RefTypePointageDto) getListeTypes().get(numType - 1);
 		}
-		Integer idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(getVAL_ST_AGENT_MIN());
-		Integer idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(getVAL_ST_AGENT_MAX());
+		String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MIN();
+		String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MAX();
+
+		// si superieur à 1000 alors on bloque
+		List<String> idAgents = new ArrayList<String>();
+
+		if (idAgentMin != null && idAgentMax == null) {
+			if (!idAgents.contains(idAgentMin))
+				idAgents.add(idAgentMin);
+		} else if (idAgentMin != null && idAgentMax != null) {
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(), Integer.valueOf(idAgentMin),
+					Integer.valueOf(idAgentMax));
+			for (AgentNW ag : listAgent) {
+				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent())))
+					idAgents.add(ag.getIdAgent());
+			}
+		}
+
+		String codeService = getVAL_ST_CODE_SERVICE();
+		if (!codeService.equals(Const.CHAINE_VIDE)) {
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), codeService);
+			for (AgentNW ag : listAgent) {
+				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent())))
+					idAgents.add(ag.getIdAgent());
+			}
+		}
+
+		if (idAgents.size() == 0) {
+			idAgents = null;
+		} else if (idAgents.size() >= 1000) {
+			// "ERR501",
+			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
+			return false;
+		}
 
 		// TODO : mettre les bons filtres
-		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, service, idAgentMin, idAgentMax,
-				etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
+		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null,
+				type != null ? type.getIdRefTypePointage() : null);
 
 		return true;
 	}
@@ -278,10 +311,6 @@ public class OePTGSaisie extends BasicProcess {
 	private boolean performControlerFiltres() {
 		String dateDeb = getVAL_ST_DATE_MIN();
 		if (dateDeb.equals(Const.CHAINE_VIDE)) {
-			return false;
-		}
-		String dateFin = getVAL_ST_DATE_MAX();
-		if (dateFin.equals(Const.CHAINE_VIDE)) {
 			return false;
 		}
 		return true;

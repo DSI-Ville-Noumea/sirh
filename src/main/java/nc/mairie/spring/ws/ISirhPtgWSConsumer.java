@@ -13,8 +13,7 @@ public interface ISirhPtgWSConsumer {
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
 
-	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, String codeService, Integer agentFrom, Integer agentTo,
-			Integer idRefEtat, Integer idRefType);
+	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType);
 
 	List<RefEtatDto> getEtatsPointage();
 
