@@ -89,7 +89,7 @@ public class OeAVCTConvCol extends BasicProcess {
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 				addZone(getNOM_ST_MONTANT_PRIME(i),
 						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()) + " <br> "
-								+ (av.getMontantPrime1200() == null ? "&nbsp;" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+								+ (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
 			}
 		}
 	}
