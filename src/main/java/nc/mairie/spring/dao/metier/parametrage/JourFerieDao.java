@@ -48,7 +48,7 @@ public class JourFerieDao implements JourFerieDaoInterface {
 
 	@Override
 	public ArrayList<JourFerie> listerJourByAnnee(String annee) {
-		String sql = "select * from " + NOM_TABLE + " where year(" + CHAMP_DATE_JOUR + ")=?";
+		String sql = "select * from " + NOM_TABLE + " where year(" + CHAMP_DATE_JOUR + ")=? order by " + CHAMP_DATE_JOUR + " asc";
 
 		ArrayList<JourFerie> listeJourFerie = new ArrayList<JourFerie>();
 
