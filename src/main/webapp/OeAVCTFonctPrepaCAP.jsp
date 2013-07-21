@@ -237,7 +237,7 @@ function reduireHierarchy() {
 								<%} %>
 								
 								<td>
-								<%if(avct.getAvisSHD()!=null && (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("4")|| avct.getIdMotifAvct().equals("6"))){ %>
+								<%if(avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("4")|| avct.getIdMotifAvct().equals("6")|| avct.getIdMotifAvct().equals("3")){ %>
 								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
 								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>

@@ -172,8 +172,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private void afficheListeAvancement() throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
-			if (av.getIdAgent().equals("9003686"))
-				System.out.println("idi");
 			Integer i = Integer.valueOf(av.getIdAvct());
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
@@ -764,7 +762,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 							avct.setOrdreMerite(null);
 						}
 					}
-				} else if (avct.getIdMotifAvct().equals("6")) {
+				} else if (avct.getIdMotifAvct().equals("6") || avct.getIdMotifAvct().equals("3")) {
 					avct.setIdAvisCAP("2");
 					avct.setOrdreMerite(null);
 				} else {

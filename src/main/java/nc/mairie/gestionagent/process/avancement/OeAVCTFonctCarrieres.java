@@ -314,7 +314,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' ) and avct.ID_AVIS_EMP!= 5 ";
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' ) and (avct.ID_AVIS_EMP!= 5  or avct.ID_AVIS_EMP is null ) ";
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
 
 		afficheListeAvancement();
@@ -341,25 +341,34 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 
-			String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), av.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
-			String dateAvctFinale = Const.CHAINE_VIDE;
-			if (idAvisEmp.equals("MIN")) {
-				dateAvctFinale = av.getDateAvctMini();
-			} else if (idAvisEmp.equals("MOY")) {
-				dateAvctFinale = av.getDateAvctMoy();
-			} else if (idAvisEmp.equals("MAX")) {
-				dateAvctFinale = av.getDateAvctMaxi();
-			} else if (idAvisEmp.equals("FAV")) {
-				dateAvctFinale = av.getDateAvctMoy();
+			if (av.getIdAvisEmp() != null) {
+				String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), av.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
+				String dateAvctFinale = Const.CHAINE_VIDE;
+				if (idAvisEmp.equals("MIN")) {
+					dateAvctFinale = av.getDateAvctMini();
+				} else if (idAvisEmp.equals("MOY")) {
+					dateAvctFinale = av.getDateAvctMoy();
+				} else if (idAvisEmp.equals("MAX")) {
+					dateAvctFinale = av.getDateAvctMaxi();
+				} else if (idAvisEmp.equals("FAV")) {
+					dateAvctFinale = av.getDateAvctMoy();
+				}
+				addZone(getNOM_ST_DATE_AVCT(i), dateAvctFinale);
+			} else {
+				if (av.getIdMotifAvct().equals("3")) {
+					addZone(getNOM_ST_DATE_AVCT(i), av.getDateAvctMoy());
+				} else {
+					addZone(getNOM_ST_DATE_AVCT(i), "&nbsp;");
+				}
 			}
-			addZone(getNOM_ST_DATE_AVCT(i), dateAvctFinale);
 
 			addZone(getNOM_ST_NUM_ARRETE(i), av.getNumArrete());
 			addZone(getNOM_ST_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
 			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) ? getCHECKED_ON()
 					: getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
-			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : "oui");
+			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null || av.getCarriereSimu().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: "oui");
 
 		}
 	}
@@ -415,8 +424,54 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la carrière en cours
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCarr);
+
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
+
+						// pourla date d'avancement
+						String dateAvctFinale = Const.ZERO;
+						String idAvisEmp = null;
+						if (avct.getIdAvisEmp() != null) {
+							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
+							if (idAvisEmp.equals("MIN")) {
+								dateAvctFinale = avct.getDateAvctMini();
+							} else if (idAvisEmp.equals("MOY")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+							} else if (idAvisEmp.equals("MAX")) {
+								dateAvctFinale = avct.getDateAvctMaxi();
+							} else if (idAvisEmp.equals("FAV")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+							} else {
+								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule()
+										+ "); ";
+								continue;
+							}
+						} else {
+							if (avct.getIdMotifAvct().equals("3")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+								idAvisEmp = "MOY";
+							} else {
+								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule()
+										+ "); ";
+								continue;
+							}
+						}
+
+						// il faut faire attention qu'il n'y a pas de carriere
+						// de simu deja en cours
+						// TODO
+						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr, Services.convertitDate(dateAvctFinale, "dd/MM/yyyy", "yyyyMMdd"));
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+							// on met un 'S' dans son avancement
+							avct.setCarriereSimu("S");
+							avct.modifierAvancement(getTransaction());
+							continue;
+						}
+						
+
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 						addZone(getNOM_ST_ETAT(i), avct.getEtat());
@@ -424,22 +479,6 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						String dateArr = getVAL_ST_DATE_ARR_GLOBALE();
 						avct.setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? null : dateArr);
 						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NUM_ARRETE(i));
-
-						// pourla date d'avancement
-						String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp()).getLibCourtAvisCAP().toUpperCase();
-						String dateAvctFinale = Const.ZERO;
-						if (idAvisEmp.equals("MIN")) {
-							dateAvctFinale = avct.getDateAvctMini();
-						} else if (idAvisEmp.equals("MOY")) {
-							dateAvctFinale = avct.getDateAvctMoy();
-						} else if (idAvisEmp.equals("MAX")) {
-							dateAvctFinale = avct.getDateAvctMaxi();
-						} else if (idAvisEmp.equals("FAV")) {
-							dateAvctFinale = avct.getDateAvctMoy();
-						} else {
-							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
-							continue;
-						}
 
 						// on ferme cette carriere
 						carr.setDateFin(dateAvctFinale);

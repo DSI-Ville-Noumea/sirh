@@ -600,7 +600,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				if (avct.getIdMotifAvct().equals("4")) {
 					// on fait une liste des arretes changement classe
 					listeImpressionChangementClasse.add(Integer.valueOf(avct.getIdAgent()));
-				} else if (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("6")) {
+				} else if (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("6") || avct.getIdMotifAvct().equals("3")) {
 					// on fait une liste des arretes avancement diffé
 					listeImpressionAvancementDiff.add(Integer.valueOf(avct.getIdAgent()));
 				} else {
