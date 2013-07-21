@@ -422,7 +422,11 @@ public class RobotAgent extends Robot {
 		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR, OePTGSelectionApprobateur.class.getName());
 		navigation.put(OePTGSaisie.class.getName() + OePTGSaisie.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGSaisie.class.getName() + OePTGSaisie.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
-
+		
+		
+		
+		
+		////////////////////////////////////////		
 		// pour la recherche d'un agent
 		// données perso
 		navigation.put(OeAGENTEtatCivil.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
@@ -476,6 +480,10 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTCampagnePlanification.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneGestionEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneTableauBord.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		//SIMU
+		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// SM - Suivi Medical
 		navigation.put(OeSMConvocation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
