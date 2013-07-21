@@ -72,6 +72,44 @@ function SelectLigne(id,tailleTableau)
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+<script type="text/javascript">
+	function activeRegul() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+				Integer i = Integer.valueOf(avct.getIdAvct());
+			%>
+			var box = document.formu.elements['NOM_CK_REGUL_ARR_IMPR_' + <%=i%>];
+			if (document.formu.elements['CHECK_ALL_REGUL'].checked) {
+				if (box != null && !box.disabled) {
+					box.checked = true;
+				}
+			} else {
+				if (box != null && !box.disabled) {
+					box.checked = false;
+				}
+			}
+			<%}%>
+}
+	function activeImpr() {						
+		<%
+		for (int j = 0;j<process.getListeAvct().size();j++){
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
+		%>
+		var box = document.formu.elements['NOM_CK_VALID_ARR_IMPR_' + <%=i%>];
+		if (document.formu.elements['CHECK_ALL_IMPR'].checked) {
+			if (box != null && !box.disabled) {
+				box.checked = true;
+			}
+		} else {
+			if (box != null && !box.disabled) {
+				box.checked = false;
+			}
+		}
+		<%}%>
+}
+</script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
@@ -114,7 +152,7 @@ function SelectLigne(id,tailleTableau)
 						<%=tree.getJavaScriptLine()%>
 						<%}%>
 						document.write(d);
-				
+										
 						d.closeAll();
 						<% if (theNode !=0) { %>
 							d.openTo(<%=theNode%>,true);
@@ -151,8 +189,8 @@ function SelectLigne(id,tailleTableau)
 							<th>Observations</th>
 							<th>Verif SGC</th>	
 							<th>Date Avct</th>
-							<th>Regul.</th>
-							<th>A imprimer</th>	
+							<th>Regul. <br> <INPUT type="checkbox" name="CHECK_ALL_REGUL" onClick='activeRegul()'></th>
+							<th>A imprimer<br> <INPUT type="checkbox" name="CHECK_ALL_IMPR" onClick='activeImpr()'></th>	
 							<th>Imprimé le <br> A <br> PAR</th>						
 						</tr>
 					</thead>
