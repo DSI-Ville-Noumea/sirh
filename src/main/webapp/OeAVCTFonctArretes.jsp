@@ -109,6 +109,24 @@ function SelectLigne(id,tailleTableau)
 		}
 		<%}%>
 }
+	function activeVerifSGC() {						
+		<%
+		for (int j = 0;j<process.getListeAvct().size();j++){
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+			Integer i = Integer.valueOf(avct.getIdAvct());
+		%>
+		var box = document.formu.elements['NOM_CK_VALID_ARR_' + <%=i%>];
+		if (document.formu.elements['CHECK_ALL_SGC'].checked) {
+			if (box != null && !box.disabled) {
+				box.checked = true;
+			}
+		} else {
+			if (box != null && !box.disabled) {
+				box.checked = false;
+			}
+		}
+		<%}%>
+}
 </script>
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
@@ -184,10 +202,10 @@ function SelectLigne(id,tailleTableau)
 							<th>Libel. grade <br> Ancien <br> Nouveau</th>
 							<th>Date Avct Mini <br> Moy <br> Maxi</th>
 							<th>Prop avct <br> Type <br> SHD <br> VDN</th>
-							<th>Date CAP</th>
 							<th>Avis CAP <br> Decision Employeur</th>	
 							<th>Observations</th>
-							<th>Verif SGC</th>	
+							<th>Verif SGC<br> <INPUT type="checkbox" name="CHECK_ALL_SGC" onClick='activeVerifSGC()'></th>	
+							<th>Date CAP</th>
 							<th>Date Avct</th>
 							<th>Regul. <br> <INPUT type="checkbox" name="CHECK_ALL_REGUL" onClick='activeRegul()'></th>
 							<th>A imprimer<br> <INPUT type="checkbox" name="CHECK_ALL_IMPR" onClick='activeImpr()'></th>	
@@ -208,8 +226,7 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>								
+								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
 								<td>								
 									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
@@ -245,23 +262,23 @@ function SelectLigne(id,tailleTableau)
 								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
 									<textarea <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "readonly='readonly'" : "" %> rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
 								<%} %>
-								</td>
+								</td>									
 								<td>
 								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
-									<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct) %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
-									<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_DATE_AVCT(indiceAvct)%>" value="DATE">
+									<INPUT style="visibility: visible;"type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
 								<%} %>
 								</td>
+								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>
-								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()))&& !process.isDefavorable(indiceAvct)){ %>
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%} %>
 								</td>
 								<td>	
-								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())|| process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()))&& !process.isDefavorable(indiceAvct)){ %>							
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>							
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
