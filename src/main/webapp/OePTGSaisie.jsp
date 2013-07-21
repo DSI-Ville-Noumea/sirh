@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.dto.ConsultPointageDto"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
@@ -10,12 +11,19 @@
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
-		<TITLE>Droits des pointages</TITLE>		
+<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+<LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
+		<TITLE>Visualisation des pointages</TITLE>		
+
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
+
 <SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
 		function executeBouton(nom)
@@ -124,6 +132,83 @@
 			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
 			<BR/><BR/>				
+		</FIELDSET>
+		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+		    <legend class="sigp2Legend">Gestion des pointages</legend>
+			<BR/>
+			<table class="display" id="tabPTG">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Nom <br> Prénom <br> Matr</th>
+						<th>Type </th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%for (int i = 0;i<process.getListePointage().size();i++){
+					ConsultPointageDto ptg = process.getListePointage().get(i);
+					Integer indicePtg = ptg.getIdPointage();
+				%>
+						<tr>
+							<td>&nbsp;</td>
+							<td><%=process.getVAL_ST_AGENT(indicePtg)%></td>
+							<td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
+							<td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
+						</tr>
+				<%}%>
+				</tbody>
+			</table>
+			<script type="text/javascript">
+				$(document).ready(function() {
+				    $('#"tabPTG"').dataTable({
+						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+						"aoColumns": [null,null,null,null],
+						"sDom": '<"H"fl>t<"F"iT>',
+						"sScrollY": "375px",
+						"bPaginate": false,
+						"oTableTools": {
+							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"pointages","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
+							"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+						}
+				    });
+				} );
+			</script>
+			<BR/>	
+		</FIELDSET>
+		
+	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+		    <legend class="sigp2Legend">Gestion des avancements des fonctionnaires</legend>
+			<BR/>
+				<table class="display" id="tabAvctFonct">
+					<thead>
+						<tr>
+							<th rowspan="2">Vérifié par</th>
+						</tr>
+					</thead>
+					<tbody>
+							<tr>
+								<td>&nbsp;</td>
+						    </tr>
+					</tbody>
+				</table>
+				<script type="text/javascript">
+					$(document).ready(function() {
+					    $('#tabAvctFonct').dataTable({			    						    
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"aoColumns": [null],
+							"sDom": '<"H"fl>t<"F"iT>',
+							"sScrollY": "375px",
+							"bPaginate": false,
+							"oTableTools": {
+								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"avctFonctionnaires","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+							}
+					    });
+					} );
+				</script>
+			<BR/>
 		</FIELDSET>
 		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">

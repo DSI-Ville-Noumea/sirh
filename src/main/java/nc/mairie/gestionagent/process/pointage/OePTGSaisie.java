@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,13 +9,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -24,8 +25,6 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -41,12 +40,13 @@ public class OePTGSaisie extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
 
+	private ArrayList<ConsultPointageDto> listePointage;
+
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
 
 	private ArrayList<RefEtatDto> listeEtats;
 	private ArrayList<RefTypePointageDto> listeTypes;
-
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
@@ -69,7 +69,6 @@ public class OePTGSaisie extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		initialiseDao();
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
@@ -86,12 +85,6 @@ public class OePTGSaisie extends BasicProcess {
 			if (agt != null)
 				addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
 		}
-
-	}
-
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
 
 	}
 
@@ -305,7 +298,28 @@ public class OePTGSaisie extends BasicProcess {
 		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null,
 				type != null ? type.getIdRefTypePointage() : null);
 
+		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
+		afficheListePointages();
+
 		return true;
+	}
+
+	private void afficheListePointages() {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		for (int p = 0; p < getListePointage().size(); p++) {
+			ConsultPointageDto ptg = getListePointage().get(p);
+			Integer i = ptg.getIdPointage();
+			AgentDto agtPtg = ptg.getAgent();
+
+			addZone(getNOM_ST_AGENT(i),
+					agtPtg.getNom() + " " + agtPtg.getPrenom() + " ("
+							+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ") ");
+			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
+
+		}
 	}
 
 	private boolean performControlerFiltres() {
@@ -704,5 +718,67 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
 		this.listeTypes = listeTypes;
+	}
+
+	public ArrayList<ConsultPointageDto> getListePointage() {
+		return listePointage == null ? new ArrayList<ConsultPointageDto>() : listePointage;
+	}
+
+	public void setListePointage(ArrayList<ConsultPointageDto> listePointage) {
+		this.listePointage = listePointage;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_AGENT(int i) {
+		return "NOM_ST_AGENT_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_AGENT(int i) {
+		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_TYPE(int i) {
+		return "NOM_ST_TYPE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_TYPE(int i) {
+		return getZone(getNOM_ST_TYPE(i));
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE(int i) {
+		return "NOM_ST_DATE_" + i;
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE(int i) {
+		return getZone(getNOM_ST_DATE(i));
 	}
 }
