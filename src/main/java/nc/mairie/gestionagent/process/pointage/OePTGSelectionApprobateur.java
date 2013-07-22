@@ -347,6 +347,17 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		ArrayList<AgentNW> xcludeListe = getListeApprobateurs();
 		aListe = elim_doublure_approbateur(aListe, xcludeListe);
 
+		Comparator<AgentNW> comp = new Comparator<AgentNW>() {
+			@Override
+			public int compare(AgentNW o1, AgentNW o2) {
+				return o1.getNomAgent().compareTo(o2.getNomAgent());
+			}
+
+		};
+
+		Collections.sort(aListe, comp);
+		
+
 		setListeApprobateursPossible(null);
 		setListeApprobateursPossible(aListe);
 		afficheListeApproPossible(request);
@@ -542,8 +553,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_POSTE_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_LIB_POSTE_AGENT Date
+	 * de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getNOM_ST_LIB_POSTE_AGENT(int i) {
@@ -551,8 +562,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_LIB_POSTE_AGENT Date
-	 * de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_LIB_POSTE_AGENT Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
 	public String getVAL_ST_LIB_POSTE_AGENT(int i) {
