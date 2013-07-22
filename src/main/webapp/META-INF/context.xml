@@ -42,7 +42,7 @@
 		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
 		
-		<!-- <Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
+		<!--<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true"
 		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1"
 		validationInterval="30000" timeBetweenEvictionRunsMillis="30000"
@@ -64,6 +64,17 @@
 		jmxEnabled="true" username="opensirh" password="***REMOVED***" 
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
+
+	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
+		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
+		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+		validationQuery="select 1 from sysdummy1" validationInterval="30000"
+		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" 
+		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
+		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+		jmxEnabled="true" username="opensirh2" password="***REMOVED***" 
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" />-->
 
 	<!-- Quand SIRH passera sous Oracle -->
 	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
@@ -126,7 +137,8 @@
 	<Parameter name="AFFICHAGE_AVCT" 	description="Paramètre pour savoir si on affiche le module Avancement"
 		value="TRUE" override="false" />
 	<Parameter name="AFFICHAGE_CAMPAGNE_EAE" 	description="Paramètre pour savoir si on affiche le module Campagne EAE"
-		value="TRUE" override="false" />
+		value="TRUE" override="false" />		
+		
 		
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats" name="REPERTOIRE_MODELES_CONTRATS"
