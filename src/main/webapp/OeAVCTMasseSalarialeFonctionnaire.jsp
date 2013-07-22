@@ -157,8 +157,8 @@ function reduireHierarchy() {
 					<tbody>
 					<%
 					if (process.getListeAvct()!=null){
-						for (int i = 0;i<process.getListeAvct().size();i++){
-							Integer indiceAvct = Integer.valueOf(process.getListeAvct().get(i).getIdAvct());
+						for (int j = 0;j<process.getListeAvct().size();j++){
+							Integer indiceAvct = Integer.valueOf(process.getListeAvct().get(j).getIdAvct());
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -194,7 +194,7 @@ function reduireHierarchy() {
 										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>									
-									<%if(process.getVAL_ST_ETAT(indiceAvct).equals("A")){ %>
+									<%if(process.getVAL_ST_ETAT(indiceAvct).equals("E")){ %>
 										<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> ></td>																
 									<%}else{ %>
 										<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																

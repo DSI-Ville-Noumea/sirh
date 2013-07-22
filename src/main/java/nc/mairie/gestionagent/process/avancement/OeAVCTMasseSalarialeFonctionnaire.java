@@ -888,7 +888,13 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, listeSousService));
+		// recuperation agent
+		AgentNW agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+		}
+
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent, listeSousService));
 		afficherListeAvct(request);
 
 		return true;
@@ -1600,13 +1606,21 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// precedente
 
 						String libCourtAvisCap = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisCAP()).getLibCourtAvisCAP();
-						String dateAvct = Const.CHAINE_VIDE;
+						String dateAvct = avct.getDateAvctMoy();
 						if (libCourtAvisCap.toUpperCase().equals("MIN")) {
 							dateAvct = avct.getDateAvctMini();
 						} else if (libCourtAvisCap.toUpperCase().equals("MOY")) {
 							dateAvct = avct.getDateAvctMoy();
 						} else if (libCourtAvisCap.toUpperCase().equals("MAX")) {
 							dateAvct = avct.getDateAvctMaxi();
+						} else if (libCourtAvisCap.toUpperCase().equals("FAV")) {
+							dateAvct = avct.getDateAvctMoy();
+						} else {
+							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+							continue;
+						}
+						if (dateAvct == null || dateAvct.equals(Const.CHAINE_VIDE)) {
+							dateAvct = avct.getDateAvctMoy();
 						}
 
 						// on ferme cette carriere
@@ -1627,6 +1641,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// la duree MOY
 						calculAccBm(avct, carr, nouvelleCarriere, libCourtAvisCap);
 
+						if(getTransaction().isErreur()){
+							System.out.println("ici");
+						}
+
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
@@ -1641,6 +1659,11 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
+
+						if(getTransaction().isErreur()){
+							System.out.println("ici");
+						}
+						avct.modifierAvancement(getTransaction());
 
 						// on enregistre
 
@@ -1761,7 +1784,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
 		// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 
-		avct.modifierAvancement(getTransaction());
+		//avct.modifierAvancement(getTransaction());
 
 		// on met à jour les champs pour la creation de la carriere
 		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
