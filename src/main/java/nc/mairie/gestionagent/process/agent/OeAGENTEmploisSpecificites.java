@@ -1,13 +1,16 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
@@ -26,6 +29,7 @@ import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -79,7 +83,8 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 	private ArrayList<TypeAvantage> listeTypeAvantage;
 	private ArrayList<NatureAvantage> listeNatureAvantage;
-	private ArrayList<Rubrique> listeRubrique;
+	private List<Rubrique> listeRubrique;
+	private List<RefPrimeDto> listePrimes;
 	private ArrayList<TypeDelegation> listeTypeDelegation;
 	private ArrayList<TypeRegIndemn> listeTypeRegIndemn;
 
@@ -135,8 +140,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				// Recherche des informations à afficher
 				setFichePosteCourant(FichePoste.chercherFichePoste(getTransaction(), getAffectationCourant().getIdFichePoste()));
 				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
-					setFichePosteSecondaireCourant(FichePoste.chercherFichePoste(getTransaction(), getAffectationCourant()
-							.getIdFichePosteSecondaire()));
+					setFichePosteSecondaireCourant(FichePoste.chercherFichePoste(getTransaction(), getAffectationCourant().getIdFichePosteSecondaire()));
 				}
 			} else if (affActives.size() == 0) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR083"));
@@ -180,14 +184,28 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		initialisePrimePointage();
 	}
 
+	/**
+	 * CLV #3264 Initialisation de la liste déroulantes des primes.
+	 * @throws Exception 
+	 */
+	private List<RefPrimeDto> initialiseListeDeroulantePrimes() throws Exception {
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCourant);
+		List<RefPrimeDto> primes = t.getPrimes(carr.getStatutCarriere(carr.getCodeCategorie()));
+		System.out.println("Nombre de primes reçues:" + primes.size());
+		return primes;
+	}
+	/**
+	 * fin CLV #3264 
+	 */
+	
 	private void initialisePrimePointage() throws Exception {
 
 		// Primes pointages
 		if (getListePrimePointageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getFichePosteSecondaireCourant() != null) {
-				getListePrimePointageFP().addAll(
-						getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteSecondaireCourant().getIdFichePoste())));
+				getListePrimePointageFP().addAll(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteSecondaireCourant().getIdFichePoste())));
 			}
 		}
 
@@ -199,8 +217,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
 				PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(i);
 				if (prime != null) {
-					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
-							.toString());
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique().toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
 					indicePrime++;
@@ -211,8 +228,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
 				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
 				if (prime != null && !getListePrimePointageFP().contains(prime)) {
-					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
-							.toString());
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique().toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
 					indicePrime++;
@@ -220,18 +236,15 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			}
 		}
 		if (getListePrimePointageAffAAjouter() != null && getListePrimePointageAffAAjouter().size() != 0) {
-			for (int k = 0; k < getListePrimePointageAffAAjouter().size(); k++) {
-				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffAAjouter().get(k);
+			for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 				if (prime != null) {
-					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique()
-							.toString());
+					Rubrique rubr = prime.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), prime.getNumRubrique().toString());
 					if (rubr != null && rubr.getNumRubrique() != null)
 						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrime), rubr.getLibRubrique());
 					indicePrime++;
 				}
 			}
 		}
-
 	}
 
 	private void initialiseRegime() throws Exception {
@@ -239,8 +252,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		if (getListeRegimeFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListeRegimeFP(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
 			if (getFichePosteSecondaireCourant() != null) {
-				getListeRegimeFP().addAll(
-						RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+				getListeRegimeFP().addAll(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
 			}
 		}
 		if (getListeRegimeAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
@@ -300,8 +312,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		if (getListeDelegationFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListeDelegationFP(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
 			if (getFichePosteSecondaireCourant() != null) {
-				getListeDelegationFP()
-						.addAll(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+				getListeDelegationFP().addAll(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
 			}
 		}
 		if (getListeDelegationAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
@@ -349,8 +360,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		if (getListeAvantageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListeAvantageFP(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourant().getIdFichePoste()));
 			if (getFichePosteSecondaireCourant() != null) {
-				getListeAvantageFP().addAll(
-						AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
+				getListeAvantageFP().addAll(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteSecondaireCourant().getIdFichePoste()));
 			}
 		}
 		if (getListeAvantageAFF() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
@@ -362,8 +372,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageFP().get(i);
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
 
 					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
@@ -381,8 +390,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAFF().get(j);
 				if (aAvNat != null && !getListeAvantageFP().contains(aAvNat)) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
 					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
 					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
@@ -400,8 +408,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAAjouter().get(k);
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(), aAvNat.getNumRubrique());
 					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
 					addZone(getNOM_ST_LST_AVANTAGE_MONTANT(indiceAvNat), aAvNat.getMontant());
@@ -445,7 +452,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 
 		// Si liste rubrique vide alors affectation
-		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide || getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
+		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
 			ArrayList<Rubrique> rubrique = Rubrique.listerRubrique7000(getTransaction());
 			setListeRubrique(rubrique);
 
@@ -461,12 +468,27 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				}
 				setLB_RUBRIQUE_AVANTAGE(aFormatRub.getListeFormatee(true));
 				setLB_RUBRIQUE_REGIME(aFormatRub.getListeFormatee(true));
-				setLB_RUBRIQUE_PRIME_POINTAGE(aFormatRub.getListeFormatee(true));
 			} else {
 				setLB_RUBRIQUE_AVANTAGE(null);
 				setLB_RUBRIQUE_REGIME(null);
-				setLB_RUBRIQUE_PRIME_POINTAGE(null);
 			}
+		}
+
+		/***
+		 * CLV #3264
+		 */
+		if (getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
+			setListePrimes(initialiseListeDeroulantePrimes());
+			if (getListePrimes() != null) {
+				String[] content = new String[getListePrimes().size()];
+				for (int i = 0; i < getListePrimes().size(); i++) {
+					content[i] = getListePrimes().get(i).getNumRubrique() + " - " + getListePrimes().get(i).getLibelle();
+				}
+				setLB_RUBRIQUE_PRIME_POINTAGE(content);
+			}
+			/***
+			 * fin CLV #3264
+			 */
 		}
 
 		// Si liste type délégation vide alors affectation
@@ -669,8 +691,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		// Si la spécificité à supprimer est déjà en base
 		if (indiceEltASupprimer - getListeAvantageFP().size() + nbAvNatFPSelected < getListeAvantageAFF().size()) {
-			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAFF().get(
-					indiceEltASupprimer - getListeAvantageFP().size() + nbAvNatFPSelected);
+			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAFF().get(indiceEltASupprimer - getListeAvantageFP().size() + nbAvNatFPSelected);
 			if (avNatASupprimer != null) {
 				getListeAvantageAFF().remove(avNatASupprimer);
 				getListeAvantageASupprimer().add(avNatASupprimer);
@@ -680,8 +701,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// Si la spécificité à supprimer n'est pas encore en base mais vient
 		// d'être ajoutée par l'utilisateur
 		else {
-			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAAjouter().get(
-					indiceEltASupprimer - getListeAvantageFP().size() - getListeAvantageAFF().size() + nbAvNatFPSelected);
+			AvantageNature avNatASupprimer = (AvantageNature) getListeAvantageAAjouter().get(indiceEltASupprimer - getListeAvantageFP().size() - getListeAvantageAFF().size() + nbAvNatFPSelected);
 			if (avNatASupprimer != null) {
 				getListeAvantageAAjouter().remove(avNatASupprimer);
 			}
@@ -715,8 +735,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		// Si la spécificité à supprimer est déjà en base
 		if (indiceEltASupprimer - getListeDelegationFP().size() + nbDelFPSelected < getListeDelegationAFF().size()) {
-			Delegation delASupprimer = (Delegation) getListeDelegationAFF()
-					.get(indiceEltASupprimer - getListeDelegationFP().size() + nbDelFPSelected);
+			Delegation delASupprimer = (Delegation) getListeDelegationAFF().get(indiceEltASupprimer - getListeDelegationFP().size() + nbDelFPSelected);
 			if (delASupprimer != null) {
 				getListeDelegationAFF().remove(delASupprimer);
 				getListeDelegationASupprimer().add(delASupprimer);
@@ -726,8 +745,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// Si la spécificité à supprimer n'est pas encore en base mais vient
 		// d'être ajoutée par l'utilisateur
 		else {
-			Delegation delASupprimer = (Delegation) getListeDelegationAAjouter().get(
-					indiceEltASupprimer - getListeDelegationFP().size() - getListeDelegationAFF().size() + nbDelFPSelected);
+			Delegation delASupprimer = (Delegation) getListeDelegationAAjouter().get(indiceEltASupprimer - getListeDelegationFP().size() - getListeDelegationAFF().size() + nbDelFPSelected);
 			if (delASupprimer != null) {
 				getListeDelegationAAjouter().remove(delASupprimer);
 			}
@@ -761,8 +779,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		// Si la spécificité à supprimer est déjà en base
 		if (indiceEltASupprimer - getListeRegimeFP().size() + nbRegIndemnFPSelected < getListeRegimeAFF().size()) {
-			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAFF().get(
-					indiceEltASupprimer - getListeRegimeFP().size() + nbRegIndemnFPSelected);
+			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAFF().get(indiceEltASupprimer - getListeRegimeFP().size() + nbRegIndemnFPSelected);
 			if (regIndemnASupprimer != null) {
 				getListeRegimeAFF().remove(regIndemnASupprimer);
 				getListeRegimeASupprimer().add(regIndemnASupprimer);
@@ -772,8 +789,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// Si la spécificité à supprimer n'est pas encore en base mais vient
 		// d'être ajoutée par l'utilisateur
 		else {
-			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAAjouter().get(
-					indiceEltASupprimer - getListeRegimeFP().size() - getListeRegimeAFF().size() + nbRegIndemnFPSelected);
+			RegimeIndemnitaire regIndemnASupprimer = (RegimeIndemnitaire) getListeRegimeAAjouter().get(indiceEltASupprimer - getListeRegimeFP().size() - getListeRegimeAFF().size() + nbRegIndemnFPSelected);
 			if (regIndemnASupprimer != null) {
 				getListeRegimeAAjouter().remove(regIndemnASupprimer);
 			}
@@ -807,8 +823,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		// Si la spécificité à supprimer est déjà en base
 		if (indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected < getListePrimePointageAFF().size()) {
-			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAFF().get(
-					indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected);
+			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAFF().get(indiceEltASupprimer - getListePrimePointageFP().size() + nbPrimePointageFPSelected);
 			if (primePointageASupprimer != null) {
 				getListePrimePointageAFF().remove(primePointageASupprimer);
 				getListePrimePointageAffASupprimer().add(primePointageASupprimer);
@@ -818,8 +833,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// Si la spécificité à supprimer n'est pas encore en base mais vient
 		// d'être ajoutée par l'utilisateur
 		else {
-			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAffAAjouter().get(
-					indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size() + nbPrimePointageFPSelected);
+			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAffAAjouter().get(indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size() + nbPrimePointageFPSelected);
 			if (primePointageASupprimer != null) {
 				getListePrimePointageAffAAjouter().remove(primePointageASupprimer);
 			}
@@ -913,8 +927,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		for (int i = 0; i < getListeAvantageASupprimer().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageASupprimer().get(i);
-			AvantageNatureAFF avNatAFF = AvantageNatureAFF.chercherAvantageNatureAFF(getTransaction(), getAffectationCourant().getIdAffectation(),
-					avNat.getIdAvantage());
+			AvantageNatureAFF avNatAFF = AvantageNatureAFF.chercherAvantageNatureAFF(getTransaction(), getAffectationCourant().getIdAffectation(), avNat.getIdAvantage());
 			avNatAFF.supprimerAvantageNatureAFF(getTransaction());
 			avNat.supprimerAvantageNature(getTransaction());
 			if (getTransaction().isErreur()) {
@@ -936,8 +949,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		for (int i = 0; i < getListeDelegationASupprimer().size(); i++) {
 			Delegation deleg = (Delegation) getListeDelegationASupprimer().get(i);
-			DelegationAFF delAFF = DelegationAFF.chercherDelegationAFF(getTransaction(), getAffectationCourant().getIdAffectation(),
-					deleg.getIdDelegation());
+			DelegationAFF delAFF = DelegationAFF.chercherDelegationAFF(getTransaction(), getAffectationCourant().getIdAffectation(), deleg.getIdDelegation());
 			delAFF.supprimerDelegationAFF(getTransaction());
 			deleg.supprimerDelegation(getTransaction());
 			if (getTransaction().isErreur()) {
@@ -959,8 +971,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		}
 		for (int i = 0; i < getListeRegimeASupprimer().size(); i++) {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeASupprimer().get(i);
-			RegIndemnAFF riAFF = RegIndemnAFF.chercherRegIndemnAFF(getTransaction(), getAffectationCourant().getIdAffectation(),
-					regIndemn.getIdRegIndemn());
+			RegIndemnAFF riAFF = RegIndemnAFF.chercherRegIndemnAFF(getTransaction(), getAffectationCourant().getIdAffectation(), regIndemn.getIdRegIndemn());
 			riAFF.supprimerRegIndemnAFF(getTransaction());
 			regIndemn.supprimerRegimeIndemnitaire(getTransaction());
 			if (getTransaction().isErreur()) {
@@ -971,9 +982,8 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 		// Sauvegarde des nouvelles primes de pointage et suppression des
 		// anciens
-		for (int i = 0; i < getListePrimePointageAffAAjouter().size(); i++) {
+		for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 			try {
-				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffAAjouter().get(i);
 				getPrimePointageAffDao().creerPrimePointageAff(prime.getNumRubrique(), Integer.valueOf(getAffectationCourant().getIdAffectation()));
 
 			} catch (Exception e) {
@@ -981,11 +991,9 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 				return false;
 			}
 		}
-		for (int i = 0; i < getListePrimePointageAffASupprimer().size(); i++) {
+		for (PrimePointageAff prime : getListePrimePointageAffASupprimer()) {
 			try {
-				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAffASupprimer().get(i);
-				getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()),
-						prime.getNumRubrique());
+				getPrimePointageAffDao().supprimerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation()), prime.getNumRubrique());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimée.");
 				return false;
@@ -1025,16 +1033,13 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE());
 
-			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT())
-					: -1);
+			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
-			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())
-					: -1);
+			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage)).getIdNatureAvantage());
-			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
+			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
 			if (indiceRubAvantage > 0)
-				avNat.setNumRubrique(((Rubrique) getListeRubrique().get(indiceRubAvantage - 1)).getNumRubrique());
+				avNat.setNumRubrique(getListeRubrique().get(indiceRubAvantage - 1).getNumRubrique());
 
 			if (getListeAvantageAFF() == null)
 				setListeAvantageAFF(new ArrayList<AvantageNature>());
@@ -1059,8 +1064,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 
 			deleg.setLibDelegation(getVAL_EF_COMMENT_DELEGATION());
 
-			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
-					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
+			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation)).getIdTypeDelegation());
 
 			if (getListeDelegationAFF() == null)
@@ -1091,7 +1095,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn)).getIdTypeRegIndemn());
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
 			if (indiceRub > 0)
-				regIndemn.setNumRubrique(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique());
+				regIndemn.setNumRubrique(getListeRubrique().get(indiceRub - 1).getNumRubrique());
 
 			if (getListeRegimeAFF() == null)
 				setListeRegimeAFF(new ArrayList<RegimeIndemnitaire>());
@@ -1112,17 +1116,15 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			if (!performControlerSaisiePrimePointage(request))
 				return false;
 
-			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
 			// Alimentation de l'objet
 			PrimePointageAff prime = new PrimePointageAff();
-			prime.setNumRubrique(Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
+			prime.setNumRubrique(getListePrimes().get(indiceRub).getNumRubrique());
 
 			if (getListePrimePointageAFF() == null)
 				setListePrimePointageAFF(new ArrayList<PrimePointageAff>());
 
-			if (!getListePrimePointageAFF().contains(prime) && !getListePrimePointageFP().contains(prime)
-					&& !getListePrimePointageAffAAjouter().contains(prime)) {
+			if (!getListePrimePointageAFF().contains(prime) && !getListePrimePointageFP().contains(prime) && !getListePrimePointageAffAAjouter().contains(prime)) {
 				if (getListePrimePointageAffASupprimer().contains(prime)) {
 					getListePrimePointageAffASupprimer().remove(prime);
 					getListePrimePointageAFF().add(prime);
@@ -1872,8 +1874,17 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @return listeRubrique
 	 */
-	private ArrayList<Rubrique> getListeRubrique() {
+	private List<Rubrique> getListeRubrique() {
 		return listeRubrique;
+	}
+
+	/**
+	 * Retourne la liste des primes.
+	 * 
+	 * @return listeRubrique
+	 */
+	private List<RefPrimeDto> getListePrimes() {
+		return listePrimes;
 	}
 
 	/**
@@ -1890,8 +1901,17 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	 * 
 	 * @param listeRubrique
 	 */
-	private void setListeRubrique(ArrayList<Rubrique> listeRubrique) {
+	private void setListeRubrique(List<Rubrique> listeRubrique) {
 		this.listeRubrique = listeRubrique;
+	}
+
+	/**
+	 * Met à jour la liste des primes.
+	 * 
+	 * @param listeRubrique
+	 */
+	private void setListePrimes(List<RefPrimeDto> listePrimes) {
+		this.listePrimes = listePrimes;
 	}
 
 	/**
@@ -1985,8 +2005,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 		// ****************************************
 		// Verification Montant OU Nature renseigné
 		// ****************************************
-		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
-				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
+		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0 && ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
 			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 			setFocus(getNOM_LB_NATURE_AVANTAGE());
@@ -2060,9 +2079,8 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 	private boolean performControlerSaisiePrimePointage(HttpServletRequest request) throws Exception {
 
 		// rubrique obligatoire
-		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
-		if (indiceRubr < 1) {
+		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+		if (indiceRubr < 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "rubrique"));
 			return false;
@@ -2185,32 +2203,28 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_AVANTAGE
-			for (int i = getListeAvantageFP().size(); i < getListeAvantageFP().size() + getListeAvantageAFF().size()
-					+ getListeAvantageAAjouter().size() - getListeAvantageASupprimer().size(); i++) {
+			for (int i = getListeAvantageFP().size(); i < getListeAvantageFP().size() + getListeAvantageAFF().size() + getListeAvantageAAjouter().size() - getListeAvantageASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_AVANTAGE(i))) {
 					return performPB_SUPPRIMER_AVANTAGE(request, i);
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_DELEGATION
-			for (int i = getListeDelegationFP().size(); i < getListeDelegationFP().size() + getListeDelegationAFF().size()
-					+ getListeDelegationAAjouter().size() - getListeDelegationASupprimer().size(); i++) {
+			for (int i = getListeDelegationFP().size(); i < getListeDelegationFP().size() + getListeDelegationAFF().size() + getListeDelegationAAjouter().size() - getListeDelegationASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_DELEGATION(i))) {
 					return performPB_SUPPRIMER_DELEGATION(request, i);
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_REGIME
-			for (int i = getListeRegimeFP().size(); i < getListeRegimeFP().size() + getListeRegimeAFF().size() + getListeRegimeAAjouter().size()
-					- getListeRegimeASupprimer().size(); i++) {
+			for (int i = getListeRegimeFP().size(); i < getListeRegimeFP().size() + getListeRegimeAFF().size() + getListeRegimeAAjouter().size() - getListeRegimeASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_REGIME(i))) {
 					return performPB_SUPPRIMER_REGIME(request, i);
 				}
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_PRIME_POINTAGE
-			for (int i = getListePrimePointageFP().size(); i < getListePrimePointageFP().size() + getListePrimePointageAFF().size()
-					+ getListePrimePointageAffAAjouter().size() - getListePrimePointageAffASupprimer().size(); i++) {
+			for (int i = getListePrimePointageFP().size(); i < getListePrimePointageFP().size() + getListePrimePointageAFF().size() + getListePrimePointageAffAAjouter().size() - getListePrimePointageAffASupprimer().size(); i++) {
 				if (testerParametre(request, getNOM_PB_SUPPRIMER_PRIME_POINTAGE(i))) {
 					return performPB_SUPPRIMER_PRIME_POINTAGE(request, i);
 				}
