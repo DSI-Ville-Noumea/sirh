@@ -1106,8 +1106,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		setMessage(Const.CHAINE_VIDE);
 		ArrayList<AgentNW> listeEval = new ArrayList<AgentNW>();
 
-		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
-		setEaeCourant(eaeCourant);
+		setEaeCourant(getEaeDao().chercherEAE(idEae));
 		ArrayList<EaeEvaluateur> listeEvalEAE = getEaeEvaluateurDao().listerEvaluateurEAE(eaeCourant.getIdEAE());
 
 		if (listeEvalEAE != null) {

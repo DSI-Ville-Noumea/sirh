@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import nc.mairie.gestionagent.dto.RefEtatDto;
+import nc.mairie.gestionagent.dto.RefPrimeDto;
+import nc.mairie.gestionagent.dto.RefTypePointageDto;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.technique.VariableGlobale;
@@ -27,17 +33,13 @@ import nc.mairie.utils.TreeHierarchy;
 public class OeAGENTRecherche extends BasicProcess {
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private static final long serialVersionUID = 1L;
-
 	public static final int STATUT_ETAT_CIVIL = 1;
-
 	private ArrayList<AgentNW> listeAgent;
-
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
-
 	private AgentNW AgentActivite;
 	public String focus = null;
 	private boolean first = true;
@@ -170,8 +172,9 @@ public class OeAGENTRecherche extends BasicProcess {
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
 
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
+				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
 					continue;
+				}
 
 				// recherche du supérieur
 				String codeService = serv.getCodService();
@@ -221,8 +224,9 @@ public class OeAGENTRecherche extends BasicProcess {
 		} else if (Services.estNumerique(zone)) {
 			AgentNW aAgent = AgentNW.chercherAgent(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
 			// Si erreur alors pas trouvé. On traite
-			if (getTransaction().isErreur())
+			if (getTransaction().isErreur()) {
 				return false;
+			}
 
 			aListe = new ArrayList<AgentNW>();
 			aListe.add(aAgent);
@@ -235,10 +239,8 @@ public class OeAGENTRecherche extends BasicProcess {
 			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
 			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			String prefixe = service.getCodService().substring(
-					0,
-					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2 : Service.isDivision(service
-							.getCodService()) ? 3 : Service.isSection(service.getCodService()) ? 4 : 0);
+			String prefixe = service.getCodService().substring(0,
+					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2 : Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service.getCodService()) ? 4 : 0);
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 		}
 
@@ -286,8 +288,9 @@ public class OeAGENTRecherche extends BasicProcess {
 				String service = Const.CHAINE_VIDE;
 				AgentNW agent = (AgentNW) getListeAgent().get(0);
 				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-				if (getTransaction().isErreur())
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
+				}
 				if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
 					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 					if (getTransaction().isErreur()) {
@@ -703,8 +706,9 @@ public class OeAGENTRecherche extends BasicProcess {
 			String service = Const.CHAINE_VIDE;
 			AgentNW agent = (AgentNW) getListeAgent().get(elemSelection);
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			if (getTransaction().isErreur())
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
+			}
 			if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
 				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 				if (getTransaction().isErreur()) {

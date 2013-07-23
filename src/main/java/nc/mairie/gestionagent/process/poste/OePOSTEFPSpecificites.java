@@ -1,10 +1,12 @@
 package nc.mairie.gestionagent.process.poste;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;
@@ -15,6 +17,7 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -59,13 +62,14 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private ArrayList<RegimeIndemnitaire> listeRegime;
 	private ArrayList<RegimeIndemnitaire> listeRegimeAAjouter;
 	private ArrayList<RegimeIndemnitaire> listeRegimeASupprimer;
-	private ArrayList<PrimePointageFP> listePrimePointageFP;
-	private ArrayList<PrimePointageFP> listePrimePointageFPAAjouter;
-	private ArrayList<PrimePointageFP> listePrimePointageFPASupprimer;
 
 	private ArrayList<TypeAvantage> listeTypeAvantage;
 	private ArrayList<NatureAvantage> listeNatureAvantage;
 	private ArrayList<Rubrique> listeRubrique;
+	private List<RefPrimeDto> listePrimes = new ArrayList<>();
+	private ArrayList<PrimePointageFP> listePrimePointageFP = new ArrayList<>();
+	private ArrayList<PrimePointageFP> listePrimePointageFPAAjouter = new ArrayList<>();
+	private ArrayList<PrimePointageFP> listePrimePointageFPASupprimer = new ArrayList<>();
 	private ArrayList<TypeDelegation> listeTypeDelegation;
 	private ArrayList<TypeRegIndemn> listeTypeRegIndemn;
 
@@ -130,7 +134,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getListeRegimeASupprimer() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR, getListeRegimeASupprimer());
 
-		if (getListePrimePointageFP() != null)
+		if (getListePrimes() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointageFP());
 		if (getListePrimePointageFPAAjouter() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT, getListePrimePointageFPAAjouter());
@@ -160,8 +164,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// ****************************************
 		// Verification Montant OU Nature renseigné
 		// ****************************************
-		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
-				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
+		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0 && ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
 			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 			setFocus(getNOM_LB_NATURE_AVANTAGE());
@@ -975,11 +978,11 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	public boolean performPB_SUPPRIMER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
 		// Récupération de la prime pointage à supprimer
 		int indicePrime = (Services.estNumerique(getVAL_LB_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_PRIME_POINTAGE_SELECT()) : -1);
-		if (indicePrime == -1 || getListePrimePointageFP().size() == 0 || indicePrime > getListePrimePointageFP().size() - 1) {
+		if (indicePrime == -1 || getListePrimePointageFP().isEmpty() || indicePrime > getListePrimePointageFP().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Primes"));
 			return false;
 		}
-		PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(indicePrime);
+		PrimePointageFP prime = getListePrimePointageFP().get(indicePrime);
 
 		if (prime != null) {
 			if (getListePrimePointageFP() != null) {
@@ -1271,24 +1274,6 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	}
 
 	/**
-	 * Retourne la liste des PrimePointageIndemnitaire.
-	 * 
-	 * @return listePrimePointage
-	 */
-	private ArrayList<PrimePointageFP> getListePrimePointageFP() {
-		return listePrimePointageFP;
-	}
-
-	/**
-	 * Met à jour la liste des PrimePointageIndemnitaire.
-	 * 
-	 * @param listePrimePointage
-	 */
-	private void setListePrimePointageFP(ArrayList<PrimePointageFP> listePrimePointageFP) {
-		this.listePrimePointageFP = listePrimePointageFP;
-	}
-
-	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
@@ -1318,8 +1303,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
 					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(), natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
 				}
@@ -1368,6 +1352,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		}
 
 		// Primes pointage
+
 		if (getListePrimePointageFP() == null)
 			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
 		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
@@ -1386,6 +1371,21 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			setLB_PRIME_POINTAGE(null);
 		}
 	}
+
+	/**
+	 * #3264 Initialisation de la liste déroulantes des primes.
+	 */
+	private List<RefPrimeDto> initialiseListeDeroulantePrimes() {
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		// Si liste etat vide alors affectation
+		List<RefPrimeDto> primes = t.getPrimes();
+		System.out.println("Nombre de primes reçues:" + primes.size());
+		return primes;
+	}
+
+	/**
+	 * fin CLV #3264
+	 */
 
 	/**
 	 * Initialise les listes déroulantes de l'écran. Date de création :
@@ -1442,12 +1442,27 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				}
 				setLB_RUBRIQUE_AVANTAGE(aFormatRub.getListeFormatee(true));
 				setLB_RUBRIQUE_REGIME(aFormatRub.getListeFormatee(true));
-				setLB_RUBRIQUE_PRIME_POINTAGE(aFormatRub.getListeFormatee(true));
 			} else {
 				setLB_RUBRIQUE_AVANTAGE(null);
 				setLB_RUBRIQUE_REGIME(null);
-				setLB_RUBRIQUE_PRIME_POINTAGE(null);
 			}
+		}
+
+		/***
+		 * CLV #3264
+		 */
+		if (getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
+			setListePrimes(initialiseListeDeroulantePrimes());
+			if (getListePrimes() != null) {
+				String[] content = new String[getListePrimes().size()];
+				for (int i = 0; i < getListePrimes().size(); i++) {
+					content[i] = getListePrimes().get(i).getNumRubrique() + " - " + getListePrimes().get(i).getLibelle();
+				}
+				setLB_RUBRIQUE_PRIME_POINTAGE(content);
+			}
+			/***
+			 * fin CLV #3264
+			 */
 		}
 
 		// Si liste type délégation vide alors affectation
@@ -1603,7 +1618,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	private ArrayList<PrimePointageFP> getListePrimePointageFPAAjouter() {
 		if (listePrimePointageFPAAjouter == null)
-			listePrimePointageFPAAjouter = new ArrayList<PrimePointageFP>();
+			listePrimePointageFPAAjouter = new ArrayList<>();
 		return listePrimePointageFPAAjouter;
 	}
 
@@ -1614,7 +1629,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	private ArrayList<PrimePointageFP> getListePrimePointageFPASupprimer() {
 		if (listePrimePointageFPASupprimer == null)
-			listePrimePointageFPASupprimer = new ArrayList<PrimePointageFP>();
+			listePrimePointageFPASupprimer = new ArrayList<>();
 		return listePrimePointageFPASupprimer;
 	}
 
@@ -1681,14 +1696,11 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE());
 
-			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT())
-					: -1);
+			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
-			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())
-					: -1);
+			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage)).getIdNatureAvantage());
-			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
+			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
 			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(indiceRubAvantage - 1)).getNumRubrique());
 
 			if (getListeAvantage() == null)
@@ -1712,8 +1724,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			deleg.setLibDelegation(getVAL_EF_COMMENT_DELEGATION());
 
-			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
-					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
+			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation)).getIdTypeDelegation());
 
 			if (getListeDelegation() == null)
@@ -1741,7 +1752,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn)).getIdTypeRegIndemn());
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
-			regIndemn.setNumRubrique(indiceRub <= 0 ? null : ((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique());
+			regIndemn.setNumRubrique(indiceRub <= 0 ? null : getListeRubrique().get(indiceRub - 1).getNumRubrique());
 
 			if (getListeRegime() == null)
 				setListeRegime(new ArrayList<RegimeIndemnitaire>());
@@ -1761,12 +1772,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			// Alimentation de l'objet
 			PrimePointageFP regIndemn = new PrimePointageFP();
-			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
-					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
-			regIndemn.setNumRubrique(indiceRub <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(indiceRub - 1)).getNumRubrique()));
-
-			if (getListePrimePointageFP() == null)
-				setListePrimePointageFP(new ArrayList<PrimePointageFP>());
+			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+			regIndemn.setNumRubrique(indiceRub <= 0 ? null : Integer.valueOf(getListePrimes().get(indiceRub).getNumRubrique()));
 
 			if (!getListePrimePointageFP().contains(regIndemn)) {
 				getListePrimePointageFP().add(regIndemn);
@@ -1782,8 +1789,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	private boolean performControlerSaisiePrimePointage(HttpServletRequest request) {
 		// rubrique obligatoire
-		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
 		if (indiceRubr < 1) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "rubrique"));
@@ -1809,6 +1815,43 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	private void setListeTypeDelegation(ArrayList<TypeDelegation> listeTypeDelegation) {
 		this.listeTypeDelegation = listeTypeDelegation;
+	}
+
+	/**
+	 * Retourne la liste des PrimePointageIndemnitaire que l'on peut ajouter.
+	 * 
+	 * @return listePrimePointage
+	 */
+	public List<RefPrimeDto> getListePrimes() {
+		return listePrimes;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire que l'on peut ajouter.
+	 * 
+	 * @param listePrimePointage
+	 */
+	public void setListePrimes(List<RefPrimeDto> listePrimes) {
+		this.listePrimes = listePrimes;
+	}
+
+	/**
+	 * Retourne la liste des PrimePointageIndemnitaire.
+	 * 
+	 * @return listePrimePointageFP
+	 */
+
+	public ArrayList<PrimePointageFP> getListePrimePointageFP() {
+		return listePrimePointageFP;
+	}
+
+	/**
+	 * Met à jour la liste des PrimePointageIndemnitaire.
+	 * 
+	 * @param listePrimePointageFP
+	 */
+	public void setListePrimePointageFP(ArrayList<PrimePointageFP> listePrimePointageFP) {
+		this.listePrimePointageFP = listePrimePointageFP;
 	}
 
 	/**
