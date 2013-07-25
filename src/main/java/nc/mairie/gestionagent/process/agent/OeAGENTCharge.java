@@ -77,7 +77,7 @@ public class OeAGENTCharge extends BasicProcess {
 	public boolean showDonneesMutu = false;
 	public boolean montantObligatoire = false;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName("PERSONNEL", "CALCUL", "DTAARA");
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());

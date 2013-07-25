@@ -59,7 +59,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	public String ACTION_MODIFICATION_GRADE = "Modification d'un grade.";
 	public String ACTION_DESACTIVATION_GRILLE = "Désactivation d'une grille.";
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName("PERSONNEL", "CALCUL", "DTAARA");
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());
