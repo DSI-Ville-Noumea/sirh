@@ -29,21 +29,8 @@
 		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
 		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="adminwas" 
 		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" 
-		/>
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" /> 
 		<!-- username="opensirh" password="***REMOVED***" -->
-		
-		<!-- <Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true"
-		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1"
-		validationInterval="30000" timeBetweenEvictionRunsMillis="30000"
-		maxActive="300" maxIdle="30" maxWait="30000" initialSize="10"
-		removeAbandonedTimeout="500" removeAbandoned="true" logAbandoned="true"
-		minEvictableIdleTimeMillis="30000" jmxEnabled="true"
-		jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
-            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
-		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-		url="jdbc:as400://robinnw;naming=system;libraries=SMAIRIE,SSIRH,SYSIBM;errors=full;" />	 -->
 		
 		
 		
@@ -68,17 +55,6 @@
 		jmxEnabled="true" username="adminwas" password="***REMOVED***" 
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
-
-	<!-- <Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
-		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-		validationQuery="select 1 from sysdummy1" validationInterval="30000"
-		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" 
-		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
-		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="opensirh" password="***REMOVED***" 
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=SMAIRIE,SSIRH,SYSIBM;errors=full;" />-->
 
 	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
