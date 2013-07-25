@@ -21,6 +21,19 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
 	<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
+		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true" 
+		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1" 
+		validationInterval="30000" timeBetweenEvictionRunsMillis="30000" maxActive="300" 
+		maxIdle="30" maxWait="30000" initialSize="10" removeAbandonedTimeout="500" 
+		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" 
+		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
+		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="adminwas" 
+		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" 
+		/>
+		<!-- username="opensirh" password="***REMOVED***" -->
+		
+		<!-- <Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true"
 		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1"
 		validationInterval="30000" timeBetweenEvictionRunsMillis="30000"
@@ -29,9 +42,10 @@
 		minEvictableIdleTimeMillis="30000" jmxEnabled="true"
 		jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
-		username="adminwas" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
-		<!-- username="opensirh" password="***REMOVED***" -->
+		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+		url="jdbc:as400://robinnw;naming=system;libraries=SMAIRIE,SSIRH,SYSIBM;errors=full;" />	 -->
+		
+		
 		
 		<!--<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true" 
@@ -44,7 +58,7 @@
 		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" 
 		/> -->
-	<Resource auth="Container" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+	<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		validationQuery="select 1 from sysdummy1" validationInterval="30000"
@@ -52,7 +66,19 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="adminwas" password="***REMOVED***" 
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
+
+	<!-- <Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
+		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
+		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+		validationQuery="select 1 from sysdummy1" validationInterval="30000"
+		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" 
+		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
+		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+		jmxEnabled="true" username="opensirh" password="***REMOVED***" 
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
+		url="jdbc:as400://robinnw;naming=system;libraries=SMAIRIE,SSIRH,SYSIBM;errors=full;" />-->
 
 	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
@@ -174,8 +200,10 @@
 	<Parameter description="parametre pour accès à la DTAARA_CALC" name="HOST_SGBD_PAYE" override="false" value="robinnw" />
 	<Parameter description="Login pour accès à la DTAARA_CALC" name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
 	<Parameter description="Pws pour accès à la DTAARA_CALC" name="HOST_SGBD_PWD" override="false" value="***REMOVED***" />
-	<Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" override="false" value="PERSONNEL" />
+	<Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" override="false" value="PERSONNEL" /> 
+	<!-- <Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" override="false" value="SPERSONNEL" />-->
 	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME" override="false" value="CALCUL" />
+	<!-- <Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME" override="false" value="SIMUL" /> -->
 	
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
 	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
