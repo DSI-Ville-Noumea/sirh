@@ -1141,7 +1141,7 @@ public class OeAGENTEmploisSpecificites extends BasicProcess {
 					getListePrimePointageAffAAjouter().add(prime);
 				}
 			} else {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR087"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR088"));
 			}
 
 			// Réinitialisation des champs de saisie
