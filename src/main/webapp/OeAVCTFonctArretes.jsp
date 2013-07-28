@@ -274,14 +274,14 @@ function SelectLigne(id,tailleTableau)
 								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%}else{ %>
-									<INPUT style="visibility: hidden;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
+									<INPUT style="visibility: hidden;" type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%} %>
 								</td>
 								<td>	
 								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>							
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
 								<%}else{ %>
-									<INPUT style="visibility: hidden;" type="checkbox"  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
+									<INPUT style="visibility: hidden;" type="checkbox"  disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
 								<%} %>
 								</td>
 								<td><%=process.getVAL_ST_USER_VALID_ARR_IMPR(indiceAvct)%></td>

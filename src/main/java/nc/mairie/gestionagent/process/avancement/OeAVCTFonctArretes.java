@@ -573,17 +573,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		if (avctDiff.exists()) {
 			avctDiff.delete();
 		}
-
-		// on sauvegarde l'état du tableau afin de sauvegarder les
-		// regularisations
-		if (!performPB_VALIDER(request)) {
-			// "ERR184",
-			// "Une erreur est survenue dans la sauvegarde du tableau. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR184"));
-			return false;
-		}
 		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
 		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
+
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		String heureAction = sdf.format(new Date());
+		String dateJour = Services.dateDuJour();
 
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
@@ -598,7 +594,25 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				} else {
 					continue;
 				}
+				// si la ligne est cochée
+				// on regarde si l'etat est deja ARR
+				// --> oui on ne modifie pas le user
+				// --> non on passe l'etat à ARR et on met à jour le user
+				if (avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
+					// on sauvegarde qui a fait l'action
+					avct.setUserVerifArrImpr(user.getUserName());
+					avct.setDateVerifArrImpr(dateJour);
+					avct.setHeureVerifArrImpr(heureAction);
+				}
 			}
+
+			// on sauvegarde les regularisations
+			if (getVAL_CK_REGUL_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
+				avct.setRegularisation(true);
+			} else {
+				avct.setRegularisation(false);
+			}
+			avct.modifierAvancement(getTransaction());
 			addZone(getNOM_CK_VALID_ARR_IMPR(idAvct), getCHECKED_OFF());
 
 		}
@@ -797,9 +811,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_ARR(idAvct).equals(getCHECKED_ON())) {
-				performPB_SET_DATE_AVCT(request, idAvct.toString());
 				avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), avctDepart.getIdAvct());
-				
+
 				// si la ligne est cochée
 				// on regarde si l'etat est deja ARR
 				// --> oui on ne modifie pas le user
@@ -810,18 +823,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					avct.setDateVerifArr(dateJour);
 					avct.setHeureVerifArr(heureAction);
 					avct.setEtat(EnumEtatAvancement.ARRETE.getValue());
-				}
-				if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-					// si la ligne est cochée
-					// on regarde si l'etat est deja ARR
-					// --> oui on ne modifie pas le user
-					// --> non on passe l'etat à ARR et on met à jour le user
-					if (avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
-						// on sauvegarde qui a fait l'action
-						avct.setUserVerifArrImpr(user.getUserName());
-						avct.setDateVerifArrImpr(dateJour);
-						avct.setHeureVerifArrImpr(heureAction);
-					}
+
+					performPB_SET_DATE_AVCT(request, avct, idAvct);
 				}
 			} else {
 				// si la ligne n'est pas cochée
@@ -882,9 +885,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			}
 			avct.setObservationArr(getVAL_ST_OBSERVATION(idAvct));
 
-			if (!avct.modifierAvancement(getTransaction())) {
-				System.out.println("ici : " + avct.getIdAgent());
-			}
+			avct.modifierAvancement(getTransaction());
+
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -1744,11 +1746,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, String idAvct) throws Exception {
-		Integer indiceElemen = Integer.valueOf(idAvct);
+	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, AvancementFonctionnaires avct, Integer indiceElemen) throws Exception {
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
 
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
@@ -1780,7 +1780,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			String dateCAP = getVAL_ST_DATE_CAP_GLOBALE();
 			addZone(getNOM_ST_DATE_CAP(indiceElemen), dateCAP);
 			avct.setDateCap(dateCAP);
-			avct.modifierAvancement(getTransaction());
 
 			if (getTransaction().isErreur())
 				return false;
@@ -1789,7 +1788,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		} else {
 
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), idAvct);
 			addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_DATE_CAP(indiceElemen), Const.CHAINE_VIDE);
 			avct.setDateCap(Const.DATE_NULL);
