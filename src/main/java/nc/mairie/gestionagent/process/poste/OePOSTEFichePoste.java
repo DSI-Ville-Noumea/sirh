@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -360,6 +359,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			} else {
 				setEmploiPrimaire(fep);
 			}
+
 			afficheFEP();
 			initialiseMission();
 			initialiseInfoEmploi();
@@ -1575,8 +1575,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private boolean saveJoin(HttpServletRequest request) throws Exception {
 		// Sauvegarde des fiche emploi primaire et secondaire
-		emploiPrimaire = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true);
-		if (emploiPrimaire == null) {
+		FicheEmploi emploiPrimaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true);
+		if (emploiPrimaireTest == null) {
 			FEFP fefpPrimaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiPrimaire().getIdFicheEmploi(), true);
 			fefpPrimaire.creerFEFP(getTransaction());
 			if (getTransaction().isErreur()) {
@@ -1592,8 +1592,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		if (getEmploiSecondaire() != null) {
-			emploiSecondaire = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
-			if (emploiSecondaire == null) {
+			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
+			if (emploiSecondaireTest == null) {
 				FEFP fefpSecondaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiSecondaire().getIdFicheEmploi(), false);
 				fefpSecondaire.creerFEFP(getTransaction());
 				if (getTransaction().isErreur()) {
@@ -1610,8 +1610,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		} else {
 			// on supprime le lien eventuel
-			emploiSecondaire = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
-			if (emploiSecondaire != null) {
+			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
+			if (emploiSecondaireTest != null) {
 				// on modifie le lien avec le num FE secondaire
 				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante().getIdFichePoste(), false);
 				ancienLien.supprimerFEFP(getTransaction());
