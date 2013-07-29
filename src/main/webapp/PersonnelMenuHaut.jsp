@@ -73,7 +73,6 @@ document.write(menuAgentHSCT.afficher());
 var menuAgentEmplois = new MenuHaut("Module_agent_emplois");
 menuAgentEmplois.ajouterFils(new Lien("AgtEmploisAffectations", "AFFECTATIONS", "Gestion des affectations de l'agent", true, false,"AGENT/EMPLOI/AFF"));
 menuAgentEmplois.ajouterFils(new Lien("AgtEmploisPoste", "POSTE", "Informations sur le poste occupé", true, false,"AGENT/EMPLOI/POSTE"));
-menuAgentEmplois.ajouterFils(new Lien("AgtEmploisSpecificites", "SPECIFICITES", "Gestion des spécificités de l'agent", true, false,"AGENT/EMPLOI/SPEC"));
 document.write(menuAgentEmplois.afficher());
 
 var menuAgentEltsSalaires = new MenuHaut("Module_agent_eltsSalaires");
