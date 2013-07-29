@@ -894,7 +894,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent, listeSousService));
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent, listeSousService, null));
 		afficherListeAvct(request);
 
 		return true;
@@ -1641,7 +1641,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// la duree MOY
 						calculAccBm(avct, carr, nouvelleCarriere, libCourtAvisCap);
 
-						if(getTransaction().isErreur()){
+						if (getTransaction().isErreur()) {
 							System.out.println("ici");
 						}
 
@@ -1660,7 +1660,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
 
-						if(getTransaction().isErreur()){
+						if (getTransaction().isErreur()) {
 							System.out.println("ici");
 						}
 						avct.modifierAvancement(getTransaction());
@@ -1784,7 +1784,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
 		// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 
-		//avct.modifierAvancement(getTransaction());
+		// avct.modifierAvancement(getTransaction());
 
 		// on met à jour les champs pour la creation de la carriere
 		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());

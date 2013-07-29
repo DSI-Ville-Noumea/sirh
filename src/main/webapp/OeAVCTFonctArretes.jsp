@@ -136,10 +136,6 @@ function SelectLigne(id,tailleTableau)
 			<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>" style="width=70px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
 			</SELECT>
-			<span class="sigp2" style="width:75px">Filière : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width=200px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
-			</SELECT>
 			<span class="sigp2" style="width:75px">Par agent :</span>
 			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" >
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
@@ -177,7 +173,20 @@ function SelectLigne(id,tailleTableau)
 						<%}%>
 					</script>
 				</div>
-          	<BR/>
+          	<BR/>  <BR/>        	
+			<span class="sigp2" style="width:75px">Filière : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width=200px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+			</SELECT>    	
+			<span class="sigp2" style="width:75px">Catégorie : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
+			</SELECT> 	
+			<span class="sigp2" style="width:75px">Verif SGC : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_VERIF_SGC() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_VERIF_SGC(), process.getVAL_LB_VERIF_SGC_SELECT()) %>
+			</SELECT>
+			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER()%>">
 		</FIELDSET>
 		

@@ -394,7 +394,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='" + EnumEtatAvancement.SGC.getValue() + "')";
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService, null));
 
 		afficheListeAvancement();
 

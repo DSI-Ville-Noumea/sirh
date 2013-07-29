@@ -74,7 +74,7 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 			agentEnErreur = Const.CHAINE_VIDE;
 			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
-			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null));
+			setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null, null));
 
 			for (int i = 0; i < getListeAvct().size(); i++) {
 				AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(i);
@@ -105,8 +105,9 @@ public class OeAVCTFonctionnaires extends BasicProcess {
 						+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
 
 				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-				addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct().equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct())
-						.getLibMotifAvct());
+				addZone(getNOM_ST_MOTIF_AVCT(i),
+						av.getIdMotifAvct().equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashMotifAvancement().get(av.getIdMotifAvct())
+								.getLibMotifAvct());
 				addZone(getNOM_LB_AVIS_CAP_SELECT(i),
 						av.getIdAvisCAP() == null || av.getIdAvisCAP().length() == 0 ? Const.CHAINE_VIDE : String.valueOf(getListeAvisCAP().indexOf(
 								getHashAvisCAP().get(av.getIdAvisCAP()))));

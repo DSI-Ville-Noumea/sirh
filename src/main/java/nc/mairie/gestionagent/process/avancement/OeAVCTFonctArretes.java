@@ -64,6 +64,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private String[] LB_ANNEE;
 	private String[] LB_FILIERE;
+	private String[] LB_CATEGORIE;
+	private String[] LB_VERIF_SGC;
 	private String[] LB_AVIS_CAP_AD;
 	private String[] LB_AVIS_CAP_CLASSE;
 	private String[] LB_AVIS_EMP_AD;
@@ -72,6 +74,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private String[] listeAnnee;
 	private String anneeSelect;
 	private ArrayList<FiliereGrade> listeFiliere;
+	private ArrayList<Grade> listeCategorie;
+	private ArrayList<String> listeVerifSGC;
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
@@ -342,7 +346,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
 		}
 
-		// Si liste medecins vide alors affectation
+		// Si liste filiere vide alors affectation
 		if (getListeFiliere() == null || getListeFiliere().size() == 0) {
 			setListeFiliere(FiliereGrade.listerFiliereGrade(getTransaction()));
 
@@ -357,6 +361,38 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			}
 			setLB_FILIERE(aFormat.getListeFormatee(true));
 
+		}
+
+		// Si liste categorie vide alors affectation
+		if (getListeCategorie() == null || getListeCategorie().size() == 0) {
+			setListeCategorie(Grade.listerCategorieGrade(getTransaction()));
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (Grade list : getListeCategorie()) {
+				String ligne[] = { list.getCodeCadre() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_CATEGORIE(aFormat.getListeFormatee(true));
+
+		}
+
+		// Si liste verif SGC vide alors affectation
+		if (getLB_VERIF_SGC() == LBVide) {
+			ArrayList<String> verif = new ArrayList<String>();
+			verif.add("oui");
+			verif.add("non");
+			setListeVerifSGC(verif);
+			int[] tailles = { 15 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<String> list = verif.listIterator(); list.hasNext();) {
+				String ligne[] = { list.next() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_VERIF_SGC(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_VERIF_SGC_SELECT(), Const.ZERO);
 		}
 
 		// Si liste avisCAP vide alors affectation
@@ -519,6 +555,20 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
 		}
 
+		// Recuperation categorie
+		String categorie = null;
+		int indiceCat = (Services.estNumerique(getVAL_LB_CATEGORIE_SELECT()) ? Integer.parseInt(getVAL_LB_CATEGORIE_SELECT()) : -1);
+		if (indiceCat > 0) {
+			categorie = getListeCategorie().get(indiceCat - 1).getCodeCadre();
+		}
+
+		// Recuperation verifSGC
+		String verifSGC = null;
+		int indiceVerifSGC = (Services.estNumerique(getVAL_LB_VERIF_SGC_SELECT()) ? Integer.parseInt(getVAL_LB_VERIF_SGC_SELECT()) : -1);
+		if (indiceVerifSGC > 0) {
+			verifSGC = (String) getListeVerifSGC().get(indiceVerifSGC - 1);
+		}
+
 		// recuperation agent
 		AgentNW agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
@@ -534,7 +584,16 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "')";
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
+		if (verifSGC != null) {
+			if (verifSGC.equals("oui")) {
+				reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "')";
+			} else if (verifSGC.equals("non")) {
+				reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' )";
+			}
+
+		}
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService,
+				categorie));
 
 		afficheListeAvancement();
 		return true;
@@ -1944,5 +2003,131 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CATEGORIE Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_CATEGORIE() {
+		if (LB_CATEGORIE == null)
+			LB_CATEGORIE = initialiseLazyLB();
+		return LB_CATEGORIE;
+	}
+
+	/**
+	 * Setter de la liste: LB_CATEGORIE Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_CATEGORIE(String[] newLB_CATEGORIE) {
+		LB_CATEGORIE = newLB_CATEGORIE;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CATEGORIE Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CATEGORIE() {
+		return "NOM_LB_CATEGORIE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CATEGORIE_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CATEGORIE_SELECT() {
+		return "NOM_LB_CATEGORIE_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CATEGORIE Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_CATEGORIE() {
+		return getLB_CATEGORIE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CATEGORIE Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_CATEGORIE_SELECT() {
+		return getZone(getNOM_LB_CATEGORIE_SELECT());
+	}
+
+	public ArrayList<Grade> getListeCategorie() {
+		return listeCategorie == null ? new ArrayList<Grade>() : listeCategorie;
+	}
+
+	public void setListeCategorie(ArrayList<Grade> listeCategorie) {
+		this.listeCategorie = listeCategorie;
+	}
+
+	public ArrayList<String> getListeVerifSGC() {
+		return listeVerifSGC == null ? new ArrayList<String>() : listeVerifSGC;
+	}
+
+	public void setListeVerifSGC(ArrayList<String> listeVerifSGC) {
+		this.listeVerifSGC = listeVerifSGC;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_VERIF_SGC Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	private String[] getLB_VERIF_SGC() {
+		if (LB_VERIF_SGC == null)
+			LB_VERIF_SGC = initialiseLazyLB();
+		return LB_VERIF_SGC;
+	}
+
+	/**
+	 * Setter de la liste: LB_VERIF_SGC Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_VERIF_SGC(String[] newLB_VERIF_SGC) {
+		LB_VERIF_SGC = newLB_VERIF_SGC;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_VERIF_SGC Date de
+	 * création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_VERIF_SGC() {
+		return "NOM_LB_VERIF_SGC";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_VERIF_SGC_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_VERIF_SGC_SELECT() {
+		return "NOM_LB_VERIF_SGC_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_VERIF_SGC Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_VERIF_SGC() {
+		return getLB_VERIF_SGC();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_VERIF_SGC Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_VERIF_SGC_SELECT() {
+		return getZone(getNOM_LB_VERIF_SGC_SELECT());
 	}
 }

@@ -315,7 +315,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		}
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "' ) and (avct.ID_AVIS_EMP!= 5  or avct.ID_AVIS_EMP is null ) ";
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService));
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService, null));
 
 		afficheListeAvancement();
 		return true;
@@ -460,7 +460,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// il faut faire attention qu'il n'y a pas de carriere
 						// de simu deja en cours
 						// TODO
-						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr, Services.convertitDate(dateAvctFinale, "dd/MM/yyyy", "yyyyMMdd"));
+						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr,
+								Services.convertitDate(dateAvctFinale, "dd/MM/yyyy", "yyyyMMdd"));
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
@@ -470,7 +471,6 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 							avct.modifierAvancement(getTransaction());
 							continue;
 						}
-						
 
 						// alors on fait les modifs sur avancement
 						avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
