@@ -29,7 +29,7 @@
 		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
 		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="adminwas" 
 		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" /> 
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" /> 
 		<!-- username="opensirh" password="***REMOVED***" -->
 		
 		
@@ -43,7 +43,7 @@
 		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
 		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="opensirh2" 
 		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" 
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date format=iso;" 
 		/> -->
 	<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
@@ -54,7 +54,7 @@
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="adminwas" password="***REMOVED***" 
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;" />
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
 
 	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
@@ -65,7 +65,7 @@
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="opensirh2" password="***REMOVED***" 
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;" />-->
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date format=iso;" />-->
 
 	<!-- Quand SIRH passera sous Oracle -->
 	<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver"
@@ -98,7 +98,7 @@
 		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" />
 	<!-- WS DES POINTAGES -->
 	<Parameter description="SIRH PTG WS url pour les droits"
-		name="SIRH_PTG_WS" override="false" value="http://127.0.0.1:8080/sirh-ptg-ws/" />
+		name="SIRH_PTG_WS" override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
 	<!-- Parametres pour l'affichage des nouveaux modules -->
 	<Parameter
 		description="Paramètre pour savoir si on affiche l&apos;onglet avancement CAP"

@@ -2292,6 +2292,33 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
 			initialiseAffectationVide();
+			// Init Fiche de poste
+			// RG_AG_AF_A04
+			// RG_AG_AF_A12
+			if (etatStatut() == STATUT_RECHERCHE_FP) {
+				FichePoste fp = (FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+				VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+				if (fp != null) {
+					setFichePosteCourant(fp);
+					initialiserFichePoste();
+				} else if (getFichePosteSecondaireCourant() == null && getAffectationCourant().getIdFichePosteSecondaire() != null) {
+					setFichePosteCourant(FichePoste.chercherFichePoste(getTransaction(), getAffectationCourant().getIdFichePoste()));
+					initialiserFichePoste();
+				}
+			}
+			// Init Fiche de poste secondaire
+			if (etatStatut() == STATUT_RECHERCHE_FP_SECONDAIRE) {
+				FichePoste fpSecondaire = (FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+				VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+				if (fpSecondaire != null) {
+					setFichePosteSecondaireCourant(fpSecondaire);
+					initialiserFichePosteSecondaire();
+				} else if (getFichePosteSecondaireCourant() == null && getAffectationCourant().getIdFichePosteSecondaire() != null) {
+					setFichePosteSecondaireCourant(FichePoste.chercherFichePoste(getTransaction(), getAffectationCourant()
+							.getIdFichePosteSecondaire()));
+					initialiserFichePosteSecondaire();
+				}
+			}
 		} else {
 			// Init Fiche de poste
 			// RG_AG_AF_A04
@@ -3019,8 +3046,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							.getIdFichePosteSecondaire()));
 				}
 			} else if (affActives.size() == 0) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR083"));
-				return;
+				/*
+				 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR083"
+				 * )); return;
+				 */
 			} else if (affActives.size() > 1) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR082"));
 				return;
@@ -3423,6 +3452,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// On supprime la fiche de poste
 		setFichePosteCourant(null);
 		setFichePosteSecondaireCourant(null);
+		setListePrimePointageAFF(null);
+		setListePrimePointageFP(null);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
@@ -3928,16 +3959,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si Action Suppression
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
+			// ON SUPPRIME LES SPECIFICITES DE L'AFFECTATION LIE
+			getPrimePointageAffDao().supprimerToutesPrimePointageAff(getAffectationCourant().getIdAffectation());
 			// Suppression
 			getAffectationCourant().supprimerAffectation(getTransaction(), user, getAgentCourant());
 			if (getTransaction().isErreur())
 				return false;
-			// Message informatif
-			// RG_AG_AF_A10
-			if (getTransaction().isErreur())
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "<BR/>" + MessageUtils.getMessage("INF004"));
-			else
-				getTransaction().declarerErreur(MessageUtils.getMessage("INF004"));
 
 			setFocus(getNOM_PB_AJOUTER());
 		} else if (getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {

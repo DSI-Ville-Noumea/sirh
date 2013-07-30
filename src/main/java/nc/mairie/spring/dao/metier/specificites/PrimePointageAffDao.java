@@ -59,4 +59,9 @@ public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 		return listePrime;
 	}
 
+	public void supprimerToutesPrimePointageAff(String idAffectation) {
+		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_AFFECTATION + "=? ";
+		jdbcTemplate.update(sql, new Object[] { idAffectation });
+	}
+
 }
