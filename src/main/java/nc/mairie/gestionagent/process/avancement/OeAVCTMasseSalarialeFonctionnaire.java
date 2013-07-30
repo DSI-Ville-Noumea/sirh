@@ -1641,10 +1641,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// la duree MOY
 						calculAccBm(avct, carr, nouvelleCarriere, libCourtAvisCap);
 
-						if (getTransaction().isErreur()) {
-							System.out.println("ici");
-						}
-
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
@@ -1660,9 +1656,6 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
 
-						if (getTransaction().isErreur()) {
-							System.out.println("ici");
-						}
 						avct.modifierAvancement(getTransaction());
 
 						// on enregistre

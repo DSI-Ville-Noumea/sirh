@@ -53,7 +53,6 @@ import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
-import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
@@ -114,7 +113,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private String urlFichier;
 
 	private PrimePointageFPDao primePointageFPDao;
-	private PrimePointageAffDao primePointageAffDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -195,9 +193,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		if (getPrimePointageFPDao() == null) {
 			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
-		}
-		if (getPrimePointageAffDao() == null) {
-			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
 		}
 	}
 
@@ -2180,14 +2175,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
 		this.primePointageFPDao = primePointageFPDao;
-	}
-
-	public PrimePointageAffDao getPrimePointageAffDao() {
-		return primePointageAffDao;
-	}
-
-	public void setPrimePointageAffDao(PrimePointageAffDao primePointageAffDao) {
-		this.primePointageAffDao = primePointageAffDao;
 	}
 
 }

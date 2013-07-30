@@ -11,11 +11,15 @@
 <META name="GENERATOR"
 	content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<LINK rel="stylesheet" href="theme/calendrier-mairie.css"
-	type="text/css">
+<LINK rel="stylesheet" href="theme/calendrier-mairie.css"	type="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
+<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+		
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 
 
 <TITLE>Gestion des affectations d'un agent</TITLE>
@@ -25,13 +29,12 @@
             {
                 document.formu.elements[nom].click();
             }
-
-            // afin de mettre le focus sur une zone précise
-            function setfocus(nom)
-            {
-                if (document.formu.elements[nom] != null)
-                    document.formu.elements[nom].focus();
-            }
+    		// afin de mettre le focus sur une zone précise
+    		function setfocus(nom)
+    		{
+    		if (document.formu.elements[nom] != null)
+    		document.formu.elements[nom].focus();
+    		}
             //function pour changement couleur arriere plan ligne du tableau
             function SelectLigne(id, tailleTableau)
             {
@@ -222,8 +225,7 @@
 					}
 				%>
 
-				<FIELDSET class="sigp2Fieldset"
-					style="text-align: left; margin: 10px;">
+				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 					<legend class="sigp2Legend">Spécificités</legend>
 					<%
 						if (process.getAgentCourant() != null) {
@@ -253,10 +255,14 @@
 					<br />
 					<table class="sigp2-tab">
 						<tr>
+							<%
+							if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+							%>
 							<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								src="images/ajout.gif" height="16px" width="16px"
 								name="<%=process.getNOM_PB_AJOUTER_AVANTAGE_spec()%>"></th>
+							<%} %>
 							<th class="sigp2-tabTitre" style="width: 300px;">Type</th>
 							<th class="sigp2-tabTitre" style="width: 100px;">Montant</th>
 							<th class="sigp2-tabTitre" style="width: 150px;">Nature</th>
@@ -283,12 +289,16 @@
 												if (!process.getListeAvantageFP().contains(process.getListeAvantageAFF().get(i))) {
 						%>
 						<tr>
+							<%
+							if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+							%>
 							<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 								type="image" src="images/suppression.gif"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								height="16px" width="16px"
 								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE_spec(indiceAvNat)%>">
 							</td>
+							<%} %>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE_spec(indiceAvNat)%></td>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT_spec(indiceAvNat)%></td>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE_spec(indiceAvNat)%></td>
@@ -303,12 +313,16 @@
 											for (int i = 0; i < process.getListeAvantageAAjouter().size(); i++) {
 						%>
 						<tr>
+							<%
+							if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+							%>
 							<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 								type="image" src="images/suppression.gif"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								height="16px" width="16px"
 								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE_spec(indiceAvNat)%>">
 							</td>
+							<%} %>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE_spec(indiceAvNat)%></td>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT_spec(indiceAvNat)%></td>
 							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE_spec(indiceAvNat)%></td>
@@ -332,11 +346,15 @@
 			<br />
 			<table class="sigp2-tab">
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_AJOUTER_DELEGATION_spec()%>"></th>
+					<%} %>
 					<th class="sigp2-tabTitre" width="150px">Type</th>
 					<th class="sigp2-tabTitre" width="700px">Commentaire</th>
 				</tr>
@@ -359,12 +377,16 @@
 										if (!process.getListeDelegationFP().contains(process.getListeDelegationAFF().get(i))) {
 				%>
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION_spec(indiceDel)%>">
 					</td>
+					<%} %>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE_spec(indiceDel)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT_spec(indiceDel)%></td>
 				</tr>
@@ -377,12 +399,16 @@
 									for (int i = 0; i < process.getListeDelegationAAjouter().size(); i++) {
 				%>
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION_spec(indiceDel)%>">
 					</td>
+					<%} %>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE_spec(indiceDel)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT_spec(indiceDel)%></td>
 				</tr>
@@ -405,11 +431,15 @@
 			<br />
 			<table class="sigp2-tab">
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_AJOUTER_REGIME_spec()%>"></th>
+					<%} %>
 					<th class="sigp2-tabTitre" width="150px">Type</th>
 					<th class="sigp2-tabTitre" width="100px">Forfait</th>
 					<th class="sigp2-tabTitre" width="100px">Nb points</th>
@@ -436,12 +466,16 @@
 										if (!process.getListeRegimeFP().contains(process.getListeRegimeAFF().get(i))) {
 				%>
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_SUPPRIMER_REGIME_spec(indiceRegIndemn)%>">
 					</td>
+					<%} %>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE_spec(indiceRegIndemn)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT_spec(indiceRegIndemn)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS_spec(indiceRegIndemn)%></td>
@@ -456,12 +490,16 @@
 									for (int i = 0; i < process.getListeRegimeAAjouter().size(); i++) {
 				%>
 				<tr>
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_SUPPRIMER_REGIME_spec(indiceRegIndemn)%>">
 					</td>
+					<%} %>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE_spec(indiceRegIndemn)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT_spec(indiceRegIndemn)%></td>
 					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS_spec(indiceRegIndemn)%></td>
@@ -484,114 +522,127 @@
 							}
 			%>
 			<br />
-			<table class="sigp2-tab">
+			
+			<table class="display" id="tabPrimePointage">
+				<thead>
 				<tr>
-
+					<th width="50px;" align="center" >
 					<%
 						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
 					%>
-
-					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
+						<INPUT tabindex="" type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE_spec()%>"></th>
+						name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE_spec()%>">
 					<%
 						}
 					%>
-					<th class="sigp2-tabTitre" width="380px">Libelle</th>
-					<th class="sigp2-tabTitre" width="380px">Provenance</th>
+					</th>
+					<th align="center">Provenance</th>
+					<th>Prime</th>
 				</tr>
+				</thead>
+				<tbody>
 				<%
 					ArrayList<Integer> rubs = process.getListeRubs();
 								int indicePrimePointage = 0;
 								if (process.getListePrimePointageFP() != null) {
-									System.out.println("------\nfp:");
 									for (int i = 0; i < process.getListePrimePointageFP().size(); i++) {
 										if (!rubs.contains(process.getListePrimePointageFP().get(i).getNumRubrique())) {
 				%>
 				<tr>
-					<td class="sigp2-tabLigne"><input tabindex="" type="image"
-						src="images/check.gif"
-						name="<%=process.getNomPrimeFP_AFF_spec(indicePrimePointage)%>"
-						value="checked"></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
-					<td class="sigp2-tabLigne"><%="Fiche Poste " + process.getPosteCourantTitle()%></td>
+					
+					<td align="center" width="50px;">
+					<%
+						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
+					%>
+						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage) %>")'  >
+						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
+											
+					<%
+						}
+					%>
+					</td>
+					<td align="center"><%="FP " + process.getPosteCourantTitle()%></td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
 				</tr>
 				<%
 					}
-										System.out.println("prime:"+ process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)+"  index="+indicePrimePointage);
 										indicePrimePointage++;
 									}
 								}
 								if (process.getListePrimePointageAFF() != null && process.getListePrimePointageAFF().size() > 0) {
-									System.out.println("affectés:");
 									for (int i = 0; i < process.getListePrimePointageAFF().size(); i++) {
 				%>
 				<tr>
 
+					<td align="center" width="50px;">
 					<%
 						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
 					%>
-					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
+					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
 						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE_spec(indicePrimePointage)%>">
-					</td>
 					<%
 						}
 					%>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
-					<td class="sigp2-tabLigne"><%="Affectation "%></td>
+					</td>
+					<td align="center"><%="Affectation "%></td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
 				</tr>
 				<%
-					System.out.println("prime:"+ process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)+"  index="+indicePrimePointage);
-										indicePrimePointage++;
+							indicePrimePointage++;
 
 									}
 								}
 								if (process.getListePrimePointageAffAAjouter() != null && process.getListePrimePointageAffAAjouter().size() > 0) {
-									System.out.println("a ajouter:");
 									for (int i = 0; i < process.getListePrimePointageAffAAjouter().size(); i++) {
 				%>
 				<tr>
+					<td align="center" width="50px;">
 					<%
 						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) {
 					%>
-					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
+					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE_spec(indicePrimePointage)%>"></td>
+						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE_spec(indicePrimePointage)%>">
 					<%
 						}
 					%>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
-					<td class="sigp2-tabLigne">En cours d'ajout</td>
+					</td>
+					<td align="center">En cours d'ajout</td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
 				</tr>
 				<%
-					System.out.println("prime:"+ process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)+"  index="+indicePrimePointage);
-										indicePrimePointage++;
+									indicePrimePointage++;
 									}
 								}
-								//if (process.getListePrimePointageAffASupprimer()!= null && process.getListePrimePointageAffASupprimer().size()>0) {
-								//	System.out.println("a supprimer:");
-								//	for (PrimePointageAff p:process.getListePrimePointageAffASupprimer()) {
-								//	System.out.println("prime:"+ p.getNumRubrique()+"  index="+indicePrimePointage);
-								//	indicePrimePointage++;
-								//	}
-								//}
 				%>
+			</tbody>
 			</table>
-			<BR />
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$('#tabPrimePointage').dataTable({
+						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+						"aoColumns": [{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false}],
+						"bPaginate": false,
+						"sDom": '<>t<>'						
+				    });
+				} );
+			</script>
 			</div>
 			<BR />
+		</FIELDSET>
+
 			<%
-				if (!"".equals(process.getVAL_ST_ACTION_spec())) {
+				if (!Const.CHAINE_VIDE.equals(process.getVAL_ST_ACTION_spec())) {
 			%>
-			<FIELDSET class="sigp2Fieldset"
-				style="text-align: left; margin: 10px; width: 1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 				<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_spec()%>
 					<%=process.getVAL_ST_SPECIFICITE()%></legend>
 				<BR />
@@ -655,7 +706,7 @@
 					style="width: 350px;">
 						<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_spec(), process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT())%>
 				</SELECT>
-				</span> <BR /> <BR />
+				</span>
 				<%
 					} else {
 				%>
@@ -697,13 +748,11 @@
 			<%
 				}
 			%>
-			<BR />
-		</FIELDSET>
-
 
 		<%
 			if (process.getAffectationCourant().getIdFichePosteSecondaire() != null) {
 		%>
+		<br/>
 		<FIELDSET class="sigp2Fieldset"
 			style="text-align: left; margin: 10px;">
 			<legend class="sigp2Legend">Fiche de poste secondaire</legend>

@@ -1379,7 +1379,6 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		// Si liste etat vide alors affectation
 		List<RefPrimeDto> primes = t.getPrimes();
-		System.out.println("Nombre de primes reçues:" + primes.size());
 		return primes;
 	}
 

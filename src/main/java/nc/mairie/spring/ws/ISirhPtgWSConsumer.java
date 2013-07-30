@@ -23,4 +23,6 @@ public interface ISirhPtgWSConsumer {
 	List<RefEtatDto> getEtatsPointage();
 
 	List<RefTypePointageDto> getTypesPointage();
+
+	RefPrimeDto getPrimeDetail(Integer numRubrique);
 }

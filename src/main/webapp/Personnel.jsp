@@ -52,7 +52,6 @@
 		/*Module AGENT - Emplois*/
 		listeDroits.add("AgtEmploisAffectations");
 		listeDroits.add("AgtEmploisPoste");
-		listeDroits.add("AgtEmploisSpecificites");
 		
 		/*Module AGENT - Elts Salaire*/
 		listeDroits.add("PrimeGestion");
