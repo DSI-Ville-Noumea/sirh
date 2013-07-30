@@ -25,6 +25,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import nc.mairie.gestionagent.process.pointage.EtatPointageEnum;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -37,97 +38,524 @@ public class OePTGSaisie extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
+	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
 
-	private ArrayList<ConsultPointageDto> listePointage;
+	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
 
 	private ArrayList<RefEtatDto> listeEtats;
-	private ArrayList<RefTypePointageDto> listeTypes;
+	private ArrayList<ConsultPointageDto> listePointage;
 	private ArrayList<Service> listeServices;
-	public Hashtable<String, TreeHierarchy> hTree = null;
+	private ArrayList<RefTypePointageDto> listeTypes;
+
+	private void afficheListePointages() {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		for (int p = 0; p < getListePointage().size(); p++) {
+			ConsultPointageDto ptg = getListePointage().get(p);
+			Integer i = ptg.getIdPointage();
+			AgentDto agtPtg = ptg.getAgent();
+
+			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ") ");
+			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
+			addZone(getNOM_ST_DATE_DEB(i), sdf.format(ptg.getDebut()));
+			addZone(getNOM_ST_DATE_FIN(i), sdf.format(ptg.getFin()));
+			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
+			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
+			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()));
+		}
+	}
+
+	/**
+	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Service.
+	 * 
+	 * @return hTree
+	 */
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
+	}
 
 	@Override
 	public String getJSP() {
 		return "OePTGSaisie.jsp";
 	}
 
-	@Override
-	public void initialiseZones(HttpServletRequest request) throws Exception {
-		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
-		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
-
-		// ----------------------------------//
-		// Vérification des droits d'accès. //
-		// ----------------------------------//
-		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
-			throw new Exception();
-		}
-
-		// Initialisation des listes déroulantes
-		initialiseListeDeroulante();
-
-		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null)
-				addZone(getNOM_ST_AGENT_MIN(), agt.getIdAgent());
-		}
-		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null)
-				addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
-		}
-
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_ETAT() {
+		if (LB_ETAT == null)
+			LB_ETAT = initialiseLazyLB();
+		return LB_ETAT;
 	}
 
-	@Override
-	public boolean recupererStatut(HttpServletRequest request) throws Exception {
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_TYPE() {
+		if (LB_TYPE == null)
+			LB_TYPE = initialiseLazyLB();
+		return LB_TYPE;
+	}
 
-		// Si on arrive de la JSP alors on traite le get
-		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+	public ArrayList<RefEtatDto> getListeEtats() {
+		return listeEtats;
+	}
 
-			// Si clic sur le bouton PB_FILTRER
-			if (testerParametre(request, getNOM_PB_FILTRER())) {
-				return performPB_FILTRER(request);
-			}
+	public ArrayList<ConsultPointageDto> getListePointage() {
+		return listePointage == null ? new ArrayList<ConsultPointageDto>() : listePointage;
+	}
 
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
-				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-			}
+	/**
+	 * Retourne la liste des services.
+	 * 
+	 * @return listeServices
+	 */
+	public ArrayList<Service> getListeServices() {
+		return listeServices;
+	}
 
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_MIN
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MIN())) {
-				return performPB_RECHERCHER_AGENT_MIN(request);
-			}
+	public ArrayList<RefTypePointageDto> getListeTypes() {
+		return listeTypes;
+	}
 
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MIN
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(request);
-			}
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
+	 * création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
 
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_MAX
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MAX())) {
-				return performPB_RECHERCHER_AGENT_MAX(request);
-			}
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_ETAT() {
+		return "NOM_LB_ETAT";
+	}
 
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
-			}
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_ETAT_SELECT() {
+		return "NOM_LB_ETAT_SELECT";
+	}
 
-		}
-		// Si TAG INPUT non géré par le process
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_TYPE() {
+		return "NOM_LB_TYPE";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_TYPE_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_TYPE_SELECT() {
+		return "NOM_LB_TYPE_SELECT";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (05/09/11 11:31:37)
+	 * 
+	 */
+	public String getNOM_PB_FILTRER() {
+		return "NOM_PB_FILTRER";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MAX Date de
+	 * création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT_MAX() {
+		return "NOM_PB_RECHERCHER_AGENT_MAX";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MIN Date de
+	 * création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT_MIN() {
+		return "NOM_PB_RECHERCHER_AGENT_MIN";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_MAX Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_SUPPRIMER_RECHERCHER_AGENT_MIN Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN";
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_AGENT(int i) {
+		return "NOM_ST_AGENT_" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MAX Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT_MAX() {
+		return "NOM_ST_AGENT_MAX";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MIN Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT_MIN() {
+		return "NOM_ST_AGENT_MIN";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getNOM_ST_CODE_SERVICE() {
+		return "NOM_ST_CODE_SERVICE";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE(int i) {
+		return "NOM_ST_DATE_" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE_DEB(int i) {
+		return "getNOM_ST_DATE_DEB" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique
+	 * 
+	 */
+	public String getNOM_ST_DATE_FIN(int i) {
+		return "getNOM_ST_DATE_FIN" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE_MAX() {
+		return "NOM_ST_DATE_MAX";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_DATE_MIN() {
+		return "NOM_ST_DATE_MIN";
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique
+	 * 
+	 */
+	public String getNOM_ST_DATE_SAISIE(int i) {
+		return "getNOM_ST_DATE_SAISIE" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique
+	 * 
+	 */
+	public String getNOM_ST_DUREE(int i) {
+		return "getNOM_ST_DUREE" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique
+	 * 
+	 */
+	public String getNOM_ST_ETAT(int i) {
+		return "getNOM_ST_ETAT" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique
+	 * 
+	 */
+	public String getNOM_ST_MOTIF(int i) {
+		return "getNOM_ST_MOTIF" + i;
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_ST_TYPE(int i) {
+		return "NOM_ST_TYPE_" + i;
+	}
+
+	/**
+	 * Getter du nom de l'écran (pour la gestion des droits)
+	 */
+	public String getNomEcran() {
+		return "ECR-PTG-SAISIE";
+	}
+
+	public String getVal_Del(int i) {
+		return "Delete_" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+
+	public String getVal_DelAll() {
+		return "Delete_All";
+	}
+
+	public String getVal_Delay(int i) {
+		return "Delay_" + i;
+	}
+
+	public String getVal_DelayAll() {
+		return "Delay_All";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
+	 * 
+	 */
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_ETAT() {
+		return getLB_ETAT();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_ETAT_SELECT() {
+		return getZone(getNOM_LB_ETAT_SELECT());
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_TYPE Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_TYPE() {
+		return getLB_TYPE();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_TYPE Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_TYPE_SELECT() {
+		return getZone(getNOM_LB_TYPE_SELECT());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_AGENT(int i) {
+		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MAX Date
+	 * de création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT_MAX() {
+		return getZone(getNOM_ST_AGENT_MAX());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MIN Date
+	 * de création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT_MIN() {
+		return getZone(getNOM_ST_AGENT_MIN());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de création : (13/09/11 08:45:29)
+	 * 
+	 */
+	public String getVAL_ST_CODE_SERVICE() {
+		return getZone(getNOM_ST_CODE_SERVICE());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE(int i) {
+		return getZone(getNOM_ST_DATE(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_DATE_DEB(int i) {
+		return getZone(getNOM_ST_DATE_DEB(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_DATE_FIN(int i) {
+		return getZone(getNOM_ST_DATE_FIN(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE_MAX() {
+		return getZone(getNOM_ST_DATE_MAX());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
+	 * de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_DATE_MIN() {
+		return getZone(getNOM_ST_DATE_MIN());
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_DATE_SAISIE(int i) {
+		return getZone(getNOM_ST_DATE_SAISIE(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_DUREE(int i) {
+		return getZone(getNOM_ST_DUREE(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_ETAT(int i) {
+		return getZone(getNOM_ST_ETAT(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone
+	 * 
+	 */
+	public String getVAL_ST_MOTIF(int i) {
+		return getZone(getNOM_ST_MOTIF(i));
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
+	 * création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_ST_TYPE(int i) {
+		return getZone(getNOM_ST_TYPE(i));
+	}
+
+	public String getVal_Valid(int i) {
+		return "Valid_" + i;
+	}
+
+	public String getVal_ValidAll() {
+		return "Valid_All";
 	}
 
 	/**
@@ -204,20 +632,45 @@ public class OePTGSaisie extends BasicProcess {
 
 	}
 
-	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
-	 */
-	public String getNomEcran() {
-		return "ECR-PTG-SAISIE";
+	@Override
+	public void initialiseZones(HttpServletRequest request) throws Exception {
+		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
+		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
+
+		// ----------------------------------//
+		// Vérification des droits d'accès. //
+		// ----------------------------------//
+		if (MairieUtils.estInterdit(request, getNomEcran())) {
+			// "ERR190",
+			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
+			throw new Exception();
+		}
+
+		// Initialisation des listes déroulantes
+		initialiseListeDeroulante();
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null)
+				addZone(getNOM_ST_AGENT_MIN(), agt.getIdAgent());
+		}
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null)
+				addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
+		}
+
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-	 * (05/09/11 11:31:37)
-	 * 
-	 */
-	public String getNOM_PB_FILTRER() {
-		return "NOM_PB_FILTRER";
+	private boolean performControlerFiltres() {
+		String dateDeb = getVAL_ST_DATE_MIN();
+		if (dateDeb.equals(Const.CHAINE_VIDE)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -268,8 +721,7 @@ public class OePTGSaisie extends BasicProcess {
 			if (!idAgents.contains(idAgentMin))
 				idAgents.add(idAgentMin);
 		} else if (idAgentMin != null && idAgentMax != null) {
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(), Integer.valueOf(idAgentMin),
-					Integer.valueOf(idAgentMax));
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(), Integer.valueOf(idAgentMin), Integer.valueOf(idAgentMax));
 			for (AgentNW ag : listAgent) {
 				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent())))
 					idAgents.add(ag.getIdAgent());
@@ -295,8 +747,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 
 		// TODO : mettre les bons filtres
-		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null,
-				type != null ? type.getIdRefTypePointage() : null);
+		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
 
 		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
 		afficheListePointages();
@@ -304,365 +755,40 @@ public class OePTGSaisie extends BasicProcess {
 		return true;
 	}
 
-	private void afficheListePointages() {
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		for (int p = 0; p < getListePointage().size(); p++) {
-			ConsultPointageDto ptg = getListePointage().get(p);
-			Integer i = ptg.getIdPointage();
-			AgentDto agtPtg = ptg.getAgent();
-
-			addZone(getNOM_ST_AGENT(i),
-					agtPtg.getNom() + " " + agtPtg.getPrenom() + " ("
-							+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ") ");
-			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
-			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
-
-		}
-	}
-
-	private boolean performControlerFiltres() {
-		String dateDeb = getVAL_ST_DATE_MIN();
-		if (dateDeb.equals(Const.CHAINE_VIDE)) {
-			return false;
-		}
+	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
+		System.out.println("perform valid all");
+		// TODO
 		return true;
 	}
 
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_ETAT() {
-		if (LB_ETAT == null)
-			LB_ETAT = initialiseLazyLB();
-		return LB_ETAT;
-	}
-
-	/**
-	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_ETAT(String[] newLB_ETAT) {
-		LB_ETAT = newLB_ETAT;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT() {
-		return "NOM_LB_ETAT";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT_SELECT() {
-		return "NOM_LB_ETAT_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_ETAT() {
-		return getLB_ETAT();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_ETAT_SELECT() {
-		return getZone(getNOM_LB_ETAT_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_TYPE() {
-		if (LB_TYPE == null)
-			LB_TYPE = initialiseLazyLB();
-		return LB_TYPE;
-	}
-
-	/**
-	 * Setter de la liste: LB_TYPE Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_TYPE(String[] newLB_TYPE) {
-		LB_TYPE = newLB_TYPE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TYPE() {
-		return "NOM_LB_TYPE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TYPE_SELECT() {
-		return "NOM_LB_TYPE_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_TYPE() {
-		return getLB_TYPE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_TYPE_SELECT() {
-		return getZone(getNOM_LB_TYPE_SELECT());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE_MIN() {
-		return "NOM_ST_DATE_MIN";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE_MIN() {
-		return getZone(getNOM_ST_DATE_MIN());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE_MAX() {
-		return "NOM_ST_DATE_MAX";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE_MAX() {
-		return getZone(getNOM_ST_DATE_MAX());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
-	 * 
-	 */
-	public String getNOM_EF_SERVICE() {
-		return "NOM_EF_SERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
-	 * 
-	 */
-	public String getVAL_EF_SERVICE() {
-		return getZone(getNOM_EF_SERVICE());
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
+		System.out.println("perform valid " + i);
+		// TODO
 		return true;
 	}
 
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	/**
-	 * Met à jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MIN Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getNOM_ST_AGENT_MIN() {
-		return "NOM_ST_AGENT_MIN";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MIN Date
-	 * de création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getVAL_ST_AGENT_MIN() {
-		return getZone(getNOM_ST_AGENT_MIN());
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MIN Date de
-	 * création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public String getNOM_PB_RECHERCHER_AGENT_MIN() {
-		return "NOM_PB_RECHERCHER_AGENT_MIN";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
-
-		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
+	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
+		System.out.println("performPB_DEL all ");
+		// TODO
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MIN Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
-		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
+	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
+		System.out.println("performPB_DEL " + i);
+		// TODO
 		return true;
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MAX Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getNOM_ST_AGENT_MAX() {
-		return "NOM_ST_AGENT_MAX";
+	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
+		System.out.println("performPB_DELAY all ");
+		// TODO
+		return true;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MAX Date
-	 * de création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getVAL_ST_AGENT_MAX() {
-		return getZone(getNOM_ST_AGENT_MAX());
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MAX Date de
-	 * création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public String getNOM_PB_RECHERCHER_AGENT_MAX() {
-		return "NOM_PB_RECHERCHER_AGENT_MAX";
+	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
+		System.out.println("performPB_DELAY " + i);
+		// TODO
+		return true;
 	}
 
 	/**
@@ -682,13 +808,18 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MAX Date de création : (13/07/11 09:49:02)
-	 * 
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX";
+	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+
+		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
+		return true;
 	}
 
 	/**
@@ -704,24 +835,117 @@ public class OePTGSaisie extends BasicProcess {
 		return true;
 	}
 
-	public ArrayList<RefEtatDto> getListeEtats() {
-		return listeEtats;
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		// On enlève le service selectionnée
+		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	@Override
+	public boolean recupererStatut(HttpServletRequest request) throws Exception {
+
+		// Si on arrive de la JSP alors on traite le get
+		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_FILTRER
+			if (testerParametre(request, getNOM_PB_FILTRER())) {
+				return performPB_FILTRER(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_MIN
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MIN())) {
+				return performPB_RECHERCHER_AGENT_MIN(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MIN
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_MAX
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MAX())) {
+				return performPB_RECHERCHER_AGENT_MAX(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
+			}
+
+			if (testerParametre(request, getVal_ValidAll())) {
+				return performPB_VALID(request);
+			}
+
+			if (testerParametre(request, getVal_DelayAll())) {
+				return performPB_DELAY(request);
+			}
+
+			if (testerParametre(request, getVal_DelAll())) {
+				return performPB_DEL(request);
+			}
+
+			for (int i = 0; i < getListePointage().size(); i++) {
+				if (testerParametre(request, getVal_Del(i))) {
+					return performPB_DEL(request, i);
+				}
+				if (testerParametre(request, getVal_Valid(i))) {
+					return performPB_VALID(request, i);
+				}
+				if (testerParametre(request, getVal_Delay(i))) {
+					return performPB_DELAY(request, i);
+				}
+			}
+
+		}
+		// Si TAG INPUT non géré par le process
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	/**
+	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_ETAT(String[] newLB_ETAT) {
+		LB_ETAT = newLB_ETAT;
+	}
+
+	/**
+	 * Setter de la liste: LB_TYPE Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_TYPE(String[] newLB_TYPE) {
+		LB_TYPE = newLB_TYPE;
 	}
 
 	public void setListeEtats(ArrayList<RefEtatDto> listeEtats) {
 		this.listeEtats = listeEtats;
-	}
-
-	public ArrayList<RefTypePointageDto> getListeTypes() {
-		return listeTypes;
-	}
-
-	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
-		this.listeTypes = listeTypes;
-	}
-
-	public ArrayList<ConsultPointageDto> getListePointage() {
-		return listePointage == null ? new ArrayList<ConsultPointageDto>() : listePointage;
 	}
 
 	public void setListePointage(ArrayList<ConsultPointageDto> listePointage) {
@@ -729,56 +953,15 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
+	 * Met à jour la liste des services.
 	 * 
+	 * @param listeServices
 	 */
-	public String getNOM_ST_AGENT(int i) {
-		return "NOM_ST_AGENT_" + i;
+	private void setListeServices(ArrayList<Service> listeServices) {
+		this.listeServices = listeServices;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_AGENT(int i) {
-		return getZone(getNOM_ST_AGENT(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_TYPE(int i) {
-		return "NOM_ST_TYPE_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_TYPE(int i) {
-		return getZone(getNOM_ST_TYPE(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE(int i) {
-		return "NOM_ST_DATE_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE(int i) {
-		return getZone(getNOM_ST_DATE(i));
+	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
+		this.listeTypes = listeTypes;
 	}
 }

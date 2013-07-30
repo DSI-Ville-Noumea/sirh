@@ -15,7 +15,7 @@
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
 		<TITLE>Visualisation des pointages</TITLE>		
 
-<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
@@ -56,7 +56,25 @@
 			hier.style.display='none';
 		}
 		
-		</SCRIPT>		
+		$(document).ready(function() {
+		    $('#example').dataTable({
+		    	"aoColumns":[
+                             {"bSortable": true},
+                             {"bSortable": true},
+                             {"bSortable": true},
+                             {"bSortable": true},
+                             {"bSortable": true},
+                             {"bSortable": true},
+                             {"bSortable": false},
+                             {"bSortable": false},
+                             {"bSortable": false},
+                             {"bSortable": false},
+                             {"bSortable": false},
+                             {"bSortable": false}
+                            ]
+			} );
+		} );
+			</SCRIPT>		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
 	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGSaisie" id="process" scope="session"></jsp:useBean>
@@ -137,78 +155,62 @@
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des pointages</legend>
 			<BR/>
-			<table class="display" id="tabPTG">
-				<thead>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"> 
+   				 <thead>
 					<tr>
-						<th>&nbsp;</th>
-						<th>Nom <br> Prénom <br> Matr</th>
-						<th>Type </th>
+						<th>Agent </th>
+						<th>Type</th>
 						<th>Date</th>
+						<th>Début</th>
+						<th>Fin</th>
+						<th>Durée</th>
+						<th>Motif<br>Commentaires</th>
+						<th>Etat</th>
+						<th>Date de saisie</th>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/valid.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"
+						name="<%=process.getVal_ValidAll()%>"></th>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/del.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"
+						name="<%=process.getVal_DelAll()%>"></th>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/clock.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"
+						name="<%=process.getVal_DelayAll()%>"></th>
 					</tr>
 				</thead>
 				<tbody>
-				<%for (int i = 0;i<process.getListePointage().size();i++){
-					ConsultPointageDto ptg = process.getListePointage().get(i);
+	<%         out.println("Taille pointages:"+process.getListePointage().size());
+	   out.println(new java.sql.Timestamp(new java.util.Date().getTime()));
+          for (ConsultPointageDto ptg:process.getListePointage()){
 					Integer indicePtg = ptg.getIdPointage();
 				%>
 						<tr>
-							<td>&nbsp;</td>
 							<td><%=process.getVAL_ST_AGENT(indicePtg)%></td>
 							<td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
 							<td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
+							<td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							
+							<td><%=process.getVAL_ST_DATE_FIN(indicePtg)%></td>							
+							<td><%=process.getVAL_ST_DUREE(indicePtg)%></td>							
+							<td><%=process.getVAL_ST_MOTIF(indicePtg)%></td>							
+							<td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
+							<td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
+							<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/valid.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></th>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/del.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></th>
+						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/clock.png"
+						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></th>				
 						</tr>
 				<%}%>
 				</tbody>
 			</table>
-			<script type="text/javascript">
-				$(document).ready(function() {
-				    $('#"tabPTG"').dataTable({
-						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [null,null,null,null],
-						"sDom": '<"H"fl>t<"F"iT>',
-						"sScrollY": "375px",
-						"bPaginate": false,
-						"oTableTools": {
-							"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"pointages","sFileName":"*.xls"}], //OU : "mColumns":[1,2,3,4]
-							"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
-						}
-				    });
-				} );
-			</script>
 			<BR/>	
-		</FIELDSET>
-		
-	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-		    <legend class="sigp2Legend">Gestion des avancements des fonctionnaires</legend>
-			<BR/>
-				<table class="display" id="tabAvctFonct">
-					<thead>
-						<tr>
-							<th rowspan="2">Vérifié par</th>
-						</tr>
-					</thead>
-					<tbody>
-							<tr>
-								<td>&nbsp;</td>
-						    </tr>
-					</tbody>
-				</table>
-				<script type="text/javascript">
-					$(document).ready(function() {
-					    $('#tabAvctFonct').dataTable({			    						    
-							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [null],
-							"sDom": '<"H"fl>t<"F"iT>',
-							"sScrollY": "375px",
-							"bPaginate": false,
-							"oTableTools": {
-								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"avctFonctionnaires","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
-								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
-							}
-					    });
-					} );
-				</script>
-			<BR/>
 		</FIELDSET>
 		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
