@@ -23,12 +23,16 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
+	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
+	private static final String sirhPtgVisualisationSetState = "visualisation/changerEtatsSIRH";
+
 	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
 	private static final String sirhPtgTypesPointage = "filtres/getTypes";
 	private static final String sirhPtgPrimesStatut = "primes/getListePrimeWithStatus";
@@ -52,6 +56,38 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndPostRequest(json, url);
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
 
+	}
+
+	@Override
+	public ClientResponse setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idagent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgVisualisationSetState+"?idAgent="+idagent);
+
+		StringBuilder json = new StringBuilder("[");
+		for (Integer id : idPtgs) {
+			json.append("{\"idPointage\" : " + id + ",\"idRefEtat\" : " + idRefEtat + "},");
+		}
+		if (idPtgs.size() > 0)
+			json.substring(0, json.length() - 1);
+		json.append("]");
+		return createAndPostRequest(json.toString(), url);
+	}
+
+	@Override
+	public List<ConsultPointageDto> getVisualisationHistory(String idPointage) {
+
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgVisualisationHistory);
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idPointage", idPointage);
+		ClientResponse res = createAndFireRequest(parameters, url);
+		return readResponseAsList(ConsultPointageDto.class, res, url);
+	}
+
+	private ClientResponse createAndPostRequest(Map parameters, String url) {
+		String json = new JSONSerializer().serialize(parameters);
+		System.out.println("appel :" + url + " avec " + json);
+		return createAndPostRequest(json, url);
 	}
 
 	private ClientResponse createAndPostRequest(String json, String url) {
@@ -134,15 +170,13 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		String output = response.getEntity(String.class);
 
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass)
-				.deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
 
 		return result;
 	}
 
 	@Override
-	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat,
-			Integer idRefType) {
+	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVisulaisationPointage);

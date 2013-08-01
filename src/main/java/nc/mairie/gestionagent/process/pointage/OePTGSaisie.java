@@ -2,8 +2,10 @@ package nc.mairie.gestionagent.process.pointage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -15,17 +17,18 @@ import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
-import nc.mairie.gestionagent.process.pointage.EtatPointageEnum;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -47,16 +50,17 @@ public class OePTGSaisie extends BasicProcess {
 	private String[] LB_TYPE;
 
 	private ArrayList<RefEtatDto> listeEtats;
-	private ArrayList<ConsultPointageDto> listePointage;
+	private HashMap<Integer, ConsultPointageDto> listePointage;
 	private ArrayList<Service> listeServices;
 	private ArrayList<RefTypePointageDto> listeTypes;
+
+	private AgentNW loggedAgent;
 
 	private void afficheListePointages() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		for (int p = 0; p < getListePointage().size(); p++) {
-			ConsultPointageDto ptg = getListePointage().get(p);
+		for (ConsultPointageDto ptg : getListePointage().values()) {
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
@@ -64,7 +68,9 @@ public class OePTGSaisie extends BasicProcess {
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 			addZone(getNOM_ST_DATE_DEB(i), sdf.format(ptg.getDebut()));
-			addZone(getNOM_ST_DATE_FIN(i), sdf.format(ptg.getFin()));
+			if (ptg.getFin() != null) {
+				addZone(getNOM_ST_DATE_FIN(i), sdf.format(ptg.getFin()));
+			}
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
 			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
@@ -113,8 +119,8 @@ public class OePTGSaisie extends BasicProcess {
 		return listeEtats;
 	}
 
-	public ArrayList<ConsultPointageDto> getListePointage() {
-		return listePointage == null ? new ArrayList<ConsultPointageDto>() : listePointage;
+	public HashMap<Integer, ConsultPointageDto> getListePointage() {
+		return listePointage == null ? new HashMap<Integer, ConsultPointageDto>() : listePointage;
 	}
 
 	/**
@@ -361,7 +367,7 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public String getVal_Del(int i) {
-		return "Delete_" + i;
+		return "Delete_F" + i;
 	}
 
 	/**
@@ -378,7 +384,7 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public String getVal_Delay(int i) {
-		return "Delay_" + i;
+		return "Delay_F" + i;
 	}
 
 	public String getVal_DelayAll() {
@@ -662,7 +668,18 @@ public class OePTGSaisie extends BasicProcess {
 			if (agt != null)
 				addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
 		}
-
+		UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+			if (user != null && user.getNomatr() != null) {
+				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			}
+		} else {
+			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
 	}
 
 	private boolean performControlerFiltres() {
@@ -680,7 +697,7 @@ public class OePTGSaisie extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
 	 * 
 	 */
-	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+	public boolean performPB_FILTRER() throws Exception {
 		if (!performControlerFiltres()) {
 			// "ERR500",
 			// "Le champ date de début est obligatoire."
@@ -756,39 +773,58 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
-		System.out.println("perform valid all");
-		// TODO
+		changeState(getListePointage().values(), EtatPointageEnum.VALIDE);
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
-		System.out.println("perform valid " + i);
-		// TODO
+		changeState(getListePointage().get(i), EtatPointageEnum.VALIDE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
-		System.out.println("performPB_DEL all ");
-		// TODO
+		changeState(getListePointage().values(), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
-		System.out.println("performPB_DEL " + i);
-		// TODO
+		changeState(getListePointage().get(i), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
-		System.out.println("performPB_DELAY all ");
-		// TODO
+		changeState(getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
-		System.out.println("performPB_DELAY " + i);
-		// TODO
+		changeState(getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
 		return true;
+	}
+
+	private void changeState(ConsultPointageDto ptg, EtatPointageEnum state) {
+		ArrayList<ConsultPointageDto> param = new ArrayList<>();
+		param.add(ptg);
+		changeState(param, state);
+	}
+
+	private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
+		ArrayList<Integer> ids = new ArrayList<>();
+		for (ConsultPointageDto pt : ptg) {
+			ids.add(pt.getIdPointage());
+		}
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		if (getLoggedAgent() == null) {
+			System.out.println("Agent complètement nul!");
+
+		} else {
+			t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent());
+			try {
+				performPB_FILTRER();
+			} catch (Exception e) {
+				System.out.println("Exception in performPB_FILTRER");
+			}
+		}
 	}
 
 	/**
@@ -870,7 +906,7 @@ public class OePTGSaisie extends BasicProcess {
 
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
-				return performPB_FILTRER(request);
+				return performPB_FILTRER();
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
@@ -910,7 +946,7 @@ public class OePTGSaisie extends BasicProcess {
 				return performPB_DEL(request);
 			}
 
-			for (int i = 0; i < getListePointage().size(); i++) {
+			for (int i : getListePointage().keySet()) {
 				if (testerParametre(request, getVal_Del(i))) {
 					return performPB_DEL(request, i);
 				}
@@ -948,8 +984,10 @@ public class OePTGSaisie extends BasicProcess {
 		this.listeEtats = listeEtats;
 	}
 
-	public void setListePointage(ArrayList<ConsultPointageDto> listePointage) {
-		this.listePointage = listePointage;
+	public void setListePointage(ArrayList<ConsultPointageDto> _listePointage) {
+		listePointage = new HashMap<>();
+		for (ConsultPointageDto ptg : _listePointage)
+			listePointage.put(ptg.getIdPointage(), ptg);
 	}
 
 	/**
@@ -963,5 +1001,9 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
 		this.listeTypes = listeTypes;
+	}
+
+	public AgentNW getLoggedAgent() {
+		return loggedAgent;
 	}
 }

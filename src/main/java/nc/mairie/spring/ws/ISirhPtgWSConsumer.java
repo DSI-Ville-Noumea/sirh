@@ -1,6 +1,9 @@
 package nc.mairie.spring.ws;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.jersey.api.client.ClientResponse;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
@@ -16,6 +19,10 @@ public interface ISirhPtgWSConsumer {
 
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType);
 
+	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
+
+	List<ConsultPointageDto> getVisualisationHistory(String idAgents);
+
 	List<RefPrimeDto> getPrimes(String agentStatus);
 
 	List<RefPrimeDto> getPrimes();
@@ -25,4 +32,5 @@ public interface ISirhPtgWSConsumer {
 	List<RefTypePointageDto> getTypesPointage();
 
 	RefPrimeDto getPrimeDetail(Integer numRubrique);
+
 }

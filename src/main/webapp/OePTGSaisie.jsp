@@ -58,7 +58,7 @@
 		
 		$(document).ready(function() {
 		    $('#example').dataTable({
-		    	"aoColumns":[
+				"aoColumns":[
                              {"bSortable": true},
                              {"bSortable": true},
                              {"bSortable": true},
@@ -71,8 +71,15 @@
                              {"bSortable": false},
                              {"bSortable": false},
                              {"bSortable": false}
-                            ]
-			} );
+                            ],
+                            "sDom": '<"H"fl>t<"F"ipT>',
+							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
+							"oTableTools": {
+								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"visualisationPointage","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+							}
+							
+		} );
 		} );
 			</SCRIPT>		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -152,6 +159,8 @@
 			<BR/><BR/>				
 		</FIELDSET>
 		
+		<%      out.println("Taille pointages:"+process.getListePointage().size()+" at "+new java.sql.Timestamp(new java.util.Date().getTime()));
+         %>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des pointages</legend>
 			<BR/>
@@ -167,25 +176,16 @@
 						<th>Motif<br>Commentaires</th>
 						<th>Etat</th>
 						<th>Date de saisie</th>
-						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/valid.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"
-						name="<%=process.getVal_ValidAll()%>"></th>
-						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/del.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"
-						name="<%=process.getVal_DelAll()%>"></th>
-						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/clock.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"
-						name="<%=process.getVal_DelayAll()%>"></th>
+						<th align="center"><INPUT tabindex="" type="image"	src="images/valid.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_ValidAll()%>"></th>
+						<th align="center"><INPUT tabindex="" type="image"	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_DelAll()%>"></th>
+						<th align="center"><INPUT tabindex="" type="image"	src="images/clock.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+						height="16px" width="16px"	name="<%=process.getVal_DelayAll()%>"></th>
 					</tr>
 				</thead>
 				<tbody>
-	<%         out.println("Taille pointages:"+process.getListePointage().size());
-	   out.println(new java.sql.Timestamp(new java.util.Date().getTime()));
-          for (ConsultPointageDto ptg:process.getListePointage()){
-					Integer indicePtg = ptg.getIdPointage();
+	<%    for (int indicePtg:process.getListePointage().keySet()){
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_AGENT(indicePtg)%></td>
@@ -197,17 +197,14 @@
 							<td><%=process.getVAL_ST_MOTIF(indicePtg)%></td>							
 							<td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
 							<td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
-							<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/valid.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></th>
-						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/del.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></th>
-						<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"	src="images/clock.png"
-						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-						height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></th>				
+							<td align="center"><INPUT type="image"	src="images/valid.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+							height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></td>
+							<td align="center"><INPUT type="image"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+							height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></td>
+							<td align="center"><INPUT type="image"	src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+							height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				
 						</tr>
-				<%}%>
+					<%}%>
 				</tbody>
 			</table>
 			<BR/>	
