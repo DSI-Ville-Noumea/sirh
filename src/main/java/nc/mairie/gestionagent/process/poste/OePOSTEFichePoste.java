@@ -985,15 +985,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Primes pointage
-		setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
+		ArrayList<PrimePointageFP> listeRecup = (ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
+				VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE);
+		setListePrimePointageFP(listeRecup);
 		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() > 0) {
 			setListePrimePointageFPAAjouter((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT));
 			setListePrimePointageFPASupprimer((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR));
+		} else if (etatStatut() == STATUT_SPECIFICITES && listeRecup.size() == 0) {
+			setListePrimePointageFPASupprimer((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
+
 	}
 
 	/**

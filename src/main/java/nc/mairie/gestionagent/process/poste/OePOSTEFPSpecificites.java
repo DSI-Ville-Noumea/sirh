@@ -164,7 +164,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// ****************************************
 		// Verification Montant OU Nature renseigné
 		// ****************************************
-		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0 && ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
+		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
+				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
 			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 			setFocus(getNOM_LB_NATURE_AVANTAGE());
@@ -1284,7 +1285,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		initialiseListeDeroulante();
 		initialiseListeSpecificites();
 		if (getVAL_RG_SPECIFICITE() == null || getVAL_RG_SPECIFICITE().length() == 0)
-			addZone(getNOM_RG_SPECIFICITE(), getNOM_RB_SPECIFICITE_AN());
+			addZone(getNOM_RG_SPECIFICITE(), getNOM_RB_SPECIFICITE_PP());
 	}
 
 	/**
@@ -1303,7 +1304,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
+							aAvNat.getIdNatureAvantage());
 					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(), natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
 				}
@@ -1353,16 +1355,18 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Primes pointage
 
-		if (getListePrimePointageFP() == null)
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+
+		if (getListePrimePointageFP() == null || getListePrimePointageFP().size() == 0)
 			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
-		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
+		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() > 0) {
 			int taillesReg[] = { 10, 50 };
 			FormateListe aFormatReg = new FormateListe(taillesReg);
 			for (ListIterator<PrimePointageFP> list = getListePrimePointageFP().listIterator(); list.hasNext();) {
 				PrimePointageFP aReg = (PrimePointageFP) list.next();
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getNumRubrique().toString());
+				RefPrimeDto rubr = t.getPrimeDetail(aReg.getNumRubrique());
 				if (aReg != null) {
-					String ligne[] = { rubr.getNumRubrique(), rubr.getLibRubrique() };
+					String ligne[] = { rubr.getNumRubrique().toString(), rubr.getLibelle() };
 					aFormatReg.ajouteLigne(ligne);
 				}
 			}
@@ -1695,11 +1699,14 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE());
 
-			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
+			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT())
+					: -1);
 			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
-			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
+			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())
+					: -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage)).getIdNatureAvantage());
-			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
+			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
 			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(indiceRubAvantage - 1)).getNumRubrique());
 
 			if (getListeAvantage() == null)
@@ -1723,7 +1730,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			deleg.setLibDelegation(getVAL_EF_COMMENT_DELEGATION());
 
-			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
+			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
+					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation)).getIdTypeDelegation());
 
 			if (getListeDelegation() == null)
@@ -1770,26 +1778,60 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				return false;
 
 			// Alimentation de l'objet
-			PrimePointageFP regIndemn = new PrimePointageFP();
-			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
-			regIndemn.setNumRubrique(indiceRub <= 0 ? null : Integer.valueOf(getListePrimes().get(indiceRub).getNumRubrique()));
+			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+			if (indiceRub != -1) {
+				Integer numRubAjout = getListePrimes().get(indiceRub).getNumRubrique();
 
-			if (!getListePrimePointageFP().contains(regIndemn)) {
-				getListePrimePointageFP().add(regIndemn);
-				if (getListePrimePointageFPASupprimer().contains(regIndemn)) {
-					getListePrimePointageFPASupprimer().remove(regIndemn);
+				// Alimentation de l'objet
+				if (!getListeRubs().contains(numRubAjout)) {
+					PrimePointageFP prime = new PrimePointageFP();
+					prime.setNumRubrique(numRubAjout);
+
+					if (getListePrimePointageFP() == null)
+						setListePrimePointageFP(new ArrayList<PrimePointageFP>());
+
+					if (getListePrimePointageFPASupprimer().contains(prime)) {
+						getListePrimePointageFPASupprimer().remove(prime);
+						getListePrimePointageFP().remove(prime);
+					} else {
+						getListePrimePointageFPAAjouter().add(prime);
+						getListePrimePointageFP().add(prime);
+					}
 				} else {
-					getListePrimePointageFPAAjouter().add(regIndemn);
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR088"));
+					return false;
 				}
+			} else {
+				return false;
 			}
+
 		}
 		return true;
 	}
 
+	public ArrayList<Integer> getListeRubs() {
+		ArrayList<Integer> ret = new ArrayList<>();
+
+		if (getListePrimePointageFP() != null) {
+			for (PrimePointageFP p : getListePrimePointageFP()) {
+				ret.add(p.getNumRubrique());
+			}
+		}
+		if (getListePrimePointageFPAAjouter() != null) {
+			for (PrimePointageFP p : getListePrimePointageFPAAjouter()) {
+				ret.add(p.getNumRubrique());
+
+			}
+		}
+		return ret;
+	}
+
 	private boolean performControlerSaisiePrimePointage(HttpServletRequest request) {
 		// rubrique obligatoire
-		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
-		if (indiceRubr < 1) {
+		int indiceRubr = (Services.estNumerique(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT()) : -1);
+		if (indiceRubr < 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "rubrique"));
 			return false;
