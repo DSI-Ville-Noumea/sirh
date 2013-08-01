@@ -185,7 +185,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.3</version>
 				<configuration>
 					<reportPlugins>
 						<plugin>
@@ -225,7 +225,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.4</version>
+							<version>2.7</version>
 							<configuration>
 								<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 							</configuration>
