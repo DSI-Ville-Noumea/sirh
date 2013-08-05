@@ -470,7 +470,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * création : (16/08/11 15:48:02)
 	 * 
 	 */
-	private String[] getLB_NATURE_AVANTAGE_spec() {
+	private String[] getLB_NATURE_AVANTAGE() {
 		if (LB_NATURE_AVANTAGE == null)
 			LB_NATURE_AVANTAGE = initialiseLazyLB();
 		return LB_NATURE_AVANTAGE;
@@ -481,7 +481,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * création : (16/08/11 15:48:02)
 	 * 
 	 */
-	private String[] getLB_RUBRIQUE_AVANTAGE_spec() {
+	private String[] getLB_RUBRIQUE_AVANTAGE() {
 		if (LB_RUBRIQUE_AVANTAGE == null)
 			LB_RUBRIQUE_AVANTAGE = initialiseLazyLB();
 		return LB_RUBRIQUE_AVANTAGE;
@@ -492,7 +492,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * de création : (16/08/11 15:48:02)
 	 * 
 	 */
-	private String[] getLB_RUBRIQUE_PRIME_POINTAGE_spec() {
+	private String[] getLB_RUBRIQUE_PRIME_POINTAGE() {
 		if (LB_RUBRIQUE_PRIME_POINTAGE == null)
 			LB_RUBRIQUE_PRIME_POINTAGE = initialiseLazyLB();
 		return LB_RUBRIQUE_PRIME_POINTAGE;
@@ -666,7 +666,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listePrimePointageAFF
 	 */
 	public ArrayList<PrimePointageAff> getListePrimePointageAFF() {
-		return listePrimePointageAFF;
+		return listePrimePointageAFF == null ? new ArrayList<PrimePointageAff>() : listePrimePointageAFF;
 	}
 
 	/**
@@ -697,7 +697,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listePrimePointageFP
 	 */
 	public ArrayList<PrimePointageFP> getListePrimePointageFP() {
-		return listePrimePointageFP;
+		return listePrimePointageFP == null ? new ArrayList<PrimePointageFP>() : listePrimePointageFP;
 	}
 
 	/**
@@ -933,8 +933,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * NOM_LB_NATURE_AVANTAGE_SELECT Date de création : (16/08/11 15:48:02)
 	 * 
 	 */
-	public String getNOM_LB_NATURE_AVANTAGE_SELECT() {
-		return "NOM_LB_NATURE_AVANTAGE_SELECT";
+	public String getNOM_LB_NATURE_AVANTAGE_SELECT_spec() {
+		return "NOM_LB_NATURE_AVANTAGE_SELECT_spec";
 	}
 
 	/**
@@ -952,7 +952,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE() {
-		return "NOM_LB_RUBRIQUE_AVANTAGE_spec";
+		return "NOM_LB_RUBRIQUE_AVANTAGE";
 	}
 
 	/**
@@ -961,7 +961,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_RUBRIQUE_AVANTAGE_SELECT() {
-		return "NOM_LB_RUBRIQUE_AVANTAGE_SELECT_spec";
+		return "NOM_LB_RUBRIQUE_AVANTAGE_SELECT";
 	}
 
 	/**
@@ -1043,7 +1043,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_LB_TYPE_DELEGATION_SELECT_spec() {
-		return "NOM_LB_TYPE_DELEGATION_SELEC_specT";
+		return "NOM_LB_TYPE_DELEGATION_SELEC_spec";
 	}
 
 	/**
@@ -1378,7 +1378,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_MONTANT_spec(int i) {
-		return "NOM_ST_LST_AVANTAGE_MONTANT" + i;
+		return "NOM_ST_LST_AVANTAGE_MONTANT_spec" + i;
 	}
 
 	/**
@@ -1387,7 +1387,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_NATURE_spec(int i) {
-		return "NOM_ST_LST_AVANTAGE_NATURE" + i;
+		return "NOM_ST_LST_AVANTAGE_NATURE_spec" + i;
 	}
 
 	/**
@@ -1396,7 +1396,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_RUBRIQUE_spec(int i) {
-		return "NOM_ST_LST_AVANTAGE_RUBRIQUE" + i;
+		return "NOM_ST_LST_AVANTAGE_RUBRIQUE_spec" + i;
 	}
 
 	/**
@@ -1405,7 +1405,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_AVANTAGE_TYPE_spec(int i) {
-		return "NOM_ST_LST_AVANTAGE_TYPE" + i;
+		return "NOM_ST_LST_AVANTAGE_TYPE_spec" + i;
 	}
 
 	/**
@@ -1414,7 +1414,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_DELEGATION_COMMENT_spec(int i) {
-		return "NOM_ST_LST_DELEGATION_COMMENT" + i;
+		return "NOM_ST_LST_DELEGATION_COMMENT_spec" + i;
 	}
 
 	/**
@@ -1423,7 +1423,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_DELEGATION_TYPE_spec(int i) {
-		return "NOM_ST_LST_DELEGATION_TYPE" + i;
+		return "NOM_ST_LST_DELEGATION_TYPE_spec" + i;
 	}
 
 	/**
@@ -1432,7 +1432,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(int i) {
-		return "NOM_ST_LST_PRIME_POINTAGE_RUBRIQUE" + i;
+		return "NOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec" + i;
 	}
 
 	/**
@@ -1441,7 +1441,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_FORFAIT_spec(int i) {
-		return "NOM_ST_LST_REGINDEMN_FORFAIT" + i;
+		return "NOM_ST_LST_REGINDEMN_FORFAIT_spec" + i;
 	}
 
 	/**
@@ -1450,7 +1450,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_NB_POINTS_spec(int i) {
-		return "NOM_ST_LST_REGINDEMN_NB_POINTS" + i;
+		return "NOM_ST_LST_REGINDEMN_NB_POINTS_spec" + i;
 	}
 
 	/**
@@ -1459,7 +1459,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_RUBRIQUE_spec(int i) {
-		return "NOM_ST_LST_REGINDEMN_RUBRIQUE" + i;
+		return "NOM_ST_LST_REGINDEMN_RUBRIQUE_spec" + i;
 	}
 
 	/**
@@ -1468,7 +1468,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_LST_REGINDEMN_TYPE_spec(int i) {
-		return "NOM_ST_LST_REGINDEMN_TYPE" + i;
+		return "NOM_ST_LST_REGINDEMN_TYPE_spec" + i;
 	}
 
 	/**
@@ -1531,7 +1531,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getNOM_ST_SPECIFICITE_spec() {
-		return "NOM_ST_SPECIFICITE";
+		return "NOM_ST_SPECIFICITE_spec";
 	}
 
 	/**
@@ -1775,7 +1775,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String getVAL_LB_NATURE_AVANTAGE_SELECT_spec() {
-		return getZone(getNOM_LB_NATURE_AVANTAGE_SELECT());
+		return getZone(getNOM_LB_NATURE_AVANTAGE_SELECT_spec());
 	}
 
 	/**
@@ -1784,7 +1784,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String[] getVAL_LB_NATURE_AVANTAGE_spec() {
-		return getLB_NATURE_AVANTAGE_spec();
+		return getLB_NATURE_AVANTAGE();
 	}
 
 	/**
@@ -1793,7 +1793,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public String[] getVAL_LB_RUBRIQUE_AVANTAGE() {
-		return getLB_RUBRIQUE_AVANTAGE_spec();
+		return getLB_RUBRIQUE_AVANTAGE();
 	}
 
 	/**
@@ -1820,8 +1820,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * JSP : LB_RUBRIQUE_PRIME_POINTAGE Date de création : (16/08/11 15:48:02)
 	 * 
 	 */
-	public String[] getVAL_LB_RUBRIQUE_PRIME_POINTAGE_spec() {
-		return getLB_RUBRIQUE_PRIME_POINTAGE_spec();
+	public String[] getVAL_LB_RUBRIQUE_PRIME_POINTAGE() {
+		return getLB_RUBRIQUE_PRIME_POINTAGE();
 	}
 
 	/**
@@ -1865,7 +1865,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * la JSP : LB_TYPE_AVANTAGE Date de création : (16/08/11 15:48:02)
 	 * 
 	 */
-	public String getVAL_LB_TYPE_AVANTAGE_SELEC_specT() {
+	public String getVAL_LB_TYPE_AVANTAGE_SELECT_spec() {
 		return getZone(getNOM_LB_TYPE_AVANTAGE_SELECT_spec());
 	}
 
@@ -2687,7 +2687,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		// Si liste nature avantage vide alors affectation
-		if (getLB_NATURE_AVANTAGE_spec() == LBVide) {
+		if (getLB_NATURE_AVANTAGE() == LBVide) {
 			ArrayList<NatureAvantage> natureAvantage = NatureAvantage.listerNatureAvantage(getTransaction());
 			NatureAvantage natAvVide = new NatureAvantage();
 			natureAvantage.add(0, natAvVide);
@@ -2699,7 +2699,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 
 		// Si liste rubrique vide alors affectation
-		if (getLB_RUBRIQUE_AVANTAGE_spec() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
+		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
 			ArrayList<Rubrique> rubrique = Rubrique.listerRubrique7000(getTransaction());
 			setListeRubrique(rubrique);
 
@@ -2721,7 +2721,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		if (getLB_RUBRIQUE_PRIME_POINTAGE_spec() == LBVide) {
+		if (getLB_RUBRIQUE_PRIME_POINTAGE() == LBVide) {
 			setListePrimes(initialiseListeDeroulantePrimes_spec());
 			if (getListePrimes() != null) {
 				String[] content = new String[getListePrimes().size()];
@@ -2801,7 +2801,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		// Primes pointages
-		if (getListePrimePointageFP() == null && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
+		if (getListePrimePointageFP().size() == 0 && getFichePosteCourant() != null && getFichePosteCourant().getIdFichePoste() != null) {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getFichePosteSecondaireCourant() != null) {
 				getListePrimePointageFP().addAll(
@@ -2809,7 +2809,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null && getAffectationCourant().getIdAffectation() != null) {
+		if (getListePrimePointageAFF().size() == 0 && getFichePosteCourant() != null && getAffectationCourant().getIdAffectation() != null) {
 			setListePrimePointageAFF(getPrimePointageAffDao().listerPrimePointageAff(Integer.valueOf(getAffectationCourant().getIdAffectation())));
 		}
 		int indicePrime = 0;
@@ -3332,11 +3332,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	private boolean performControlerSaisieAvNat_spec(HttpServletRequest request) throws Exception {
 
-		// **************************
-		// Verification Type avantage
-		// **************************
-		if (getVAL_LB_TYPE_AVANTAGE_SELEC_specT().length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
+		// type avantage obligatoire
+		int indiceRubr = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) : -1);
+		if (indiceRubr < 0) {
+			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Type avantage"));
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
@@ -3372,6 +3371,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieDel_spec(HttpServletRequest request) throws Exception {
+		// type obligatoire
+		int indiceRubr = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT_spec()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT_spec())
+				: -1);
+		if (indiceRubr < 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Type"));
+			setFocus(getNOM_PB_AJOUTER());
+			return false;
+		}
 		return true;
 	}
 
@@ -3399,6 +3407,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * (29/07/11)
 	 */
 	private boolean performControlerSaisieRegIndemn_spec(HttpServletRequest request) throws Exception {
+		// type obligatoire
+		int indiceRubr = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT_spec()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT_spec()) : -1);
+		if (indiceRubr < 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Type"));
+			setFocus(getNOM_PB_AJOUTER());
+			return false;
+		}
 
 		// *******************************************
 		// Verification Forfait OU Nb points renseigné
@@ -4195,8 +4211,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE_spec());
 
-			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELEC_specT()) ? Integer
-					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELEC_specT()) : -1);
+			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) ? Integer
+					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) : -1);
 			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
 			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT_spec()) ? Integer
 					.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT_spec()) : -1);
@@ -4865,7 +4881,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	private void viderAvantageNature_spec() throws Exception {
 		addZone(getNOM_LB_TYPE_AVANTAGE_SELECT_spec(), "0");
-		addZone(getNOM_LB_NATURE_AVANTAGE_SELECT(), "0");
+		addZone(getNOM_LB_NATURE_AVANTAGE_SELECT_spec(), "0");
 		addZone(getNOM_EF_MONTANT_AVANTAGE_spec(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_RUBRIQUE_AVANTAGE_SELECT(), "0");
 	}

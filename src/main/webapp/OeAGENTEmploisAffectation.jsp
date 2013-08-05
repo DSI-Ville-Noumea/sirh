@@ -256,7 +256,7 @@
 					<table class="sigp2-tab">
 						<tr>
 							<%
-							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) ) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) )) {
 							%>
 							<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
@@ -290,7 +290,7 @@
 						%>
 						<tr>
 							<%
-							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) ) {
 							%>
 							<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 								type="image" src="images/suppression.gif"
@@ -314,7 +314,7 @@
 						%>
 						<tr>
 							<%
-							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) ) {
 							%>
 							<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 								type="image" src="images/suppression.gif"
@@ -347,7 +347,7 @@
 			<table class="sigp2-tab">
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -378,7 +378,7 @@
 				%>
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))) {
 					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -400,7 +400,7 @@
 				%>
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -432,7 +432,7 @@
 			<table class="sigp2-tab">
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -467,7 +467,7 @@
 				%>
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) ) {
 					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -491,7 +491,7 @@
 				%>
 				<tr>
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<td class="sigp2-tabLigne" align="center"><INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -528,7 +528,7 @@
 				<tr>
 					<th width="50px;" align="center" >
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 						<INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -555,7 +555,7 @@
 					
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) ) {
 					%>
 						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage) %>")'  >
 						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
@@ -579,7 +579,7 @@
 
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -604,7 +604,7 @@
 				<tr>
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) &&  (process.getAffectationCourant()!=null && process.getAffectationCourant().getIdAffectation()!=null ?process.getAffectationCourant().isActive() : false) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -657,7 +657,7 @@
 					d'avantage : </span> <span> <SELECT class="sigp2-liste"
 					name="<%=process.getNOM_LB_TYPE_AVANTAGE_spec()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_AVANTAGE_spec(), process.getVAL_LB_TYPE_AVANTAGE_SELEC_specT())%>
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_AVANTAGE_spec(), process.getVAL_LB_TYPE_AVANTAGE_SELECT_spec())%>
 				</SELECT>
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 150px;">Nature
@@ -704,7 +704,7 @@
 					: </span> <span> <SELECT class="sigp2-liste"
 					name="<%=process.getNOM_LB_RUBRIQUE_PRIME_POINTAGE()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_spec(), process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT())%>
+						<%=process.forComboHTML(process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE(), process.getVAL_LB_RUBRIQUE_PRIME_POINTAGE_SELECT())%>
 				</SELECT>
 				</span>
 				<%
