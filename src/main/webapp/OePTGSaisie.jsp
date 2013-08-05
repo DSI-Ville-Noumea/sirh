@@ -66,8 +66,8 @@
                              {"bSortable": false},
                              {"bSortable": false}
                             ],
-                            "sDom": '<"H"fl>t<"F"iT>',
-    						"sPaginationType": "full_numbers",
+                            "sDom": '<"H"fl>t<"F"Trip>',
+    					    "sPaginationType": "full_numbers",
                             "oLanguage": {
                                 "oPaginate": {
                                     "sFirst": "Début",
@@ -249,9 +249,7 @@
 			<BR/><BR/>				
 		</FIELDSET>
 		
-		<%      out.println("Taille pointages:"+process.getListePointage().size()+" nbr historique :"+process.getHistorySize()	+" at "+new java.sql.Timestamp(new java.util.Date().getTime()));
-         %>
-	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+		 <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des pointages</legend>
 			<BR/>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
