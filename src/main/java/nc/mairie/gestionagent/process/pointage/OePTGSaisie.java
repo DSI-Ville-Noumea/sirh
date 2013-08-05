@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
@@ -53,6 +55,7 @@ public class OePTGSaisie extends BasicProcess {
 	private HashMap<Integer, ConsultPointageDto> listePointage;
 	private ArrayList<Service> listeServices;
 	private ArrayList<RefTypePointageDto> listeTypes;
+	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
 
 	private AgentNW loggedAgent;
 
@@ -64,7 +67,7 @@ public class OePTGSaisie extends BasicProcess {
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
-			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ") ");
+			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 			addZone(getNOM_ST_DATE_DEB(i), sdf.format(ptg.getDebut()));
@@ -564,6 +567,10 @@ public class OePTGSaisie extends BasicProcess {
 		return "Valid_All";
 	}
 
+	public String getValHistory(int id) {
+		return "History_" + id;
+	}
+
 	/**
 	 * Initialisation des liste déroulantes de l'écran convocation du suivi
 	 * médical.
@@ -767,18 +774,20 @@ public class OePTGSaisie extends BasicProcess {
 		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
 
 		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
+		loadHistory();
+
 		afficheListePointages();
 
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.VALIDE);
+		changeState(getListePointage().values(), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.VALIDE);
+		changeState(getListePointage().get(i), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
@@ -812,7 +821,8 @@ public class OePTGSaisie extends BasicProcess {
 		ArrayList<Integer> ids = new ArrayList<>();
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
-		}
+			refreshHistory(pt.getIdPointage());
+			}
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (getLoggedAgent() == null) {
 			System.out.println("Agent complètement nul!");
@@ -956,6 +966,10 @@ public class OePTGSaisie extends BasicProcess {
 				if (testerParametre(request, getVal_Delay(i))) {
 					return performPB_DELAY(request, i);
 				}
+				// if (testerParametre(request, getValHistory(i))) {
+				// getHistory(i);
+				// return true;
+				// }
 			}
 
 		}
@@ -1005,5 +1019,82 @@ public class OePTGSaisie extends BasicProcess {
 
 	public AgentNW getLoggedAgent() {
 		return loggedAgent;
+	}
+
+	private void loadHistory() {
+		for (Integer i : listePointage.keySet()) {
+			loadHistory(i);
+		}
+	}
+
+	public int getHistorySize() {
+		return history.size();
+	}
+
+	private void loadHistory(int ptgId) {
+		if (!history.containsKey(ptgId)) {
+			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+			history.put(ptgId, t.getVisualisationHistory(ptgId));
+			// System.out.println(ptgId + " history.size() " + history.size() +
+			// " --");
+			// for (ConsultPointageDto d : history.get(ptgId))
+			// System.out.print(d.getIdPointage() + ",");
+		}
+
+	}
+
+	private void refreshHistory(int ptgId){
+		history.remove(ptgId);
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		history.put(ptgId, t.getVisualisationHistory(ptgId));
+	}
+	
+	public String getHistory(int ptgId) {
+		if (!history.containsKey(ptgId)) {
+			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+			history.put(ptgId, t.getVisualisationHistory(ptgId));
+		}
+		/**
+		 * try { performPB_FILTRER(); } catch (Exception e) {
+		 * System.out.println("Exception in performPB_FILTRER"); }
+		 **/
+
+		List<ConsultPointageDto> data = history.get(ptgId);
+		int numParams = 7;
+		String[][] ret = new String[data.size()][numParams];
+		int index = 0;
+		for (ConsultPointageDto p : data) {
+			ret[index][0] = formatDate(p.getDate());
+			ret[index][1] = formatDate(p.getDebut());
+			ret[index][2] = formatDate(p.getFin());
+			ret[index][3] = "" + p.getQuantite();
+			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
+			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
+			ret[index][6] = formatDate(p.getDateSaisie());
+			index++;
+		}
+		StringBuilder strret = new StringBuilder();
+		for (int i = 0; i < data.size(); i++) {
+			// strret.append("[");
+			for (int j = 0; j < numParams; j++) {
+				strret.append(ret[i][j]).append(",");
+			}
+			strret.deleteCharAt(strret.lastIndexOf(","));
+			strret.append("|");
+		}
+		strret.deleteCharAt(strret.lastIndexOf("|"));
+			return strret.toString();
+	}
+
+	private String formatDate(Date d) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		if (d != null)
+			return formatter.format(d);
+		else
+			return "";
+	}
+
+	public List<ConsultPointageDto> getHistoryTable(int ptgId) {
+		return history.get(ptgId);
 	}
 }

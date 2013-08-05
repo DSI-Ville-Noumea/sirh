@@ -74,12 +74,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public List<ConsultPointageDto> getVisualisationHistory(String idPointage) {
+	public List<ConsultPointageDto> getVisualisationHistory(int idPointage) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVisualisationHistory);
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idPointage", idPointage);
+		parameters.put("idPointage", ""+idPointage);
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(ConsultPointageDto.class, res, url);
 	}

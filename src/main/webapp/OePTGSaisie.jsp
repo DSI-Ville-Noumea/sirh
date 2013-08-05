@@ -13,32 +13,28 @@
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-		<TITLE>Visualisation des pointages</TITLE>		
+<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGSaisie" id="process" scope="session"></jsp:useBean>
+			<TITLE>Visualisation des pointages</TITLE>		
 
-<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
-
-<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 
-<SCRIPT language="JavaScript">
-		//afin de sélectionner un élément dans une liste
+<SCRIPT type="text/javascript">
 		function executeBouton(nom)
 		{
 			document.formu.elements[nom].click();
 		}
-
-		// afin de mettre le focus sur une zone précise
-		function setfocus(nom)
+	    function setfocus(nom)
 		{
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 		}
 
-		// afin d'afficher la hiérarchie des services
 		function agrandirHierarchy() {
 
 			hier = 	document.getElementById('treeHierarchy');
@@ -46,18 +42,16 @@
 			if (hier.style.display!='none') {
 				reduireHierarchy();
 			} else {
-				hier.style.display='block';
-			}
+				hier.style.display='block';			}
 		}
 
-		// afin de cacher la hiérarchie des services
 		function reduireHierarchy() {
 			hier = 	document.getElementById('treeHierarchy');
 			hier.style.display='none';
 		}
 		
 		$(document).ready(function() {
-		    $('#example').dataTable({
+		    $('#VisualisationPointageList').dataTable({
 				"aoColumns":[
                              {"bSortable": true},
                              {"bSortable": true},
@@ -72,19 +66,115 @@
                              {"bSortable": false},
                              {"bSortable": false}
                             ],
-                            "sDom": '<"H"fl>t<"F"ipT>',
-							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"oTableTools": {
-								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"visualisationPointage","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                            "sDom": '<"H"fl>t<"F"iT>',
+    						"sPaginationType": "full_numbers",
+                            "oLanguage": {
+                                "oPaginate": {
+                                    "sFirst": "Début",
+                                    "sLast": "Fin",
+                                    "sNext": "Suivant",
+                                    "sPrevious": "Précédent"
+                                },
+                                "sZeroRecords": "Aucune information de pointage à afficher",
+                                "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ pointages au total",
+                                "sInfoEmpty": "Aucune information de pointage à afficher",
+                                "sEmptyTable": "Veuillez sélectionner une date de début, de fin et un délégataire pour afficher les informations de pointage",
+                                "sInfoFiltered": "(filtrage sur _MAX_ pointages au total)",
+                                "sLengthMenu": "Affichage de _MENU_ pointages par page",
+                                "sSearch": "Recherche instantanée"
+                            } ,
+                        	"oTableTools": {
+								"aButtons": [{"sExtends":"xls","sButtonText":"Export Excel","mColumns":"visible","sTitle":"pointageVisu","sFileName":"*.xls"}], //OU : "mColumns":[0,1,2,3,4]
 								"sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
 							}
-							
+                           
+     	} );
 		} );
-		} );
+		
+		
+		
+		
+	    function loadPointageHistory(pointageId, list) {
+	 	    //alert('Historique du pointage : #tr'+pointageId);
+	 	    
+	 	    var oTable=$('#VisualisationPointageList').dataTable();
+	 	    var tr=document.getElementById('tr'+pointageId);
+	 	    
+	 	     if ( oTable.fnIsOpen(tr) ) {
+		      oTable.fnClose( tr );
+		    } else {
+		      oTable.fnOpen(tr, buildDetailTable(list));	   	
+		    } 	 
+        }
+		
+		
+        /**
+         * Build the table containing the detail of the pointage
+         */
+        function buildDetailTable(data) {
+
+            var detailContainer = $(document.createElement("div"));
+
+            // Build the new table that will handle the detail (append the thead and all tr, th)
+            var detailTable = $(document.createElement("table"))
+                              .addClass("detailContent")
+                              .addClass("subDataTable")
+                              .attr("cellpadding", "0")
+                              .attr("cellspacing", "0")
+                              .css({ width: "100%" })
+                              .append($(document.createElement("thead"))
+                              .append($(document.createElement("tr"))
+                              .append($(document.createElement("th")).html("Date"))
+                              .append($(document.createElement("th")).html("D&eacute;but"))
+                              .append($(document.createElement("th")).html("Fin"))
+                              .append($(document.createElement("th")).html("Dur&eacute;e<br />Quantit&eacute;"))
+                              .append($(document.createElement("th")).html("Motif<br />Commentaire"))
+                              .append($(document.createElement("th")).html("Etat"))
+                              .append($(document.createElement("th")).html("Date de saisie"))
+                      ));
+
+            // Append the tbody element
+            var tbody = $(document.createElement("tbody")).appendTo(detailTable);
+
+            // Initialize temporary dates
+            var dateTemp = false;
+            var dateTemp2 = false;
+            var dateTemp3 = false;
+            var dateTemp4 = false;
+           
+            
+            var pointages=data.split("|");
+            
+          //  alert(" pointages.length " +pointages.length);
+            // Loop on data
+            for (var i = 0; i < pointages.length; i++) {
+                var donnees= pointages[i].split(",");
+                tbody.append($(document.createElement("tr"))
+                             .addClass(i % 2 == 0 ? "even" : "odd")
+                             .append($(document.createElement("td")).html(donnees[0]))
+                             .append($(document.createElement("td")).html(donnees[1]))
+                             .append($(document.createElement("td")).html(donnees[2]))
+                             .append($(document.createElement("td")).html(donnees[3]))
+                             .append($(document.createElement("td")).html(donnees[4]))
+                             .append($(document.createElement("td")).html(donnees[5]))
+                             .append($(document.createElement("td")).html(donnees[6]))
+                             );
+            }
+
+            // Append the detail table into the detail container
+            detailContainer.append(detailTable);
+            // Finally return the table
+            return detailContainer;
+        }
+	    
+	    
+	    
+	    
+		
+		
 			</SCRIPT>		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
-	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGSaisie" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">		
@@ -159,12 +249,12 @@
 			<BR/><BR/>				
 		</FIELDSET>
 		
-		<%      out.println("Taille pointages:"+process.getListePointage().size()+" at "+new java.sql.Timestamp(new java.util.Date().getTime()));
+		<%      out.println("Taille pointages:"+process.getListePointage().size()+" nbr historique :"+process.getHistorySize()	+" at "+new java.sql.Timestamp(new java.util.Date().getTime()));
          %>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des pointages</legend>
 			<BR/>
-			<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"> 
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
    				 <thead>
 					<tr>
 						<th>Agent </th>
@@ -187,8 +277,8 @@
 				<tbody>
 	<%    for (int indicePtg:process.getListePointage().keySet()){
 				%>
-						<tr>
-							<td><%=process.getVAL_ST_AGENT(indicePtg)%></td>
+						<tr id="tr<%=process.getValHistory(indicePtg)%>">
+							<td><%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="10px" width="10px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>','<%=process.getHistory(indicePtg)%>')"></td>  
 							<td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
 							<td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
 							<td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							
@@ -204,7 +294,7 @@
 							<td align="center"><INPUT type="image"	src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 							height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				
 						</tr>
-					<%}%>
+				<%}%>
 				</tbody>
 			</table>
 			<BR/>	

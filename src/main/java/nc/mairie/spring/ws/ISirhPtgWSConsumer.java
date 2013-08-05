@@ -21,7 +21,7 @@ public interface ISirhPtgWSConsumer {
 
 	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
 
-	List<ConsultPointageDto> getVisualisationHistory(String idAgents);
+	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
 
 	List<RefPrimeDto> getPrimes(String agentStatus);
 
