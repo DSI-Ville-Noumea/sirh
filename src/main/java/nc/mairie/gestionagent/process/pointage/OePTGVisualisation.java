@@ -36,7 +36,7 @@ import nc.mairie.utils.VariablesActivite;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OePTGSaisie extends BasicProcess {
+public class OePTGVisualisation extends BasicProcess {
 
 	/**
 	 * 
@@ -93,7 +93,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	@Override
 	public String getJSP() {
-		return "OePTGSaisie.jsp";
+		return "OePTGVisualisation.jsp";
 	}
 
 	/**

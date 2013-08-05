@@ -13,7 +13,7 @@
 		<LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGSaisie" id="process" scope="session"></jsp:useBean>
+<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVisualisation" id="process" scope="session"></jsp:useBean>
 			<TITLE>Visualisation des pointages</TITLE>		
 
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
@@ -96,7 +96,6 @@
 		
 	    function loadPointageHistory(pointageId, list) {
 	 	    //alert('Historique du pointage : #tr'+pointageId);
-	 	    
 	 	    var oTable=$('#VisualisationPointageList').dataTable();
 	 	    var tr=document.getElementById('tr'+pointageId);
 	 	    
@@ -135,18 +134,10 @@
 
             // Append the tbody element
             var tbody = $(document.createElement("tbody")).appendTo(detailTable);
-
-            // Initialize temporary dates
-            var dateTemp = false;
-            var dateTemp2 = false;
-            var dateTemp3 = false;
-            var dateTemp4 = false;
-           
-            
+ 
             var pointages=data.split("|");
             
           //  alert(" pointages.length " +pointages.length);
-            // Loop on data
             for (var i = 0; i < pointages.length; i++) {
                 var donnees= pointages[i].split(",");
                 tbody.append($(document.createElement("tr"))
