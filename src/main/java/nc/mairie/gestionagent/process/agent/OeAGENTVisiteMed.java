@@ -300,8 +300,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			vm.setIdAgent(sm.getIdAgent().toString());
 			vm.setIdMedecin(sm.getIdMedecin() == null ? null : sm.getIdMedecin().toString());
 			vm.setIdRecommandation(null);
-			vm.setDateDerniereVisite(sm.getDateProchaineVisite() == null ? null : Services.convertitDate(sm.getDateProchaineVisite().toString(),
-					"yyyy-MM-dd", "dd/MM/yyyy"));
+			vm.setDateDerniereVisite(sm.getDateProchaineVisite() == null || sm.getDateProchaineVisite().equals(Const.DATE_NULL) ? null : Services
+					.convertitDate(sm.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			vm.setDureeValidite(Const.ZERO);
 			vm.setApte(null);
 			vm.setIdMotif(sm.getIdMotifVM().toString());
@@ -311,7 +311,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// on trie par date la liste des VM
 		Collections.sort(listeVisiteMed, new Comparator<VisiteMedicale>() {
 			public int compare(VisiteMedicale o1, VisiteMedicale o2) {
-				if (o1.getDateDerniereVisite() == null || o2.getDateDerniereVisite() == null) {
+				if (o1.getDateDerniereVisite() == null || o1.getDateDerniereVisite().equals(Const.DATE_NULL) || o2.getDateDerniereVisite() == null
+						|| o2.getDateDerniereVisite().equals(Const.DATE_NULL)) {
 					return 0;
 				}
 				return Services.compareDates(Services.formateDate(o1.getDateDerniereVisite()), Services.formateDate(o2.getDateDerniereVisite()));
@@ -343,7 +344,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
-				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null ? "&nbsp;" : vm.getDateDerniereVisite());
+				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null || vm.getDateDerniereVisite().equals(Const.DATE_NULL) ? "&nbsp;" : vm.getDateDerniereVisite());
 				addZone(getNOM_ST_DUREE(indiceVisite),
 						vm == null || vm.getDureeValidite().equals(Const.CHAINE_VIDE) || vm.getDureeValidite().equals(Const.ZERO) ? "&nbsp;" : vm
 								.getDureeValidite());
@@ -998,7 +999,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				for (PositionAdmAgent pa : listePA) {
 					if (Services.compareDates(pa.getDatdeb(), dateVisite) <= 0
-							&& (pa.getDatfin() == null || Services.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
+							&& (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL) || Services.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
 						if (!pa.permetVM()) {
 							messageInf = MessageUtils.getMessage("INF009", "visites médicales");
 						}
@@ -3211,7 +3212,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

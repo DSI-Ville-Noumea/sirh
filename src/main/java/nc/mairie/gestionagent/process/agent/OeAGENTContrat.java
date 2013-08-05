@@ -398,10 +398,12 @@ public class OeAGENTContrat extends BasicProcess {
 				Contrat c = (Contrat) lc.get(i);
 				if (!c.getIdContrat().equals(getContratCourant().getIdContrat())) {
 					if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null) || Services.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services.compareDates(c.getDateFin(),
+									getZone(getNOM_EF_DATE_DEB())) >= 0)) {
 						rgOK = false;
 					} else if (Services.compareDates(getZone(getNOM_EF_DATE_FIN()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null) || Services.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services.compareDates(c.getDateFin(),
+									getZone(getNOM_EF_DATE_DEB())) >= 0)) {
 						rgOK = false;
 					}
 				}
@@ -916,8 +918,11 @@ public class OeAGENTContrat extends BasicProcess {
 				addZone(getNOM_ST_TYPE(indiceContrat), t.getLibTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat());
 				addZone(getNOM_ST_AVENANT(indiceContrat), c.isAvenant() ? "Oui" : "Non");
 				addZone(getNOM_ST_DATE_DEBUT(indiceContrat), c.getDateDebut());
-				addZone(getNOM_ST_DATE_ESSAI(indiceContrat), c.getDateFinPeriodeEssai() == null ? "&nbsp;" : c.getDateFinPeriodeEssai());
-				addZone(getNOM_ST_DATE_FIN(indiceContrat), c.getDateFin() == null ? "&nbsp;" : c.getDateFin());
+				addZone(getNOM_ST_DATE_ESSAI(indiceContrat),
+						c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "&nbsp;" : c
+								.getDateFinPeriodeEssai());
+				addZone(getNOM_ST_DATE_FIN(indiceContrat),
+						c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateFin());
 				addZone(getNOM_ST_MOTIF(indiceContrat), m.getLibMotif().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif());
 				addZone(getNOM_ST_JUSTIFICATION(indiceContrat), c.getJustification().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getJustification());
 
@@ -1268,26 +1273,26 @@ public class OeAGENTContrat extends BasicProcess {
 					// semaine dans limite des 14jours
 					String datedebut = getZone(getNOM_EF_DATE_DEB());
 					String datefin = getZone(getNOM_EF_DATE_FIN());
-					String dateDebFinale=null;
+					String dateDebFinale = null;
 					String dateFinFinale = null;
-					try{
+					try {
 						SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
 						Date dateDeb = sdf.parse(datedebut);
 						Date dateFin = sdf.parse(datefin);
 						SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 						dateDebFinale = sdf2.format(dateDeb);
 						dateFinFinale = sdf2.format(dateFin);
-					}catch (Exception e) {
+					} catch (Exception e) {
 						// on essaye un autre format
-						try{
+						try {
 							SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 							Date dateDeb = sdf.parse(datedebut);
 							Date dateFin = sdf.parse(datefin);
 							SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 							dateDebFinale = sdf2.format(dateDeb);
 							dateFinFinale = sdf2.format(dateFin);
-						}catch (Exception e2) {
-							//on ne fait rien
+						} catch (Exception e2) {
+							// on ne fait rien
 						}
 					}
 					int nbJours = Services.compteJoursEntreDates(dateDebFinale, dateFinFinale);
@@ -1558,7 +1563,8 @@ public class OeAGENTContrat extends BasicProcess {
 			commNaiss = Commune.chercherCommune(getTransaction(), a.getCodeCommuneNaissanceFr()).getLibCommune();
 		}
 		int nbEnftCharge = 0;
-		for (Iterator<LienEnfantNWAgentNW> iter = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecAgent(getTransaction(), a).iterator(); iter.hasNext();) {
+		for (Iterator<LienEnfantNWAgentNW> iter = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecAgent(getTransaction(), a).iterator(); iter
+				.hasNext();) {
 			LienEnfantNWAgentNW element = (LienEnfantNWAgentNW) iter.next();
 			if (element.isEnfantACharge()) {
 				nbEnftCharge = nbEnftCharge + 1;
@@ -1576,11 +1582,12 @@ public class OeAGENTContrat extends BasicProcess {
 		String numCre = a.getNumCre().equals(Const.CHAINE_VIDE) ? "En cours d'affiliation" : a.getNumCre();
 
 		String dateDebContrat = c.getDateDebut();
-		String dateFinContrat = c.getDateDebut() == null ? "Il n'y a pas de date de fin pour ce contrat !" : c.getDateFin();
-		String dateFinEssai = c.getDateFinPeriodeEssai() == null ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !" : c
-				.getDateFinPeriodeEssai();
+		String dateFinContrat = c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin pour ce contrat !"
+				: c.getDateFin();
+		String dateFinEssai = c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !"
+				: c.getDateFinPeriodeEssai();
 		String dureeContrat;
-		if (c.getDateFin() == null) {
+		if (c.getDateFin() == null|| c.getDateFin().equals(Const.DATE_NULL)) {
 			dureeContrat = "Il n'y a pas de date de fin pour ce contrat !";
 		} else {
 			long aTimeUneDate = java.sql.Date.valueOf(Services.formateDateInternationale(c.getDateDebut())).getTime();
@@ -1589,7 +1596,7 @@ public class OeAGENTContrat extends BasicProcess {
 			dureeContrat = String.valueOf(nbMois);
 		}
 		String dureePeriodeEssai;
-		if (c.getDateFinPeriodeEssai() == null) {
+		if (c.getDateFinPeriodeEssai() == null|| c.getDateFinPeriodeEssai().equals(Const.DATE_NULL)) {
 			dureePeriodeEssai = "Il n'y a pas de date fin de periode d'essai pour ce contrat !";
 		} else {
 			dureePeriodeEssai = String.valueOf(Services.compteJoursEntreDates(c.getDateDebut(), c.getDateFinPeriodeEssai()));

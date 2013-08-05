@@ -52,7 +52,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 	private String messageInf = Const.CHAINE_VIDE;
 	public boolean DateDebutEditable = true;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
+			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());
@@ -147,9 +148,12 @@ public class OeAGENTPosAdm extends BasicProcess {
 				addZone(getNOM_ST_POSA(indicePaAgent), pa.getCdpadm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getCdpadm());
 				addZone(getNOM_ST_LIB_POSA(indicePaAgent), pa.getLiPAdm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getLiPAdm());
 				addZone(getNOM_ST_REF_ARR(indicePaAgent), paa.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : paa.getRefarr());
-				addZone(getNOM_ST_DATE_ARR(indicePaAgent), paa.getDateArrete() == null ? "&nbsp;" : paa.getDateArrete());
-				addZone(getNOM_ST_DATE_DEBUT(indicePaAgent), paa.getDatdeb() == null ? "&nbsp;" : paa.getDatdeb());
-				addZone(getNOM_ST_DATE_FIN(indicePaAgent), paa.getDatfin() == null ? "&nbsp;" : paa.getDatfin());
+				addZone(getNOM_ST_DATE_ARR(indicePaAgent), paa.getDateArrete() == null || paa.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;"
+						: paa.getDateArrete());
+				addZone(getNOM_ST_DATE_DEBUT(indicePaAgent),
+						paa.getDatdeb() == null || paa.getDatdeb().equals(Const.DATE_NULL) ? "&nbsp;" : paa.getDatdeb());
+				addZone(getNOM_ST_DATE_FIN(indicePaAgent),
+						paa.getDatfin() == null || paa.getDatfin().equals(Const.DATE_NULL) ? "&nbsp;" : paa.getDatfin());
 
 				indicePaAgent++;
 			}
@@ -229,7 +233,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 		addZone(getNOM_EF_DATE_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_DEBUT(),
-				getLastPA() != null && getLastPA().getDatfin() != null ? Services.ajouteJours(Services.formateDate(getLastPA().getDatfin()), 1)
+				getLastPA() != null && getLastPA().getDatfin() != null && !getLastPA().getDatfin().equals(Const.DATE_NULL) ? Services.ajouteJours(Services.formateDate(getLastPA().getDatfin()), 1)
 						: Const.CHAINE_VIDE);
 		addZone(getNOM_EF_REF_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_POSA(), Const.CHAINE_VIDE);
@@ -331,7 +335,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 			}
 		} else {
 			if (lastPA != null) {
-				if (lastPA.getDatfin() != null && Services.compareDates(lastPA.getDatfin(), getPaCourante().getDatdeb()) > 0) {
+				if (lastPA.getDatfin() != null &&!lastPA.getDatfin().equals(Const.DATE_NULL)&& Services.compareDates(lastPA.getDatfin(), getPaCourante().getDatdeb()) > 0) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR070"));
 					return false;
 				} else if (Services.compareDates(lastPA.getDatdeb(), getPaCourante().getDatdeb()) >= 0) {
@@ -421,7 +425,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 			PositionAdmAgent prevPA = getPrevPA();
 			// RG_AG_PA_A03
 			// RG_AG_PA_A06
-			if (prevPA != null && (prevPA.getDatfin() == null || Services.compareDates(prevPA.getDatfin(), getPaCourante().getDatdeb()) != 0)) {
+			if (prevPA != null && (prevPA.getDatfin() == null || prevPA.getDatfin().equals(Const.DATE_NULL)|| Services.compareDates(prevPA.getDatfin(), getPaCourante().getDatdeb()) != 0)) {
 				prevPA.setDatfin(getPaCourante().getDatdeb());
 				if (!prevPA.modifierPositionAdmAgent(getTransaction(), getAgentCourant(), user)) {
 					// "ERR009",

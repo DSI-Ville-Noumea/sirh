@@ -80,7 +80,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
-	
+
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesHSCT.class);
 
 	/**
@@ -351,7 +351,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				LienDocumentAgent l = LienDocumentAgent
 						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				File f = new File(repertoireStockage+d.getLienDocument());
+				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
@@ -363,7 +363,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				LienDocumentAgent l = LienDocumentAgent
 						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				File f = new File(repertoireStockage+d.getLienDocument());
+				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
@@ -375,7 +375,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				LienDocumentAgent l = LienDocumentAgent
 						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				File f = new File(repertoireStockage+d.getLienDocument());
+				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
@@ -422,9 +422,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		if(extension.equals(".pdf")){
+		if (extension.equals(".pdf")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
-		}else{
+		} else {
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
 		}
 
@@ -432,7 +432,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			return false;
 
 		// on crée le document en base de données
-		//String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		// String repPartage = (String)
+		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
 		getDocumentCourant().setNomDocument(nom);
@@ -464,6 +465,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 		return true;
 	}
+
 	private boolean uploadFichierPDF(File f, String nomFichier, String codTypeDoc) throws Exception {
 		boolean resultat = false;
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -473,7 +475,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		File newFile = new File(repPartage + codTypeDoc + "/" + nomFichier);
 
 		FileInputStream in = new FileInputStream(f);
-		
+
 		try {
 			FileOutputStream out = new FileOutputStream(newFile);
 			try {
@@ -491,6 +493,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 		return resultat;
 	}
+
 	private boolean performControlerFichier(HttpServletRequest request, String nomFichier) {
 		boolean result = true;
 		// on regarde dans la liste des document si il y a une entrée avec ce
@@ -687,10 +690,10 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicale(getTransaction(), id);
-					if(getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
-					if (vm != null && vm.getDateDerniereVisite() != null) {
+					if (vm != null && vm.getDateDerniereVisite() != null && !vm.getDateDerniereVisite().equals(Const.DATE_NULL)) {
 						info = "VM du : " + vm.getDateDerniereVisite();
 					}
 				} else if (td.getCodTypeDocument().equals("AT")) {
@@ -699,7 +702,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					AccidentTravail at = AccidentTravail.chercherAccidentTravail(getTransaction(), id);
-					if (at != null && at.getDateAT() != null) {
+					if (at != null && at.getDateAT() != null && !at.getDateAT().endsWith(Const.DATE_NULL)) {
 						info = "AT du : " + at.getDateAT();
 					}
 				} else if (td.getCodTypeDocument().equals("HANDI")) {
@@ -708,17 +711,15 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					Handicap handi = Handicap.chercherHandicap(getTransaction(), id);
-					if (handi != null && handi.getDateDebutHandicap() != null) {
+					if (handi != null && handi.getDateDebutHandicap() != null && !handi.getDateDebutHandicap().equals(Const.DATE_NULL)) {
 						info = "Handicap du : " + handi.getDateDebutHandicap();
 					}
 				}
 
 				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument()
-						);
+				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire()
-						);
+				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 				addZone(getNOM_ST_INFO(indiceActe), info);
 
 				indiceActe++;
@@ -858,7 +859,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// on supprime le fichier physiquement sur le serveur
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 		String cheminDoc = getDocumentCourant().getLienDocument();
-		File fichierASupp = new File(repertoireStockage+cheminDoc);
+		File fichierASupp = new File(repertoireStockage + cheminDoc);
 		try {
 			fichierASupp.delete();
 		} catch (Exception e) {
@@ -1109,7 +1110,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

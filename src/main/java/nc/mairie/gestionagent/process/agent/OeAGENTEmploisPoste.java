@@ -1554,7 +1554,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		String dateAff = Const.CHAINE_VIDE;
 		if (affAgent != null) {
-			dateAff = affAgent.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le " + affAgent.getDateDebutAff();
+			dateAff = affAgent.getDateDebutAff() == null || affAgent.getDateDebutAff().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+					: "Affecté depuis le " + affAgent.getDateDebutAff();
 		}
 		// responsable hierarchique
 		String respFP = Const.CHAINE_VIDE;

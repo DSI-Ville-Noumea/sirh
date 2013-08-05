@@ -86,7 +86,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	public boolean showDateFin = false;
 	public boolean showAccBM = false;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
+			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());
@@ -330,7 +331,8 @@ public class OeAGENTCarriere extends BasicProcess {
 				addZone(getNOM_ST_INA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIna() : "&nbsp;");
 				addZone(getNOM_ST_INM(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getInm() : "&nbsp;");
 				addZone(getNOM_ST_DEBUT(indiceCarr), carriere.getDateDebut());
-				addZone(getNOM_ST_FIN(indiceCarr), carriere.getDateFin() == null ? "&nbsp;" : carriere.getDateFin());
+				addZone(getNOM_ST_FIN(indiceCarr), carriere.getDateFin() == null || carriere.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;"
+						: carriere.getDateFin());
 				addZone(getNOM_ST_REF_ARR(indiceCarr), carriere.getReferenceArrete());
 				addZone(getNOM_ST_STATUT(indiceCarr), statut.getLiCate());
 
@@ -531,8 +533,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		addZone(getNOM_EF_DATE_DEBUT(), getCarriereCourante().getDateDebut());
-		addZone(getNOM_EF_DATE_FIN(), getCarriereCourante().getDateFin());
-		addZone(getNOM_EF_DATE_ARR(), getCarriereCourante().getDateArrete());
+		addZone(getNOM_EF_DATE_FIN(),
+				getCarriereCourante().getDateFin() == null || getCarriereCourante().getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+						: getCarriereCourante().getDateFin());
+		addZone(getNOM_EF_DATE_ARR(),
+				getCarriereCourante().getDateArrete() == null || getCarriereCourante().getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+						: getCarriereCourante().getDateArrete());
 
 		Bareme bareme = null;
 		if (!getCarriereCourante().getIban().equals(Const.CHAINE_VIDE)) {
@@ -650,8 +656,10 @@ public class OeAGENTCarriere extends BasicProcess {
 			// RG_AG_CA_A06
 			// RG_AG_CA_C13
 			if (getCarriereCourante().isActive()) {
-				if (derniereCarriere != null && !derniereCarriere.getCodeCategorie().equals("8")
-						&& (derniereCarriere.getDateFin() == null || !derniereCarriere.getDateFin().equals(getCarriereCourante().getDateDebut()))) {
+				if (derniereCarriere != null
+						&& !derniereCarriere.getCodeCategorie().equals("8")
+						&& (derniereCarriere.getDateFin() == null || derniereCarriere.getDateFin().equals(Const.DATE_NULL) || !derniereCarriere
+								.getDateFin().equals(getCarriereCourante().getDateDebut()))) {
 					derniereCarriere.setDateFin(getCarriereCourante().getDateDebut());
 					derniereCarriere.modifierCarriere(getTransaction(), getAgentCourant(), user);
 					declarerModifDateFin = true;
@@ -778,7 +786,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
 		if (numLigneBHP == -1 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size())
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire pointage"));
-		BaseHoraire bhp =  (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1) ;
+		BaseHoraire bhp = (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1);
 
 		// base reglement
 		int numLigneBR = (Services.estNumerique(getZone(getNOM_LB_BASE_REGLEMENT_SELECT())) ? Integer
@@ -845,7 +853,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setCodeBaseHoraire2(horaire.getCdtHor());
 
 		// basehoraire pointage
-		getCarriereCourante().setCodeBase( bhp.getCodBaseHoraire() );
+		getCarriereCourante().setCodeBase(bhp.getCodBaseHoraire());
 
 		// baseReglement
 		getCarriereCourante().setModeReglement(baseReg.getModReg());
@@ -877,7 +885,8 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (gradeObligatoire) {
 			Grade g = getSelectedGrade();
-			if (g == null) {
+			if (g == null || getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "grade"));
 				return false;
 			}
@@ -1024,7 +1033,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					}
 				}
 			} else if (derniereCarriere != null) {
-				if (derniereCarriere.getDateFin() != null
+				if (derniereCarriere.getDateFin() != null && !derniereCarriere.getDateFin().equals(Const.DATE_NULL)
 						&& Services.compareDates(derniereCarriere.getDateFin(), getCarriereCourante().getDateDebut()) > 0) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 					return false;

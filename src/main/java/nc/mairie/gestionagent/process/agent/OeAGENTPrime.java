@@ -50,7 +50,8 @@ public class OeAGENTPrime extends BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'une fiche Prime.";
 	private String ACTION_CREATION = "Création d'une fiche Prime.";
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
+			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
 	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());
@@ -154,10 +155,11 @@ public class OeAGENTPrime extends BasicProcess {
 				addZone(getNOM_ST_CODE_RUBR(indicePrime), r == null || r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
 				addZone(getNOM_ST_LIB_RUBR(indicePrime), r == null || r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
 				addZone(getNOM_ST_REF_ARR(indicePrime), p.getRefArr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr());
-				addZone(getNOM_ST_DATE_ARR(indicePrime), p.getDateArrete() == null ? "&nbsp;" : p.getDateArrete());
+				addZone(getNOM_ST_DATE_ARR(indicePrime),
+						p.getDateArrete() == null || p.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;" : p.getDateArrete());
 				addZone(getNOM_ST_MONTANT(indicePrime), p.getMtPri().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getMtPri());
 				addZone(getNOM_ST_DATE_DEBUT(indicePrime), p.getDatDeb());
-				addZone(getNOM_ST_DATE_FIN(indicePrime), p.getDatFin() == null ? "&nbsp;" : p.getDatFin());
+				addZone(getNOM_ST_DATE_FIN(indicePrime), p.getDatFin() == null || p.getDatFin().equals(Const.DATE_NULL) ? "&nbsp;" : p.getDatFin());
 
 				indicePrime++;
 			}

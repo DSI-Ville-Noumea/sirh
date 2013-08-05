@@ -19,9 +19,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 /**
- * Process OeAGENTCONTACTGestion
- * Date de création : (11/02/03 14:20:31)
-     *
+ * Process OeAGENTCONTACTGestion Date de création : (11/02/03 14:20:31)
+ * 
  */
 public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	/**
@@ -45,17 +44,18 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	public String focus = null;
 
 	/**
-	 * Constructeur du process OeAGENTCONTACTGestion.
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Constructeur du process OeAGENTCONTACTGestion. Date de création :
+	 * (11/02/03 14:20:31)
+	 * 
 	 */
 	public OeAGENTADMINISTRATIONGestion() {
 		super();
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 11:01:39)
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 11:01:39)
+	 * 
 	 * @return nc.mairie.metier.agent.AdministrationAgent
 	 */
 	private AutreAdministrationAgent getAutreAdministrationAgentCourant() {
@@ -63,8 +63,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (11/02/2003 15:15:56)
+	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * 15:15:56)
+	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
 	public AgentNW getAgentCourant() {
@@ -72,8 +73,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 10:14:48)
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 10:14:48)
+	 * 
 	 * @return Hashtable
 	 */
 	private Hashtable<String, AutreAdministration> getHashAdministration() {
@@ -84,10 +86,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize :
-	 * LB_ADMINISTRATION
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * Getter de la liste avec un lazy initialize : LB_ADMINISTRATION Date de
+	 * création : (11/02/03 14:20:32)
+	 * 
 	 */
 	private String[] getLB_ADMINISTRATION() {
 		if (LB_ADMINISTRATION == null)
@@ -96,8 +97,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 10:47:43)
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 10:47:43)
+	 * 
 	 * @return ArrayList
 	 */
 	private ArrayList<AutreAdministration> getListeAdministrations() {
@@ -108,8 +110,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 10:38:02)
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 10:38:02)
+	 * 
 	 * @return ArrayList
 	 */
 	public ArrayList<AutreAdministrationAgent> getListeAgentAdministrations() {
@@ -120,30 +123,27 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_DATE_DEBUT
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_DEBUT Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_EF_DATE_DEBUT() {
 		return "NOM_EF_DATE_DEBUT";
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_DATE_FIN
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_FIN Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_EF_DATE_FIN() {
 		return "NOM_EF_DATE_FIN";
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP :
-	 * NOM_LB_ADMINISTRATION
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_ADMINISTRATION Date de
+	 * création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String getNOM_LB_ADMINISTRATION() {
 		return "NOM_LB_ADMINISTRATION";
@@ -151,19 +151,17 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ADMINISTRATION_SELECT
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * NOM_LB_ADMINISTRATION_SELECT Date de création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String getNOM_LB_ADMINISTRATION_SELECT() {
 		return "NOM_LB_ADMINISTRATION_SELECT";
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP :
-	 * NOM_LB_AGENT_ADMINISTRATION
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_AGENT_ADMINISTRATION Date
+	 * de création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String getNOM_LB_AGENT_ADMINISTRATION() {
 		return "NOM_LB_AGENT_ADMINISTRATION";
@@ -171,131 +169,116 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_AGENT_ADMINISTRATION_SELECT
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * NOM_LB_AGENT_ADMINISTRATION_SELECT Date de création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String getNOM_LB_AGENT_ADMINISTRATION_SELECT() {
 		return "NOM_LB_AGENT_ADMINISTRATION_SELECT";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_ANNULER
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_CREER
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
+	 * (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_PB_CREER() {
 		return "NOM_PB_CREER";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_RECHERCHER
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_PB_RECHERCHER() {
 		return "NOM_PB_RECHERCHER";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_VALIDER
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_PB_VALIDER() {
 		return "NOM_PB_VALIDER";
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_ACTION
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_ST_ACTION() {
 		return "NOM_ST_ACTION";
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_AGENT
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getNOM_ST_AGENT() {
 		return "NOM_ST_AGENT";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
-	 * EF_DATE_DEBUT
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_DEBUT Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getVAL_EF_DATE_DEBUT() {
 		return getZone(getNOM_EF_DATE_DEBUT());
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
-	 * EF_DATE_FIN
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_DATE_FIN Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getVAL_EF_DATE_FIN() {
 		return getZone(getNOM_EF_DATE_FIN());
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne la valeur à afficher pour la zone de la JSP :
-	 * LB_ADMINISTRATION
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String[] getVAL_LB_ADMINISTRATION() {
 		return getLB_ADMINISTRATION();
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne l'indice à sélectionner pour la zone de la JSP :
-	 * LB_ADMINISTRATION
-	 * Date de création : (11/02/03 14:20:32)
-     *
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_ADMINISTRATION Date de création : (11/02/03 14:20:32)
+	 * 
 	 */
 	public String getVAL_LB_ADMINISTRATION_SELECT() {
 		return getZone(getNOM_LB_ADMINISTRATION_SELECT());
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_ACTION
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getVAL_ST_ACTION() {
 		return getZone(getNOM_ST_ACTION());
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_AGENT
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public String getVAL_ST_AGENT() {
 		return getZone(getNOM_ST_AGENT());
@@ -303,18 +286,18 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Initialisation de la liste des administrations
-     *
+	 * 
 	 */
 	private void initialiseFenetre(HttpServletRequest request) throws Exception {
 
-		//Recherche des administrations de l'agent
+		// Recherche des administrations de l'agent
 		ArrayList<AutreAdministrationAgent> a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(getTransaction(), getAgentCourant());
 		setListeAgentAdministrations(a);
 
-		//Init de la liste des administrations de l'agent
+		// Init de la liste des administrations de l'agent
 		initialiseListeAgentAdministrations(request);
 
-		//Alim des zones
+		// Alim des zones
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), "0");
 		addZone(getNOM_RG_FONCTIONNAIRE(), getNOM_RB_FONCTIONNAIRE_N());
@@ -324,7 +307,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Initialisation de la liste des administrations
-     *
+	 * 
 	 */
 	private void initialiseListeAgentAdministrations(HttpServletRequest request) throws Exception {
 
@@ -332,12 +315,15 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		if (getListeAgentAdministrations() != null) {
 			for (int i = 0; i < getListeAgentAdministrations().size(); i++) {
 				AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) getListeAgentAdministrations().get(i);
-				AutreAdministration aAdministration = (AutreAdministration) AutreAdministration.chercherAutreAdministration(getTransaction(), aAdministrationAgent.getIdAutreAdmin());
+				AutreAdministration aAdministration = (AutreAdministration) AutreAdministration.chercherAutreAdministration(getTransaction(),
+						aAdministrationAgent.getIdAutreAdmin());
 
-				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration), aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aAdministration.getLibAutreAdmin());
+				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration), aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: aAdministration.getLibAutreAdmin());
 				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration), aAdministrationAgent.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
 				addZone(getNOM_ST_DATE_ENTREE(indiceAdministration), aAdministrationAgent.getDateEntree());
-				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration), aAdministrationAgent.getDateSortie() == null ? "&nbsp;" : aAdministrationAgent.getDateSortie());
+				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration), aAdministrationAgent.getDateSortie() == null
+						|| aAdministrationAgent.getDateSortie().equals(Const.DATE_NULL) ? "&nbsp;" : aAdministrationAgent.getDateSortie());
 
 				indiceAdministration++;
 			}
@@ -345,44 +331,45 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des zones à afficher dans la JSP
-	 * Alimentation des listes, s'il y en a, avec setListeLB_XXX()
-	 * ATTENTION : Les Objets dans la liste doivent avoir les Fields PUBLIC
-	 * Utilisation de la méthode addZone(getNOMxxx, String);
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-		//POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
+		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 		if (MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 
-		//Vérification des droits d'accès.
+		// Vérification des droits d'accès.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			//"ERR190", "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+			// "ERR190",
+			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
 
-		//Si agentCourant vide ou si etat recherche
+		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " "
+						+ getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 
-				//initialisation fenêtre si changement de l'agent
+				// initialisation fenêtre si changement de l'agent
 				initialiseFenetre(request);
 			} else {
-				//ERR004 : "Vous devez d'abord rechercher un agent."
+				// ERR004 : "Vous devez d'abord rechercher un agent."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
 		}
 
-		//Si liste des administrations vide ou si statut gestion admin
+		// Si liste des administrations vide ou si statut gestion admin
 		if (getLB_ADMINISTRATION() == LBVide) {
 			ArrayList<AutreAdministration> a = AutreAdministration.listerAutreAdministration(getTransaction());
 			setListeAdministrations(a);
@@ -391,7 +378,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			String[] champs = { "libAutreAdmin" };
 			setLB_ADMINISTRATION(new FormateListe(tailles, a, champs).getListeFormatee());
 
-			//Remplissage de la hashtable des types de administrations.
+			// Remplissage de la hashtable des types de administrations.
 			for (ListIterator<AutreAdministration> list = a.listIterator(); list.hasNext();) {
 				AutreAdministration aAdministration = (AutreAdministration) list.next();
 				getHashAdministration().put(aAdministration.getIdAutreAdmin(), aAdministration);
@@ -401,12 +388,11 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
@@ -418,27 +404,26 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		//On nomme l'action
+		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 
-		//On vide la zone de saisie
+		// On vide la zone de saisie
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), "0");
 		addZone(getNOM_EF_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_FONCTIONNAIRE(), getNOM_RB_FONCTIONNAIRE_N());
-		
-		//init du administration courant
+
+		// init du administration courant
 		setAutreAdministrationAgentCourant(new AutreAdministrationAgent());
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -446,23 +431,22 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		//Si aucune action en cours
+		// Si aucune action en cours
 		if (getZone(getNOM_ST_ACTION()).length() == 0) {
-			//"Vous ne pouvez pas valider, il n'y a pas d'action en cours."
+			// "Vous ne pouvez pas valider, il n'y a pas d'action en cours."
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
 		}
 
-		//Récup des zones saisies
+		// Récup des zones saisies
 		String newDateDeb = getZone(getNOM_EF_DATE_DEBUT());
 		String newDateFin = getZone(getNOM_EF_DATE_FIN());
 		if (getVAL_RG_FONCTIONNAIRE().equals(getNOM_RB_FONCTIONNAIRE_N())) {
@@ -471,9 +455,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			getAutreAdministrationAgentCourant().setFonctionnaire("1");
 		}
 
-		//Si Action Suppression
+		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
-			//Suppression
+			// Suppression
 			getAutreAdministrationAgentCourant().supprimerAutreAdministrationAgent(getTransaction());
 			if (getTransaction().isErreur())
 				return false;
@@ -483,28 +467,29 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 				return false;
 			}
 
-			//Recup Administration
-			AutreAdministration newAdministration = (AutreAdministration) getListeAdministrations().get(Integer.parseInt(getZone(getNOM_LB_ADMINISTRATION_SELECT())));
+			// Recup Administration
+			AutreAdministration newAdministration = (AutreAdministration) getListeAdministrations().get(
+					Integer.parseInt(getZone(getNOM_LB_ADMINISTRATION_SELECT())));
 
-			//Affectation des attributs
+			// Affectation des attributs
 			getAutreAdministrationAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin());
 			getAutreAdministrationAgentCourant().setDateEntree(newDateDeb);
 			getAutreAdministrationAgentCourant().setDateSortie(newDateFin);
-			
+
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
-				//Modification
+				// Modification
 				getAutreAdministrationAgentCourant().modifierAutreAdministrationAgent(getTransaction());
 
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				//Création
+				// Création
 				getAutreAdministrationAgentCourant().creerAutreAdministrationAgent(getTransaction());
 			}
 
 			if (getTransaction().isErreur())
 				return false;
 		}
-		//Tout s'est bien passé
+		// Tout s'est bien passé
 		commitTransaction();
 		initialiseFenetre(request);
 
@@ -513,35 +498,38 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Controle la bonne saisie des champs.
+	 * 
 	 * @return boolean
 	 * @throws Exception
-	 * RG_AG_AA_C01
+	 *             RG_AG_AA_C01
 	 */
 	public boolean performControlerChamps() throws Exception {
 		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEBUT()))) {
 			// format de date
 			if (!Services.estUneDate(getZone(getNOM_EF_DATE_DEBUT()))) {
-				//ERR007 : La date @ est incorrecte. Elle doit être au format date.
+				// ERR007 : La date @ est incorrecte. Elle doit être au format
+				// date.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'entrée"));
 				setFocus(getNOM_EF_DATE_DEBUT());
 				return false;
 			}
 			if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN()))) {
 				if (!Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
-					//ERR007 : La date @ est incorrecte. Elle doit être au format date.
+					// ERR007 : La date @ est incorrecte. Elle doit être au
+					// format date.
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de sortie"));
 					setFocus(getNOM_EF_DATE_FIN());
 					return false;
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE_DEBUT()), getZone(getNOM_EF_DATE_FIN())) >= 0) {
-					//ERR205 : La date @ doit être supérieure à la date @.
-					//RG_AG_AA_C01
+					// ERR205 : La date @ doit être supérieure à la date @.
+					// RG_AG_AA_C01
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de sortie", "d'entrée"));
 					setFocus(getNOM_EF_DATE_FIN());
 					return false;
 				}
 			}
 		} else {
-			//ERR002 : La zone @ est obligatoire.
+			// ERR002 : La zone @ est obligatoire.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Date d'entrée"));
 			setFocus(getNOM_EF_DATE_DEBUT());
 			return false;
@@ -552,18 +540,21 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Controle les RGs.
+	 * 
 	 * @return boolean
 	 * @throws Exception
-	 * RG_AG_AA_A02
+	 *             RG_AG_AA_A02
 	 */
 	public boolean performControlerRG() throws Exception {
 
 		for (ListIterator<AutreAdministrationAgent> list = getListeAgentAdministrations().listIterator(); list.hasNext();) {
 			AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) list.next();
 			if (!aAdministrationAgent.getIdAutreAdmin().equals(getAutreAdministrationAgentCourant().getIdAutreAdmin())) {
-				if (Services.compareDates(getVAL_EF_DATE_FIN(), aAdministrationAgent.getDateEntree()) >= 0 && Services.compareDates(getVAL_EF_DATE_DEBUT(), aAdministrationAgent.getDateSortie()) <= 0) {
-					//"ERR201", "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
-					//RG_AG_AA_A02
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), aAdministrationAgent.getDateEntree()) >= 0
+						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), aAdministrationAgent.getDateSortie()) <= 0) {
+					// "ERR201",
+					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					// RG_AG_AA_A02
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
 					setFocus(getNOM_EF_DATE_DEBUT());
 					return false;
@@ -575,18 +566,22 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 11:01:39)
-	 * @param newAdministrationAgentCourant nc.mairie.metier.agent.AdministrationAgent
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 11:01:39)
+	 * 
+	 * @param newAdministrationAgentCourant
+	 *            nc.mairie.metier.agent.AdministrationAgent
 	 */
 	private void setAutreAdministrationAgentCourant(AutreAdministrationAgent newAutreAdministrationAgentCourant) {
 		autreAdministrationAgentCourant = newAutreAdministrationAgentCourant;
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (11/02/2003 15:15:56)
-	 * @param newAgentCourant nc.mairie.metier.agent.Agent
+	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
+	 * 15:15:56)
+	 * 
+	 * @param newAgentCourant
+	 *            nc.mairie.metier.agent.Agent
 	 */
 	private void setAgentCourant(AgentNW newAgentCourant) {
 		AgentCourant = newAgentCourant;
@@ -602,18 +597,22 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 10:47:43)
-	 * @param newListeAdministrations ArrayList
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 10:47:43)
+	 * 
+	 * @param newListeAdministrations
+	 *            ArrayList
 	 */
 	private void setListeAdministrations(ArrayList<AutreAdministration> newListeAdministrations) {
 		listeAdministrations = newListeAdministrations;
 	}
 
 	/**
-	 * Insérez la description de la méthode ici.
-	 *  Date de création : (13/02/2003 10:38:02)
-	 * @param newListeAgentAdministrations ArrayList
+	 * Insérez la description de la méthode ici. Date de création : (13/02/2003
+	 * 10:38:02)
+	 * 
+	 * @param newListeAgentAdministrations
+	 *            ArrayList
 	 */
 	private void setListeAgentAdministrations(ArrayList<AutreAdministrationAgent> newListeAgentAdministrations) {
 		listeAgentAdministrations = newListeAgentAdministrations;
@@ -634,137 +633,124 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * @param focus focus à définir.
+	 * @param focus
+	 *            focus à définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_ADMINISTRATION
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_ADMINISTRATION Date
+	 * de création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getNOM_ST_ADMINISTRATION() {
 		return "NOM_ST_ADMINISTRATION";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_ADMINISTRATION
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
 	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * 
 	 */
 	public String getVAL_ST_ADMINISTRATION() {
 		return getZone(getNOM_ST_ADMINISTRATION());
 	}
-	
+
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_FONCTIONNAIRE
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_FONCTIONNAIRE Date
+	 * de création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getNOM_ST_FONCTIONNAIRE() {
 		return "NOM_ST_FONCTIONNAIRE";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_FONCTIONNAIRE
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
 	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * 
 	 */
 	public String getVAL_ST_FONCTIONNAIRE() {
 		return getZone(getNOM_ST_FONCTIONNAIRE());
 	}
-	
-	
+
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_DEBUT
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_DEBUT Date de
+	 * création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getNOM_ST_DEBUT() {
 		return "NOM_ST_DEBUT";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_DEBUT
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DEBUT Date de
+	 * création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getVAL_ST_DEBUT() {
 		return getZone(getNOM_ST_DEBUT());
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_FIN
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_FIN Date de création
+	 * : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getNOM_ST_FIN() {
 		return "NOM_ST_FIN";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_FIN
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FIN Date de
+	 * création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getVAL_ST_FIN() {
 		return getZone(getNOM_ST_FIN());
 	}
-	
+
 	/**
 	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_FONCTIONNAIRE
-	 * Date de création : (25/03/03 15:33:11)
-     *
+	 * RG_FONCTIONNAIRE Date de création : (25/03/03 15:33:11)
+	 * 
 	 */
 	public String getNOM_RG_FONCTIONNAIRE() {
 		return "NOM_RG_FONCTIONNAIRE";
 	}
-	
+
 	/**
 	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_FONCTIONNAIRE
-	 * Date de création : (25/03/03 15:33:11)
-     *
+	 * RG_FONCTIONNAIRE Date de création : (25/03/03 15:33:11)
+	 * 
 	 */
 	public String getVAL_RG_FONCTIONNAIRE() {
 		return getZone(getNOM_RG_FONCTIONNAIRE());
 	}
-	
+
 	/**
-	 * Retourne le nom du radio bouton pour la JSP :
-	 * RB_FONCTIONNAIRE_N
-	 * Date de création : (25/03/03 15:33:11)
-     *
+	 * Retourne le nom du radio bouton pour la JSP : RB_FONCTIONNAIRE_N Date de
+	 * création : (25/03/03 15:33:11)
+	 * 
 	 */
 	public String getNOM_RB_FONCTIONNAIRE_N() {
 		return "NOM_RB_FONCTIONNAIRE_N";
 	}
-	
+
 	/**
-	 * Retourne le nom du radio bouton pour la JSP :
-	 * RB_FONCTIONNAIRE_O
-	 * Date de création : (25/03/03 15:33:11)
-     *
+	 * Retourne le nom du radio bouton pour la JSP : RB_FONCTIONNAIRE_O Date de
+	 * création : (25/03/03 15:33:11)
+	 * 
 	 */
 	public String getNOM_RB_FONCTIONNAIRE_O() {
 		return "NOM_RB_FONCTIONNAIRE_O";
 	}
-	
-	
 
 	/**
 	 * Met à jour l'administration courante
+	 * 
 	 * @param autreAdministrationCourant
 	 */
 	private void setAutreAdministrationCourant(AutreAdministration autreAdministrationCourant) {
@@ -776,27 +762,26 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : 
-	 * en fonction du bouton de la JSP 
-	 * Date de création : (11/02/03 14:20:31)
-     *
+	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de création : (11/02/03 14:20:31)
+	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
-		//Si on arrive de la JSP alors on traite le get
+		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
-			//Si clic sur le bouton PB_ANNULER
+			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
 
-			//Si clic sur le bouton PB_CREER
+			// Si clic sur le bouton PB_CREER
 			if (testerParametre(request, getNOM_PB_CREER())) {
 				return performPB_CREER(request);
 			}
 
-			//Si clic sur le bouton PB_VALIDER
+			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
 			}
@@ -823,16 +808,15 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			}
 
 		}
-		//Si pas de retour définit
+		// Si pas de retour définit
 		setStatut(STATUT_MEME_PROCESS, false, "Erreur : TAG INPUT non géré par le process");
 		return false;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process
-	 * Zone à utiliser dans un champ caché dans chaque formulaire de la JSP.
-	 * Date de création : (17/10/11 11:24:24)
-     *
+	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
+	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 11:24:24)
+	 * 
 	 */
 	public String getJSP() {
 		return "OeAGENTADMINISTRATIONGestion.jsp";
@@ -840,79 +824,71 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	/**
 	 * Retourne pour la JSP le LIEU_NAISS de la zone statique :
-	 * ST_ADMINISTRATION
-	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * ST_ADMINISTRATION Date de création : (18/08/11 10:21:15)
+	 * 
 	 */
 	public String getNOM_ST_ADMINISTRATION(int i) {
 		return "NOM_ST_ADMINISTRATION" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_ADMINISTRATION
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ADMINISTRATION
 	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * 
 	 */
 	public String getVAL_ST_ADMINISTRATION(int i) {
 		return getZone(getNOM_ST_ADMINISTRATION(i));
 	}
-	
+
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_FONCTIONNAIRE
-	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_FONCTIONNAIRE Date
+	 * de création : (29/09/08 10:39:32)
+	 * 
 	 */
 	public String getNOM_ST_FONCTIONNAIRE(int i) {
 		return "NOM_ST_FONCTIONNAIRE" + i;
 	}
-	
+
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_FONCTIONNAIRE
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_FONCTIONNAIRE
 	 * Date de création : (29/09/08 10:39:32)
-     *
+	 * 
 	 */
 	public String getVAL_ST_FONCTIONNAIRE(int i) {
 		return getZone(getNOM_ST_FONCTIONNAIRE(i));
 	}
 
 	/**
-	 * Retourne pour la JSP le LIEU_NAISS de la zone statique :
-	 * ST_DATE_ENTREE
+	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_DATE_ENTREE
 	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * 
 	 */
 	public String getNOM_ST_DATE_ENTREE(int i) {
 		return "NOM_ST_DATE_ENTREE" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_DATE_ENTREE
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_ENTREE
 	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * 
 	 */
 	public String getVAL_ST_DATE_ENTREE(int i) {
 		return getZone(getNOM_ST_DATE_ENTREE(i));
 	}
 
 	/**
-	 * Retourne pour la JSP le LIEU_NAISS de la zone statique :
-	 * ST_DATE_SORTIE
+	 * Retourne pour la JSP le LIEU_NAISS de la zone statique : ST_DATE_SORTIE
 	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * 
 	 */
 	public String getNOM_ST_DATE_SORTIE(int i) {
 		return "NOM_ST_DATE_SORTIE" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_DATE_SORTIE
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_SORTIE
 	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * 
 	 */
 	public String getVAL_ST_DATE_SORTIE(int i) {
 		return getZone(getNOM_ST_DATE_SORTIE(i));
@@ -923,86 +899,84 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (16/08/11 15:48:02)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
 	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 
-		//Si pas d'agent courant alors erreur
+		// Si pas d'agent courant alors erreur
 		if (getAgentCourant() == null) {
-			//"ERR004","Vous devez d'abord rechercher un agent"
+			// "ERR004","Vous devez d'abord rechercher un agent"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 			return false;
 		}
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		//On nomme l'action
+		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 
-		//Récup du administration courant
+		// Récup du administration courant
 		AutreAdministrationAgent c = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAModifier);
 		setAutreAdministrationAgentCourant(c);
 		AutreAdministration t = (AutreAdministration) getHashAdministration().get(c.getIdAutreAdmin());
 
-		//Alim zones
+		// Alim zones
 		int ligneType = getListeAdministrations().indexOf(t);
 		addZone(getNOM_EF_DATE_DEBUT(), c.getDateEntree());
 		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(c.getDateSortie()) ? null : c.getDateSortie());
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), String.valueOf(ligneType));
 		addZone(getNOM_RG_FONCTIONNAIRE(), c.getFonctionnaire().equals(Const.ZERO) ? getNOM_RB_FONCTIONNAIRE_N() : getNOM_RB_FONCTIONNAIRE_O());
-		
+
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_VISUALISATION
-	 * Date de création : (29/09/11 10:03:38)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
+	 * création : (29/09/11 10:03:38)
+	 * 
 	 */
 	public String getNOM_PB_CONSULTER(int i) {
 		return "NOM_PB_CONSULTER" + i;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (29/09/11 10:03:38)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
 	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		//Si pas d'agent courant alors erreur
+		// Si pas d'agent courant alors erreur
 		if (getAgentCourant() == null) {
-			//"ERR004","Vous devez d'abord rechercher un agent"
+			// "ERR004","Vous devez d'abord rechercher un agent"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 			return false;
 		}
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		//On nomme l'action
+		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CONSULTATION);
 
-		//Récup du administration courant
+		// Récup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAConsulter);
 		setAutreAdministrationAgentCourant(ag);
 		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
 		setAutreAdministrationCourant(aa);
 
-		//Alim zones
-		//int ligneType = getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
+		// Alim zones
+		// int ligneType =
+		// getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
 		addZone(getNOM_EF_DATE_DEBUT(), ag.getDateEntree());
 		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(ag.getDateSortie()) ? null : ag.getDateSortie());
 		addZone(getNOM_ST_ADMINISTRATION(), aa.getLibAutreAdmin());
-		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO)?"NON" : "OUI");
+		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
 
 		setFocus(getNOM_PB_VALIDER());
 
@@ -1011,49 +985,48 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMMER
-	 * Date de création : (05/09/11 11:31:37)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
+	 * : (05/09/11 11:31:37)
+	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER(int i) {
 		return "NOM_PB_SUPPRIMER" + i;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (05/09/11 11:31:37)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 
-		//Si pas d'agent courant alors erreur
+		// Si pas d'agent courant alors erreur
 		if (getAgentCourant() == null) {
-			//"ERR004","Vous devez d'abord rechercher un agent"
+			// "ERR004","Vous devez d'abord rechercher un agent"
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 			return false;
 		}
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		//On nomme l'action
+		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 
-		//Récup du administration courant
+		// Récup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltASuprimer);
 		setAutreAdministrationAgentCourant(ag);
 		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
 		setAutreAdministrationCourant(aa);
 
-		//Alim zones
-		//int ligneType = getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
+		// Alim zones
+		// int ligneType =
+		// getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
 		addZone(getNOM_EF_DATE_DEBUT(), ag.getDateEntree());
 		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(ag.getDateSortie()) ? null : ag.getDateSortie());
 		addZone(getNOM_ST_ADMINISTRATION(), aa.getLibAutreAdmin());
-		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO)?"NON" : "OUI");
+		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
 
 		setFocus(getNOM_PB_VALIDER());
 

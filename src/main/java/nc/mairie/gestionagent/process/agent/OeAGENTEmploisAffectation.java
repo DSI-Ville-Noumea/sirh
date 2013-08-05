@@ -201,18 +201,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		String nom = a.getNomAgent().toUpperCase();
 		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame" : "Mademoiselle";
 		String dateDebAffectation = aff.getDateDebutAff();
-		String dateFinAffectation = aff.getDateFinAff() == null ? "Il n'y a pas de date de fin pour ce contrat !" : aff.getDateFinAff();
+		String dateFinAffectation = aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin pour ce contrat !"
+				: aff.getDateFinAff();
 		String titrePoste = tp.getLibTitrePoste();
 		String dureePeriodeEssai = Const.CHAINE_VIDE;
 		String dateFinEssai = Const.CHAINE_VIDE;
 		if (c != null) {
-			if (c.getDateFinPeriodeEssai() == null) {
+			if (c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL)) {
 				dureePeriodeEssai = "Il n'y a pas de date fin de periode d'essai pour ce contrat !";
 			} else {
 				dureePeriodeEssai = String.valueOf(Services.compteJoursEntreDates(c.getDateDebut(), c.getDateFinPeriodeEssai()));
 			}
-			dateFinEssai = c.getDateFinPeriodeEssai() == null ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !" : c
-					.getDateFinPeriodeEssai();
+			dateFinEssai = c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !"
+					: c.getDateFinPeriodeEssai();
 		}
 		String interesse = a.getCivilite().equals("0") ? "interesse" : "interessee";
 		String nomme = a.getCivilite().equals("0") ? "nomme" : "nommee";
@@ -2563,7 +2564,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
 				HistoFichePoste hfp = null;
 				ArrayList<HistoFichePoste> listeHistoFP = new ArrayList<HistoFichePoste>();
-				if (a.getDateFinAff() != null && !a.getDateFinAff().equals(Const.CHAINE_VIDE)) {
+				if (a.getDateFinAff() != null && !a.getDateFinAff().equals(Const.DATE_NULL) && !a.getDateFinAff().equals(Const.CHAINE_VIDE)) {
 					// on cherche la FDP dans histo_fiche_poste
 					listeHistoFP = HistoFichePoste.listerHistoFichePosteDansDate(getTransaction(), a.getIdFichePoste(),
 							Services.convertitDate(Services.formateDate(a.getDateDebutAff()), "dd/MM/yyyy", "yyyy-MM-dd"),
@@ -2620,8 +2621,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				addZone(getNOM_ST_DIR(indiceAff), direction != null ? direction.getCodService() : "&nbsp;");
 				addZone(getNOM_ST_SERV(indiceAff), service != null ? service.getLibService() + " ( " + service.getCodService() + " )" : "&nbsp;");
 				addZone(getNOM_ST_DATE_DEBUT(indiceAff), a.getDateDebutAff());
-				addZone(getNOM_ST_DATE_FIN(indiceAff),
-						a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());
+				addZone(getNOM_ST_DATE_FIN(indiceAff), a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE)
+						|| a.getDateFinAff().equals(Const.DATE_NULL) ? "&nbsp;" : a.getDateFinAff());
 				addZone(getNOM_ST_NUM_FP(indiceAff), numFP.equals(Const.CHAINE_VIDE) ? "&nbsp;" : numFP);
 				addZone(getNOM_ST_TITRE(indiceAff), titreFichePoste.equals(Const.CHAINE_VIDE) ? "&nbsp;" : titreFichePoste);
 
@@ -3092,7 +3093,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
 			if (!aAff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-				if (aAff.getDateFinAff() != null) {
+				if (aAff.getDateFinAff() != null && !aAff.getDateFinAff().equals(Const.DATE_NULL)) {
 					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aAff.getDateFinAff()) <= 0) {
 							// "ERR201",
@@ -3146,7 +3147,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		ArrayList<Affectation> listeAffFP = Affectation.listerAffectationAvecFP(getTransaction(), getFichePosteCourant());
 		for (Affectation aff : listeAffFP) {
 			if (!aff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-				if (aff.getDateFinAff() != null) {
+				if (aff.getDateFinAff() != null && !aff.getDateFinAff().equals(Const.DATE_NULL)) {
 					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
 							// "ERR085",
@@ -3191,7 +3192,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			ArrayList<Affectation> listeAffFPSecondaire = Affectation.listerAffectationAvecFP(getTransaction(), getFichePosteSecondaireCourant());
 			for (Affectation aff : listeAffFPSecondaire) {
 				if (!aff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-					if (aff.getDateFinAff() != null) {
+					if (aff.getDateFinAff() != null && !aff.getDateFinAff().equals(Const.DATE_NULL)) {
 						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
 								// "ERR085",

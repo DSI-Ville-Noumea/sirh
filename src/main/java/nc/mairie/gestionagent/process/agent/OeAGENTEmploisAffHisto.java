@@ -63,7 +63,8 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 				addZone(getNOM_ST_SERV(indiceHistoAff), service.getLibService().equals(Const.CHAINE_VIDE) ? "&nbsp;" : service.getLibService());
 				addZone(getNOM_ST_REF_ARR(indiceHistoAff), ah.getRefArrete().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getRefArrete());
 				addZone(getNOM_ST_DATE_DEBUT(indiceHistoAff), ah.getDateDebut());
-				addZone(getNOM_ST_DATE_FIN(indiceHistoAff), ah.getDateFin() == null ? "&nbsp;" : ah.getDateFin());
+				addZone(getNOM_ST_DATE_FIN(indiceHistoAff),
+						ah.getDateFin() == null || ah.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : ah.getDateFin());
 				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff), ah.getCodeEcole().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getCodeEcole());
 
 				indiceHistoAff++;

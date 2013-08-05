@@ -190,7 +190,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 					nbDoc = listeDocAgent.size();
 				}
 
-				addZone(getNOM_ST_DATE(indiceAcc), at.getDateAT());
+				addZone(getNOM_ST_DATE(indiceAcc),
+						at.getDateAT() == null || at.getDateAT().equals(Const.DATE_NULL) || at.getDateAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
+								.getDateAT());
 				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc),
 						at.getDateATInitial().equals(Const.DATE_NULL) || at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
 								.getDateATInitial());
@@ -287,7 +289,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege());
 
 		// Alim zones
-		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT());
+		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT().equals(Const.DATE_NULL) ? "&nbsp;" : getAccidentTravailCourant()
+				.getDateAT());
 		addZone(getNOM_EF_DATE_INITIALE(), getAccidentTravailCourant().getDateATInitial().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
 				: getAccidentTravailCourant().getDateATInitial());
 		addZone(getNOM_EF_NB_JOUR_IIT(), getAccidentTravailCourant().getNbJoursITT());
@@ -389,6 +392,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// travail.
 			// RG_AG_AT_A02
 			ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+			if (getTransaction().isErreur())
+				getTransaction().traiterErreur();
 			for (PositionAdmAgent pa : listePA) {
 				if (Services.compareDates(pa.getDatdeb(), date) <= 0 && (pa.getDatfin() == null || Services.compareDates(pa.getDatfin(), date) >= 0)) {
 					if (!pa.permetAT()) {
@@ -455,11 +460,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			for (int i = 0; i < listeAT.size(); i++) {
 				AccidentTravail at = (AccidentTravail) listeAT.get(i);
 
-				if (Services.compareDates(getZone(getNOM_EF_DATE()), at.dateAT) == -1) {
+				if (Services.compareDates(getZone(getNOM_EF_DATE()), at.getDateAT()) == -1) {
 					int resultat = Services
 							.compareDates(
 									Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE())),
-											Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), at.dateAT);
+											Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), at.getDateAT());
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
@@ -1168,7 +1173,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
 				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument().equals(Const.DATE_NULL) ? "&nbsp;" : doc.getDateDocument());
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
 
 				indiceActeVM++;
@@ -1411,7 +1416,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : d.getDateDocument());
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
