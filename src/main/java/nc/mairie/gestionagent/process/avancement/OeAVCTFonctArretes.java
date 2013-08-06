@@ -160,8 +160,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
+					+ " <br> " + (av.getDateAvctMaxi() == null|| av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMaxi()));
 			// motif avancement
 			MotifAvancement motifVDN = null;
 			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
@@ -235,11 +235,11 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			String user = av.getUserVerifArrImpr() == null ? "&nbsp;" : av.getUserVerifArrImpr();
 			String heure = av.getHeureVerifArrImpr() == null ? "&nbsp;" : av.getHeureVerifArrImpr();
-			String date = av.getDateVerifArrImpr() == null ? "&nbsp;" : av.getDateVerifArrImpr();
+			String date = av.getDateVerifArrImpr() == null|| av.getDateVerifArrImpr().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateVerifArrImpr();
 			addZone(getNOM_ST_USER_VALID_ARR_IMPR(i), user + " <br> " + date + " <br> " + heure);
 
 			// date de la cap
-			addZone(getNOM_ST_DATE_CAP(i), av.getDateCap() == null ? "&nbps;" : av.getDateCap());
+			addZone(getNOM_ST_DATE_CAP(i), av.getDateCap() == null|| av.getDateCap().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateCap());
 
 			// date avct
 			if (av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {

@@ -488,7 +488,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						Carriere nouvelleCarriere = new Carriere();
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete() == null ? Const.ZERO : avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : avct.getDateArrete());
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null || avct.getDateArrete().equals(Const.DATE_NULL) ? Const.ZERO
+								: avct.getDateArrete());
 						nouvelleCarriere.setDateDebut(dateAvctFinale);
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						// on calcul Grade - ACC/BM en fonction de l'avis CAP

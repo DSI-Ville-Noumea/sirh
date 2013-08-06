@@ -917,8 +917,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 			addZone(getNOM_ST_PERIODE_STD(i), av.getDureeStandard());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+			addZone(getNOM_ST_DATE_AVCT(i),
+					(av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMini()) + " <br> "
+							+ av.getDateAvctMoy() + " <br> "
+							+ (av.getDateAvctMaxi() == null || av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMaxi()));
 
 			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_ST_MOTIF_AVCT(i),

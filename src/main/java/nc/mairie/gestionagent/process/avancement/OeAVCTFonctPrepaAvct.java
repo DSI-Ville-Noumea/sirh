@@ -193,8 +193,8 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 			addZone(getNOM_ST_PERIODE_STD(i), av.getDureeStandard());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null||av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
+					+ " <br> " + (av.getDateAvctMaxi() == null||av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMaxi()));
 
 			addZone(getNOM_CK_VALID_SGC(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 
@@ -202,7 +202,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			String user = av.getUserVerifSGC() == null ? "&nbsp;" : av.getUserVerifSGC();
 			String heure = av.getHeureVerifSGC() == null ? "&nbsp;" : av.getHeureVerifSGC();
-			String date = av.getDateVerifSGC() == null ? "&nbsp;" : av.getDateVerifSGC();
+			String date = av.getDateVerifSGC() == null || av.getDateVerifSGC().equals(Const.DATE_NULL)? "&nbsp;" : av.getDateVerifSGC();
 			addZone(getNOM_ST_USER_VALID_SGC(i), user + " <br> " + date + " <br> " + heure);
 
 		}

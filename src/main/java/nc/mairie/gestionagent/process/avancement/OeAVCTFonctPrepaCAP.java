@@ -188,14 +188,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-					+ " <br> " + (av.getDateAvctMaxi() == null ? "&nbsp;" : av.getDateAvctMaxi()));
+			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
+					+ " <br> " + (av.getDateAvctMaxi() == null || av.getDateAvctMaxi().equals(Const.DATE_NULL)? "&nbsp;" : av.getDateAvctMaxi()));
 
 			addZone(getNOM_CK_VALID_SEF(i), av.getEtat().equals(EnumEtatAvancement.SEF.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			String user = av.getUserVerifSEF() == null ? "&nbsp;" : av.getUserVerifSEF();
 			String heure = av.getHeureVerifSEF() == null ? "&nbsp;" : av.getHeureVerifSEF();
-			String date = av.getDateVerifSEF() == null ? "&nbsp;" : av.getDateVerifSEF();
+			String date = av.getDateVerifSEF() == null|| av.getDateVerifSEF().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateVerifSEF();
 			addZone(getNOM_ST_USER_VALID_SEF(i), user + " <br> " + date + " <br> " + heure);
 			addZone(getNOM_EF_ORDRE_MERITE(i), av.getOrdreMerite().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : av.getOrdreMerite());
 
