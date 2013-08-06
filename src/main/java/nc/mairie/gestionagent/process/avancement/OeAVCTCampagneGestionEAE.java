@@ -300,7 +300,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 									agentEvaluateur.getIdAgent());
 							if (listeAffectationSurMemeFDP.size() > 0) {
 								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
+										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
 										.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 							}
 							// on cherche toutes les affectations sur le meme
@@ -332,7 +333,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						}
 
 						eval.setDateEntreeCollectivite(agentEvaluateur.getDateDerniereEmbauche() == null
-								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentEvaluateur
+								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentEvaluateur
 								.getDateDerniereEmbauche()));
 
 						getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(), eval.getDateEntreeService(),
@@ -585,7 +587,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					eval.setIdAgent(Integer.valueOf(agentResp.getIdAgent()));
 					eval.setFonction(tpResp.getLibTitrePoste());
 					eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche() == null
-							|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp.getDateDerniereEmbauche()));
+							|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+							|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp.getDateDerniereEmbauche()));
 					// on cherche toutes les affectations sur la FDP du
 					// responsable
 					// on prend la date la plus ancienne
@@ -595,7 +598,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								fpResponsable, agentResp.getIdAgent());
 						if (listeAffectationSurMemeFDP.size() > 0) {
 							eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
+									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
 									.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 						}
 						// on cherche toutes les affectations sur le meme
@@ -1985,7 +1989,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							evalue.getIdAgent().toString());
 					if (listeAffectationSurMemeFDP.size() > 0) {
 						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
+								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
 								.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 					}
 				}
@@ -2025,7 +2030,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							}
 							if (agentResp != null && agentResp.getIdAgent() != null) {
 								fpModif.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
-										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp
+										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+										|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp
 										.getDateDerniereEmbauche()));
 							}
 
@@ -2037,7 +2043,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 										fpResp, agentResp.getIdAgent());
 								if (listeAffectationRespSurMemeFDP.size() > 0) {
 									fpModif.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
-											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
+											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
 											.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
 								}
 								// on cherche toutes les affectations sur le
@@ -2465,7 +2472,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			// pour l'anciennete on met le resultat en nb de jours
-			if (carrCours != null && carrCours.getDateDebut() != null) {
+			if (carrCours != null && carrCours.getDateDebut() != null && !carrCours.getDateDebut().equals(Const.DATE_NULL)) {
 				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
 				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			}
@@ -2481,8 +2488,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
 					// attention dans le cas des categorie 4 on a pas de date
 					// moyenne avct
-					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf
-							.parse(avct.getDateAvctMoy()));
+					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.DATE_NULL)
+							|| avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avct.getDateAvctMoy()));
 				}
 				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 				if (getTransaction().isErreur()) {
