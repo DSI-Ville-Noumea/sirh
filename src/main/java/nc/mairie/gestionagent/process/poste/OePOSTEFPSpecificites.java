@@ -1382,7 +1382,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private List<RefPrimeDto> initialiseListeDeroulantePrimes() {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		// Si liste etat vide alors affectation
-		List<RefPrimeDto> primes = t.getPrimes();
+		List<RefPrimeDto> primes = new ArrayList<RefPrimeDto>();
+		try {
+			primes = t.getPrimes();
+		} catch (Exception e) {
+			// TODO a supprimer quand les pointages seront en prod
+		}
 		return primes;
 	}
 

@@ -2763,7 +2763,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		List<RefPrimeDto> primes = new ArrayList<RefPrimeDto>();
 		if (agentCourant != null) {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCourant);
-			primes = t.getPrimes(carr.getStatutCarriere(carr.getCodeCategorie()));
+			try {
+				primes = t.getPrimes(carr.getStatutCarriere(carr.getCodeCategorie()));
+			} catch (Exception e) {
+				// TODO a supprimer quand les pointages seront en prod
+			}
 		}
 		return primes;
 	}
@@ -2818,9 +2822,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListePrimePointageFP().size(); i++) {
 				PrimePointageFP prime = (PrimePointageFP) getListePrimePointageFP().get(i);
 				if (prime != null) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					try {
+						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+						if (rubr != null && rubr.getNumRubrique() != null)
+							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					} catch (Exception e) {
+						// TODO a supprimer quand les pointages seront en prod
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), "L'application des pointages n'est pas disponible.");
+					}
+
 					indicePrime++;
 				}
 			}
@@ -2829,9 +2839,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListePrimePointageAFF().size(); j++) {
 				PrimePointageAff prime = (PrimePointageAff) getListePrimePointageAFF().get(j);
 				if (prime != null && !getListePrimePointageFP().contains(prime)) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					try {
+						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+						if (rubr != null && rubr.getNumRubrique() != null)
+							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					} catch (Exception e) {
+						// TODO a supprimer quand les pointages seront en prod
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), "L'application des pointages n'est pas disponible.");
+					}
 					indicePrime++;
 				}
 			}
@@ -2839,9 +2854,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListePrimePointageAffAAjouter() != null && getListePrimePointageAffAAjouter().size() != 0) {
 			for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 				if (prime != null) {
-					RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
-					if (rubr != null && rubr.getNumRubrique() != null)
-						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					try {
+						RefPrimeDto rubr = t.getPrimeDetail(prime.getNumRubrique());
+						if (rubr != null && rubr.getNumRubrique() != null)
+							addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), rubr.getNumRubrique() + " : " + rubr.getLibelle());
+					} catch (Exception e) {
+						// TODO a supprimer quand les pointages seront en prod
+						addZone(getNOM_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrime), "L'application des pointages n'est pas disponible.");
+					}
 					indicePrime++;
 				}
 			}
@@ -4916,5 +4936,17 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_EF_FORFAIT_REGIME_spec(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NB_POINTS_REGIME_spec(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_RUBRIQUE_AVANTAGE_SELECT(), "0");
+	}
+
+	public boolean isPrimeModifiable() throws Exception {
+		// TODO a supprimer quand les PTG-WS seront en prod
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		try {
+			List<RefPrimeDto> primes = t.getPrimes();
+		} catch (Exception e) {
+			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
+			return false;
+		}
+		return true;
 	}
 }

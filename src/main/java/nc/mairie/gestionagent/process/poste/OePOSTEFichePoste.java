@@ -15,12 +15,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -63,11 +65,11 @@ import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
-import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -1049,11 +1051,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Prime de pointage
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		int indicePrime = 0;
 		if (getListePrimePointageFP() != null) {
-			for (PrimePointageFP aReg : getListePrimePointageFP()) {
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), aReg.getNumRubrique().toString());
-				addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibRubrique());
+			for (PrimePointageFP prime : getListePrimePointageFP()) {
+				RefPrimeDto rubr = null;
+				try {
+					rubr = t.getPrimeDetail(prime.getNumRubrique());
+					addZone(getNOM_ST_PP_RUBR(indicePrime), rubr.getNumRubrique() + " - " + rubr.getLibelle());
+
+				} catch (Exception e) {
+					// TODO a supprimer quand les pointages seront en prod
+					addZone(getNOM_ST_PP_RUBR(indicePrime), "L'application des pointages n'est pas disponible.");
+
+				}
 				indicePrime++;
 			}
 		}
@@ -4780,6 +4791,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * @return afficherModifSpecificites boolean RG_PE_FP_A03
 	 */
 	public boolean isAfficherModifSpecificites() throws Exception {
+		// TODO a supprimer quand les PTG-WS seront en prod
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		try {
+			List<RefPrimeDto> primes = t.getPrimes();
+		} catch (Exception e) {
+			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
+			return false;
+		}
+
 		// RG_PE_FP_A03
 		if (getFichePosteCourante() != null && getListeStatut() != null && getListeStatut().size() != 0) {
 			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT()))

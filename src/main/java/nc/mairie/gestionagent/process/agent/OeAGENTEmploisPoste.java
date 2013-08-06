@@ -15,6 +15,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -52,11 +53,11 @@ import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
-import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -358,17 +359,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 
 		// Prime pointage
-		ArrayList<Rubrique> listeTotale = new ArrayList<Rubrique>();
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		ArrayList<RefPrimeDto> listeTotale = new ArrayList<RefPrimeDto>();
 		if (getListePrimePointageFP().size() == 0) {
 			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			for (PrimePointageFP primeFP : getListePrimePointageFP()) {
-				Rubrique rubr = Rubrique.chercherRubrique(getTransaction(), primeFP.getNumRubrique().toString());
-				listeTotale.add(rubr);
+				try {
+					RefPrimeDto rubr = t.getPrimeDetail(primeFP.getNumRubrique());
+					listeTotale.add(rubr);
+				} catch (Exception e) {
+					// TODO a supprimer quand les WS de PTG seront en prod
+				}
 			}
 		}
 		int indicePrime = 0;
-		for (Rubrique list : listeTotale) {
-			addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibRubrique());
+		for (RefPrimeDto list : listeTotale) {
+			addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibelle());
 			indicePrime++;
 		}
 
