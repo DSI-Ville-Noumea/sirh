@@ -106,7 +106,10 @@
 		    } 	 
         }
 		
-		
+		function launchJSPSaisie(idAgent,date){
+			document.location.href = './OePTGSaisie.jsp?idAgent='+idAgent+'&dateLundi='+date;
+		}
+	    
         /**
          * Build the table containing the detail of the pointage
          */
@@ -241,7 +244,7 @@
 		</FIELDSET>
 		
 		 <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-		    <legend class="sigp2Legend">Gestion des pointages</legend>
+		    <legend class="sigp2Legend">Visualisation des pointages</legend>
 			<BR/>
 			<table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
    				 <thead>
@@ -267,7 +270,7 @@
 	<%    for (int indicePtg:process.getListePointage().keySet()){
 				%>
 						<tr id="tr<%=process.getValHistory(indicePtg)%>">
-							<td><%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="10px" width="10px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>','<%=process.getHistory(indicePtg)%>')"></td>  
+							<td><img	src="images/modifier.gif" height="10px" width="10px"	onClick="launchJSPSaisie('<%=process.getVAL_MATRICULE_AGENT(indicePtg)%>','<%=process.getVAL_ST_DATE(indicePtg)%>')"> <%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="10px" width="10px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>','<%=process.getHistory(indicePtg)%>')"></td>  
 							<td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
 							<td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
 							<td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							

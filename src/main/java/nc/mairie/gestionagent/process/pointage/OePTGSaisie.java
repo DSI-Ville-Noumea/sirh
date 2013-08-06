@@ -1,11 +1,14 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -33,73 +36,53 @@ import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OePTGVisualisation extends BasicProcess {
+public class OePTGSaisie extends BasicProcess {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
-	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
-
-	public Hashtable<String, TreeHierarchy> hTree = null;
-
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
 
+	private String idAgent = "";
+	private Date dateLundi = new Date();
+
 	private ArrayList<RefEtatDto> listeEtats;
 	private HashMap<Integer, ConsultPointageDto> listePointage;
-	private ArrayList<Service> listeServices;
 	private ArrayList<RefTypePointageDto> listeTypes;
 	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
 
-	
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
-
-	
-	
 	private AgentNW loggedAgent;
 
 	private void afficheListePointages() {
 
-	
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
 			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
-			addZone(getMATRICULE_ST_AGENT(i),agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
-			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()));
+			addZone(getNOM_ST_DATE_DEB(i), sdf.format(ptg.getDebut()));
 			if (ptg.getFin() != null) {
-				addZone(getNOM_ST_DATE_FIN(i), hrs.format(ptg.getFin()));
+				addZone(getNOM_ST_DATE_FIN(i), sdf.format(ptg.getFin()));
 			}
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
 			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie())+" à "+hrs.format(ptg.getDateSaisie()));
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()));
 		}
-	}
-
-	/**
-	 * Retourne une hashTable de la hiérarchie des Service selon le code
-	 * Service.
-	 * 
-	 * @return hTree
-	 */
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	@Override
 	public String getJSP() {
-		return "OePTGVisualisation.jsp";
+		return "OePTGSaisie.jsp";
 	}
 
 	/**
@@ -130,15 +113,6 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public HashMap<Integer, ConsultPointageDto> getListePointage() {
 		return listePointage == null ? new HashMap<Integer, ConsultPointageDto>() : listePointage;
-	}
-
-	/**
-	 * Retourne la liste des services.
-	 * 
-	 * @return listeServices
-	 */
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
 	}
 
 	public ArrayList<RefTypePointageDto> getListeTypes() {
@@ -368,12 +342,6 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_ST_TYPE_" + i;
 	}
 
-	
-	
-	public String getMATRICULE_ST_AGENT(int i){
-		return "NOM_ST_MATRICULE_" + i;		
-	}
-	
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
@@ -458,14 +426,6 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
-	}
-	
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone 
-	 * 
-	 */
-	public String getVAL_MATRICULE_AGENT(int i) {
-		return getZone(getMATRICULE_ST_AGENT(i));
 	}
 
 	/**
@@ -626,43 +586,6 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_LB_TYPE_SELECT(), Const.ZERO);
 
 		}
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
-
-			}
-		}
-
 	}
 
 	@Override
@@ -683,18 +606,6 @@ public class OePTGVisualisation extends BasicProcess {
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
-		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null)
-				addZone(getNOM_ST_AGENT_MIN(), agt.getIdAgent());
-		}
-		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			if (agt != null)
-				addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
-		}
 		UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
 			Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
@@ -842,7 +753,7 @@ public class OePTGVisualisation extends BasicProcess {
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
 			refreshHistory(pt.getIdPointage());
-			}
+		}
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (getLoggedAgent() == null) {
 			System.out.println("Agent complètement nul!");
@@ -855,63 +766,6 @@ public class OePTGVisualisation extends BasicProcess {
 				System.out.println("Exception in performPB_FILTRER");
 			}
 		}
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
-
-		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
-
-		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
-		return true;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
-
-		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
-		return true;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
-		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
-		// On enlève l'agent selectionnée
-		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
-		return true;
 	}
 
 	/**
@@ -942,26 +796,6 @@ public class OePTGVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-			}
-
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_MIN
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MIN())) {
-				return performPB_RECHERCHER_AGENT_MIN(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MIN
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(request);
-			}
-
-			// Si clic sur le bouton PB_RECHERCHER_AGENT_MAX
-			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MAX())) {
-				return performPB_RECHERCHER_AGENT_MAX(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
-				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
 			}
 
 			if (testerParametre(request, getVal_ValidAll())) {
@@ -1024,15 +858,6 @@ public class OePTGVisualisation extends BasicProcess {
 			listePointage.put(ptg.getIdPointage(), ptg);
 	}
 
-	/**
-	 * Met à jour la liste des services.
-	 * 
-	 * @param listeServices
-	 */
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
 	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
 		this.listeTypes = listeTypes;
 	}
@@ -1063,12 +888,12 @@ public class OePTGVisualisation extends BasicProcess {
 
 	}
 
-	private void refreshHistory(int ptgId){
+	private void refreshHistory(int ptgId) {
 		history.remove(ptgId);
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		history.put(ptgId, t.getVisualisationHistory(ptgId));
 	}
-	
+
 	public String getHistory(int ptgId) {
 		if (!history.containsKey(ptgId)) {
 			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -1085,12 +910,12 @@ public class OePTGVisualisation extends BasicProcess {
 		int index = 0;
 		for (ConsultPointageDto p : data) {
 			ret[index][0] = formatDate(p.getDate());
-			ret[index][1] = formatHeure(p.getDebut());
-			ret[index][2] = formatHeure(p.getFin());
+			ret[index][1] = formatDate(p.getDebut());
+			ret[index][2] = formatDate(p.getFin());
 			ret[index][3] = "" + p.getQuantite();
 			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
 			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
-			ret[index][6] = formatDate(p.getDateSaisie())+" à "+formatHeure(p.getDateSaisie());
+			ret[index][6] = formatDate(p.getDateSaisie());
 			index++;
 		}
 		StringBuilder strret = new StringBuilder();
@@ -1103,27 +928,57 @@ public class OePTGVisualisation extends BasicProcess {
 			strret.append("|");
 		}
 		strret.deleteCharAt(strret.lastIndexOf("|"));
-			return strret.toString();
+		return strret.toString();
 	}
 
 	private String formatDate(Date d) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		if (d != null)
-			return sdf.format(d);
+			return formatter.format(d);
 		else
 			return "";
 	}
 
-
-	private String formatHeure(Date d) {
-		if (d != null)
-			return hrs.format(d);
-		else
-			return "";
-	}
-
-	
-	
 	public List<ConsultPointageDto> getHistoryTable(int ptgId) {
 		return history.get(ptgId);
 	}
+
+	public String getIdAgent() {
+		return idAgent;
+	}
+
+	public void setIdAgent(String idAgent) {
+		this.idAgent = idAgent;
+	}
+
+	public Date getDateLundi(int inc) {
+
+		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		calendar.setTime(dateLundi);
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE dd MMMM yyyy");
+		calendar.add(Calendar.DATE, inc);
+		return calendar.getTime();
+	}
+
+	public String getDateLundiStr(int inc) {
+
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE dd MMMM yyyy");
+		return formatter.format(getDateLundi(inc));
+	}
+
+	public int getWeekYear() {
+		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		calendar.setTime(dateLundi);
+		return calendar.get(Calendar.WEEK_OF_YEAR);
+	}
+
+	public void setDateLundi(String _dateLundi) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			this.dateLundi = formatter.parse(_dateLundi);
+		} catch (ParseException e) {
+			System.out.println("ParseException in OePTGSaisie setDateLundi");
+		}
+	}
+
 }
