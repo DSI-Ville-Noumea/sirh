@@ -346,48 +346,38 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 					avct.setIdAvisCAP(avisCap.getIdAvisCAP());
 
 					// calcul BM/ACC applicables
-					int nbJoursBM = 0;
-					int nbJoursACC = 0;
-					if (gradeActuel.getBm().equals(Const.OUI)) {
-						nbJoursBM += (Integer.parseInt(carr.getBMAnnee()) * 360) + (Integer.parseInt(carr.getBMMois()) * 30)
-								+ Integer.parseInt(carr.getBMJour());
-					}
-					if (gradeActuel.getAcc().equals(Const.OUI)) {
-						nbJoursACC += (Integer.parseInt(carr.getACCAnnee()) * 360) + (Integer.parseInt(carr.getACCMois()) * 30)
-								+ Integer.parseInt(carr.getACCJour());
-					}
+					int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
+					int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);
 
+					int nbJoursBonusDepart = nbJoursBM + nbJoursACC;
 					int nbJoursBonus = nbJoursBM + nbJoursACC;
-
 					// Calcul date avancement au Grade actuel
 					if (gradeActuel.getDureeMin() != null && gradeActuel.getDureeMin().length() != 0) {
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
 							avct.setDateAvctMini(carr.getDateDebut().substring(0, 6) + annee);
+							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMini(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMin())),
-									nbJoursBonus));
+							avct.setDateAvctMini(AvancementFonctionnaires.calculDateAvctMini(gradeActuel, carr));
+							nbJoursBonus = 0;
 						}
 					}
 					if (gradeActuel.getDureeMoy() != null && gradeActuel.getDureeMoy().length() != 0) {
 						avct.setDureeStandard(gradeActuel.getDureeMoy());
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 							avct.setDateAvctMoy(carr.getDateDebut().substring(0, 6) + annee);
 							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMoy(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMoy())),
-									nbJoursBonus));
+							avct.setDateAvctMoy(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr));
 							nbJoursBonus = 0;
 						}
 					}
 					if (gradeActuel.getDureeMax() != null && gradeActuel.getDureeMax().length() != 0) {
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMax()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMax()) * 30) {
 							avct.setDateAvctMaxi(carr.getDateDebut().substring(0, 6) + annee);
+							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMaxi(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMax())),
-									nbJoursBonus));
+							avct.setDateAvctMaxi(AvancementFonctionnaires.calculDateAvctMaxi(gradeActuel, carr));
+							nbJoursBonus = 0;
 						}
 					}
 					// si la date avct moy (année ) sup à l'année choisie pour

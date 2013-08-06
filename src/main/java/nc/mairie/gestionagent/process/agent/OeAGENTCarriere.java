@@ -12,6 +12,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.PositionAdmAgent;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.BaseHoraire;
 import nc.mairie.metier.carriere.Carriere;
@@ -2519,16 +2520,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// Si pas de grade suivant, agent non éligible
 		if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
 			// calcul BM/ACC applicables
-			int nbJoursBM = 0;
-			int nbJoursACC = 0;
-			if (gradeActuel.getBm().equals(Const.OUI)) {
-				nbJoursBM += (Integer.parseInt(carr.getBMAnnee()) * 360) + (Integer.parseInt(carr.getBMMois()) * 30)
-						+ Integer.parseInt(carr.getBMJour());
-			}
-			if (gradeActuel.getAcc().equals(Const.OUI)) {
-				nbJoursACC += (Integer.parseInt(carr.getACCAnnee()) * 360) + (Integer.parseInt(carr.getACCMois()) * 30)
-						+ Integer.parseInt(carr.getACCJour());
-			}
+			int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
+			int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);			
 
 			int nbJoursBonus = nbJoursBM + nbJoursACC;
 
@@ -2537,11 +2530,8 @@ public class OeAGENTCarriere extends BasicProcess {
 				if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 					addZone(getNOM_EF_DATE_DEBUT(), carr.getDateDebut().substring(0, 6) + annee);
 					nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
-				} else {
-					addZone(getNOM_EF_DATE_DEBUT(),
-							Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMoy())),
-									nbJoursBonus));
+				} else {					
+					addZone(getNOM_EF_DATE_DEBUT(), AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr));
 					nbJoursBonus = 0;
 				}
 			}

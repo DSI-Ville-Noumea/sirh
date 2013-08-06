@@ -545,18 +545,10 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 	private void calculAccBm(AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap)
 			throws Exception {
-		// calcul BM/ACC applicables
-		int nbJoursBM = 0;
-		int nbJoursACC = 0;
 		Grade gradeActuel = Grade.chercherGrade(getTransaction(), ancienneCarriere.getCodeGrade());
-		if (gradeActuel.getBm().equals(Const.OUI)) {
-			nbJoursBM += (Integer.parseInt(ancienneCarriere.getBMAnnee()) * 360) + (Integer.parseInt(ancienneCarriere.getBMMois()) * 30)
-					+ Integer.parseInt(ancienneCarriere.getBMJour());
-		}
-		if (gradeActuel.getAcc().equals(Const.OUI)) {
-			nbJoursACC += (Integer.parseInt(ancienneCarriere.getACCAnnee()) * 360) + (Integer.parseInt(ancienneCarriere.getACCMois()) * 30)
-					+ Integer.parseInt(ancienneCarriere.getACCJour());
-		}
+		// calcul BM/ACC applicables
+		int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, ancienneCarriere);
+		int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, ancienneCarriere);
 
 		int nbJoursBonus = nbJoursBM + nbJoursACC;
 
@@ -566,9 +558,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 				avct.setDateAvctMini(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMin()) * 30;
 			} else {
-				avct.setDateAvctMini(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMin())),
-						nbJoursBonus));
+				avct.setDateAvctMini(AvancementFonctionnaires.calculDateAvctMini(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		} else if (libCourtAvisCap.equals("MOY") || libCourtAvisCap.equals("FAV")) {
@@ -577,9 +567,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 			} else {
-				avct.setDateAvctMoy(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMoy())),
-						nbJoursBonus));
+				avct.setDateAvctMoy(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		} else if (libCourtAvisCap.equals("MAX")) {
@@ -587,9 +575,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 				avct.setDateAvctMaxi(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMax()) * 30;
 			} else {
-				avct.setDateAvctMaxi(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMax())),
-						nbJoursBonus));
+				avct.setDateAvctMaxi(AvancementFonctionnaires.calculDateAvctMaxi(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		}

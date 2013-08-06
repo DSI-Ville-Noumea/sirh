@@ -633,48 +633,39 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					avct.setIdAvisCAP(avisCap.getIdAvisCAP());
 
 					// calcul BM/ACC applicables
-					int nbJoursBM = 0;
-					int nbJoursACC = 0;
-					if (gradeActuel.getBm().equals(Const.OUI)) {
-						nbJoursBM += (Integer.parseInt(carr.getBMAnnee()) * 360) + (Integer.parseInt(carr.getBMMois()) * 30)
-								+ Integer.parseInt(carr.getBMJour());
-					}
-					if (gradeActuel.getAcc().equals(Const.OUI)) {
-						nbJoursACC += (Integer.parseInt(carr.getACCAnnee()) * 360) + (Integer.parseInt(carr.getACCMois()) * 30)
-								+ Integer.parseInt(carr.getACCJour());
-					}
+					int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
+					int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);
 
+					int nbJoursBonusDepart = nbJoursBM + nbJoursACC;
 					int nbJoursBonus = nbJoursBM + nbJoursACC;
 
 					// Calcul date avancement au Grade actuel
 					if (gradeActuel.getDureeMin() != null && gradeActuel.getDureeMin().length() != 0) {
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
 							avct.setDateAvctMini(carr.getDateDebut().substring(0, 6) + annee);
+							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMini(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMin())),
-									nbJoursBonus));
+							avct.setDateAvctMini(AvancementFonctionnaires.calculDateAvctMini(gradeActuel, carr));
+							nbJoursBonus = 0;
 						}
 					}
 					if (gradeActuel.getDureeMoy() != null && gradeActuel.getDureeMoy().length() != 0) {
 						avct.setDureeStandard(gradeActuel.getDureeMoy());
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 							avct.setDateAvctMoy(carr.getDateDebut().substring(0, 6) + annee);
 							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMoy(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMoy())),
-									nbJoursBonus));
+							avct.setDateAvctMoy(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr));
 							nbJoursBonus = 0;
 						}
 					}
 					if (gradeActuel.getDureeMax() != null && gradeActuel.getDureeMax().length() != 0) {
-						if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMax()) * 30) {
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMax()) * 30) {
 							avct.setDateAvctMaxi(carr.getDateDebut().substring(0, 6) + annee);
+							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
-							avct.setDateAvctMaxi(Services.enleveJours(
-									Services.ajouteMois(Services.formateDate(carr.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMax())),
-									nbJoursBonus));
+							avct.setDateAvctMaxi(AvancementFonctionnaires.calculDateAvctMaxi(gradeActuel, carr));
+							nbJoursBonus = 0;
 						}
 					}
 					// si la date avct moy (année ) sup à l'année choisie pour
@@ -940,12 +931,11 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 							: getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
 			addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-			/*
-			 * addZone(getNOM_CK_AFFECTER(i),
-			 * av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) ||
-			 * av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ?
-			 * getCHECKED_ON() : getCHECKED_OFF());
-			 */
+
+			addZone(getNOM_CK_AFFECTER(i),
+					av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
+							: getCHECKED_OFF());
+
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 
@@ -1685,18 +1675,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 	private void calculAccBm(AvancementFonctionnaires avct, Carriere ancienneCarriere, Carriere nouvelleCarriere, String libCourtAvisCap)
 			throws Exception {
-		// calcul BM/ACC applicables
-		int nbJoursBM = 0;
-		int nbJoursACC = 0;
 		Grade gradeActuel = Grade.chercherGrade(getTransaction(), ancienneCarriere.getCodeGrade());
-		if (gradeActuel.getBm().equals(Const.OUI)) {
-			nbJoursBM += (Integer.parseInt(ancienneCarriere.getBMAnnee()) * 360) + (Integer.parseInt(ancienneCarriere.getBMMois()) * 30)
-					+ Integer.parseInt(ancienneCarriere.getBMJour());
-		}
-		if (gradeActuel.getAcc().equals(Const.OUI)) {
-			nbJoursACC += (Integer.parseInt(ancienneCarriere.getACCAnnee()) * 360) + (Integer.parseInt(ancienneCarriere.getACCMois()) * 30)
-					+ Integer.parseInt(ancienneCarriere.getACCJour());
-		}
+		// calcul BM/ACC applicables
+		int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, ancienneCarriere);
+		int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, ancienneCarriere);
 
 		int nbJoursBonus = nbJoursBM + nbJoursACC;
 
@@ -1706,9 +1688,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 				avct.setDateAvctMini(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMin()) * 30;
 			} else {
-				avct.setDateAvctMini(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMin())),
-						nbJoursBonus));
+				avct.setDateAvctMini(AvancementFonctionnaires.calculDateAvctMini(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		} else if (libCourtAvisCap.equals("Moy")) {
@@ -1717,9 +1697,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 			} else {
-				avct.setDateAvctMoy(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMoy())),
-						nbJoursBonus));
+				avct.setDateAvctMoy(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		} else if (libCourtAvisCap.equals("Max")) {
@@ -1727,9 +1705,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 				avct.setDateAvctMaxi(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMax()) * 30;
 			} else {
-				avct.setDateAvctMaxi(Services.enleveJours(
-						Services.ajouteMois(Services.formateDate(ancienneCarriere.getDateDebut()), Integer.parseInt(gradeActuel.getDureeMax())),
-						nbJoursBonus));
+				avct.setDateAvctMaxi(AvancementFonctionnaires.calculDateAvctMaxi(gradeActuel, ancienneCarriere));
 				nbJoursBonus = 0;
 			}
 		}
