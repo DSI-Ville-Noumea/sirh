@@ -270,7 +270,7 @@
 	<%    for (int indicePtg:process.getListePointage().keySet()){
 				%>
 						<tr id="tr<%=process.getValHistory(indicePtg)%>">
-							<td><img	src="images/modifier.gif" height="10px" width="10px"	onClick="launchJSPSaisie('<%=process.getVAL_MATRICULE_AGENT(indicePtg)%>','<%=process.getVAL_ST_DATE(indicePtg)%>')"> <%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="10px" width="10px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>','<%=process.getHistory(indicePtg)%>')"></td>  
+							<td><img	src="images/modifier.gif" height="10px" width="10px"	onClick="launchJSPSaisie('<%=process.getVAL_MATRICULE_AGENT(indicePtg)%>','<%=process.getLundi(indicePtg)%>')"> <%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="10px" width="10px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>','<%=process.getHistory(indicePtg)%>')"></td>  
 							<td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
 							<td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
 							<td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							

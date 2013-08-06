@@ -1,11 +1,14 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,23 +60,19 @@ public class OePTGVisualisation extends BasicProcess {
 	private ArrayList<RefTypePointageDto> listeTypes;
 	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
 
-	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
 
-	
-	
 	private AgentNW loggedAgent;
 
 	private void afficheListePointages() {
 
-	
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
 			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
-			addZone(getMATRICULE_ST_AGENT(i),agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
+			addZone(getMATRICULE_ST_AGENT(i), agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()));
@@ -83,7 +82,7 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
 			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie())+" à "+hrs.format(ptg.getDateSaisie()));
+			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à " + hrs.format(ptg.getDateSaisie()));
 		}
 	}
 
@@ -368,12 +367,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_ST_TYPE_" + i;
 	}
 
-	
-	
-	public String getMATRICULE_ST_AGENT(int i){
-		return "NOM_ST_MATRICULE_" + i;		
+	public String getMATRICULE_ST_AGENT(int i) {
+		return "NOM_ST_MATRICULE_" + i;
 	}
-	
+
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
@@ -459,9 +456,9 @@ public class OePTGVisualisation extends BasicProcess {
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
 	}
-	
+
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone 
+	 * Retourne la valeur à afficher par la JSP pour la zone
 	 * 
 	 */
 	public String getVAL_MATRICULE_AGENT(int i) {
@@ -842,7 +839,7 @@ public class OePTGVisualisation extends BasicProcess {
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
 			refreshHistory(pt.getIdPointage());
-			}
+		}
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (getLoggedAgent() == null) {
 			System.out.println("Agent complètement nul!");
@@ -1063,12 +1060,12 @@ public class OePTGVisualisation extends BasicProcess {
 
 	}
 
-	private void refreshHistory(int ptgId){
+	private void refreshHistory(int ptgId) {
 		history.remove(ptgId);
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		history.put(ptgId, t.getVisualisationHistory(ptgId));
 	}
-	
+
 	public String getHistory(int ptgId) {
 		if (!history.containsKey(ptgId)) {
 			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -1090,7 +1087,7 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][3] = "" + p.getQuantite();
 			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
 			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
-			ret[index][6] = formatDate(p.getDateSaisie())+" à "+formatHeure(p.getDateSaisie());
+			ret[index][6] = formatDate(p.getDateSaisie()) + " à " + formatHeure(p.getDateSaisie());
 			index++;
 		}
 		StringBuilder strret = new StringBuilder();
@@ -1103,7 +1100,7 @@ public class OePTGVisualisation extends BasicProcess {
 			strret.append("|");
 		}
 		strret.deleteCharAt(strret.lastIndexOf("|"));
-			return strret.toString();
+		return strret.toString();
 	}
 
 	private String formatDate(Date d) {
@@ -1113,7 +1110,6 @@ public class OePTGVisualisation extends BasicProcess {
 			return "";
 	}
 
-
 	private String formatHeure(Date d) {
 		if (d != null)
 			return hrs.format(d);
@@ -1121,8 +1117,14 @@ public class OePTGVisualisation extends BasicProcess {
 			return "";
 	}
 
-	
-	
+	public String getLundi(int idPtg) {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(listePointage.get(idPtg).getDate());
+		cal.set(Calendar.DAY_OF_WEEK, -6); //back to previous week 
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); //jump to next monday.
+		return sdf.format(cal.getTime());
+	}
+
 	public List<ConsultPointageDto> getHistoryTable(int ptgId) {
 		return history.get(ptgId);
 	}

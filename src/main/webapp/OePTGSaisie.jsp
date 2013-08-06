@@ -32,7 +32,9 @@
 			document.formu.elements[nom].focus();
 		}
 	
-	
+		function back(){
+			document.location.href = './OePTGVisualisation.jsp';
+		}
 		
         /**
          * Build the table containing the detail of the pointage
@@ -118,5 +120,6 @@
 			<BR/>	
 		</FIELDSET>
 	</FORM>
+	<img src="images/fleche-gauche.png" height="25px" width="25px"	onClick="back()">
 	</BODY>
 </HTML>
