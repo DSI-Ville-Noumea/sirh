@@ -171,11 +171,12 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 				addZone(getNOM_ST_ANNEE(indiceCamp), campagne.getAnnee().toString());
 				addZone(getNOM_ST_DATE_DEBUT(indiceCamp), sdf.format(campagne.getDateDebut()));
-				addZone(getNOM_ST_DATE_FIN(indiceCamp), campagne.getDateFin() == null ? "&nbsp;" : sdf.format(campagne.getDateFin()));
-				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp),
-						campagne.getDateOuvertureKiosque() == null ? "&nbsp;" : sdf.format(campagne.getDateOuvertureKiosque()));
-				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp),
-						campagne.getDateFermetureKiosque() == null ? "&nbsp;" : sdf.format(campagne.getDateFermetureKiosque()));
+				addZone(getNOM_ST_DATE_FIN(indiceCamp), campagne.getDateFin() == null || campagne.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;"
+						: sdf.format(campagne.getDateFin()));
+				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp), campagne.getDateOuvertureKiosque() == null
+						|| campagne.getDateOuvertureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf.format(campagne.getDateOuvertureKiosque()));
+				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp), campagne.getDateFermetureKiosque() == null
+						|| campagne.getDateFermetureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf.format(campagne.getDateFermetureKiosque()));
 				addZone(getNOM_ST_NB_DOC(indiceCamp), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceCamp++;
@@ -398,64 +399,49 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// RG-EAE-6 --> mis au moment où on controle un EAE.
 		// on cherche pour chaque EAE de la campagne si il y a une ligne dans
 		// Avanacement pourla meme année
-		/*MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
-		MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
-		MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
-		ArrayList<EAE> listeEAE = getEaeDao().listerEAEFinaliseControlePourCampagne(getCampagneCourante().getIdCampagneEAE());
-		for (int i = 0; i < listeEAE.size(); i++) {
-			EAE eae = listeEAE.get(i);
-			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
-			Avancement avct = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante().getAnnee().toString(), evalue
-					.getIdAgent().toString());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (avct.getGrade() != null) {
-				Grade gradeAgent = Grade.chercherGrade(getTransaction(), avct.getGrade());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					avct.setIdMotifAvct(null);
-					avct.setAvisSHD(null);
-				} else {
-					String typeAvct = gradeAgent.getCodeTava();
-					if (!typeAvct.equals(Const.CHAINE_VIDE)) {
-						// on cherche le type avancement correspondant
-						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), typeAvct);
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							avct.setIdMotifAvct(null);
-							avct.setAvisSHD(null);
-						} else {
-							avct.setIdMotifAvct(motif.getIdMotifAvct());
-							EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
-							if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
-								avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
-							} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
-								avct.setAvisSHD(eval.getPropositionAvancement());
-							} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
-								avct.setAvisSHD(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
-							} else {
-								avct.setAvisSHD(null);
-							}
-						}
-					} else {
-						avct.setIdMotifAvct(null);
-						avct.setAvisSHD(null);
-					}
-				}
-			} else {
-				avct.setIdMotifAvct(null);
-				avct.setAvisSHD(null);
-			}
-			avct.modifierAvancement(getTransaction());
-		}
-
-		if (getTransaction().isErreur())
-			return false;
-
-		// tout s'est bien passé
-		commitTransaction();*/
+		/*
+		 * MotifAvancement motifRevalo =
+		 * MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+		 * "REVALORISATION"); MotifAvancement motifAD =
+		 * MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+		 * "AVANCEMENT DIFFERENCIE"); MotifAvancement motifPromo =
+		 * MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+		 * "PROMOTION"); ArrayList<EAE> listeEAE =
+		 * getEaeDao().listerEAEFinaliseControlePourCampagne
+		 * (getCampagneCourante().getIdCampagneEAE()); for (int i = 0; i <
+		 * listeEAE.size(); i++) { EAE eae = listeEAE.get(i); EaeEvalue evalue =
+		 * getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE()); Avancement avct
+		 * = Avancement.chercherAvancementAvecAnneeEtAgent(getTransaction(),
+		 * getCampagneCourante().getAnnee().toString(), evalue
+		 * .getIdAgent().toString()); if (getTransaction().isErreur()) {
+		 * getTransaction().traiterErreur(); continue; } if (avct.getGrade() !=
+		 * null) { Grade gradeAgent = Grade.chercherGrade(getTransaction(),
+		 * avct.getGrade()); if (getTransaction().isErreur()) {
+		 * getTransaction().traiterErreur(); avct.setIdMotifAvct(null);
+		 * avct.setAvisSHD(null); } else { String typeAvct =
+		 * gradeAgent.getCodeTava(); if (!typeAvct.equals(Const.CHAINE_VIDE)) {
+		 * // on cherche le type avancement correspondant MotifAvancement motif
+		 * = MotifAvancement.chercherMotifAvancement(getTransaction(),
+		 * typeAvct); if (getTransaction().isErreur()) {
+		 * getTransaction().traiterErreur(); avct.setIdMotifAvct(null);
+		 * avct.setAvisSHD(null); } else {
+		 * avct.setIdMotifAvct(motif.getIdMotifAvct()); EaeEvaluation eval =
+		 * getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE()); if
+		 * (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
+		 * avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" :
+		 * "Défavorable"); } else if (typeAvct.equals(motifAD.getIdMotifAvct()))
+		 * { avct.setAvisSHD(eval.getPropositionAvancement()); } else if
+		 * (typeAvct.equals(motifPromo.getIdMotifAvct())) {
+		 * avct.setAvisSHD(eval.getAvisChangementClasse() == 1 ? "Favorable" :
+		 * "Défavorable"); } else { avct.setAvisSHD(null); } } } else {
+		 * avct.setIdMotifAvct(null); avct.setAvisSHD(null); } } } else {
+		 * avct.setIdMotifAvct(null); avct.setAvisSHD(null); }
+		 * avct.modifierAvancement(getTransaction()); }
+		 * 
+		 * if (getTransaction().isErreur()) return false;
+		 * 
+		 * // tout s'est bien passé commitTransaction();
+		 */
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		getCampagneCourante().setDateFin(sdf.parse(Services.dateDuJour()));
@@ -474,7 +460,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// fin campagne vide et date ouverture kiosque vide
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque()!=null) {
+				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
+				&& campagneCourante.getDateFermetureKiosque() != null && !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			return false;
@@ -488,8 +475,9 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// ET QUE DATE FERMETURE_KIOSQUE n’est pas saisie
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() == null
-				&& campagneCourante.getDateOuvertureKiosque() != null) {
+				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
+				&& (campagneCourante.getDateFermetureKiosque() == null || campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL))
+				&& campagneCourante.getDateOuvertureKiosque() != null && !campagneCourante.getDateOuvertureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			return false;
@@ -500,7 +488,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		CampagneEAE campagneCourante = (CampagneEAE) getListeCampagne().get(element);
 		// RG-EAE-6
 		// si DATE FERMETURE_KIOSQUE est saisie
-		if (campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() != null) {
+		if ((campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
+				&& campagneCourante.getDateFermetureKiosque() != null && !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			return false;
@@ -581,7 +570,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		addZone(getNOM_ST_ANNEE(), camp.getAnnee().toString());
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(camp.getDateDebut()));
-		addZone(getNOM_ST_DATE_FIN(), camp.getDateFin() == null ? Const.CHAINE_VIDE : sdf.format(camp.getDateFin()));
+		addZone(getNOM_ST_DATE_FIN(),
+				camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : sdf.format(camp.getDateFin()));
 		addZone(getNOM_ST_COMMENTAIRE(), camp.getCommentaire());
 
 		return true;
@@ -721,7 +711,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// RG-EAE-2 : on regarde si toutes les campagnes sont cloturées
 		for (CampagneEAE camp : getListeCampagne()) {
-			if (camp.getDateFin() == null || camp.getDateFin().equals(Const.CHAINE_VIDE)) {
+			if (camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) || camp.getDateFin().equals(Const.CHAINE_VIDE)) {
 				// "ERR210",
 				// "Toutes les campgnes ne sont pas cloturées. Vous ne pouvez pas en créer une nouvelle."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR210"));
@@ -1579,7 +1569,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");
