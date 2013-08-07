@@ -2292,7 +2292,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private boolean initialiseAffectationCourante(HttpServletRequest request) throws Exception {
 
 		if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
-			initialiseAffectationVide();
+			if (getFichePosteCourant() == null || getFichePosteCourant().getIdFichePoste() == null) {
+				initialiseAffectationVide();
+			}
 			// Init Fiche de poste
 			// RG_AG_AF_A04
 			// RG_AG_AF_A12
