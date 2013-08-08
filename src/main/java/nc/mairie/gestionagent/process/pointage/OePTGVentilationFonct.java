@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.pointage;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.metier.Const;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -14,7 +15,7 @@ import org.springframework.context.ApplicationContext;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OePTGVentilationNonTitu extends BasicProcess {
+public class OePTGVentilationFonct extends BasicProcess {
 
 	/**
 	 * 
@@ -25,7 +26,7 @@ public class OePTGVentilationNonTitu extends BasicProcess {
 
 	@Override
 	public String getJSP() {
-		return "OePTGVentilationNonTitu.jsp";
+		return "OePTGVentilationFonct.jsp";
 	}
 
 	@Override
@@ -61,6 +62,12 @@ public class OePTGVentilationNonTitu extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// gestion navigation
+			// Si clic sur le bouton PB_RESET
+			if (testerParametre(request, getNOM_PB_RESET())) {
+				return performPB_RESET(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -79,6 +86,40 @@ public class OePTGVentilationNonTitu extends BasicProcess {
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-PTG-VENT-NON-TITU";
+		return "ECR-PTG-VENT-TITU";
+	}
+
+	public String getNOM_PB_RESET() {
+		return "NOM_PB_RESET";
+	}
+
+	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_VENTILATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_HS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_PRIMES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
+
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_VENTILATION() {
+		return "NOM_ST_ACTION_VENTILATION";
+	}
+
+	public String getNOM_ST_ACTION_HS() {
+		return "NOM_ST_ACTION_HS";
+	}
+
+	public String getNOM_ST_ACTION_PRIMES() {
+		return "NOM_ST_ACTION_PRIMES";
+	}
+
+	public String getNOM_ST_ACTION_ABS() {
+		return "NOM_ST_ACTION_ABS";
+	}
+
+	public String getNOM_ST_ACTION_VALIDATION() {
+		return "NOM_ST_ACTION_VALIDATION";
 	}
 }

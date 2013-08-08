@@ -7,7 +7,7 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Ventilation des conventions collectives</TITLE>		
+		<TITLE>Ventilation des contractuels</TITLE>		
 
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -29,7 +29,7 @@
 		</SCRIPT>		
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
-	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -70,7 +70,7 @@
 			<div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-				<legend class="sigp2Legend">Ventilation des pointages des conventions collectives</legend>	
+				<legend class="sigp2Legend">Ventilation des pointages des contractuels</legend>	
 			</FIELDSET>
 			</div>
 		
@@ -120,6 +120,7 @@
 		
 		
 	<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
+		
 	</FORM>
 	</BODY>
 </HTML>

@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.pointage;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.metier.Const;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -61,6 +62,12 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// gestion navigation
+			// Si clic sur le bouton PB_RESET
+			if (testerParametre(request, getNOM_PB_RESET())) {
+				return performPB_RESET(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -80,5 +87,34 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-VENT-CONV-COL";
+	}
+
+	public String getNOM_PB_RESET() {
+		return "NOM_PB_RESET";
+	}
+
+	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_VENTILATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_HS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_PRIMES(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
+
+		return true;
+	}
+	public String getNOM_ST_ACTION_VENTILATION() {
+		return "NOM_ST_ACTION_VENTILATION";
+	}
+	public String getNOM_ST_ACTION_HS() {
+		return "NOM_ST_ACTION_HS";
+	}
+	public String getNOM_ST_ACTION_PRIMES() {
+		return "NOM_ST_ACTION_PRIMES";
+	}
+	public String getNOM_ST_ACTION_ABS() {
+		return "NOM_ST_ACTION_ABS";
+	}
+	public String getNOM_ST_ACTION_VALIDATION() {
+		return "NOM_ST_ACTION_VALIDATION";
 	}
 }

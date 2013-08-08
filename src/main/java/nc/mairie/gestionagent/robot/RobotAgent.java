@@ -66,8 +66,8 @@ import nc.mairie.gestionagent.process.pointage.OePTGPayeurTitu;
 import nc.mairie.gestionagent.process.pointage.OePTGVisualisation;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
-import nc.mairie.gestionagent.process.pointage.OePTGVentilationNonTitu;
-import nc.mairie.gestionagent.process.pointage.OePTGVentilationTitu;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
 import nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActivite;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActiviteSelection;
@@ -236,9 +236,9 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("PTGVentilationConvCol")) {
 			return new OePTGVentilationConvCol();
 		} else if (activite.equals("PTGVentilationTitu")) {
-			return new OePTGVentilationTitu();
+			return new OePTGVentilationFonct();
 		} else if (activite.equals("PTGVentilationNonTitu")) {
-			return new OePTGVentilationNonTitu();
+			return new OePTGVentilationContractuels();
 		} else if (activite.equals("PTGPayeurConvCol")) {
 			return new OePTGPayeurConvCol();
 		} else if (activite.equals("PTGPayeurTitu")) {
@@ -486,8 +486,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePTGDroits.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OePTGVentilationNonTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVentilationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurNonTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
