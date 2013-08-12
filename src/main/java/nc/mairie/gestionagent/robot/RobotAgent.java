@@ -63,11 +63,12 @@ import nc.mairie.gestionagent.process.pointage.OePTGDroits;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurNonTitu;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurTitu;
-import nc.mairie.gestionagent.process.pointage.OePTGVisualisation;
+import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
+import nc.mairie.gestionagent.process.pointage.OePTGVisualisation;
 import nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActivite;
 import nc.mairie.gestionagent.process.poste.OePOSTEFEActiviteSelection;
@@ -419,6 +420,7 @@ public class RobotAgent extends Robot {
 		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR, OePTGSelectionApprobateur.class.getName());
 		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
+		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent

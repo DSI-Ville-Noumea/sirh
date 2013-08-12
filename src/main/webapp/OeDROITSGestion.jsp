@@ -108,7 +108,7 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 			</div>
 			<%
 			UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
-			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")) {%>
+			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")|| aUser.getUserName().equals("levch80")) {%>
 			<BR/>
 			<div style="position:absolute;top:535px;">
 				<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_ELEMENT()%>">
