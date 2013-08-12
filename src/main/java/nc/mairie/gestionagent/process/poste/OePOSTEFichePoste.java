@@ -3220,7 +3220,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (fichePosteCourante != null && fichePosteCourante.getIdFichePoste() != null) {
 			// Vérifie l'affectation
-			setFpCouranteAffectee(getFichePosteCourante().estAffectée(getTransaction()));
+			setFpCouranteAffectee(getFichePosteCourante().estAffectee(getTransaction()));
 			// Init fiches emploi
 			setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true));
 			setEmploiSecondaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false));
@@ -4805,7 +4805,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT()))
 					: -1);
 			StatutFP sfp = (StatutFP) getListeStatut().get(numLigneStatut);
-			return (!getFichePosteCourante().estAffectée(getTransaction()) && !sfp.getLibStatutFP()
+			return (!getFichePosteCourante().estAffectee(getTransaction()) && !sfp.getLibStatutFP()
 					.equals(EnumStatutFichePoste.INACTIVE.getLibLong()));
 		} else {
 			return false;
