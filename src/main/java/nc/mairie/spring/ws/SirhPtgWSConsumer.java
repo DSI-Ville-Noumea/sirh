@@ -12,6 +12,7 @@ import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.gestionagent.dto.FichePointageDto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,9 +30,12 @@ import flexjson.JSONSerializer;
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
+	
 	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
 	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
 	private static final String sirhPtgVisualisationSetState = "visualisation/changerEtatsSIRH";
+	
+	private static final String sirhPtgSaisie = "saisie/ficheSIRH";
 
 	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
 	private static final String sirhPtgTypesPointage = "filtres/getTypes";
@@ -43,9 +47,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	public List<AgentWithServiceDto> getApprobateurs() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgAgentsApprobateurs);
-
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
-
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
 	}
 
@@ -57,6 +59,21 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
 
 	}
+	
+	
+	@Override
+	public FichePointageDto getSaisiePointage(String idAgent,String monday) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgSaisie);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("date", monday);
+		//System.out.println("Call "+url+" with "+idAgent+", "+monday);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(FichePointageDto.class, res, url);
+	}
+	
+	
 
 	@Override
 	public ClientResponse setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idagent) {
@@ -84,6 +101,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		return readResponseAsList(ConsultPointageDto.class, res, url);
 	}
 
+	
+	
 	private ClientResponse createAndPostRequest(Map parameters, String url) {
 		String json = new JSONSerializer().serialize(parameters);
 		System.out.println("appel :" + url + " avec " + json);
@@ -107,8 +126,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		return response;
 	}
 
-	public ClientResponse createAndFireRequest(Map<String, String> parameters, String url) {
-
+	/**
+	 *GET
+	 */
+	 public ClientResponse createAndFireRequest(Map<String, String> parameters, String url) {
 		Client client = Client.create();
 		WebResource webResource = client.resource(url);
 
@@ -132,9 +153,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		T result = null;
 
 		try {
-
 			result = targetClass.newInstance();
-
 		} catch (Exception ex) {
 			throw new SirhPtgWSConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
 		}
@@ -148,16 +167,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		String output = response.getEntity(String.class);
-
-		result = new JSONDeserializer<T>().deserializeInto(output, result);
-
+		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
 
 	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
-
 		List<T> result = null;
-
 		result = new ArrayList<T>();
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -169,11 +184,29 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		String output = response.getEntity(String.class);
-
 		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
-
 		return result;
 	}
+	
+	
+	public <K,V>Map<K,V> readResponseAsMap(Class<K> targetClassKey,Class<V> targetClassValue, ClientResponse response, String url) {
+		Map<K,V> result = null;
+		result = new HashMap<K,V>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		result = new JSONDeserializer<Map<K,V>>().use(Date.class, new MSDateTransformer()).use(null, HashMap.class).deserialize(output);
+		return result;
+	}
+	
+	
 
 	@Override
 	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType) {
@@ -254,9 +287,17 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = String.format(urlWS + sirhPtgPrimeDetail);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("noRubr", numRubrique.toString());
-
 		ClientResponse res = createAndFireRequest(params, url);
-
 		return readResponse(RefPrimeDto.class, res, url);
+	}
+
+	@Override
+	public ClientResponse setSaisiePointage(String idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgSaisie);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("json", json);//TODO a verif
+		return createAndPostRequest(params, url);
 	}
 }
