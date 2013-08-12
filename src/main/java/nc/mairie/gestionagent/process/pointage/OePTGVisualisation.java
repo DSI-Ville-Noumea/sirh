@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.pointage;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,7 +13,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.DateFormatter;
 
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
@@ -48,6 +46,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
+	public static final int STATUT_SAISIE_PTG = 3;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
@@ -375,7 +374,7 @@ public class OePTGVisualisation extends BasicProcess {
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-PTG-SAISIE";
+		return "ECR-PTG-VISU";
 	}
 
 	public String getVal_Del(int i) {
@@ -455,6 +454,13 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public String getVAL_ST_AGENT(int i) {
 		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	/**
+	 * 
+	 */
+	public String getSAISIE_PTG(int i) {
+		return "getSAISIE_PTG_" + i;
 	}
 
 	/**
@@ -787,9 +793,7 @@ public class OePTGVisualisation extends BasicProcess {
 			return false;
 		}
 
-		// TODO : mettre les bons filtres
 		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
-
 		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
 		loadHistory();
 
@@ -983,12 +987,16 @@ public class OePTGVisualisation extends BasicProcess {
 				if (testerParametre(request, getVal_Delay(i))) {
 					return performPB_DELAY(request, i);
 				}
-				// if (testerParametre(request, getValHistory(i))) {
-				// getHistory(i);
-				// return true;
-				// }
+				if (testerParametre(request, getSAISIE_PTG(i))) {
+					//System.out.println("enreg visu agent :"+getVAL_MATRICULE_AGENT(i));
+					//System.out.println("enreg visu lundi :"+getLundi(i));
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_MATRICULE_AGENT(i));
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
+					// TODO
+					setStatut(STATUT_SAISIE_PTG, true);
+					return true;
+				}
 			}
-
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -1090,6 +1098,7 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][6] = formatDate(p.getDateSaisie()) + " à " + formatHeure(p.getDateSaisie());
 			index++;
 		}
+		
 		StringBuilder strret = new StringBuilder();
 		for (int i = 0; i < data.size(); i++) {
 			// strret.append("[");
@@ -1120,8 +1129,8 @@ public class OePTGVisualisation extends BasicProcess {
 	public String getLundi(int idPtg) {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(listePointage.get(idPtg).getDate());
-		cal.set(Calendar.DAY_OF_WEEK, -6); //back to previous week 
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); //jump to next monday.
+		cal.set(Calendar.DAY_OF_WEEK, -6); // back to previous week
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
 		return sdf.format(cal.getTime());
 	}
 
