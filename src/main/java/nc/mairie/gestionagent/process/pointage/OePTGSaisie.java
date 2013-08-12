@@ -1,984 +1,399 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.DateFormatter;
 
-import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.AbsenceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
-import nc.mairie.gestionagent.dto.RefEtatDto;
-import nc.mairie.gestionagent.dto.RefTypePointageDto;
-import nc.mairie.metier.Const;
+import nc.mairie.gestionagent.dto.FichePointageDto;
+import nc.mairie.gestionagent.dto.HeureSupDto;
+import nc.mairie.gestionagent.dto.JourPointageDto;
+import nc.mairie.gestionagent.dto.PrimeDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
-import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 /**
- * 
+ *
  */
 public class OePTGSaisie extends BasicProcess {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private String[] LB_ETAT;
-	private String[] LB_TYPE;
-
-	private String idAgent = "";
-	private Date dateLundi = new Date();
-
-	private ArrayList<RefEtatDto> listeEtats;
-	private HashMap<Integer, ConsultPointageDto> listePointage;
-	private ArrayList<RefTypePointageDto> listeTypes;
-	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
-
-	private AgentNW loggedAgent;
-
-	private void afficheListePointages() {
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		for (ConsultPointageDto ptg : getListePointage().values()) {
-			Integer i = ptg.getIdPointage();
-			AgentDto agtPtg = ptg.getAgent();
-
-			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
-			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
-			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
-			addZone(getNOM_ST_DATE_DEB(i), sdf.format(ptg.getDebut()));
-			if (ptg.getFin() != null) {
-				addZone(getNOM_ST_DATE_FIN(i), sdf.format(ptg.getFin()));
-			}
-			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
-			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
-			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
-			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()));
-		}
-	}
-
-	@Override
-	public String getJSP() {
-		return "OePTGSaisie.jsp";
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_ETAT() {
-		if (LB_ETAT == null)
-			LB_ETAT = initialiseLazyLB();
-		return LB_ETAT;
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	private String[] getLB_TYPE() {
-		if (LB_TYPE == null)
-			LB_TYPE = initialiseLazyLB();
-		return LB_TYPE;
-	}
-
-	public ArrayList<RefEtatDto> getListeEtats() {
-		return listeEtats;
-	}
-
-	public HashMap<Integer, ConsultPointageDto> getListePointage() {
-		return listePointage == null ? new HashMap<Integer, ConsultPointageDto>() : listePointage;
-	}
-
-	public ArrayList<RefTypePointageDto> getListeTypes() {
-		return listeTypes;
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
-	 * création : (13/09/11 11:47:15)
-	 * 
-	 */
-	public String getNOM_EF_SERVICE() {
-		return "NOM_EF_SERVICE";
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_ETAT Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT() {
-		return "NOM_LB_ETAT";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_ETAT_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_ETAT_SELECT() {
-		return "NOM_LB_ETAT_SELECT";
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
-	 * (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TYPE() {
-		return "NOM_LB_TYPE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TYPE_SELECT() {
-		return "NOM_LB_TYPE_SELECT";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-	 * (05/09/11 11:31:37)
-	 * 
-	 */
-	public String getNOM_PB_FILTRER() {
-		return "NOM_PB_FILTRER";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MAX Date de
-	 * création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public String getNOM_PB_RECHERCHER_AGENT_MAX() {
-		return "NOM_PB_RECHERCHER_AGENT_MAX";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT_MIN Date de
-	 * création : (02/08/11 09:42:00)
-	 * 
-	 */
-	public String getNOM_PB_RECHERCHER_AGENT_MIN() {
-		return "NOM_PB_RECHERCHER_AGENT_MIN";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MAX Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_SUPPRIMER_RECHERCHER_AGENT_MIN Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN";
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
-	 * Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
-		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_AGENT(int i) {
-		return "NOM_ST_AGENT_" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MAX Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getNOM_ST_AGENT_MAX() {
-		return "NOM_ST_AGENT_MAX";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MIN Date de
-	 * création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getNOM_ST_AGENT_MIN() {
-		return "NOM_ST_AGENT_MIN";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
-	 * création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getNOM_ST_CODE_SERVICE() {
-		return "NOM_ST_CODE_SERVICE";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE(int i) {
-		return "NOM_ST_DATE_" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE_DEB(int i) {
-		return "getNOM_ST_DATE_DEB" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique
-	 * 
-	 */
-	public String getNOM_ST_DATE_FIN(int i) {
-		return "getNOM_ST_DATE_FIN" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE_MAX() {
-		return "NOM_ST_DATE_MAX";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_CAP Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_DATE_MIN() {
-		return "NOM_ST_DATE_MIN";
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique
-	 * 
-	 */
-	public String getNOM_ST_DATE_SAISIE(int i) {
-		return "getNOM_ST_DATE_SAISIE" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique
-	 * 
-	 */
-	public String getNOM_ST_DUREE(int i) {
-		return "getNOM_ST_DUREE" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique
-	 * 
-	 */
-	public String getNOM_ST_ETAT(int i) {
-		return "getNOM_ST_ETAT" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique
-	 * 
-	 */
-	public String getNOM_ST_MOTIF(int i) {
-		return "getNOM_ST_MOTIF" + i;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_TYPE(int i) {
-		return "NOM_ST_TYPE_" + i;
-	}
-
-	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
-	 */
-	public String getNomEcran() {
-		return "ECR-PTG-SAISIE";
-	}
-
-	public String getVal_Del(int i) {
-		return "Delete_F" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-
-	public String getVal_DelAll() {
-		return "Delete_All";
-	}
-
-	public String getVal_Delay(int i) {
-		return "Delay_F" + i;
-	}
-
-	public String getVal_DelayAll() {
-		return "Delay_All";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_SERVICE Date de création : (13/09/11 11:47:15)
-	 * 
-	 */
-	public String getVAL_EF_SERVICE() {
-		return getZone(getNOM_EF_SERVICE());
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_ETAT Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_ETAT() {
-		return getLB_ETAT();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_ETAT_SELECT() {
-		return getZone(getNOM_LB_ETAT_SELECT());
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_TYPE() {
-		return getLB_TYPE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_TYPE_SELECT() {
-		return getZone(getNOM_LB_TYPE_SELECT());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_AGENT(int i) {
-		return getZone(getNOM_ST_AGENT(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MAX Date
-	 * de création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getVAL_ST_AGENT_MAX() {
-		return getZone(getNOM_ST_AGENT_MAX());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT_MIN Date
-	 * de création : (02/08/11 09:40:42)
-	 * 
-	 */
-	public String getVAL_ST_AGENT_MIN() {
-		return getZone(getNOM_ST_AGENT_MIN());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
-	 * Date de création : (13/09/11 08:45:29)
-	 * 
-	 */
-	public String getVAL_ST_CODE_SERVICE() {
-		return getZone(getNOM_ST_CODE_SERVICE());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE(int i) {
-		return getZone(getNOM_ST_DATE(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_DATE_DEB(int i) {
-		return getZone(getNOM_ST_DATE_DEB(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_DATE_FIN(int i) {
-		return getZone(getNOM_ST_DATE_FIN(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE_MAX() {
-		return getZone(getNOM_ST_DATE_MAX());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_CAP Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_DATE_MIN() {
-		return getZone(getNOM_ST_DATE_MIN());
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_DATE_SAISIE(int i) {
-		return getZone(getNOM_ST_DATE_SAISIE(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_DUREE(int i) {
-		return getZone(getNOM_ST_DUREE(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_ETAT(int i) {
-		return getZone(getNOM_ST_ETAT(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_ST_MOTIF(int i) {
-		return getZone(getNOM_ST_MOTIF(i));
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_TYPE(int i) {
-		return getZone(getNOM_ST_TYPE(i));
-	}
-
-	public String getVal_Valid(int i) {
-		return "Valid_" + i;
-	}
-
-	public String getVal_ValidAll() {
-		return "Valid_All";
-	}
-
-	public String getValHistory(int id) {
-		return "History_" + id;
-	}
-
-	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
-	 */
-	private void initialiseListeDeroulante() throws Exception {
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		// Si liste etat vide alors affectation
-		if (getLB_ETAT() == LBVide) {
-			List<RefEtatDto> etats = t.getEtatsPointage();
-			setListeEtats((ArrayList<RefEtatDto>) etats);
-			int[] tailles = { 50 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (RefEtatDto etat : etats) {
-				String ligne[] = { etat.getLibelle() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_ETAT(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
-
-		}
-		// Si liste type vide alors affectation
-		if (getLB_TYPE() == LBVide) {
-			List<RefTypePointageDto> types = t.getTypesPointage();
-			setListeTypes((ArrayList<RefTypePointageDto>) types);
-
-			int[] tailles = { 50 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (RefTypePointageDto type : types) {
-				String ligne[] = { type.getLibelle() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_TYPE(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_TYPE_SELECT(), Const.ZERO);
-
-		}
-	}
-
-	@Override
-	public void initialiseZones(HttpServletRequest request) throws Exception {
-		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
-		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
-
-		// ----------------------------------//
-		// Vérification des droits d'accès. //
-		// ----------------------------------//
-		if (MairieUtils.estInterdit(request, getNomEcran())) {
-			// "ERR190",
-			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
-			throw new Exception();
-		}
-
-		// Initialisation des listes déroulantes
-		initialiseListeDeroulante();
-
-		UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (user != null && user.getNomatr() != null) {
-				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
-			}
-		} else {
-			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
-		}
-	}
-
-	private boolean performControlerFiltres() {
-		String dateDeb = getVAL_ST_DATE_MIN();
-		if (dateDeb.equals(Const.CHAINE_VIDE)) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * 
-	 */
-	public boolean performPB_FILTRER() throws Exception {
-		if (!performControlerFiltres()) {
-			// "ERR500",
-			// "Le champ date de début est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
-			return false;
-		}
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-
-		String dateDeb = getVAL_ST_DATE_MIN();
-		String dateMin = Services.convertitDate(dateDeb, "dd/MM/yyyy", "yyyyMMdd");
-
-		String dateFin = getVAL_ST_DATE_MAX();
-		String dateMax = null;
-		if (!dateFin.equals(Const.CHAINE_VIDE)) {
-			dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
-		} else {
-			dateMax = dateMin;
-		}
-		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
-		RefEtatDto etat = null;
-		if (numEtat != -1 && numEtat != 0) {
-			etat = (RefEtatDto) getListeEtats().get(numEtat - 1);
-		}
-		// type
-		int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
-		RefTypePointageDto type = null;
-		if (numType != -1 && numType != 0) {
-			type = (RefTypePointageDto) getListeTypes().get(numType - 1);
-		}
-		String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MIN();
-		String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MAX();
-
-		// si superieur à 1000 alors on bloque
-		List<String> idAgents = new ArrayList<String>();
-
-		if (idAgentMin != null && idAgentMax == null) {
-			if (!idAgents.contains(idAgentMin))
-				idAgents.add(idAgentMin);
-		} else if (idAgentMin != null && idAgentMax != null) {
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(), Integer.valueOf(idAgentMin), Integer.valueOf(idAgentMax));
-			for (AgentNW ag : listAgent) {
-				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent())))
-					idAgents.add(ag.getIdAgent());
-			}
-		}
-
-		String codeService = getVAL_ST_CODE_SERVICE();
-		if (!codeService.equals(Const.CHAINE_VIDE)) {
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), codeService);
-			for (AgentNW ag : listAgent) {
-				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent())))
-					idAgents.add(ag.getIdAgent());
-			}
-		}
-
-		if (idAgents.size() == 0) {
-			idAgents = null;
-		} else if (idAgents.size() >= 1000) {
-			// "ERR501",
-			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
-			return false;
-		}
-
-		// TODO : mettre les bons filtres
-		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
-
-		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
-		loadHistory();
-
-		afficheListePointages();
-
-		return true;
-	}
-
-	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.APPROUVE);
-		return true;
-	}
-
-	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.APPROUVE);
-		return true;
-	}
-
-	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.REJETE);
-		return true;
-	}
-
-	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.REJETE);
-		return true;
-	}
-
-	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
-		changeState(getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
-		return true;
-	}
-
-	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
-		changeState(getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
-		return true;
-	}
-
-	private void changeState(ConsultPointageDto ptg, EtatPointageEnum state) {
-		ArrayList<ConsultPointageDto> param = new ArrayList<>();
-		param.add(ptg);
-		changeState(param, state);
-	}
-
-	private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
-		ArrayList<Integer> ids = new ArrayList<>();
-		for (ConsultPointageDto pt : ptg) {
-			ids.add(pt.getIdPointage());
-			refreshHistory(pt.getIdPointage());
-		}
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		if (getLoggedAgent() == null) {
-			System.out.println("Agent complètement nul!");
-
-		} else {
-			t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent());
-			try {
-				performPB_FILTRER();
-			} catch (Exception e) {
-				System.out.println("Exception in performPB_FILTRER");
-			}
-		}
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
-		// On enlève le service selectionnée
-		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
-		return true;
-	}
-
-	@Override
-	public boolean recupererStatut(HttpServletRequest request) throws Exception {
-
-		// Si on arrive de la JSP alors on traite le get
-		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-
-			// Si clic sur le bouton PB_FILTRER
-			if (testerParametre(request, getNOM_PB_FILTRER())) {
-				return performPB_FILTRER();
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
-				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
-			}
-
-			if (testerParametre(request, getVal_ValidAll())) {
-				return performPB_VALID(request);
-			}
-
-			if (testerParametre(request, getVal_DelayAll())) {
-				return performPB_DELAY(request);
-			}
-
-			if (testerParametre(request, getVal_DelAll())) {
-				return performPB_DEL(request);
-			}
-
-			for (int i : getListePointage().keySet()) {
-				if (testerParametre(request, getVal_Del(i))) {
-					return performPB_DEL(request, i);
-				}
-				if (testerParametre(request, getVal_Valid(i))) {
-					return performPB_VALID(request, i);
-				}
-				if (testerParametre(request, getVal_Delay(i))) {
-					return performPB_DELAY(request, i);
-				}
-				// if (testerParametre(request, getValHistory(i))) {
-				// getHistory(i);
-				// return true;
-				// }
-			}
-
-		}
-		// Si TAG INPUT non géré par le process
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	/**
-	 * Setter de la liste: LB_ETAT Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_ETAT(String[] newLB_ETAT) {
-		LB_ETAT = newLB_ETAT;
-	}
-
-	/**
-	 * Setter de la liste: LB_TYPE Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_TYPE(String[] newLB_TYPE) {
-		LB_TYPE = newLB_TYPE;
-	}
-
-	public void setListeEtats(ArrayList<RefEtatDto> listeEtats) {
-		this.listeEtats = listeEtats;
-	}
-
-	public void setListePointage(ArrayList<ConsultPointageDto> _listePointage) {
-		listePointage = new HashMap<>();
-		for (ConsultPointageDto ptg : _listePointage)
-			listePointage.put(ptg.getIdPointage(), ptg);
-	}
-
-	public void setListeTypes(ArrayList<RefTypePointageDto> listeTypes) {
-		this.listeTypes = listeTypes;
-	}
-
-	public AgentNW getLoggedAgent() {
-		return loggedAgent;
-	}
-
-	private void loadHistory() {
-		for (Integer i : listePointage.keySet()) {
-			loadHistory(i);
-		}
-	}
-
-	public int getHistorySize() {
-		return history.size();
-	}
-
-	private void loadHistory(int ptgId) {
-		if (!history.containsKey(ptgId)) {
-			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			history.put(ptgId, t.getVisualisationHistory(ptgId));
-			// System.out.println(ptgId + " history.size() " + history.size() +
-			// " --");
-			// for (ConsultPointageDto d : history.get(ptgId))
-			// System.out.print(d.getIdPointage() + ",");
-		}
-
-	}
-
-	private void refreshHistory(int ptgId) {
-		history.remove(ptgId);
-		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		history.put(ptgId, t.getVisualisationHistory(ptgId));
-	}
-
-	public String getHistory(int ptgId) {
-		if (!history.containsKey(ptgId)) {
-			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			history.put(ptgId, t.getVisualisationHistory(ptgId));
-		}
-		/**
-		 * try { performPB_FILTRER(); } catch (Exception e) {
-		 * System.out.println("Exception in performPB_FILTRER"); }
-		 **/
-
-		List<ConsultPointageDto> data = history.get(ptgId);
-		int numParams = 7;
-		String[][] ret = new String[data.size()][numParams];
-		int index = 0;
-		for (ConsultPointageDto p : data) {
-			ret[index][0] = formatDate(p.getDate());
-			ret[index][1] = formatDate(p.getDebut());
-			ret[index][2] = formatDate(p.getFin());
-			ret[index][3] = "" + p.getQuantite();
-			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
-			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
-			ret[index][6] = formatDate(p.getDateSaisie());
-			index++;
-		}
-		StringBuilder strret = new StringBuilder();
-		for (int i = 0; i < data.size(); i++) {
-			// strret.append("[");
-			for (int j = 0; j < numParams; j++) {
-				strret.append(ret[i][j]).append(",");
-			}
-			strret.deleteCharAt(strret.lastIndexOf(","));
-			strret.append("|");
-		}
-		strret.deleteCharAt(strret.lastIndexOf("|"));
-		return strret.toString();
-	}
-
-	private String formatDate(Date d) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		if (d != null)
-			return formatter.format(d);
-		else
-			return "";
-	}
-
-	public List<ConsultPointageDto> getHistoryTable(int ptgId) {
-		return history.get(ptgId);
-	}
-
-	public String getIdAgent() {
-		return idAgent;
-	}
-
-	public void setIdAgent(String idAgent) {
-		this.idAgent = idAgent;
-	}
-
-	public Date getDateLundi(int inc) {
-
-		GregorianCalendar calendar = new java.util.GregorianCalendar();
-		calendar.setTime(dateLundi);
-		SimpleDateFormat formatter = new SimpleDateFormat("EEEE dd MMMM yyyy");
-		calendar.add(Calendar.DATE, inc);
-		return calendar.getTime();
-	}
-
-	public String getDateLundiStr(int inc) {
-
-		SimpleDateFormat formatter = new SimpleDateFormat("EEEE dd MMMM yyyy");
-		return formatter.format(getDateLundi(inc));
-	}
-
-	public int getWeekYear() {
-		GregorianCalendar calendar = new java.util.GregorianCalendar();
-		calendar.setTime(dateLundi);
-		return calendar.get(Calendar.WEEK_OF_YEAR);
-	}
-
-	public void setDateLundi(String _dateLundi) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			this.dateLundi = formatter.parse(_dateLundi);
-		} catch (ParseException e) {
-			System.out.println("ParseException in OePTGSaisie setDateLundi");
-		}
-	}
-
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String idAgent = "";
+    private Date dateLundi = new Date();
+    private List<List<PrimeDto>> primess = new ArrayList<>();
+    private HashMap<String, List<AbsenceDto>> absences = new HashMap<>();
+    private HashMap<String, List<HeureSupDto>> hsups = new HashMap<>();
+    public static final String VALIDATION = "validation page saisie";
+    public static final String BACK = "back sur page saisie";
+    public static final String DATE_FORMAT = "EEEE dd MMMM yyyy";
+    private AgentNW loggedAgent;
+    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+
+    @Override
+    public String getJSP() {
+        return "OePTGSaisie.jsp";
+    }
+
+    /**
+     * Getter du nom de l'écran (pour la gestion des droits)
+     */
+    public String getNomEcran() {
+        return "ECR-PTG-SAISIE";
+    }
+
+    public void initParams() {
+        setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
+        setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
+    }
+
+    /**
+     * Initialisation des données.
+     */
+    private void initialiseDonnees() throws Exception {
+        SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+        FichePointageDto listeFichePointage = t.getSaisiePointage(idAgent, Services.convertitDate(getDateLundiStr(0), DATE_FORMAT, "yyyyMMdd"));
+        absences.clear();
+        primess.clear();
+        hsups.clear();
+        for (JourPointageDto jour : listeFichePointage.getSaisies()) {
+            primess.add(jour.getPrimes());
+            absences.put(sdf.format(jour.getDate()), jour.getAbsences());
+            hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
+        }
+        // TODO
+    }
+
+    @Override
+    public void initialiseZones(HttpServletRequest request) throws Exception { // POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
+        VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
+        // ----------------------------------//
+        // Vérification des droits d'accès. //
+        // ----------------------------------//
+        if (MairieUtils.estInterdit(request, getNomEcran())) { // "ERR190",
+            // "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+            getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
+            throw new Exception();
+        }
+        initParams();
+        initialiseDonnees();
+
+        UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+        if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
+            Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
+            if (getTransaction().isErreur()) {
+                getTransaction().traiterErreur();
+            }
+            if (user != null && user.getNomatr() != null) {
+                loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+            }
+        } else {
+            loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+        }
+    }
+
+    public boolean performPB_VALID(HttpServletRequest request) throws Exception {
+        // TODO
+        return true;
+    }
+
+    public boolean performPB_BACK(HttpServletRequest request) throws Exception {
+        setStatut(STATUT_PROCESS_APPELANT);
+        return true;
+    }
+
+    private void changeState(ConsultPointageDto ptg, EtatPointageEnum state) {
+        ArrayList<ConsultPointageDto> param = new ArrayList<>();
+        param.add(ptg);
+        changeState(param, state);
+    }
+
+    private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (ConsultPointageDto pt : ptg) {
+            ids.add(pt.getIdPointage());
+        }
+        SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+        if (loggedAgent == null) {
+            System.out.println("Agent complètement nul!");
+        } else {
+            t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent());
+            // refresh?
+        }
+    }
+
+    @Override
+    public boolean recupererStatut(HttpServletRequest request) throws Exception {
+        // Si on arrive de la JSP alors on traite le get
+        if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+            if (testerParametre(request, VALIDATION)) {
+                return performPB_VALID(request);
+            }
+
+            if (testerParametre(request, BACK)) {
+                return performPB_BACK(request);
+            }
+        }
+        // Si TAG INPUT non géré par le process
+        setStatut(STATUT_MEME_PROCESS);
+        return true;
+    }
+
+    public String getIdAgent() {
+        return idAgent;
+    }
+
+    public void setIdAgent(String idAgent) {
+        this.idAgent = idAgent;
+    }
+
+    public Date getDateLundi(int inc) {
+
+        GregorianCalendar calendar = new java.util.GregorianCalendar();
+        calendar.setTime(dateLundi);
+        calendar.add(Calendar.DATE, inc);
+        return calendar.getTime();
+    }
+
+    public String getDateLundiStr(int inc) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        return formatter.format(getDateLundi(inc));
+    }
+
+    public int getWeekYear() {
+        GregorianCalendar calendar = new java.util.GregorianCalendar();
+        calendar.setTime(dateLundi);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
+    }
+
+    public void setDateLundi(String _dateLundi) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            this.dateLundi = formatter.parse(_dateLundi);
+        } catch (ParseException e) {
+            System.out.println("ParseException in OePTGSaisie setDateLundi");
+        }
+    }
+
+    public String getHeaderTable() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("<tr>");//<th>Intitulé</th>");
+        for (int i = 0; i < 7; i++) {
+            ret.append("<TH>");
+            ret.append(getDateLundiStr(i));
+            ret.append("</TH>");
+        }
+        ret.append("</tr>");
+        return ret.toString();
+    }
+
+    public String getPrimesTab() {
+        StringBuilder ret = new StringBuilder();
+
+        int nbrPrime = primess.get(0).size();
+        if (nbrPrime > 0) {
+            ret.append(getLineTitle("Primes"));
+        }
+
+        for (int i = 0; i < nbrPrime; i++) {
+            ret.append("<tr>");
+            //  ret.append(getLibelleCell(primess.get(0).get(i)));
+            for (List<PrimeDto> pl : primess) {
+                ret.append(getCell(pl.get(i)));
+            }
+            ret.append("</tr>");
+        }
+        return ret.toString();
+    }
+
+    public String getHSTab() {
+        StringBuilder ret = new StringBuilder();
+        String id = "HS";
+        ret.append(getLineTitle("Heures Supplémentaires"));
+        String dateIndex = "";
+        Date bidon = new Date();
+        bidon.setHours(0);
+        bidon.setMinutes(0);
+        for (int j = 0; j < 2; j++) {
+            ret.append("<tr>");
+            for (int i = 0; i < 7; i++) {
+                dateIndex = getDateLundiStr(i);
+                if (hsups.containsKey(dateIndex) && hsups.get(dateIndex).size() > j) {
+                    HeureSupDto hs = hsups.get(dateIndex).get(j);
+                    String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(hs.getIdRefEtat()).name() : "";
+                    System.out.println("hs:" + id + i + ":" + j + "   - " + hs.getHeureDebut() + " " + hs.getHeureFin() + " " + hs.getMotif() + " " + hs.getCommentaire());
+                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, "Heure supplémentaire"));
+                } else {
+                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "Motif", "Commentaire", "", "Heure supplémentaire"));
+                }
+            }
+            ret.append("</tr>");
+        }
+        return ret.toString();
+        // return getType3TabLine("HS0", "Heures Supplémentaires", "A récupérer") + getType3TabLine("HS1", "Heures Supplémentaires", "A récupérer");
+    }
+
+    public String getAbsTab() {
+        StringBuilder ret = new StringBuilder();
+        String id = "ABS";
+        ret.append(getLineTitle("Absences"));
+        Date bidon = new Date();
+        bidon.setHours(0);
+        bidon.setMinutes(0);
+        String dateIndex = "";
+
+        for (int j = 0; j < 2; j++) {
+            ret.append("<tr>");
+            for (int i = 0; i < 7; i++) {
+                dateIndex = getDateLundiStr(i);
+                if (absences.containsKey(dateIndex) && absences.get(dateIndex).size() > j) {
+                    AbsenceDto abs = absences.get(dateIndex).get(j);
+                    System.out.println("abs:" + id + i + ":" + j + "   - " + abs.getHeureDebut() + " " + abs.getHeureFin() + " " + abs.getMotif() + " " + abs.getCommentaire());
+                    String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(abs.getIdRefEtat()).name() : "";
+                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, abs.getHeureDebut(), abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, "Absence"));
+                } else {
+                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, bidon, bidon, "Motif", "Commentaire", "", "Absence"));
+                }
+            }
+            ret.append("</tr>");
+        }
+
+        return ret.toString();
+    }
+
+    /**
+     * private String getLibelleCell(PrimeDto p) { return
+     * getLibelleCell(p.getTypeSaisie(), p.getTitre()); }*
+     */
+    private String getCell(PrimeDto p) {
+        String id = p.getNumRubrique() + ":" + p.getIdPointage();
+        String motif = p.getMotif() != null ? p.getMotif() : "Motif";
+        String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "Commentaire";
+        int qte = p.getQuantite() != null ? p.getQuantite() : 0;
+        int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
+        String status = p.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(idref).name() : "";
+        switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
+            case CASE_A_COCHER:
+                return getType0TabCell(id, qte == 1, motif, commentaire, status, p.getTitre());
+            case NB_HEURES:
+                return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'heures :", p.getTitre());
+            case NB_INDEMNITES:
+                return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'indemnités :", p.getTitre());
+            case PERIODE_HEURES:
+                return getType3TabCell(id, "check", false, p.getHeureDebut(), p.getHeureFin(), motif, commentaire, status, p.getTitre());
+            default:
+        }
+        return "failcell:" + id;
+    }
+
+    private String getLineTitle(String title) {
+        return "<tr bgcolor='#009ACD'><TD colspan=8 align=center><b><H4>" + title + "<H3></b></TD></tr>";
+    }
+
+    private String getHead(String id, String status, String title) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("<TR> <td bgcolor='#00BFFF'><b>" + title + "</b>  " + status + "<CENTER> <img	src='images/suppression.gif' height='32px' width='32px'	onClick=\"suppr('" + id + "')\"></CENTER></td></TR> ");
+        return ret.toString();
+    }
+
+    /**
+     * private String getLibelleCell(String type, String title) { switch
+     * (TypeSaisieEnum.valueOf(type)) { case CASE_A_COCHER: return
+     * getLibelleTypCell(title, "Accordée ?"); case NB_HEURES: return
+     * getLibelleTypCell(title, "Nombre d'indemnités"); case NB_INDEMNITES:
+     * return getLibelleTypCell(title, "Nombre d'heures"); case PERIODE_HEURES:
+     * return getLibelleTypCell(title, "Début / Fin"); } return "type indéfini";
+     * }
+     *
+     * private String getLibelleTypCell(String title, String spc) {
+     * StringBuilder ret = new StringBuilder(); ret.append("<td><table
+     * cellpadding='0' cellspacing='0' border='0' class='display'>");
+     * ret.append("<tr bgcolor='#20B2AA'><td><b>" + title + "</td></b></tr>");
+     * ret.append("<tr bgcolor='#00CDCD'><td>" + spc + "</td></tr>");
+     * ret.append("<tr bgcolor='#B2DFEE'><td><input type='text' length='50px'
+     * disabled value='Motif'></td></tr>"); ret.append("<tr
+     * bgcolor='#BFEFFF'><td><input type='text' length='50px' disabled
+     * value='Commentaire'></td></tr>"); ret.append("</table></td>"); return
+     * ret.toString(); }*
+     */
+    private String getType0TabCell(String id, boolean check, String motif, String comment, String status, String title) {
+        //System.out.println("cell:" + id + " " + check + " " + motif + " " + comment);
+        StringBuilder ret = new StringBuilder();
+        ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
+        ret.append(getHead(id, status, title));
+        ret.append("<tr bgcolor='#5CACEE'><td><input type='checkbox' name='acc_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
+        ret.append(commonFields(id, motif, comment));
+        ret.append("</table></td>");
+        return ret.toString();
+    }
+
+    private String getType12TabCell(String id, int nbr, String motif, String comment, String status, String label, String title) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
+        ret.append(getHead(id, status, title));
+        ret.append("<tr bgcolor='#5CACEE'><td>" + label + "<input type='text' size='4' name='nbr_" + id + "' value='" + nbr + "'></td></tr>");
+        ret.append(commonFields(id, motif, comment));
+        ret.append("</table></td>");
+        return ret.toString();
+    }
+
+    private String getType3TabCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin, String motif, String comment, String status, String title) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
+        ret.append(getHead(id, status, title));
+        ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='TIME_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='TIME_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
+        ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
+        ret.append(commonFields(id, motif, comment));
+        ret.append("</table></td>");
+        return ret.toString();
+    }
+
+    private String commonFields(String id, String motif, String comment) {
+        StringBuilder ret = new StringBuilder();
+        motif = motif.equals("null") ? "" : motif;
+        comment = comment.equals("null") ? "" : comment;
+        ret.append("<tr bgcolor='#B2DFEE'><td><input type='text' length='50px' name='motif_" + id + "' value='" + motif + "'></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='comm_" + id + "'>" + comment + "</textarea></td></tr>");
+        return ret.toString();
+    }
+
+    private String getTimeCombo(Date heure) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("<option value=''></option>");
+        DateFormat df = new SimpleDateFormat("HH:mm");
+        String seleted = df.format(heure);
+        String val = "";
+        for (int hours = 5; hours <= 22; hours++) {
+            for (int min = 0; min < 60; min += 15) {
+                val = hours + ":" + min;
+                if (min == 0) {
+                    val += "0";
+                }
+                ret.append("<option value='" + val + "'" + (seleted.equals(val) ? "selected" : "") + ">" + val + "</option>");
+            }
+        }
+        ret.append("<option value='23:00'>23:00</option>");
+        return ret.toString();
+    }
 }
