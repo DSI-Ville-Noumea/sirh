@@ -48,7 +48,9 @@
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-                <legend class="sigp2Legend"><INPUT title="Retour à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/fleche-gauche.png" height="16px" width="16px" name="<%=process.BACK%>"> - Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%></legend>
+                <legend class="sigp2Legend"> Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%>
+                    <INPUT title="Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/annuler.png" height="16px" width="55px" name="<%=process.BACK%>">
+                    <INPUT title="Enregister et Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/enregistrer.png" height="16px" width="68px" name="<%=process.VALIDATION%>"></legend>
                 <BR/>
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="SaisiePointageList"> 
                     <thead>
@@ -61,6 +63,8 @@
                     </tbody>
                 </table>
                 <BR/>	
+                <INPUT title="Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/annuler.png" height="16px" width="55px" name="<%=process.BACK%>">
+                <INPUT title="Enregister et Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/enregistrer.png" height="16px" width="68px" name="<%=process.VALIDATION%>">
             </FIELDSET>
         </FORM>
     </BODY>

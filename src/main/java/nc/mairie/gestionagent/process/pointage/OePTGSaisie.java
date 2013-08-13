@@ -290,7 +290,7 @@ public class OePTGSaisie extends BasicProcess {
         String id = p.getNumRubrique() + ":" + p.getIdPointage();
         String motif = p.getMotif() != null ? p.getMotif() : "";
         String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
-        String qte = p.getQuantite() != null ? ""+p.getQuantite() : "";
+        String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";
         int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
         String status = p.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(idref) : "";
         switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
@@ -301,7 +301,7 @@ public class OePTGSaisie extends BasicProcess {
             case NB_INDEMNITES:
                 return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'indemnités :", p.getTitre());
             case PERIODE_HEURES:
-                return getType3TabCell(id, "check", false, p.getHeureDebut(), p.getHeureFin(), motif, commentaire, status, p.getTitre());
+                return getType3TabCell(id, "check", false, p.getHeureDebut(), p.getHeureFin(), motif, commentaire, status + "<br>", p.getTitre());
             default:
         }
         return "failcell:" + id;
@@ -361,7 +361,7 @@ public class OePTGSaisie extends BasicProcess {
     private String getType3TabCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin, String motif, String comment, String status, String title) {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
-        ret.append(getHead(id, status, title + "<br>"));
+        ret.append(getHead(id, status, title));
         ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='TIME_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='TIME_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
         ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
         ret.append(commonFields(id, motif, comment));
