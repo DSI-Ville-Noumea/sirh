@@ -73,6 +73,7 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
 			addZone(getMATRICULE_ST_AGENT(i), agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+                      //  System.out.println("recu :"+ptg.getDate()+"-->"+sdf.format(ptg.getDate()));
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()));
 			if (ptg.getFin() != null) {
@@ -630,7 +631,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 		}
 		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
+		if (getListeServices() == null || getListeServices().isEmpty()) {
 			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
@@ -644,7 +645,7 @@ public class OePTGVisualisation extends BasicProcess {
 			});
 
 			// alim de la hTree
-			hTree = new Hashtable<String, TreeHierarchy>();
+			hTree = new Hashtable<>();
 			TreeHierarchy parent = null;
 			for (int i = 0; i < getListeServices().size(); i++) {
 				Service serv = (Service) getListeServices().get(i);
@@ -784,7 +785,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		}
 
-		if (idAgents.size() == 0) {
+		if (idAgents.isEmpty()) {
 			idAgents = null;
 		} else if (idAgents.size() >= 1000) {
 			// "ERR501",
@@ -793,8 +794,8 @@ public class OePTGVisualisation extends BasicProcess {
 			return false;
 		}
 
-		List<ConsultPointageDto> listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
-		setListePointage((ArrayList<ConsultPointageDto>) listePointage);
+		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents, etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
+		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
 		loadHistory();
 
 		afficheListePointages();

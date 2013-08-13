@@ -241,11 +241,11 @@ public class OePTGSaisie extends BasicProcess {
                 dateIndex = getDateLundiStr(i);
                 if (hsups.containsKey(dateIndex) && hsups.get(dateIndex).size() > j) {
                     HeureSupDto hs = hsups.get(dateIndex).get(j);
-                    String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(hs.getIdRefEtat()).name() : "";
+                    String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(hs.getIdRefEtat()) : "";
                     System.out.println("hs:" + id + i + ":" + j + "   - " + hs.getHeureDebut() + " " + hs.getHeureFin() + " " + hs.getMotif() + " " + hs.getCommentaire());
-                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, "Heure supplémentaire"));
+                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, ""));
                 } else {
-                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "Motif", "Commentaire", "", "Heure supplémentaire"));
+                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "", "", "", ""));
                 }
             }
             ret.append("</tr>");
@@ -270,10 +270,10 @@ public class OePTGSaisie extends BasicProcess {
                 if (absences.containsKey(dateIndex) && absences.get(dateIndex).size() > j) {
                     AbsenceDto abs = absences.get(dateIndex).get(j);
                     System.out.println("abs:" + id + i + ":" + j + "   - " + abs.getHeureDebut() + " " + abs.getHeureFin() + " " + abs.getMotif() + " " + abs.getCommentaire());
-                    String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(abs.getIdRefEtat()).name() : "";
-                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, abs.getHeureDebut(), abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, "Absence"));
+                    String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(abs.getIdRefEtat()) : "";
+                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", abs.getConcertee(), abs.getHeureDebut(), abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, ""));
                 } else {
-                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, bidon, bidon, "Motif", "Commentaire", "", "Absence"));
+                    ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, bidon, bidon, "", "", "", ""));
                 }
             }
             ret.append("</tr>");
@@ -288,14 +288,14 @@ public class OePTGSaisie extends BasicProcess {
      */
     private String getCell(PrimeDto p) {
         String id = p.getNumRubrique() + ":" + p.getIdPointage();
-        String motif = p.getMotif() != null ? p.getMotif() : "Motif";
-        String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "Commentaire";
-        int qte = p.getQuantite() != null ? p.getQuantite() : 0;
+        String motif = p.getMotif() != null ? p.getMotif() : "";
+        String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
+        String qte = p.getQuantite() != null ? ""+p.getQuantite() : "";
         int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
-        String status = p.getIdRefEtat() != null ? EtatPointageEnum.getEtatPointageEnum(idref).name() : "";
+        String status = p.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(idref) : "";
         switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
             case CASE_A_COCHER:
-                return getType0TabCell(id, qte == 1, motif, commentaire, status, p.getTitre());
+                return getType0TabCell(id, qte.equals("1"), motif, commentaire, status, p.getTitre());
             case NB_HEURES:
                 return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'heures :", p.getTitre());
             case NB_INDEMNITES:
@@ -313,7 +313,7 @@ public class OePTGSaisie extends BasicProcess {
 
     private String getHead(String id, String status, String title) {
         StringBuilder ret = new StringBuilder();
-        ret.append("<TR> <td bgcolor='#00BFFF'><b>" + title + "</b>  " + status + "<CENTER> <img	src='images/suppression.gif' height='32px' width='32px'	onClick=\"suppr('" + id + "')\"></CENTER></td></TR> ");
+        ret.append("<TR> <td ><CENTER><b>" + title + " </b>" + status + "<br>" + (status.equals("Saisi") ? " <img src='images/suppression.gif' height='16px' width='16px' onClick=\"suppr('" + id + "')\">" : "") + "</CENTER></td></TR> ");
         return ret.toString();
     }
 
@@ -341,17 +341,17 @@ public class OePTGSaisie extends BasicProcess {
         //System.out.println("cell:" + id + " " + check + " " + motif + " " + comment);
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
-        ret.append(getHead(id, status, title));
+        ret.append(getHead(id, status, title + "<br>"));
         ret.append("<tr bgcolor='#5CACEE'><td><input type='checkbox' name='acc_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
         return ret.toString();
     }
 
-    private String getType12TabCell(String id, int nbr, String motif, String comment, String status, String label, String title) {
+    private String getType12TabCell(String id, String nbr, String motif, String comment, String status, String label, String title) {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
-        ret.append(getHead(id, status, title));
+        ret.append(getHead(id, status, title + "<br>"));
         ret.append("<tr bgcolor='#5CACEE'><td>" + label + "<input type='text' size='4' name='nbr_" + id + "' value='" + nbr + "'></td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
@@ -361,7 +361,7 @@ public class OePTGSaisie extends BasicProcess {
     private String getType3TabCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin, String motif, String comment, String status, String title) {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
-        ret.append(getHead(id, status, title));
+        ret.append(getHead(id, status, title + "<br>"));
         ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='TIME_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='TIME_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
         ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
         ret.append(commonFields(id, motif, comment));
@@ -373,8 +373,8 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         motif = motif.equals("null") ? "" : motif;
         comment = comment.equals("null") ? "" : comment;
-        ret.append("<tr bgcolor='#B2DFEE'><td><input type='text' length='50px' name='motif_" + id + "' value='" + motif + "'></td></tr>");
-        ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='comm_" + id + "'>" + comment + "</textarea></td></tr>");
+        ret.append("<tr bgcolor='#B2DFEE'><td><input type='text' length='50px' name='motif_" + id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='comm_" + id + "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
         return ret.toString();
     }
 
@@ -389,6 +389,9 @@ public class OePTGSaisie extends BasicProcess {
                 val = hours + ":" + min;
                 if (min == 0) {
                     val += "0";
+                }
+                if (hours < 10) {
+                    val = "0" + val;
                 }
                 ret.append("<option value='" + val + "'" + (seleted.equals(val) ? "selected" : "") + ">" + val + "</option>");
             }
