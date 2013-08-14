@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.gestionagent.dto.ConsultPointageDto"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -17,33 +17,28 @@
             <!-- <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
             <SCRIPT type="text/javascript">
                 function suppr(id) {
-                    alert("delete:" + id);
-                    if (document.getElementById("acc_" + id) != null) {
-                        document.getElementById("acc_" + id).checked = false;
+                    if (document.getElementById("NOM_acc_" + id) !== null) {
+                        document.getElementById("NOM_acc_" + id).checked = false;
                     }
-                    if (document.getElementById("chk_" + id) != null) {
-                        document.getElementById("chk_" + id).checked = false;
+                    if (document.getElementById("NOM_chk_" + id) !== null) {
+                        document.getElementById("NOM_chk_" + id).checked = false;
                     }
-                    if (document.getElementById("nbr_" + id) != null) {
-                        document.getElementById("nbr_" + id).value = '';
+                    if (document.getElementById("NOM_nbr_" + id) !== null) {
+                        document.getElementById("NOM_nbr_" + id).value = '';
                     }
-                    document.getElementById("motif_" + id).value = '';
-                    document.getElementById("comm_" + id).value = '';
-                    if (document.getElementById("TIME_" + id + "_D") != null) {
-                        document.getElementById("TIME_" + id + "_D").value = '';
+                    document.getElementById("NOM_motif_" + id).value = '';
+                    document.getElementById("NOM_comm_" + id).value = '';
+                    if (document.getElementById("NOM_time_" + id + "_D") !== null) {
+                        document.getElementById("NOM_time_" + id + "_D").value = '';
                     }
-                    if (document.getElementById("TIME_" + id + "_F") != null) {
-                        document.getElementById("TIME_" + id + "_F").value = '';
+                    if (document.getElementById("NOM_time_" + id + "_F") !== null) {
+                        document.getElementById("NOM_time_" + id + "_F").value = '';
                     }
                 }
-
-                function init() {
-                }
-
             </SCRIPT>		
             <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         </HEAD>
-        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple"  onload="init()">
+        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple">
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">

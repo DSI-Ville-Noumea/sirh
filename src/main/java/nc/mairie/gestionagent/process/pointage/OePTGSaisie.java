@@ -23,6 +23,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import static nc.mairie.technique.BasicProcess.STATUT_PROCESS_APPELANT;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
@@ -62,11 +63,6 @@ public class OePTGSaisie extends BasicProcess {
         return "ECR-PTG-SAISIE";
     }
 
-    public void initParams() {
-        setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
-        setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
-    }
-
     /**
      * Initialisation des données.
      */
@@ -81,7 +77,6 @@ public class OePTGSaisie extends BasicProcess {
             absences.put(sdf.format(jour.getDate()), jour.getAbsences());
             hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
         }
-        // TODO
     }
 
     @Override
@@ -95,9 +90,10 @@ public class OePTGSaisie extends BasicProcess {
             getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
             throw new Exception();
         }
-        initParams();
+        setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
+        setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
         initialiseDonnees();
-
+        System.out.println("init saisie data ok");
         UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
         if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
             Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
@@ -114,31 +110,30 @@ public class OePTGSaisie extends BasicProcess {
 
     public boolean performPB_VALID(HttpServletRequest request) throws Exception {
         // TODO
-        return true;
-    }
-
-    public boolean performPB_BACK(HttpServletRequest request) throws Exception {
-        setStatut(STATUT_PROCESS_APPELANT);
-        return true;
-    }
-
-    private void changeState(ConsultPointageDto ptg, EtatPointageEnum state) {
-        ArrayList<ConsultPointageDto> param = new ArrayList<>();
-        param.add(ptg);
-        changeState(param, state);
-    }
-
-    private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (ConsultPointageDto pt : ptg) {
-            ids.add(pt.getIdPointage());
+        //  String dateIndex;
+        String id = "HS";
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < 7; i++) {
+                //    dateIndex = getDateLundiStr(i);
+                String chk = getZone("NOM_chk_" + id + i + ":" + j);
+                String motif = getZone("NOM_motif_" + id + i + ":" + j);
+                String comment = getZone("NOM_comm_" + id + i + ":" + j);
+                String timeD = getZone("NOM_time_" + id + i + ":" + j + "_D");
+                String timeF = getZone("NOM_time_" + id + i + ":" + j + "_F");
+                System.out.println(id + " motif:" + chk + "," + motif + "," + comment + "," + timeD + "," + timeF + ",");
+            }
         }
+        return true;
+    }
+
+    private void save() {
+        ArrayList<Integer> ids = new ArrayList<>();
+      
         SirhPtgWSConsumer t = new SirhPtgWSConsumer();
         if (loggedAgent == null) {
             System.out.println("Agent complètement nul!");
         } else {
-            t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent());
-            // refresh?
+            //TODO
         }
     }
 
@@ -151,7 +146,8 @@ public class OePTGSaisie extends BasicProcess {
             }
 
             if (testerParametre(request, BACK)) {
-                return performPB_BACK(request);
+                setStatut(STATUT_PROCESS_APPELANT);
+                return true;
             }
         }
         // Si TAG INPUT non géré par le process
@@ -242,7 +238,7 @@ public class OePTGSaisie extends BasicProcess {
                 if (hsups.containsKey(dateIndex) && hsups.get(dateIndex).size() > j) {
                     HeureSupDto hs = hsups.get(dateIndex).get(j);
                     String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(hs.getIdRefEtat()) : "";
-                    System.out.println("hs:" + id + i + ":" + j + "   - " + hs.getHeureDebut() + " " + hs.getHeureFin() + " " + hs.getMotif() + " " + hs.getCommentaire());
+                    //      System.out.println("hs:" + id + i + ":" + j + "   - " + hs.getHeureDebut() + " " + hs.getHeureFin() + " " + hs.getMotif() + " " + hs.getCommentaire());
                     ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, ""));
                 } else {
                     ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "", "", "", ""));
@@ -269,7 +265,7 @@ public class OePTGSaisie extends BasicProcess {
                 dateIndex = getDateLundiStr(i);
                 if (absences.containsKey(dateIndex) && absences.get(dateIndex).size() > j) {
                     AbsenceDto abs = absences.get(dateIndex).get(j);
-                    System.out.println("abs:" + id + i + ":" + j + "   - " + abs.getHeureDebut() + " " + abs.getHeureFin() + " " + abs.getMotif() + " " + abs.getCommentaire());
+                    // System.out.println("abs:" + id + i + ":" + j + "   - " + abs.getHeureDebut() + " " + abs.getHeureFin() + " " + abs.getMotif() + " " + abs.getCommentaire());
                     String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(abs.getIdRefEtat()) : "";
                     ret.append(getType3TabCell(id + i + ":" + j, "Concertée", abs.getConcertee(), abs.getHeureDebut(), abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, ""));
                 } else {
@@ -342,9 +338,11 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
         ret.append(getHead(id, status, title + "<br>"));
-        ret.append("<tr bgcolor='#5CACEE'><td><input type='checkbox' name='acc_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
+        ret.append("<tr bgcolor='#5CACEE'><td><input type='checkbox' name='NOM_acc_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
+
+        addZone("acc_" + id, "" + check);
         return ret.toString();
     }
 
@@ -352,9 +350,10 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
         ret.append(getHead(id, status, title + "<br>"));
-        ret.append("<tr bgcolor='#5CACEE'><td>" + label + "<input type='text' size='4' name='nbr_" + id + "' value='" + nbr + "'></td></tr>");
+        ret.append("<tr bgcolor='#5CACEE'><td>" + label + "<input type='text' size='4' name='NOM_nbr_" + id + "' value='" + nbr + "'></td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
+        addZone("nbr_" + id, "" + nbr);
         return ret.toString();
     }
 
@@ -362,8 +361,8 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
         ret.append(getHead(id, status, title));
-        ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='TIME_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='TIME_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
-        ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
+        ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='NOM_time_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='NOM_time_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
+        ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
         return ret.toString();
@@ -373,8 +372,8 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         motif = motif.equals("null") ? "" : motif;
         comment = comment.equals("null") ? "" : comment;
-        ret.append("<tr bgcolor='#B2DFEE'><td><input type='text' length='50px' name='motif_" + id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
-        ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='comm_" + id + "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
+        ret.append("<tr bgcolor='#B2DFEE'><td><INPUT type='text' class=\"sigp2-saisie\"  length='50px' name='NOM_motif_" + id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='NOM_comm_" + id + "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
         return ret.toString();
     }
 
