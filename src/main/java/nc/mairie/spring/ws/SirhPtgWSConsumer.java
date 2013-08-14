@@ -34,7 +34,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
 	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
 	private static final String sirhPtgVisualisationSetState = "visualisation/changerEtatsSIRH";
-	
 	private static final String sirhPtgSaisie = "saisie/ficheSIRH";
 
 	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
@@ -292,12 +291,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setSaisiePointage(String idAgent, String json) {
+	public ClientResponse setSaisiePointage(String idagent, String dateLundi, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = String.format(urlWS + sirhPtgSaisie);
+		String url = String.format(urlWS + sirhPtgSaisie+"?idAgent="+idagent);
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
-		params.put("json", json);//TODO a verif
+		params.put("dateLundi", dateLundi);
+		params.put("json",  new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(toSerialize));
 		return createAndPostRequest(params, url);
 	}
 }

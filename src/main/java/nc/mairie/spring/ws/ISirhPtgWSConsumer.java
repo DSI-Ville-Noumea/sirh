@@ -21,7 +21,7 @@ public interface ISirhPtgWSConsumer {
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType);
 	
 	FichePointageDto getSaisiePointage(String idAgent,String monday);
-	ClientResponse setSaisiePointage(String idAgent, String json);
+	ClientResponse setSaisiePointage(String idAgent,String dateLundi, FichePointageDto toSerialize);
 	
 	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
 
