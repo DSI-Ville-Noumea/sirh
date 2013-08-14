@@ -2372,6 +2372,23 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					evalAModif.setDateEntreeFonctionnaire(dateCarriere);
 				}
 			}
+			// on regarde si la date de l'EAE precedent est différente alors on
+			// prend la date de l'EAE de l'année passée
+			CampagneEAE campagneActuelle = getCampagneCourante();
+			CampagneEAE campagnePrec = getCampagneEAEDao().chercherCampagneEAEAnnee(campagneActuelle.getAnnee() - 1);
+			EAE eaeAnneePrec = getEaeDao().chercherEAEAgent(Integer.valueOf(ag.getIdAgent()), campagnePrec.getIdCampagneEAE());
+			EaeEvalue ancienneValeur = getEaeEvalueDao().chercherEaeEvalue(eaeAnneePrec.getIdEAE());
+			if (evalAModif.getDateEntreeFonctionnaire() != null) {
+				if (ancienneValeur.getDateEntreeFonctionnaire() != null
+						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
+					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
+				}
+			} else {
+				if (ancienneValeur.getDateEntreeFonctionnaire() != null) {
+					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
+				}
+			}
+
 			if (miseAjourDateAdministration) {
 				// on cherche la date la plus ancienne dans les PA de
 				// mairie.SPADMN
@@ -2404,6 +2421,19 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					} else {
 						evalAModif.setDateEntreeAdministration(dateSpadmnAncienne);
 					}
+				}
+			}
+
+			// on regarde si la date de l'EAE precedent est différente alors on
+			// prend la date de l'EAE de l'année passée
+			if (evalAModif.getDateEntreeAdministration() != null) {
+				if (ancienneValeur.getDateEntreeAdministration() != null
+						&& (evalAModif.getDateEntreeAdministration().compareTo(ancienneValeur.getDateEntreeAdministration()) != 0)) {
+					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
+				}
+			} else {
+				if (ancienneValeur.getDateEntreeAdministration() != null) {
+					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
 				}
 			}
 
