@@ -862,6 +862,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				return performPB_SUPPRIMER_DELIBERATION(request);
 			}
 
+			// Si clic sur le bouton PB_MODIFIER_DELIBERATION
+			if (testerParametre(request, getNOM_PB_MODIFIER_DELIBERATION())) {
+				return performPB_MODIFIER_DELIBERATION(request);
+			}
+
 			// Si clic sur le bouton PB_VALIDER_DELIBERATION
 			if (testerParametre(request, getNOM_PB_VALIDER_DELIBERATION())) {
 				return performPB_VALIDER_DELIBERATION(request);
@@ -1530,7 +1535,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION)) {
 
 			for (Representant repre : getListeRepresentant()) {
-				if (repre.getNomRepresentant().trim().equals(getVAL_EF_NOM_REPRESENTANT().toUpperCase().trim()) && repre.getPrenomRepresentant().trim().equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
+				if (repre.getNomRepresentant().trim().equals(getVAL_EF_NOM_REPRESENTANT().toUpperCase().trim())
+						&& repre.getPrenomRepresentant().trim().equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
@@ -1889,6 +1895,22 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				getDeliberationDao().supprimerDeliberation(getDeliberationCourant().getIdDeliberation());
 				getListeDeliberation().remove(getDeliberationCourant());
 				setDeliberationCourant(null);
+			} else if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_MODIFICATION)) {
+
+				// on recupere le type de déliberation
+				int indiceTypeDelib = (Services.estNumerique(getVAL_LB_TYPE_DELIBERATION_SELECT()) ? Integer
+						.parseInt(getVAL_LB_TYPE_DELIBERATION_SELECT()) : -1);
+				String typeDelib = Const.CHAINE_VIDE;
+				if (indiceTypeDelib > -1) {
+					typeDelib = getListeTypeDeliberation().get(indiceTypeDelib);
+				}
+				getDeliberationCourant().setLibDeliberation(getVAL_EF_LIB_DELIBERATION());
+				getDeliberationCourant().setTexteCAP(getVAL_EF_TEXTE_CAP_DELIBERATION());
+				getDeliberationCourant().setTypeDeliberation(typeDelib);
+				getDeliberationDao().modifierDeliberation(getDeliberationCourant().getCodeDeliberation(),
+						getDeliberationCourant().getLibDeliberation(), getDeliberationCourant().getTypeDeliberation(),
+						getDeliberationCourant().getTexteCAP());
+
 			}
 			initialiseListeDeliberation(request);
 			addZone(getNOM_ST_ACTION_DELIBERATION(), Const.CHAINE_VIDE);
@@ -2965,8 +2987,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
-		
-		//on gere les corps deja selctionné
+
+		// on gere les corps deja selctionné
 		setListeCorpsCap(null);
 		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
 		for (int i = 0; i < getListeCorps().size(); i++) {
@@ -2977,8 +2999,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			}
 		}
 		setListeCorpsCap(listeCorps);
-		
-		
+
 		return true;
 	}
 
@@ -3242,8 +3263,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
 		setFocus(getDefaultFocus());
-		
-		//on gere les corps deja selectionnés
+
+		// on gere les corps deja selectionnés
 		setListeCorpsCap(null);
 		ArrayList<GradeGenerique> listeCorps = new ArrayList<GradeGenerique>();
 		for (int i = 0; i < getListeCorps().size(); i++) {
@@ -3369,5 +3390,31 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
+	}
+
+	public String getNOM_PB_MODIFIER_DELIBERATION() {
+		return "NOM_PB_MODIFIER_DELIBERATION";
+	}
+
+	public boolean performPB_MODIFIER_DELIBERATION(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
+		if (indice != -1 && indice < getListeDeliberation().size()) {
+			Deliberation delib = getListeDeliberation().get(indice);
+			setDeliberationCourant(delib);
+
+			int ligneTypeDelib = getListeTypeDeliberation().indexOf(delib.getTypeDeliberation());
+
+			addZone(getNOM_LB_TYPE_DELIBERATION_SELECT(), String.valueOf(ligneTypeDelib));
+			addZone(getNOM_EF_CODE_DELIBERATION(), delib.getCodeDeliberation());
+			addZone(getNOM_EF_LIB_DELIBERATION(), delib.getLibDeliberation());
+			addZone(getNOM_EF_TEXTE_CAP_DELIBERATION(), delib.getTexteCAP());
+
+			addZone(getNOM_ST_ACTION_DELIBERATION(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "délibérations"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_DELIBERATION());
+		return true;
 	}
 }

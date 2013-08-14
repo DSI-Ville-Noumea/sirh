@@ -110,4 +110,13 @@ public class DeliberationDao implements DeliberationDaoInterface {
 
 		return listeDeliberation;
 	}
+
+	@Override
+	public void modifierDeliberation(String codeDeliberation, String libelleDeliberation, String typeDeliberation, String texteCAPDeliberation)
+			throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_DELIBERATION + "=?," + CHAMP_TYPE_DELIBERATION + "=?," + CHAMP_TEXTE_CAP
+				+ "=? where " + CHAMP_CODE_DELIBERATION + "=?";
+		jdbcTemplate.update(sql, new Object[] { libelleDeliberation.toUpperCase(), typeDeliberation.toUpperCase(), texteCAPDeliberation,
+				codeDeliberation.toUpperCase() });
+	}
 }

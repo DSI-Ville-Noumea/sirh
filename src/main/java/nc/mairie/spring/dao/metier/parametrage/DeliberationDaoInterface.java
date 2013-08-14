@@ -17,4 +17,7 @@ public interface DeliberationDaoInterface {
 
 	public void supprimerDeliberation(Integer idDeliberation) throws Exception;
 
+	public void modifierDeliberation(String codeDeliberation, String libelleDeliberation, String typeDeliberation, String texteCAPDeliberation)
+			throws Exception;
+
 }
