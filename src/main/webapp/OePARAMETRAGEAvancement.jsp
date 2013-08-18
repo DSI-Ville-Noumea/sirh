@@ -204,6 +204,7 @@
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_DELIBERATION()%>">
     	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_DELIBERATION()%>">
+    	        	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_DELIBERATION()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_DELIBERATION()!= null && !process.getVAL_ST_ACTION_DELIBERATION().equals("")) {%>
@@ -211,7 +212,11 @@
 	            
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_DELIBERATION())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Code :</label>
+					<%if (process.getVAL_ST_ACTION_DELIBERATION().equals(process.ACTION_MODIFICATION)){ %>
+					<INPUT class="sigp2-saisie" disabled="disabled" maxlength="10" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<%}else{ %>
 					<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<%} %>
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
@@ -228,7 +233,9 @@
 					<div Style="width:100%" align="center">
 					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_DELIBERATION())) { %>
 						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_DELIBERATION()%>"></span>
-					<% } %>
+					<% }else{ %>
+						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_DELIBERATION()%>"></span>
+					<%} %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
 					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
