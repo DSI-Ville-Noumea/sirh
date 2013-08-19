@@ -15,9 +15,9 @@ public class JourPointageDto {
 	private List<AbsenceDto> absences;
 
 	public JourPointageDto() {
-		primes = new ArrayList<PrimeDto>();
-		heuresSup = new ArrayList<HeureSupDto>();
-		absences = new ArrayList<AbsenceDto>();
+		primes = new ArrayList<>();
+		heuresSup = new ArrayList<>();
+		absences = new ArrayList<>();
 	}
 
 	public JourPointageDto(JourPointageDto jourPointageTemplate) {

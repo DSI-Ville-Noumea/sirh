@@ -73,4 +73,8 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
 	}
+        
+        public String toString(){
+           return  " Agent:"+nom+" "+prenom+" id="+idAgent+" service "+service+" codeService "+codeService;
+        }
 }

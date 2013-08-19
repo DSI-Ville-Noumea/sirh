@@ -1,12 +1,14 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.util.Date;
+
 public class DataContainer {
 
     private String chk = "";
     private String motif = "";
     private String comment = "";
-    private String timeD = "";
-    private String timeF = "";
+    private Date timeD = new Date();
+    private Date timeF = new Date();
     private String nbr = "0";
 
     public DataContainer() {
@@ -36,19 +38,19 @@ public class DataContainer {
         this.comment = comment;
     }
 
-    public String getTimeD() {
+    public Date getTimeD() {
         return timeD;
     }
 
-    public void setTimeD(String timeD) {
+    public void setTimeD(Date timeD) {
         this.timeD = timeD;
     }
 
-    public String getTimeF() {
+    public Date getTimeF() {
         return timeF;
     }
 
-    public void setTimeF(String timeF) {
+    public void setTimeF(Date timeF) {
         this.timeF = timeF;
     }
 
