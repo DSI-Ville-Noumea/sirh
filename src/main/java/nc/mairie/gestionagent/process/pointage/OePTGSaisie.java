@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,6 +18,7 @@ import nc.mairie.gestionagent.dto.AbsenceDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
+import nc.mairie.gestionagent.dto.PointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
@@ -29,6 +31,7 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import org.springframework.http.HttpStatus;
 
 /**
  *
@@ -110,57 +113,53 @@ public class OePTGSaisie extends BasicProcess {
         for (int i = 0; i < 7; i++) {
             JourPointageDto temp = new JourPointageDto();
             temp.setDate(getDateLundi(i));
-            temp.setAbsences(getList(AbsenceDto.class, "ABS" + i + ":"));
-            temp.setHeuresSup(getList(HeureSupDto.class, "HS" + i + ":"));
-            temp.setPrimes(getList(PrimeDto.class, "PRIME:" + i + ":"));
+
+            for (int j = 0; j < 2; j++) {
+                temp.getAbsences().addAll(getList(AbsenceDto.class, "ABS:" + i + ":" + j));
+                temp.getHeuresSup().addAll(getList(HeureSupDto.class, "HS:" + i + ":" + j));
+            }
+            //TODO for liste des primes
+            temp.getPrimes().addAll(getList(PrimeDto.class, "PRIME:" + i + ":"));
             newList.add(temp);
         }
-        //for (JourPointageDto jour            : listeFichePointage.getSaisies()) {
-        //TODO update listeFichePointage
-        //    primess.add(jour.getPrimes());
-        //     absences.put(sdf.format(jour.getDate()), jour.getAbsences());
-        //     hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
-        // }
         listeFichePointage.setSaisies(newList);
         SirhPtgWSConsumer t = new SirhPtgWSConsumer();
         if (loggedAgent == null) {
-            System.out.println("OePTGSaisie.Java : Agent complètement nul!");
+            System.out.println("OePTGSaisie.Java : Agent complètement nul!");// getDateLundi(0).getTime()+"+"+ getDateLundi(0).getTimezoneOffset()    Services.convertitDate(getDateLundiStr(0), DATE_FORMAT, "yyyyMMdd")
         } else {
-            ClientResponse res = t.setSaisiePointage(loggedAgent.idAgent,Services.convertitDate(getDateLundiStr(0), DATE_FORMAT, "yyyyMMdd"), listeFichePointage);
-            System.out.println("response:" + res.toString());
-            System.out.println(res.getEntity(String.class).toString());
+            ClientResponse res = t.setSaisiePointage(loggedAgent.idAgent, listeFichePointage);
+            if (res.getStatus() != 200) {
+                String rep=res.getEntity(String.class).toString();
+                System.out.println("response :" + res.toString() + "\n" + rep);
+                getTransaction().declarerErreur(rep.substring(rep.indexOf("[")+2, rep.indexOf("]")-1));
+            }
         }
+
         return true;
     }
 
     private <T> List<T> getList(Class<T> targetClass, String id) {
         List<T> ret = new ArrayList<>();
-        for (int j = 0; j < 2; j++) {
-            DataContainer data = getData(id + j);
-            System.out.println(id + "," + data.getChk() + "," + data.getMotif() + "," + data.getComment() + "," + data.getTimeD() + "," + data.getTimeF());
-            if (!data.getMotif().equals("")) {
-                if (id.startsWith("HS")) {
-                    HeureSupDto hs = new HeureSupDto();
-                    hs.setCommentaire(data.getComment());
-                    hs.setMotif(data.getMotif());
-                    hs.setRecuperee(data.getChk().equals("on"));
-                    ret.add((T) hs);
-                }
-                if (id.startsWith("ABS")) {
-                    AbsenceDto abs = new AbsenceDto();
-                    abs.setCommentaire(data.getComment());
-                    abs.setMotif(data.getMotif());
-                    abs.setConcertee(data.getChk().equals("on"));
-                    ret.add((T) abs);
-                }
-                if (id.startsWith("PRIME")) {
-                    PrimeDto prime = new PrimeDto();
-                    prime.setCommentaire(data.getComment());
-                    prime.setMotif(data.getMotif());
-                    prime.setQuantite(Integer.parseInt(data.getNbr()));
-                    ret.add((T) prime);
-                }
+        DataContainer data = getData(id);
+        // System.out.println(id + "," + data.getChk() + "," + data.getMotif() + "," + data.getComment() + "," + data.getTimeD() + "," + data.getTimeF());
+        if (!data.getMotif().equals("")) {
+            PointageDto ptg = new PrimeDto();
+            if (id.startsWith("HS")) {
+                ptg = new HeureSupDto();
+                ((HeureSupDto) ptg).setRecuperee(data.getChk().equals("on"));
             }
+            if (id.startsWith("ABS")) {
+                ptg = new AbsenceDto();
+                ((AbsenceDto) ptg).setConcertee(data.getChk().equals("on"));
+            }
+            if (id.startsWith("PRIME")) {
+                ((PrimeDto) ptg).setQuantite(Integer.parseInt(data.getNbr()));
+            }
+            ptg.setHeureDebut(data.getTimeD());
+            ptg.setHeureFin(data.getTimeF());
+            ptg.setCommentaire(data.getComment());
+            ptg.setMotif(data.getMotif());
+            ret.add((T) ptg);
         }
         System.out.println("list " + id + " size " + ret.size());
         return ret;
@@ -171,8 +170,8 @@ public class OePTGSaisie extends BasicProcess {
         ret.setChk(getZone("NOM_chk_" + id));
         ret.setMotif(getZone("NOM_motif_" + id));
         ret.setComment(getZone("NOM_comm_" + id));
-        ret.setTimeD(getZone("NOM_time_" + id + "_D"));
-        ret.setTimeF(getZone("NOM_time_" + id + "_F"));
+        ret.setTimeD(getDateFromTimeCombo(getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
+        ret.setTimeF(getDateFromTimeCombo(getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
         return ret;
     }
 
@@ -203,6 +202,7 @@ public class OePTGSaisie extends BasicProcess {
         GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(dateLundi);
         calendar.add(Calendar.DATE, inc);
+        //   calendar.setTimeZone(TimeZone.getTimeZone("GMT+11"));
         return calendar.getTime();
     }
 
@@ -224,6 +224,20 @@ public class OePTGSaisie extends BasicProcess {
         } catch (ParseException e) {
             System.out.println("ParseException in OePTGSaisie setDateLundi");
         }
+    }
+
+    private Date getDateFromTimeCombo(String h, int i) {
+        Date ret = getDateLundi(i);
+        if (h.equals("")) {
+           // System.out.println("heure non saisie jour " + i);
+            return ret;
+        }
+        GregorianCalendar calendar = new java.util.GregorianCalendar();
+        calendar.setTime(ret);
+        //  calendar.setTimeZone(TimeZone.getTimeZone("GMT+11"));
+        calendar.add(GregorianCalendar.HOUR, Integer.parseInt(h.substring(0, h.indexOf(":"))));
+        calendar.add(GregorianCalendar.MINUTE, Integer.parseInt(h.substring(h.indexOf(":") + 1)));
+        return calendar.getTime();
     }
 
     public String getHeaderTable() {
@@ -418,7 +432,7 @@ public class OePTGSaisie extends BasicProcess {
         DateFormat df = new SimpleDateFormat("HH:mm");
         String seleted = df.format(heure);
         String val = "";
-        for (int hours = 5; hours <= 22; hours++) {
+        for (int hours = 5; hours <= 23; hours++) {
             for (int min = 0; min < 60; min += 15) {
                 val = hours + ":" + min;
                 if (min == 0) {
@@ -430,7 +444,6 @@ public class OePTGSaisie extends BasicProcess {
                 ret.append("<option value='" + val + "'" + (seleted.equals(val) ? "selected" : "") + ">" + val + "</option>");
             }
         }
-        ret.append("<option value='23:00'>23:00</option>");
         return ret.toString();
     }
 }
