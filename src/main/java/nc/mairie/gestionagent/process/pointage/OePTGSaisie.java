@@ -185,7 +185,9 @@ public class OePTGSaisie extends BasicProcess {
     public boolean recupererStatut(HttpServletRequest request) throws Exception {
         if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) { // Si on arrive de la JSP alors on traite le get
             if (testerParametre(request, VALIDATION)) {
-                return save();
+                save();
+                setStatut(STATUT_PROCESS_APPELANT);
+                return true;     
             }
             if (testerParametre(request, BACK)) {
                 setStatut(STATUT_PROCESS_APPELANT);
