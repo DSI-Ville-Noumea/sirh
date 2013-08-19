@@ -464,6 +464,10 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 				&& campagneCourante.getDateFermetureKiosque() != null && !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
+			if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
+					&& campagneCourante.getDateFermetureKiosque() == null && campagneCourante.getDateOuvertureKiosque() == null) {
+				return true;
+			}
 			return false;
 		}
 	}
