@@ -110,6 +110,8 @@ public class OePTGSaisie extends BasicProcess {
     private boolean save() throws Exception {
         List<JourPointageDto> newList = new ArrayList<>();
 
+        int nbrPrime = primess.get(0).size();
+
         for (int i = 0; i < 7; i++) {
             JourPointageDto temp = new JourPointageDto();
             temp.setDate(getDateLundi(i));
@@ -119,7 +121,11 @@ public class OePTGSaisie extends BasicProcess {
                 temp.getHeuresSup().addAll(getList(HeureSupDto.class, "HS:" + i + ":" + j));
             }
             //TODO for liste des primes
-            temp.getPrimes().addAll(getList(PrimeDto.class, "PRIME:" + i + ":"));
+            for (int prim = 0; prim < nbrPrime; prim++) {
+                    temp.getPrimes().addAll(getList(PrimeDto.class, "PRIME:" + primess.get(i).get(prim).getNumRubrique() + ":" + i));
+            }
+
+
             newList.add(temp);
         }
         listeFichePointage.setSaisies(newList);
@@ -129,9 +135,9 @@ public class OePTGSaisie extends BasicProcess {
         } else {
             ClientResponse res = t.setSaisiePointage(loggedAgent.idAgent, listeFichePointage);
             if (res.getStatus() != 200) {
-                String rep=res.getEntity(String.class).toString();
+                String rep = res.getEntity(String.class).toString();
                 System.out.println("response :" + res.toString() + "\n" + rep);
-                getTransaction().declarerErreur(rep.substring(rep.indexOf("[")+2, rep.indexOf("]")-1));
+                getTransaction().declarerErreur(rep.substring(rep.indexOf("[") + 2, rep.indexOf("]") - 1));
             }
         }
 
@@ -229,7 +235,7 @@ public class OePTGSaisie extends BasicProcess {
     private Date getDateFromTimeCombo(String h, int i) {
         Date ret = getDateLundi(i);
         if (h.equals("")) {
-           // System.out.println("heure non saisie jour " + i);
+            // System.out.println("heure non saisie jour " + i);
             return ret;
         }
         GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -262,9 +268,10 @@ public class OePTGSaisie extends BasicProcess {
 
         for (int i = 0; i < nbrPrime; i++) {
             ret.append("<tr>");
-            //  ret.append(getLibelleCell(primess.get(0).get(i)));
+            int jour = 0;
             for (List<PrimeDto> pl : primess) {
-                ret.append(getCell(pl.get(i)));
+                ret.append(getCell(pl.get(i), jour));
+                jour++;
             }
             ret.append("</tr>");
         }
@@ -330,8 +337,8 @@ public class OePTGSaisie extends BasicProcess {
      * private String getLibelleCell(PrimeDto p) { return
      * getLibelleCell(p.getTypeSaisie(), p.getTitre()); }*
      */
-    private String getCell(PrimeDto p) {
-        String id = "PRIME:" + p.getNumRubrique() + ":" + p.getIdPointage();
+    private String getCell(PrimeDto p, int i) {
+        String id = "PRIME:" + p.getNumRubrique() + ":" + i; //+ ":" + p.getIdPointage()
         String motif = p.getMotif() != null ? p.getMotif() : "";
         String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
         String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";

@@ -61,10 +61,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
     public FichePointageDto getSaisiePointage(String idAgent, String monday) {
         String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
         String url = String.format(urlWS + sirhPtgSaisie);
+        // String url = String.format(urlWS + "saisie/fiche");
         HashMap<String, String> params = new HashMap<>();
-        params.put("idAgent", idAgent);
+        idAgent = idAgent.startsWith("900") ? idAgent : "900" + idAgent;
         params.put("date", monday);
-        //System.out.println("Call "+url+" with "+idAgent+", "+monday);
+        params.put("idAgent", idAgent);
+        // params.put("idAgent", "9003047");
+        // params.put("agent", "9005138");
+        // System.out.println("Call " + url + " with " + idAgent + ", " + monday);
         ClientResponse res = createAndFireRequest(params, url);
         return readResponse(FichePointageDto.class, res, url);
     }
@@ -285,7 +289,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
     public ClientResponse setSaisiePointage(String idagent, FichePointageDto toSerialize) {
         String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
         String url = String.format(urlWS + sirhPtgSaisie + "?idAgent=" + idagent);
-       // String url = String.format(urlWS + "saisie/fiche?idAgent=9003047");  //pour un pointage 5463
+        // String url = String.format(urlWS + "saisie/fiche?idAgent=9003047");  //pour un pointage 5463
         return createAndPostRequest(new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(toSerialize), url);
     }
 }
