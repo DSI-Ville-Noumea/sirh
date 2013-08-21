@@ -112,21 +112,21 @@ public class OePTGSaisie extends BasicProcess {
 
         int nbrPrime = primess.get(0).size();
 
-        for (int i = 0; i < 7; i++) {
+        int i = 0;
+        for (JourPointageDto jour : listeFichePointage.getSaisies()) {
             JourPointageDto temp = new JourPointageDto();
-            temp.setDate(getDateLundi(i));
-
+            temp.setDate(jour.getDate());
             for (int j = 0; j < 2; j++) {
-                temp.getAbsences().addAll(getList(AbsenceDto.class, "ABS:" + i + ":" + j));
-                temp.getHeuresSup().addAll(getList(HeureSupDto.class, "HS:" + i + ":" + j));
+                temp.getAbsences().add(getAbsence(temp.getDate(), "ABS:" + i + ":" + j));
+                temp.getHeuresSup().add(getHS(temp.getDate(), "HS:" + i + ":" + j));
             }
             //TODO for liste des primes
             for (int prim = 0; prim < nbrPrime; prim++) {
-                    temp.getPrimes().addAll(getList(PrimeDto.class, "PRIME:" + primess.get(i).get(prim).getNumRubrique() + ":" + i));
+                PrimeDto ptemp = primess.get(i).get(prim);
+                temp.getPrimes().add(getPrime(temp.getDate(), "PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":" + i, ptemp.getTitre(), ptemp.getTypeSaisie()));
             }
-
-
             newList.add(temp);
+            i++;
         }
         listeFichePointage.setSaisies(newList);
         SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -137,47 +137,72 @@ public class OePTGSaisie extends BasicProcess {
             if (res.getStatus() != 200) {
                 String rep = res.getEntity(String.class).toString();
                 System.out.println("response :" + res.toString() + "\n" + rep);
-                getTransaction().declarerErreur(rep.substring(rep.indexOf("[") + 2, rep.indexOf("]") - 1));
+                rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[")) : rep;
+                rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
+                getTransaction().declarerErreur(rep);
             }
         }
 
         return true;
     }
 
-    private <T> List<T> getList(Class<T> targetClass, String id) {
-        List<T> ret = new ArrayList<>();
-        DataContainer data = getData(id);
-        // System.out.println(id + "," + data.getChk() + "," + data.getMotif() + "," + data.getComment() + "," + data.getTimeD() + "," + data.getTimeF());
+    private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
+        PrimeDto ret = null;
+        DataContainer data = getData(id, d);
         if (!data.getMotif().equals("")) {
-            PointageDto ptg = new PrimeDto();
-            if (id.startsWith("HS")) {
-                ptg = new HeureSupDto();
-                ((HeureSupDto) ptg).setRecuperee(data.getChk().equals("on"));
-            }
-            if (id.startsWith("ABS")) {
-                ptg = new AbsenceDto();
-                ((AbsenceDto) ptg).setConcertee(data.getChk().equals("on"));
-            }
-            if (id.startsWith("PRIME")) {
-                ((PrimeDto) ptg).setQuantite(Integer.parseInt(data.getNbr()));
-            }
-            ptg.setHeureDebut(data.getTimeD());
-            ptg.setHeureFin(data.getTimeF());
-            ptg.setCommentaire(data.getComment());
-            ptg.setMotif(data.getMotif());
-            ret.add((T) ptg);
+            ret = new PrimeDto();
+            ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+            ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
+            ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+            ret.setHeureDebut(data.getTimeD());
+            ret.setHeureFin(data.getTimeF());
+            ret.setCommentaire(data.getComment());
+            ret.setMotif(data.getMotif());
+            ret.setTitre(title);
+            ret.setTypeSaisie(typesaisie);
+            System.out.println("Prime " + id);
         }
-        System.out.println("list " + id + " size " + ret.size());
         return ret;
     }
 
-    private DataContainer getData(String id) {
+    private AbsenceDto getAbsence(Date d, String id) {
+        AbsenceDto ret = null;
+        DataContainer data = getData(id, d);
+        if (!data.getMotif().equals("")) {
+            ret = new AbsenceDto();
+            ret.setConcertee(data.getChk().equals("on"));
+            ret.setHeureDebut(data.getTimeD());
+            ret.setHeureFin(data.getTimeF());
+            ret.setCommentaire(data.getComment());
+            ret.setMotif(data.getMotif());
+            System.out.println("Absence " + id);
+        }
+        return ret;
+    }
+
+    private HeureSupDto getHS(Date d, String id) {
+        HeureSupDto ret = null;
+        DataContainer data = getData(id, d);
+        if (!data.getMotif().equals("")) {
+            ret = new HeureSupDto();
+            ret.setRecuperee(data.getChk().equals("on"));
+            ret.setHeureDebut(data.getTimeD());
+            ret.setHeureFin(data.getTimeF());
+            ret.setCommentaire(data.getComment());
+            ret.setMotif(data.getMotif());
+            System.out.println("Heure sup " + id);
+        }
+        return ret;
+    }
+
+    private DataContainer getData(String id, Date d) {
         DataContainer ret = new DataContainer();
         ret.setChk(getZone("NOM_chk_" + id));
         ret.setMotif(getZone("NOM_motif_" + id));
         ret.setComment(getZone("NOM_comm_" + id));
-        ret.setTimeD(getDateFromTimeCombo(getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
-        ret.setTimeF(getDateFromTimeCombo(getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
+        ret.setNbr(getZone("NOM_nbr_" + id));
+        ret.setTimeD(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
+        ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
         return ret;
     }
 
@@ -187,7 +212,7 @@ public class OePTGSaisie extends BasicProcess {
             if (testerParametre(request, VALIDATION)) {
                 save();
                 setStatut(STATUT_PROCESS_APPELANT);
-                return true;     
+                return true;
             }
             if (testerParametre(request, BACK)) {
                 setStatut(STATUT_PROCESS_APPELANT);
@@ -234,8 +259,8 @@ public class OePTGSaisie extends BasicProcess {
         }
     }
 
-    private Date getDateFromTimeCombo(String h, int i) {
-        Date ret = getDateLundi(i);
+    private Date getDateFromTimeCombo(Date d, String h, int i) {
+        Date ret = d;
         if (h.equals("")) {
             // System.out.println("heure non saisie jour " + i);
             return ret;
@@ -340,7 +365,7 @@ public class OePTGSaisie extends BasicProcess {
      * getLibelleCell(p.getTypeSaisie(), p.getTitre()); }*
      */
     private String getCell(PrimeDto p, int i) {
-        String id = "PRIME:" + p.getNumRubrique() + ":" + i; //+ ":" + p.getIdPointage()
+        String id = "PRIME:" + p.getNumRubrique() + ":" + p.getIdRefPrime() + ":" + i; //+ ":" + p.getIdPointage()
         String motif = p.getMotif() != null ? p.getMotif() : "";
         String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
         String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";
