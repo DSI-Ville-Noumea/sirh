@@ -117,8 +117,14 @@ public class OePTGSaisie extends BasicProcess {
             JourPointageDto temp = new JourPointageDto();
             temp.setDate(jour.getDate());
             for (int j = 0; j < 2; j++) {
-                temp.getAbsences().add(getAbsence(temp.getDate(), "ABS:" + i + ":" + j));
-                temp.getHeuresSup().add(getHS(temp.getDate(), "HS:" + i + ":" + j));
+                AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
+                if (dto != null) {
+                    temp.getAbsences().add(dto);
+                }
+                HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
+                if (hsdto != null) {
+                    temp.getHeuresSup().add(hsdto);
+                }
             }
             //TODO for liste des primes
             for (int prim = 0; prim < nbrPrime; prim++) {
@@ -149,19 +155,17 @@ public class OePTGSaisie extends BasicProcess {
     private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
         PrimeDto ret = null;
         DataContainer data = getData(id, d);
-        if (!data.getMotif().equals("")) {
-            ret = new PrimeDto();
-            ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
-            ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
-            ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
-            ret.setHeureDebut(data.getTimeD());
-            ret.setHeureFin(data.getTimeF());
-            ret.setCommentaire(data.getComment());
-            ret.setMotif(data.getMotif());
-            ret.setTitre(title);
-            ret.setTypeSaisie(typesaisie);
-            System.out.println("Prime " + id);
-        }
+        ret = new PrimeDto();
+        ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+        ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
+        ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+        ret.setHeureDebut(data.getTimeD());
+        ret.setHeureFin(data.getTimeF());
+        ret.setCommentaire(data.getComment());
+        ret.setMotif(data.getMotif());
+        ret.setTitre(title);
+        ret.setTypeSaisie(typesaisie);
+        System.out.println("Prime " + id);
         return ret;
     }
 
