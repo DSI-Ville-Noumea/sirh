@@ -140,7 +140,7 @@ public class OePTGSaisie extends BasicProcess {
             if (res.getStatus() != 200) {
                 String rep = res.getEntity(String.class).toString();
                 System.out.println("response :" + res.toString() + "\n" + rep);
-                rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[")+1) : rep;
+                rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
                 rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
                 getTransaction().declarerErreur(rep);
             }
@@ -153,7 +153,11 @@ public class OePTGSaisie extends BasicProcess {
         PrimeDto ret = null;
         DataContainer data = getData(id, d);
         ret = new PrimeDto();
-        ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+        if (data.getNbr() != null && data.getNbr() != "") {
+            ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+        } else {
+            ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
+        }
         ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
         ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
         ret.setHeureDebut(data.getTimeD());

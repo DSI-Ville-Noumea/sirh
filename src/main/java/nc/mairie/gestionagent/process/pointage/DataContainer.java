@@ -9,7 +9,7 @@ public class DataContainer {
     private String comment = "";
     private Date timeD = new Date();
     private Date timeF = new Date();
-    private String nbr = "0";
+    private String nbr = "";
 
     public DataContainer() {
     }
