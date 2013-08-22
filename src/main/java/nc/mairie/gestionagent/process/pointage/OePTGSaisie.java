@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +17,6 @@ import nc.mairie.gestionagent.dto.AbsenceDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
-import nc.mairie.gestionagent.dto.PointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
@@ -31,7 +29,6 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
-import org.springframework.http.HttpStatus;
 
 /**
  *
@@ -143,7 +140,7 @@ public class OePTGSaisie extends BasicProcess {
             if (res.getStatus() != 200) {
                 String rep = res.getEntity(String.class).toString();
                 System.out.println("response :" + res.toString() + "\n" + rep);
-                rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[")) : rep;
+                rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[")+1) : rep;
                 rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
                 getTransaction().declarerErreur(rep);
             }
@@ -374,7 +371,7 @@ public class OePTGSaisie extends BasicProcess {
         String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
         String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";
         int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
-        String status = p.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(idref) : "";
+        String status = p.getIdRefEtat() != null && !motif.equals("") ? EtatPointageEnum.getDisplayableEtatPointageEnum(idref) : "";
         switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
             case CASE_A_COCHER:
                 return getType0TabCell(id, qte.equals("1"), motif, commentaire, status, p.getTitre());
