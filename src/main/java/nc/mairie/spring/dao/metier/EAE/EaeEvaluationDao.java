@@ -63,32 +63,32 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ " inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null";
+					+ " inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE });
 		} else if (section == null && direction != null) {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE });
 		} else if (direction == null && section == null) {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE });
 		} else {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE });
 		}
 		return total;
@@ -103,32 +103,32 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null  or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE, dureeAvct });
 		} else if (section == null && direction != null) {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE, dureeAvct });
 		} else if (direction == null && section == null) {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE, dureeAvct });
 		} else {
 			sql = "select count(ev.ID_EAE) from "
 					+ NOM_TABLE
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
-					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE, dureeAvct });
 		}
 		return total;
