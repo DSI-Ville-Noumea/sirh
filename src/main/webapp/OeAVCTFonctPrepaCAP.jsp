@@ -329,6 +329,8 @@ function reduireHierarchy() {
 		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Impressions</legend>
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Rafraîchir" name="<%=process.getNOM_PB_RAFRAICHIR_IMPRIMER()%>">
+				<br/>
 		    <BR/>
 				<table class="display" id="tabAvctFonctImprJob">
 					<thead>
