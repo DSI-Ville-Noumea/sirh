@@ -25,6 +25,8 @@ import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
@@ -39,6 +41,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
     private static final String sirhPtgPrimesStatut = "primes/getListePrimeWithStatus";
     private static final String sirhPtgPrimes = "primes/getListePrime";
     private static final String sirhPtgPrimeDetail = "primes/getPrime";
+    private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
     @Override
     public List<AgentWithServiceDto> getApprobateurs() {
@@ -68,7 +71,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
         params.put("idAgent", idAgent);
         // params.put("idAgent", "9003047");
         // params.put("agent", "9005138");
-        // System.out.println("Call " + url + " with " + idAgent + ", " + monday);
+        logger.debug("Call " + url + " with " + idAgent + ", " + monday);
         ClientResponse res = createAndFireRequest(params, url);
         return readResponse(FichePointageDto.class, res, url);
     }
@@ -102,7 +105,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
     private ClientResponse createAndPostRequest(Map parameters, String url) {
         String json = new JSONSerializer().serialize(parameters);
-        System.out.println("appel :" + url + " avec " + json);
+        logger.debug("appel :" + url + " avec " + json);
         return createAndPostRequest(json, url);
     }
 
@@ -112,7 +115,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
         WebResource webResource = client.resource(url);
 
         ClientResponse response = null;
-
+        logger.debug("json poste:" + json);
         try {
             response = webResource.type("application/json").post(ClientResponse.class, json);
 
@@ -164,6 +167,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
         }
 
         String output = response.getEntity(String.class);
+        logger.debug("json recu:" + output);
         result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
         return result;
     }
