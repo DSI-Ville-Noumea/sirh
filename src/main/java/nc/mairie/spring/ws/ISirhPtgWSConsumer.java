@@ -3,14 +3,14 @@ package nc.mairie.spring.ws;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.jersey.api.client.ClientResponse;
-
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
-import nc.mairie.gestionagent.dto.FichePointageDto;
+
+import com.sun.jersey.api.client.ClientResponse;
 
 public interface ISirhPtgWSConsumer {
 
@@ -35,5 +35,7 @@ public interface ISirhPtgWSConsumer {
 	List<RefTypePointageDto> getTypesPointage();
 
 	RefPrimeDto getPrimeDetail(Integer numRubrique);
+	
+	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
 
 }

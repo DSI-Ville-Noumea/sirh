@@ -579,7 +579,7 @@
 
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable()) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -604,7 +604,7 @@
 				<tr>
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage) ) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
