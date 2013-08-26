@@ -221,15 +221,15 @@
                 d.add(0, -1, "Services");
 
                         <%
-                                String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-                                int theNode = 0;
-                                for (int i = 1; i < process.getListeServices().size(); i++) {
-                                    Service serv = (Service) process.getListeServices().get(i);
-                                    String code = serv.getCodService();
-                                    TreeHierarchy tree = (TreeHierarchy) process.getHTree().get(code);
-                                    if (theNode == 0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-                                        theNode = tree.getIndex();
-                                    }
+                            String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
+                            int theNode = 0;
+                            for (int i = 1; i < process.getListeServices().size(); i++) {
+                                Service serv = (Service) process.getListeServices().get(i);
+                                String code = serv.getCodService();
+                                TreeHierarchy tree = (TreeHierarchy) process.getHTree().get(code);
+                                if (theNode == 0 && serviceSaisi.equals(tree.getService().getSigleService())) {
+                                    theNode = tree.getIndex();
+                                }
                         %>
                         <%=tree.getJavaScriptLine()%>
                         <%}%>
@@ -261,11 +261,11 @@
                             <th>Motif<br>Commentaires</th>
                             <th>Etat</th>
                             <th>Date de saisie</th>
-                            <th align="center"><INPUT tabindex="" type="image"	src="images/valid.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <th align="center"><INPUT tabindex="" title="Approuver tous les pointages" type="image"	src="images/valid.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_ValidAll()%>"></th>
-                            <th align="center"><INPUT tabindex="" type="image"	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <th align="center"><INPUT tabindex="" type="image"  title="Refuser tous les pointages" 	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_DelAll()%>"></th>
-                            <th align="center"><INPUT tabindex="" type="image"	src="images/clock.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <th align="center"><INPUT tabindex="" type="image"	 title="Mettre en attente tous les pointages" src="images/clock.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_DelayAll()%>"></th>
                         </tr>
                     </thead>
@@ -282,11 +282,11 @@
                             <td><%=process.getVAL_ST_MOTIF(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
                             <td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
-                            <td align="center"><INPUT type="image"	src="images/valid.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <td align="center"><INPUT type="image" title="Approuver le pointage"	src="images/valid.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <td align="center"><INPUT type="image" title="Refuser le pointage"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image"	src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <td align="center"><INPUT type="image"	title="Mettre en attente le pointage" src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				
                         </tr>
                         <%}%>
