@@ -132,7 +132,7 @@
                             .append($(document.createElement("th")).html("Date"))
                             .append($(document.createElement("th")).html("D&eacute;but"))
                             .append($(document.createElement("th")).html("Fin"))
-                            .append($(document.createElement("th")).html("Dur&eacute;e<br />Quantit&eacute;"))
+                            .append($(document.createElement("th")).html("Quantit&eacute;"))
                             .append($(document.createElement("th")).html("Motif<br />Commentaire"))
                             .append($(document.createElement("th")).html("Etat"))
                             .append($(document.createElement("th")).html("Date de saisie"))
@@ -257,7 +257,7 @@
                             <th>Date</th>
                             <th>Début</th>
                             <th>Fin</th>
-                            <th>Durée</th>
+                            <th>Quantité</th>
                             <th>Motif<br>Commentaires</th>
                             <th>Etat</th>
                             <th>Date de saisie</th>
