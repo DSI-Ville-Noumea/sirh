@@ -58,7 +58,6 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.SetFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 
@@ -620,6 +619,18 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 						getNOM_PB_CONSULTER_TABLEAU(i, getVAL_ST_CODE_CAP(i),
 								getVAL_ST_CADRE_EMPLOI(i)))) {
 					return performPB_CONSULTER_TABLEAU(request,
+							getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i));
+				}
+			}
+
+			// Si clic sur le bouton PB_CONSULTER_TABLEAU_AVIS_SHD
+			for (int i = 0; i < getListeImpression().size(); i++) {
+				if (testerParametre(
+						request,
+						getNOM_PB_CONSULTER_TABLEAU_AVIS_SHD(i,
+								getVAL_ST_CODE_CAP(i),
+								getVAL_ST_CADRE_EMPLOI(i)))) {
+					return performPB_CONSULTER_TABLEAU_AVIS_SHD(request,
 							getVAL_ST_CODE_CAP(i), getVAL_ST_CADRE_EMPLOI(i));
 				}
 			}
@@ -1534,7 +1545,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		}
 
 		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(),
-				Integer.valueOf(cadre.getIdCadreEmploi()), "PDF");
+				Integer.valueOf(cadre.getIdCadreEmploi()), false, "PDF");
 		if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 			// "ERR182",
 			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -1545,10 +1556,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	public byte[] getTabAvctCapReportAsByteArray(int idCap, int idCadreEmploi,
-			String format) throws Exception {
+			boolean avisEAE, String format) throws Exception {
 
 		ClientResponse response = createAndFireRequest(idCap, idCadreEmploi,
-				format);
+				avisEAE, format);
 
 		return readResponseAsByteArray(response, format);
 	}
@@ -1579,12 +1590,12 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	}
 
 	public ClientResponse createAndFireRequest(int idCap, int idCadreEmploi,
-			String format) {
+			boolean avisEAE, String format) {
 		String urlWSTableauAvctCAP = (String) ServletAgent.getMesParametres()
 				.get("SIRH_WS_URL_TABLEAU_AVCT_CAP")
 				+ "?idCap="
 				+ idCap
-				+ "&idCadreEmploi=" + idCadreEmploi;
+				+ "&idCadreEmploi=" + idCadreEmploi + "&avisEAE=" + avisEAE;
 
 		Client client = Client.create();
 
@@ -2118,9 +2129,48 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		return "NOM_PB_RAFRAICHIR_IMPRIMER";
 	}
 
-	private boolean performPB_RAFRAICHIR_IMPRIMER(HttpServletRequest request) throws Exception {
+	private boolean performPB_RAFRAICHIR_IMPRIMER(HttpServletRequest request)
+			throws Exception {
 		initialiseTableauImpressionJob();
-		
+
+		return true;
+	}
+
+	public String getNOM_PB_CONSULTER_TABLEAU_AVIS_SHD(int i, String indiceCap,
+			String indiceCadreEmp) {
+		return "NOM_PB_CONSULTER_TABLEAU_AVIS_SHD_" + i;
+	}
+
+	public boolean performPB_CONSULTER_TABLEAU_AVIS_SHD(
+			HttpServletRequest request, String indiceCap,
+			String indiceCadreEmploi) throws Exception {
+		verifieRepertoire("Avancement");
+		String repPartage = (String) ServletAgent.getMesParametres().get(
+				"REPERTOIRE_ACTES");
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request,
+				VariableGlobale.GLOBAL_USER_APPLI);
+		String destination = "Avancement/tabAvctCap_" + user.getUserName()
+				+ ".pdf";
+		// on receupere la CAP et le cadre Emploi
+		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+		CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(
+				getTransaction(), indiceCadreEmploi);
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR182",
+			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+			return false;
+		}
+
+		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(),
+				Integer.valueOf(cadre.getIdCadreEmploi()), true, "PDF");
+		if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+			// "ERR182",
+			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+			return false;
+		}
 		return true;
 	}
 }
