@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.dto.VentilHSupDto;
 import nc.mairie.gestionagent.dto.VentilPrimeDto;
@@ -41,13 +42,13 @@ public class OePTGVentilationUtils {
         }
         StringBuilder sb = new StringBuilder();
         SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-        sb.append("<table cellpadding='0' cellspacing='0' border='0' class='display' id='VentilationTable'>");
+        sb.append("<table id='VentilationTable'>");
 
 
         AgentNW agent;
         switch (RefTypePointageEnum.getRefTypePointageEnum(typePointage)) {
             case H_SUP: {
-                sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>A récupérer</th><th>Heures complémentairees</th><th>HS 25%</th><th>HS 50%</th><th>HNU</th><th>HDJF 20%</th><th>HDJF 50%</th><th>HMAI</th><th>loupe</th></tr></thead>");
+                sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>A récupérer</th><th>Heures complémentairees</th><th>HS 25%</th><th>HS 50%</th><th>HNU</th><th>HDJF 25%</th><th>HDJF 50%</th><th>HMAI</th><th>loupe</th></tr></thead>");
                 List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, agentsCsv.toString(), date, typePointage);
                // System.out.println("VentilHSupDto rep.size()=" + rep.size());
                 sb.append("<tbody>");
@@ -73,14 +74,15 @@ public class OePTGVentilationUtils {
                 break;
             }
             case PRIME: {
-                sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>Primes</th><th><th>Nombre</th><th>loupe</th></tr></thead>");
+                sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>Primes</th><th>Nombre</th><th>loupe</th></tr></thead>");
                 List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, agentsCsv.toString(), date, typePointage);
              //   System.out.println("VentilPrimeDto rep.size()=" + rep.size());
                 sb.append("<tbody>");
                 for (VentilPrimeDto prime : rep) {
                     greg.setTime(prime.getDate_debut_mois());
+                    RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getId_ref_prime());
                     agent = agents.get(prime.getId_agent());
-                    sb.append("<tr><td>" + prime.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(prime.getDate_debut_mois()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>" + prime.getId_ref_prime() + "</td><td>" + prime.getQuantite() + "</td><td>loupe</td></tr>");
+                    sb.append("<tr><td>" + prime.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(prime.getDate_debut_mois()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>" + primeDetail.getLibelle() + "</td><td>" + prime.getQuantite() + "</td><td>loupe</td></tr>");
                 }
                 sb.append("</tbody>");
                 break;

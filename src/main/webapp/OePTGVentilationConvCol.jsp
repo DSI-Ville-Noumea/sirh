@@ -17,6 +17,13 @@
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
         <SCRIPT language="JavaScript">
+
+
+            $(document).ready(function() {
+                $('#VentilationTable').dataTable();
+            });
+
+
             //afin de sélectionner un élément dans une liste
             function executeBouton(nom)
             {
