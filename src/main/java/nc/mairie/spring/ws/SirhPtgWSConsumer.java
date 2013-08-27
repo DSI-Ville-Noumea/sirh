@@ -27,6 +27,7 @@ import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
@@ -42,6 +43,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgPrimes = "primes/getListePrime";
 	private static final String sirhPtgPrimeDetail = "primes/getPrime";
 	private static final String sirhPtgPrimePointee = "primes/isPrimeUtilisee";
+    private static final String sirhPtgVentilations = "ventilation/show";
     private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -158,7 +160,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			throw new SirhPtgWSConsumerException(String.format(
 					"An error occured when querying '%s'.", url), ex);
 		}
-
 		return response;
 	}
 
@@ -206,13 +207,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 					url, response.getStatus()));
 		}
 
-		String output = response.getEntity(String.class);
-		result = new JSONDeserializer<List<T>>()
-				.use(Date.class, new MSDateTransformer())
-				.use(null, ArrayList.class).use("values", targetClass)
-				.deserialize(output);
-		return result;
-	}
+        String output = response.getEntity(String.class);
+     //   System.out.println("json recu:" + output);
+        result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
+        return result;
+    }
 
 	public <K, V> Map<K, V> readResponseAsMap(Class<K> targetClassKey,
 			Class<V> targetClassValue, ClientResponse response, String url) {
@@ -360,4 +359,15 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 	}
 
+
+    public <T> List<T> getVentilations(Class<T> targetClass, String csvIdAgents, Integer idDateVentil, Integer idRefTypePointage) {
+        String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+        String url = String.format(urlWS + sirhPtgVentilations);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("idDateVentil", "" + idDateVentil);
+        params.put("csvIdAgents", csvIdAgents);
+        params.put("typePointage", "" + idRefTypePointage);
+        ClientResponse res = createAndFireRequest(params, url);
+        return readResponseAsList(targetClass, res, url);
+    }
 }
