@@ -153,19 +153,21 @@ public class OePTGSaisie extends BasicProcess {
         PrimeDto ret = null;
         DataContainer data = getData(id, d);
         ret = new PrimeDto();
-        if (data.getNbr() != null && data.getNbr() != "") {
-            ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
-        } else {
-            ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
-        }
-        ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
-        ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
-        ret.setHeureDebut(data.getTimeD());
-        ret.setHeureFin(data.getTimeF());
-        ret.setCommentaire(data.getComment());
         ret.setMotif(data.getMotif());
-        ret.setTitre(title);
-        ret.setTypeSaisie(typesaisie);
+        if (!ret.getMotif().equals("")) {
+            if (data.getNbr() != null && data.getNbr() != "") {
+                ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+            } else {
+                ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
+            }
+            ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
+            ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+            ret.setHeureDebut(data.getTimeD());
+            ret.setHeureFin(data.getTimeF());
+            ret.setCommentaire(data.getComment());
+            ret.setTitre(title);
+            ret.setTypeSaisie(typesaisie);
+        }
         System.out.println("Prime " + id);
         return ret;
     }
@@ -425,7 +427,7 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
         ret.append(getHead(id, status, title + "<br>"));
-        ret.append("<tr bgcolor='#5CACEE'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
 
@@ -437,7 +439,7 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
         ret.append(getHead(id, status, title + "<br>"));
-        ret.append("<tr bgcolor='#5CACEE'><td>" + label + "<input type='text' size='4' name='NOM_nbr_" + id + "' value='" + nbr + "'></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td>" + label + "<input type='text' size='4' name='NOM_nbr_" + id + "' value='" + nbr + "'></td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
         addZone("nbr_" + id, "" + nbr);
@@ -448,8 +450,8 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
         ret.append(getHead(id, status, title));
-        ret.append("<tr bgcolor='#5CACEE'><td> Heure début  -->   Heure fin <br><select name='NOM_time_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='NOM_time_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
-        ret.append("<tr bgcolor='#5CBBEE'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td> Heure début  -->   Heure fin <br><select name='NOM_time_" + id + "_D" + "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='NOM_time_" + id + "_F" + "'>" + getTimeCombo(heureFin) + " </select></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + ">" + checkname + "</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
         return ret.toString();
@@ -459,7 +461,7 @@ public class OePTGSaisie extends BasicProcess {
         StringBuilder ret = new StringBuilder();
         motif = motif.equals("null") ? "" : motif;
         comment = comment.equals("null") ? "" : comment;
-        ret.append("<tr bgcolor='#B2DFEE'><td><INPUT type='text' class=\"sigp2-saisie\"  length='50px' name='NOM_motif_" + id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
+        ret.append("<tr bgcolor='#BFEFFF'><td><INPUT type='text' class=\"sigp2-saisie\"  length='50px' name='NOM_motif_" + id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
         ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='NOM_comm_" + id + "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
         return ret.toString();
     }
