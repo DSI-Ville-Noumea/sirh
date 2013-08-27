@@ -7,8 +7,12 @@
         <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+        <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+        <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <TITLE>Ventilation des fonctionnaires</TITLE>		
 
+        <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>

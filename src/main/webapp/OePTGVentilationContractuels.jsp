@@ -7,18 +7,45 @@
         <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+        <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+        <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <TITLE>Ventilation des contractuels</TITLE>		
 
+        <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
         <SCRIPT language="javascript">
-     
+
             $(document).ready(function() {
-                $('#VentilationTable').dataTable();
+                $('#VentilationTable').dataTable({
+                        "sDom": '<"H"fl>t<"F"Trip>',
+                        "sPaginationType": "full_numbers",
+                        "oLanguage": {
+                            "oPaginate": {
+                                "sFirst": "Début",
+                                "sLast": "Fin",
+                                "sNext": "Suivant",
+                                "sPrevious": "Précédent"
+                            },
+                            "sZeroRecords": "Aucune information de ventilation à afficher",
+                            "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                            "sInfoEmpty": "Aucune information de ventilation à afficher",
+                            "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                            "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                            "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                            "sSearch": "Recherche instantanée"
+                        },
+                        "oTableTools": {
+                            "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                            "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                        }
+
+                    });
             });
 
-    
+
             //afin de sélectionner un élément dans une liste
             function executeBouton(nom)
             {

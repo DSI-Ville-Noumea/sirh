@@ -14,28 +14,31 @@ import com.sun.jersey.api.client.ClientResponse;
 
 public interface ISirhPtgWSConsumer {
 
-	List<AgentWithServiceDto> getApprobateurs();
+    List<AgentWithServiceDto> getApprobateurs();
 
-	List<AgentWithServiceDto> setApprobateurs(String json);
+    List<AgentWithServiceDto> setApprobateurs(String json);
 
-	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType);
-	
-	FichePointageDto getSaisiePointage(String idAgent,String monday);
-	ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
-	
-	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
+    List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType);
 
-	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
+    FichePointageDto getSaisiePointage(String idAgent, String monday);
 
-	List<RefPrimeDto> getPrimes(String agentStatus);
-	List<RefPrimeDto> getPrimes();
+    ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
 
-	List<RefEtatDto> getEtatsPointage();
+    ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
 
-	List<RefTypePointageDto> getTypesPointage();
+    List<ConsultPointageDto> getVisualisationHistory(int idAgents);
 
-	RefPrimeDto getPrimeDetail(Integer numRubrique);
-	
-	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
+    List<RefPrimeDto> getPrimes(String agentStatus);
 
+    List<RefPrimeDto> getPrimes();
+
+    List<RefEtatDto> getEtatsPointage();
+
+    List<RefTypePointageDto> getTypesPointage();
+
+    RefPrimeDto getPrimeDetail(Integer numRubrique);
+
+    RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
+
+    boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
 }

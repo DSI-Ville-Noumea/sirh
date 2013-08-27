@@ -79,7 +79,7 @@
                             "sZeroRecords": "Aucune information de pointage à afficher",
                             "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ pointages au total",
                             "sInfoEmpty": "Aucune information de pointage à afficher",
-                            "sEmptyTable": "Veuillez sélectionner une date de début, de fin et un délégataire pour afficher les informations de pointage",
+                            "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations de pointage",
                             "sInfoFiltered": "(filtrage sur _MAX_ pointages au total)",
                             "sLengthMenu": "Affichage de _MENU_ pointages par page",
                             "sSearch": "Recherche instantanée"
