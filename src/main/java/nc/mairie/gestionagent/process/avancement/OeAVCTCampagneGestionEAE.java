@@ -3044,6 +3044,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
 
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
+			//TODO
+			//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
+			
+			
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
 			// dans
 			// Avanacement pourla meme année
