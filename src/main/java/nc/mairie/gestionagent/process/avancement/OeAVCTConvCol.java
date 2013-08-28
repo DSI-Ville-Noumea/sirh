@@ -287,7 +287,11 @@ public class OeAVCTConvCol extends BasicProcess {
 
 							Prime newPrime = new Prime();
 							newPrime.setNoMatr(agent.getNoMatricule());
-							newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
+							if((Integer.valueOf(prime.getMtPri()) + 1)>30){
+								newPrime.setMtPri("30");
+							}else{
+								newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
+							}
 							newPrime.setDatDeb("01/01/" + avct.getAnnee());
 							newPrime.setDatFin(Const.ZERO);
 							newPrime.setRefArr(avct.getNumArrete());

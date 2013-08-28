@@ -349,7 +349,11 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 						getTransaction().traiterErreur();
 					} else {
 						if (prime1200 != null && prime1200.getMtPri() != null) {
-							avct.setMontantPrime1200(prime1200.getMtPri());
+							if(Integer.valueOf(prime1200.getMtPri())>30){
+								avct.setMontantPrime1200("30");
+							}else{
+								avct.setMontantPrime1200(prime1200.getMtPri());
+							}
 						}
 					}
 
