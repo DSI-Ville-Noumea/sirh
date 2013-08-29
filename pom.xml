@@ -335,32 +335,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
-								<copy todir="src/site/resources/war/${project.version}"
-									file="target/sirh##${maven.build.timestamp}-${project.version}.war">
-								</copy>
-								<checksum algorithm="md5">
-									<fileset dir="src/site/resources/war/${project.version}">
-										<include name="*.war" />
-										<include name="*.jar" />
-									</fileset>
-								</checksum>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
