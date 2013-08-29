@@ -54,6 +54,8 @@
                 $(document).ready(function() {
                     $('#VisualisationPointageList').dataTable({
                         "aoColumns": [
+                            {"bSortable": false},
+                            {"bSortable": false},
                             {"bSortable": true},
                             {"bSortable": true},
                             {"bSortable": true},
@@ -251,6 +253,8 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
                         <tr>
+                            <th> <img	src="images/modifier.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
+                            <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
                             <th>Date</th>
@@ -272,7 +276,9 @@
                         <%    for (int indicePtg : process.getListePointage().keySet()) {
                         %>
                         <tr id="tr<%=process.getValHistory(indicePtg)%>">
-                            <td><INPUT title="Editer le pointage" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/modifier.gif" height="16px" width="16px" title="Voir l'historique du pointage" name="<%=process.getSAISIE_PTG(indicePtg)%>"> <%=process.getVAL_ST_AGENT(indicePtg)%>    <img	src="images/loupe.gif" height="16px" width="16px"	onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')"></td>  
+                            <td><INPUT title="Editer le pointage" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getSAISIE_PTG(indicePtg)%>"></td>  
+                            <td><img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')"></td>
+                            <td><%=process.getVAL_ST_AGENT(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
                             <td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							
@@ -285,7 +291,7 @@
                                                       height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></td>
                             <td align="center"><INPUT type="image" title="Refuser le pointage"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image"	title="Mettre en attente le pointage" src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <td align="center"><INPUT type="image" title="Mettre en attente le pointage" src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				
                         </tr>
                         <%}%>
