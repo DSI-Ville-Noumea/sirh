@@ -253,7 +253,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
                         <tr>
-                            <th> <img	src="images/modifier.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
+                            <th> <img	src="images/modifier.gif" height="16px" width="16px" title="Editer le pointage"></th>
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
