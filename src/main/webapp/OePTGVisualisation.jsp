@@ -20,7 +20,7 @@
             <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
             <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
-            <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
+            <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
             <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
             <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 
@@ -67,14 +67,13 @@
                             {"bSortable": false},
                             {"bSortable": false}
                         ],
-                        "sDom": '<"H"fl>t<"F"Trip>',
-                        "sPaginationType": "full_numbers",
+                        "sDom": '<"H"fl>t<"F"rip>',
                         "oLanguage": {
                             "oPaginate": {
-                                "sFirst": "Début",
-                                "sLast": "Fin",
-                                "sNext": "Suivant",
-                                "sPrevious": "Précédent"
+                                "sFirst": "",
+                                "sLast": "",
+                                "sNext": "",
+                                "sPrevious": ""
                             },
                             "sZeroRecords": "Aucune information de pointage à afficher",
                             "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ pointages au total",
