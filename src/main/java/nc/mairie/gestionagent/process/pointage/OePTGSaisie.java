@@ -401,7 +401,7 @@ public class OePTGSaisie extends BasicProcess {
         if (!"".equals(title)) {
             ret.append("<tr><td><CENTER><b>" + title + " </b></CENTER></td></tr>");
         }
-        ret.append("<tr><td><CENTER>" + status + " " + (status.equals("Saisi") ? " <img src='images/suppression.gif' height='16px' width='16px' onClick=\"suppr('" + id + "')\">" : "<img src='images/vide.gif' height='16px' width='16px'>") + "</CENTER></TD></tr>");
+        ret.append("<tr><td><CENTER>" + status + " " + (status.equals("Saisi") ? " <img src='images/suppression.gif' height='16px' width='16px' onClick=\"suppr('" + id + "')\">" : "<img src='images/vide.png' height='16px' width='16px'>") + "</CENTER></TD></tr>");
         return ret.toString();
     }
 
