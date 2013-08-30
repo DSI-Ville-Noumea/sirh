@@ -10,7 +10,7 @@
         <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGSaisie" id="process" scope="session"></jsp:useBean>
             <TITLE>Saisie des pointages</TITLE>		
-           <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+        <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>   <!--  -->
             <SCRIPT type="text/javascript">
                 function suppr(id) {
                     if (document.getElementById("NOM_chk_" + id) !== null) {  document.getElementById("NOM_chk_" + id).checked = false;  }
