@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,8 +50,8 @@ public class OePTGSaisie extends BasicProcess {
     public static final String BACK = "back sur page saisie";
     public static final String DATE_FORMAT = "EEEE dd MMMM yyyy";
     private AgentNW loggedAgent;
-    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-
+    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, new Locale("fr", "FR"));
+    
     @Override
     public String getJSP() {
         return "OePTGSaisie.jsp";
@@ -155,7 +156,7 @@ public class OePTGSaisie extends BasicProcess {
         ret = new PrimeDto();
         ret.setMotif(data.getMotif());
         if (!ret.getMotif().equals("")) {
-            if (data.getNbr() != null && data.getNbr() != "") {
+            if (data.getNbr() != null && !"".equals(data.getNbr())) {
                 ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
             } else {
                 ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
@@ -242,13 +243,12 @@ public class OePTGSaisie extends BasicProcess {
         GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(dateLundi);
         calendar.add(Calendar.DATE, inc);
-        //   calendar.setTimeZone(TimeZone.getTimeZone("GMT+11"));
         return calendar.getTime();
     }
 
     public String getDateLundiStr(int inc) {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        return formatter.format(getDateLundi(inc));
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, new Locale("fr", "FR"));
+       return formatter.format(getDateLundi(inc));
     }
 
     public int getWeekYear() {
@@ -398,7 +398,10 @@ public class OePTGSaisie extends BasicProcess {
 
     private String getHead(String id, String status, String title) {
         StringBuilder ret = new StringBuilder();
-        ret.append("<TR> <td ><CENTER><b>" + title + " </b>" + status + "<br>" + (status.equals("Saisi") ? " <img src='images/suppression.gif' height='16px' width='16px' onClick=\"suppr('" + id + "')\">" : "") + "</CENTER></td></TR> ");
+        if (!"".equals(title)) {
+            ret.append("<tr><td><CENTER><b>" + title + " </b></CENTER></td></tr>");
+        }
+        ret.append("<tr><td><CENTER>" + status + " " + (status.equals("Saisi") ? " <img src='images/suppression.gif' height='16px' width='16px' onClick=\"suppr('" + id + "')\">" : "<img src='images/vide.gif' height='16px' width='16px'>") + "</CENTER></TD></tr>");
         return ret.toString();
     }
 
@@ -426,7 +429,7 @@ public class OePTGSaisie extends BasicProcess {
         //System.out.println("cell:" + id + " " + check + " " + motif + " " + comment);
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
-        ret.append(getHead(id, status, title + "<br>"));
+        ret.append(getHead(id, status, title));
         ret.append("<tr bgcolor='#BFEFFF'><td><input type='checkbox' name='NOM_chk_" + id + "'" + (check ? "checked" : "") + "> accordée</td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
@@ -438,7 +441,7 @@ public class OePTGSaisie extends BasicProcess {
     private String getType12TabCell(String id, String nbr, String motif, String comment, String status, String label, String title) {
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id + "'>");
-        ret.append(getHead(id, status, title + "<br>"));
+        ret.append(getHead(id, status, title));
         ret.append("<tr bgcolor='#BFEFFF'><td>" + label + "<input type='text' size='4' name='NOM_nbr_" + id + "' value='" + nbr + "'></td></tr>");
         ret.append(commonFields(id, motif, comment));
         ret.append("</table></td>");
