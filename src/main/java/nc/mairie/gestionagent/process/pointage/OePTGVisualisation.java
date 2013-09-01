@@ -689,14 +689,14 @@ public class OePTGVisualisation extends BasicProcess {
             AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
             VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
             if (agt != null) {
-                addZone(getNOM_ST_AGENT_MIN(), agt.getIdAgent());
+                addZone(getNOM_ST_AGENT_MIN(), agt.getNoMatricule());
             }
         }
         if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
             AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
             VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
             if (agt != null) {
-                addZone(getNOM_ST_AGENT_MAX(), agt.getIdAgent());
+                addZone(getNOM_ST_AGENT_MAX(), agt.getNoMatricule());
             }
         }
         UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
@@ -745,7 +745,9 @@ public class OePTGVisualisation extends BasicProcess {
         if (!dateFin.equals(Const.CHAINE_VIDE)) {
             dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
         } else {
-            dateMax = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            //     dateMax = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            dateMax = dateMin;
+            addZone(getNOM_ST_DATE_MAX(), getVAL_ST_DATE_MIN());
         }
         // etat
         int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
@@ -759,8 +761,13 @@ public class OePTGVisualisation extends BasicProcess {
         if (numType != -1 && numType != 0) {
             type = (RefTypePointageDto) getListeTypes().get(numType - 1);
         }
-        String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MIN();
-        String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_AGENT_MAX();
+        String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MIN();
+
+        if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+            addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
+        }
+
+        String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MAX();
 
         // si superieur à 1000 alors on bloque
         List<String> idAgents = new ArrayList<String>();
