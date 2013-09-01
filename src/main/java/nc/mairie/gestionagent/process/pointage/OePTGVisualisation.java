@@ -745,7 +745,7 @@ public class OePTGVisualisation extends BasicProcess {
         if (!dateFin.equals(Const.CHAINE_VIDE)) {
             dateMax = Services.convertitDate(dateFin, "dd/MM/yyyy", "yyyyMMdd");
         } else {
-            dateMax = dateMin;
+            dateMax = new SimpleDateFormat("yyyyMMdd").format(new Date());
         }
         // etat
         int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
