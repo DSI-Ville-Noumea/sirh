@@ -60,8 +60,8 @@
         SIRH est l'application de gestion du personnel de la Mairie. 
     </description>
 	<issueManagement>
-		<system>JIRA</system>
-		<url>http://dvlp:8181/browse/SIRH</url>
+		<system>REDMINE</system>
+		<url>https://redmine.ville-noumea.nc/projects/sirh</url>
 	</issueManagement>
 
 	<properties>
@@ -71,9 +71,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</connection>
-		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</developerConnection>
-		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</url>
+		<connection>scm:svn:https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</connection>
+		<developerConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</developerConnection>
+		<url>https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</url>
 	</scm>
 
 	<distributionManagement>
@@ -83,7 +83,6 @@
 			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH\</url>
 		</site>
 	</distributionManagement>
-
 	<dependencies>
 		<!-- sirh_api -->
 		<dependency>
@@ -141,9 +140,14 @@
 			<version>2.0</version>
 		</dependency>
 		<!-- Pour lire les rapport BIRT -->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
+			<version>1.17.1</version>
+		</dependency>	-->	
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-contribs</artifactId>
 			<version>1.17.1</version>
 		</dependency>
 		<dependency>
@@ -345,9 +349,9 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<webAccessUrl>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</webAccessUrl>
-					<anonymousConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</anonymousConnection>
-					<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh/trunk/SIRH_war</developerConnection>
+					<webAccessUrl>https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</webAccessUrl>
+					<anonymousConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</anonymousConnection>
+					<developerConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh/trunk/SIRH_war</developerConnection>
 				</configuration>
 				<reportSets>
 					<reportSet>
