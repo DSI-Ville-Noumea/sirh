@@ -140,16 +140,16 @@
 			<version>2.0</version>
 		</dependency>
 		<!-- Pour lire les rapport BIRT -->
-		<!--<dependency>
+		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.17.1</version>
-		</dependency>	-->	
-		<dependency>
+		</dependency>
+		<!-- <dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-contribs</artifactId>
 			<version>1.17.1</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
