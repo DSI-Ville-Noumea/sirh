@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.pointage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -134,6 +133,6 @@ public class OePTGVentilationContractuels extends BasicProcess {
         } catch (Exception ex) {
             Logger.getLogger(OePTGVentilationFonct.class.getName()).log(Level.SEVERE, null, "agent non trouvé.");
         }
-        return OePTGVentilationUtils.getTabVisu(agents, 25, typePointage);
+        return OePTGVentilationUtils.getTabVisu(agents, 25, typePointage, false);
     }
 }

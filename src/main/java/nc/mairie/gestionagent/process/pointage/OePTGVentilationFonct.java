@@ -134,6 +134,6 @@ public class OePTGVentilationFonct extends BasicProcess {
         } catch (Exception ex) {
             Logger.getLogger(OePTGVentilationFonct.class.getName()).log(Level.SEVERE, null, "agent non trouvé.");
         }
-       return OePTGVentilationUtils.getTabVisu(agents, 25, typePointage);
+       return OePTGVentilationUtils.getTabVisu(agents, 25, typePointage,true);
     }
 }
