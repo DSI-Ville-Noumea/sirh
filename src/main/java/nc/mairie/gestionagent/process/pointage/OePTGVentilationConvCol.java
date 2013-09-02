@@ -127,13 +127,13 @@ public class OePTGVentilationConvCol extends BasicProcess {
         return "NOM_ST_ACTION_VALIDATION";
     }
 
-     public String getTab(int typePointage) {
-        Map<Integer,AgentNW> agents = new HashMap<>();
+      public String getTab(int typePointage) {
+        Map<Integer, AgentNW> agents = new HashMap<>();
         try {
-            agents.put(9003903,AgentNW.chercherAgent(getTransaction(), "9003903"));
+            agents.put(9003126, AgentNW.chercherAgent(getTransaction(), "9003126"));
         } catch (Exception ex) {
             Logger.getLogger(OePTGVentilationFonct.class.getName()).log(Level.SEVERE, null, "agent non trouvé.");
         }
-       return OePTGVentilationUtils.getTabVisu(agents, 25, typePointage,false);
+        return OePTGVentilationUtils.getTabVisu(agents, 50, typePointage, false);
     }
 }
