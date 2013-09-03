@@ -51,7 +51,6 @@ public class OePTGVentilationUtils {
                 if (titulaire) {
                     sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>ABS</th><th>CH</th><th>HCO</th><th>HS</th><th>HSDJF</th><th>HSJO</th><th>HSI</th><th>HSNU</th><th>loupe</th></tr></thead>");
                     List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, agentsCsv.toString(), date, typePointage);
-                    // System.out.println("VentilHSupDto rep.size()=" + rep.size());
                     sb.append("<tbody>");
                     for (VentilHSupDto hsup : rep) {
                         greg.setTime(hsup.getDate_lundi());
@@ -63,7 +62,6 @@ public class OePTGVentilationUtils {
                 } else {
                     sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>ABS</th><th>CH</th><th>HC</th><th>HCE</th><th>HDJF</th><th>HDJF25</th><th>HDJF50</th><th>HMAI</th><th>HNU</th><th>HS</th><th>HS25</th><th>HS50</th><th>loupe</th></tr></thead>");
                     List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, agentsCsv.toString(), date, typePointage);
-                    // System.out.println("VentilHSupDto rep.size()=" + rep.size());
                     sb.append("<tbody>");
                     for (VentilHSupDto hsup : rep) {
                         greg.setTime(hsup.getDate_lundi());
@@ -77,7 +75,6 @@ public class OePTGVentilationUtils {
             case ABSENCE: {
                 sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>Minutes concertées</th><th>Minutes non concertées</th><th>loupe</th></tr></thead>");
                 List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, agentsCsv.toString(), date, typePointage);
-                //    System.out.println("VentilAbsenceDto rep.size()=" + rep.size());
                 sb.append("<tbody>");
                 for (VentilAbsenceDto abs : rep) {
                     greg.setTime(abs.getDate_lundi());
@@ -90,7 +87,6 @@ public class OePTGVentilationUtils {
             case PRIME: {
                 sb.append("<thead><tr><th>Matricule Agent</th><th>Nom prénom</th><th>Mois-année</th><th>Semaine</th><th>Primes</th><th>Nombre</th><th>loupe</th></tr></thead>");
                 List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, agentsCsv.toString(), date, typePointage);
-                //   System.out.println("VentilPrimeDto rep.size()=" + rep.size());
                 sb.append("<tbody>");
                 for (VentilPrimeDto prime : rep) {
                     greg.setTime(prime.getDate_debut_mois());
@@ -107,5 +103,13 @@ public class OePTGVentilationUtils {
                 "</table>");
         //    return "tab for contractuel:" + RefTypePointageEnum.getRefTypePointageEnum(typePointage);
         return sb.toString();
+    }
+
+    public static String getTabValid() {
+        return "      <INPUT type=\"submit\" class=\"sigp2-Bouton-100\" value=\"Deverser\" onclick='unavailable()'>";
+    }
+
+    public static String getTabVentil() {
+        return "      <INPUT type=\"submit\" class=\"sigp2-Bouton-100\" value=\"Ventiler\" onclick='unavailable()'>";
     }
 }

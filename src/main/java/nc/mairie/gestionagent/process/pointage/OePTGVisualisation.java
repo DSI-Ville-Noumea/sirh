@@ -76,7 +76,6 @@ public class OePTGVisualisation extends BasicProcess {
             addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " (" + agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
             addZone(getMATRICULE_ST_AGENT(i), agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
             addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
-            //  System.out.println("recu :"+ptg.getDate()+"-->"+sdf.format(ptg.getDate()));
             addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
             addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()));
             if (ptg.getFin() != null) {
@@ -1075,8 +1074,6 @@ public class OePTGVisualisation extends BasicProcess {
                     return performPB_DELAY(request, i);
                 }
                 if (testerParametre(request, getSAISIE_PTG(i))) {
-                    //System.out.println("enreg visu agent :"+getVAL_MATRICULE_AGENT(i));
-                    //System.out.println("enreg visu lundi :"+getLundi(i));
                     VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_MATRICULE_AGENT(i));
                     VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
                     setStatut(STATUT_SAISIE_PTG, true);
@@ -1162,10 +1159,6 @@ public class OePTGVisualisation extends BasicProcess {
         if (!history.containsKey(ptgId)) {
             SirhPtgWSConsumer t = new SirhPtgWSConsumer();
             history.put(ptgId, t.getVisualisationHistory(ptgId));
-            // System.out.println(ptgId + " history.size() " + history.size() +
-            // " --");
-            // for (ConsultPointageDto d : history.get(ptgId))
-            // System.out.print(d.getIdPointage() + ",");
         }
 
     }
@@ -1181,11 +1174,6 @@ public class OePTGVisualisation extends BasicProcess {
             SirhPtgWSConsumer t = new SirhPtgWSConsumer();
             history.put(ptgId, t.getVisualisationHistory(ptgId));
         }
-        /**
-         * try { performPB_FILTRER(); } catch (Exception e) {
-         * System.out.println("Exception in performPB_FILTRER"); }
-         *
-         */
         List<ConsultPointageDto> data = history.get(ptgId);
         int numParams = 7;
         String[][] ret = new String[data.size()][numParams];

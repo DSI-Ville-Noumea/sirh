@@ -19,6 +19,7 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
+import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -30,6 +31,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +54,8 @@ public class OePTGSaisie extends BasicProcess {
     public static final String DATE_FORMAT = "EEEE dd MMMM yyyy";
     private AgentNW loggedAgent;
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, new Locale("fr", "FR"));
-    
+    	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneGestionEAE.class);
+
     @Override
     public String getJSP() {
         return "OePTGSaisie.jsp";
@@ -90,8 +94,7 @@ public class OePTGSaisie extends BasicProcess {
         setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
         setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
         initialiseDonnees();
-        System.out.println("init saisie data ok");
-        UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+       UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
         if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
             Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
             if (getTransaction().isErreur()) {
@@ -135,12 +138,12 @@ public class OePTGSaisie extends BasicProcess {
         listeFichePointage.setSaisies(newList);
         SirhPtgWSConsumer t = new SirhPtgWSConsumer();
         if (loggedAgent == null) {
-            System.out.println("OePTGSaisie.Java : Agent complètement nul!");// getDateLundi(0).getTime()+"+"+ getDateLundi(0).getTimezoneOffset()    Services.convertitDate(getDateLundiStr(0), DATE_FORMAT, "yyyyMMdd")
+            logger.debug("OePTGSaisie.Java : Agent complètement nul!");// getDateLundi(0).getTime()+"+"+ getDateLundi(0).getTimezoneOffset()    Services.convertitDate(getDateLundiStr(0), DATE_FORMAT, "yyyyMMdd")
         } else {
             ClientResponse res = t.setSaisiePointage(loggedAgent.idAgent, listeFichePointage);
             if (res.getStatus() != 200) {
                 String rep = res.getEntity(String.class).toString();
-                System.out.println("response :" + res.toString() + "\n" + rep);
+                logger.debug("response :" + res.toString() + "\n" + rep);
                 rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
                 rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
                 getTransaction().declarerErreur(rep);
@@ -169,7 +172,7 @@ public class OePTGSaisie extends BasicProcess {
             ret.setTitre(title);
             ret.setTypeSaisie(typesaisie);
         }
-        System.out.println("Prime " + id);
+        logger.debug("Prime " + id);
         return ret;
     }
 
@@ -183,7 +186,7 @@ public class OePTGSaisie extends BasicProcess {
             ret.setHeureFin(data.getTimeF());
             ret.setCommentaire(data.getComment());
             ret.setMotif(data.getMotif());
-            System.out.println("Absence " + id);
+            logger.debug("Absence " + id);
         }
         return ret;
     }
@@ -198,7 +201,7 @@ public class OePTGSaisie extends BasicProcess {
             ret.setHeureFin(data.getTimeF());
             ret.setCommentaire(data.getComment());
             ret.setMotif(data.getMotif());
-            System.out.println("Heure sup " + id);
+            logger.debug("Heure sup " + id);
         }
         return ret;
     }
@@ -262,19 +265,17 @@ public class OePTGSaisie extends BasicProcess {
         try {
             this.dateLundi = formatter.parse(_dateLundi);
         } catch (ParseException e) {
-            System.out.println("ParseException in OePTGSaisie setDateLundi");
+           logger.debug("ParseException in OePTGSaisie setDateLundi");
         }
     }
 
     private Date getDateFromTimeCombo(Date d, String h, int i) {
         Date ret = d;
         if (h.equals("")) {
-            // System.out.println("heure non saisie jour " + i);
             return ret;
         }
         GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(ret);
-        //  calendar.setTimeZone(TimeZone.getTimeZone("GMT+11"));
         calendar.add(GregorianCalendar.HOUR, Integer.parseInt(h.substring(0, h.indexOf(":"))));
         calendar.add(GregorianCalendar.MINUTE, Integer.parseInt(h.substring(h.indexOf(":") + 1)));
         return calendar.getTime();
@@ -327,8 +328,7 @@ public class OePTGSaisie extends BasicProcess {
                 if (hsups.containsKey(dateIndex) && hsups.get(dateIndex).size() > j) {
                     HeureSupDto hs = hsups.get(dateIndex).get(j);
                     String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(hs.getIdRefEtat()) : "";
-                    //      System.out.println("hs:" + id + i + ":" + j + "   - " + hs.getHeureDebut() + " " + hs.getHeureFin() + " " + hs.getMotif() + " " + hs.getCommentaire());
-                    ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, ""));
+                   ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(), hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, ""));
                 } else {
                     ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "", "", "", ""));
                 }
@@ -354,7 +354,6 @@ public class OePTGSaisie extends BasicProcess {
                 dateIndex = getDateLundiStr(i);
                 if (absences.containsKey(dateIndex) && absences.get(dateIndex).size() > j) {
                     AbsenceDto abs = absences.get(dateIndex).get(j);
-                    // System.out.println("abs:" + id + i + ":" + j + "   - " + abs.getHeureDebut() + " " + abs.getHeureFin() + " " + abs.getMotif() + " " + abs.getCommentaire());
                     String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(abs.getIdRefEtat()) : "";
                     boolean chk = abs.getConcertee() != null ? abs.getConcertee() : false;
                     ret.append(getType3TabCell(id + i + ":" + j, "Concertée", chk, abs.getHeureDebut(), abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, ""));
@@ -426,7 +425,6 @@ public class OePTGSaisie extends BasicProcess {
      * ret.toString(); }*
      */
     private String getType0TabCell(String id, boolean check, String motif, String comment, String status, String title) {
-        //System.out.println("cell:" + id + " " + check + " " + motif + " " + comment);
         StringBuilder ret = new StringBuilder();
         ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
         ret.append(getHead(id, status, title));

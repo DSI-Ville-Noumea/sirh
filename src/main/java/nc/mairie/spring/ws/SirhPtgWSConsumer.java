@@ -209,7 +209,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
         }
 
         String output = response.getEntity(String.class);
-        //   System.out.println("json recu:" + output);
         result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
         return result;
     }
