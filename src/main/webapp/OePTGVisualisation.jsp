@@ -322,7 +322,7 @@
                         <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
                         <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
-                        <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">		
+                        <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		
                         <BR/><BR/>				
                     </FIELDSET>
                 </div>

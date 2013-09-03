@@ -204,6 +204,10 @@ public class OePTGVisualisation extends BasicProcess {
         return "NOM_PB_CREATE";
     }
 
+    public String getNOM_PB_CREATE_CANCEL() {
+        return "NOM_PB_CREATE_CANCEL";
+    }
+
     public String getNOM_PB_FILTRER() {
         return "NOM_PB_FILTRER";
     }
@@ -1079,12 +1083,20 @@ public class OePTGVisualisation extends BasicProcess {
 
             if (testerParametre(request, getNOM_PB_CREATE())) {
                 status = "EDIT";
-                //  setFocus(focus = getNOM_PB_FILTRER());
                 VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
                 VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundiCreate());
                 setStatut(STATUT_SAISIE_PTG, true);
                 return true;
             }
+
+            if (testerParametre(request, getNOM_PB_CREATE_CANCEL())) {
+                status = "EDIT";
+                setFocus(focus = getNOM_PB_FILTRER());
+                setStatut(STATUT_MEME_PROCESS);
+                return true;
+            }
+
+
         }
         // Si TAG INPUT non géré par le process
         setStatut(STATUT_MEME_PROCESS);
