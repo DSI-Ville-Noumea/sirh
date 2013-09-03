@@ -528,7 +528,7 @@
 				<tr>
 					<th width="50px;" align="center" >
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
 					%>
 						<INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -555,7 +555,7 @@
 					
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
 					%>
 						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage) %>")'  >
 						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
@@ -579,7 +579,7 @@
 
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -604,7 +604,7 @@
 				<tr>
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage) ) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"

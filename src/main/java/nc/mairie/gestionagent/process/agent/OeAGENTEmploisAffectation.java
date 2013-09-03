@@ -95,6 +95,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public String ACTION_IMPRESSION = "Impression des documents liés à une affectation";
 	public String ACTION_MODIFICATION = "Modification d'une affectation";
 	public String ACTION_SUPPRESSION = "Suppression d'une affectation";
+	
+	public String ACTION_SUPPRESSION_PRIME_POINTAGE = "Suppression d'une prime pointage";
+
 
 	public final String ACTION_SUPPRIMER_SPEC = "Supprimer";
 	private Affectation affectationCourant;
@@ -3361,7 +3364,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		initialiseDao_spec();
 		initialiseListeDeroulante_spec();
-		initialiseListeSpecificites_spec();
+		if(!getVAL_ST_ACTION().equals(ACTION_SUPPRESSION_PRIME_POINTAGE)){
+			initialiseListeSpecificites_spec();
+		}
 
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null
@@ -4393,6 +4398,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						primePointageASupprimer);
 			}
 		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_PRIME_POINTAGE);
 		return true;
 	}
 
