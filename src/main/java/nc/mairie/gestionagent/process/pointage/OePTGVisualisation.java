@@ -12,8 +12,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +19,7 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
@@ -36,6 +35,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -64,6 +65,7 @@ public class OePTGVisualisation extends BasicProcess {
     private AgentNW loggedAgent;
     public String status = "VISU";
     public String focus = getNOM_PB_FILTRER();
+    private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneGestionEAE.class);
 
     private void afficheListePointages() {
 
@@ -850,7 +852,7 @@ public class OePTGVisualisation extends BasicProcess {
             for (AgentNW ag : listAgent) {
                 idAgents.add(ag.getIdAgent());
             }
-         //   System.out.println("nbr agents:"+listAgent.size());
+            logger.debug("agents amount in tree selection:" + listAgent.size());
         }
 
         if (idAgents.isEmpty()) {
@@ -915,14 +917,14 @@ public class OePTGVisualisation extends BasicProcess {
         }
         SirhPtgWSConsumer t = new SirhPtgWSConsumer();
         if (getLoggedAgent() == null) {
-            System.out.println("Agent complètement nul!");
+            logger.debug("Agent complètement nul!");
 
         } else {
             t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent());
             try {
                 performPB_FILTRER();
             } catch (Exception e) {
-                System.out.println("Exception in performPB_FILTRER");
+                logger.debug("Exception in performPB_FILTRER");
             }
         }
     }
