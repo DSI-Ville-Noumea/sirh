@@ -318,7 +318,7 @@
                         <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
                         <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
-                        <span class="sigp2" style="width:100px">Agent :</span>
+                        <span class="sigp2Mandatory" style="width:100px">Agent :</span>
                         <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
                         <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
                         <span class="sigp2Mandatory" style="width:80px"></span>

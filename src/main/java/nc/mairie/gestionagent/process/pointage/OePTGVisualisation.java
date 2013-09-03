@@ -831,6 +831,14 @@ public class OePTGVisualisation extends BasicProcess {
         }
 
         String codeService = getVAL_ST_CODE_SERVICE();
+		// Récupération des agents
+		// on recupere les sous-service du service selectionne
+		ArrayList<String> listeSousService = null;
+		if (!codeService.equals(Const.CHAINE_VIDE)) {
+			Service serv = Service.chercherService(getTransaction(), codeService);
+			listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+		}
+		
         if (!codeService.equals(Const.CHAINE_VIDE)) {
             ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), codeService);
             for (AgentNW ag : listAgent) {
