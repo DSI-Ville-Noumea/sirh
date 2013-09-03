@@ -835,21 +835,22 @@ public class OePTGVisualisation extends BasicProcess {
         }
 
         String codeService = getVAL_ST_CODE_SERVICE();
-		// Récupération des agents
-		// on recupere les sous-service du service selectionne
-		ArrayList<String> listeSousService = null;
-		if (!codeService.equals(Const.CHAINE_VIDE)) {
-			Service serv = Service.chercherService(getTransaction(), codeService);
-			listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
-		}
-		
+        // Récupération des agents
+        // on recupere les sous-service du service selectionne
+        ArrayList<String> listeSousService = null;
         if (!codeService.equals(Const.CHAINE_VIDE)) {
-            ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), codeService);
+            Service serv = Service.chercherService(getTransaction(), codeService);
+            listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+        }
+
+        if (!codeService.equals(Const.CHAINE_VIDE)) {
+            ArrayList<String> codesServices = listeSousService;
+            idAgents.clear();
+            ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServices(getTransaction(), codesServices);
             for (AgentNW ag : listAgent) {
-                if (!idAgents.contains(Integer.valueOf(ag.getIdAgent()))) {
-                    idAgents.add(ag.getIdAgent());
-                }
+                idAgents.add(ag.getIdAgent());
             }
+         //   System.out.println("nbr agents:"+listAgent.size());
         }
 
         if (idAgents.isEmpty()) {
@@ -1095,8 +1096,6 @@ public class OePTGVisualisation extends BasicProcess {
                 setStatut(STATUT_MEME_PROCESS);
                 return true;
             }
-
-
         }
         // Si TAG INPUT non géré par le process
         setStatut(STATUT_MEME_PROCESS);
