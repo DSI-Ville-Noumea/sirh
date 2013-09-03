@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +12,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,6 +27,7 @@ import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import static nc.mairie.technique.BasicProcess.STATUT_MEME_PROCESS;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -43,6 +47,7 @@ public class OePTGVisualisation extends BasicProcess {
      *
      */
     private static final long serialVersionUID = 1L;
+    public static final int STATUT_RECHERCHER_AGENT_CREATE = 4;
     public static final int STATUT_RECHERCHER_AGENT_MAX = 2;
     public static final int STATUT_RECHERCHER_AGENT_MIN = 1;
     public static final int STATUT_SAISIE_PTG = 3;
@@ -57,6 +62,8 @@ public class OePTGVisualisation extends BasicProcess {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
     private AgentNW loggedAgent;
+    public String status = "VISU";
+    public String focus = getNOM_PB_FILTRER();
 
     private void afficheListePointages() {
 
@@ -93,6 +100,14 @@ public class OePTGVisualisation extends BasicProcess {
     @Override
     public String getJSP() {
         return "OePTGVisualisation.jsp";
+    }
+
+    public void setFocus(String focus) {
+        this.focus = focus;
+    }
+
+    public String getFocus() {
+        return focus;
     }
 
     /**
@@ -185,13 +200,28 @@ public class OePTGVisualisation extends BasicProcess {
         return "NOM_LB_TYPE_SELECT";
     }
 
-    /**
-     * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-     * (05/09/11 11:31:37)
-     *
-     */
+    public String getNOM_PB_CREATE() {
+        return "NOM_PB_CREATE";
+    }
+
     public String getNOM_PB_FILTRER() {
         return "NOM_PB_FILTRER";
+    }
+
+    public String getNOM_ST_DATE_CREATE() {
+        return "NOM_ST_DATE_CREATE";
+    }
+
+    public String getVAL_ST_DATE_CREATE() {
+        return getZone(getNOM_ST_DATE_CREATE());
+    }
+
+    public String getNOM_ST_AGENT_CREATE() {
+        return "NOM_ST_AGENT_CREATE";
+    }
+
+    public String getVAL_ST_AGENT_CREATE() {
+        return getZone(getNOM_ST_AGENT_CREATE());
     }
 
     /**
@@ -220,6 +250,10 @@ public class OePTGVisualisation extends BasicProcess {
      */
     public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX() {
         return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX";
+    }
+
+    public String getNOM_PB_RECHERCHER_AGENT_CREATE() {
+        return "NOM_PB_RECHERCHER_AGENT_CREATE";
     }
 
     /**
@@ -586,6 +620,10 @@ public class OePTGVisualisation extends BasicProcess {
         return "Valid_All";
     }
 
+    public String getCreatBox() {
+        return "Create_Box";
+    }
+
     public String getValHistory(int id) {
         return "History_" + id;
     }
@@ -697,6 +735,13 @@ public class OePTGVisualisation extends BasicProcess {
             VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
             if (agt != null) {
                 addZone(getNOM_ST_AGENT_MAX(), agt.getNoMatricule());
+            }
+        }
+        if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATE) {
+            AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+            VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+            if (agt != null) {
+                addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
             }
         }
         UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
@@ -880,8 +925,15 @@ public class OePTGVisualisation extends BasicProcess {
 
         // On met l'agent courant en var d'activité
         VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
-
         setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
+        return true;
+    }
+
+    public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
+
+        // On met l'agent courant en var d'activité
+        VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+        setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
         return true;
     }
 
@@ -895,7 +947,6 @@ public class OePTGVisualisation extends BasicProcess {
     public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
         // On met l'agent courant en var d'activité
         VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
-
         setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
         return true;
     }
@@ -971,6 +1022,10 @@ public class OePTGVisualisation extends BasicProcess {
                 return performPB_RECHERCHER_AGENT_MAX(request);
             }
 
+            if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
+                return performPB_RECHERCHER_AGENT_CREATE(request);
+            }
+
             // Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
             if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
                 return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
@@ -978,6 +1033,12 @@ public class OePTGVisualisation extends BasicProcess {
 
             if (testerParametre(request, getVal_ValidAll())) {
                 return performPB_VALID(request);
+            }
+            if (testerParametre(request, getCreatBox())) {
+                status = "CREATION";
+                setFocus(getNOM_PB_CREATE());
+                setStatut(STATUT_MEME_PROCESS);
+                return true;
             }
 
             if (testerParametre(request, getVal_DelayAll())) {
@@ -1003,10 +1064,18 @@ public class OePTGVisualisation extends BasicProcess {
                     //System.out.println("enreg visu lundi :"+getLundi(i));
                     VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_MATRICULE_AGENT(i));
                     VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
-                    // TODO
                     setStatut(STATUT_SAISIE_PTG, true);
                     return true;
                 }
+            }
+
+            if (testerParametre(request, getNOM_PB_CREATE())) {
+                status = "EDIT";
+                //  setFocus(focus = getNOM_PB_FILTRER());
+                VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
+                VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundiCreate());
+                setStatut(STATUT_SAISIE_PTG, true);
+                return true;
             }
         }
         // Si TAG INPUT non géré par le process
@@ -1143,6 +1212,18 @@ public class OePTGVisualisation extends BasicProcess {
     public String getLundi(int idPtg) {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(listePointage.get(idPtg).getDate());
+        cal.set(Calendar.DAY_OF_WEEK, -6); // back to previous week
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
+        return sdf.format(cal.getTime());
+    }
+
+    public String getLundiCreate() {
+        GregorianCalendar cal = new GregorianCalendar();
+        try {
+            cal.setTimeInMillis(sdf.parse(getVAL_ST_DATE_CREATE()).getTime());
+        } catch (ParseException ex) {
+            cal.setTime(new Date());
+        }
         cal.set(Calendar.DAY_OF_WEEK, -6); // back to previous week
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
         return sdf.format(cal.getTime());

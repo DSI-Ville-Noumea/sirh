@@ -1,4 +1,4 @@
-<!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.gestionagent.dto.ConsultPointageDto"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
@@ -20,11 +20,13 @@
             <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
             <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
-            <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+            <!-- <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
             <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
             <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 
             <SCRIPT type="text/javascript">
+
+
                 function executeBouton(nom)
                 {
                     document.formu.elements[nom].click();
@@ -167,13 +169,10 @@
 
 
 
-
-
-
             </SCRIPT>		
             <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         </HEAD>
-        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();" >
+        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();   return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
@@ -253,7 +252,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
                         <tr>
-                            <th> <img	src="images/modifier.gif" height="16px" width="16px" title="Editer le pointage"></th>
+                            <th> <INPUT title="Creer un pointage" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getCreatBox()%>"></th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
@@ -302,7 +301,31 @@
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">	
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>" value="RECHERCHERAGENTMAX">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>" value="SUPPRECHERCHERAGENTMAX">	
+
+
+            <% if (process.status.equals("CREATION")) {%>
+            <div id="creatediv" title="Creation"  style="display:block;margin-right:10px;width:800px;">
+                <% } else {%>
+                <div id="creatediv" title="Creation" style="display:none;margin-right:10px;width:800px;">
+                    <% }%>
+
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+                        <legend class="sigp2Legend">Création d'un pointage
+                        </legend>
+                        <span class="sigp2Mandatory" style="width:80px">Date : </span>
+                        <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
+                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
+                        <span class="sigp2Mandatory" style="width:80px"></span>
+                        <span class="sigp2" style="width:100px">Agent :</span>
+                        <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
+                        <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
+                        <span class="sigp2Mandatory" style="width:80px"></span>
+                        <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">		
+                        <BR/><BR/>				
+                    </FIELDSET>
+                </div>
         </FORM>
     </BODY>
 </HTML>
