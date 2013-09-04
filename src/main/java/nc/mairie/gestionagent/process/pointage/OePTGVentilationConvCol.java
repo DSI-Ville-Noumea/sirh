@@ -1,10 +1,8 @@
 package nc.mairie.gestionagent.process.pointage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
@@ -15,6 +13,7 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -28,6 +27,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
      */
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(OePTGVentilationContractuels.class);
 
 	@Override
 	public String getJSP() {
@@ -131,7 +131,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		try {
 			agents.put(9004634, AgentNW.chercherAgent(getTransaction(), "9004634"));
 		} catch (Exception ex) {
-			Logger.getLogger(OePTGVentilationFonct.class.getName()).log(Level.SEVERE, null, "agent non trouvé.");
+			logger.debug("agent non trouvé.");
 		}
 		return OePTGVentilationUtils.getTabVisu(agents, 51, typePointage, false);
 	}
