@@ -37,6 +37,13 @@
                     document.formu.elements[nom].focus();
             }
 
+            function unavailable() {
+                alert("Le service demandé n'est actuellement pas disponible.\n Veuillez revenir sur cette page ultérieurement");
+            }
+            function available() {
+                alert("ok");
+            }
+
         </SCRIPT>		
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     </HEAD>
@@ -92,6 +99,7 @@
                     <% }%>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
                         <legend class="sigp2Legend">Ventilation des pointages des conventions collectives</legend>	
+                        <%=process.getVentil()%>		
                     </FIELDSET>
                 </div>
 
@@ -139,6 +147,7 @@
                                      <% }%>
                                      <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
                                         <legend class="sigp2Legend">Validation de la ventilation des pointages</legend>	
+                                        <%=process.getValid()%>		
                                     </FIELDSET>
                                 </div>
 

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.CanStartVentilationDto;
+import nc.mairie.gestionagent.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
@@ -25,6 +27,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -346,8 +349,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
-			String ret = readResponse(String.class, res, url);
-			return Boolean.parseBoolean(ret);
+			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
+			System.out.println(result.toString());
+			return result.isCanStartExportPaieAction();
 		} else {
 			return false;
 		}
@@ -361,8 +365,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("statut", agentStatus);
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
-			String ret = readResponse(String.class, res, url);
-			return Boolean.parseBoolean(ret);
+			CanStartVentilationDto result = readResponse(CanStartVentilationDto.class, res, url);
+			System.out.println(result.toString());
+			return result.isCanStartVentilation();
 		} else {
 			return false;
 		}
