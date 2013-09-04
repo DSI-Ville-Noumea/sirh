@@ -27,7 +27,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
      */
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-	private Logger logger = org.slf4j.LoggerFactory.getLogger(OePTGVentilationContractuels.class);
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(OePTGVentilationConvCol.class);
 
 	@Override
 	public String getJSP() {
