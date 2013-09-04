@@ -41,4 +41,8 @@ public interface ISirhPtgWSConsumer {
     RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
 
     boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
+
+    boolean isVentilAvailable(String agentStatus);
+
+    boolean isValidAvailable(String agentStatus);
 }
