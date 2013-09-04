@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>nc.noumea.mairie</groupId>
 			<artifactId>sirh_api</artifactId>
-			<version>3.7</version>
+			<version>3.8-SNAPSHOT</version>
 		</dependency>
 		<!-- JSON -->
 		<dependency>
@@ -145,11 +145,18 @@
 			<artifactId>jersey-client</artifactId>
 			<version>1.17.1</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-contribs</artifactId>
-			<version>1.17.1</version>
-		</dependency> -->
+		<!-- Pour se connecter en NTLM a Sharepoint -->
+		<dependency>
+			<groupId>jcifs</groupId>
+			<artifactId>jcifs</artifactId>
+			<version>1.3.17</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<!--END -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>

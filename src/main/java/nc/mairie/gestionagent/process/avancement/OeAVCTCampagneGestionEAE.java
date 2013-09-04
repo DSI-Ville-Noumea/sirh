@@ -14,6 +14,7 @@ import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.gestionagent.dto.KiosqueDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -64,12 +65,16 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 import nc.mairie.spring.domain.metier.EAE.EaeFDPActivite;
 import nc.mairie.spring.domain.metier.EAE.EaeFDPCompetence;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
+import nc.mairie.spring.domain.metier.EAE.EaeFinalisation;
 import nc.mairie.spring.domain.metier.EAE.EaeFormation;
 import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
 import nc.mairie.spring.domain.metier.diplome.FormationAgent;
 import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
+import nc.mairie.spring.ws.SirhKiosqueWSConsumerException;
+import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -3045,8 +3050,20 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
 			//TODO
-			//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
-			
+			//on cherche le document concerné
+			try{
+				String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
+				//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
+				SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
+				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise,false);
+				if(retour.getStatus().equals("ko")){
+					//TODO declarer erreur
+					return false;
+				}
+			}catch(SirhKiosqueWSConsumerException e){
+				//TODO declarer erreur
+				return false;
+			}
 			
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
 			// dans
@@ -3151,6 +3168,23 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 
+		// RG-EAE-6 --> mis au moment où on controle un EAE.
+		//TODO
+		//on cherche le document concerné
+		try{
+			String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
+			//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
+			SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
+			KiosqueDto retour = t.setDroitEvalueEAE(docFinalise,true);
+			if(retour.getStatus().equals("ko")){
+				//TODO declarer erreur
+				return false;
+			}
+		}catch(SirhKiosqueWSConsumerException e){
+			//TODO declarer erreur
+			return false;
+		}
+		
 		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
 				.getAnnee().toString(), evalue.getIdAgent().toString());

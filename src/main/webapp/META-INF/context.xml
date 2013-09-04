@@ -187,9 +187,32 @@
 	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
 		override="false"
 		value="http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
+	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la GED Sharepoint -->
+	<Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="setupAdmin" />
+	<Parameter description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="Pass@word1" />
+	<Parameter description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="KELIOSDEV" />
+	<Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="172.16.24.42" />
+	<Parameter description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="80" />
+	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
+		override="false"
+		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvaluateur.aspx" />
+	<!-- END-->
+	
+	<!-- AUTRE PARAM -->
 	<Parameter
 		description="parametre pour afficher dans le titre de l&apos;appli si on est en prod ou en recette"
 		name="TYPE_SIRH" override="false" value="DEV" />
+		
 	<!-- Authentification LDAP -->
 	<Parameter description="" name="CRITERE_RECHERCHE_LDAP"
 		override="false" value="samaccountname" />
