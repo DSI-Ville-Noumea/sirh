@@ -1,8 +1,5 @@
 package nc.mairie.gestionagent.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class RefTypePointageDto {
 
 	private Integer idRefTypePointage;

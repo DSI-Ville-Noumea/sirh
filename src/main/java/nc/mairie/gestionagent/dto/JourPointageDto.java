@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class JourPointageDto {
 
 	private Date date;
@@ -22,7 +19,7 @@ public class JourPointageDto {
 
 	public JourPointageDto(JourPointageDto jourPointageTemplate) {
 		this();
-		
+
 		// copy all primes every day
 		for (PrimeDto prime : jourPointageTemplate.getPrimes())
 			primes.add(new PrimeDto(prime));

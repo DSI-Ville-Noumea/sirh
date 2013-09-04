@@ -51,11 +51,11 @@ public class OePTGVentilationUtils {
 				List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, agentsCsv.toString(), date, typePointage);
 				sb.append("<tbody>");
 				for (VentilHSupDto hsup : rep) {
-					greg.setTime(hsup.getDate_lundi());
+					greg.setTime(hsup.getDateLundi());
 					agent = agents.get(hsup.getId_agent());
-					sb.append("<tr><td>" + hsup.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(hsup.getDate_lundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
-							+ hsup.getMabs() + "</td><td>" + "contingent h hebdo" + "</td><td>" + hsup.getM_hors_contrat() + "</td><td>" + hsup.getM_composees() + "</td><td>" + hsup.getM_normales() + "</td><td>" + hsup.getM_sup() + "</td><td>"
-							+ hsup.getM_djf() + "</td><td>" + hsup.getM_sup() + "</td><td>" + hsup.getM_simples() + "</td><td>" + hsup.getM_nuit() + "</td><td>loupe</td></tr>");
+					sb.append("<tr><td>" + hsup.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(hsup.getDateLundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
+							+ hsup.getMabs() + "</td><td>" + "contingent h hebdo" + "</td><td>" + hsup.getmHorsContrat() + "</td><td>" + hsup.getmComposees() + "</td><td>" + hsup.getmNormales() + "</td><td>" + hsup.getmSup() + "</td><td>"
+							+ hsup.getmDjf() + "</td><td>" + hsup.getmSup() + "</td><td>" + hsup.getmSimples() + "</td><td>" + hsup.getmNuit() + "</td><td>loupe</td></tr>");
 				}
 				sb.append("</tbody>");
 				break;
@@ -64,11 +64,11 @@ public class OePTGVentilationUtils {
 				List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, agentsCsv.toString(), date, typePointage);
 				sb.append("<tbody>");
 				for (VentilHSupDto hsup : rep) {
-					greg.setTime(hsup.getDate_lundi());
+					greg.setTime(hsup.getDateLundi());
 					agent = agents.get(hsup.getId_agent());
-					sb.append("<tr><td>" + hsup.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(hsup.getDate_lundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
-							+ hsup.getMabs() + "</td><td>" + "contingent h hebdo" + "</td><td>" + hsup.getM_hors_contrat() + "</td><td>" + hsup.getM_complementaires() + "</td><td>" + hsup.getM_djf() + "</td><td>" + hsup.getM_djf_25() + "</td><td>"
-							+ hsup.getM_djf_50() + "</td><td>" + hsup.getM_1_mai() + "</td><td>" + hsup.getM_nuit() + "</td><td>" + hsup.getM_sup() + "</td><td>" + hsup.getM_sup_25() + "</td><td>" + hsup.getM_sup_50() + "</td><td>loupe</td></tr>");
+					sb.append("<tr><td>" + hsup.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(hsup.getDateLundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
+							+ hsup.getMabs() + "</td><td>" + "contingent h hebdo" + "</td><td>" + hsup.getmHorsContrat() + "</td><td>" + hsup.getmComplementaires() + "</td><td>" + hsup.getmDjf() + "</td><td>" + hsup.getmDjf25() + "</td><td>"
+							+ hsup.getmDjf50() + "</td><td>" + hsup.getM1Mai() + "</td><td>" + hsup.getmNuit() + "</td><td>" + hsup.getmSup() + "</td><td>" + hsup.getmSup25() + "</td><td>" + hsup.getmSup50() + "</td><td>loupe</td></tr>");
 				}
 				sb.append("</tbody>");
 				break;
@@ -79,10 +79,10 @@ public class OePTGVentilationUtils {
 			List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, agentsCsv.toString(), date, typePointage);
 			sb.append("<tbody>");
 			for (VentilAbsenceDto abs : rep) {
-				greg.setTime(abs.getDate_lundi());
+				greg.setTime(abs.getDateLundi());
 				agent = agents.get(abs.getId_agent());
-				sb.append("<tr><td>" + abs.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(abs.getDate_lundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
-						+ abs.getMinutes_concertees() + "</td><td>" + abs.getMinutes_non_concertees() + "</td><td>loupe</td></tr>");
+				sb.append("<tr><td>" + abs.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(abs.getDateLundi()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
+						+ abs.getMinutesConcertees() + "</td><td>" + abs.getMinutesNonConcertees() + "</td><td>loupe</td></tr>");
 			}
 			sb.append("</tbody>");
 			break;
@@ -92,10 +92,10 @@ public class OePTGVentilationUtils {
 			List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, agentsCsv.toString(), date, typePointage);
 			sb.append("<tbody>");
 			for (VentilPrimeDto prime : rep) {
-				greg.setTime(prime.getDate_debut_mois());
-				RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getId_ref_prime());
+				greg.setTime(prime.getDateDebutMois());
+				RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getIdRefPrime());
 				agent = agents.get(prime.getId_agent());
-				sb.append("<tr><td>" + prime.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(prime.getDate_debut_mois()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
+				sb.append("<tr><td>" + prime.getId_agent() + "</td><td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td><td>" + moisAnnee.format(prime.getDateDebutMois()) + "</td><td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td><td>"
 						+ primeDetail.getLibelle() + "</td><td>" + prime.getQuantite() + "</td><td>loupe</td></tr>");
 			}
 			sb.append("</tbody>");

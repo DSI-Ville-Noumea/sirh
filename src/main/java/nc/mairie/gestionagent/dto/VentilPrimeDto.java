@@ -6,34 +6,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class VentilPrimeDto extends VentilDto {
 
-    private int id_ref_prime;
+    private int idRefPrime;
     private int quantite;
 
     public VentilPrimeDto() {
     }
 
-    public int getId_ventil_prime() {
-        return id_ventil;
+    public int getIdVentilPrime() {
+        return idVentil;
     }
 
-    public void setId_ventil_prime(int id_ventil_prime) {
-        this.id_ventil = id_ventil_prime;
+    public void setIdVentilPrime(int idVentilPrime) {
+        this.idVentil = idVentilPrime;
     }
 
-    public Date getDate_debut_mois() {
+    public Date getDateDebutMois() {
         return date;
     }
 
-    public void setDate_debut_mois(Date date_debut_mois) {
-        this.date = date_debut_mois;
+    public void setDateDebutMois(Date dateDebutMois) {
+        this.date = dateDebutMois;
     }
 
-    public int getId_ref_prime() {
-        return id_ref_prime;
+    public int getIdRefPrime() {
+        return idRefPrime;
     }
 
-    public void setId_ref_prime(int id_ref_prime) {
-        this.id_ref_prime = id_ref_prime;
+    public void setIdRefPrime(int idRefPrime) {
+        this.idRefPrime = idRefPrime;
     }
 
     public int getQuantite() {

@@ -1,46 +1,44 @@
 package nc.mairie.gestionagent.dto;
 
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
 public class VentilAbsenceDto extends VentilDto {
 
-    private int minutes_concertees;
-    private int minutes_non_concertees;
+	private int minutesConcertees;
+	private int minutesNonConcertees;
 
-    public VentilAbsenceDto() {
-    }
+	public VentilAbsenceDto() {
+	}
 
-    public int getId_ventil_absence() {
-        return id_ventil;
-    }
+	public int getIdVentilAbsence() {
+		return idVentil;
+	}
 
-    public void setId_ventil_absence(int id_ventil_absence) {
-        this.id_ventil = id_ventil_absence;
-    }
+	public void setIdVentilAbsence(int idVentilAbsence) {
+		this.idVentil = idVentilAbsence;
+	}
 
-    public Date getDate_lundi() {
-        return date;
-    }
+	public Date getDateLundi() {
+		return date;
+	}
 
-    public void setDate_lundi(Date date_lundi) {
-        this.date = date_lundi;
-    }
+	public void setDateLundi(Date dateLundi) {
+		this.date = dateLundi;
+	}
 
-    public int getMinutes_concertees() {
-        return minutes_concertees;
-    }
+	public int getMinutesConcertees() {
+		return minutesConcertees;
+	}
 
-    public void setMinutes_concertees(int minutes_concertees) {
-        this.minutes_concertees = minutes_concertees;
-    }
+	public void setMinutesConcertees(int minutesConcertees) {
+		this.minutesConcertees = minutesConcertees;
+	}
 
-    public int getMinutes_non_concertees() {
-        return minutes_non_concertees;
-    }
+	public int getMinutesNonConcertees() {
+		return minutesNonConcertees;
+	}
 
-    public void setMinutes_non_concertees(int minutes_non_concertees) {
-        this.minutes_non_concertees = minutes_non_concertees;
-    }
+	public void setMinutesNonConcertees(int minutesNonConcertees) {
+		this.minutesNonConcertees = minutesNonConcertees;
+	}
 }

@@ -1,9 +1,6 @@
 package nc.mairie.gestionagent.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
-public class PrimeDto extends PointageDto  {
+public class PrimeDto extends PointageDto {
 
 	private String titre;
 	private String typeSaisie;
@@ -14,17 +11,15 @@ public class PrimeDto extends PointageDto  {
 	public PrimeDto() {
 	}
 
-	
 	public PrimeDto(PrimeDto primeDto) {
 		super((PointageDto) primeDto);
-		
+
 		this.titre = primeDto.titre;
 		this.typeSaisie = primeDto.typeSaisie;
 		this.quantite = primeDto.quantite;
 		this.numRubrique = primeDto.numRubrique;
 		this.idRefPrime = primeDto.idRefPrime;
 	}
-
 
 	public String getTitre() {
 		return titre;

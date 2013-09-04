@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.dto;
 
 import java.util.Date;
 
-
 public abstract class PointageDto {
 
 	private Integer idPointage;
@@ -13,10 +12,9 @@ public abstract class PointageDto {
 	private Integer idRefEtat;
 
 	public PointageDto() {
-		
+
 	}
-	
-	
+
 	public PointageDto(PointageDto pointageDto) {
 		this.idPointage = pointageDto.idPointage;
 		this.heureDebut = pointageDto.heureDebut;
@@ -25,7 +23,7 @@ public abstract class PointageDto {
 		this.commentaire = pointageDto.commentaire;
 		this.idRefEtat = pointageDto.idRefEtat;
 	}
-	
+
 	public Integer getIdPointage() {
 		return idPointage;
 	}

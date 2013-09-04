@@ -6,9 +6,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class VentilDto {
 
-    protected int id_ventil;
+    protected int idVentil;
     protected Date date;
-    protected int id_agent;
+    protected int idAgent;
     protected int etat;
 
     
@@ -16,11 +16,11 @@ public class VentilDto {
     }
 
     public int getId_agent() {
-        return id_agent;
+        return idAgent;
     }
 
-    public void setId_agent(int id_agent) {
-        this.id_agent = id_agent;
+    public void setIdAgent(int idAgent) {
+        this.idAgent = idAgent;
     }
 
     public int getEtat() {

@@ -1,17 +1,13 @@
 package nc.mairie.gestionagent.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
+public class HeureSupDto extends PointageDto {
 
-@XmlRootElement
-public class HeureSupDto extends PointageDto  {
-	
 	private Boolean recuperee;
 
 	public HeureSupDto() {
-	
+
 	}
-	
-	
+
 	public Boolean getRecuperee() {
 		return recuperee;
 	}

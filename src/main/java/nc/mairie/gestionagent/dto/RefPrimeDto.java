@@ -1,8 +1,5 @@
 package nc.mairie.gestionagent.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class RefPrimeDto {
 
 	private Integer idRefPrime;
@@ -15,13 +12,11 @@ public class RefPrimeDto {
 
 	public RefPrimeDto() {
 	}
-        
-        
-        @Override
-        public String toString(){
-            return "Prime:"+idRefPrime+","+numRubrique+","+libelle+","+description+","+typeSaisie+","+calculee+","+statut;
-        }
 
+	@Override
+	public String toString() {
+		return "Prime:" + idRefPrime + "," + numRubrique + "," + libelle + "," + description + "," + typeSaisie + "," + calculee + "," + statut;
+	}
 
 	public Integer getIdRefPrime() {
 		return idRefPrime;
