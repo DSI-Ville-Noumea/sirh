@@ -205,7 +205,7 @@
 		value="80" />
 	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
 		override="false"
-		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvaluateur.aspx" />
+		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
 	<!-- END-->
 	
 	<!-- AUTRE PARAM -->
