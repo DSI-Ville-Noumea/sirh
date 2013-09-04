@@ -350,7 +350,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
-			System.out.println(result.toString());
+			logger.debug(result.toString());
 			return result.isCanStartExportPaieAction();
 		} else {
 			return false;
@@ -366,7 +366,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			CanStartVentilationDto result = readResponse(CanStartVentilationDto.class, res, url);
-			System.out.println(result.toString());
+			logger.debug(result.toString());
 			return result.isCanStartVentilation();
 		} else {
 			return false;
