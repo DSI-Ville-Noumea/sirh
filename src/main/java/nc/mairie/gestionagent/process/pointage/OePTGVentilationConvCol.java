@@ -219,6 +219,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			listeAg.addAll(getListeAgentsVentil());
 		}
 		VariablesActivite.ajouter(this, "LISTEAGENT", listeAg);
+		VariablesActivite.ajouter(this, "TYPE", "CC");
 		setStatut(STATUT_AGENT, true);
 		return true;
 	}

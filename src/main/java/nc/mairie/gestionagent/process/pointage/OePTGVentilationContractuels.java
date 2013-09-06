@@ -220,6 +220,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			listeAg.addAll(getListeAgentsVentil());
 		}
 		VariablesActivite.ajouter(this, "LISTEAGENT", listeAg);
+		VariablesActivite.ajouter(this, "TYPE", "C");
 		setStatut(STATUT_AGENT, true);
 		return true;
 	}

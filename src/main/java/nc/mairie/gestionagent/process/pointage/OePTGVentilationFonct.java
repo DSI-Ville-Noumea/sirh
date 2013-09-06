@@ -221,6 +221,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			listeAg.addAll(getListeAgentsVentil());
 		}
 		VariablesActivite.ajouter(this, "LISTEAGENT", listeAg);
+		VariablesActivite.ajouter(this, "TYPE", "F");
 		setStatut(STATUT_AGENT, true);
 		return true;
 	}

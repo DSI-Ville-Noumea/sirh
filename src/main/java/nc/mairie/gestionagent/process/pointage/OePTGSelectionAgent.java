@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -25,27 +26,12 @@ public class OePTGSelectionAgent extends BasicProcess {
 	private ArrayList<AgentNW> listeAgents;
 	private ArrayList<AgentNW> listeAgentsDepart;
 	private ArrayList<AgentNW> listAff = new ArrayList<AgentNW>();
-
-	public ArrayList<AgentNW> getListeAgentsDepart() {
-		return listeAgentsDepart;
-	}
-
-	public void setListeAgentsDepart(ArrayList<AgentNW> listeAgentsDepart) {
-		this.listeAgentsDepart = listeAgentsDepart;
-	}
+	private String typePopulation;
 
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	public String focus = null;
 	private boolean first = true;
-
-	public ArrayList<AgentNW> getListeAgents() {
-		return listeAgents;
-	}
-
-	public void setListeAgents(ArrayList<AgentNW> listeAgents) {
-		this.listeAgents = listeAgents;
-	}
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
@@ -53,24 +39,26 @@ public class OePTGSelectionAgent extends BasicProcess {
 		initialiseListeService();
 		if (isFirst()) {
 			addZone(getNOM_RG_RECHERCHE(), getNOM_RB_RECH_NOM());
+			// on recupere le type de population F, C ou CC
+			String type = (String) VariablesActivite.recuperer(this, "TYPE");
+			setTypePopulation(type);
 			setFirst(false);
 		}
 
-		ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite
-				.recuperer(this, "LISTEAGENT");
+		ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEAGENT");
 		if (getListeAgentsDepart() == null)
 			setListeAgentsDepart(new ArrayList<AgentNW>());
-		getListeAgentsDepart().addAll(
-				xcludeListe == null ? new ArrayList<AgentNW>() : xcludeListe);
+		getListeAgentsDepart().addAll(xcludeListe == null ? new ArrayList<AgentNW>() : xcludeListe);
 
 		VariablesActivite.enlever(this, "LISTEAGENT");
+		VariablesActivite.enlever(this, "TYPE");
 		afficheListeAgents();
 	}
 
 	private void afficheListeAgents() {
 		setListAff(new ArrayList<AgentNW>());
 		getListAff().addAll(getListeAgentsDepart());
-		getListAff().addAll(getListeAgents()==null ? new ArrayList<AgentNW>() : getListeAgents());
+		getListAff().addAll(getListeAgents() == null ? new ArrayList<AgentNW>() : getListeAgents());
 		for (int j = 0; j < getListAff().size(); j++) {
 			AgentNW agent = (AgentNW) getListAff().get(j);
 			Integer i = Integer.valueOf(agent.getIdAgent());
@@ -78,8 +66,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 			}
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
-			addZone(getNOM_ST_LIB_AGENT(i),
-					agent.getNomAgent() + " " + agent.getPrenomAgent());
+			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 		}
 
 	}
@@ -87,8 +74,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service
-					.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -113,16 +99,13 @@ public class OePTGSelectionAgent extends BasicProcess {
 				// recherche du supérieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0,
-							codeService.length() - 1);
+					codeService = codeService.substring(0, codeService.length() - 1);
 				}
-				codeService = codeService
-						.substring(0, codeService.length() - 1);
+				codeService = codeService.substring(0, codeService.length() - 1);
 				codeService = Services.rpad(codeService, 4, "A");
 				parent = hTree.get(codeService);
 				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i,
-						indexParent));
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
 
 			}
 		}
@@ -136,16 +119,14 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
 	 *         elements identiques
 	 */
-	public static ArrayList<AgentNW> elim_doubure_agents(ArrayList<AgentNW> l1,
-			ArrayList<AgentNW> l2) {
+	public static ArrayList<AgentNW> elim_doubure_agents(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
 		if (null == l1)
 			return null;
 
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((AgentNW) l2.get(i)).getIdAgent())
-							.equals(((AgentNW) l1.get(j)).getIdAgent()))
+					if ((((AgentNW) l2.get(i)).getIdAgent()).equals(((AgentNW) l1.get(j)).getIdAgent()))
 						l1.remove(j);
 
 				}
@@ -171,8 +152,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (03/02/09 14:56:59)
 	 * 
 	 */
-	public boolean performPB_ANNULER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
 	}
@@ -201,8 +181,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (19/07/11 16:22:13)
 	 * 
 	 */
-	public boolean performPB_VALIDER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
 		for (int j = 0; j < getListAff().size(); j++) {
 			// on recupère la ligne concernée
@@ -227,8 +206,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		// Si on arrive de la JSP alors on traite le get
-		if (request.getParameter("JSP") != null
-				&& request.getParameter("JSP").equals(getJSP())) {
+		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
@@ -330,8 +308,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 		return "NOM_PB_RECHERCHER";
 	}
 
-	public boolean performPB_RECHERCHER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
 
 		String zone = getVAL_EF_ZONE();
 
@@ -354,32 +331,35 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
-			aListe = AgentNW.listerAgentAvecNomCommencant(getTransaction(),
-					zone);
+			aListe = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(),
-					zone);
+			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
-			Service service = Service.chercherService(getTransaction(),
-					getVAL_ST_CODE_SERVICE());
+			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
 			String prefixe = service.getCodService().substring(
 					0,
-					Service.isEntite(service.getCodService()) ? 1 : Service
-							.isDirection(service.getCodService()) ? 2 : Service
-							.isDivision(service.getCodService()) ? 3 : Service
-							.isSection(service.getCodService()) ? 4 : 0);
-			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(),
-					prefixe);
+					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
+							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
+									.getCodService()) ? 4 : 0);
+			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 		}
 
 		// Si la liste est vide alors erreur
 		if (aListe.size() == 0) {
-			setStatut(STATUT_MEME_PROCESS, false,
-					MessageUtils.getMessage("ERR005", "resultat"));
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
 			return false;
 		}
-
+		// on verifie que l'agent soit bien C,CC ou F
+		ArrayList<AgentNW> listeAExclure = new ArrayList<AgentNW>();
+		for (AgentNW ag : aListe) {
+			if (!Carriere.getStatutCarriere(
+					Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag).getCodeCategorie()).equals(
+					getTypePopulation())) {
+				listeAExclure.add(ag);
+			}
+		}
+		aListe.removeAll(listeAExclure);
 		setListeAgents(aListe);
 		afficheListeAgents();
 
@@ -412,5 +392,29 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 	public void setListAff(ArrayList<AgentNW> listAff) {
 		this.listAff = listAff;
+	}
+
+	public ArrayList<AgentNW> getListeAgentsDepart() {
+		return listeAgentsDepart;
+	}
+
+	public void setListeAgentsDepart(ArrayList<AgentNW> listeAgentsDepart) {
+		this.listeAgentsDepart = listeAgentsDepart;
+	}
+
+	public ArrayList<AgentNW> getListeAgents() {
+		return listeAgents;
+	}
+
+	public void setListeAgents(ArrayList<AgentNW> listeAgents) {
+		this.listeAgents = listeAgents;
+	}
+
+	public String getTypePopulation() {
+		return typePopulation;
+	}
+
+	public void setTypePopulation(String typePopulation) {
+		this.typePopulation = typePopulation;
 	}
 }
