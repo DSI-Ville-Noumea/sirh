@@ -52,4 +52,6 @@ public interface ISirhPtgWSConsumer {
 	boolean startVentilation(String idAgent, Date dateVentilation, String agentsJson, String statut,
 			String idRefTypePointage);
 
+	boolean isValidAvailable(String agentStatus);
+
 }
