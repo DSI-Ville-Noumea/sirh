@@ -47,10 +47,9 @@ public interface ISirhPtgWSConsumer {
 
 	boolean isVentilAvailable(String agentStatus);
 
-	boolean isValidAvailable(String agentStatus);
-
 	VentilDateDto getVentilationEnCours(String statut);
 
 	boolean startVentilation(String idAgent, Date dateVentilation, String agentsJson, String statut,
 			String idRefTypePointage);
+
 }

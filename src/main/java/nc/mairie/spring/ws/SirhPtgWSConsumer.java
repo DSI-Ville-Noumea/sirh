@@ -323,15 +323,16 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setSaisiePointage(String idagent, FichePointageDto toSerialize) {
+	public ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = String.format(urlWS + sirhPtgSaisie + "?idAgent=" + idagent);
-		// String url = String.format(urlWS + "saisie/fiche?idAgent=9003047");
-		// //pour un pointage 5463
+
+		String url = urlWS + sirhPtgSaisie + "?idAgent=" + idAgent;// +
+																	// "statutAgent="
+																	// +
+																	// toSerialize.getAgent().getStatut();
 		return createAndPostRequest(
-				url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-						.deepSerialize(toSerialize));
+						.deepSerialize(toSerialize), url);
 	}
 
 	@Override
