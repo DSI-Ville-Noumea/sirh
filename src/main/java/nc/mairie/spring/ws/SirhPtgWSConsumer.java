@@ -1,5 +1,6 @@
 package nc.mairie.spring.ws;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,8 +15,11 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -27,9 +31,6 @@ import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
@@ -49,6 +50,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgPrimeDetailFromIdRefPrime = "primes/getPrimeFromIdRefPrime";
 	private static final String sirhPtgPrimePointee = "primes/isPrimeUtilisee";
 	private static final String sirhPtgVentilations = "ventilation/show";
+	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
+	private static final String sirhPtgStartVentilation = "ventilation/start";
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -63,7 +66,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	public List<AgentWithServiceDto> setApprobateurs(String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgAgentsApprobateurs);
-		ClientResponse res = createAndPostRequest(json, url);
+		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
 
 	}
@@ -97,7 +100,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			json.substring(0, json.length() - 1);
 		}
 		json.append("]");
-		return createAndPostRequest(json.toString(), url);
+		return createAndPostRequest(url, json.toString());
 	}
 
 	@Override
@@ -111,16 +114,21 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		return readResponseAsList(ConsultPointageDto.class, res, url);
 	}
 
-	private ClientResponse createAndPostRequest(Map parameters, String url) {
-		String json = new JSONSerializer().serialize(parameters);
-		logger.debug("appel :" + url + " avec " + json);
-		return createAndPostRequest(json, url);
+	/**
+	 * POST
+	 */
+	private ClientResponse createAndPostRequest(String url, String json) {
+		return createAndPostRequest(new HashMap<String, String>(), url, json);
 	}
 
-	private ClientResponse createAndPostRequest(String json, String url) {
+	private ClientResponse createAndPostRequest(Map<String, String> parameters, String url, String json) {
 
 		Client client = Client.create();
 		WebResource webResource = client.resource(url);
+
+		for (String key : parameters.keySet()) {
+			webResource = webResource.queryParam(key, parameters.get(key));
+		}
 
 		ClientResponse response = null;
 		logger.debug("json poste:" + json);
@@ -162,7 +170,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhPtgWSConsumerException("An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
+			throw new SirhPtgWSConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from SIRH WS request.", ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -170,7 +179,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new SirhPtgWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -188,15 +198,18 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new SirhPtgWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
-		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class).use("values", targetClass).deserialize(output);
+		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
+				.use("values", targetClass).deserialize(output);
 		return result;
 	}
 
-	public <K, V> Map<K, V> readResponseAsMap(Class<K> targetClassKey, Class<V> targetClassValue, ClientResponse response, String url) {
+	public <K, V> Map<K, V> readResponseAsMap(Class<K> targetClassKey, Class<V> targetClassValue,
+			ClientResponse response, String url) {
 		Map<K, V> result = null;
 		result = new HashMap<K, V>();
 
@@ -205,16 +218,19 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+			throw new SirhPtgWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
-		result = new JSONDeserializer<Map<K, V>>().use(Date.class, new MSDateTransformer()).use(null, HashMap.class).deserialize(output);
+		result = new JSONDeserializer<Map<K, V>>().use(Date.class, new MSDateTransformer()).use(null, HashMap.class)
+				.deserialize(output);
 		return result;
 	}
 
 	@Override
-	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents, Integer idRefEtat, Integer idRefType) {
+	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
+			Integer idRefEtat, Integer idRefType) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVisulaisationPointage);
@@ -312,7 +328,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = String.format(urlWS + sirhPtgSaisie + "?idAgent=" + idagent);
 		// String url = String.format(urlWS + "saisie/fiche?idAgent=9003047");
 		// //pour un pointage 5463
-		return createAndPostRequest(new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class).deepSerialize(toSerialize), url);
+		return createAndPostRequest(
+				url,
+				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+						.deepSerialize(toSerialize));
 	}
 
 	@Override
@@ -330,7 +349,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 	}
 
-	public <T> List<T> getVentilations(Class<T> targetClass, String csvIdAgents, Integer idDateVentil, Integer idRefTypePointage) {
+	public <T> List<T> getVentilations(Class<T> targetClass, String csvIdAgents, Integer idDateVentil,
+			Integer idRefTypePointage) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVentilations);
 		HashMap<String, String> params = new HashMap<>();
@@ -368,6 +388,42 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			CanStartVentilationDto result = readResponse(CanStartVentilationDto.class, res, url);
 			logger.debug(result.toString());
 			return result.isCanStartVentilation();
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public VentilDateDto getVentilationEnCours(String statut) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgVentilationEnCours);
+		HashMap<String, String> params = new HashMap<>();
+		params.put("statut", statut);
+		ClientResponse res = createAndFireRequest(params, url);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			VentilDateDto result = readResponse(VentilDateDto.class, res, url);
+			logger.debug(result.toString());
+			return result;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean startVentilation(String idAgent, Date dateVentilation, String agentsJson, String statut,
+			String idRefTypePointage) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = String.format(urlWS + sirhPtgStartVentilation);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("date", sdf.format(dateVentilation));
+		params.put("statut", statut);
+		if (idRefTypePointage != null)
+			params.put("typePointage", idRefTypePointage);
+		ClientResponse res = createAndPostRequest(params, url, agentsJson);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			return true;
 		} else {
 			return false;
 		}

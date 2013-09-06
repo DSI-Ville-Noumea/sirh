@@ -64,9 +64,10 @@ import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurNonTitu;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurTitu;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
+import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
-import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationContractuels;
+import nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGVisualisation;
 import nc.mairie.gestionagent.process.poste.OePOSTEEmploiSelection;
@@ -401,10 +402,19 @@ public class RobotAgent extends Robot {
         // ///////////////////
         // Classe OePTGDroits
         navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR, OePTGSelectionApprobateur.class.getName());
+        
+        // Classe OePTGVisualisation
         navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
         navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
         navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_CREATE, OeAGENTRecherche.class.getName());
         navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_SAISIE_PTG, OePTGSaisie.class.getName());
+        
+        //Classe OePTGVentilationFonct
+        navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+        //Classe OePTGVentilationContractuels
+        navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+        //Classe OePTGVentilationConvCol
+        navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_AGENT, OePTGSelectionAgent.class.getName());
 
         // //////////////////////////////////////
         // pour la recherche d'un agent

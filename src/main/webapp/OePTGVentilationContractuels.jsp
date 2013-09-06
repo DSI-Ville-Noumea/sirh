@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -9,14 +10,16 @@
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
         <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
         <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
-        <TITLE>Ventilation des contractuels</TITLE>		
+        <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
+       <TITLE>Ventilation des contractuels</TITLE>		
 
+		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
-        <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+        <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
-        <SCRIPT language="javascript">
+        <SCRIPT language="JavaScript">
 
             $(document).ready(function() {
                 $('#VentilationTable').dataTable({
@@ -120,9 +123,49 @@
                 <% } else {%>
                 <div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
                     <% }%>
-                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-                        <legend class="sigp2Legend">Ventilation des pointages des contractuels</legend>	
-                        <%=process.getVentil()%>		
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
+                        <legend class="sigp2Legend">Ventilation des pointages des contractuels</legend>
+						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Date :</span>
+						<%if(process.ventilationExist()){ %>
+							<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
+						<%}else{ %>
+							<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+						<%} %>
+                		<span class="sigp2Mandatory" style="width:50px;margin-left:50px;">Type :</span>
+                        <INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires
+						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes
+						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences
+						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_TOUT())%>>Tout
+						<BR/><BR/>
+                		<span class="sigp2" style="width:50px;margin-left:20px;">Agents :</span>
+				        <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT()%>">
+				       <br/>
+			            <%if(process.getListeAgentsVentil()!=null && process.getListeAgentsVentil().size()>0){ %>
+							<div style="overflow: auto;height: 120px;width:1000px;margin-left:20px;">
+								<table class="sigp2NewTab" style="text-align:left;width:980px;">
+								<%
+								int indiceAgent = 0;
+									for (int i = 0;i<process.getListeAgentsVentil().size();i++){
+								%>
+										<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeAgentsVentil().size()%>)" >
+											<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">											
+												<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT(indiceAgent)%>">
+											</td>
+											<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_AGENT(indiceAgent)%></td>
+										</tr>
+										<%
+										indiceAgent++;
+									}
+								%>
+								</table>	
+							</div>
+						<br/>
+						<%} %>
+						<BR/><BR/>
+						<%if( OePTGVentilationUtils.canProcessVentilation("F")){ %>
+						<INPUT type="submit" class="sigp2-Bouton-100" value="Ventiler" name="<%=process.getNOM_PB_VENTILER()%>">
+						<%} %>		
                     </FIELDSET>
 
                 </div>

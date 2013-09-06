@@ -117,10 +117,8 @@ public class OePTGVentilationUtils {
 		return "      <INPUT type=\"submit\" class=\"sigp2-Bouton-100\" value=\"Valider\" onclick=" + method + ">";
 	}
 
-	public static String getTabVentil(String statut) {
+	public static boolean canProcessVentilation(String statut) {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		boolean ok = consum.isVentilAvailable(statut);
-		String method = ok ? "'available()'" : "'unavailable()'";
-		return "      <INPUT type=\"submit\" class=\"sigp2-Bouton-100\" value=\"Ventiler\" onclick=" + method + ">";
+		return consum.isVentilAvailable(statut);
 	}
 }
