@@ -411,6 +411,7 @@ public class RobotAgent extends Robot {
         
         //Classe OePTGVentilationFonct
         navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+        navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
         //Classe OePTGVentilationContractuels
         navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_AGENT, OePTGSelectionAgent.class.getName());
         //Classe OePTGVentilationConvCol

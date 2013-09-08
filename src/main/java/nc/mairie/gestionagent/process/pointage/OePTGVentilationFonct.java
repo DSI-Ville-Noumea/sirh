@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -44,10 +45,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int STATUT_AGENT = 2;
+	public static final int STATUT_RECHERCHER_AGENT_MIN = 3;
 
 	private Logger logger = LoggerFactory.getLogger(OePTGVentilationFonct.class);
 
 	private ArrayList<AgentNW> listeAgentsVentil;
+	private String tabVisu;
 
 	@Override
 	public String getJSP() {
@@ -72,6 +75,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 		initialiseDao();
 
 		addZone(getNOM_RG_TYPE(), getNOM_RB_TYPE_TOUT());
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_MIN(), agt.getNoMatricule());
+			}
+		}
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
@@ -140,6 +151,23 @@ public class OePTGVentilationFonct extends BasicProcess {
 				return performPB_VENTILER(request);
 			}
 
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_MIN
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MIN())) {
+				return performPB_RECHERCHER_AGENT_MIN(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MIN
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(request);
+			}
+
+			// Si clic sur le bouton PB_AFFICHER_VENTIL
+			for (int i = 1; i < 4; i++) {
+				if (testerParametre(request, getNOM_PB_AFFICHER_VENTIL(i))) {
+					return performPB_AFFICHER_VENTIL(request, i);
+				}
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -192,16 +220,6 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public String getNOM_ST_ACTION_VALIDATION() {
 		return "NOM_ST_ACTION_VALIDATION";
-	}
-
-	public String getTab(int typePointage) {
-		Map<Integer, AgentNW> agents = new HashMap<>();
-		try {
-			agents.put(9003041, AgentNW.chercherAgent(getTransaction(), "9003041"));
-		} catch (Exception ex) {
-			logger.debug("agent non trouvé.");
-		}
-		return OePTGVentilationUtils.getTabVisu(agents, 50, typePointage, true);
 	}
 
 	public String getValid() {
@@ -399,5 +417,74 @@ public class OePTGVentilationFonct extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	public String getNOM_ST_AGENT_MIN() {
+		return "NOM_ST_AGENT_MIN";
+	}
+
+	public String getVAL_ST_AGENT_MIN() {
+		return getZone(getNOM_ST_AGENT_MIN());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_MIN() {
+		return "NOM_PB_RECHERCHER_AGENT_MIN";
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
+		return true;
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_PB_AFFICHER_VENTIL(int typePointage) {
+		return "NOM_PB_AFFICHER_VENTIL";
+	}
+
+	public boolean performPB_AFFICHER_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
+		Map<Integer, AgentNW> agents = new HashMap<>();
+		// si le filtre agent est vide
+		// TODO
+		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategorieSPCARR(getTransaction(), "F");
+		for (Carriere carr : listeCarr) {
+			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			if(getTransaction().isErreur()){
+				getTransaction().traiterErreur();
+				continue;
+			}
+			if (!agents.containsKey(Integer.valueOf(ag.getIdAgent()))) {
+				agents.put(Integer.valueOf(ag.getIdAgent()), ag);
+			}
+
+		}
+
+		// on recupere la ventilation en cours
+		VentilDateDto ventilEnCours = getInfoVentilation("F");
+		// TODO
+		if (ventilEnCours.getIdDateVentil() == null) {
+			// TODO declarere erreur
+			return false;
+		}
+		setTabVisu(OePTGVentilationUtils.getTabVisu(agents, ventilEnCours.getIdDateVentil(), typePointage, true));
+		return true;
+	}
+
+	public String getTabVisu() {
+		return tabVisu;
+	}
+
+	public void setTabVisu(String tabVisu) {
+		this.tabVisu = tabVisu;
 	}
 }

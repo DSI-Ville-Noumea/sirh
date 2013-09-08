@@ -138,26 +138,34 @@
 
                 <% if (process.onglet.equals("ONGLET2")) {%>
                 <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                    <% } else {%>
-                    <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-                        <% }%>
-                        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                <% } else {%>
+                <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+                <% }%>
+                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                            <legend class="sigp2Legend">Filtres des heures supplémentaires</legend>		
+			                 <span class="sigp2" style="width:100px">Agent min :</span>
+			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
+			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
+			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
+							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
+                 	</FIELDSET>
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
                             <legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires</legend>	
-                            <%=process.getTab(2)%>		
-                        </FIELDSET>
+                            <%=process.getTabVisu()%>		
+                    </FIELDSET>
                     </div>
 
 
-                    <% if (process.onglet.equals("ONGLET3")) {%>
-                    <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                        <% } else {%>
-                        <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-                            <% }%>
-                            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-                                <legend class="sigp2Legend">Visualisation de la ventilation des primes</legend>	
-                                <%=process.getTab(3)%>		
-                            </FIELDSET>
-                        </div>
+                 <% if (process.onglet.equals("ONGLET3")) {%>
+                 <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
+                 <% } else {%>
+                 <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+                 <% }%>
+                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                    	<legend class="sigp2Legend">Visualisation de la ventilation des primes</legend>	
+                        <%=process.getTabVisu()%>		
+                    </FIELDSET>
+                 </div>
 
 
                         <% if (process.onglet.equals("ONGLET4")) {%>
@@ -167,7 +175,7 @@
                                 <% }%>
                                 <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
                                     <legend class="sigp2Legend">Visualisation de la ventilation des absences</legend>	
-                                    <%=process.getTab(1)%>		
+                                    <%=process.getTabVisu()%>		
                                 </FIELDSET>
                             </div>
 
@@ -186,6 +194,8 @@
 
                                 <INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
 
-                                </FORM>
-                                </BODY>
-                                </HTML>
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">	
+	</FORM>
+</BODY>
+</HTML>
