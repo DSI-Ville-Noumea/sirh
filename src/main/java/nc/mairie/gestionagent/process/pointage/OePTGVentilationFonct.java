@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.pointage;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,12 +17,15 @@ import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -91,7 +95,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 		if (getListeAgentsVentil() != null) {
 			for (int i = 0; i < getListeAgentsVentil().size(); i++) {
 				AgentNW ag = (AgentNW) getListeAgentsVentil().get(i);
-				addZone(getNOM_ST_LIB_AGENT(indiceAgent), ag.getNomAgent() + " " + ag.getPrenomAgent());
+				addZone(getNOM_ST_LIB_AGENT(indiceAgent),
+						ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule() + ")");
 
 				indiceAgent++;
 			}
@@ -312,6 +317,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public boolean performPB_VENTILER(HttpServletRequest request) throws Exception {
 
+		if (!performControlerDateVentilation()) {
+			return false;
+		}
 		// on construit la liste des agents
 		List<Integer> listeIdAgents = new ArrayList<>();
 		if (getListeAgentsVentil() != null) {
@@ -360,5 +368,36 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		return t.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
 				new JSONSerializer().serialize(listeIdAgents), "F", idRefTypePointage);
+	}
+
+	private boolean performControlerDateVentilation() throws ParseException {
+
+		// date de debut obligatoire
+		if ((Const.CHAINE_VIDE).equals(getVAL_EF_DATE_DEBUT())) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date"));
+			return false;
+		}
+
+		// format date de debut
+		if (!Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
+			// "ERR007",
+			// "La date @ est incorrecte. Elle doit être au format date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de ventilation"));
+			return false;
+		}
+
+		// Check that the ventilation date must be a sunday. Otherwise stop here
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date dateVentilation = sdf.parse(getVAL_EF_DATE_DEBUT());
+		DateTime givenVentilationDate = new DateTime(dateVentilation);
+		if (givenVentilationDate.dayOfWeek().get() != DateTimeConstants.SUNDAY) {
+			// "ERR600",
+			// "La date de ventilation choisie est un @. Impossible de ventiler les pointages à une date autre qu'un dimanche."
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR600", givenVentilationDate.dayOfWeek().getAsText()));
+			return false;
+		}
+		return true;
 	}
 }
