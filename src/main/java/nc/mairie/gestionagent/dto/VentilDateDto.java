@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class VentilDateDto {
 
-	private Integer idDateVentil;
+	private Integer idVentilDate;
 	private Date dateVentil;
 	private boolean isPaie;
 	private String typeChaine;
@@ -14,7 +14,7 @@ public class VentilDateDto {
 
 	@Override
 	public String toString() {
-		return "VentilDateDto: [Id : " + getIdDateVentil() + ",date : " + getDateVentil() + ",isPaie : " + isPaie()
+		return "VentilDateDto: [Id : " + getIdVentilDate() + ",date : " + getDateVentil() + ",isPaie : " + isPaie()
 				+ ", typeChaine : " + getTypeChaine() + "]";
 	}
 
@@ -42,12 +42,12 @@ public class VentilDateDto {
 		this.typeChaine = typeChaine;
 	}
 
-	public Integer getIdDateVentil() {
-		return idDateVentil;
+	public Integer getIdVentilDate() {
+		return idVentilDate;
 	}
 
-	public void setIdDateVentil(Integer idDateVentil) {
-		this.idDateVentil = idDateVentil;
+	public void setIdVentilDate(Integer idVentilDate) {
+		this.idVentilDate = idVentilDate;
 	}
 
 }

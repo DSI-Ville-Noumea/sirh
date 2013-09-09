@@ -4,9 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,6 +44,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int STATUT_AGENT = 2;
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 3;
+	public static final int STATUT_RECHERCHER_AGENT_MAX = 4;
 
 	private Logger logger = LoggerFactory.getLogger(OePTGVentilationFonct.class);
 
@@ -81,6 +80,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_MIN(), agt.getNoMatricule());
+			}
+		}
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_MAX(), agt.getNoMatricule());
 			}
 		}
 
@@ -168,6 +175,16 @@ public class OePTGVentilationFonct extends BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_MAX
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_MAX())) {
+				return performPB_RECHERCHER_AGENT_MAX(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -198,6 +215,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		addZone(getNOM_ST_ACTION_PRIMES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
+		setTabVisu("");
+		addZone(getNOM_ST_AGENT_MIN(), "");
+		addZone(getNOM_ST_AGENT_MAX(), "");
 
 		return true;
 	}
@@ -384,8 +404,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 		// on lance la ventilation
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		return t.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
-				new JSONSerializer().serialize(listeIdAgents), "F", idRefTypePointage);
+		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
+				new JSONSerializer().serialize(listeIdAgents), "F", idRefTypePointage)) {
+			// TODO declarer erreur
+			return false;
+		}
+		return true;
 	}
 
 	private boolean performControlerDateVentilation() throws ParseException {
@@ -449,34 +473,46 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public String getNOM_PB_AFFICHER_VENTIL(int typePointage) {
-		return "NOM_PB_AFFICHER_VENTIL";
+		return "NOM_PB_AFFICHER_VENTIL" + typePointage;
 	}
 
 	public boolean performPB_AFFICHER_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
-		Map<Integer, AgentNW> agents = new HashMap<>();
-		// si le filtre agent est vide
-		// TODO
-		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategorieSPCARR(getTransaction(), "F");
+		ArrayList<Carriere> listeCarr = new ArrayList<Carriere>();
+		List<Integer> agents = new ArrayList<Integer>();
+		if (!getVAL_ST_AGENT_MIN().equals("")) {
+			if (getVAL_ST_AGENT_MAX().equals("")) {
+				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT_MIN());
+				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
+				listeCarr.add(carr);
+				addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
+			} else {
+				listeCarr = Carriere.listerCarriereActiveParCategorieNoMatrBetweenPourPointage(getTransaction(), "F",
+						getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
+			}
+		} else {
+			listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
+		}
+
 		for (Carriere carr : listeCarr) {
 			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
-			if(getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.containsKey(Integer.valueOf(ag.getIdAgent()))) {
-				agents.put(Integer.valueOf(ag.getIdAgent()), ag);
+			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
+				agents.add(Integer.valueOf(ag.getIdAgent()));
 			}
 
 		}
-
 		// on recupere la ventilation en cours
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		// TODO
-		if (ventilEnCours.getIdDateVentil() == null) {
-			// TODO declarere erreur
+		if (ventilEnCours == null || ventilEnCours.getIdVentilDate() == null) {
+			//"ERR601", "Il n'y a pas de ventilation en cours."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
 			return false;
 		}
-		setTabVisu(OePTGVentilationUtils.getTabVisu(agents, ventilEnCours.getIdDateVentil(), typePointage, true));
+		setTabVisu(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(), typePointage,
+				true, new JSONSerializer().serialize(agents)));
 		return true;
 	}
 
@@ -486,5 +522,34 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public void setTabVisu(String tabVisu) {
 		this.tabVisu = tabVisu;
+	}
+
+	public String getNOM_ST_AGENT_MAX() {
+		return "NOM_ST_AGENT_MAX";
+	}
+
+	public String getVAL_ST_AGENT_MAX() {
+		return getZone(getNOM_ST_AGENT_MAX());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_MAX() {
+		return "NOM_PB_RECHERCHER_AGENT_MAX";
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
+		return true;
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
+		return true;
 	}
 }

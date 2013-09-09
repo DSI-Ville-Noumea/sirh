@@ -412,10 +412,15 @@ public class RobotAgent extends Robot {
         //Classe OePTGVentilationFonct
         navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_AGENT, OePTGSelectionAgent.class.getName());
         navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+        navigation.put(OePTGVentilationFonct.class.getName() + OePTGVentilationFonct.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
         //Classe OePTGVentilationContractuels
         navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+        navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+        navigation.put(OePTGVentilationContractuels.class.getName() + OePTGVentilationContractuels.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
         //Classe OePTGVentilationConvCol
         navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_AGENT, OePTGSelectionAgent.class.getName());
+        navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MIN, OeAGENTRecherche.class.getName());
+        navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_RECHERCHER_AGENT_MAX, OeAGENTRecherche.class.getName());
 
         // //////////////////////////////////////
         // pour la recherche d'un agent

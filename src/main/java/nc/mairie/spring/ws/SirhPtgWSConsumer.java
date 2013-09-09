@@ -351,15 +351,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 	}
 
-	public <T> List<T> getVentilations(Class<T> targetClass, String csvIdAgents, Integer idDateVentil,
-			Integer idRefTypePointage) {
+	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
+			String agentsJson) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = String.format(urlWS + sirhPtgVentilations);
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", "" + idDateVentil);
-		params.put("csvIdAgents", csvIdAgents);
 		params.put("typePointage", "" + idRefTypePointage);
-		ClientResponse res = createAndFireRequest(params, url);
+		ClientResponse res = createAndPostRequest(params, url, agentsJson);
 		return readResponseAsList(targetClass, res, url);
 	}
 
