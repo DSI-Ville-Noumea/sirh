@@ -203,6 +203,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		String output = response.getEntity(String.class);
+		logger.debug("json recu:" + output);
 		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
 				.use("values", targetClass).deserialize(output);
 		return result;
@@ -279,7 +280,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = String.format(urlWS + sirhPtgTypesPointage);
 
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
-
 		return readResponseAsList(RefTypePointageDto.class, res, url);
 	}
 
@@ -325,14 +325,15 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-
-		String url = urlWS + sirhPtgSaisie + "?idAgent=" + idAgent;// +
-																	// "statutAgent="
-																	// +
-																	// toSerialize.getAgent().getStatut();
+		String url = urlWS + sirhPtgSaisie;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("statutAgent", toSerialize.getAgent().getStatut());
 		return createAndPostRequest(
+				params,
+				url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-						.deepSerialize(toSerialize), url);
+						.deepSerialize(toSerialize));
 	}
 
 	@Override

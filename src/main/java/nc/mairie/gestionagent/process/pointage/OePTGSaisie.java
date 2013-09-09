@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.pointage;
 
-import com.sun.jersey.api.client.ClientResponse;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,20 +18,20 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
-import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
-import static nc.mairie.technique.BasicProcess.STATUT_PROCESS_APPELANT;
-import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  *
