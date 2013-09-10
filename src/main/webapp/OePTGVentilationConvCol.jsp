@@ -20,35 +20,88 @@
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
-        <SCRIPT language="JavaScript">
+        <SCRIPT language="javascript">
 
-
-            $(document).ready(function() {
-                $('#VentilationTable').dataTable({
-                    "sDom": '<"H"fl>t<"F"Trip>',
-                    "sPaginationType": "full_numbers",
-                    "oLanguage": {
-                        "oPaginate": {
-                            "sFirst": "Début",
-                            "sLast": "Fin",
-                            "sNext": "Suivant",
-                            "sPrevious": "Précédent"
-                        },
-                        "sZeroRecords": "Aucune information de ventilation à afficher",
-                        "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
-                        "sInfoEmpty": "Aucune information de ventilation à afficher",
-                        "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
-                        "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
-                        "sLengthMenu": "Affichage de _MENU_ ventilation par page",
-                        "sSearch": "Recherche instantanée"
+        $(document).ready(function() {
+            $('#VentilationTable_1').dataTable({
+                "sDom": '<"H"fl>t<"F"Trip>',
+                "sPaginationType": "full_numbers",
+                "oLanguage": {
+                    "oPaginate": {
+                        "sFirst": "Début",
+                        "sLast": "Fin",
+                        "sNext": "Suivant",
+                        "sPrevious": "Précédent"
                     },
-                    "oTableTools": {
-                        "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
-                        "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
-                    }
+                    "sZeroRecords": "Aucune information de ventilation à afficher",
+                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation à afficher",
+                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                    "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                    "sSearch": "Recherche instantanée"
+                },
+                "oTableTools": {
+                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilConvCol", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                    "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                }
 
-                });
             });
+        });
+
+        $(document).ready(function() {
+            $('#VentilationTable_2').dataTable({
+                "sDom": '<"H"fl>t<"F"Trip>',
+                "sPaginationType": "full_numbers",
+                "oLanguage": {
+                    "oPaginate": {
+                        "sFirst": "Début",
+                        "sLast": "Fin",
+                        "sNext": "Suivant",
+                        "sPrevious": "Précédent"
+                    },
+                    "sZeroRecords": "Aucune information de ventilation à afficher",
+                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation à afficher",
+                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                    "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                    "sSearch": "Recherche instantanée"
+                },
+                "oTableTools": {
+                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                    "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                }
+
+            });
+        });
+
+        $(document).ready(function() {
+            $('#VentilationTable_3').dataTable({
+                "sDom": '<"H"fl>t<"F"Trip>',
+                "sPaginationType": "full_numbers",
+                "oLanguage": {
+                    "oPaginate": {
+                        "sFirst": "Début",
+                        "sLast": "Fin",
+                        "sNext": "Suivant",
+                        "sPrevious": "Précédent"
+                    },
+                    "sZeroRecords": "Aucune information de ventilation à afficher",
+                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation à afficher",
+                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                    "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                    "sSearch": "Recherche instantanée"
+                },
+                "oTableTools": {
+                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                    "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                }
+
+            });
+        });
 
 
             //afin de sélectionner un élément dans une liste
@@ -62,13 +115,6 @@
             {
                 if (document.formu.elements[nom] != null)
                     document.formu.elements[nom].focus();
-            }
-
-            function unavailable() {
-                alert("Le service demandé n'est actuellement pas disponible.\n Veuillez revenir sur cette page ultérieurement");
-            }
-            function available() {
-                alert("ok");
             }
 
         </SCRIPT>		
@@ -189,7 +235,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
                  	</FIELDSET>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-                    	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires</legend>	
+                    	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des conventions collectives</legend>	
                         <%=process.getTabVisu()%>		
                     </FIELDSET>
                 </div>
@@ -213,7 +259,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(3)%>">
                  	</FIELDSET>
                  	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-                    	<legend class="sigp2Legend">Visualisation de la ventilation des primes</legend>	
+                    	<legend class="sigp2Legend">Visualisation de la ventilation des primes des conventions collectives</legend>	
                         <%=process.getTabVisu()%>		
                     </FIELDSET>
                  </div>
@@ -237,7 +283,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(1)%>">
                  	</FIELDSET>
 	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-	                	<legend class="sigp2Legend">Visualisation de la ventilation des absences</legend>	
+	                	<legend class="sigp2Legend">Visualisation de la ventilation des absences des conventions collectives</legend>	
 	                    <%=process.getTabVisu()%>		
 	                </FIELDSET>
                 </div>
@@ -256,6 +302,11 @@
 
 
                                 <INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
-                                </FORM>
-                                </BODY>
-                                </HTML>
+
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>" value="RECHERCHERAGENTMAX">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>" value="SUPPRECHERCHERAGENTMAX">	
+	</FORM>
+</BODY>
+</HTML>

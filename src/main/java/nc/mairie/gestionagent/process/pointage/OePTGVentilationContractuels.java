@@ -510,7 +510,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			return false;
 		}
 		setTabVisu(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(), typePointage,
-				true, new JSONSerializer().serialize(agents)));
+				false, new JSONSerializer().serialize(agents)));
 		return true;
 	}
 
