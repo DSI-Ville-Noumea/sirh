@@ -14,6 +14,7 @@
        <TITLE>Ventilation des contractuels</TITLE>		
 
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 

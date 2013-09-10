@@ -14,6 +14,7 @@
         <TITLE>Ventilation des conventions collectives</TITLE>		
 
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
@@ -23,7 +24,30 @@
 
 
             $(document).ready(function() {
-                $('#VentilationTable').dataTable();
+                $('#VentilationTable').dataTable({
+                    "sDom": '<"H"fl>t<"F"Trip>',
+                    "sPaginationType": "full_numbers",
+                    "oLanguage": {
+                        "oPaginate": {
+                            "sFirst": "Début",
+                            "sLast": "Fin",
+                            "sNext": "Suivant",
+                            "sPrevious": "Précédent"
+                        },
+                        "sZeroRecords": "Aucune information de ventilation à afficher",
+                        "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                        "sInfoEmpty": "Aucune information de ventilation à afficher",
+                        "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                        "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                        "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                        "sSearch": "Recherche instantanée"
+                    },
+                    "oTableTools": {
+                        "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                        "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                    }
+
+                });
             });
 
 
