@@ -31,7 +31,7 @@ public class OePTGVentilationUtils {
 
 		StringBuilder sb = new StringBuilder();
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		sb.append("<table  class=\"display\"  id=\"VentilationTable_" + typePointage + "\">");
+		sb.append("<table  class=\"display\"  id=\"VentilationTable\">");
 
 		AgentNW agent;
 

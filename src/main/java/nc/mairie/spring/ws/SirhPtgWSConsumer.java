@@ -325,15 +325,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	@Override
 	public ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = urlWS + sirhPtgSaisie;
-		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
-		params.put("statutAgent", toSerialize.getAgent().getStatut());
+		String url = urlWS + sirhPtgSaisie + "?idAgent=" + idAgent;// +
+																	// "statutAgent="+
+																	// toSerialize.getAgent().getStatut();
 		return createAndPostRequest(
-				params,
-				url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-						.deepSerialize(toSerialize));
+						.deepSerialize(toSerialize), url);
 	}
 
 	@Override
@@ -358,6 +355,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", "" + idDateVentil);
 		params.put("typePointage", "" + idRefTypePointage);
+		if (agentsJson.isEmpty())
+			return new ArrayList<T>();
 		ClientResponse res = createAndPostRequest(params, url, agentsJson);
 		return readResponseAsList(targetClass, res, url);
 	}
