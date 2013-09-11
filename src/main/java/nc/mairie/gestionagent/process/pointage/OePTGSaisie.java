@@ -496,7 +496,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.append("<textarea  cols='10' rows='1'  style='visibility: hidden' name='NOM_idptg_" + id
 				+ "' title='Zone cachee idptg'>" + idptg + "</textarea>");
 		ret.append("<textarea  cols='10' rows='1' style='visibility: hidden' name='NOM_idrefetat_" + id
-				+ "' title='Zone cachee idptg'>" + idrefetat + "</textarea>");
+				+ "' title='Zone cachee idrefetat'>" + idrefetat + "</textarea>");
 
 		return ret.toString();
 	}
