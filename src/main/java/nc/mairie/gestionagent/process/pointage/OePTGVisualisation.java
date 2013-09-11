@@ -19,14 +19,12 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
-import nc.mairie.gestionagent.process.avancement.OeAVCTCampagneGestionEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
-import static nc.mairie.technique.BasicProcess.STATUT_MEME_PROCESS;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -68,7 +66,7 @@ public class OePTGVisualisation extends BasicProcess {
 	private AgentNW loggedAgent;
 	public String status = "VISU";
 	public String focus = getNOM_PB_FILTRER();
-	private Logger logger = LoggerFactory.getLogger(OeAVCTCampagneGestionEAE.class);
+	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
 	private void afficheListePointages() {
 
