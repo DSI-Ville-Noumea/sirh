@@ -325,8 +325,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 																	// "statutAgent="+
 																	// toSerialize.getAgent().getStatut();
 		return createAndPostRequest(
+				url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-						.deepSerialize(toSerialize), url);
+						.deepSerialize(toSerialize));
 	}
 
 	@Override
