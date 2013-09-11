@@ -34,6 +34,7 @@ public class OePTGVentilationUtils {
 		sb.append("<table  class=\"display\"  id=\"VentilationTable\">");
 
 		AgentNW agent;
+		// sb.append("<td><INPUT title='Editer le pointage' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='<%=process.getSAISIE_PTG(indicePtg)%>'></td>");
 
 		switch (RefTypePointageEnum.getRefTypePointageEnum(typePointage)) {
 			case H_SUP: {
@@ -190,17 +191,7 @@ public class OePTGVentilationUtils {
 				break;
 			}
 		}
-		// <INPUT title="Editer le pointage" type="image"
-		// class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-		// src="images/modifier.gif" height="16px" width="16px"
-		// title="Voir l'historique du pointage"
-		// name="<%=process.getSAISIE_PTG(indicePtg)%>">
-		// <%=process.getVAL_ST_AGENT(indicePtg)%> <img src="images/loupe.gif"
-		// height="16px" width="16px"
-		// onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')">
 		sb.append("</table>");
-		// return "tab for contractuel:" +
-		// RefTypePointageEnum.getRefTypePointageEnum(typePointage);
 		return sb.toString();
 	}
 
