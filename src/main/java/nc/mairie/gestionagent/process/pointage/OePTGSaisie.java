@@ -493,9 +493,9 @@ public class OePTGSaisie extends BasicProcess {
 				+ id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
 		ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='NOM_comm_" + id
 				+ "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
-		ret.append("<textarea  cols='10' rows='1' visibility: hidden name='NOM_idptg_" + id
+		ret.append("<textarea  cols='10' rows='1'  style='visibility: hidden' name='NOM_idptg_" + id
 				+ "' title='Zone cachee idptg'>" + idptg + "</textarea>");
-		ret.append("<textarea  cols='10' rows='1' visibility: hidden name='NOM_idrefetat_" + id
+		ret.append("<textarea  cols='10' rows='1' style='visibility: hidden' name='NOM_idrefetat_" + id
 				+ "' title='Zone cachee idptg'>" + idrefetat + "</textarea>");
 
 		return ret.toString();
