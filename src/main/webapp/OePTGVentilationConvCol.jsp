@@ -19,6 +19,7 @@
         <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
+        <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT> 
         <SCRIPT language="javascript">
 
         $(document).ready(function() {
