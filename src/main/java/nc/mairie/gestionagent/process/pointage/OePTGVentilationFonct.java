@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,6 +47,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	public static final int STATUT_AGENT = 2;
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 3;
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 4;
+	public static final int STATUT_SAISIE_PTG = 5;
 
 	private Logger logger = LoggerFactory.getLogger(OePTGVentilationFonct.class);
 
@@ -183,6 +186,25 @@ public class OePTGVentilationFonct extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_MAX
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
+			}
+
+			for (String s : (Set<String>) request.getParameterMap().keySet()) {
+				// Si clic sur le bouton edit
+				if (s.startsWith("JMP_SAISIE:")) {
+					StringTokenizer tok = new StringTokenizer(s, ":");
+					tok.nextToken();
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG,
+							OePTGVentilationUtils.getMondayFromWeekNumber(Integer.parseInt(tok.nextToken())));
+					String rawAgent = tok.nextToken();
+					int index1 = 0;
+					if (rawAgent.startsWith("900"))
+						index1 = 3;
+					rawAgent = rawAgent.substring(index1, rawAgent.lastIndexOf("."));
+					logger.info("\n rawAgent=" + rawAgent);
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, rawAgent);
+					setStatut(STATUT_SAISIE_PTG, true);
+					return true;
+				}
 			}
 
 		}
@@ -507,7 +529,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// on recupere la ventilation en cours
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
 		if (ventilEnCours == null || ventilEnCours.getIdVentilDate() == null) {
-			//"ERR601", "Il n'y a pas de ventilation en cours."
+			// "ERR601", "Il n'y a pas de ventilation en cours."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
 			return false;
 		}

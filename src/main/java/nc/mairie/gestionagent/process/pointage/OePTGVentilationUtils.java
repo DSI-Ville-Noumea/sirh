@@ -23,6 +23,8 @@ import nc.mairie.technique.Transaction;
  */
 public class OePTGVentilationUtils {
 
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 	public static String getTabVisu(Transaction aTransaction, int date, int typePointage, boolean titulaire,
 			String agentsJson) throws Exception {
 
@@ -77,9 +79,11 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + hsup.getmSup() + "</td>");
 						sb.append("<td>" + hsup.getmSimples() + "</td>");
 						sb.append("<td>" + hsup.getmNuit() + "</td>");
-						sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
+								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
 					}
+
 					sb.append("</tbody>");
 					break;
 				} else {
@@ -125,7 +129,8 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + hsup.getmSup() + "</td>");
 						sb.append("<td>" + hsup.getmSup25() + "</td>");
 						sb.append("<td>" + hsup.getmSup50() + "</td>");
-						sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
+								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
 					}
 					sb.append("</tbody>");
@@ -155,7 +160,9 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
 					sb.append("<td>" + abs.getMinutesConcertees() + "</td>");
 					sb.append("<td>" + abs.getMinutesNonConcertees() + "</td>");
-					sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+					// sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
+							+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 					sb.append("</tr>");
 				}
 				sb.append("</tbody>");
@@ -184,7 +191,8 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
 					sb.append("<td>" + primeDetail.getLibelle() + "</td>");
 					sb.append("<td>" + prime.getQuantite() + "</td>");
-					sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
+							+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 					sb.append("</tr>");
 				}
 				sb.append("</tbody>");
@@ -206,4 +214,13 @@ public class OePTGVentilationUtils {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		return consum.isVentilAvailable(statut);
 	}
+
+	public static String getMondayFromWeekNumber(int week) {
+		GregorianCalendar cal = new GregorianCalendar();
+		// cal.setTime(listePointage.get(idPtg).getDate());
+		cal.set(Calendar.WEEK_OF_YEAR, week); // back to previous week
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
+		return sdf.format(cal.getTime());
+	}
+
 }

@@ -314,20 +314,23 @@ public class OePTGSaisie extends BasicProcess {
 
 	public String getPrimesTab() {
 		StringBuilder ret = new StringBuilder();
-
-		int nbrPrime = primess.get(0).size();
-		if (nbrPrime > 0) {
-			ret.append(getLineTitle("Primes"));
-		}
-
-		for (int i = 0; i < nbrPrime; i++) {
-			ret.append("<tr>");
-			int jour = 0;
-			for (List<PrimeDto> pl : primess) {
-				ret.append(getCell(pl.get(i), jour));
-				jour++;
+		if (primess.size() > 0) {
+			int nbrPrime = primess.get(0).size();
+			if (nbrPrime > 0) {
+				ret.append(getLineTitle("Primes"));
 			}
-			ret.append("</tr>");
+
+			for (int i = 0; i < nbrPrime; i++) {
+				ret.append("<tr>");
+				int jour = 0;
+				for (List<PrimeDto> pl : primess) {
+					ret.append(getCell(pl.get(i), jour));
+					jour++;
+				}
+				ret.append("</tr>");
+			}
+		} else {
+			ret.append("");
 		}
 		return ret.toString();
 	}
@@ -400,24 +403,24 @@ public class OePTGSaisie extends BasicProcess {
 																						// +
 																						// p.getIdPointage()
 		String motif = p.getMotif() != null ? p.getMotif() : "";
+		String titre = p.getTitre() != null ? p.getTitre() : "";
 		String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
 		String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";
 		int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
+		int idptg = p.getIdPointage() != null ? p.getIdPointage() : 0;
 		String status = p.getIdRefEtat() != null && !motif.equals("") ? EtatPointageEnum
 				.getDisplayableEtatPointageEnum(idref) : "";
 		switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
 			case CASE_A_COCHER:
-				return getType0TabCell(id, qte.equals("1"), motif, commentaire, status, p.getTitre(),
-						p.getIdPointage(), p.getIdRefEtat());
+				return getType0TabCell(id, qte.equals("1"), motif, commentaire, status, titre, idptg, idref);
 			case NB_HEURES:
-				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'heures :", p.getTitre(),
-						p.getIdPointage(), p.getIdRefEtat());
+				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'heures :", titre, idptg, idref);
 			case NB_INDEMNITES:
-				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'indemnités :", p.getTitre(),
-						p.getIdPointage(), p.getIdRefEtat());
+				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'indemnités :", titre, idptg,
+						idref);
 			case PERIODE_HEURES:
 				return getType3TabCell(id, "check", qte.equals("1"), p.getHeureDebut(), p.getHeureFin(), motif,
-						commentaire, status + "<br>", p.getTitre(), p.getIdPointage(), p.getIdRefEtat());
+						commentaire, status + "<br>", titre, idptg, idref);
 			default:
 		}
 		return "failcell:" + id;
