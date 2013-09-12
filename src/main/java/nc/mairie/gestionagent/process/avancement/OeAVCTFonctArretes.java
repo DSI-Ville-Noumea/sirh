@@ -824,6 +824,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					getTransaction().declarerErreur("Une erreur est survenue dans la sauvegarde des avancements. Merci de contacter le responsable du projet.");
 					return false;
 				}
+				commitTransaction();
 			}
 			addZone(getNOM_CK_VALID_ARR_IMPR(idAvct), getCHECKED_OFF());
 
@@ -880,6 +881,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		}
 		setListeDocuments(null);
+		afficheListeAvancement();
 		return true;
 	}
 
