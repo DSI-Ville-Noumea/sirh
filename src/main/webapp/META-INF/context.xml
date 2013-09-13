@@ -206,6 +206,26 @@
 	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
 		override="false"
 		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
+		
+		<!-- EN RECETTE -->
+	<!-- <Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="sirhDroitEAE" />
+	<Parameter description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="fum2ndo5" />
+	<Parameter description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="SITE-MAIRIE" />
+	<Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="svq-sp" />
+	<Parameter description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE"
+		override="false"
+		value="80" />
+	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
+		override="false"
+		value="/kiosque-rh/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" /> -->
 	<!-- END-->
 	
 	<!-- AUTRE PARAM -->
