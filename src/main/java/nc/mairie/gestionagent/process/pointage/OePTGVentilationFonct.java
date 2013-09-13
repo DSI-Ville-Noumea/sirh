@@ -207,6 +207,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 				}
 			}
 
+			// Si clic sur le bouton PB_DEVERSER
+			if (testerParametre(request, getNOM_PB_DEVERSER())) {
+				return performPB_DEVERSER(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -262,10 +267,6 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public String getNOM_ST_ACTION_VALIDATION() {
 		return "NOM_ST_ACTION_VALIDATION";
-	}
-
-	public String getValid() {
-		return OePTGVentilationUtils.getTabValid("F");
 	}
 
 	public String getNOM_EF_DATE_DEBUT() {
@@ -572,6 +573,43 @@ public class OePTGVentilationFonct extends BasicProcess {
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
 		// On enlève l'agent selectionnée
 		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_PB_DEVERSER() {
+		return "NOM_PB_DEVERSER";
+	}
+
+	public boolean performPB_DEVERSER(HttpServletRequest request) throws Exception {
+		// on recupere l'agent connecté
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via la
+		// table SIIDMA
+		AgentNW agentConnecte = null;
+		if (!u.getUserName().equals("nicno85")) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+		} else {
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+		// on lance le deversement
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		if (!t.startDeversementPaie(agentConnecte.getIdAgent(), "F")) {
+			// TODO declarer erreur
+			return false;
+		}
 		return true;
 	}
 }

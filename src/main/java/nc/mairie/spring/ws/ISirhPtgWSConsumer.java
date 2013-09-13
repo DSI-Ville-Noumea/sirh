@@ -54,4 +54,6 @@ public interface ISirhPtgWSConsumer {
 
 	boolean isValidAvailable(String agentStatus);
 
+	boolean startDeversementPaie(String idAgent, String statut);
+
 }

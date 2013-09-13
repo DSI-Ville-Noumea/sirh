@@ -52,6 +52,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVentilations = "ventilation/show";
 	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
 	private static final String sirhPtgStartVentilation = "ventilation/start";
+	private static final String sirhPtgStartDeversement = "exportPaie/start";
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -424,6 +425,22 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (idRefTypePointage != null)
 			params.put("typePointage", idRefTypePointage);
 		ClientResponse res = createAndPostRequest(params, url, agentsJson);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean startDeversementPaie(String idAgent, String statut) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgStartDeversement;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("statut", statut);
+		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			return true;
 		} else {

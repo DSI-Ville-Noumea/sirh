@@ -235,19 +235,22 @@
                   </div>
 
 
-                            <% if (process.onglet.equals("ONGLET5")) {%>
-                            <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                                <% } else {%>
-                                <div id="corpsOngletValidation" title=""Validation"" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-                                     <% }%>
-                                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
-                                        <legend class="sigp2Legend">Validation de la ventilation des pointages</legend>	
-                                        <%=process.getValid()%>		
-                                    </FIELDSET>
-                                </div>
+              <% if (process.onglet.equals("ONGLET5")) {%>
+              <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
+              <% } else {%>
+              <div id="corpsOngletValidation" title=""Validation"" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+              <% }%>
+	              <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+	              	<legend class="sigp2Legend">Validation de la ventilation des pointages des contractuels</legend>	
+	              	<span style="color: red;">Attention , cette action est irreversible !</span>    
+	              	<br>  <br>       
+					<%if( OePTGVentilationUtils.canProcessDeversementPaie("C")){ %>
+						<INPUT type="submit" class="sigp2-Bouton-200" value="Deverser dans la paie" name="<%=process.getNOM_PB_DEVERSER()%>">
+					<%} %>	
+	              </FIELDSET>
+              </div>
 
-
-                                <INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
+            <INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
 
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">

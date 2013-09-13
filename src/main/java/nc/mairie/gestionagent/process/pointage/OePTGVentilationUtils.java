@@ -203,11 +203,9 @@ public class OePTGVentilationUtils {
 		return sb.toString();
 	}
 
-	public static String getTabValid(String statut) {
+	public static boolean canProcessDeversementPaie(String statut) {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		boolean ok = consum.isValidAvailable(statut);
-		String method = ok ? "'available()'" : "'unavailable()'";
-		return "      <INPUT type=\"submit\" class=\"sigp2-Bouton-100\" value=\"Valider\" onclick=" + method + ">";
+		return consum.isValidAvailable(statut);
 	}
 
 	public static boolean canProcessVentilation(String statut) {
