@@ -27,7 +27,7 @@ public interface ISirhPtgWSConsumer {
 
 	ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
 
-	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent);
+	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
 
 	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
 

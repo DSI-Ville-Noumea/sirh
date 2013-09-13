@@ -265,7 +265,7 @@
                             <th>Date de saisie</th>
                             <th align="center"><INPUT tabindex="" title="Approuver tous les pointages" type="image"	src="images/valid.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_ValidAll()%>"></th>
-                            <th align="center"><INPUT tabindex="" type="image"  title="Refuser tous les pointages" 	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <th align="center"><INPUT tabindex="" type="image"  title="Rejeter tous les pointages" 	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_DelAll()%>"></th>
                             <th align="center"><INPUT tabindex="" type="image"	 title="Mettre en attente tous les pointages" src="images/clock.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_DelayAll()%>"></th>
@@ -288,7 +288,7 @@
                             <td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
                             <td align="center"><INPUT type="image" title="Approuver le pointage"	src="images/valid.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image" title="Refuser le pointage"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
+                            <td align="center"><INPUT type="image" title="Rejeter le pointage"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></td>
                             <td align="center"><INPUT type="image" title="Mettre en attente le pointage" src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
                                                       height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				

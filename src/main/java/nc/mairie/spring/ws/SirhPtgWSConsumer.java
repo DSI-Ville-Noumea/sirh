@@ -85,9 +85,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idagent) {
+	public ClientResponse setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idAgent, String statutAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = urlWS + sirhPtgVisualisationSetState + "?idAgent=" + idagent;
+		String url = urlWS + sirhPtgVisualisationSetState;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		params.put("statutAgent", statutAgent);
 
 		StringBuilder json = new StringBuilder("[");
 		for (Integer id : idPtgs) {
@@ -97,7 +100,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			json.substring(0, json.length() - 1);
 		}
 		json.append("]");
-		return createAndPostRequest(url, json.toString());
+		return createAndPostRequest(params, url, json.toString());
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -926,15 +927,19 @@ public class OePTGVisualisation extends BasicProcess {
 			logger.debug("Agent complètement nul!");
 
 		} else {
-			ClientResponse cr = t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent());
-			if (cr.getStatus() != 200) {
-				String rep = cr.getEntity(String.class).toString();
-				logger.debug("changeState response :" + cr.toString() + "\n" + rep);
-				rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
-				rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
-				getTransaction().declarerErreur(rep);
-			}
+
+			Carriere carr;
 			try {
+				carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), loggedAgent);
+				ClientResponse cr = t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent(),
+						Carriere.getStatutCarriere(carr.getCodeCategorie()));
+				if (cr.getStatus() != 200) {
+					String rep = cr.getEntity(String.class).toString();
+					logger.debug("changeState response :" + cr.toString() + "\n" + rep);
+					rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
+					rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
+					getTransaction().declarerErreur(rep);
+				}
 				performPB_FILTRER();
 			} catch (Exception e) {
 				logger.debug("Exception in performPB_FILTRER");
