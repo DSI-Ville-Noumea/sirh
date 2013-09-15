@@ -109,7 +109,15 @@ public class OePTGSaisie extends BasicProcess {
 		}
 	}
 
-	private boolean save() throws Exception {
+	private void save() throws Exception {
+
+		// compare date lundi avec aujourd'hui pour savoir si autorisé à
+		// enregister
+		if ((new Date().getTime() - getDateLundi(0).getTime()) / (1000 * 60 * 60 * 24 * 30) >= 3) {
+			getTransaction().declarerErreur("La semaine sélectionnée est trop ancienne pour être modifiée");
+			return;
+		}
+
 		List<JourPointageDto> newList = new ArrayList<>();
 
 		int nbrPrime = primess.get(0).size();
@@ -152,7 +160,7 @@ public class OePTGSaisie extends BasicProcess {
 			}
 		}
 
-		return true;
+		return;
 	}
 
 	private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
