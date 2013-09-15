@@ -65,7 +65,6 @@ import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 import nc.mairie.spring.domain.metier.EAE.EaeFDPActivite;
 import nc.mairie.spring.domain.metier.EAE.EaeFDPCompetence;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
-import nc.mairie.spring.domain.metier.EAE.EaeFinalisation;
 import nc.mairie.spring.domain.metier.EAE.EaeFormation;
 import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
 import nc.mairie.spring.domain.metier.diplome.FormationAgent;
@@ -74,7 +73,6 @@ import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumerException;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -270,11 +268,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void initialiseEvaluateur() throws Exception {
-		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "EVALUATEURS");
+		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite
+				.recuperer(this, "EVALUATEURS");
 		VariablesActivite.enlever(this, "EVALUATEURS");
 		if (getEaeCourant() != null) {
 			// on supprime tous les evaluateurs existants
-			ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(getEaeCourant().getIdEAE());
+			ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(
+					getEaeCourant().getIdEAE());
 			for (int i = 0; i < evaluateursExistants.size(); i++) {
 				EaeEvaluateur eval = evaluateursExistants.get(i);
 				getEaeEvaluateurDao().supprimerEaeEvaluateur(eval.getIdEaeEvaluateur());
@@ -290,7 +290,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						eval.setIdAgent(Integer.valueOf(agentEvaluateur.getIdAgent()));
 
 						// on recupere le poste
-						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agentEvaluateur.getIdAgent());
+						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+								agentEvaluateur.getIdAgent());
 						if (getTransaction().isErreur() || aff.getIdFichePoste() == null) {
 							getTransaction().traiterErreur();
 						}
@@ -301,27 +302,30 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
-							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fp,
-									agentEvaluateur.getIdAgent());
+							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation
+									.listerAffectationAvecFPEtAgent(getTransaction(), fp, agentEvaluateur.getIdAgent());
 							if (listeAffectationSurMemeFDP.size() > 0) {
 								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
-										.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff()
+												.equals(Const.CHAINE_VIDE)
+										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
+										: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 							}
 							// on cherche toutes les affectations sur le meme
 							// service et
 							// on prend la date la plus ancienne
 							// NB : pour les affectations successives
-							ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(getTransaction(),
-									agentEvaluateur.getIdAgent(), fp.getIdServi());
+							ArrayList<Affectation> listeAffectationService = Affectation
+									.listerAffectationAgentAvecService(getTransaction(), agentEvaluateur.getIdAgent(),
+											fp.getIdServi());
 							String dateDebutService = null;
 							for (int i = 0; i < listeAffectationService.size(); i++) {
 								Affectation affCours = listeAffectationService.get(i);
 								if (listeAffectationService.size() > i + 1) {
 									if (listeAffectationService.get(i + 1) != null) {
 										Affectation affPrecedente = listeAffectationService.get(i + 1);
-										if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+										if (affCours.getDateDebutAff().equals(
+												Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
 											dateDebutService = affPrecedente.getDateDebutAff();
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
@@ -333,17 +337,18 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 									dateDebutService = affCours.getDateDebutAff();
 								}
 							}
-							eval.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
-									.parse(dateDebutService));
+							eval.setDateEntreeService(dateDebutService == null
+									|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
 						}
 
 						eval.setDateEntreeCollectivite(agentEvaluateur.getDateDerniereEmbauche() == null
 								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentEvaluateur
-								.getDateDerniereEmbauche()));
+								|| agentEvaluateur.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf
+								.parse(agentEvaluateur.getDateDerniereEmbauche()));
 
-						getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(), eval.getDateEntreeService(),
-								eval.getDateEntreeCollectivite(), eval.getDateEntreeFonction());
+						getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(),
+								eval.getFonction(), eval.getDateEntreeService(), eval.getDateEntreeCollectivite(),
+								eval.getDateEntreeFonction());
 					}
 				}
 				// on sort de la boucle, on change l'état de l'EAE en NON-DEBUTE
@@ -368,7 +373,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (getListeCampagneEAE().size() > 0) {
 				// si il s'agit d'une campagne ouverte on fait le calcul
 				if (getCampagneCourante().estOuverte()) {
-					if (!performCalculEAE(request, getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getAnnee())) {
+					if (!performCalculEAE(request, getCampagneCourante().getIdCampagneEAE(), getCampagneCourante()
+							.getAnnee())) {
 						// "ERR213",
 						// "Une erreur est survenue dans le calcul des EAEs. Merci de contacter le responsable du projet."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR213"));
@@ -380,7 +386,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		return true;
 	}
 
-	private boolean performCalculEAE(HttpServletRequest request, Integer idCampagneEAE, Integer anneeCampagne) throws Exception {
+	private boolean performCalculEAE(HttpServletRequest request, Integer idCampagneEAE, Integer anneeCampagne)
+			throws Exception {
 		// Miseà jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 		logger.info("Entree dans le calcul");
@@ -456,7 +463,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat sdfSIRH = new SimpleDateFormat("yyyy-MM-dd");
 		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans détachés ");
-		ArrayList<Carriere> listeCarrierePAActive = Carriere.listerCarriereActiveAvecPA(getTransaction(), sdfMairie.format(new Date()));
+		ArrayList<Carriere> listeCarrierePAActive = Carriere.listerCarriereActiveAvecPA(getTransaction(),
+				sdfMairie.format(new Date()));
 		String listeNomatr = Const.CHAINE_VIDE;
 		for (Carriere carr : listeCarrierePAActive) {
 			listeNomatr += carr.getNoMatricule() + ",";
@@ -464,7 +472,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (!listeNomatr.equals(Const.CHAINE_VIDE)) {
 			listeNomatr = listeNomatr.substring(0, listeNomatr.length() - 1);
 		}
-		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), listeNomatr, sdfSIRH.format(new Date()));
+		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), listeNomatr,
+				sdfSIRH.format(new Date()));
 		logger.info("Req AS400 : FIN listerAgentEligibleEAE sans détachés : " + la.size());
 
 		// Parcours des agents sans les détachés
@@ -488,8 +497,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// pour le CAP
 				// on cherche si il y a une ligne dans les avancements
 				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
-						anneeCampagne.toString(), a.getIdAgent());
+				AvancementFonctionnaires avct = AvancementFonctionnaires
+						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
+								a.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				if (avct != null && avct.getIdAvct() != null) {
@@ -507,9 +517,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				eae.setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
 				// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
-				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(), eae.isDocumentAttache(),
-						eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(), eae.getDureeEntretien(), eae.getDateFinalise(),
-						eae.getDateControle(), eae.getHeureControle(), eae.getUserControle(), eae.getIdDelegataire());
+				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
+						eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
+						eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
+						eae.getUserControle(), eae.getIdDelegataire());
 
 				// on recupere le poste
 				// logger.info("Req AS400 : chercherAffectationActiveAvecAgent");
@@ -529,21 +540,25 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						// on recupere le superieur hierarchique
 						if (fpPrincipale.getIdResponsable() != null) {
 							// logger.info("Req AS400 : chercherAffectationAvecFP (Superieur)");
-							Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(), fpPrincipale.getIdResponsable());
+							Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(),
+									fpPrincipale.getIdResponsable());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							}
 							if (affSuperieur.getIdFichePoste() != null) {
 								// logger.info("Req AS400 : chercherFichePoste (Superieur)");
-								fpResponsable = FichePoste.chercherFichePoste(getTransaction(), affSuperieur.getIdFichePoste());
+								fpResponsable = FichePoste.chercherFichePoste(getTransaction(),
+										affSuperieur.getIdFichePoste());
 								// logger.info("Req AS400 : chercherTitrePoste (Superieur)");
-								tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
+								tpResp = TitrePoste.chercherTitrePoste(getTransaction(),
+										fpResponsable.getIdTitrePoste());
 							}
 						}
 					}
 					if (affAgent.getIdFichePosteSecondaire() != null) {
 						// logger.info("Req AS400 : chercherFichePoste (secondaire)");
-						fpSecondaire = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePosteSecondaire());
+						fpSecondaire = FichePoste.chercherFichePoste(getTransaction(),
+								affAgent.getIdFichePosteSecondaire());
 					}
 				}
 
@@ -593,34 +608,36 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					eval.setFonction(tpResp.getLibTitrePoste());
 					eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche() == null
 							|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-							|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp.getDateDerniereEmbauche()));
+							|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp
+							.getDateDerniereEmbauche()));
 					// on cherche toutes les affectations sur la FDP du
 					// responsable
 					// on prend la date la plus ancienne
 					if (fpResponsable != null && fpResponsable.getIdServi() != null) {
 						// logger.info("Req AS400 : listerAffectationAvecFP (fonction evaluateur)");
-						ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
-								fpResponsable, agentResp.getIdAgent());
+						ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
+								getTransaction(), fpResponsable, agentResp.getIdAgent());
 						if (listeAffectationSurMemeFDP.size() > 0) {
 							eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
-									.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
+									: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 						}
 						// on cherche toutes les affectations sur le meme
 						// service et
 						// on prend la date la plus ancienne
 						// NB : pour les affectations successives
 						// logger.info("Req AS400 : listerAffectationAgentAvecService (fonction evaluateur)");
-						ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(getTransaction(),
-								agentResp.getIdAgent(), fpResponsable.getIdServi());
+						ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
+								getTransaction(), agentResp.getIdAgent(), fpResponsable.getIdServi());
 						String dateDebutService = null;
 						for (int i = 0; i < listeAffectationService.size(); i++) {
 							Affectation affCours = listeAffectationService.get(i);
 							if (listeAffectationService.size() > i + 1) {
 								if (listeAffectationService.get(i + 1) != null) {
 									Affectation affPrecedente = listeAffectationService.get(i + 1);
-									if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+									if (affCours.getDateDebutAff().equals(
+											Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
 										dateDebutService = affPrecedente.getDateDebutAff();
 									} else {
 										dateDebutService = affCours.getDateDebutAff();
@@ -632,19 +649,22 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								dateDebutService = affCours.getDateDebutAff();
 							}
 						}
-						eval.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
-								.parse(dateDebutService));
+						eval.setDateEntreeService(dateDebutService == null
+								|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
 					}
 					// logger.info("Req Oracle : creerEaeEvaluateur");
-					getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(), eval.getDateEntreeService(),
-							eval.getDateEntreeCollectivite(), eval.getDateEntreeFonction());
+					getEaeEvaluateurDao()
+							.creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(),
+									eval.getDateEntreeService(), eval.getDateEntreeCollectivite(),
+									eval.getDateEntreeFonction());
 				}
 
 			}
 		}
 
 		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE détachés ");
-		ArrayList<Carriere> listeCarrierePAActiveDetache = Carriere.listerCarriereActiveAvecPADetache(getTransaction(), sdfMairie.format(new Date()));
+		ArrayList<Carriere> listeCarrierePAActiveDetache = Carriere.listerCarriereActiveAvecPADetache(getTransaction(),
+				sdfMairie.format(new Date()));
 		String listeNomatrDetache = Const.CHAINE_VIDE;
 		for (Carriere carr : listeCarrierePAActiveDetache) {
 			listeNomatrDetache += carr.getNoMatricule() + ",";
@@ -674,8 +694,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// pour le CAP
 				// on cherche si il y a une ligne dans les avancements
 				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
-						anneeCampagne.toString(), a.getIdAgent());
+				AvancementFonctionnaires avct = AvancementFonctionnaires
+						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
+								a.getIdAgent());
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 				if (avct != null && avct.getIdAvct() != null) {
@@ -693,9 +714,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				eae.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 				// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
-				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(), eae.isDocumentAttache(),
-						eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(), eae.getDureeEntretien(), eae.getDateFinalise(),
-						eae.getDateControle(), eae.getHeureControle(), eae.getUserControle(), eae.getIdDelegataire());
+				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
+						eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
+						eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
+						eae.getUserControle(), eae.getIdDelegataire());
 
 				// logger.info("Req Oracle : chercherEAE (celui crée )");
 				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
@@ -743,8 +765,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						getTransaction().traiterErreur();
 					}
 					if (agentResp != null && agentResp.getIdAgent() != null) {
-						addZone(getNOM_ST_SHD(i), agentResp.getNomAgent() + " " + agentResp.getPrenomAgent() + " (" + agentResp.getNoMatricule()
-								+ ") ");
+						addZone(getNOM_ST_SHD(i), agentResp.getNomAgent() + " " + agentResp.getPrenomAgent() + " ("
+								+ agentResp.getNoMatricule() + ") ");
 					} else {
 						addZone(getNOM_ST_SHD(i), "&nbsp;");
 					}
@@ -762,7 +784,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// on ne fait rien
 			}
 			AgentNW agentEAE = AgentNW.chercherAgent(getTransaction(), evalue.getIdAgent().toString());
-			addZone(getNOM_ST_AGENT(i), agentEAE.getNomAgent() + " " + agentEAE.getPrenomAgent() + " (" + agentEAE.getNoMatricule() + ") ");
+			addZone(getNOM_ST_AGENT(i),
+					agentEAE.getNomAgent() + " " + agentEAE.getPrenomAgent() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), (evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut()) + " <br> "
 					+ (evalue.isAgentDetache() ? "oui" : "&nbsp;"));
 			// on recupere les evaluateurs
@@ -771,28 +794,33 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			for (int j = 0; j < listeEvaluateur.size(); j++) {
 				EaeEvaluateur evaluateur = listeEvaluateur.get(j);
 				AgentNW agentevaluateur = AgentNW.chercherAgent(getTransaction(), evaluateur.getIdAgent().toString());
-				eval += agentevaluateur.getNomAgent() + " " + agentevaluateur.getPrenomAgent() + " (" + agentevaluateur.getNoMatricule() + ") <br> ";
+				eval += agentevaluateur.getNomAgent() + " " + agentevaluateur.getPrenomAgent() + " ("
+						+ agentevaluateur.getNoMatricule() + ") <br> ";
 			}
 			addZone(getNOM_ST_EVALUATEURS(i), eval.equals(Const.CHAINE_VIDE) ? "&nbsp;" : eval);
 			if (eae.getIdDelegataire() != null) {
 				AgentNW agentDelegataire = AgentNW.chercherAgent(getTransaction(), eae.getIdDelegataire().toString());
 				addZone(getNOM_ST_DELEGATAIRE(i),
-						agentDelegataire.getNomAgent() + " " + agentDelegataire.getPrenomAgent() + " (" + agentDelegataire.getNoMatricule() + ")");
+						agentDelegataire.getNomAgent() + " " + agentDelegataire.getPrenomAgent() + " ("
+								+ agentDelegataire.getNoMatricule() + ")");
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE(i), "&nbsp;");
 			}
 
 			addZone(getNOM_ST_CAP(i), eae.isCap() ? "oui" : "&nbsp;");
-			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvis_shd() == null ? "&nbsp;" : evaluation.getAvis_shd());
+			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvis_shd() == null ? "&nbsp;"
+					: evaluation.getAvis_shd());
 			addZone(getNOM_ST_EAE_JOINT(i), eae.isDocumentAttache() ? "oui" : "non");
-			addZone(getNOM_ST_CONTROLE(i), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()) + " <br> "
-					+ (eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
-					+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
-					+ (eae.getDateControle() == null ? "&nbsp;" : sdf.format(eae.getDateControle())));
+			addZone(getNOM_ST_CONTROLE(i),
+					EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()) + " <br> "
+							+ (eae.getDateCreation() == null ? "&nbsp;" : sdf.format(eae.getDateCreation())) + " <br> "
+							+ (eae.getDateFinalise() == null ? "&nbsp;" : sdf.format(eae.getDateFinalise())) + " <br> "
+							+ (eae.getDateControle() == null ? "&nbsp;" : sdf.format(eae.getDateControle())));
 			addZone(getNOM_ST_ACTIONS_DEFINALISE(i), "&nbsp;");
 			addZone(getNOM_ST_ACTIONS_MAJ(i), "&nbsp;");
 			addZone(getNOM_CK_VALID_MAJ(i), getCHECKED_OFF());
-			addZone(getNOM_CK_VALID_EAE(i), eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_VALID_EAE(i), eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode()) ? getCHECKED_ON()
+					: getCHECKED_OFF());
 			addZone(getNOM_ST_CONTROLE_PAR(i), eae.getUserControle() == null ? "&nbsp;" : eae.getUserControle());
 
 		}
@@ -1150,17 +1178,20 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// setMessage(Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
 		// Recherche des eae de la campagne en fonction de l'état
-		int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
+		int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT())
+				: -1);
 		String etat = Const.CHAINE_VIDE;
 		if (indiceEtat > 0) {
 			etat = getListeEnumEtatEAE().get(indiceEtat - 1).getCode();
 		}
 		// Recherche des eae de la campagne en fonction du statut
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 		String statut = Const.CHAINE_VIDE;
 		if (indiceStatut > 0) {
 			String statutChaineLongue = getListeStatut().get(indiceStatut - 1);
@@ -1191,7 +1222,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 
 		// Recherche des eae de la campagne en fonction du détachés
-		int indiceDetache = (Services.estNumerique(getVAL_LB_DETACHE_SELECT()) ? Integer.parseInt(getVAL_LB_DETACHE_SELECT()) : -1);
+		int indiceDetache = (Services.estNumerique(getVAL_LB_DETACHE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DETACHE_SELECT()) : -1);
 		String detach = Const.CHAINE_VIDE;
 		if (indiceDetache > 0) {
 			detach = getListeDetache().get(indiceDetache - 1);
@@ -1210,8 +1242,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 
 		// on affiche la liste des EAE avec le filtre
-		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat, statut, listeSousService, cap,
-				agentEvaluateur, agentEvalue, detach);
+		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat,
+				statut, listeSousService, cap, agentEvaluateur, agentEvalue, detach);
 		setListeEAE(listeEAE);
 		return true;
 	}
@@ -1235,7 +1267,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	public boolean performPB_CALCULER(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 		if (getListeCampagneEAE() != null && getListeCampagneEAE().size() > 0) {
-			int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
 			if (!initialiseListeEAE(request)) {
@@ -1673,7 +1706,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void performCreerFormation(HttpServletRequest request, AgentNW ag) throws Exception {
-		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgent(Integer.valueOf(ag.getIdAgent()));
+		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgent(
+				Integer.valueOf(ag.getIdAgent()));
 		Integer tailleListe = listFormationAgent.size();
 		if (tailleListe > 6) {
 			tailleListe = 6;
@@ -1687,39 +1721,47 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			form.setAnneeFormation(formation.getAnneeFormation());
 			form.setDureeFormation(formation.getDureeFormation().toString() + " " + formation.getUniteDuree());
 			form.setLibelleFormation(titre.getLibTitreFormation() + " - " + centre.getLibCentreFormation());
-			getEaeFormationDao().creerEaeFormation(form.getIdEAE(), form.getAnneeFormation(), form.getDureeFormation(), form.getLibelleFormation());
+			getEaeFormationDao().creerEaeFormation(form.getIdEAE(), form.getAnneeFormation(), form.getDureeFormation(),
+					form.getLibelleFormation());
 		}
 	}
 
-	private void performCreerCompetencesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire) throws Exception {
+	private void performCreerCompetencesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
+			throws Exception {
 		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpSecondaire);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
+			TypeCompetence typComp = TypeCompetence
+					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFDP(getIdCreerFichePosteSecondaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
 			compEAE.setLibCompetence(comp.getNomCompetence());
 
-			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(), compEAE.getLibCompetence());
+			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(),
+					compEAE.getLibCompetence());
 		}
 	}
 
-	private void performCreerCompetencesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale) throws Exception {
+	private void performCreerCompetencesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
+			throws Exception {
 		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpPrincipale);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
+			TypeCompetence typComp = TypeCompetence
+					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFDP(getIdCreerFichePostePrimaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
 			compEAE.setLibCompetence(comp.getNomCompetence());
 
-			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(), compEAE.getLibCompetence());
+			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(),
+					compEAE.getLibCompetence());
 		}
 	}
 
-	private void performCreerActivitesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale) throws Exception {
+	private void performCreerActivitesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
+			throws Exception {
 		// gère les activites
 		ArrayList<Activite> listActFDP = Activite.listerActiviteAvecFP(getTransaction(), fpPrincipale);
 		for (int i = 0; i < listActFDP.size(); i++) {
@@ -1732,7 +1774,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 	}
 
-	private void performCreerActivitesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire) throws Exception {
+	private void performCreerActivitesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
+			throws Exception {
 		// gère les activites
 		ArrayList<Activite> listActFDP = Activite.listerActiviteAvecFP(getTransaction(), fpSecondaire);
 		for (int i = 0; i < listActFDP.size(); i++) {
@@ -1745,7 +1788,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 	}
 
-	private void performCreerFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire, EAE eae) throws Exception {
+	private void performCreerFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire, EAE eae)
+			throws Exception {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -1756,12 +1800,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				EaeFichePoste aSupp = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), false);
 				// on recupere les activites/competences liées
 				try {
-					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(aSupp.getIdEaeFichePoste());
+					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
+							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
 						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
 					}
-					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(aSupp.getIdEaeFichePoste());
+					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
+							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
 						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
@@ -1778,11 +1824,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			fichePosteEae.setIdEae(eae.getIdEAE());
 			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpSecondaire.getIdFichePoste()));
 			if (fpSecondaire.getIdResponsable() != null) {
-				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpSecondaire.getIdResponsable());
+				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(),
+						fpSecondaire.getIdResponsable());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
-				fichePosteEae.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer.valueOf(agentResp.getIdAgent()));
+				fichePosteEae.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer
+						.valueOf(agentResp.getIdAgent()));
 
 			}
 			fichePosteEae.setPrimaire(false);
@@ -1811,8 +1859,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 			// on cherche toutes les affectations sur la FDP
 			// on prend la date la plus ancienne
-			ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fpSecondaire, evalue
-					.getIdAgent().toString());
+			ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
+					getTransaction(), fpSecondaire, evalue.getIdAgent().toString());
 			if (listeAffectationSurMemeFDP.size() > 0) {
 				fichePosteEae.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 						|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
@@ -1843,7 +1891,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					} else {
 						fichePosteEae.setFonctionResponsable(tpResp.getLibTitrePoste());
 					}
-					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp.getIdFichePoste());
+					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
+							fpResp.getIdFichePoste());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
@@ -1853,35 +1902,40 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							getTransaction().traiterErreur();
 						}
 						if (agentResp != null && agentResp.getIdAgent() != null) {
-							fichePosteEae.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
-									|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf.parse(agentResp
-									.getDateDerniereEmbauche()));
+							fichePosteEae
+									.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
+											|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null
+											: sdf.parse(agentResp.getDateDerniereEmbauche()));
 						}
 
 						// on cherche toutes les affectations sur la FDP du
 						// responsable
 						// on prend la date la plus ancienne
 						if (fpResp != null && fpResp.getIdServi() != null) {
-							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
-									fpResp, agentResp.getIdAgent());
+							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation
+									.listerAffectationAvecFPEtAgent(getTransaction(), fpResp, agentResp.getIdAgent());
 							if (listeAffectationRespSurMemeFDP.size() > 0) {
-								fichePosteEae.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
-										|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
+								fichePosteEae.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0)
+										.getDateDebutAff() == null
+										|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
+												.equals(Const.CHAINE_VIDE) ? null : sdf
 										.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
 							}
 							// on cherche toutes les affectations sur le meme
 							// service et
 							// on prend la date la plus ancienne
 							// NB : pour les affectations successives
-							ArrayList<Affectation> listeAffectationRespService = Affectation.listerAffectationAgentAvecService(getTransaction(),
-									agentResp.getIdAgent(), fpResp.getIdServi());
+							ArrayList<Affectation> listeAffectationRespService = Affectation
+									.listerAffectationAgentAvecService(getTransaction(), agentResp.getIdAgent(),
+											fpResp.getIdServi());
 							String dateDebutService = null;
 							for (int i = 0; i < listeAffectationRespService.size(); i++) {
 								Affectation affCours = listeAffectationRespService.get(i);
 								if (listeAffectationRespService.size() > i + 1) {
 									if (listeAffectationRespService.get(i + 1) != null) {
 										Affectation affPrecedente = listeAffectationRespService.get(i + 1);
-										if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+										if (affCours.getDateDebutAff().equals(
+												Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
 											dateDebutService = affPrecedente.getDateDebutAff();
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
@@ -1893,9 +1947,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 									dateDebutService = affCours.getDateDebutAff();
 								}
 							}
-							fichePosteEae
-									.setDateEntreeServiceResponsable(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
-											: sdf.parse(dateDebutService));
+							fichePosteEae.setDateEntreeServiceResponsable(dateDebutService == null
+									|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
 						}
 					}
 				}
@@ -1906,18 +1959,21 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 			setIdCreerFichePosteSecondaire(idCreer);
 
-			getEaeFichePosteDao().creerEaeFichePoste(idCreer, fichePosteEae.getIdEae(), fichePosteEae.getIdSHD(), fichePosteEae.isPrimaire(),
-					fichePosteEae.getDirectionServ(), fichePosteEae.getServiceServ(), fichePosteEae.getSectionServ(), fichePosteEae.getEmploi(),
-					fichePosteEae.getFonction(), fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
-					fichePosteEae.getLocalisation(), fichePosteEae.getMission(), fichePosteEae.getFonctionResponsable(),
-					fichePosteEae.getDateEntreeServiceResponsable(), fichePosteEae.getDateEntreeCollectiviteResponsable(),
-					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(), fichePosteEae.getIdSirhFichePoste());
+			getEaeFichePosteDao().creerEaeFichePoste(idCreer, fichePosteEae.getIdEae(), fichePosteEae.getIdSHD(),
+					fichePosteEae.isPrimaire(), fichePosteEae.getDirectionServ(), fichePosteEae.getServiceServ(),
+					fichePosteEae.getSectionServ(), fichePosteEae.getEmploi(), fichePosteEae.getFonction(),
+					fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
+					fichePosteEae.getLocalisation(), fichePosteEae.getMission(),
+					fichePosteEae.getFonctionResponsable(), fichePosteEae.getDateEntreeServiceResponsable(),
+					fichePosteEae.getDateEntreeCollectiviteResponsable(),
+					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(),
+					fichePosteEae.getIdSirhFichePoste());
 
 		}
 	}
 
-	private void performCreerFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale, EAE eae, boolean modifDateFonction,
-			boolean modeCreation) throws Exception {
+	private void performCreerFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale, EAE eae,
+			boolean modifDateFonction, boolean modeCreation) throws Exception {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		EaeFichePoste fpModif = null;
@@ -1928,13 +1984,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				fpModif = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
 				// on recupere les activites/competence liées
 				try {
-					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(fpModif.getIdEaeFichePoste());
+					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
+							fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
 						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
 					}
 
-					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(fpModif.getIdEaeFichePoste());
+					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
+							fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
 						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
@@ -1957,11 +2015,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				fpModif.setIdEae(eae.getIdEAE());
 				fpModif.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
 				if (fpPrincipale.getIdResponsable() != null) {
-					AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
+					AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(),
+							fpPrincipale.getIdResponsable());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
-					fpModif.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer.valueOf(agentResp.getIdAgent()));
+					fpModif.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : Integer
+							.valueOf(agentResp.getIdAgent()));
 
 				}
 				fpModif.setPrimaire(true);
@@ -1990,13 +2050,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (modifDateFonction && evalue != null) {
 					// on cherche toutes les affectations sur la FDP
 					// on prend la date la plus ancienne
-					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(), fpPrincipale,
-							evalue.getIdAgent().toString());
+					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
+							getTransaction(), fpPrincipale, evalue.getIdAgent().toString());
 					if (listeAffectationSurMemeFDP.size() > 0) {
 						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
 								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
-								.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
+								: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
 					}
 				}
 				// grade du poste
@@ -2014,7 +2074,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 				fpModif.setMission(fpPrincipale.getMissions());
 				if (fpPrincipale.getIdResponsable() != null) {
-					FichePoste fpResp = FichePoste.chercherFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
+					FichePoste fpResp = FichePoste
+							.chercherFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
@@ -2024,7 +2085,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						} else {
 							fpModif.setFonctionResponsable(tpResp.getLibTitrePoste());
 						}
-						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp.getIdFichePoste());
+						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
+								fpResp.getIdFichePoste());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -2036,20 +2098,24 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							if (agentResp != null && agentResp.getIdAgent() != null) {
 								fpModif.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche() == null
 										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-										|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp
-										.getDateDerniereEmbauche()));
+										|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf
+										.parse(agentResp.getDateDerniereEmbauche()));
 							}
 
 							// on cherche toutes les affectations sur la FDP du
 							// responsable
 							// on prend la date la plus ancienne
 							if (fpResp != null && fpResp.getIdServi() != null) {
-								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(getTransaction(),
-										fpResp, agentResp.getIdAgent());
+								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation
+										.listerAffectationAvecFPEtAgent(getTransaction(), fpResp,
+												agentResp.getIdAgent());
 								if (listeAffectationRespSurMemeFDP.size() > 0) {
-									fpModif.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff() == null
-											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
+									fpModif.setDateEntreeFonctionResponsable(listeAffectationRespSurMemeFDP.get(0)
+											.getDateDebutAff() == null
+											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
+													.equals(Const.CHAINE_VIDE)
+											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
+													.equals(Const.DATE_NULL) ? null : sdf
 											.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
 								}
 								// on cherche toutes les affectations sur le
@@ -2057,15 +2123,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								// service et
 								// on prend la date la plus ancienne
 								// NB : pour les affectations successives
-								ArrayList<Affectation> listeAffectationRespService = Affectation.listerAffectationAgentAvecService(getTransaction(),
-										agentResp.getIdAgent(), fpResp.getIdServi());
+								ArrayList<Affectation> listeAffectationRespService = Affectation
+										.listerAffectationAgentAvecService(getTransaction(), agentResp.getIdAgent(),
+												fpResp.getIdServi());
 								String dateDebutService = null;
 								for (int i = 0; i < listeAffectationRespService.size(); i++) {
 									Affectation affCours = listeAffectationRespService.get(i);
 									if (listeAffectationRespService.size() > i + 1) {
 										if (listeAffectationRespService.get(i + 1) != null) {
 											Affectation affPrecedente = listeAffectationRespService.get(i + 1);
-											if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+											if (affCours.getDateDebutAff().equals(
+													Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
 												dateDebutService = affPrecedente.getDateDebutAff();
 											} else {
 												dateDebutService = affCours.getDateDebutAff();
@@ -2077,8 +2145,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 										dateDebutService = affCours.getDateDebutAff();
 									}
 								}
-								fpModif.setDateEntreeServiceResponsable(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
-										: sdf.parse(dateDebutService));
+								fpModif.setDateEntreeServiceResponsable(dateDebutService == null
+										|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
+										.parse(dateDebutService));
 							}
 						}
 					}
@@ -2090,21 +2159,25 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					// on recupere l'id
 					Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 					setIdCreerFichePostePrimaire(idCreer);
-					getEaeFichePosteDao().creerEaeFichePoste(idCreer, fpModif.getIdEae(), fpModif.getIdSHD(), fpModif.isPrimaire(),
-							fpModif.getDirectionServ(), fpModif.getServiceServ(), fpModif.getSectionServ(), fpModif.getEmploi(),
-							fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(), fpModif.getLocalisation(),
-							fpModif.getMission(), fpModif.getFonctionResponsable(), fpModif.getDateEntreeServiceResponsable(),
-							fpModif.getDateEntreeCollectiviteResponsable(), fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(),
+					getEaeFichePosteDao().creerEaeFichePoste(idCreer, fpModif.getIdEae(), fpModif.getIdSHD(),
+							fpModif.isPrimaire(), fpModif.getDirectionServ(), fpModif.getServiceServ(),
+							fpModif.getSectionServ(), fpModif.getEmploi(), fpModif.getFonction(),
+							fpModif.getDateEntreeFonction(), fpModif.getGradePoste(), fpModif.getLocalisation(),
+							fpModif.getMission(), fpModif.getFonctionResponsable(),
+							fpModif.getDateEntreeServiceResponsable(), fpModif.getDateEntreeCollectiviteResponsable(),
+							fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(),
 							fpModif.getIdSirhFichePoste());
 
 				} else {
 					setIdCreerFichePostePrimaire(fpModif.getIdEaeFichePoste());
-					getEaeFichePosteDao().modifierEaeFichePoste(fpModif.getIdEaeFichePoste(), fpModif.getIdEae(), fpModif.getIdSHD(),
-							fpModif.isPrimaire(), fpModif.getDirectionServ(), fpModif.getServiceServ(), fpModif.getSectionServ(),
-							fpModif.getEmploi(), fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(),
+					getEaeFichePosteDao().modifierEaeFichePoste(fpModif.getIdEaeFichePoste(), fpModif.getIdEae(),
+							fpModif.getIdSHD(), fpModif.isPrimaire(), fpModif.getDirectionServ(),
+							fpModif.getServiceServ(), fpModif.getSectionServ(), fpModif.getEmploi(),
+							fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(),
 							fpModif.getLocalisation(), fpModif.getMission(), fpModif.getFonctionResponsable(),
 							fpModif.getDateEntreeServiceResponsable(), fpModif.getDateEntreeCollectiviteResponsable(),
-							fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(), fpModif.getIdSirhFichePoste());
+							fpModif.getDateEntreeFonctionResponsable(), fpModif.getCodeService(),
+							fpModif.getIdSirhFichePoste());
 				}
 
 			}
@@ -2131,7 +2204,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
 				parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
 				Date dateFinSp = null;
-				if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
+				if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO)
+						&& !sp.getDatfin().equals(Const.DATE_NULL)) {
 					String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
 					String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
 					String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
@@ -2142,8 +2216,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
 				lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
 				parcours.setLibelleParcoursPro(lib);
-				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-						parcours.getLibelleParcoursPro());
+				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+						parcours.getDateFin(), parcours.getLibelleParcoursPro());
 			} else {
 				// on regarde si il y a des lignes suivantes
 				Spmtsr spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNoMatricule(),
@@ -2159,7 +2233,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
 					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
 					Date dateFinSp = null;
-					if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO) && !sp.getDatfin().equals(Const.DATE_NULL)) {
+					if (sp.getDatfin() != null && !sp.getDatfin().equals(Const.ZERO)
+							&& !sp.getDatfin().equals(Const.DATE_NULL)) {
 						String anneeDateFinSpmtsr = sp.getDatfin().substring(0, 4);
 						String moisDateFinSpmtsr = sp.getDatfin().substring(4, 6);
 						String jourDateFinSpmtsr = sp.getDatfin().substring(6, 8);
@@ -2168,14 +2243,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					}
 					parcours.setDateFin(dateFinSp);
 					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
-					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
+					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " "
+							+ serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-							parcours.getLibelleParcoursPro());
+					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+							parcours.getDateFin(), parcours.getLibelleParcoursPro());
 				} else {
 					boolean fin = false;
 					Integer dateSortie = null;
-					if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO) || sp.getDatfin().equals(Const.DATE_NULL)) {
+					if (sp.getDatfin() == null || sp.getDatfin().equals(Const.ZERO)
+							|| sp.getDatfin().equals(Const.DATE_NULL)) {
 						Integer dateFinSP = Integer.valueOf(sp.getDatfin()) + 1;
 						String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
 						String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
@@ -2185,8 +2262,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						fin = true;
 					}
 					while (!fin) {
-						spSuiv = Spmtsr
-								.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNoMatricule(), dateSortie == null ? 0 : dateSortie);
+						spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNoMatricule(),
+								dateSortie == null ? 0 : dateSortie);
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							fin = true;
@@ -2195,7 +2272,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							String anneeDateDebSpmtsr = dateFinSP.toString().substring(0, 4);
 							String moisDateDebSpmtsr = dateFinSP.toString().substring(4, 6);
 							String jourDateDebSpmtsr = dateFinSP.toString().substring(6, 8);
-							String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/" + anneeDateDebSpmtsr;
+							String dateDebSpmtsr = jourDateDebSpmtsr + "/" + moisDateDebSpmtsr + "/"
+									+ anneeDateDebSpmtsr;
 							dateSortie = Integer.valueOf(dateDebSpmtsr);
 						}
 					}
@@ -2209,34 +2287,40 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					parcours.setDateDebut(sdf.parse(dateDebSpmtsr));
 					parcours.setDateFin(dateSortie == null ? null : sdf.parse(dateSortie.toString()));
 					String lib = direction == null ? Const.CHAINE_VIDE : direction.getLibService();
-					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " " + serv.getLibService();
+					lib += serv == null || serv.getLibService() == null ? Const.CHAINE_VIDE : " "
+							+ serv.getLibService();
 					parcours.setLibelleParcoursPro(lib);
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-							parcours.getLibelleParcoursPro());
+					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+							parcours.getDateFin(), parcours.getLibelleParcoursPro());
 
 				}
 			}
 		}
 		// sur autre administration
-		ArrayList<AutreAdministrationAgent> listAutreAdmin = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(getTransaction(), ag);
+		ArrayList<AutreAdministrationAgent> listAutreAdmin = AutreAdministrationAgent
+				.listerAutreAdministrationAgentAvecAgent(getTransaction(), ag);
 		for (int i = 0; i < listAutreAdmin.size(); i++) {
 			AutreAdministrationAgent admAgent = listAutreAdmin.get(i);
-			AutreAdministration administration = AutreAdministration.chercherAutreAdministration(getTransaction(), admAgent.getIdAutreAdmin());
+			AutreAdministration administration = AutreAdministration.chercherAutreAdministration(getTransaction(),
+					admAgent.getIdAutreAdmin());
 			if (admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
 					|| admAgent.getDateSortie().equals(Const.DATE_NULL)) {
 				// on crée une ligne pour administration
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEAE());
 				parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
-				parcours.setDateFin(admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
-						|| admAgent.getDateSortie().equals(Const.DATE_NULL) ? null : sdf.parse(admAgent.getDateSortie()));
+				parcours.setDateFin(admAgent.getDateSortie() == null
+						|| admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
+						|| admAgent.getDateSortie().equals(Const.DATE_NULL) ? null
+						: sdf.parse(admAgent.getDateSortie()));
 				parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-						parcours.getLibelleParcoursPro());
+				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+						parcours.getDateFin(), parcours.getLibelleParcoursPro());
 			} else {
 				// on regarde si il y a des lignes suivantes
-				AutreAdministrationAgent admSuiv = AutreAdministrationAgent.chercherAutreAdministrationAgentDateDebut(getTransaction(),
-						ag.getIdAgent(), Services.formateDateInternationale(admAgent.getDateSortie()));
+				AutreAdministrationAgent admSuiv = AutreAdministrationAgent
+						.chercherAutreAdministrationAgentDateDebut(getTransaction(), ag.getIdAgent(),
+								Services.formateDateInternationale(admAgent.getDateSortie()));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// on crée une ligne pour administration
@@ -2245,13 +2329,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
 					parcours.setDateFin(sdf.parse(admAgent.getDateSortie()));
 					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-							parcours.getLibelleParcoursPro());
+					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+							parcours.getDateFin(), parcours.getLibelleParcoursPro());
 				} else {
 					boolean fin = false;
 					String dateSortie = admSuiv.getDateSortie();
 					while (!fin) {
-						admSuiv = AutreAdministrationAgent.chercherAutreAdministrationAgentDateDebut(getTransaction(), ag.getIdAgent(), dateSortie);
+						admSuiv = AutreAdministrationAgent.chercherAutreAdministrationAgentDateDebut(getTransaction(),
+								ag.getIdAgent(), dateSortie);
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							fin = true;
@@ -2265,8 +2350,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
 					parcours.setDateFin(sdf.parse(dateSortie));
 					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(), parcours.getDateFin(),
-							parcours.getLibelleParcoursPro());
+					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+							parcours.getDateFin(), parcours.getLibelleParcoursPro());
 				}
 			}
 		}
@@ -2277,21 +2362,24 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (int i = 0; i < listDiploAgent.size(); i++) {
 			DiplomeAgent d = listDiploAgent.get(i);
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), d.getIdTitreDiplome());
-			SpecialiteDiplomeNW spe = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), d.getIdSpecialiteDiplome());
+			SpecialiteDiplomeNW spe = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(),
+					d.getIdSpecialiteDiplome());
 			EaeDiplome eaeDiplome = new EaeDiplome();
 			eaeDiplome.setIdEae(getEaeCourant().getIdEAE());
 			String anneeObtention = Const.CHAINE_VIDE;
-			if (d.getDateObtention() != null && !d.getDateObtention().equals(Const.DATE_NULL) && !d.getDateObtention().equals(Const.CHAINE_VIDE)) {
+			if (d.getDateObtention() != null && !d.getDateObtention().equals(Const.DATE_NULL)
+					&& !d.getDateObtention().equals(Const.CHAINE_VIDE)) {
 				anneeObtention = d.getDateObtention().substring(6, d.getDateObtention().length());
 			}
-			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : anneeObtention + " : ")
+			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : anneeObtention
+					+ " : ")
 					+ td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome());
 			getEaeDiplomeDao().creerEaeDiplome(eaeDiplome.getIdEae(), eaeDiplome.getLibelleDiplome());
 		}
 	}
 
-	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration, boolean agentDetach,
-			boolean modeCreation) throws Exception {
+	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration,
+			boolean agentDetach, boolean modeCreation) throws Exception {
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		EaeEvalue evalAModif = null;
@@ -2318,15 +2406,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// service et
 				// on prend la date la plus ancienne
 				// NB : pour les affectations successives
-				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(getTransaction(), ag.getIdAgent(),
-						fp.getIdServi());
+				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
+						getTransaction(), ag.getIdAgent(), fp.getIdServi());
 				String dateDebutService = null;
 				for (int i = 0; i < listeAffectationService.size(); i++) {
 					Affectation affCours = listeAffectationService.get(i);
 					if (listeAffectationService.size() > i + 1) {
 						if (listeAffectationService.get(i + 1) != null) {
 							Affectation affPrecedente = listeAffectationService.get(i + 1);
-							if (affCours.getDateDebutAff().equals(Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+							if (affCours.getDateDebutAff().equals(
+									Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
 								dateDebutService = affPrecedente.getDateDebutAff();
 							} else {
 								dateDebutService = affCours.getDateDebutAff();
@@ -2338,12 +2427,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						dateDebutService = affCours.getDateDebutAff();
 					}
 				}
-				evalAModif.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(dateDebutService));
+				evalAModif
+						.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
+								: sdf.parse(dateDebutService));
 			}
 
-			evalAModif.setDateEntreeCollectivite(ag.getDateDerniereEmbauche() == null || ag.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-					|| ag.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(ag.getDateDerniereEmbauche()));
+			evalAModif.setDateEntreeCollectivite(ag.getDateDerniereEmbauche() == null
+					|| ag.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+					|| ag.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(ag
+					.getDateDerniereEmbauche()));
 			// on cherche la date la plus ancienne dans les carrieres pour le
 			// statut
 			// fonctionnaire
@@ -2356,8 +2448,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				dateCarriere = sdf.parse(carr.getDateDebut());
 			}
 			// idem dans la liste des autres administration
-			AutreAdministrationAgent autreAdmin = AutreAdministrationAgent.chercherAutreAdministrationAgentFonctionnaireAncienne(getTransaction(),
-					ag.getIdAgent());
+			AutreAdministrationAgent autreAdmin = AutreAdministrationAgent
+					.chercherAutreAdministrationAgentFonctionnaireAncienne(getTransaction(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -2381,11 +2473,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// prend la date de l'EAE de l'année passée
 			CampagneEAE campagneActuelle = getCampagneCourante();
 			CampagneEAE campagnePrec = getCampagneEAEDao().chercherCampagneEAEAnnee(campagneActuelle.getAnnee() - 1);
-			EAE eaeAnneePrec = getEaeDao().chercherEAEAgent(Integer.valueOf(ag.getIdAgent()), campagnePrec.getIdCampagneEAE());
+			EAE eaeAnneePrec = getEaeDao().chercherEAEAgent(Integer.valueOf(ag.getIdAgent()),
+					campagnePrec.getIdCampagneEAE());
 			EaeEvalue ancienneValeur = getEaeEvalueDao().chercherEaeEvalue(eaeAnneePrec.getIdEAE());
 			if (evalAModif.getDateEntreeFonctionnaire() != null) {
 				if (ancienneValeur.getDateEntreeFonctionnaire() != null
-						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
+						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(
+								ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
 					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
 				}
 			} else {
@@ -2397,7 +2491,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (miseAjourDateAdministration) {
 				// on cherche la date la plus ancienne dans les PA de
 				// mairie.SPADMN
-				PositionAdmAgent paAncienne = PositionAdmAgent.chercherPositionAdmAgentAncienne(getTransaction(), ag.getNoMatricule());
+				PositionAdmAgent paAncienne = PositionAdmAgent.chercherPositionAdmAgentAncienne(getTransaction(),
+						ag.getNoMatricule());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -2406,8 +2501,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					dateSpadmnAncienne = sdf.parse(paAncienne.getDatdeb());
 				}
 				// idem dans la liste des autres administration
-				AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent.chercherAutreAdministrationAgentAncienne(getTransaction(),
-						ag.getIdAgent());
+				AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent
+						.chercherAutreAdministrationAgentAncienne(getTransaction(), ag.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -2433,7 +2528,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// prend la date de l'EAE de l'année passée
 			if (evalAModif.getDateEntreeAdministration() != null) {
 				if (ancienneValeur.getDateEntreeAdministration() != null
-						&& (evalAModif.getDateEntreeAdministration().compareTo(ancienneValeur.getDateEntreeAdministration()) != 0)) {
+						&& (evalAModif.getDateEntreeAdministration().compareTo(
+								ancienneValeur.getDateEntreeAdministration()) != 0)) {
 					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
 				}
 			} else {
@@ -2449,11 +2545,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (carrCours != null & carrCours.getNoMatricule() != null) {
 				evalAModif.setStatut(Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()));
 				if (evalAModif.getStatut().equals("A")) {
-					evalAModif.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie()).getLiCate());
+					evalAModif.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(),
+							carrCours.getCodeCategorie()).getLiCate());
 				}
 				if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("F")) {
 					// pour le cadre
-					StatutCarriere statCarr = StatutCarriere.chercherStatutCarriere(getTransaction(), carrCours.getCodeCategorie());
+					StatutCarriere statCarr = StatutCarriere.chercherStatutCarriere(getTransaction(),
+							carrCours.getCodeCategorie());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
@@ -2476,12 +2574,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								classeString = classe.getLibClasse();
 							}
 						}
-						evalAModif.setNbMoisDureeMin(grade.getDureeMin().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMin()));
-						evalAModif.setNbMoisDureeMoy(grade.getDureeMoy().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMoy()));
-						evalAModif.setNbMoisDureeMax(grade.getDureeMax().equals(Const.ZERO) ? null : Integer.valueOf(grade.getDureeMax()));
+						evalAModif.setNbMoisDureeMin(grade.getDureeMin().equals(Const.ZERO) ? null : Integer
+								.valueOf(grade.getDureeMin()));
+						evalAModif.setNbMoisDureeMoy(grade.getDureeMoy().equals(Const.ZERO) ? null : Integer
+								.valueOf(grade.getDureeMoy()));
+						evalAModif.setNbMoisDureeMax(grade.getDureeMax().equals(Const.ZERO) ? null : Integer
+								.valueOf(grade.getDureeMax()));
 
 						evalAModif.setGrade(grade.getGrade() + " " + classeString);
-						GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
+						GradeGenerique gradeGen = GradeGenerique.chercherGradeGenerique(getTransaction(),
+								grade.getCodeGradeGenerique());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
@@ -2507,24 +2609,28 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			// pour l'anciennete on met le resultat en nb de jours
-			if (carrCours != null && carrCours.getDateDebut() != null && !carrCours.getDateDebut().equals(Const.DATE_NULL)) {
-				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/" + (getCampagneCourante().getAnnee() - 1));
+			if (carrCours != null && carrCours.getDateDebut() != null
+					&& !carrCours.getDateDebut().equals(Const.DATE_NULL)) {
+				int nbJours = Services.compteJoursEntreDates(carrCours.getDateDebut(), "31/12/"
+						+ (getCampagneCourante().getAnnee() - 1));
 				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			}
 
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
 			// echelon
 			// et la date d'avancement
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
-					.getAnnee().toString(), ag.getIdAgent());
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
+					getTransaction(), getCampagneCourante().getAnnee().toString(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
 				if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
 					// attention dans le cas des categorie 4 on a pas de date
 					// moyenne avct
-					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null || avct.getDateAvctMoy().equals(Const.DATE_NULL)
-							|| avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avct.getDateAvctMoy()));
+					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null
+							|| avct.getDateAvctMoy().equals(Const.DATE_NULL)
+							|| avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null
+							: sdf.parse(avct.getDateAvctMoy()));
 				}
 				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
 				if (getTransaction().isErreur()) {
@@ -2543,7 +2649,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					}
 					evalAModif.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
 					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
-						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeAvct.getCodeTava());
+						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
+								gradeAvct.getCodeTava());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -2563,7 +2670,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			// pour la PA
-			PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), ag.getNoMatricule());
+			PositionAdmAgent paCours = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(),
+					ag.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
@@ -2573,21 +2681,25 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			evalAModif.setAgentDetache(agentDetach);
 			if (modeCreation) {
 				// enfin on créer la ligne
-				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(), evalAModif.getDateEntreeService(),
-						evalAModif.getDateEntreeCollectivite(), evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
-						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(), evalAModif.getCategorie(),
-						evalAModif.getClassification(), evalAModif.getGrade(), evalAModif.getEchelon(), evalAModif.getDateEffetAvct(),
-						evalAModif.getNouvGrade(), evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
-						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(), evalAModif.getNbMoisDureeMoy(),
-						evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
+				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
+						evalAModif.getDateEntreeService(), evalAModif.getDateEntreeCollectivite(),
+						evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
+						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(),
+						evalAModif.getCategorie(), evalAModif.getClassification(), evalAModif.getGrade(),
+						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
+						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
+						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(),
+						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
 			} else {
-				getEaeEvalueDao().modifierEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(), evalAModif.getDateEntreeService(),
-						evalAModif.getDateEntreeCollectivite(), evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
-						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(), evalAModif.getCategorie(),
-						evalAModif.getClassification(), evalAModif.getGrade(), evalAModif.getEchelon(), evalAModif.getDateEffetAvct(),
-						evalAModif.getNouvGrade(), evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
-						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(), evalAModif.getNbMoisDureeMoy(),
-						evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
+				getEaeEvalueDao().modifierEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
+						evalAModif.getDateEntreeService(), evalAModif.getDateEntreeCollectivite(),
+						evalAModif.getDateEntreeFonctionnaire(), evalAModif.getDateEntreeAdministration(),
+						evalAModif.getStatut(), evalAModif.getAncienneteEchelonJours(), evalAModif.getCadre(),
+						evalAModif.getCategorie(), evalAModif.getClassification(), evalAModif.getGrade(),
+						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
+						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
+						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(),
+						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
 			}
 		}
 	}
@@ -3043,38 +3155,49 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		setMessage(Const.CHAINE_VIDE);
 		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
+		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
 
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
-			//TODO
-			//on cherche le document concerné
-			try{
+			// on cherche le document concerné
+			try {
 				String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-				//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
+				// on fait appel au WS de Sharepoint pour mettre à jour les
+				// droits de l'évalué sur le document.
 				SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
-				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise,false);
-				if(retour.getStatus().equals("ko")){
-					//TODO declarer erreur
+				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, false);
+				if (retour.getStatus().equals("ko")) {
+					// "ERR214",
+					// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
+					logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE()
+							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
 					return false;
 				}
-			}catch(SirhKiosqueWSConsumerException e){
-				//TODO declarer erreur
+			} catch (SirhKiosqueWSConsumerException e) {
+				// "ERR214",
+				// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
+				logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
+						+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
 				return false;
 			}
-			
+
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
 			// dans
 			// Avanacement pourla meme année
-			MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "REVALORISATION");
-			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "AVANCEMENT DIFFERENCIE");
+			MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+					"REVALORISATION");
+			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+					"AVANCEMENT DIFFERENCIE");
 			MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
-			MotifAvancement motifTitu = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "TITULARISATION");
-			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
-					.getAnnee().toString(), evalue.getIdAgent().toString());
+			MotifAvancement motifTitu = MotifAvancement
+					.chercherMotifAvancementByLib(getTransaction(), "TITULARISATION");
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
+					getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// "INF500",
@@ -3099,7 +3222,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								avct.setAvisSHD(null);
 							} else {
 								avct.setIdMotifAvct(motif.getIdMotifAvct());
-								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(getEaeCourant().getIdEAE());
+								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(
+										getEaeCourant().getIdEAE());
 								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
 									avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
 								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
@@ -3136,8 +3260,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			getEaeCourant().setDateControle(new Date());
 			getEaeCourant().setHeureControle(heureAction);
 			getEaeCourant().setUserControle(user.getUserName());
-			getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(), getEaeCourant().getHeureControle(),
-					getEaeCourant().getUserControle(), getEaeCourant().getEtat());
+			getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(),
+					getEaeCourant().getHeureControle(), getEaeCourant().getUserControle(), getEaeCourant().getEtat());
 		}
 		// on reinitialise l'affichage du tableau
 		performPB_FILTRER(request);
@@ -3164,30 +3288,38 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		setMessage(Const.CHAINE_VIDE);
 		EAE eaeCourant = getEaeDao().chercherEAE(idEae);
 		setEaeCourant(eaeCourant);
+		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 
 		// RG-EAE-6 --> mis au moment où on controle un EAE.
-		//TODO
-		//on cherche le document concerné
-		try{
+		// on cherche le document concerné
+		try {
 			String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-			//on fait appel au WS de Sharepoint pour mettre à jour les droits de l'évalué sur le document.
+			// on fait appel au WS de Sharepoint pour mettre à jour les droits
+			// de l'évalué sur le document.
 			SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
-			KiosqueDto retour = t.setDroitEvalueEAE(docFinalise,true);
-			if(retour.getStatus().equals("ko")){
-				//TODO declarer erreur
+			KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, true);
+			if (retour.getStatus().equals("ko")) {
+				// "ERR215",
+				// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
+				logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
+						+ evalue.getIdAgent() + ", erreur :" + retour.getMessage());
 				return false;
 			}
-		}catch(SirhKiosqueWSConsumerException e){
-			//TODO declarer erreur
+		} catch (SirhKiosqueWSConsumerException e) {
+			// "ERR215",
+			// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
+			logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
+					+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
 			return false;
 		}
-		
-		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(), getCampagneCourante()
-				.getAnnee().toString(), evalue.getIdAgent().toString());
+
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(),
+				getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "INF500",
@@ -3210,8 +3342,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		getEaeCourant().setDateControle(new Date());
 		getEaeCourant().setHeureControle(heureAction);
 		getEaeCourant().setUserControle(user.getUserName());
-		getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(), getEaeCourant().getHeureControle(),
-				getEaeCourant().getUserControle(), getEaeCourant().getEtat());
+		getEaeDao().modifierControle(getEaeCourant().getIdEAE(), getEaeCourant().getDateControle(),
+				getEaeCourant().getHeureControle(), getEaeCourant().getUserControle(), getEaeCourant().getEtat());
 
 		// on reinitialise l'affichage du tableau
 		performPB_FILTRER(request);
@@ -3266,7 +3398,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		performCreerDiplome(request, ag);
 
 		// on supprime les parcours pro
-		ArrayList<EaeParcoursPro> listeEaeParcoursPro = getEaeParcoursProDao().listerEaeParcoursPro(getEaeCourant().getIdEAE());
+		ArrayList<EaeParcoursPro> listeEaeParcoursPro = getEaeParcoursProDao().listerEaeParcoursPro(
+				getEaeCourant().getIdEAE());
 		for (int j = 0; j < listeEaeParcoursPro.size(); j++) {
 			EaeParcoursPro parcours = listeEaeParcoursPro.get(j);
 			getEaeParcoursProDao().supprimerEaeParcoursPro(parcours.getIdEaeParcoursPro());
@@ -3288,8 +3421,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// on met à jour le champ CAP
 		// on cherche si il y a une ligne dans les avancements
 		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(),
-				getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
+				getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
 		EAE eae = getEaeCourant();
@@ -3374,7 +3507,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		EAE eaeSelection = getEaeDao().chercherEAE(idEae);
 		// on supprime tous les evaluateurs existants
-		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(eaeSelection.getIdEAE());
+		ArrayList<EaeEvaluateur> evaluateursExistants = getEaeEvaluateurDao().listerEvaluateurEAE(
+				eaeSelection.getIdEAE());
 		for (int i = 0; i < evaluateursExistants.size(); i++) {
 			EaeEvaluateur eval = evaluateursExistants.get(i);
 			getEaeEvaluateurDao().supprimerEaeEvaluateur(eval.getIdEaeEvaluateur());

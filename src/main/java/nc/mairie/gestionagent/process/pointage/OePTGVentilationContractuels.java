@@ -426,7 +426,9 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
 				new JSONSerializer().serialize(listeIdAgents), "C", idRefTypePointage)) {
-			// TODO declarer erreur
+			// "ERR602",
+			// "La ventilation des @ n'a pu être lancée. Merci de contacter le responsable du projet.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR602", "contractuels"));
 			return false;
 		}
 		return true;
@@ -604,7 +606,8 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		// on lance le deversement
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (!t.startDeversementPaie(agentConnecte.getIdAgent(), "C")) {
-			// TODO declarer erreur
+			//"ERR603", "La déversement dans la paie des @ n'a pu être lancée. Merci de contacter le responsable du projet.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR603", "contractuels"));
 			return false;
 		}
 		return true;

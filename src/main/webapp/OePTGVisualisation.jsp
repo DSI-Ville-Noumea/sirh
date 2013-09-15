@@ -112,8 +112,7 @@
 
                 function launchJSPSaisie(idAgent, date) {
                     document.location.href = './OePTGSaisie.jsp?idAgent=' + idAgent + '&dateLundi=' + date;
-                    //TODO	ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "EVALUATEURS");
-
+                   
                 }
 
                 /**

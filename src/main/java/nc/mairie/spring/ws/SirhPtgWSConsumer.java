@@ -428,6 +428,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			return true;
 		} else {
+			logger.debug("StartVentilation NON OK : " + res.getStatus());
 			return false;
 		}
 	}
@@ -436,7 +437,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	public boolean startDeversementPaie(String idAgent, String statut) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgStartDeversement;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent);
 		params.put("statut", statut);
@@ -444,6 +444,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			return true;
 		} else {
+			logger.debug("StartDeversement NON OK : " + res.getStatus());
 			return false;
 		}
 	}
