@@ -48,8 +48,6 @@ public class OePTGSaisie extends BasicProcess {
 	private FichePointageDto listeFichePointage;
 	private HashMap<String, List<AbsenceDto>> absences = new HashMap<>();
 	private HashMap<String, List<HeureSupDto>> hsups = new HashMap<>();
-	public static final String VALIDATION = "validation page saisie";
-	public static final String BACK = "back sur page saisie";
 	private AgentNW loggedAgent;
 	private SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", new Locale("fr", "FR"));
 	private SimpleDateFormat wsdf = new SimpleDateFormat("yyyyMMdd", new Locale("fr", "FR"));
@@ -237,23 +235,13 @@ public class OePTGSaisie extends BasicProcess {
 
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
-		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) { // Si
-																									// on
-																									// arrive
-																									// de
-																									// la
-																									// JSP
-																									// alors
-																									// on
-																									// traite
-																									// le
-																									// get
-			if (testerParametre(request, VALIDATION)) {
+		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+			if (testerParametre(request, getNOM_PB_VALIDATION())) {
 				save();
 				setStatut(STATUT_PROCESS_APPELANT);
 				return true;
 			}
-			if (testerParametre(request, BACK)) {
+			if (testerParametre(request, getNOM_PB_BACK())) {
 				setStatut(STATUT_PROCESS_APPELANT);
 				return true;
 			}
@@ -533,5 +521,13 @@ public class OePTGSaisie extends BasicProcess {
 			}
 		}
 		return ret.toString();
+	}
+
+	public String getNOM_PB_BACK() {
+		return "NOM_PB_BACK";
+	}
+
+	public String getNOM_PB_VALIDATION() {
+		return "NOM_PB_VALIDATION";
 	}
 }
