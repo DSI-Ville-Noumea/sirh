@@ -189,7 +189,7 @@
                 <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
                 <span class="sigp2Mandatory" style="width:80px"></span>
                 <span class="sigp2" style="width:40px">Etat : </span>
-                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT()%>" width=150px;margin-right:20px;">
+                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT()%>" style="width:150px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT())%>
                 </SELECT>
                 <BR/><BR/>
@@ -203,7 +203,7 @@
                 <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
                 <span class="sigp2Mandatory" style="width:80px"></span>
                 <span class="sigp2" style="width:40px">Type : </span>
-                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE()%>" width=150px;margin-right:20px;">
+                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE()%>" style="width:150px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT())%>
                 </SELECT>
                 <BR/><BR/>

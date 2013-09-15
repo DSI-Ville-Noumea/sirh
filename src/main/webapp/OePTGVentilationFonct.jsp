@@ -237,7 +237,7 @@
                 <% if (process.onglet.equals("ONGLET5")) {%>
                 <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
                 <% } else {%>
-                <div id="corpsOngletValidation" title=""Validation"" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+                <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
                 <% }%>
 	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
 		                <legend class="sigp2Legend">Validation de la ventilation des pointages des fonctionnaires</legend>	
