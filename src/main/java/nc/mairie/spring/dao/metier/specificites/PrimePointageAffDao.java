@@ -31,20 +31,23 @@ public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 
 	@Override
 	public void creerPrimePointageAff(Integer numRubrique, Integer idAffectation) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_NUM_RUBRIQUE + "," + CHAMP_ID_AFFECTATION + ") " + "VALUES (?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_NUM_RUBRIQUE + "," + CHAMP_ID_AFFECTATION + ") "
+				+ "VALUES (?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { numRubrique, idAffectation });
 	}
 
 	@Override
 	public void supprimerPrimePointageAff(Integer idAffectation, Integer numRubrique) {
-		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_AFFECTATION + "=? and " + CHAMP_NUM_RUBRIQUE + "=?";
+		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_AFFECTATION + "=? and " + CHAMP_NUM_RUBRIQUE
+				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idAffectation, numRubrique });
 	}
 
 	@Override
 	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation) {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AFFECTATION + "=? WITH UR";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AFFECTATION + "=? order by "
+				+ CHAMP_NUM_RUBRIQUE + " WITH UR";
 
 		ArrayList<PrimePointageAff> listePrime = new ArrayList<PrimePointageAff>();
 
