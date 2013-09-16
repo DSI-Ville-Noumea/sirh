@@ -232,7 +232,7 @@
 					%>
 					<BR />
 					<div align="left">
-						<span class="sigp2-RadioBouton"> 
+						<span class="sigp2-RadioBouton"> </span>
 						<INPUT tabindex=""	type="radio" checked
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_PP_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Prime pointage <span style="width: 5px"></span> 
 					    <INPUT tabindex=""	type="radio" 
