@@ -401,7 +401,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		// on fait la correspondance entre le login et l'agent via la
 		// table SIIDMA
 		AgentNW agentConnecte = null;
-		if (!u.getUserName().equals("nicno85")) {
+		if (!(u.getUserName().equals("nicno85") || u.getUserName().equals("levch80"))) {
 			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
