@@ -46,8 +46,7 @@ public class PrimePointageFPDao implements PrimePointageFPDaoInterface {
 
 	@Override
 	public ArrayList<PrimePointageFP> listerPrimePointageFP(Integer idFichePoste) {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? order by "
-				+ CHAMP_NUM_RUBRIQUE + " WITH UR";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_FICHE_POSTE + "=? WITH UR";
 
 		ArrayList<PrimePointageFP> listePrime = new ArrayList<PrimePointageFP>();
 

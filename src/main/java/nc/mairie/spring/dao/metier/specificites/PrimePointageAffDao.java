@@ -46,8 +46,7 @@ public class PrimePointageAffDao implements PrimePointageAffDaoInterface {
 
 	@Override
 	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation) {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AFFECTATION + "=? order by "
-				+ CHAMP_NUM_RUBRIQUE + " WITH UR";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AFFECTATION + "=? WITH UR";
 
 		ArrayList<PrimePointageAff> listePrime = new ArrayList<PrimePointageAff>();
 
