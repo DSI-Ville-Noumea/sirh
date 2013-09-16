@@ -28,7 +28,7 @@
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-                <legend class="sigp2Legend"> Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%>
+                <legend class="sigp2Legend" style="font-size: 11px;"> Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%>
                     <INPUT title="Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/annuler.png" height="16px" width="55px" name="<%=process.getNOM_PB_BACK()%>">
                     <INPUT title="Enregister et Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/enregistrer.png" height="16px" width="68px" name="<%=process.getNOM_PB_VALIDATION()%>"></legend>
                 <BR/>

@@ -20,6 +20,8 @@ import nc.mairie.gestionagent.dto.JourPointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
+import nc.mairie.metier.poste.Affectation;
+import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.UserAppli;
@@ -251,8 +253,24 @@ public class OePTGSaisie extends BasicProcess {
 		return true;
 	}
 
-	public String getIdAgent() {
-		return idAgent;
+	public String getIdAgent() throws Exception {
+		AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), idAgent);
+		String service = "";
+		Affectation affAgent = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+		} else {
+			if (affAgent.getIdFichePoste() != null) {
+				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePoste());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+					service = fp.getIdServi();
+				}
+			}
+		}
+		return agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + idAgent + ")"
+				+ (service.equals("") ? "" : " - " + service);
 	}
 
 	public void setIdAgent(String idAgent) {
