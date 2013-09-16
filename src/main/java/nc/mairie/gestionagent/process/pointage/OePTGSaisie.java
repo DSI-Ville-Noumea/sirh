@@ -111,7 +111,8 @@ public class OePTGSaisie extends BasicProcess {
 
 		// compare date lundi avec aujourd'hui pour savoir si autorisé à
 		// enregister
-		if ((new Date().getTime() - getDateLundi(0).getTime()) / (1000 * 60 * 60 * 24 * 30) >= 3) {
+		if (((new Date().getTime() - getDateLundi(0).getTime()) / (1000l * 60 * 60 * 24 * 30)) >= 3) {
+			logger.debug("\nTentative de sauvegarde d'un pointage de plus de 3 mois");
 			getTransaction().declarerErreur("La semaine sélectionnée est trop ancienne pour être modifiée");
 			return;
 		}
