@@ -353,9 +353,14 @@ public class OePTGSelectionAgent extends BasicProcess {
 		// on verifie que l'agent soit bien C,CC ou F
 		ArrayList<AgentNW> listeAExclure = new ArrayList<AgentNW>();
 		for (AgentNW ag : aListe) {
-			if (!Carriere.getStatutCarriere(
-					Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag).getCodeCategorie()).equals(
-					getTypePopulation())) {
+			Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				listeAExclure.add(ag);
+				continue;
+			}
+			String statutCarriere = Carriere.getStatutCarriere(carrEnCours.getCodeCategorie());
+			if (!statutCarriere.equals(getTypePopulation())) {
 				listeAExclure.add(ag);
 			}
 		}
