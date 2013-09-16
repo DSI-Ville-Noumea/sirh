@@ -263,7 +263,8 @@
 				<span class="sigp2-titre" >
 				<span class="sigp2-saisie" style="position:relative;width:80px;">Code</span>
 				<span class="sigp2-saisie" style="position:relative;width:110px;">Type</span>
-				<span class="sigp2-saisie" style="position:relative;">Reférence</span>
+				<span class="sigp2-saisie" style="position:relative;width:50px;">Reférence</span>
+				<span class="sigp2-saisie" style="position:relative;">VDN</span>
 				<SELECT name="<%= process.getNOM_LB_CAP() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
@@ -295,6 +296,11 @@
 							<%=process.forComboHTML(process.getVAL_LB_TYPE_CAP(), process.getVAL_LB_TYPE_CAP_SELECT()) %>
 					</SELECT>				
 					<br />
+					<span style="margin-right:30px;" class="sigp2Mandatory" nowrap> CAP VDN :</span>
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CAP_VDN(),process.getNOM_RB_CAP_VDN_O())%> >Oui
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CAP_VDN(),process.getNOM_RB_CAP_VDN_N())%> >Non
+					<span style="width:172px"></span>
+					<br /><br />
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
 					<br/>
 					<div style="overflow: auto;height: 120px;width:95%;">
@@ -361,8 +367,11 @@
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_CAP() %>">
 							<%=process.forComboHTML(process.getVAL_LB_TYPE_CAP(), process.getVAL_LB_TYPE_CAP_SELECT()) %>
-					</SELECT>				
+					</SELECT>	
 					<br />
+					<span class="sigp2" style="width: 120px">CAP VDN : </span>
+					<span class="sigp2-saisie" style="width: 120px"><%=process.getVAL_ST_CAP_VDN() %></span> 			
+					<br /><br />
 					<span class="sigp2Mandatory" style="position:relative;width:150px;"> Corps : </span>
 					<br/>
 					<table class="sigp2NewTab" style="text-align:left;width:90%;">

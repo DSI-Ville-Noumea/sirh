@@ -17,6 +17,8 @@ public class CapResultSetExtractor implements ResultSetExtractor<Object> {
 		cap.setCodeCap(rs.getString(CapDao.CHAMP_CODE_CAP));
 		cap.setRefCap(rs.getString(CapDao.CHAMP_REF_CAP));
 		cap.setDescription(rs.getString(CapDao.CHAMP_DESCRIPTION));
+		cap.setTypeCap(rs.getString(CapDao.CHAMP_TYPE_CAP));
+		cap.setCapVDN(rs.getInt(CapDao.CHAMP_CAP_VDN));
 
 		return cap;
 	}

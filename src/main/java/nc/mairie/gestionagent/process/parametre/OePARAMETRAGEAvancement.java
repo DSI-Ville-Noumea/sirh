@@ -276,9 +276,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<Representant> list = getListeRepresentant().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
-				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
-						+ " )" };
+				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(
+						repre.getIdTypeRepresentant());
+				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( "
+						+ typeRepre.getLibTypeRepresentant() + " )" };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -363,8 +364,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<Representant> list = getListeRepresentant().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
-				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-				String ligne[] = { repre.getNomRepresentant(), repre.getPrenomRepresentant(), typeRepre.getLibTypeRepresentant() };
+				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(
+						repre.getIdTypeRepresentant());
+				String ligne[] = { repre.getNomRepresentant(), repre.getPrenomRepresentant(),
+						typeRepre.getLibTypeRepresentant() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -624,7 +627,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				&& AvancementFonctionnaires.listerAvancementAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avancement", "ce motif d'avancement"));
+			getTransaction()
+					.declarerErreur(MessageUtils.getMessage("ERR989", "un avancement", "ce motif d'avancement"));
 			return false;
 		}
 
@@ -635,13 +639,15 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				if (motif.getLibMotifAvct().equals(getVAL_EF_LIB_MOTIF().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce libellé"));
 					return false;
 				}
 				if (motif.getCodeMotifAvct().equals(getVAL_EF_CODE_MOTIF().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce code"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce code"));
 					return false;
 				}
 			}
@@ -1134,7 +1140,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_EMPLOYEUR(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_EMPLOYEUR_SELECT()) ? Integer.parseInt(getVAL_LB_EMPLOYEUR_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_EMPLOYEUR_SELECT()) ? Integer
+				.parseInt(getVAL_LB_EMPLOYEUR_SELECT()) : -1);
 		if (indice != -1 && indice < getListeEmployeur().size()) {
 			Employeur emp = getListeEmployeur().get(indice);
 			setEmployeurCourant(emp);
@@ -1178,7 +1185,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				setEmployeurCourant(new Employeur());
 				getEmployeurCourant().setLibEmployeur(getVAL_EF_EMPLOYEUR());
 				getEmployeurCourant().setTitreEmployeur(getVAL_EF_TITRE_EMPLOYEUR());
-				getEmployeurDao().creerEmployeur(getEmployeurCourant().getLibEmployeur(), getEmployeurCourant().getTitreEmployeur());
+				getEmployeurDao().creerEmployeur(getEmployeurCourant().getLibEmployeur(),
+						getEmployeurCourant().getTitreEmployeur());
 				getListeEmployeur().add(getEmployeurCourant());
 			} else if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_SUPPRESSION)) {
 				getEmployeurDao().supprimerEmployeur(getEmployeurCourant().getIdEmployeur());
@@ -1426,7 +1434,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_REPRESENTANT(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_REPRESENTANT_SELECT()) ? Integer.parseInt(getVAL_LB_REPRESENTANT_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_REPRESENTANT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_REPRESENTANT_SELECT()) : -1);
 		if (indice != -1 && indice < getListeRepresentant().size()) {
 			Representant repre = getListeRepresentant().get(indice);
 			setRepresentantCourant(repre);
@@ -1475,14 +1484,17 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION)) {
 				setRepresentantCourant(new Representant());
 				// on recupere le type de representant
-				int indice = (Services.estNumerique(getVAL_LB_TYPE_REPRESENTANT_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REPRESENTANT_SELECT())
-						: -1);
-				Integer idTypeRepre = ((TypeRepresentant) getListeTypeRepresentant().get(indice)).getIdTypeRepresentant();
+				int indice = (Services.estNumerique(getVAL_LB_TYPE_REPRESENTANT_SELECT()) ? Integer
+						.parseInt(getVAL_LB_TYPE_REPRESENTANT_SELECT()) : -1);
+				Integer idTypeRepre = ((TypeRepresentant) getListeTypeRepresentant().get(indice))
+						.getIdTypeRepresentant();
 				getRepresentantCourant().setIdTypeRepresentant(idTypeRepre);
 				getRepresentantCourant().setNomRepresentant(getVAL_EF_NOM_REPRESENTANT());
 				getRepresentantCourant().setPrenomRepresentant(getVAL_EF_PRENOM_REPRESENTANT());
-				getRepresentantDao().creerRepresentant(getRepresentantCourant().getIdTypeRepresentant(),
-						getRepresentantCourant().getNomRepresentant(), getRepresentantCourant().getPrenomRepresentant());
+				getRepresentantDao()
+						.creerRepresentant(getRepresentantCourant().getIdTypeRepresentant(),
+								getRepresentantCourant().getNomRepresentant(),
+								getRepresentantCourant().getPrenomRepresentant());
 				getListeRepresentant().add(getRepresentantCourant());
 			} else if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_SUPPRESSION)) {
 				getRepresentantDao().supprimerRepresentant(getRepresentantCourant().getIdRepresentant());
@@ -1524,7 +1536,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// Verification si suppression d'un employeur utilisée sur une
 		// cap
 		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_SUPPRESSION)
-				&& getRepresentantCapDao().listerRepresentantCapParRepresentant(getRepresentantCourant().getIdRepresentant()).size() > 0) {
+				&& getRepresentantCapDao().listerRepresentantCapParRepresentant(
+						getRepresentantCourant().getIdRepresentant()).size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une CAP", "ce représentant"));
@@ -1536,10 +1549,12 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 			for (Representant repre : getListeRepresentant()) {
 				if (repre.getNomRepresentant().trim().equals(getVAL_EF_NOM_REPRESENTANT().toUpperCase().trim())
-						&& repre.getPrenomRepresentant().trim().equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
+						&& repre.getPrenomRepresentant().trim()
+								.equals(getVAL_EF_PRENOM_REPRESENTANT().toUpperCase().trim())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un représentant", "ce nom et ce prénom"));
 					return false;
 				}
 			}
@@ -1826,7 +1841,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DELIBERATION(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
 		if (indice != -1 && indice < getListeDeliberation().size()) {
 			Deliberation delib = getListeDeliberation().get(indice);
 			setDeliberationCourant(delib);
@@ -1887,8 +1903,9 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				getDeliberationCourant().setLibDeliberation(getVAL_EF_LIB_DELIBERATION());
 				getDeliberationCourant().setTexteCAP(getVAL_EF_TEXTE_CAP_DELIBERATION());
 				getDeliberationCourant().setTypeDeliberation(typeDelib);
-				getDeliberationDao().creerDeliberation(getDeliberationCourant().getCodeDeliberation(), getDeliberationCourant().getLibDeliberation(),
-						getDeliberationCourant().getTypeDeliberation(), getDeliberationCourant().getTexteCAP());
+				getDeliberationDao().creerDeliberation(getDeliberationCourant().getCodeDeliberation(),
+						getDeliberationCourant().getLibDeliberation(), getDeliberationCourant().getTypeDeliberation(),
+						getDeliberationCourant().getTexteCAP());
 				getListeDeliberation().add(getDeliberationCourant());
 
 			} else if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_SUPPRESSION)) {
@@ -2009,10 +2026,12 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// grade générique
 
 		if (getVAL_ST_ACTION_DELIBERATION().equals(ACTION_SUPPRESSION)
-				&& GradeGenerique.listerGradeGeneriqueAvecDeliberation(getTransaction(), getDeliberationCourant().getIdDeliberation()).size() > 0) {
+				&& GradeGenerique.listerGradeGeneriqueAvecDeliberation(getTransaction(),
+						getDeliberationCourant().getIdDeliberation()).size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une délibération", "un grade générique"));
+			getTransaction()
+					.declarerErreur(MessageUtils.getMessage("ERR989", "une délibération", "un grade générique"));
 			return false;
 		}
 
@@ -2029,7 +2048,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				if (delib.getLibDeliberation().equals(getVAL_EF_LIB_DELIBERATION().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce libellé"));
+					getTransaction()
+							.declarerErreur(MessageUtils.getMessage("ERR974", "une délibération", "ce libellé"));
 					return false;
 				}
 			}
@@ -2216,6 +2236,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		setLB_EMP_CAP_MULTI(null);
 		addZone(getNOM_LB_REPRE_CAP_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_EMP_CAP_SELECT(), Const.ZERO);
+		addZone(getNOM_RG_CAP_VDN(), getNOM_RB_CAP_VDN_N());
 
 		setListeEmployeurCap(null);
 		setListeRepresentantCap(null);
@@ -2253,9 +2274,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
+			addZone(getNOM_ST_CAP_VDN(), cap.getCapVDN().toString().equals("1") ? "Oui" : "Non");
 
 			// on affiche la liste des employeurs CAP
-			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
+			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(
+					getCapCourant().getIdCap());
 			ArrayList<Employeur> listeTempEmp = new ArrayList<Employeur>();
 			for (int i = 0; i < listeEmpCap.size(); i++) {
 				EmployeurCap empCap = listeEmpCap.get(i);
@@ -2265,7 +2288,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			setListeEmployeurCap(listeTempEmp);
 
 			// on affiche la liste des représentant CAP
-			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(getCapCourant().getIdCap());
+			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(
+					getCapCourant().getIdCap());
 			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
 			for (int i = 0; i < listeRepreCap.size(); i++) {
 				RepresentantCap reprCap = listeRepreCap.get(i);
@@ -2340,7 +2364,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				}
 
 				// on recupere le type de déliberation
-				int indicetypeCap = (Services.estNumerique(getVAL_LB_TYPE_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_CAP_SELECT()) : -1);
+				int indicetypeCap = (Services.estNumerique(getVAL_LB_TYPE_CAP_SELECT()) ? Integer
+						.parseInt(getVAL_LB_TYPE_CAP_SELECT()) : -1);
 				String typeCap = Const.CHAINE_VIDE;
 				if (indicetypeCap > -1) {
 					typeCap = getListeTypeCap().get(indicetypeCap);
@@ -2350,16 +2375,21 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				getCapCourant().setRefCap(getVAL_EF_REF_CAP());
 				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
 				getCapCourant().setTypeCap(typeCap);
+				// on recupere le CAP VDN
+				getCapCourant().setCapVDN(getVAL_RG_CAP_VDN().equals(getNOM_RB_CAP_VDN_O()) ? 1 : 0);
 				Cap capAjoute = null;
 				if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
-					getCapDao().creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(), getCapCourant().getDescription(),
-							getCapCourant().getTypeCap());
+					getCapDao()
+							.creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(),
+									getCapCourant().getDescription(), getCapCourant().getTypeCap(),
+									getCapCourant().getCapVDN());
 					capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 				} else {
 					// modification
 					capAjoute = getCapCourant();
-					getCapDao().modifierCap(getCapCourant().getIdCap(), getCapCourant().getCodeCap(), getCapCourant().getRefCap(),
-							getCapCourant().getDescription(), getCapCourant().getTypeCap());
+					getCapDao().modifierCap(getCapCourant().getIdCap(), getCapCourant().getCodeCap(),
+							getCapCourant().getRefCap(), getCapCourant().getDescription(),
+							getCapCourant().getTypeCap(), getCapCourant().getCapVDN());
 
 					// on supprime les corps liés
 					getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
@@ -2379,13 +2409,15 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 				// on ajoute les employeurs CAP
 				for (int i = 0; i < getListeEmployeurCap().size(); i++) {
-					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(), capAjoute.getIdCap(), i);
+					getEmployeurCapDao().creerEmployeurCap(getListeEmployeurCap().get(i).getIdEmployeur(),
+							capAjoute.getIdCap(), i);
 				}
 				setListeEmployeurCap(null);
 
 				// on ajoute les représentants CAP
 				for (int i = 0; i < getListeRepresentantCap().size(); i++) {
-					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(), capAjoute.getIdCap(), i);
+					getRepresentantCapDao().creerRepresentantCap(getListeRepresentantCap().get(i).getIdRepresentant(),
+							capAjoute.getIdCap(), i);
 				}
 				setListeRepresentantCap(null);
 
@@ -2727,12 +2759,15 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
+			addZone(getNOM_RG_CAP_VDN(), cap.getCapVDN().toString().equals("1") ? getNOM_RB_CAP_VDN_O()
+					: getNOM_RB_CAP_VDN_N());
 
 			int ligneTypeCap = getListeTypeCap().indexOf(cap.getTypeCap());
 			addZone(getNOM_LB_TYPE_CAP_SELECT(), String.valueOf(ligneTypeCap));
 
 			// on affiche la liste des employeurs CAP
-			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(getCapCourant().getIdCap());
+			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(
+					getCapCourant().getIdCap());
 			ArrayList<Employeur> listeTempEmp = new ArrayList<Employeur>();
 			for (int i = 0; i < listeEmpCap.size(); i++) {
 				EmployeurCap empCap = listeEmpCap.get(i);
@@ -2757,7 +2792,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			}
 
 			// on affiche la liste des représentant CAP
-			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(getCapCourant().getIdCap());
+			ArrayList<RepresentantCap> listeRepreCap = getRepresentantCapDao().listerRepresentantCapParCap(
+					getCapCourant().getIdCap());
 			ArrayList<Representant> listeTempRepre = new ArrayList<Representant>();
 			for (int i = 0; i < listeRepreCap.size(); i++) {
 				RepresentantCap reprCap = listeRepreCap.get(i);
@@ -2772,9 +2808,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
 				for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 					Representant repre = (Representant) list.next();
-					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
-							+ " )" };
+					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(
+							repre.getIdTypeRepresentant());
+					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( "
+							+ typeRepre.getLibTypeRepresentant() + " )" };
 
 					aFormat.ajouteLigne(ligne);
 				}
@@ -2909,9 +2946,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
 				for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 					Representant repre = (Representant) list.next();
-					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
-							+ " )" };
+					TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(
+							repre.getIdTypeRepresentant());
+					String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( "
+							+ typeRepre.getLibTypeRepresentant() + " )" };
 
 					aFormat.ajouteLigne(ligne);
 				}
@@ -2947,7 +2985,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	public boolean performPB_AJOUTER_REPRESENTANT_CAP(HttpServletRequest request) throws Exception {
 		// Récupération du niveau d'étude à ajouter
 
-		int indiceRepr = (Services.estNumerique(getVAL_LB_REPRE_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_REPRE_CAP_SELECT()) : -1);
+		int indiceRepr = (Services.estNumerique(getVAL_LB_REPRE_CAP_SELECT()) ? Integer
+				.parseInt(getVAL_LB_REPRE_CAP_SELECT()) : -1);
 
 		if (indiceRepr > 0) {
 			Representant n = (Representant) getListeRepresentant().get(indiceRepr - 1);
@@ -2974,9 +3013,10 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<Representant> list = getListeRepresentantCap().listIterator(); list.hasNext();) {
 				Representant repre = (Representant) list.next();
-				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(repre.getIdTypeRepresentant());
-				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( " + typeRepre.getLibTypeRepresentant()
-						+ " )" };
+				TypeRepresentant typeRepre = getTypeRepresentantDao().chercherTypeRepresentant(
+						repre.getIdTypeRepresentant());
+				String ligne[] = { repre.getNomRepresentant() + " " + repre.getPrenomRepresentant() + "( "
+						+ typeRepre.getLibTypeRepresentant() + " )" };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -3225,7 +3265,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	public boolean performPB_AJOUTER_EMPLOYEUR_CAP(HttpServletRequest request) throws Exception {
 		// Récupération de l'employeur à ajouter
 
-		int indiceEmp = (Services.estNumerique(getVAL_LB_EMP_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_EMP_CAP_SELECT()) : -1);
+		int indiceEmp = (Services.estNumerique(getVAL_LB_EMP_CAP_SELECT()) ? Integer
+				.parseInt(getVAL_LB_EMP_CAP_SELECT()) : -1);
 
 		if (indiceEmp > 0) {
 			Employeur n = (Employeur) getListeEmployeur().get(indiceEmp - 1);
@@ -3397,7 +3438,8 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	public boolean performPB_MODIFIER_DELIBERATION(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DELIBERATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DELIBERATION_SELECT()) : -1);
 		if (indice != -1 && indice < getListeDeliberation().size()) {
 			Deliberation delib = getListeDeliberation().get(indice);
 			setDeliberationCourant(delib);
@@ -3416,5 +3458,29 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_DELIBERATION());
 		return true;
+	}
+
+	public String getNOM_RG_CAP_VDN() {
+		return "NOM_RG_CAP_VDN";
+	}
+
+	public String getVAL_RG_CAP_VDN() {
+		return getZone(getNOM_RG_CAP_VDN());
+	}
+
+	public String getNOM_RB_CAP_VDN_N() {
+		return "NOM_RB_CAP_VDN_N";
+	}
+
+	public String getNOM_RB_CAP_VDN_O() {
+		return "NOM_RB_CAP_VDN_O";
+	}
+
+	public String getNOM_ST_CAP_VDN() {
+		return "NOM_ST_CAP_VDN";
+	}
+
+	public String getVAL_ST_CAP_VDN() {
+		return getZone(getNOM_ST_CAP_VDN());
 	}
 }
