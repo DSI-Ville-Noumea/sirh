@@ -333,6 +333,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 					avct.setCodeCategorie(carr.getCodeCategorie());
 					avct.setAnnee(annee);
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
+					// on traite si l'agent est detaché ou non
+					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
+							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
+						avct.setAgentVDN(false);
+					}else{
+						avct.setAgentVDN(true);
+					}
 					// BM/ACC
 					avct.setNouvBMAnnee(carr.getBMAnnee());
 					avct.setNouvBMMois(carr.getBMMois());
