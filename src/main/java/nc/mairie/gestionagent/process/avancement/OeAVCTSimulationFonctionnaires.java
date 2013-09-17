@@ -94,7 +94,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		if (getLB_ANNEE() == LBVide) {
 			String anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[1]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante+1));
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
 			// TODO
 			// changement de l'année pour faire au mieux.
