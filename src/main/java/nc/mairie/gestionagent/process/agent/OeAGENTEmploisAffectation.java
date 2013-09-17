@@ -95,7 +95,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	public String ACTION_IMPRESSION = "Impression des documents liés à une affectation";
 	public String ACTION_MODIFICATION = "Modification d'une affectation";
 	public String ACTION_SUPPRESSION = "Suppression d'une affectation";
-	public String ACTION_SUPPRESSION_PRIME_POINTAGE = "Suppression d'une prime pointage";
 
 	public final String ACTION_SUPPRIMER_SPEC = "Supprimer";
 	private Affectation affectationCourant;
@@ -129,7 +128,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private ArrayList<MotifAffectation> listeMotifAffectation = new ArrayList<>();
 	private ArrayList<NatureAvantage> listeNatureAvantage = new ArrayList<>();
 
-	private ArrayList<PrimePointageAff> listePrimePointageAFF = new ArrayList<>();
+	private ArrayList<PrimePointageAff> listePrimePointageAFF;
 	private ArrayList<PrimePointageAff> listePrimePointageAffAAjouter = new ArrayList<>();
 	private ArrayList<PrimePointageAff> listePrimePointageAffASupprimer = new ArrayList<>();
 	private ArrayList<PrimePointageFP> listePrimePointageFP = new ArrayList<>();
@@ -676,7 +675,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * @return listePrimePointageAFF
 	 */
 	public ArrayList<PrimePointageAff> getListePrimePointageAFF() {
-		return listePrimePointageAFF == null ? new ArrayList<PrimePointageAff>() : listePrimePointageAFF;
+		return listePrimePointageAFF;
 	}
 
 	/**
@@ -2851,7 +2850,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private void initialisePrimePointage_spec() throws Exception {
 
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-
 		// Primes pointages
 		if (getListePrimePointageFP().size() == 0 && getFichePosteCourant() != null
 				&& getFichePosteCourant().getIdFichePoste() != null) {
@@ -2864,7 +2862,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
-		if (getListePrimePointageAFF().size() == 0 && getFichePosteCourant() != null
+		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null
 				&& getAffectationCourant().getIdAffectation() != null) {
 			setListePrimePointageAFF(getPrimePointageAffDao().listerPrimePointageAff(
 					Integer.valueOf(getAffectationCourant().getIdAffectation())));
@@ -3127,9 +3125,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		initialiseDao_spec();
 		initialiseListeDeroulante_spec();
-		if (!getVAL_ST_ACTION().equals(ACTION_SUPPRESSION_PRIME_POINTAGE)) {
-			initialiseListeSpecificites_spec();
-		}
+
+		initialiseListeSpecificites_spec();
 
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
@@ -3552,8 +3549,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			setFocus(getNOM_PB_AJOUTER());
 			return false;
 		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_PRIME_POINTAGE);
 		return true;
 	}
 
@@ -4008,8 +4003,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Calcul du nombre de Prime Pointage sélectionnés par l'utilisateur
 		// parmi ceux issus de la fiche de poste
 
+		int ppAffSize = 0;
+		if (getListePrimePointageAFF() != null) {
+			ppAffSize = getListePrimePointageAFF().size();
+		}
 		// Si la spécificité à supprimer est déjà en base
-		if (indiceEltASupprimer - getListePrimePointageFP().size() < getListePrimePointageAFF().size()) {
+		if (indiceEltASupprimer - getListePrimePointageFP().size() < ppAffSize) {
 			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAFF().get(
 					indiceEltASupprimer - getListePrimePointageFP().size());
 			if (primePointageASupprimer != null) {
@@ -4022,7 +4021,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// d'être ajoutée par l'utilisateur
 		else {
 			PrimePointageAff primePointageASupprimer = (PrimePointageAff) getListePrimePointageAffAAjouter().get(
-					indiceEltASupprimer - getListePrimePointageFP().size() - getListePrimePointageAFF().size());
+					indiceEltASupprimer - getListePrimePointageFP().size() - ppAffSize);
 			if (primePointageASupprimer != null) {
 				getListePrimePointageAffAAjouter().remove(primePointageASupprimer);
 			}
@@ -4302,10 +4301,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			}
 		}
 
+		if (getListePrimePointageAFF() == null && getListePrimePointageAffAAjouter().size() > 0) {
+			setListePrimePointageAFF(new ArrayList<PrimePointageAff>());
+		}
 		for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 			getListePrimePointageAFF().add(prime);
 		}
 		getListePrimePointageAffAAjouter().clear();
+		getListePrimePointageAffASupprimer().clear();
 
 		if (!getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
 			// Tout s'est bien passé
@@ -4335,6 +4338,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER_AJOUT_spec(HttpServletRequest request) throws Exception {
+
 		if (getVAL_ST_SPECIFICITE().equals(SPEC_AVANTAGE_NATURE_SPEC)) {
 			// Contrôle des champs
 			if (!performControlerSaisieAvNat_spec(request))
@@ -4597,6 +4601,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					return performPB_SUPPRIMER_REGIME_spec(request, i);
 				}
 			}
+
+			if (getListePrimePointageAFF() == null)
+				setListePrimePointageAFF(new ArrayList<PrimePointageAff>());
 
 			// Si clic sur le bouton PB_SUPPRIMER_PRIME_POINTAGE
 			for (int i = 0; i < getListePrimePointageFP().size() + getListePrimePointageAFF().size()

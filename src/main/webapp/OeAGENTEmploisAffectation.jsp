@@ -529,8 +529,7 @@
 					<th width="50px;" align="center" >
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
-								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE)||
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
 					%>
 						<INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -548,44 +547,42 @@
 				<tbody>
 				<%
 					ArrayList<Integer> rubs = process.getListeRubs();
-								int indicePrimePointage = 0;
-								if (process.getListePrimePointageFP() != null) {
-									for (int i = 0; i < process.getListePrimePointageFP().size(); i++) {
-										if (!rubs.contains(process.getListePrimePointageFP().get(i).getNumRubrique())) {
+										int indicePrimePointage = 0;
+										if (process.getListePrimePointageFP() != null) {
+											for (int i = 0; i < process.getListePrimePointageFP().size(); i++) {
+												if (!rubs.contains(process.getListePrimePointageFP().get(i).getNumRubrique())) {
 				%>
 				<tr>
 					
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
-								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) ||
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
 					%>
-						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage) %>")'  >
+						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>")'  >
 						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
 											
 					<%
-						}
-					%>
+																	}
+																%>
 					</td>
 					<td align="center"><%="FP " + process.getPosteCourantTitle()%></td>
 					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
 				</tr>
 				<%
 					}
-										indicePrimePointage++;
-									}
-								}
-								if (process.getListePrimePointageAFF() != null && process.getListePrimePointageAFF().size() > 0) {
-									for (int i = 0; i < process.getListePrimePointageAFF().size(); i++) {
+												indicePrimePointage++;
+											}
+										}
+										if (process.getListePrimePointageAFF() != null && process.getListePrimePointageAFF().size() > 0) {
+											for (int i = 0; i < process.getListePrimePointageAFF().size(); i++) {
 				%>
 				<tr>
 
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
-								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) ||
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -600,19 +597,18 @@
 					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
 				</tr>
 				<%
-							indicePrimePointage++;
+					indicePrimePointage++;
 
-									}
-								}
-								if (process.getListePrimePointageAffAAjouter() != null && process.getListePrimePointageAffAAjouter().size() > 0) {
-									for (int i = 0; i < process.getListePrimePointageAffAAjouter().size(); i++) {
+											}
+										}
+										if (process.getListePrimePointageAffAAjouter() != null && process.getListePrimePointageAffAAjouter().size() > 0) {
+											for (int i = 0; i < process.getListePrimePointageAffAAjouter().size(); i++) {
 				%>
 				<tr>
 					<td align="center" width="50px;">
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
-								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || 
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
