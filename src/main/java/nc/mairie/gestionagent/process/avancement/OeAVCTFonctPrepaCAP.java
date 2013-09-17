@@ -775,6 +775,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					avct.setHeureVerifSEF(heureAction);
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				}
+				//on met egalement a jour la CAP à laquelle appartient l'agent
+				//TODO
+				
 			} else {
 				// si la ligne n'est pas cochée
 				// on regarde quel etat son etat
