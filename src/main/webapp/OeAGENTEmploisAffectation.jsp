@@ -232,7 +232,7 @@
 					%>
 					<BR />
 					<div align="left">
-						<span class="sigp2-RadioBouton"> </span>
+						<span class="sigp2-RadioBouton"> 
 						<INPUT tabindex=""	type="radio" checked
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_PP_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Prime pointage <span style="width: 5px"></span> 
 					    <INPUT tabindex=""	type="radio" 
@@ -528,7 +528,9 @@
 				<tr>
 					<th width="50px;" align="center" >
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
+								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE)||
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
 					%>
 						<INPUT tabindex="" type="image"
 						src="images/ajout.gif"
@@ -555,7 +557,9 @@
 					
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
+								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) ||
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
 					%>
 						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage) %>")'  >
 						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
@@ -579,7 +583,9 @@
 
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
+								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) ||
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable()) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -604,7 +610,9 @@
 				<tr>
 					<td align="center" width="50px;">
 					<%
-						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage) ) {
+						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
+								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || 
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
