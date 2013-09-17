@@ -585,7 +585,7 @@
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
 								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) ||
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable()) {
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
@@ -612,7 +612,7 @@
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || 
 								process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_PRIME_POINTAGE) || 
-								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
+								process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() && process.isPrimeSupprimable(indicePrimePointage)) {
 					%>
 					<INPUT tabindex=""
 						type="image" src="images/suppression.gif"
