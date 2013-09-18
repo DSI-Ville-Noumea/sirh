@@ -526,7 +526,7 @@ public class OePTGSaisie extends BasicProcess {
 		DateFormat df = new SimpleDateFormat("HH:mm");
 		String seleted = df.format(heure);
 		String val = "";
-		for (int hours = 5; hours <= 23; hours++) {
+		for (int hours = 0; hours <= 23; hours++) {
 			for (int min = 0; min < 60; min += 15) {
 				val = hours + ":" + min;
 				if (min == 0) {
