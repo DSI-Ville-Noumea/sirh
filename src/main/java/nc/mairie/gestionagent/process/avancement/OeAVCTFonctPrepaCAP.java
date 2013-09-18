@@ -658,7 +658,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='"
 				+ EnumEtatAvancement.SEF.getValue() + "')";
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere,
-				agent, listeSousService, null));
+				agent, listeSousService, null, null));
 
 		afficheListeAvancement();
 		return true;
@@ -775,9 +775,25 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					avct.setHeureVerifSEF(heureAction);
 					avct.setEtat(EnumEtatAvancement.SEF.getValue());
 				}
-				//on met egalement a jour la CAP à laquelle appartient l'agent
-				//TODO
-				
+				// on met egalement a jour la CAP à laquelle appartient l'agent
+				// on recupere la catégorie de l'agent
+				String type = avct.getCodeCategorie().equals("1") || avct.getCodeCategorie().equals("2") ? "COMMUNAL"
+						: (avct.getCodeCategorie().equals("18") || avct.getCodeCategorie().equals("20")) ? "TERRITORIAL"
+								: null;
+				if (type != null) {
+					logger.debug("Recherche CAP : [idAvct = " + avct.getIdAvct() + ", idAgent=" + avct.getIdAgent()
+							+ ",type=" + type + "]");
+					try {
+						Cap capAgent = getCapDao().chercherCapByAgent(Integer.valueOf(avct.getIdAgent()), type,
+								Integer.valueOf(avct.getAnnee()));
+						if (capAgent != null & capAgent.getIdCap() != null) {
+							avct.setIdCap(capAgent.getIdCap().toString());
+						}
+					} catch (Exception e) {
+						// aucune CAP trouvée
+					}
+				}
+
 			} else {
 				// si la ligne n'est pas cochée
 				// on regarde quel etat son etat

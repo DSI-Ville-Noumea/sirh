@@ -174,16 +174,20 @@ function SelectLigne(id,tailleTableau)
 					</script>
 				</div>
           	<BR/>  <BR/>        	
-			<span class="sigp2" style="width:75px">Filière : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width=200px;margin-right:20px;">
+			<span class="sigp2" style="width:55px">Filière : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FILIERE() %>" style="width:200px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_FILIERE(), process.getVAL_LB_FILIERE_SELECT()) %>
+			</SELECT>       	
+			<span class="sigp2" style="width:45px">CAP : </span>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CAP() %>" style="width:100px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
 			</SELECT>    	
 			<span class="sigp2" style="width:75px">Catégorie : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>" style="width=50px;margin-right:20px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>" style="width:50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
 			</SELECT> 	
 			<span class="sigp2" style="width:75px">Verif SGC : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_VERIF_SGC() %>" style="width=50px;margin-right:20px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_VERIF_SGC() %>" style="width:50px;margin-right:20px;">
 				<%=process.forComboHTML(process.getVAL_LB_VERIF_SGC(), process.getVAL_LB_VERIF_SGC_SELECT()) %>
 			</SELECT>
 			<BR/><BR/>

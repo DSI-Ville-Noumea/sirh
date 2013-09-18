@@ -20,4 +20,6 @@ public interface CapDaoInterface {
 
 	public Cap chercherCapByCodeCap(String codeCap) throws Exception;
 
+	public Cap chercherCapByAgent(Integer idAgent, String type, Integer annee);
+
 }

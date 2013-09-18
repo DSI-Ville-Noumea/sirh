@@ -907,7 +907,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 
 		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent,
-				listeSousService, null));
+				listeSousService, null, null));
 		afficherListeAvct(request);
 
 		return true;

@@ -24,6 +24,9 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.metier.parametrage.CapDao;
+import nc.mairie.spring.domain.metier.parametrage.Cap;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -41,6 +44,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 
 import com.sun.jersey.api.client.Client;
@@ -64,6 +68,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private String[] LB_ANNEE;
 	private String[] LB_FILIERE;
+	private String[] LB_CAP;
 	private String[] LB_CATEGORIE;
 	private String[] LB_VERIF_SGC;
 	private String[] LB_AVIS_CAP_AD;
@@ -74,6 +79,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private String[] listeAnnee;
 	private String anneeSelect;
 	private ArrayList<FiliereGrade> listeFiliere;
+	private ArrayList<Cap> listeCap;
 	private ArrayList<Grade> listeCategorie;
 	private ArrayList<String> listeVerifSGC;
 	private ArrayList<Service> listeServices;
@@ -84,6 +90,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private ArrayList<AvisCap> listeAvisCAPFavDefav;
 
 	private Hashtable<String, AvisCap> hashAvisCAP;
+
+	private CapDao capDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -105,16 +113,16 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
 		initialiseListeService();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this,
-					VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			VariablesActivite.enlever(this,
-					VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
 		}
 
@@ -126,23 +134,27 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getCapDao() == null) {
+			setCapDao((CapDao) context.getBean("capDao"));
+		}
+	}
+
 	private ArrayList<String> listerDocumentsArretes() throws ParseException {
 		ArrayList<String> res = new ArrayList<String>();
-		String repPartage = (String) ServletAgent.getMesParametres().get(
-				"REPERTOIRE_ROOT");
-		String docuArreteChangementClasse = repPartage
-				+ "Avancement/arretesChangementClasse.doc";
-		String docuArreteAvctDiff = repPartage
-				+ "Avancement/arretesAvancementDiff.doc";
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		String docuArreteChangementClasse = repPartage + "Avancement/arretesChangementClasse.doc";
+		String docuArreteAvctDiff = repPartage + "Avancement/arretesAvancementDiff.doc";
 
 		// on verifie l'existance de chaque fichier
-		boolean existsDocuArreteChangementClasse = new File(
-				docuArreteChangementClasse).exists();
+		boolean existsDocuArreteChangementClasse = new File(docuArreteChangementClasse).exists();
 		if (existsDocuArreteChangementClasse) {
 			res.add(docuArreteChangementClasse);
 		}
-		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff)
-				.exists();
+		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff).exists();
 		if (existsDocuArreteAvctDiff) {
 			res.add(docuArreteAvctDiff);
 		}
@@ -151,204 +163,141 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private void afficheListeAvancement() throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
-			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct()
-					.get(j);
+			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer i = Integer.valueOf(av.getIdAvct());
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(),
-					av.getIdAgent());
-			Grade gradeAgent = Grade.chercherGrade(getTransaction(),
-					av.getGrade());
-			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(),
-					av.getIdNouvGrade());
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
+			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
 			addZone(getNOM_ST_AGENT(i),
-					agent.getNomAgent() + " <br> " + agent.getPrenomAgent()
-							+ " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> "
-					+ av.getSectionService());
+					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
-					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre())
-							+ " <br> " + av.getFiliere());
-			addZone(getNOM_ST_GRADE(i),
-					av.getGrade()
-							+ " <br> "
-							+ (av.getIdNouvGrade() != null
-									&& av.getIdNouvGrade().length() != 0 ? av
-									.getIdNouvGrade() : "&nbsp;"));
-			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent
-					.getLibGrade();
-			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;"
-					: gradeSuivantAgent.getLibGrade();
+					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			addZone(getNOM_ST_GRADE(i), av.getGrade()
+					+ " <br> "
+					+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade()
+							: "&nbsp;"));
+			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
+			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 			addZone(getNOM_ST_DATE_AVCT(i),
-					(av.getDateAvctMini() == null
-							|| av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;"
-							: av.getDateAvctMini())
+					(av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av
+							.getDateAvctMini())
 							+ " <br> "
 							+ av.getDateAvctMoy()
 							+ " <br> "
-							+ (av.getDateAvctMaxi() == null
-									|| av.getDateAvctMaxi().equals(
-											Const.DATE_NULL) ? "&nbsp;" : av
-									.getDateAvctMaxi()));
+							+ (av.getDateAvctMaxi() == null || av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;"
+									: av.getDateAvctMaxi()));
 			// motif avancement
 			MotifAvancement motifVDN = null;
-			if (av.getIdMotifAvct() != null
-					&& !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
-				motifVDN = MotifAvancement.chercherMotifAvancement(
-						getTransaction(), av.getIdMotifAvct());
+			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
+				motifVDN = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
 			}
 			// avis SHD
-			String avisSHD = av.getAvisSHD() == null ? "&nbsp;" : av
-					.getAvisSHD();
+			String avisSHD = av.getAvisSHD() == null ? "&nbsp;" : av.getAvisSHD();
 
 			// avis VDN
 			String avisVDN = av.getIdAvisCAP() == null ? "&nbsp;" : AvisCap
-					.chercherAvisCap(getTransaction(), av.getIdAvisCAP())
-					.getLibCourtAvisCAP().toUpperCase();
-			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;"
-					: motifVDN.getCodeMotifAvct())
-					+ " <br> "
-					+ avisSHD
-					+ " <br> " + avisVDN);
+					.chercherAvisCap(getTransaction(), av.getIdAvisCAP()).getLibCourtAvisCAP().toUpperCase();
+			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCodeMotifAvct()) + " <br> "
+					+ avisSHD + " <br> " + avisVDN);
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
-			addZone(getNOM_ST_OBSERVATION(i),
-					av.getObservationArr() == null ? "&nbsp;" : av
-							.getObservationArr());
-			addZone(getNOM_CK_REGUL_ARR_IMPR(i),
-					av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
-			addZone(getNOM_CK_VALID_ARR(i),
-					av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON()
-							: getCHECKED_OFF());
+			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
+			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_VALID_ARR(i), av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue()) ? getCHECKED_ON()
+					: getCHECKED_OFF());
 
 			if (av.getIdAvisArr() == null) {
 				if (!av.getIdAvisCAP().equals(Const.CHAINE_VIDE)) {
 					if (av.getIdAvisCAP().equals("3")) {
 						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("3"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("3"))));
 					} else if (av.getIdAvisCAP().equals("2")) {
 						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("2"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
 					} else if (av.getIdAvisCAP().equals("1")) {
 						addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("1"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("1"))));
 					} else if (av.getIdAvisCAP().equals("4")) {
 						addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i),
-								String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(getHashAvisCAP().get("4"))));
+								String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 					} else if (av.getIdAvisCAP().equals("5")) {
 						addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i),
-								String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(getHashAvisCAP().get("5"))));
+								String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("5"))));
 					}
 
 				} else {
 					addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
-							String.valueOf(getListeAvisCAPMinMoyMax().indexOf(
-									getHashAvisCAP().get("2"))));
+							String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
 					addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i),
-							String.valueOf(getListeAvisCAPFavDefav().indexOf(
-									getHashAvisCAP().get("4"))));
+							String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 				}
 
 			} else {
 				addZone(getNOM_LB_AVIS_CAP_AD_SELECT(i),
-						av.getIdAvisArr() == null
-								|| av.getIdAvisArr().length() == 0 ? Const.CHAINE_VIDE
-								: String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(
-												getHashAvisCAP().get(
-														av.getIdAvisArr()))));
+						av.getIdAvisArr() == null || av.getIdAvisArr().length() == 0 ? Const.CHAINE_VIDE : String
+								.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get(av.getIdAvisArr()))));
 				addZone(getNOM_LB_AVIS_CAP_CLASSE_SELECT(i),
-						av.getIdAvisArr() == null
-								|| av.getIdAvisArr().length() == 0 ? Const.CHAINE_VIDE
-								: String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(
-												getHashAvisCAP().get(
-														av.getIdAvisArr()))));
+						av.getIdAvisArr() == null || av.getIdAvisArr().length() == 0 ? Const.CHAINE_VIDE : String
+								.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get(av.getIdAvisArr()))));
 			}
 			if (av.getIdAvisEmp() == null) {
 				if (!av.getIdAvisCAP().equals(Const.CHAINE_VIDE)) {
 					if (av.getIdAvisCAP().equals("3")) {
 						addZone(getNOM_LB_AVIS_EMP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("3"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("3"))));
 					} else if (av.getIdAvisCAP().equals("2")) {
 						addZone(getNOM_LB_AVIS_EMP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("2"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
 					} else if (av.getIdAvisCAP().equals("1")) {
 						addZone(getNOM_LB_AVIS_EMP_AD_SELECT(i),
-								String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(getHashAvisCAP().get("1"))));
+								String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("1"))));
 					} else if (av.getIdAvisCAP().equals("4")) {
 						addZone(getNOM_LB_AVIS_EMP_CLASSE_SELECT(i),
-								String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(getHashAvisCAP().get("4"))));
+								String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 					} else if (av.getIdAvisCAP().equals("5")) {
 						addZone(getNOM_LB_AVIS_EMP_CLASSE_SELECT(i),
-								String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(getHashAvisCAP().get("5"))));
+								String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("5"))));
 					}
 
 				} else {
 					addZone(getNOM_LB_AVIS_EMP_AD_SELECT(i),
-							String.valueOf(getListeAvisCAPMinMoyMax().indexOf(
-									getHashAvisCAP().get("2"))));
+							String.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get("2"))));
 					addZone(getNOM_LB_AVIS_EMP_CLASSE_SELECT(i),
-							String.valueOf(getListeAvisCAPFavDefav().indexOf(
-									getHashAvisCAP().get("4"))));
+							String.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get("4"))));
 				}
 
 			} else {
 				addZone(getNOM_LB_AVIS_EMP_AD_SELECT(i),
-						av.getIdAvisEmp() == null
-								|| av.getIdAvisEmp().length() == 0 ? Const.CHAINE_VIDE
-								: String.valueOf(getListeAvisCAPMinMoyMax()
-										.indexOf(
-												getHashAvisCAP().get(
-														av.getIdAvisEmp()))));
+						av.getIdAvisEmp() == null || av.getIdAvisEmp().length() == 0 ? Const.CHAINE_VIDE : String
+								.valueOf(getListeAvisCAPMinMoyMax().indexOf(getHashAvisCAP().get(av.getIdAvisEmp()))));
 				addZone(getNOM_LB_AVIS_EMP_CLASSE_SELECT(i),
-						av.getIdAvisEmp() == null
-								|| av.getIdAvisEmp().length() == 0 ? Const.CHAINE_VIDE
-								: String.valueOf(getListeAvisCAPFavDefav()
-										.indexOf(
-												getHashAvisCAP().get(
-														av.getIdAvisEmp()))));
+						av.getIdAvisEmp() == null || av.getIdAvisEmp().length() == 0 ? Const.CHAINE_VIDE : String
+								.valueOf(getListeAvisCAPFavDefav().indexOf(getHashAvisCAP().get(av.getIdAvisEmp()))));
 			}
 
-			String user = av.getUserVerifArrImpr() == null ? "&nbsp;" : av
-					.getUserVerifArrImpr();
-			String heure = av.getHeureVerifArrImpr() == null ? "&nbsp;" : av
-					.getHeureVerifArrImpr();
-			String date = av.getDateVerifArrImpr() == null
-					|| av.getDateVerifArrImpr().equals(Const.DATE_NULL) ? "&nbsp;"
+			String user = av.getUserVerifArrImpr() == null ? "&nbsp;" : av.getUserVerifArrImpr();
+			String heure = av.getHeureVerifArrImpr() == null ? "&nbsp;" : av.getHeureVerifArrImpr();
+			String date = av.getDateVerifArrImpr() == null || av.getDateVerifArrImpr().equals(Const.DATE_NULL) ? "&nbsp;"
 					: av.getDateVerifArrImpr();
-			addZone(getNOM_ST_USER_VALID_ARR_IMPR(i), user + " <br> " + date
-					+ " <br> " + heure);
+			addZone(getNOM_ST_USER_VALID_ARR_IMPR(i), user + " <br> " + date + " <br> " + heure);
 
 			// date de la cap
 			addZone(getNOM_ST_DATE_CAP(i),
-					av.getDateCap() == null
-							|| av.getDateCap().equals(Const.DATE_NULL) ? "&nbsp;"
-							: av.getDateCap());
+					av.getDateCap() == null || av.getDateCap().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateCap());
 
 			// date avct
 			if (av.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
 				if (av.getIdMotifAvct().equals("7")) {
 					// on récupere l'avis Emp
-					int indiceAvisCapMinMoyMaxEmp = (Services
-							.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(i)) ? Integer
+					int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(i)) ? Integer
 							.parseInt(getVAL_LB_AVIS_EMP_AD_SELECT(i)) : -1);
 					if (indiceAvisCapMinMoyMaxEmp != -1) {
-						String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax()
-								.get(indiceAvisCapMinMoyMaxEmp))
+						String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp))
 								.getLibCourtAvisCAP().toUpperCase();
 						String dateAvctFinale = Const.CHAINE_VIDE;
 						if (idAvisEmp.equals("MIN")) {
@@ -364,12 +313,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					addZone(getNOM_ST_DATE_AVCT_FINALE(i), av.getDateAvctMoy());
 				} else {
 					// on récupere l'avis Emp
-					int indiceAvisCapFavDefavEmp = (Services
-							.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(i)) ? Integer
+					int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(i)) ? Integer
 							.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(i)) : -1);
 					if (indiceAvisCapFavDefavEmp != -1) {
-						String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav()
-								.get(indiceAvisCapFavDefavEmp))
+						String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
 								.getLibCourtAvisCAP().toUpperCase();
 						String dateAvctFinale = Const.CHAINE_VIDE;
 						if (idAvisEmp.equals("FAV")) {
@@ -388,8 +335,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private void initialiseListeService() throws Exception {
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service
-					.listerServiceActif(getTransaction());
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
 			setListeServices(services);
 
 			// Tri par codeservice
@@ -413,16 +359,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				// recherche du supérieur
 				String codeService = serv.getCodService();
 				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0,
-							codeService.length() - 1);
+					codeService = codeService.substring(0, codeService.length() - 1);
 				}
-				codeService = codeService
-						.substring(0, codeService.length() - 1);
+				codeService = codeService.substring(0, codeService.length() - 1);
 				codeService = Services.rpad(codeService, 4, "A");
 				parent = hTree.get(codeService);
 				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i,
-						indexParent));
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
 
 			}
 		}
@@ -440,21 +383,16 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			if (anneeCourante == null || anneeCourante.length() == 0)
 				anneeCourante = Services.dateDuJour().substring(6, 10);
 			setListeAnnee(new String[5]);
-			getListeAnnee()[0] = String
-					.valueOf(Integer.parseInt(anneeCourante));
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
 			// TODO
 			// changement de l'année pour faire au mieux.
 			// getListeAnnee()[0] =
 			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
-			getListeAnnee()[1] = String
-					.valueOf(Integer.parseInt(anneeCourante) + 2);
-			getListeAnnee()[2] = String
-					.valueOf(Integer.parseInt(anneeCourante) + 3);
-			getListeAnnee()[3] = String
-					.valueOf(Integer.parseInt(anneeCourante) + 4);
-			getListeAnnee()[4] = String
-					.valueOf(Integer.parseInt(anneeCourante) + 5);
+			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
+			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
+			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
+			getListeAnnee()[4] = String.valueOf(Integer.parseInt(anneeCourante) + 5);
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
@@ -467,14 +405,31 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<FiliereGrade> list = getListeFiliere()
-					.listIterator(); list.hasNext();) {
+			for (ListIterator<FiliereGrade> list = getListeFiliere().listIterator(); list.hasNext();) {
 				FiliereGrade fili = (FiliereGrade) list.next();
 				String ligne[] = { fili.getLibFiliere() };
 
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_FILIERE(aFormat.getListeFormatee(true));
+
+		}
+		// Si liste cap vide alors affectation
+		if (getListeCap() == null || getListeCap().size() == 0) {
+			setListeCap(getCapDao().listerCap());
+
+			int tailles[] = { 10 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<Cap> list = getListeCap().listIterator(); list.hasNext();) {
+				Cap cap = (Cap) list.next();
+				String ligne[] = { cap.getCodeCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			String ligneSans[] = { "SANS" };
+			aFormat.ajouteLigne(ligneSans);
+			setLB_CAP(aFormat.getListeFormatee(true));
 
 		}
 
@@ -502,8 +457,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			setListeVerifSGC(verif);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<String> list = verif.listIterator(); list
-					.hasNext();) {
+			for (ListIterator<String> list = verif.listIterator(); list.hasNext();) {
 				String ligne[] = { list.next() };
 				aFormat.ajouteLigne(ligne);
 			}
@@ -512,18 +466,14 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		// Si liste avisCAP vide alors affectation
-		if (getListeAvisCAPMinMoyMax() == null
-				|| getListeAvisCAPMinMoyMax().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap
-					.listerAvisCapMinMoyMax(getTransaction());
+		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
 			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 15 };
 			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs)
-					.getListeFormatee(false));
-			setLB_AVIS_EMP_AD(new FormateListe(tailles, avis, champs)
-					.getListeFormatee(false));
+			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			setLB_AVIS_EMP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPMinMoyMax().size(); i++) {
@@ -533,18 +483,14 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		// Si liste avisCAP vide alors affectation
-		if (getListeAvisCAPFavDefav() == null
-				|| getListeAvisCAPFavDefav().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap
-					.listerAvisCapFavDefav(getTransaction());
+		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
+			ArrayList<AvisCap> avis = AvisCap.listerAvisCapFavDefav(getTransaction());
 			setListeAvisCAPFavDefav(avis);
 
 			int[] tailles = { 15 };
 			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs)
-					.getListeFormatee(false));
-			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs)
-					.getListeFormatee(false));
+			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPFavDefav().size(); i++) {
@@ -563,8 +509,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		// Si on arrive de la JSP alors on traite le get
-		if (request.getParameter("JSP") != null
-				&& request.getParameter("JSP").equals(getJSP())) {
+		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
@@ -597,8 +542,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
-			if (testerParametre(request,
-					getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
 				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
 			}
 
@@ -649,8 +593,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_ANNULER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		return true;
 	}
 
@@ -670,10 +613,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (28/11/11)
 	 * 
 	 */
-	public boolean performPB_FILTRER(HttpServletRequest request)
-			throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
+				: -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 		setAnneeSelect(annee);
 
@@ -683,6 +625,16 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
 		if (indiceFiliere > 0) {
 			filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
+		}
+
+		// Recuperation CAP
+		String idCap = "";
+		int indiceCap = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
+		if(indiceCap > getListeCap().size()){
+			idCap = "null";
+		}else if (indiceCap > 0) {
+			Cap cap = (Cap) getListeCap().get(indiceCap - 1);
+			idCap = cap.getIdCap().toString();
 		}
 
 		// Recuperation categorie
@@ -695,8 +647,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		// Recuperation verifSGC
 		String verifSGC = null;
-		int indiceVerifSGC = (Services
-				.estNumerique(getVAL_LB_VERIF_SGC_SELECT()) ? Integer
+		int indiceVerifSGC = (Services.estNumerique(getVAL_LB_VERIF_SGC_SELECT()) ? Integer
 				.parseInt(getVAL_LB_VERIF_SGC_SELECT()) : -1);
 		if (indiceVerifSGC > 0) {
 			verifSGC = (String) getListeVerifSGC().get(indiceVerifSGC - 1);
@@ -705,35 +656,29 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		// recuperation agent
 		AgentNW agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(),
-					getVAL_ST_AGENT());
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
 		// recuperation du service
 		ArrayList<String> listeSousService = null;
 		if (getVAL_ST_CODE_SERVICE().length() != 0) {
 			// on recupere les sous-service du service selectionne
-			Service serv = Service.chercherService(getTransaction(),
-					getVAL_ST_CODE_SERVICE());
-			listeSousService = Service.listSousServiceBySigle(getTransaction(),
-					serv.getSigleService());
+			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
+			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue()
-				+ "' or ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "')";
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' or ETAT='"
+				+ EnumEtatAvancement.ARRETE.getValue() + "')";
 		if (verifSGC != null) {
 			if (verifSGC.equals("oui")) {
-				reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue()
-						+ "')";
+				reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue() + "')";
 			} else if (verifSGC.equals("non")) {
-				reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue()
-						+ "' )";
+				reqEtat = " and (ETAT='" + EnumEtatAvancement.SEF.getValue() + "' )";
 			}
 
 		}
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(
-				getTransaction(), annee, reqEtat, filiere, agent,
-				listeSousService, categorie));
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere,
+				agent, listeSousService, categorie, idCap));
 
 		afficheListeAvancement();
 		return true;
@@ -755,51 +700,42 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_IMPRIMER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
 
 		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get(
-				"REPERTOIRE_ACTES");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		// on supprime les documents existants
 		String docuChangementClasse = "Avancement/arretesChangementClasse.doc";
 		String docuAvctDiff = "Avancement/arretesAvancementDiff.doc";
 		// on verifie l'existance de chaque fichier
-		File chgtClasse = new File(repPartage.substring(8, repPartage.length())
-				+ docuChangementClasse);
+		File chgtClasse = new File(repPartage.substring(8, repPartage.length()) + docuChangementClasse);
 		if (chgtClasse.exists()) {
 			chgtClasse.delete();
 		}
-		File avctDiff = new File(repPartage.substring(8, repPartage.length())
-				+ docuAvctDiff);
+		File avctDiff = new File(repPartage.substring(8, repPartage.length()) + docuAvctDiff);
 		if (avctDiff.exists()) {
 			avctDiff.delete();
 		}
 		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
 		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
 
-		UserAppli user = (UserAppli) VariableGlobale.recuperer(request,
-				VariableGlobale.GLOBAL_USER_APPLI);
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		String dateJour = Services.dateDuJour();
 
 		for (int j = 0; j < getListeAvct().size(); j++) {
-			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct()
-					.get(j);
+			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
 				if (avct.getIdMotifAvct().equals("4")) {
 					// on fait une liste des arretes changement classe
-					listeImpressionChangementClasse.add(Integer.valueOf(avct
-							.getIdAgent()));
-				} else if (avct.getIdMotifAvct().equals("7")
-						|| avct.getIdMotifAvct().equals("6")
+					listeImpressionChangementClasse.add(Integer.valueOf(avct.getIdAgent()));
+				} else if (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("6")
 						|| avct.getIdMotifAvct().equals("3")) {
 					// on fait une liste des arretes avancement diffé
-					listeImpressionAvancementDiff.add(Integer.valueOf(avct
-							.getIdAgent()));
+					listeImpressionAvancementDiff.add(Integer.valueOf(avct.getIdAgent()));
 				} else {
 					continue;
 				}
@@ -821,7 +757,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					avct.setRegularisation(false);
 				}
 				if (!AvancementFonctionnaires.modifierImpressionAvancement(getTransaction(), avct)) {
-					getTransaction().declarerErreur("Une erreur est survenue dans la sauvegarde des avancements. Merci de contacter le responsable du projet.");
+					getTransaction()
+							.declarerErreur(
+									"Une erreur est survenue dans la sauvegarde des avancements. Merci de contacter le responsable du projet.");
 					return false;
 				}
 				commitTransaction();
@@ -833,24 +771,19 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			try {
 				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionChangementClasse.toString()
-								.replace("[", "").replace("]", "")
-								.replace(" ", ""), true,
-						Integer.valueOf(getAnneeSelect()));
+						listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""),
+						true, Integer.valueOf(getAnneeSelect()));
 
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage,
-						docuChangementClasse)) {
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR185"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 					return false;
 				}
 			} catch (Exception e) {
 				// "ERR185",
 				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR185"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
@@ -859,23 +792,18 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			try {
 
 				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionAvancementDiff.toString()
-								.replace("[", "").replace("]", "")
-								.replace(" ", ""), false,
-						Integer.valueOf(getAnneeSelect()));
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage,
-						docuAvctDiff)) {
+						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""),
+						false, Integer.valueOf(getAnneeSelect()));
+				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR185"));
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 					return false;
 				}
 			} catch (Exception e) {
 				// "ERR185",
 				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR185"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 				return false;
 			}
 
@@ -902,25 +830,21 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	}
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuffer scriptOuvPDF = new StringBuffer(
-				"<script type=\"text/javascript\">");
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
 		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
 	}
 
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes,
-			String chemin, String filename) throws Exception {
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
 
 		BufferedOutputStream bos = null;
 		FileObject pdfFile = null;
 
 		try {
 			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s", chemin
-					+ filename));
-			bos = new BufferedOutputStream(pdfFile.getContent()
-					.getOutputStream());
+			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
 			IOUtils.write(fileAsBytes, bos);
 			IOUtils.closeQuietly(bos);
 
@@ -932,31 +856,24 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(String
-					.format("An error occured while writing the report file to the following path  : "
-							+ chemin + filename + " : " + e));
+			logger.error(String.format("An error occured while writing the report file to the following path  : "
+					+ chemin + filename + " : " + e));
 			return false;
 		}
 		return true;
 	}
 
-	public byte[] getArretesReportAsByteArray(String csvAgents,
-			boolean isChangementClasse, int anneeAvct) throws Exception {
+	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct)
+			throws Exception {
 
-		ClientResponse response = createAndFireRequest(csvAgents,
-				isChangementClasse, anneeAvct);
+		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct);
 
 		return readResponseAsByteArray(response);
 	}
 
-	public ClientResponse createAndFireRequest(String csvAgents,
-			boolean isChangementClasse, int anneeAvct) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get(
-				"SIRH_WS_URL_ARRETES_AVCT")
-				+ "?isChangementClasse="
-				+ isChangementClasse
-				+ "&csvIdAgents="
-				+ csvAgents + "&annee=" + anneeAvct;
+	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct) {
+		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT")
+				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct;
 
 		Client client = Client.create();
 
@@ -967,12 +884,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		return response;
 	}
 
-	public byte[] readResponseAsByteArray(ClientResponse response)
-			throws Exception {
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ",
-					response.getStatus()));
+			throw new Exception(String.format("An error occured ", response.getStatus()));
 		}
 
 		byte[] reponseData = null;
@@ -982,8 +897,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			reportFile = response.getEntity(File.class);
 			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
 		} catch (Exception e) {
-			throw new Exception(
-					"An error occured while reading the downloaded report.", e);
+			throw new Exception("An error occured while reading the downloaded report.", e);
 		} finally {
 			if (reportFile != null && reportFile.exists())
 				reportFile.delete();
@@ -994,8 +908,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private void verifieRepertoire(String codTypeDoc) {
 		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get(
-				"REPERTOIRE_ACTES");
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		File dossierParent = new File(repPartage);
 		if (!dossierParent.exists()) {
@@ -1023,14 +936,12 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_VALIDER(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 		// on verifie si la date de CAP est remplie
 		// date de debut obligatoire
 		if ((Const.CHAINE_VIDE).equals(getVAL_ST_DATE_CAP_GLOBALE())) {
 			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR002", "date de cap"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de cap"));
 			return false;
 		}
 
@@ -1038,30 +949,25 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		if (!Services.estUneDate(getVAL_ST_DATE_CAP_GLOBALE())) {
 			// "ERR007",
 			// "La date @ est incorrecte. Elle doit être au format date."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR007", "de cap"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de cap"));
 			return false;
 		}
 
-		UserAppli user = (UserAppli) VariableGlobale.recuperer(request,
-				VariableGlobale.GLOBAL_USER_APPLI);
+		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		String dateJour = Services.dateDuJour();
 		// on sauvegarde l'état du tableau
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
-			AvancementFonctionnaires avctDepart = (AvancementFonctionnaires) getListeAvct()
-					.get(j);
-			AvancementFonctionnaires avct = AvancementFonctionnaires
-					.chercherAvancement(getTransaction(),
-							avctDepart.getIdAvct());
+			AvancementFonctionnaires avctDepart = (AvancementFonctionnaires) getListeAvct().get(j);
+			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancement(getTransaction(),
+					avctDepart.getIdAvct());
 			Integer idAvct = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_ARR(idAvct).equals(getCHECKED_ON())) {
-				avct = AvancementFonctionnaires.chercherAvancement(
-						getTransaction(), avctDepart.getIdAvct());
+				avct = AvancementFonctionnaires.chercherAvancement(getTransaction(), avctDepart.getIdAvct());
 
 				// si la ligne est cochée
 				// on regarde si l'etat est deja ARR
@@ -1098,21 +1004,19 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on traite l'avis CAP
-				int indiceAvisCapMinMoyMaxCap = (Services
-						.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
+				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxCap != -1) {
-					String idAvisArr = ((AvisCap) getListeAvisCAPMinMoyMax()
-							.get(indiceAvisCapMinMoyMaxCap)).getIdAvisCAP();
+					String idAvisArr = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxCap))
+							.getIdAvisCAP();
 					avct.setIdAvisArr(idAvisArr);
 				}
 				// on traite l'avis Emp
-				int indiceAvisCapMinMoyMaxEmp = (Services
-						.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(idAvct)) ? Integer
+				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_EMP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxEmp != -1) {
-					String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax()
-							.get(indiceAvisCapMinMoyMaxEmp)).getIdAvisCAP();
+					String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp))
+							.getIdAvisCAP();
 					avct.setIdAvisEmp(idAvisEmp);
 				}
 			} else if (avct.getIdMotifAvct().equals("6")) {
@@ -1123,23 +1027,19 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			} else {
 				// on traite l'avis CAP
-				int indiceAvisCapFavDefavCap = (Services
-						.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
-						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct))
-						: -1);
+				int indiceAvisCapFavDefavCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavCap != -1) {
-					String idAvisArr = ((AvisCap) getListeAvisCAPFavDefav()
-							.get(indiceAvisCapFavDefavCap)).getIdAvisCAP();
+					String idAvisArr = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavCap))
+							.getIdAvisCAP();
 					avct.setIdAvisArr(idAvisArr);
 				}
 				// on traite l'avis Emp
-				int indiceAvisCapFavDefavEmp = (Services
-						.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer
-						.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct))
-						: -1);
+				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer
+						.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavEmp != -1) {
-					String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav()
-							.get(indiceAvisCapFavDefavEmp)).getIdAvisCAP();
+					String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
+							.getIdAvisCAP();
 					avct.setIdAvisEmp(idAvisEmp);
 				}
 			}
@@ -1325,8 +1225,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * @return listeAvct
 	 */
 	public ArrayList<AvancementFonctionnaires> getListeAvct() {
-		return listeAvct == null ? new ArrayList<AvancementFonctionnaires>()
-				: listeAvct;
+		return listeAvct == null ? new ArrayList<AvancementFonctionnaires>() : listeAvct;
 	}
 
 	/**
@@ -1470,11 +1369,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
-	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request)
-			throws Exception {
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this,
-				VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -1497,8 +1394,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(
-			HttpServletRequest request) throws Exception {
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On enlève l'agent selectionnée
 		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
 		return true;
@@ -1548,8 +1444,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
 	 * 
 	 */
-	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(
-			HttpServletRequest request) throws Exception {
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
 		// On enlève le service selectionnée
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
@@ -1658,8 +1553,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	}
 
 	public ArrayList<FiliereGrade> getListeFiliere() {
-		return listeFiliere == null ? new ArrayList<FiliereGrade>()
-				: listeFiliere;
+		return listeFiliere == null ? new ArrayList<FiliereGrade>() : listeFiliere;
 	}
 
 	public void setListeFiliere(ArrayList<FiliereGrade> listeFiliere) {
@@ -1799,8 +1693,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		return listeAvisCAPMinMoyMax;
 	}
 
-	public void setListeAvisCAPMinMoyMax(
-			ArrayList<AvisCap> listeAvisCAPMinMoyMax) {
+	public void setListeAvisCAPMinMoyMax(ArrayList<AvisCap> listeAvisCAPMinMoyMax) {
 		this.listeAvisCAPMinMoyMax = listeAvisCAPMinMoyMax;
 	}
 
@@ -2013,18 +1906,15 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request,
-			AvancementFonctionnaires avct, Integer indiceElemen)
-			throws Exception {
+	public boolean performPB_SET_DATE_AVCT(HttpServletRequest request, AvancementFonctionnaires avct,
+			Integer indiceElemen) throws Exception {
 		if (getVAL_CK_VALID_ARR(indiceElemen).equals(getCHECKED_ON())) {
 
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
-					String idAvisEmp = AvisCap
-							.chercherAvisCap(getTransaction(),
-									avct.getIdAvisEmp()).getLibCourtAvisCAP()
-							.toUpperCase();
+					String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
+							.getLibCourtAvisCAP().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
 					if (idAvisEmp.equals("MIN")) {
 						dateAvctFinale = avct.getDateAvctMini();
@@ -2033,25 +1923,20 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					} else if (idAvisEmp.equals("MAX")) {
 						dateAvctFinale = avct.getDateAvctMaxi();
 					}
-					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen),
-							dateAvctFinale);
+					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), dateAvctFinale);
 				}
 			} else if (avct.getIdMotifAvct().equals("6")) {
-				addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen),
-						avct.getDateAvctMoy());
+				addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), avct.getDateAvctMoy());
 			} else {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
-					String idAvisEmp = AvisCap
-							.chercherAvisCap(getTransaction(),
-									avct.getIdAvisEmp()).getLibCourtAvisCAP()
-							.toUpperCase();
+					String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
+							.getLibCourtAvisCAP().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
 					if (idAvisEmp.equals("FAV")) {
 						dateAvctFinale = avct.getDateAvctMoy();
 					}
-					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen),
-							dateAvctFinale);
+					addZone(getNOM_ST_DATE_AVCT_FINALE(indiceElemen), dateAvctFinale);
 				}
 			}
 			// on met la date de CAP
@@ -2180,17 +2065,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
 	 * 
 	 */
-	public boolean performPB_VISUALISATION(HttpServletRequest request,
-			int indiceEltAConsulter) throws Exception {
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
 		String docSelection = getListeDocuments().get(indiceEltAConsulter);
-		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"),
-				docSelection.length());
+		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"), docSelection.length());
 
-		String repertoireStockage = (String) ServletAgent.getMesParametres()
-				.get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement"
-				+ nomDoc));
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement" + nomDoc));
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -2199,9 +2080,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private void afficheListeDocuments() {
 		for (int i = 0; i < getListeDocuments().size(); i++) {
 			String nomDoc = getListeDocuments().get(i);
-			addZone(getNOM_ST_NOM_DOC(i),
-					nomDoc.substring(nomDoc.lastIndexOf("/") + 1,
-							nomDoc.length()));
+			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
 		}
 	}
 
@@ -2215,12 +2094,11 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		if (avct.getIdMotifAvct().equals("4")) {
 			// on traite l'avis Emp
-			int indiceAvisCapFavDefavEmp = (Services
-					.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer
+			int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer
 					.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) : -1);
 			if (indiceAvisCapFavDefavEmp != -1) {
-				String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(
-						indiceAvisCapFavDefavEmp)).getLibCourtAvisCAP();
+				String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
+						.getLibCourtAvisCAP();
 				if (idAvisEmp.toUpperCase().equals("DEF")) {
 					return true;
 				} else {
@@ -2357,5 +2235,76 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 */
 	public String getVAL_LB_VERIF_SGC_SELECT() {
 		return getZone(getNOM_LB_VERIF_SGC_SELECT());
+	}
+
+	public ArrayList<Cap> getListeCap() {
+		return listeCap == null ? new ArrayList<Cap>() : listeCap;
+	}
+
+	public void setListeCap(ArrayList<Cap> listeCap) {
+		this.listeCap = listeCap;
+	}
+
+	public CapDao getCapDao() {
+		return capDao;
+	}
+
+	public void setCapDao(CapDao capDao) {
+		this.capDao = capDao;
+	}
+
+	/**
+	 * Getter de la liste avec un lazy initialize : LB_CAP Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	private String[] getLB_CAP() {
+		if (LB_CAP == null)
+			LB_CAP = initialiseLazyLB();
+		return LB_CAP;
+	}
+
+	/**
+	 * Setter de la liste: LB_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	private void setLB_CAP(String[] newLB_CAP) {
+		LB_CAP = newLB_CAP;
+	}
+
+	/**
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_CAP Date de création :
+	 * (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CAP() {
+		return "NOM_LB_CAP";
+	}
+
+	/**
+	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
+	 * NOM_LB_CAP_SELECT Date de création : (28/11/11)
+	 * 
+	 */
+	public String getNOM_LB_CAP_SELECT() {
+		return "NOM_LB_CAP_SELECT";
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_CAP Date de création : (28/11/11 09:55:36)
+	 * 
+	 */
+	public String[] getVAL_LB_CAP() {
+		return getLB_CAP();
+	}
+
+	/**
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_CAP Date de création : (28/11/11)
+	 * 
+	 */
+	public String getVAL_LB_CAP_SELECT() {
+		return getZone(getNOM_LB_CAP_SELECT());
 	}
 }

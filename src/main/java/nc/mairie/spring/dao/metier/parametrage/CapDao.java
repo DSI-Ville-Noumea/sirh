@@ -93,4 +93,20 @@ public class CapDao implements CapDaoInterface {
 		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new CapRowMapper());
 		return c;
 	}
+
+	@Override
+	public Cap chercherCapByAgent(Integer idAgent, String type, Integer annee) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select pc.* from avct_fonct av ");
+		sb.append("inner join spgradn g on av.id_nouv_grade=g.cdgrad ");
+		sb.append("inner join spgeng e on g.codgrg=e.cdgeng ");
+		sb.append("inner join corps_cap c on e.cdgeng=c.cdgeng ");
+		sb.append("inner join p_cap pc on c.id_cap=pc.id_cap ");
+		sb.append("where av.id_agent= ? and av.annee= ? ");
+		sb.append("and av.agent_vdn = pc.cap_vdn ");
+		sb.append("and pc.type_cap= ? ");
+		Cap c = (Cap) jdbcTemplate.queryForObject(sb.toString(), new Object[] { idAgent, annee, type },
+				new CapRowMapper());
+		return c;
+	}
 }
