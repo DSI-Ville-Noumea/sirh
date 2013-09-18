@@ -628,7 +628,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		// Recuperation CAP
-		String idCap = "";
+		String idCap = null;
 		int indiceCap = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
 		if(indiceCap > getListeCap().size()){
 			idCap = "null";

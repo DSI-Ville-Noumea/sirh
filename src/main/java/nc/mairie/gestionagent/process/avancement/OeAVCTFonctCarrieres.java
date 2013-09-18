@@ -518,8 +518,11 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
-						// TODO à corriger pour les IBAN non numerique
-						nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
+						if (Services.estNumerique(gradeSuivant.getIban())) {
+							nouvelleCarriere.setIban(Services.lpad(gradeSuivant.getIban(), 7, "0"));
+						} else {
+							nouvelleCarriere.setIban(gradeSuivant.getIban());
+						}
 
 						nouvelleCarriere.setCodeMotif(avct.getIdMotifAvct());
 
