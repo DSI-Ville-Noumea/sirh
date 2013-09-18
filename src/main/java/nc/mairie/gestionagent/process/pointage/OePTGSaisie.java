@@ -130,10 +130,25 @@ public class OePTGSaisie extends BasicProcess {
 			for (int j = 0; j < 2; j++) {
 				AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
 				if (dto != null) {
+					// vérification date debut>date fin
+					if (dto.getHeureDebut().getTime() >= dto.getHeureFin().getTime()) {
+						logger.debug("\nTentative de sauvegarde d'une absence de durée négative");
+						getTransaction().declarerErreur(
+								"L'absence saisie le " + sdf.format(jour.getDate()) + " est de durée négative.");
+						return;
+					}
 					temp.getAbsences().add(dto);
 				}
 				HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
 				if (hsdto != null) {
+					// vérification date debut>date fin
+					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
+						logger.debug("\nTentative de sauvegarde d'une heure supplémentaire de durée négative");
+						getTransaction().declarerErreur(
+								"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
+										+ " est de durée négative.");
+						return;
+					}
 					temp.getHeuresSup().add(hsdto);
 				}
 			}
@@ -146,6 +161,7 @@ public class OePTGSaisie extends BasicProcess {
 			newList.add(temp);
 			i++;
 		}
+
 		listeFichePointage.setSaisies(newList);
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (loggedAgent == null) {
