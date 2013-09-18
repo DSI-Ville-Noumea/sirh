@@ -177,7 +177,7 @@
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 
 
-            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:950px;">
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;width:830px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
              
              
@@ -185,12 +185,12 @@
                 <span class="sigp2Mandatory" style="width:75px">Date début : </span>
                 <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
                 <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
-                <span class="sigp2Mandatory" style="width:80px"></span>
+                <span class="sigp2Mandatory" style="width:20px"></span>
                 <span class="sigp2" style="width:65px">Agent min :</span>
                 <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="4" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
                 <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
                 <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
-                <span class="sigp2Mandatory" style="width:80px"></span>
+                <span class="sigp2Mandatory" style="width:20px"></span>
                 <span class="sigp2" style="width:40px">Etat : </span>
                 <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT()%>" style="width:125px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT())%>
@@ -206,12 +206,12 @@
                  <span class="sigp2" style="width:75px">Date fin : </span>
                 <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
                 <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
-                <span class="sigp2Mandatory" style="width:80px"></span>
+                <span class="sigp2Mandatory" style="width:20px"></span>
                 <span class="sigp2" style="width:65px">Agent max :</span>
                 <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MAX()%>" size="4" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
                 <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
                 <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
-                <span class="sigp2Mandatory" style="width:80px"></span>
+                <span class="sigp2Mandatory" style="width:20px"></span>
                 <span class="sigp2" style="width:40px">Type : </span>
                 <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE()%>" style="width:125px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT())%>
