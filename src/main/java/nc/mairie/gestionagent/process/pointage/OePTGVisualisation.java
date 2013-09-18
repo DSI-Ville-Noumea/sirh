@@ -854,12 +854,17 @@ public class OePTGVisualisation extends BasicProcess {
 
 		if (!codeService.equals(Const.CHAINE_VIDE)) {
 			ArrayList<String> codesServices = listeSousService;
+			if (!codesServices.contains(codeService))
+				codesServices.add(codeService);
 			idAgents.clear();
 			ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServices(getTransaction(), codesServices);
 			for (AgentNW ag : listAgent) {
 				idAgents.add(ag.getIdAgent());
 			}
 			logger.debug("agents amount in tree selection:" + listAgent.size());
+			if (idAgents.size() == 0) {
+				idAgents.add("0000000");
+			}
 		}
 
 		if (idAgents.isEmpty()) {
