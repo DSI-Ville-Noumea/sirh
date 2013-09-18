@@ -328,7 +328,6 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = urlWS + sirhPtgSaisie;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent);
-		params.put("statutAgent", toSerialize.getAgent().getStatut());
 		return createAndPostRequest(
 				params,
 				url,
