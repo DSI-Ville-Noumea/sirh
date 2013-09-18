@@ -132,9 +132,10 @@ public class OePTGSaisie extends BasicProcess {
 				if (dto != null) {
 					// vérification date debut>date fin
 					if (dto.getHeureDebut().getTime() >= dto.getHeureFin().getTime()) {
-						logger.debug("\nTentative de sauvegarde d'une absence de durée négative");
+						logger.debug("\nTentative de sauvegarde d'une absence de durée nulle ou négative");
 						getTransaction().declarerErreur(
-								"L'absence saisie le " + sdf.format(jour.getDate()) + " est de durée négative.");
+								"L'absence saisie le " + sdf.format(jour.getDate())
+										+ " est de durée  nulle ou négative.");
 						return;
 					}
 					temp.getAbsences().add(dto);
@@ -143,10 +144,10 @@ public class OePTGSaisie extends BasicProcess {
 				if (hsdto != null) {
 					// vérification date debut>date fin
 					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
-						logger.debug("\nTentative de sauvegarde d'une heure supplémentaire de durée négative");
+						logger.debug("\nTentative de sauvegarde d'une heure supplémentaire de durée nulle ou négative");
 						getTransaction().declarerErreur(
 								"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
-										+ " est de durée négative.");
+										+ " est de durée nulle ou négative.");
 						return;
 					}
 					temp.getHeuresSup().add(hsdto);
