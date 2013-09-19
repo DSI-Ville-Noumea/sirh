@@ -188,7 +188,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setMotif(data.getMotif());
 		if (!ret.getMotif().equals("")) {
 			if (data.getNbr() != null && !"".equals(data.getNbr())) {
-				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
+				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()) * 60 + (Integer.parseInt(data.getMins())));
 			} else {
 				ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
 			}
@@ -246,6 +246,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setMotif(getZone("NOM_motif_" + id));
 		ret.setComment(getZone("NOM_comm_" + id));
 		ret.setNbr(getZone("NOM_nbr_" + id));
+		ret.setMins(getZone("NOM_mins_" + id));
 		ret.setTimeD(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
 		ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
 		ret.setIdPtg(Integer.parseInt("0" + getZone("NOM_idptg_" + id)));
@@ -438,6 +439,7 @@ public class OePTGSaisie extends BasicProcess {
 		String titre = p.getTitre() != null ? p.getTitre() : "";
 		String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
 		String qte = p.getQuantite() != null ? "" + p.getQuantite() : "";
+		int nbrMinsTot = qte == "" ? 0 : Integer.parseInt(qte);
 		int idref = p.getIdRefEtat() != null ? p.getIdRefEtat() : 0;
 		int idptg = p.getIdPointage() != null ? p.getIdPointage() : 0;
 		String status = p.getIdRefEtat() != null && !motif.equals("") ? EtatPointageEnum
@@ -445,13 +447,12 @@ public class OePTGSaisie extends BasicProcess {
 		switch (TypeSaisieEnum.valueOf(p.getTypeSaisie())) {
 			case CASE_A_COCHER:
 				return getType0TabCell(id, qte.equals("1"), motif, commentaire, status, titre, idptg, idref);
-			case NB_HEURES:
-				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'heures :", titre, idptg, idref);
 			case NB_INDEMNITES:
-				return getType12TabCell(id, qte, motif, commentaire, status, "Nombre d'indemnités :", titre, idptg,
-						idref);
+				return getType1TabCell(id, qte, motif, commentaire, status, "Nbre d'indemnités", titre, idptg, idref);
+			case NB_HEURES:
+				return getType2TabCell(id, nbrMinsTot, motif, commentaire, status, "Nbre d'heures", titre, idptg, idref);
 			case PERIODE_HEURES:
-				return getType3TabCell(id, "check", qte.equals("1"), p.getHeureDebut(), p.getHeureFin(), motif,
+				return getType3TabCell(id, "Coche", qte.equals("1"), p.getHeureDebut(), p.getHeureFin(), motif,
 						commentaire, status + "<br>", titre, idptg, idref);
 			default:
 		}
@@ -490,14 +491,30 @@ public class OePTGSaisie extends BasicProcess {
 		return ret.toString();
 	}
 
-	private String getType12TabCell(String id, String nbr, String motif, String comment, String status, String label,
+	private String getType1TabCell(String id, String nbr, String motif, String comment, String status, String label,
 			String title, int idptg, int idrefetat) {
 		StringBuilder ret = new StringBuilder();
-		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id
-				+ "'>");
+		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1TabCell" + id + "'>");
 		ret.append(getHead(id, status, title));
 		ret.append("<tr bgcolor='#BFEFFF'><td>" + label + "<input type='text' size='4' name='NOM_nbr_" + id
 				+ "' value='" + nbr + "'></td></tr>");
+		ret.append(commonFields(id, motif, comment, idptg, idrefetat));
+		ret.append("</table></td>");
+		addZone("nbr_" + id, "" + nbr);
+		return ret.toString();
+	}
+
+	private String getType2TabCell(String id, int nbrMins, String motif, String comment, String status, String label,
+			String title, int idptg, int idrefetat) {
+
+		int nbr = nbrMins / 60;
+		int mins = nbrMins - nbr * 60;
+		StringBuilder ret = new StringBuilder();
+		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type2TabCell" + id + "'>");
+		ret.append(getHead(id, status, title));
+		ret.append("<tr bgcolor='#BFEFFF'><td>" + label + "<input type='text' size='2' name='NOM_nbr_" + id
+				+ "' value='" + nbr + "'>h<select name='NOM_mins_" + id + "'>" + getMinsCombo(mins)
+				+ " </select></td></tr>");
 		ret.append(commonFields(id, motif, comment, idptg, idrefetat));
 		ret.append("</table></td>");
 		addZone("nbr_" + id, "" + nbr);
@@ -555,6 +572,24 @@ public class OePTGSaisie extends BasicProcess {
 				ret.append("<option value='" + val + "'" + (seleted.equals(val) ? "selected" : "") + ">" + val
 						+ "</option>");
 			}
+		}
+		return ret.toString();
+	}
+
+	private String getMinsCombo(int ival) {
+		StringBuilder ret = new StringBuilder();
+		String selected = "" + ival;
+		if (ival == 0) {
+			selected = "00";
+		}
+		String val = "";
+		for (int min = 0; min < 60; min += 15) {
+			val = "" + min;
+			if (min == 0) {
+				val += "0";
+			}
+			ret.append("<option value='" + val + "'" + (selected.equals(val) ? "selected" : "") + ">" + val
+					+ "</option>");
 		}
 		return ret.toString();
 	}

@@ -10,6 +10,7 @@ public class DataContainer {
 	private Date timeD = new Date();
 	private Date timeF = new Date();
 	private String nbr = "";
+	private String mins = "";
 	private int idPtg = 0;
 	private int idRefEtat = 0;
 
@@ -79,4 +80,13 @@ public class DataContainer {
 	public void setIdRefEtat(int idRefEtat) {
 		this.idRefEtat = idRefEtat;
 	}
+
+	public String getMins() {
+		return mins;
+	}
+
+	public void setMins(String mins) {
+		this.mins = mins;
+	}
+
 }
