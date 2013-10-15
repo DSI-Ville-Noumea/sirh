@@ -10,9 +10,13 @@ import javax.sql.DataSource;
 
 import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
+
+	private Logger logger = LoggerFactory.getLogger(EaeParcoursProDao.class);
 
 	public static final String NOM_TABLE = "EAE_PARCOURS_PRO";
 
@@ -37,11 +41,15 @@ public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
 	}
 
 	@Override
-	public void creerParcoursPro(Integer idEae, Date dateDebut, Date dateFin, String libParcours) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_PARCOURS_PRO + "," + CHAMP_ID_EAE + "," + CHAMP_DATE_DEBUT + ","
-				+ CHAMP_DATE_FIN + "," + CHAMP_LIBELLE_PARCOURS_PRO + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?)";
-
-		jdbcTemplate.update(sql, new Object[] { idEae, dateDebut, dateFin, libParcours });
+	public void creerParcoursPro(Integer idEae, Date dateDebut, Date dateFin, String libParcours) {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_PARCOURS_PRO + "," + CHAMP_ID_EAE + ","
+				+ CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN + "," + CHAMP_LIBELLE_PARCOURS_PRO + ") " + "VALUES ("
+				+ NOM_SEQUENCE + ".nextval,?,?,?,?)";
+		try {
+			jdbcTemplate.update(sql, new Object[] { idEae, dateDebut, dateFin, libParcours });
+		} catch (Exception e) {
+			logger.debug("Erreur dans la creation du parcours pro pour l' idEae=" + idEae);
+		}
 	}
 
 	@Override

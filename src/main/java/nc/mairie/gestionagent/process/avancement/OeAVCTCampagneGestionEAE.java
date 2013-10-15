@@ -481,185 +481,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (AgentNW a : la) {
 			// Récupération de l'eae evntuel
 			try {
-				// logger.info("Req Oracle : chercherEAEAgent " +
-				// a.getIdAgent());
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
+				if (eaeAgent == null) {
+					performCreeEAESansDetache(request, a, idCampagneEAE, anneeCampagne);
+				}
 				// si on trouve un EAE dejà existant alors on ne fait rien
 			} catch (Exception e) {
-				// logger.info("Création de l'EAE pour l'agent : " +
-				// a.getIdAgent());
-				// Création de l'EAE
-				EAE eae = new EAE();
-				eae.setIdCampagneEAE(idCampagneEAE);
-				eae.setDocumentAttache(false);
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				eae.setDateCreation(null);
-
-				// pour le CAP
-				// on cherche si il y a une ligne dans les avancements
-				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				AvancementFonctionnaires avct = AvancementFonctionnaires
-						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
-								a.getIdAgent());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
-				if (avct != null && avct.getIdAvct() != null) {
-					// on a trouvé une ligne dans avancement
-					// on regarde l'etat de la ligne
-					// si 'valid DRH' alors on met CAP à true;
-					if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-						eae.setCap(true);
-					} else {
-						eae.setCap(false);
-					}
-				} else {
-					eae.setCap(false);
-				}
-
-				eae.setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
-				// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
-				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
-						eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
-						eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
-						eae.getUserControle(), eae.getIdDelegataire());
-
-				// on recupere le poste
-				// logger.info("Req AS400 : chercherAffectationActiveAvecAgent");
-				Affectation affAgent = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-				FichePoste fpPrincipale = null;
-				FichePoste fpSecondaire = null;
-				FichePoste fpResponsable = null;
-				TitrePoste tpResp = null;
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					// logger.info("Req AS400 : chercherFichePoste (primaire)");
-					fpPrincipale = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePoste());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
-						// on recupere le superieur hierarchique
-						if (fpPrincipale.getIdResponsable() != null) {
-							// logger.info("Req AS400 : chercherAffectationAvecFP (Superieur)");
-							Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(),
-									fpPrincipale.getIdResponsable());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-							}
-							if (affSuperieur.getIdFichePoste() != null) {
-								// logger.info("Req AS400 : chercherFichePoste (Superieur)");
-								fpResponsable = FichePoste.chercherFichePoste(getTransaction(),
-										affSuperieur.getIdFichePoste());
-								// logger.info("Req AS400 : chercherTitrePoste (Superieur)");
-								tpResp = TitrePoste.chercherTitrePoste(getTransaction(),
-										fpResponsable.getIdTitrePoste());
-							}
-						}
-					}
-					if (affAgent.getIdFichePosteSecondaire() != null) {
-						// logger.info("Req AS400 : chercherFichePoste (secondaire)");
-						fpSecondaire = FichePoste.chercherFichePoste(getTransaction(),
-								affAgent.getIdFichePosteSecondaire());
-					}
-				}
-
-				// on crée les FDP et activites/competences
-				// logger.info("Req Oracle : chercherEAE (celui crée )");
-				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
-				setEaeCourant(eaeCree);
-				// on met les données dans EAE-evalué
-				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a, true, false, true);
-				// on met les données dans EAE-FichePoste
-				// logger.info("Req Oracle : Insert table EAE_FDP");
-				performCreerFichePostePrincipale(request, fpPrincipale, eaeCree, true, true);
-				performCreerFichePosteSecondaire(request, fpSecondaire, eaeCree);
-				// on met les données dans EAE-FDP-Activites
-				// logger.info("Req Oracle : Insert table EAE-FDP-Activites");
-				performCreerActivitesFichePostePrincipale(request, fpPrincipale);
-				performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
-				performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
-				performCreerCompetencesFichePosteSecondaire(request, fpSecondaire);
-				// logger.info("Req AS400 : chercherAgent");
-				// on met les données dans EAE-Diplome
-				// logger.info("Req Oracle : Insert table EAE-Diplome");
-				performCreerDiplome(request, a);
-				// on met les données dans EAE-Parcours-Pro
-				// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
-				performCreerParcoursPro(request, a);
-				// on met les données dans EAE-Formation
-				// logger.info("Req Oracle : Insert table EAE-Formation");
-				performCreerFormation(request, a);
-
-				// on met à jour l'etat de l'eAE
-				// logger.info("Req Oracle : chercherEaeFichePoste");
-				EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eaeCree.getIdEAE(), true);
-				if (eaeFDP.getIdSHD() == null || eaeFDP.getIdSHD() == 0) {
-					// logger.info("Req Oracle : modifierEtat");
-					getEaeDao().modifierEtat(eaeCree.getIdEAE(), EnumEtatEAE.NON_AFFECTE.getCode());
-				}
-
-				// on créer les evaluateurs
-				if (eaeFDP.getIdSHD() != null && eaeFDP.getIdSHD() != 0 && tpResp != null) {
-					// logger.info("Req AS400 : chercherAgent (evaluateur)");
-					AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), eaeFDP.getIdSHD().toString());
-					EaeEvaluateur eval = new EaeEvaluateur();
-					eval.setIdEae(idEaeCreer);
-					eval.setIdAgent(Integer.valueOf(agentResp.getIdAgent()));
-					eval.setFonction(tpResp.getLibTitrePoste());
-					eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche() == null
-							|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-							|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp
-							.getDateDerniereEmbauche()));
-					// on cherche toutes les affectations sur la FDP du
-					// responsable
-					// on prend la date la plus ancienne
-					if (fpResponsable != null && fpResponsable.getIdServi() != null) {
-						// logger.info("Req AS400 : listerAffectationAvecFP (fonction evaluateur)");
-						ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
-								getTransaction(), fpResponsable, agentResp.getIdAgent());
-						if (listeAffectationSurMemeFDP.size() > 0) {
-							eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-									|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
-									: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
-						}
-						// on cherche toutes les affectations sur le meme
-						// service et
-						// on prend la date la plus ancienne
-						// NB : pour les affectations successives
-						// logger.info("Req AS400 : listerAffectationAgentAvecService (fonction evaluateur)");
-						ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
-								getTransaction(), agentResp.getIdAgent(), fpResponsable.getIdServi());
-						String dateDebutService = null;
-						for (int i = 0; i < listeAffectationService.size(); i++) {
-							Affectation affCours = listeAffectationService.get(i);
-							if (listeAffectationService.size() > i + 1) {
-								if (listeAffectationService.get(i + 1) != null) {
-									Affectation affPrecedente = listeAffectationService.get(i + 1);
-									if (affCours.getDateDebutAff().equals(
-											Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
-										dateDebutService = affPrecedente.getDateDebutAff();
-									} else {
-										dateDebutService = affCours.getDateDebutAff();
-									}
-								} else {
-									dateDebutService = affCours.getDateDebutAff();
-								}
-							} else {
-								dateDebutService = affCours.getDateDebutAff();
-							}
-						}
-						eval.setDateEntreeService(dateDebutService == null
-								|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
-					}
-					// logger.info("Req Oracle : creerEaeEvaluateur");
-					getEaeEvaluateurDao()
-							.creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(),
-									eval.getDateEntreeService(), eval.getDateEntreeCollectivite(),
-									eval.getDateEntreeFonction());
-				}
-
+				performCreeEAESansDetache(request, a, idCampagneEAE, anneeCampagne);
 			}
 		}
 
@@ -679,70 +507,244 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (AgentNW a : laSuite) {
 			// Récupération de l'eae evntuel
 			try {
-				// logger.info("Req Oracle : chercherEAEAgent " +
-				// a.getIdAgent());
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
+				if (eaeAgent == null) {
+					performCreeEAEDetache(request, a, idCampagneEAE, anneeCampagne);
+				}
 				// si on trouve un EAE dejà existant alors on ne fait rien
 			} catch (Exception e) {
-				// logger.info("Création de l'EAE pour l'agent : " +
-				// a.getIdAgent());
-				// Création de l'EAE
-				EAE eae = new EAE();
-				eae.setIdCampagneEAE(idCampagneEAE);
-				eae.setDocumentAttache(false);
-				eae.setDateCreation(null);
-
-				// pour le CAP
-				// on cherche si il y a une ligne dans les avancements
-				// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-				AvancementFonctionnaires avct = AvancementFonctionnaires
-						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getTransaction(), anneeCampagne.toString(),
-								a.getIdAgent());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
-				if (avct != null && avct.getIdAvct() != null) {
-					// on a trouvé une ligne dans avancement
-					// on regarde l'etat de la ligne
-					// si 'valid DRH' alors on met CAP à true;
-					if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-						eae.setCap(true);
-					} else {
-						eae.setCap(false);
-					}
-				} else {
-					eae.setCap(false);
-				}
-
-				eae.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
-				// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
-				Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
-						eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
-						eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
-						eae.getUserControle(), eae.getIdDelegataire());
-
-				// logger.info("Req Oracle : chercherEAE (celui crée )");
-				EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
-				setEaeCourant(eaeCree);
-				// logger.info("Req AS400 : chercherAgent");
-				// on met les données dans EAE-evalué
-				// logger.info("Req Oracle : Insert table EAE-evalué");
-				performCreerEvalue(request, a, true, true, true);
-				// on met les données dans EAE-Diplome
-				// logger.info("Req Oracle : Insert table EAE-Diplome");
-				performCreerDiplome(request, a);
-				// on met les données dans EAE-Parcours-Pro
-				// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
-				performCreerParcoursPro(request, a);
-				// on met les données dans EAE-Formation
-				// logger.info("Req Oracle : Insert table EAE-Formation");
-				performCreerFormation(request, a);
-
+				performCreeEAEDetache(request, a, idCampagneEAE, anneeCampagne);
 			}
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
 		logger.info("Sortie du calcul");
 		return true;
+
+	}
+
+	private void performCreeEAEDetache(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
+			Integer anneeCampagne) throws Exception {
+		logger.info("Création de l'EAE pour l'agent : " + a.getIdAgent());
+		// Création de l'EAE
+		EAE eae = new EAE();
+		eae.setIdCampagneEAE(idCampagneEAE);
+		eae.setDocumentAttache(false);
+		eae.setDateCreation(null);
+
+		// pour le CAP
+		// on cherche si il y a une ligne dans les avancements
+		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
+				getTransaction(), anneeCampagne.toString(), a.getIdAgent());
+		if (getTransaction().isErreur())
+			getTransaction().traiterErreur();
+		if (avct != null && avct.getIdAvct() != null) {
+			// on a trouvé une ligne dans avancement
+			// on regarde l'etat de la ligne
+			// si 'valid DRH' alors on met CAP à true;
+			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
+				eae.setCap(true);
+			} else {
+				eae.setCap(false);
+			}
+		} else {
+			eae.setCap(false);
+		}
+
+		eae.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
+		// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
+		Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
+				eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
+				eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
+				eae.getUserControle(), eae.getIdDelegataire());
+
+		// logger.info("Req Oracle : chercherEAE (celui crée )");
+		EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
+		setEaeCourant(eaeCree);
+		// logger.info("Req AS400 : chercherAgent");
+		// on met les données dans EAE-evalué
+		// logger.info("Req Oracle : Insert table EAE-evalué");
+		performCreerEvalue(request, a, true, true, true);
+		// on met les données dans EAE-Diplome
+		// logger.info("Req Oracle : Insert table EAE-Diplome");
+		performCreerDiplome(request, a);
+		// on met les données dans EAE-Parcours-Pro
+		// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
+		performCreerParcoursPro(request, a);
+		// on met les données dans EAE-Formation
+		// logger.info("Req Oracle : Insert table EAE-Formation");
+		performCreerFormation(request, a);
+	}
+
+	private void performCreeEAESansDetache(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
+			Integer anneeCampagne) throws Exception {
+		logger.info("Création de l'EAE pour l'agent : " + a.getIdAgent());
+		// Création de l'EAE
+		EAE eae = new EAE();
+		eae.setIdCampagneEAE(idCampagneEAE);
+		eae.setDocumentAttache(false);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		eae.setDateCreation(null);
+
+		// pour le CAP
+		// on cherche si il y a une ligne dans les avancements
+		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
+				getTransaction(), anneeCampagne.toString(), a.getIdAgent());
+		if (getTransaction().isErreur())
+			getTransaction().traiterErreur();
+		if (avct != null && avct.getIdAvct() != null) {
+			// on a trouvé une ligne dans avancement
+			// on regarde l'etat de la ligne
+			// si 'valid DRH' alors on met CAP à true;
+			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
+				eae.setCap(true);
+			} else {
+				eae.setCap(false);
+			}
+		} else {
+			eae.setCap(false);
+		}
+
+		eae.setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
+		// logger.info("Req Oracle : creerEAE " + a.getIdAgent());
+		Integer idEaeCreer = getEaeDao().creerEAE(eae.getIdCampagneEAE(), eae.getEtat(), eae.isCap(),
+				eae.isDocumentAttache(), eae.getDateCreation(), eae.getDateFin(), eae.getDateEntretien(),
+				eae.getDureeEntretien(), eae.getDateFinalise(), eae.getDateControle(), eae.getHeureControle(),
+				eae.getUserControle(), eae.getIdDelegataire());
+
+		// on recupere le poste
+		// logger.info("Req AS400 : chercherAffectationActiveAvecAgent");
+		Affectation affAgent = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
+		FichePoste fpPrincipale = null;
+		FichePoste fpSecondaire = null;
+		FichePoste fpResponsable = null;
+		TitrePoste tpResp = null;
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+		} else {
+			// logger.info("Req AS400 : chercherFichePoste (primaire)");
+			fpPrincipale = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePoste());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			} else {
+				// on recupere le superieur hierarchique
+				if (fpPrincipale.getIdResponsable() != null) {
+					// logger.info("Req AS400 : chercherAffectationAvecFP (Superieur)");
+					Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(),
+							fpPrincipale.getIdResponsable());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					}
+					if (affSuperieur.getIdFichePoste() != null) {
+						// logger.info("Req AS400 : chercherFichePoste (Superieur)");
+						fpResponsable = FichePoste.chercherFichePoste(getTransaction(), affSuperieur.getIdFichePoste());
+						// logger.info("Req AS400 : chercherTitrePoste (Superieur)");
+						tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
+					}
+				}
+			}
+			if (affAgent.getIdFichePosteSecondaire() != null) {
+				// logger.info("Req AS400 : chercherFichePoste (secondaire)");
+				fpSecondaire = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePosteSecondaire());
+			}
+		}
+
+		// on crée les FDP et activites/competences
+		// logger.info("Req Oracle : chercherEAE (celui crée )");
+		EAE eaeCree = getEaeDao().chercherEAE(idEaeCreer);
+		setEaeCourant(eaeCree);
+		// on met les données dans EAE-evalué
+		// logger.info("Req Oracle : Insert table EAE-evalué");
+		performCreerEvalue(request, a, true, false, true);
+		// on met les données dans EAE-FichePoste
+		// logger.info("Req Oracle : Insert table EAE_FDP");
+		performCreerFichePostePrincipale(request, fpPrincipale, eaeCree, true, true);
+		performCreerFichePosteSecondaire(request, fpSecondaire, eaeCree);
+		// on met les données dans EAE-FDP-Activites
+		// logger.info("Req Oracle : Insert table EAE-FDP-Activites");
+		performCreerActivitesFichePostePrincipale(request, fpPrincipale);
+		performCreerActivitesFichePosteSecondaire(request, fpSecondaire);
+		performCreerCompetencesFichePostePrincipale(request, fpPrincipale);
+		performCreerCompetencesFichePosteSecondaire(request, fpSecondaire);
+		// logger.info("Req AS400 : chercherAgent");
+		// on met les données dans EAE-Diplome
+		// logger.info("Req Oracle : Insert table EAE-Diplome");
+		performCreerDiplome(request, a);
+		// on met les données dans EAE-Parcours-Pro
+		// logger.info("Req Oracle : Insert table EAE-Parcours-Pro");
+		performCreerParcoursPro(request, a);
+		// on met les données dans EAE-Formation
+		// logger.info("Req Oracle : Insert table EAE-Formation");
+		performCreerFormation(request, a);
+
+		// on met à jour l'etat de l'eAE
+		// logger.info("Req Oracle : chercherEaeFichePoste");
+		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eaeCree.getIdEAE(), true);
+		if (eaeFDP.getIdSHD() == null || eaeFDP.getIdSHD() == 0) {
+			// logger.info("Req Oracle : modifierEtat");
+			getEaeDao().modifierEtat(eaeCree.getIdEAE(), EnumEtatEAE.NON_AFFECTE.getCode());
+		}
+
+		// on créer les evaluateurs
+		if (eaeFDP.getIdSHD() != null && eaeFDP.getIdSHD() != 0 && tpResp != null) {
+			// logger.info("Req AS400 : chercherAgent (evaluateur)");
+			AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), eaeFDP.getIdSHD().toString());
+			EaeEvaluateur eval = new EaeEvaluateur();
+			eval.setIdEae(idEaeCreer);
+			eval.setIdAgent(Integer.valueOf(agentResp.getIdAgent()));
+			eval.setFonction(tpResp.getLibTitrePoste());
+			eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche() == null
+					|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+					|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf.parse(agentResp
+					.getDateDerniereEmbauche()));
+			// on cherche toutes les affectations sur la FDP du
+			// responsable
+			// on prend la date la plus ancienne
+			if (fpResponsable != null && fpResponsable.getIdServi() != null) {
+				// logger.info("Req AS400 : listerAffectationAvecFP (fonction evaluateur)");
+				ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
+						getTransaction(), fpResponsable, agentResp.getIdAgent());
+				if (listeAffectationSurMemeFDP.size() > 0) {
+					eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
+							|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
+							|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
+							.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+				}
+				// on cherche toutes les affectations sur le meme
+				// service et
+				// on prend la date la plus ancienne
+				// NB : pour les affectations successives
+				// logger.info("Req AS400 : listerAffectationAgentAvecService (fonction evaluateur)");
+				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
+						getTransaction(), agentResp.getIdAgent(), fpResponsable.getIdServi());
+				String dateDebutService = null;
+				for (int i = 0; i < listeAffectationService.size(); i++) {
+					Affectation affCours = listeAffectationService.get(i);
+					if (listeAffectationService.size() > i + 1) {
+						if (listeAffectationService.get(i + 1) != null) {
+							Affectation affPrecedente = listeAffectationService.get(i + 1);
+							if (affCours.getDateDebutAff().equals(
+									Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+								dateDebutService = affPrecedente.getDateDebutAff();
+							} else {
+								dateDebutService = affCours.getDateDebutAff();
+							}
+						} else {
+							dateDebutService = affCours.getDateDebutAff();
+						}
+					} else {
+						dateDebutService = affCours.getDateDebutAff();
+					}
+				}
+				eval.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
+						: sdf.parse(dateDebutService));
+			}
+			// logger.info("Req Oracle : creerEaeEvaluateur");
+			getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(),
+					eval.getDateEntreeService(), eval.getDateEntreeCollectivite(), eval.getDateEntreeFonction());
+		}
 
 	}
 
@@ -2476,16 +2478,20 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			CampagneEAE campagnePrec = getCampagneEAEDao().chercherCampagneEAEAnnee(campagneActuelle.getAnnee() - 1);
 			EAE eaeAnneePrec = getEaeDao().chercherEAEAgent(Integer.valueOf(ag.getIdAgent()),
 					campagnePrec.getIdCampagneEAE());
-			EaeEvalue ancienneValeur = getEaeEvalueDao().chercherEaeEvalue(eaeAnneePrec.getIdEAE());
-			if (evalAModif.getDateEntreeFonctionnaire() != null) {
-				if (ancienneValeur.getDateEntreeFonctionnaire() != null
-						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(
-								ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
-					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
-				}
-			} else {
-				if (ancienneValeur.getDateEntreeFonctionnaire() != null) {
-					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
+			// si on ne trouve pas d'EAE pour l'année precedente
+			EaeEvalue ancienneValeur=null;
+			if (eaeAnneePrec != null) {
+				ancienneValeur = getEaeEvalueDao().chercherEaeEvalue(eaeAnneePrec.getIdEAE());
+				if (evalAModif.getDateEntreeFonctionnaire() != null) {
+					if (ancienneValeur.getDateEntreeFonctionnaire() != null
+							&& (evalAModif.getDateEntreeFonctionnaire().compareTo(
+									ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
+						evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
+					}
+				} else {
+					if (ancienneValeur.getDateEntreeFonctionnaire() != null) {
+						evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
+					}
 				}
 			}
 
@@ -2527,15 +2533,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// on regarde si la date de l'EAE precedent est différente alors on
 			// prend la date de l'EAE de l'année passée
-			if (evalAModif.getDateEntreeAdministration() != null) {
-				if (ancienneValeur.getDateEntreeAdministration() != null
-						&& (evalAModif.getDateEntreeAdministration().compareTo(
-								ancienneValeur.getDateEntreeAdministration()) != 0)) {
-					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
-				}
-			} else {
-				if (ancienneValeur.getDateEntreeAdministration() != null) {
-					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
+			if(ancienneValeur!=null){
+				if (evalAModif.getDateEntreeAdministration() != null) {
+					if (ancienneValeur.getDateEntreeAdministration() != null
+							&& (evalAModif.getDateEntreeAdministration().compareTo(
+									ancienneValeur.getDateEntreeAdministration()) != 0)) {
+						evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
+					}
+				} else {
+					if (ancienneValeur.getDateEntreeAdministration() != null) {
+						evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
+					}
 				}
 			}
 
