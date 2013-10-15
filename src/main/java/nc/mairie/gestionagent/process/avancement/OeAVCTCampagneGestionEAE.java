@@ -390,7 +390,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			throws Exception {
 		// Miseà jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
-		logger.info("Entree dans le calcul");
+		logger.info("Entree dans le calcul avec les paramètres : idCampagneEAE=" + idCampagneEAE.toString()
+				+ ", annee=" + anneeCampagne.toString());
 
 		// ON ENELEVE CETTE PARTIE CAR SI L'EAE a été saisi dans le KIOSQUE
 		// ALORS ON A DES GROS SOUCIS EN BASE :cf JIRA SIRH-232
