@@ -373,7 +373,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
 			logger.debug(result.toString());
-			return result.isCanStartExportPaieAction();
+			return result.isCanStartAction();
 		} else {
 			return false;
 		}
