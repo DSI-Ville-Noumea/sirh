@@ -378,10 +378,11 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			String anneeCourante = (String) VariablesActivite.recuperer(this,
+			/*String anneeCourante = (String) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
 			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);
+				anneeCourante = Services.dateDuJour().substring(6, 10);*/
+			String anneeCourante = "2014";
 			setListeAnnee(new String[5]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 

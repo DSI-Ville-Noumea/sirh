@@ -88,7 +88,8 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			String anneeCourante = Services.dateDuJour().substring(6, 10);
+			//String anneeCourante = Services.dateDuJour().substring(6, 10);
+			String anneeCourante = "2014";
 			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
