@@ -18,6 +18,7 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Affectation;
@@ -109,14 +110,14 @@ public class OePTGSaisie extends BasicProcess {
 		}
 	}
 
-	private void save() throws Exception {
+	private boolean save() throws Exception {
 
 		// compare date lundi avec aujourd'hui pour savoir si autorisé à
 		// enregister
 		if (((new Date().getTime() - getDateLundi(0).getTime()) / (1000l * 60 * 60 * 24 * 30)) >= 3) {
 			logger.debug("\nTentative de sauvegarde d'un pointage de plus de 3 mois");
 			getTransaction().declarerErreur("La semaine sélectionnée est trop ancienne pour être modifiée");
-			return;
+			return false;
 		}
 
 		List<JourPointageDto> newList = new ArrayList<>();
@@ -136,7 +137,14 @@ public class OePTGSaisie extends BasicProcess {
 						getTransaction().declarerErreur(
 								"L'absence saisie le " + sdf.format(jour.getDate())
 										+ " est de durée  nulle ou négative.");
-						return;
+						return false;
+					}
+					// vérification motif obligatoire
+					if (dto.getMotif().equals(Const.CHAINE_VIDE)) {
+						logger.debug("\nTentative de sauvegarde d'une absence sans motif.");
+						getTransaction().declarerErreur(
+								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
+						return false;
 					}
 					temp.getAbsences().add(dto);
 				}
@@ -148,17 +156,49 @@ public class OePTGSaisie extends BasicProcess {
 						getTransaction().declarerErreur(
 								"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
 										+ " est de durée nulle ou négative.");
-						return;
+						return false;
+					}
+					// vérification motif obligatoire
+					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
+						logger.debug("\nTentative de sauvegarde d'une heure supplémentaire sans motif");
+						getTransaction()
+								.declarerErreur(
+										"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
+												+ " n'a pas de motif.");
+						return false;
 					}
 					temp.getHeuresSup().add(hsdto);
 				}
 			}
+
 			for (int prim = 0; prim < nbrPrime; prim++) {
 				PrimeDto ptemp = primess.get(i).get(prim);
-				temp.getPrimes().add(
-						getPrime(temp.getDate(), "PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":"
-								+ i, ptemp.getTitre(), ptemp.getTypeSaisie()));
+				PrimeDto primeAajouter = getPrime(temp.getDate(),
+						"PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":" + i, ptemp.getTitre(),
+						ptemp.getTypeSaisie());
+				if (primeAajouter != null) {
+					// vérification motif obligatoire
+					if (primeAajouter.getMotif().equals(Const.CHAINE_VIDE)) {
+						logger.debug("\nTentative de sauvegarde d'une prime sans motif");
+						getTransaction().declarerErreur(
+								"La prime " + ptemp.getTitre() + " saisie le " + sdf.format(jour.getDate())
+										+ " n'a pas de motif.");
+						return false;
+					}
+					// verification si prime 7704 que le nombre ne soit pas
+					// supérieur à 2
+					if (primeAajouter.getNumRubrique() == 7704 && primeAajouter.getQuantite() > 2) {
+						logger.debug("\nTentative de sauvegarde de la prime 7704 avec une quantité supérieure à 2");
+						getTransaction().declarerErreur(
+								"La prime " + ptemp.getTitre() + " saisie le " + sdf.format(jour.getDate())
+										+ " ne peut pas excéder 2 en quantité.");
+						return false;
+					}
+
+					temp.getPrimes().add(primeAajouter);
+				}
 			}
+
 			newList.add(temp);
 			i++;
 		}
@@ -178,19 +218,54 @@ public class OePTGSaisie extends BasicProcess {
 			}
 		}
 
-		return;
+		return true;
 	}
 
 	private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
 		PrimeDto ret = null;
 		DataContainer data = getData(id, d);
-		ret = new PrimeDto();
-		ret.setMotif(data.getMotif());
-		if (!ret.getMotif().equals("")) {
-			if (data.getNbr() != null && !"".equals(data.getNbr())) {
-				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()) * 60 + (Integer.parseInt(data.getMins())));
+		boolean saisie = true;
+		switch (typesaisie) {
+			case "PERIODE_HEURES":
+				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+						&& data.getTimeD().getTime() == d.getTime() && data.getTimeF().getTime() == d.getTime()) {
+					saisie = false;
+				}
+				break;
+			case "NB_INDEMNITES":
+				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+						&& data.getNbr().equals(Const.CHAINE_VIDE)) {
+					saisie = false;
+				}
+				break;
+			case "NB_HEURES":
+				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+						&& data.getNbr().equals("0") && data.getMins().equals("00")) {
+					saisie = false;
+				}
+				break;
+			case "CASE_A_COCHER":
+				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+						&& data.getChk().equals("")) {
+					saisie = false;
+				}
+				break;
+			default:
+				saisie = false;
+				break;
+		}
+		if (saisie) {
+			ret = new PrimeDto();
+			ret.setMotif(data.getMotif());
+			if (typesaisie.equals("NB_INDEMNITES")) {
+				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
 			} else {
-				ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
+				if (data.getNbr() != null && !"".equals(data.getNbr())) {
+					ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()) * 60
+							+ (Integer.parseInt(data.getMins())));
+				} else {
+					ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
+				}
 			}
 			ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
 			ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
@@ -201,15 +276,20 @@ public class OePTGSaisie extends BasicProcess {
 			ret.setIdRefEtat(data.getIdRefEtat());
 			ret.setTitre(title);
 			ret.setTypeSaisie(typesaisie);
+			logger.debug("Prime " + id);
 		}
-		logger.debug("Prime " + id);
 		return ret;
 	}
 
 	private AbsenceDto getAbsence(Date d, String id) {
 		AbsenceDto ret = null;
 		DataContainer data = getData(id, d);
-		if (!data.getMotif().equals("")) {
+		boolean saisie = true;
+		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+				&& data.getTimeD().getTime() == d.getTime() && data.getTimeF().getTime() == d.getTime()) {
+			saisie = false;
+		}
+		if (saisie) {
 			ret = new AbsenceDto();
 			ret.setConcertee(data.getChk().equals("on"));
 			ret.setHeureDebut(data.getTimeD());
@@ -226,7 +306,12 @@ public class OePTGSaisie extends BasicProcess {
 	private HeureSupDto getHS(Date d, String id) {
 		HeureSupDto ret = null;
 		DataContainer data = getData(id, d);
-		if (!data.getMotif().equals("")) {
+		boolean saisie = true;
+		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
+				&& data.getTimeD().getTime() == d.getTime() && data.getTimeF().getTime() == d.getTime()) {
+			saisie = false;
+		}
+		if (saisie) {
 			ret = new HeureSupDto();
 			ret.setRecuperee(data.getChk().equals("on"));
 			ret.setHeureDebut(data.getTimeD());
@@ -258,7 +343,8 @@ public class OePTGSaisie extends BasicProcess {
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 			if (testerParametre(request, getNOM_PB_VALIDATION())) {
-				save();
+				if (!save())
+					return false;
 				setStatut(STATUT_PROCESS_APPELANT);
 				return true;
 			}
@@ -384,12 +470,11 @@ public class OePTGSaisie extends BasicProcess {
 					HeureSupDto hs = hsups.get(dateIndex).get(j);
 					String status = hs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(hs
 							.getIdRefEtat()) : "";
-					ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(),
+					ret.append(getTypeHSCell(id + i + ":" + j, "A récupérer", hs.getRecuperee(), hs.getHeureDebut(),
 							hs.getHeureFin(), hs.getMotif(), hs.getCommentaire(), status, "", hs.getIdPointage(),
 							hs.getIdRefEtat()));
 				} else {
-					ret.append(getType3TabCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "", "", "", "", 0,
-							0));
+					ret.append(getTypeHSCell(id + i + ":" + j, "A récupérer", false, bidon, bidon, "", "", "", "", 0, 0));
 				}
 			}
 			ret.append("</tr>");
@@ -418,11 +503,11 @@ public class OePTGSaisie extends BasicProcess {
 					String status = abs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(abs
 							.getIdRefEtat()) : "";
 					boolean chk = abs.getConcertee() != null ? abs.getConcertee() : false;
-					ret.append(getType3TabCell(id + i + ":" + j, "Concertée", chk, abs.getHeureDebut(),
+					ret.append(getTypeAbsCell(id + i + ":" + j, "Concertée", chk, abs.getHeureDebut(),
 							abs.getHeureFin(), abs.getMotif(), abs.getCommentaire(), status, "", abs.getIdPointage(),
 							abs.getIdRefEtat()));
 				} else {
-					ret.append(getType3TabCell(id + i + ":" + j, "Concertée", false, bidon, bidon, "", "", "", "", 0, 0));
+					ret.append(getTypeAbsCell(id + i + ":" + j, "Concertée", false, bidon, bidon, "", "", "", "", 0, 0));
 				}
 			}
 			ret.append("</tr>");
@@ -431,10 +516,7 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	private String getCell(PrimeDto p, int i) {
-		String id = "PRIME:" + p.getNumRubrique() + ":" + p.getIdRefPrime() + ":" + i; // +
-																						// ":"
-																						// +
-																						// p.getIdPointage()
+		String id = "PRIME:" + p.getNumRubrique() + ":" + p.getIdRefPrime() + ":" + i;
 		String motif = p.getMotif() != null ? p.getMotif() : "";
 		String titre = p.getTitre() != null ? p.getTitre() : "";
 		String commentaire = p.getCommentaire() != null ? p.getCommentaire() : "";
@@ -452,8 +534,8 @@ public class OePTGSaisie extends BasicProcess {
 			case NB_HEURES:
 				return getType2TabCell(id, nbrMinsTot, motif, commentaire, status, "Nbre d'heures", titre, idptg, idref);
 			case PERIODE_HEURES:
-				return getType3TabCell(id, "Coche", qte.equals("1"), p.getHeureDebut(), p.getHeureFin(), motif,
-						commentaire, status + "<br>", titre, idptg, idref);
+				return getType3TabCell(id, qte.equals("1"), p.getHeureDebut(), p.getHeureFin(), motif, commentaire,
+						status + "<br>", titre, idptg, idref);
 			default:
 		}
 		return "failcell:" + id;
@@ -521,7 +603,37 @@ public class OePTGSaisie extends BasicProcess {
 		return ret.toString();
 	}
 
-	private String getType3TabCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin,
+	private String getType3TabCell(String id, boolean check, Date heureDebut, Date heureFin, String motif,
+			String comment, String status, String title, int idptg, int idrefetat) {
+		StringBuilder ret = new StringBuilder();
+		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id
+				+ "'>");
+		ret.append(getHead(id, status, title));
+		ret.append("<tr bgcolor='#BFEFFF'><td> Heure début  -->   Heure fin <br><select name='NOM_time_" + id + "_D"
+				+ "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='NOM_time_" + id + "_F" + "'>"
+				+ getTimeCombo(heureFin) + " </select></td></tr>");
+		ret.append(commonFields(id, motif, comment, idptg, idrefetat));
+		ret.append("</table></td>");
+		return ret.toString();
+	}
+
+	private String getTypeAbsCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin,
+			String motif, String comment, String status, String title, int idptg, int idrefetat) {
+		StringBuilder ret = new StringBuilder();
+		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id
+				+ "'>");
+		ret.append(getHead(id, status, title));
+		ret.append("<tr bgcolor='#BFEFFF'><td> Heure début  -->   Heure fin <br><select name='NOM_time_" + id + "_D"
+				+ "'>" + getTimeCombo(heureDebut) + " </select>  /  <select name='NOM_time_" + id + "_F" + "'>"
+				+ getTimeCombo(heureFin) + " </select></td></tr>");
+		ret.append("<tr bgcolor='#BFEFFF'><td><input type='checkbox' name='NOM_chk_" + id + "'"
+				+ (check ? "checked" : "") + ">" + checkname + "</td></tr>");
+		ret.append(commonFields(id, motif, comment, idptg, idrefetat));
+		ret.append("</table></td>");
+		return ret.toString();
+	}
+
+	private String getTypeHSCell(String id, String checkname, boolean check, Date heureDebut, Date heureFin,
 			String motif, String comment, String status, String title, int idptg, int idrefetat) {
 		StringBuilder ret = new StringBuilder();
 		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type1-2TabCell" + id
