@@ -59,10 +59,11 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	public String ACTION_MODIFICATION_GRADE = "Modification d'un grade.";
 	public String ACTION_DESACTIVATION_GRILLE = "Désactivation d'une grille.";
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
-			CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
 	/**
@@ -292,7 +293,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// ---------------------------//
 		// initialisation de la liste des grades génériques
 		if (getHashGradeGenerique().size() == 0) {
-			ArrayList<GradeGenerique> listeGradeGenerique = GradeGenerique.listerGradeGeneriqueOrderLib(getTransaction());
+			ArrayList<GradeGenerique> listeGradeGenerique = GradeGenerique
+					.listerGradeGeneriqueOrderLib(getTransaction());
 			setListeGradeGenerique(listeGradeGenerique);
 
 			int[] tailles = { 50 };
@@ -377,11 +379,12 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 				addZone(getNOM_ST_CODE_GRADE(indiceGrade), grade.getCodeGrade());
 				addZone(getNOM_ST_LIB_GRADE(indiceGrade), grade.getLibGrade());
-				addZone(getNOM_ST_IBA_GRADE(indiceGrade), Services.estNumerique(grade.getIban()) ? Integer.valueOf(grade.getIban()).toString()
-						: grade.getIban());
+				addZone(getNOM_ST_IBA_GRADE(indiceGrade),
+						Services.estNumerique(grade.getIban()) ? Integer.valueOf(grade.getIban()).toString() : grade
+								.getIban());
 				addZone(getNOM_ST_GRADE_SUIVANT(indiceGrade),
-						grade.getCodeGradeSuivant() == null || grade.getCodeGradeSuivant().equals(Const.CHAINE_VIDE) ? "&nbsp;" : grade
-								.getCodeGradeSuivant());
+						grade.getCodeGradeSuivant() == null || grade.getCodeGradeSuivant().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+								: grade.getCodeGradeSuivant());
 				indiceGrade++;
 			}
 		}
@@ -481,7 +484,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	 */
 	private boolean initialiseClasseEchelonCourant(HttpServletRequest request) throws Exception {
 
-		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(getGradeCourant().getCodeGradeGenerique());
+		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(
+				getGradeCourant().getCodeGradeGenerique());
 		Classe classe = (Classe) getHashClasse().get(getGradeCourant().getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(getGradeCourant().getCodeEchelon());
 		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(getGradeCourant().getIban(), 7, "0"));
@@ -491,7 +495,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		// Alim zones
 		if (gradeGenerique != null)
-			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(), String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
+			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(),
+					String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
 
 		addZone(getNOM_EF_GRADE(), getGradeCourant().getGrade());
 
@@ -502,14 +507,17 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			addZone(getNOM_LB_ECHELON_SELECT(), String.valueOf(getListeEchelon().indexOf(echelon) + 1));
 
 		addZone(getNOM_EF_CODE_GRADE(), getGradeCourant().getCodeGrade());
-		addZone(getNOM_EF_MONTANT_FORFAIT(), getGradeCourant().getMontantForfait().indexOf(".") == -1 ? getGradeCourant().getMontantForfait()
-				: getGradeCourant().getMontantForfait().substring(0, getGradeCourant().getMontantForfait().indexOf(".")));
+		addZone(getNOM_EF_MONTANT_FORFAIT(),
+				getGradeCourant().getMontantForfait().indexOf(".") == -1 ? getGradeCourant().getMontantForfait()
+						: getGradeCourant().getMontantForfait().substring(0,
+								getGradeCourant().getMontantForfait().indexOf(".")));
 		addZone(getNOM_EF_MONTANT_PRIME(), getGradeCourant().getMontantPrime());
 
 		if (bareme != null)
 			addZone(getNOM_LB_BAREME_SELECT(), String.valueOf(getListeBareme().indexOf(bareme)));
 
-		addZone(getNOM_RG_CODE_GRILLE(), getGradeCourant().getCodeGrille().equals("FR") ? getNOM_RB_FR() : getNOM_RB_NC());
+		addZone(getNOM_RG_CODE_GRILLE(), getGradeCourant().getCodeGrille().equals("FR") ? getNOM_RB_FR()
+				: getNOM_RB_NC());
 		addZone(getNOM_RG_ACC(), getGradeCourant().getAcc().equals("O") ? getNOM_RB_OUI() : getNOM_RB_NON());
 		addZone(getNOM_RG_BM(), getGradeCourant().getBm().equals("O") ? getNOM_RB_OUI() : getNOM_RB_NON());
 
@@ -892,12 +900,14 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		}
 
 		// couple classe/echelon deja existant
-		String classeString = getZone(getNOM_LB_CLASSE_SELECT()).equals(Const.CHAINE_VIDE) ? "0" : getZone(getNOM_LB_CLASSE_SELECT());
+		String classeString = getZone(getNOM_LB_CLASSE_SELECT()).equals(Const.CHAINE_VIDE) ? "0"
+				: getZone(getNOM_LB_CLASSE_SELECT());
 		Classe classe = null;
 		if (!classeString.equals("0")) {
 			classe = (Classe) getListeClasse().get(Integer.parseInt(classeString) - 1);
 		}
-		String echelonString = getZone(getNOM_LB_ECHELON_SELECT()).equals(Const.CHAINE_VIDE) ? "0" : getZone(getNOM_LB_ECHELON_SELECT());
+		String echelonString = getZone(getNOM_LB_ECHELON_SELECT()).equals(Const.CHAINE_VIDE) ? "0"
+				: getZone(getNOM_LB_ECHELON_SELECT());
 		Echelon echelon = null;
 		if (!echelonString.equals("0")) {
 			echelon = (Echelon) getListeEchelon().get(Integer.parseInt(echelonString) - 1);
@@ -909,7 +919,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 						&& g.getCodeEchelon().equals(echelon.getCodEchelon())) {
 					// listeMessages.put("ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler.");
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade", "cette classe et cet échelon"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un grade", "cette classe et cet échelon"));
 					return false;
 				}
 			}
@@ -928,7 +939,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		}
 
 		// IBAN grade n > IBAN grade n-1
-		String baremeString = getZone(getNOM_LB_BAREME_SELECT()).equals(Const.CHAINE_VIDE) ? "0" : getZone(getNOM_LB_BAREME_SELECT());
+		String baremeString = getZone(getNOM_LB_BAREME_SELECT()).equals(Const.CHAINE_VIDE) ? "0"
+				: getZone(getNOM_LB_BAREME_SELECT());
 		Bareme bareme = (Bareme) getListeBareme().get(Integer.parseInt(baremeString));
 
 		Grade gradePrecedant = getGradePrecedant();
@@ -988,14 +1000,16 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		// classe
 		Classe classe = null;
-		int numClasse = (Services.estNumerique(getZone(getNOM_LB_CLASSE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CLASSE_SELECT())) : -1);
+		int numClasse = (Services.estNumerique(getZone(getNOM_LB_CLASSE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_CLASSE_SELECT())) : -1);
 		if (numClasse > 0 && getListeClasse().size() > 0 && numClasse - 1 < getListeClasse().size()) {
 			classe = (Classe) getListeClasse().get(numClasse - 1);
 		}
 
 		// echelon
 		Echelon echelon = null;
-		int numEchelon = (Services.estNumerique(getZone(getNOM_LB_ECHELON_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_ECHELON_SELECT())) : -1);
+		int numEchelon = (Services.estNumerique(getZone(getNOM_LB_ECHELON_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ECHELON_SELECT())) : -1);
 		if (numEchelon > 0 && getListeEchelon().size() > 0 && numEchelon - 1 < getListeEchelon().size()) {
 			echelon = (Echelon) getListeEchelon().get(numEchelon - 1);
 		}
@@ -1003,7 +1017,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// grade générique
 		int numGradeGenerique = (Services.estNumerique(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) : -1);
-		if (numGradeGenerique == -1 || getListeGradeGenerique().size() == 0 || numGradeGenerique > getListeGradeGenerique().size()) {
+		if (numGradeGenerique == -1 || getListeGradeGenerique().size() == 0
+				|| numGradeGenerique > getListeGradeGenerique().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "grades génériques"));
 			return false;
 		}
@@ -1035,7 +1050,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		Bareme bareme = getListeBareme().get(Integer.parseInt(getVAL_LB_BAREME_SELECT()));
 		String iban = bareme.getIban();
 		if (Services.estNumerique(iban)) {
-			iban = Integer.valueOf(iban).toString();
+			iban = Services.lpad(iban, 7, "0");
 		}
 		getGradeCourant().setIban(iban);
 
@@ -1102,7 +1117,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	private boolean initialiseClasseEchelonAncien(HttpServletRequest request, Grade dernierGrade) throws Exception {
 
-		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(dernierGrade.getCodeGradeGenerique());
+		GradeGenerique gradeGenerique = (GradeGenerique) getHashGradeGenerique().get(
+				dernierGrade.getCodeGradeGenerique());
 		Classe classe = (Classe) getHashClasse().get(dernierGrade.getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(dernierGrade.getCodeEchelon());
 		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(dernierGrade.getIban(), 7, "0"));
@@ -1112,7 +1128,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		// Alim zones
 		if (gradeGenerique != null)
-			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(), String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
+			addZone(getNOM_LB_GRADE_GENERIQUE_SELECT(),
+					String.valueOf(getListeGradeGenerique().indexOf(gradeGenerique)));
 
 		addZone(getNOM_EF_GRADE(), dernierGrade.getGrade());
 
@@ -1123,8 +1140,9 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			addZone(getNOM_LB_ECHELON_SELECT(), String.valueOf(getListeEchelon().indexOf(echelon) + 1));
 
 		addZone(getNOM_EF_CODE_GRADE(), dernierGrade.getCodeGrade());
-		addZone(getNOM_EF_MONTANT_FORFAIT(), dernierGrade.getMontantForfait().indexOf(".") == -1 ? dernierGrade.getMontantForfait() : dernierGrade
-				.getMontantForfait().substring(0, dernierGrade.getMontantForfait().indexOf(".")));
+		addZone(getNOM_EF_MONTANT_FORFAIT(),
+				dernierGrade.getMontantForfait().indexOf(".") == -1 ? dernierGrade.getMontantForfait() : dernierGrade
+						.getMontantForfait().substring(0, dernierGrade.getMontantForfait().indexOf(".")));
 		addZone(getNOM_EF_MONTANT_PRIME(), dernierGrade.getMontantPrime());
 
 		if (bareme != null)
