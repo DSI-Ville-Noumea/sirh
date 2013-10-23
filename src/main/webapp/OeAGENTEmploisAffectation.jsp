@@ -81,7 +81,7 @@
 				poste</span> <span style="position: relative; text-align: left;">Titre
 				poste</span> <br />
 			<div
-				style="overflow: auto; height: 250px; width: 1000px; margin-right: 0px; margin-left: 0px;">
+				style="overflow: auto; height: 150px; width: 1000px; margin-right: 0px; margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align: left; width: 980px;">
 					<%
 						int indiceAff = 0;
@@ -230,7 +230,6 @@
 					<%
 						if (process.getAgentCourant() != null) {
 					%>
-					<BR />
 					<div align="left">
 						<span class="sigp2-RadioBouton"> 
 						<INPUT tabindex=""	type="radio" checked
@@ -243,7 +242,6 @@
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_RI_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Régime indemnitaire <span style="width: 5px"></span>  
 						<INPUT type="submit" style="visibility: hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>" value="OK">
 					</div>
-					<BR />
 					<%
 						if (process.getVAL_RG_SPECIFICITE_spec().equals(process.getNOM_RB_SPECIFICITE_AN_spec())) {
 										out.println("<div align='left' style='float: left; width: 100%; display: block;'>");
@@ -640,7 +638,6 @@
 				} );
 			</script>
 			</div>
-			<BR />
 		</FIELDSET>
 
 			<%
