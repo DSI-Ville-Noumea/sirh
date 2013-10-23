@@ -10,6 +10,7 @@ public abstract class PointageDto {
 	private String motif;
 	private String commentaire;
 	private Integer idRefEtat;
+	private boolean aSupprimer;
 
 	public PointageDto() {
 
@@ -22,6 +23,7 @@ public abstract class PointageDto {
 		this.motif = pointageDto.motif;
 		this.commentaire = pointageDto.commentaire;
 		this.idRefEtat = pointageDto.idRefEtat;
+		this.aSupprimer = false;
 	}
 
 	public Integer getIdPointage() {
@@ -70,5 +72,13 @@ public abstract class PointageDto {
 
 	public void setIdRefEtat(Integer idRefEtat) {
 		this.idRefEtat = idRefEtat;
+	}
+
+	public boolean isaSupprimer() {
+		return aSupprimer;
+	}
+
+	public void setaSupprimer(boolean aSupprimer) {
+		this.aSupprimer = aSupprimer;
 	}
 }
