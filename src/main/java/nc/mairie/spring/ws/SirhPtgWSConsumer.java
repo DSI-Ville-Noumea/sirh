@@ -131,7 +131,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		ClientResponse response = null;
-		logger.debug("json poste:" + json);
+		logger.trace("json poste:" + json);
 		try {
 			response = webResource.type("application/json").post(ClientResponse.class, json);
 
@@ -184,7 +184,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		String output = response.getEntity(String.class);
-		logger.debug("json recu:" + output);
+		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
@@ -203,7 +203,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 
 		String output = response.getEntity(String.class);
-		logger.debug("json recu:" + output);
+		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
 				.use("values", targetClass).deserialize(output);
 		return result;
@@ -372,7 +372,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
-			logger.debug(result.toString());
+			logger.trace(result.toString());
 			return result.isCanStartAction();
 		} else {
 			return false;
@@ -388,7 +388,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			CanStartVentilationDto result = readResponse(CanStartVentilationDto.class, res, url);
-			logger.debug(result.toString());
+			logger.trace(result.toString());
 			return result.isCanStartVentilation();
 		} else {
 			return false;
@@ -404,7 +404,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			VentilDateDto result = readResponse(VentilDateDto.class, res, url);
-			logger.debug(result.toString());
+			logger.trace(result.toString());
 			return result;
 		} else {
 			return null;
