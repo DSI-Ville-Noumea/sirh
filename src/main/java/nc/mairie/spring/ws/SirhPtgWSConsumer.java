@@ -12,6 +12,7 @@ import nc.mairie.gestionagent.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
+import nc.mairie.gestionagent.dto.ListEtatsPayeurDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
@@ -53,6 +54,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
 	private static final String sirhPtgStartVentilation = "ventilation/start";
 	private static final String sirhPtgStartDeversement = "exportPaie/start";
+	private static final String sirhPtgCanStartExportEtatsPayeur = "etatsPayeur/canStartExportEtatsPayeur";
+	private static final String sirhPtgListEtatsPayeur = "etatsPayeur/listEtatsPayeur";
+	private static final String sirhPtgDownloadFicheEtatsPayeur = "etatsPayeur/downloadFicheEtatsPayeur";
+	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
+	
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -187,6 +193,20 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
+	}
+	
+	public byte[] readResponseWithFile(ClientResponse response, String url) {
+		
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhPtgWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		return response.getEntity(byte[].class);
 	}
 
 	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) {
@@ -446,5 +466,63 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			logger.debug("StartDeversement NON OK : " + res.getStatus());
 			return false;
 		}
+	}
+	
+	@Override
+	public boolean canStartExportEtatsPayeur(String statut) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgCanStartExportEtatsPayeur;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("statut", statut);
+		ClientResponse res = createAndFireRequest(params, url);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
+			logger.trace(result.toString());
+			return result.isCanStartAction();
+		} else {
+			logger.debug("StartExportEtatsPayeur NON OK : " + res.getStatus());
+			return false;
+		}
+	}
+	
+	@Override
+	public List<ListEtatsPayeurDto> getListEtatsPayeurByStatut(String statut) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgListEtatsPayeur;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("statutAgent", statut);
+		ClientResponse res = createAndFireRequest(params, url);
+		
+		return readResponseAsList(ListEtatsPayeurDto.class, res, url);
+	}
+	
+	@Override
+	public byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur) {
+		
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgDownloadFicheEtatsPayeur;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idEtatPayeur", idEtatPayeur.toString());
+		ClientResponse res = createAndFireRequest(params, url);
+		
+		return readResponseWithFile(res, url);
+	}
+	
+	@Override
+	public boolean startExportEtatsPayeur(String idAgentExporting, String statutString) {
+		
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgStartExportEtatsPayeur;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentExporting);
+		params.put("statut", statutString);
+		ClientResponse res = createAndFireRequest(params, url);
+		
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			return true;
+		} else {
+			logger.debug("startExportEtatsPayeur NON OK : " + res.getStatus());
+			return false;
+		} 
 	}
 }

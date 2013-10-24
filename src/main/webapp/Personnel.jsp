@@ -97,8 +97,8 @@
 		listeDroits.add("PTGVentilationTitu");
 		listeDroits.add("PTGVentilationNonTitu");
 		listeDroits.add("PTGPayeurConvCol");
-		listeDroits.add("PTGPayeurTitu");
-		listeDroits.add("PTGPayeurNonTitu");
+		listeDroits.add("PTGPayeurFonct");
+		listeDroits.add("PTGPayeurContractuels");
 		
 		
 		/*Module SUIVI MEDICAL*/

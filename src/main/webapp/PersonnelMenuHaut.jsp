@@ -157,8 +157,8 @@ document.write(menuPTGVentilation.afficher());
 
 var menuPTGPayeur = new MenuHaut("Module_pointage_payeurPointage");
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurConvCol", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_CC"));
-menuPTGPayeur.ajouterFils(new Lien("PTGPayeurTitu", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_TITU"));
-menuPTGPayeur.ajouterFils(new Lien("PTGPayeurNonTitu", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_NON_TITU"));
+menuPTGPayeur.ajouterFils(new Lien("PTGPayeurFonct", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_TITU"));
+menuPTGPayeur.ajouterFils(new Lien("PTGPayeurContractuels", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_NON_TITU"));
 document.write(menuPTGPayeur.afficher());
 //***************************************************************
 //*               Le menu haut Paramètres

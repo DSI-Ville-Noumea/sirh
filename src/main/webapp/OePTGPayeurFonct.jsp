@@ -1,13 +1,15 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.enums.EnumTypeDroit"%>
+<%@page import="nc.mairie.gestionagent.dto.ListEtatsPayeurDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
+<%@page import="nc.mairie.enums.EnumTypeDroit"%>
+
 <HTML>
 	
 	<HEAD>
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-		<TITLE>Droits des pointages</TITLE>		
+		<TITLE>Edition du payeur</TITLE>		
 
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
@@ -21,11 +23,9 @@ function SelectLigne(id,tailleTableau)
     document.getElementById(id).className="selectLigne";
 }
 </SCRIPT>
-	
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
-	
-	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol" id="process" scope="session"></jsp:useBean>
+	<jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct" id="process" scope="session"></jsp:useBean>
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();" >
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -35,7 +35,6 @@ function SelectLigne(id,tailleTableau)
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<span style="color: red; margin-left:5px;">Attention, cette action est irr&eacute;versible !</span>
 		<br />
-		
 		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer éditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">

@@ -61,8 +61,8 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.pointage.OePTGDroits;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
-import nc.mairie.gestionagent.process.pointage.OePTGPayeurNonTitu;
-import nc.mairie.gestionagent.process.pointage.OePTGPayeurTitu;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionApprobateur;
@@ -234,10 +234,10 @@ public class RobotAgent extends Robot {
 			return new OePTGVentilationContractuels();
 		} else if (activite.equals("PTGPayeurConvCol")) {
 			return new OePTGPayeurConvCol();
-		} else if (activite.equals("PTGPayeurTitu")) {
-			return new OePTGPayeurTitu();
-		} else if (activite.equals("PTGPayeurNonTitu")) {
-			return new OePTGPayeurNonTitu();
+		} else if (activite.equals("PTGPayeurFonct")) {
+			return new OePTGPayeurFonct();
+		} else if (activite.equals("PTGPayeurContractuels")) {
+			return new OePTGPayeurContractuels();
 		} // Module PARAMETRAGE - Postes et emplois
 		else if (activite.equals("ParamFicheEmploi")) {
 			return new OePARAMETRAGEFicheEmploi();
@@ -589,9 +589,9 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGPayeurConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGPayeurTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+		navigation.put(OePTGPayeurFonct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
-		navigation.put(OePTGPayeurNonTitu.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+		navigation.put(OePTGPayeurContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// PARAM

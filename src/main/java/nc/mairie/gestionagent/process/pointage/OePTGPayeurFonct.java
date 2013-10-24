@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
  * 
  */
-public class OePTGPayeurConvCol extends BasicProcess {
+public class OePTGPayeurFonct extends BasicProcess {
 
 	/**
 	 * 
@@ -31,19 +31,19 @@ public class OePTGPayeurConvCol extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	
-	private Logger logger = LoggerFactory.getLogger(OePTGPayeurConvCol.class);
+	private Logger logger = LoggerFactory.getLogger(OePTGPayeurFonct.class);
 	
-	public static final String STATUT = "CC";
+	public static final String STATUT = "F";
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
 	private ArrayList<ListEtatsPayeurDto> listEtatsPayeurDto;
 	
-	private String libelleStatut = "conventions collectives";
+	private String libelleStatut = "fonctionnaires";
 
 	@Override
 	public String getJSP() {
-		return "OePTGPayeurConvCol.jsp";
+		return "OePTGPayeurFonct.jsp";
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 		try {
 			return t.canStartExportEtatsPayeur(STATUT);
 		} catch(Exception e) {
-			logger.debug("Erreur OePTGPayeurConvCol.isBoutonLancerEditionAffiche() " + e.getMessage());
+			logger.debug("Erreur OePTGPayeurFonct.isBoutonLancerEditionAffiche() " + e.getMessage());
 			return false;
 		}
 	}
@@ -106,7 +106,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 			setListEtatsPayeurDto(new ArrayList<ListEtatsPayeurDto>());
 			getListEtatsPayeurDto().addAll(t.getListEtatsPayeurByStatut(STATUT));
 		} catch(Exception e){
-			logger.debug("Erreur OePTGPayeurConvCol.initialiseHistoriqueEditions() " + e.getMessage());
+			logger.debug("Erreur OePTGPayeurFonct.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
 		}
 		
@@ -139,7 +139,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 		try {
 			ptg.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);
 		} catch(Exception e) {
-			logger.debug("Erreur OePTGPayeurConvCol.performPB_LANCER_EDITIONS() " + e.getMessage());
+			logger.debug("Erreur OePTGPayeurFonct.performPB_LANCER_EDITIONS() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR702", libelleStatut));
 			return false;
 		}
@@ -167,7 +167,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-PTG-PAY-CONV-COL";
+		return "ECR-PTG-PAY-TITU";
 	}
 	
 	public String getNOM_ST_ACTION() {
@@ -204,6 +204,4 @@ public class OePTGPayeurConvCol extends BasicProcess {
 	public String getVAL_FICHIER_EDITION(int i) {
 		return getZone(getNOM_FICHIER_EDITION(i));
 	}
-
-	
 }
