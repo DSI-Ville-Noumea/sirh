@@ -129,21 +129,22 @@ public class OePTGPayeurConvCol extends BasicProcess {
 	 */
 	public boolean performPB_LANCER_EDITIONS(HttpServletRequest request) throws Exception {
 		
-		// on recupere l'agent connecté
-		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-		AgentNW agentConnecte = null;
-		agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
-		
-		SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
 		try {
+			// on recupere l'agent connecté
+			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+			AgentNW agentConnecte = null;
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			
+			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
+		
 			ptg.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);
 		} catch(Exception e) {
 			logger.debug("Erreur OePTGPayeurConvCol.performPB_LANCER_EDITIONS() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR702", libelleStatut));
 			return false;
 		}
-			
+		
 		return true;
 	}
 
