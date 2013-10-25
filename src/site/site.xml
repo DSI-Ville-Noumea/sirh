@@ -49,6 +49,7 @@
         	<item name="Poste" href="conception/poste.html"/>
         	<item name="Paramètres" href="conception/parametres.html"/>
         	<item name="Avancement" href="conception/avancement.html"/>
+			<item name="Pointage" href="conception/pointage.html"/>
         </menu>
 		<menu name="FAQ">
         	<item name="SIE" href="sie.html"/>
