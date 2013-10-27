@@ -32,6 +32,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	private ArrayList<FamilleEmploi> listeFamilleEmploi;
 	private ArrayList<FicheEmploi> listeFE;
 	private ArrayList<CodeRome> listeCodeRome;
+	private ArrayList<FicheEmploi> listeFormNomEmploi;
 
 	public String focus = null;
 
@@ -76,6 +77,12 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		if (getListeCodeRome().size() == 0) {
 			ArrayList<CodeRome> codeRome = CodeRome.listerCodeRome(getTransaction());
 			setListeCodeRome(codeRome);
+		}
+		
+		// Si liste Nom Emploi vide alors affectation
+		if (getListeFormNomEmploi().size() == 0) {
+			ArrayList<FicheEmploi> listFicheEmploi = FicheEmploi.listerFicheEmploi(getTransaction());
+			setListeFormNomEmploi(listFicheEmploi);
 		}
 	}
 
@@ -187,8 +194,11 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 		//Recuperation ref Mairie
 		String refMairie = getVAL_EF_REF_MAIRIE_RECH();
+		
+		//Recuperation Nom mploi
+		String nomEmploi = getVAL_EF_NOM_EMPLOI();
 
-		ArrayList<FicheEmploi> fe = FicheEmploi.listerFicheEmploiAvecCriteresAvances(getTransaction(), domaineEmploi, famEmploi, codeRome, refMairie);
+		ArrayList<FicheEmploi> fe = FicheEmploi.listerFicheEmploiAvecCriteresAvances(getTransaction(), domaineEmploi, famEmploi, codeRome, refMairie, nomEmploi);
 		setListeFE(fe);
 
 		return fillList();
@@ -251,6 +261,24 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	 */
 	private void setListeFamilleEmploi(ArrayList<FamilleEmploi> listeFamilleEmploi) {
 		this.listeFamilleEmploi = listeFamilleEmploi;
+	}
+	
+	/**
+	 * Getter liste Fiche emploi (liste emploi pour autocompletion champ Nom Emploi)
+	 * @return listeFE
+	 */
+	public ArrayList<FicheEmploi> getListeFormNomEmploi() {
+		if (listeFormNomEmploi == null)
+			listeFormNomEmploi = new ArrayList<FicheEmploi>();
+		return listeFormNomEmploi;
+	}
+
+	/**
+	 * Setter liste Fiche emploi (liste emploi pour autocompletion champ Nom Emploi)
+	 * @param listeFE
+	 */
+	private void setListeFormNomEmploi(ArrayList<FicheEmploi> listeFormNomEmploi) {
+		this.listeFormNomEmploi = listeFormNomEmploi;
 	}
 
 	/**
@@ -419,6 +447,21 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	 */
 	public String getVAL_EF_CODE_ROME_RECH() {
 		return getZone(getNOM_EF_CODE_ROME_RECH());
+	}
+	
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_EMPLOI Date de
+	 */
+	public String getNOM_EF_NOM_EMPLOI() {
+		return "NOM_EF_NOM_EMPLOI";
+	}
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_NOM_EMPLOI 
+	 * 
+	 */
+	public String getVAL_EF_NOM_EMPLOI() {
+		return getZone(getNOM_EF_NOM_EMPLOI());
 	}
 
 	/**

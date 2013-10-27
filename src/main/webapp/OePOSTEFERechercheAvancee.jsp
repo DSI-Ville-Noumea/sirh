@@ -1,6 +1,8 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.metier.parametrage.CodeRome"%>
+<%@page import="nc.mairie.metier.poste.FicheEmploi"%>
+
 <HTML>
 	<jsp:useBean class="nc.mairie.gestionagent.process.poste.OePOSTEFERechercheAvancee" id="process" scope="session"></jsp:useBean>
 	<HEAD>
@@ -53,14 +55,34 @@
 		}
 		
 		res+=")</script>";
+		
+		
+		ArrayList<FicheEmploi> listeNomEmploi = process.getListeFormNomEmploi();
+		
+		String resNomEmploi = 	"<script language=\"javascript\">\n"+
+				"var availableNomEmploi = new Array(\n";
+		
+		for (int i = 0; i < listeNomEmploi.size(); i++){
+			resNomEmploi+= "   \""+((FicheEmploi)listeNomEmploi.get(i)).getNomMetierEmploi()+"\"";
+			if (i+1 < listeNomEmploi.size())
+				resNomEmploi+=",\n";
+			else	resNomEmploi+="\n";
+		}
+		
+		resNomEmploi+=")</script>";
 		%>
 		<%=res%>
+		<%=resNomEmploi%>
 		<SCRIPT type="text/javascript">
 			$(document).ready(function(){
 				$("#listeCodeRome").autocomplete({source:availableCodeRome
 				});
 			});
-		</SCRIPT>	
+			$(document).ready(function(){
+				$("#listeNomEmploi").autocomplete({source:availableNomEmploi
+				});
+			});
+		</SCRIPT>
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
 	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
@@ -83,6 +105,11 @@
 				<INPUT class="sigp2-saisiemajuscule" maxlength="8"
 					name="<%= process.getNOM_EF_REF_MAIRIE_RECH() %>" size="10"
 					type="text" value="<%= process.getVAL_EF_REF_MAIRIE_RECH() %>">
+				<BR/><BR/>
+				<span class="sigp2" style="width:150px">Nom du métier / emploi : </span>
+				<INPUT tabindex="" id="listeNomEmploi" class="sigp2-saisie" 
+					name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px" 
+					type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
 				<BR/><BR/>
 				<span class="sigp2" style="width:147px">Code Rome :</span>
 				<INPUT id="listeCodeRome" class="sigp2-saisiemajuscule"
@@ -108,7 +135,7 @@
 					int indiceFe = 0;
 					if (process.getListeFE()!=null){
 						for (int i = 0;i<process.getListeFE().size();i++){
-					%>
+					%> 
 							<tr id="<%=indiceFe%>" onmouseover="SelectLigne(<%=indiceFe%>,<%=process.getListeFE().size()%>)" ondblclick='executeBouton("<%=process.getNOM_PB_VALIDER(indiceFe)%>")'>
 								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: left;"><%=process.getVAL_ST_REF(indiceFe)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_NOM(indiceFe)%></td>
