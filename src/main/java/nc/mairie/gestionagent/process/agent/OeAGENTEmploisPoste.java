@@ -108,6 +108,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private String gradeAgt;
 	private String listeDiplomeGenFP = Const.CHAINE_VIDE;
 	private String diplomeAgt;
+	
+	private FichePoste superieurHierarchique;
+	private AgentNW agtResponsable;
+	private TitrePoste titrePosteResponsable; 
 
 	public String ACTION_IMPRESSION = "Impression d'un contrat.";
 	private String focus = null;
@@ -262,6 +266,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				} else {
 					setGradeAgt(grade.getLibGrade());
 				}
+			}
+			
+
+			// Responsable hiérarchique
+			if (getFichePosteCourant() != null && getFichePosteCourant().getIdResponsable() != null) {
+				setSuperieurHierarchique(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourant().getIdResponsable()));
+				afficheSuperieurHierarchique();
 			}
 
 			// Affiche les zones de la page
@@ -571,6 +582,22 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		setFichePosteSecondaireCourant(origine);
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+	
+	/**
+	 * Affiche la fiche de poste "Responsable"
+	 */
+	private void afficheSuperieurHierarchique() {
+		if (getFichePosteCourant().getIdResponsable() != null) { 
+			if (getAgtResponsable() != null) {
+				addZone(getNOM_ST_SUPERIEUR_HIERARCHIQUE(), getAgtResponsable().getNomAgent() + " " + getAgtResponsable().getPrenomAgent() + " ("
+						+ getAgtResponsable().getNoMatricule() + ") - " + getTitrePosteResponsable().getLibTitrePoste());
+			} else {
+				addZone(getNOM_ST_SUPERIEUR_HIERARCHIQUE(), "Cette fiche de poste (" + getTitrePosteResponsable().getLibTitrePoste() + ") n'est pas affectée");
+			}
+		} else {
+			addZone(getNOM_ST_SUPERIEUR_HIERARCHIQUE(), Const.CHAINE_VIDE);
+		}
 	}
 
 	/**
@@ -958,6 +985,24 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 */
 	public String getVAL_ST_TPS_TRAVAIL_AGT() {
 		return getZone(getNOM_ST_TPS_TRAVAIL_AGT());
+	}
+	
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_TPS_TRAVAIL_AGT Date
+	 * de création : (03/08/11 17:03:03)
+	 * 
+	 */
+	public String getNOM_ST_SUPERIEUR_HIERARCHIQUE() {
+		return "NOM_ST_SUPERIEUR_HIERARCHIQUE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone :
+	 * ST_TPS_TRAVAIL_AGT Date de création : (03/08/11 17:03:03)
+	 * 
+	 */
+	public String getVAL_ST_SUPERIEUR_HIERARCHIQUE() {
+		return getZone(getNOM_ST_SUPERIEUR_HIERARCHIQUE());
 	}
 
 	/**
@@ -1830,6 +1875,20 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private void setSection(Service section) {
 		this.section = section;
 	}
+	
+	public FichePoste getSuperieurHierarchique() {
+		return superieurHierarchique;
+	}
+	public void setSuperieurHierarchique(FichePoste superieurHierarchique) throws Exception {
+		this.superieurHierarchique = superieurHierarchique;
+		if (superieurHierarchique != null) {
+			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getSuperieurHierarchique().getIdFichePoste()));
+			setTitrePosteResponsable(TitrePoste.chercherTitrePoste(getTransaction(), getSuperieurHierarchique().getIdTitrePoste()));
+		} else {
+			setAgtResponsable(null);
+			setTitrePosteResponsable(null);
+		}
+	}
 
 	/**
 	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
@@ -2183,5 +2242,20 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
 		this.primePointageFPDao = primePointageFPDao;
 	}
+	
+	public AgentNW getAgtResponsable() {
+		return agtResponsable;
+	}
+	public void setAgtResponsable(AgentNW agtResponsable) {
+		this.agtResponsable = agtResponsable;
+	}
+
+	public TitrePoste getTitrePosteResponsable() {
+		return titrePosteResponsable;
+	}
+	public void setTitrePosteResponsable(TitrePoste titrePosteResponsable) {
+		this.titrePosteResponsable = titrePosteResponsable;
+	}
+	
 
 }

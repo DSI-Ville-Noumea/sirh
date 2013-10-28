@@ -125,6 +125,10 @@ document.formu.elements[nom].focus();
 			<span class="sigp2" style="width:150px"> Temps de travail : </span>
 			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_TPS_TRAVAIL_AGT()%></span>
 			<br/>
+			<br/>
+			<span class="sigp2" style="width:150px"> Supérieur hiérarchique : </span>
+			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_SUPERIEUR_HIERARCHIQUE()%></span>
+			<br/>
 		</FIELDSET>
 		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
