@@ -63,25 +63,43 @@ function reduireHierarchy() {
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 <script type="text/javascript">
-	function activeAffecter() {						
-			<%
-			for (int j = 0;j<process.getListeAvct().size();j++){
-				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
-			%>
-			var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  		
-	  		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked){
-	  			if(box!=null && !box.disabled){	
-					box.checked=true;  
-					validAffecter(<%=i%>);
-				}			
-		  	}else{
-	  			if(box!=null && !box.disabled){	
-					box.checked=false;	 
-					validAffecter(<%=i%>);
-				}		
-			}
-			<%}%>
+function activeMajDateAvct() {						
+	<%
+	for (int j = 0;j<process.getListeAvct().size();j++){
+		AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+		Integer i = Integer.valueOf(avct.getIdAvct());
+	%>
+	var box = document.formu.elements['NOM_CK_MAJ_DATE_AVCT_'+<%=i%>];  		
+		if(document.formu.elements['CHECK_ALL_MAJ_DATE_AVCT'].checked){
+			if(box!=null && !box.disabled){	
+			box.checked=true;  
+		}			
+  	}else{
+			if(box!=null && !box.disabled){	
+			box.checked=false;	 
+		}		
+	}
+	<%}%>
+}
+function activeAffecter() {						
+	<%
+	for (int j = 0;j<process.getListeAvct().size();j++){
+		AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
+		Integer i = Integer.valueOf(avct.getIdAvct());
+	%>
+	var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  		
+		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked){
+			if(box!=null && !box.disabled){	
+			box.checked=true;  
+			validAffecter(<%=i%>);
+		}			
+  	}else{
+			if(box!=null && !box.disabled){	
+			box.checked=false;	 
+			validAffecter(<%=i%>);
+		}		
+	}
+	<%}%>
 }
 	function validAffecter(indice) {	
 		  var box = document.formu.elements['NOM_CK_AFFECTER_'+indice];
@@ -180,6 +198,7 @@ function reduireHierarchy() {
 							<th>Num Arrete</th>
 							<th>Date Arrete</th>
 							<th>Carrière de <br> simulation</th>
+							<th>MAJ<br>date avct<br><INPUT type="checkbox" name="CHECK_ALL_MAJ_DATE_AVCT" onClick='activeMajDateAvct()'></th>
 							<th> A affecter
 								<br><INPUT type="checkbox" name="CHECK_ALL_AFFECTER" onClick='activeAffecter()'>
 							</th>
@@ -207,6 +226,9 @@ function reduireHierarchy() {
 								<td align="center" ><%=process.getVAL_ST_DATE_ARRETE(indiceAvct)%></td>
 								<td align="center" ><%=process.getVAL_ST_CARRIERE_SIMU(indiceAvct)%></td>
 								<td align="center" >
+									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_MAJ_DATE_AVCT(indiceAvct),process.getVAL_CK_MAJ_DATE_AVCT(indiceAvct))%>>									
+								</td>
+								<td align="center" >
 								<%if(avct.getCarriereSimu()==null || !avct.getCarriereSimu().toUpperCase().equals("S")){ %>
 								<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'>
 								<%}else{ %>
@@ -224,7 +246,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
@@ -240,6 +262,7 @@ function reduireHierarchy() {
 
 		<FIELDSET class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>" style="text-align:center;width:1030px;">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
+			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_MAJ_DATE_AVCT()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Générer" name="<%=process.getNOM_PB_AFFECTER()%>">
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 		</FIELDSET>
