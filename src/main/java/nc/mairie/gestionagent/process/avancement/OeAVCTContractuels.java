@@ -280,7 +280,7 @@ public class OeAVCTContractuels extends BasicProcess {
 			Integer i = Integer.valueOf(avct.getIdAvct());
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
-			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
+			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
@@ -375,7 +375,7 @@ public class OeAVCTContractuels extends BasicProcess {
 			AvancementContractuels avct = (AvancementContractuels) getListeAvct().get(j);
 			Integer i = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
-			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
+			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				// on traite l'etat
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					avct.setEtat(EnumEtatAvancement.VALIDE.getValue());

@@ -1100,7 +1100,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			AvancementContractuels avct = (AvancementContractuels) getListeAvct().get(j);
 			Integer i = Integer.valueOf(avct.getIdAvct());
 			// on fait les modifications
-			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE)) {
+			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				// on traite l'etat
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					avct.setEtat(EnumEtatAvancement.VALIDE.getValue());
