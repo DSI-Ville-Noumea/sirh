@@ -390,7 +390,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			addZone(getNOM_ST_CARRIERE_SIMU(i),
 					av.getCarriereSimu() == null || av.getCarriereSimu().trim().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 							: "oui");
-			addZone(getNOM_CK_MAJ_DATE_AVCT(i),getCHECKED_OFF());
+			addZone(getNOM_CK_MAJ_DATE_AVCT(i), getCHECKED_OFF());
 
 		}
 	}
@@ -505,12 +505,47 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						avct.setNumArrete(getVAL_ST_NUM_ARRETE(i).equals(Const.CHAINE_VIDE) ? null
 								: getVAL_ST_NUM_ARRETE(i));
 
+						// on crée un nouvelle carriere
+						Carriere nouvelleCarriere = new Carriere();
+
+						// on calcul Grade - ACC/BM en fonction de l'avis CAP
+						// il est différent du resultat affiché dans le tableau
+						// si AVIS_CAP != MOY
+						// car pour la simulation on prenait comme ref de calcul
+						// la duree MOY
+						calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
+						
+						//on recalcul la date d'avancement
+						if (avct.getIdAvisEmp() != null) {
+							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
+									.getLibCourtAvisCAP().toUpperCase();
+							if (idAvisEmp.equals("MIN")) {
+								dateAvctFinale = avct.getDateAvctMini();
+							} else if (idAvisEmp.equals("MOY")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+							} else if (idAvisEmp.equals("MAX")) {
+								dateAvctFinale = avct.getDateAvctMaxi();
+							} else if (idAvisEmp.equals("FAV")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+							} else {
+								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+										+ agentCarr.getNoMatricule() + "); ";
+								continue;
+							}
+						} else {
+							if (avct.getIdMotifAvct().equals("3")) {
+								dateAvctFinale = avct.getDateAvctMoy();
+								idAvisEmp = "MOY";
+							} else {
+								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+										+ agentCarr.getNoMatricule() + "); ";
+								continue;
+							}
+						}
 						// on ferme cette carriere
 						carr.setDateFin(dateAvctFinale);
 						carr.modifierCarriere(getTransaction(), agentCarr, user);
 
-						// on crée un nouvelle carriere
-						Carriere nouvelleCarriere = new Carriere();
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete() == null ? Const.ZERO : avct
 								.getNumArrete());
@@ -518,12 +553,6 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								|| avct.getDateArrete().equals(Const.DATE_NULL) ? Const.ZERO : avct.getDateArrete());
 						nouvelleCarriere.setDateDebut(dateAvctFinale);
 						nouvelleCarriere.setDateFin(Const.ZERO);
-						// on calcul Grade - ACC/BM en fonction de l'avis CAP
-						// il est différent du resultat affiché dans le tableau
-						// si AVIS_CAP != MOY
-						// car pour la simulation on prenait comme ref de calcul
-						// la duree MOY
-						calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
 
 						// on recupere iban du grade
 						Grade gradeSuivant = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
