@@ -16,6 +16,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
@@ -4166,7 +4167,20 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				// Modification
 				getAffectationCourant().modifierAffectation(getTransaction(), user, getAgentCourant(),
 						getFichePosteCourant());
+				// mise à jour du champ primaire de sppost
+				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFP(), true);
+				if (getFichePosteSecondaireCourant() != null) {
+					Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteSecondaireCourant().getNumFP(),
+							false);
+				}
+
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
+				// mise à jour du champ primaire de sppost
+				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFP(), true);
+				if (getFichePosteSecondaireCourant() != null) {
+					Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteSecondaireCourant().getNumFP(),
+							false);
+				}
 				// Création Affectation
 				if (!getAffectationCourant().creerAffectation(getTransaction(), user, getAgentCourant())) {
 					return false;
