@@ -65,8 +65,10 @@ import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.domain.metier.parametrage.NatureCredit;
 import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -126,6 +128,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_DIPLOME;
 	private String[] LB_DIPLOME_MULTI;
 	private String[] LB_NIVEAU_ETUDE;
+	private String[] LB_NATURE_CREDIT;
 	// nouvelle liste suite remaniement fdp/activites
 	private ArrayList<Activite> listeToutesActi;
 	// activites de la fiche emploi primaire
@@ -162,6 +165,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<TitrePoste> listeTitre;
 	private ArrayList<Grade> listeGrade;
 	private ArrayList<EntiteGeo> listeLocalisation;
+	private ArrayList<NatureCredit> listeNatureCredit;
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<AvantageNature> listeAvantageAAjouter;
 	private ArrayList<AvantageNature> listeAvantageASupprimer;
@@ -211,6 +215,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public boolean estFDPInactive = false;
 	private PrimePointageAffDao primePointageAffDao;
 	private PrimePointageFPDao primePointageFPDao;
+	private NatureCreditDao natureCreditDao;
+
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
 	/**
@@ -267,7 +273,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Récupération de la fiche de poste en session
 		if (etatStatut() == STATUT_RECHERCHE_AVANCEE) {
-			FichePoste fpRechAvancee = (FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+			FichePoste fpRechAvancee = (FichePoste) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_FICHE_POSTE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
 			if (fpRechAvancee != null) {
 				viderFichePoste();
@@ -287,7 +294,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setResponsable((FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE));
 			} else {
 				if (getFichePosteCourante() != null && getFichePosteCourante().getIdResponsable() != null) {
-					setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdResponsable()));
+					setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+							.getIdResponsable()));
 				} else {
 					setResponsable(null);
 				}
@@ -296,8 +304,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheResponsable();
 			return;
 		} else {
-			if (getResponsable() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdResponsable() != null) {
-				setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdResponsable()));
+			if (getResponsable() == null && getFichePosteCourante() != null
+					&& getFichePosteCourante().getIdResponsable() != null) {
+				setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+						.getIdResponsable()));
 				afficheResponsable();
 			}
 		}
@@ -308,7 +318,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setRemplacement((FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE));
 			} else {
 				if (getFichePosteCourante() != null && getFichePosteCourante().getIdRemplacement() != null) {
-					setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdRemplacement()));
+					setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+							.getIdRemplacement()));
 				} else {
 					setRemplacement(null);
 				}
@@ -317,8 +328,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			afficheRemplacement();
 			return;
 		} else {
-			if (getRemplacement() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdRemplacement() != null) {
-				setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdRemplacement()));
+			if (getRemplacement() == null && getFichePosteCourante() != null
+					&& getFichePosteCourante().getIdRemplacement() != null) {
+				setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+						.getIdRemplacement()));
 				afficheRemplacement();
 			}
 		}
@@ -375,8 +388,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_MISSIONS(), getMission() == null ? Const.CHAINE_VIDE : getMission());
 			return;
 		} else {
-			if (getEmploiPrimaire() == null && getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-				setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true));
+			if (getEmploiPrimaire() == null && getFichePosteCourante() != null
+					&& getFichePosteCourante().getIdFichePoste() != null) {
+				setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
+						getFichePosteCourante(), true));
 				afficheFEP();
 			}
 		}
@@ -405,6 +420,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getPrimePointageFPDao() == null) {
 			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
 		}
+		if (getNatureCreditDao() == null) {
+			setNatureCreditDao((NatureCreditDao) context.getBean("natureCreditDao"));
+		}
 	}
 
 	/**
@@ -428,7 +446,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getService() != null) {
 				addZone(getNOM_EF_SERVICE(), getService().getSigleService());
 				addZone(getNOM_EF_CODESERVICE(), getService().getCodService());
-				String infoService = getService().getCodService() + " - " + getService().getLibService().replace("\'", " ");
+				String infoService = getService().getCodService() + " - "
+						+ getService().getLibService().replace("\'", " ");
 				addZone(getNOM_ST_INFO_SERVICE(), infoService);
 			}
 
@@ -529,6 +548,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
+			if (getListeNatureCredit() != null) {
+				for (int i = 0; i < getListeNatureCredit().size(); i++) {
+					NatureCredit b = (NatureCredit) getListeNatureCredit().get(i);
+					if (b.getIdNatureCredit().equals(getFichePosteCourante().getIdNatureCredit())) {
+						addZone(getNOM_LB_NATURE_CREDIT_SELECT(), String.valueOf(i));
+						break;
+					}
+				}
+			}
+
 			afficheResponsable();
 			afficheRemplacement();
 
@@ -542,7 +571,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Affiche la FicheEmploi secondaire.
 	 */
 	private void afficheFES() throws Exception {
-		addZone(getNOM_ST_EMPLOI_SECONDAIRE(), getEmploiSecondaire() == null ? Const.CHAINE_VIDE : getEmploiSecondaire().getRefMairie());
+		addZone(getNOM_ST_EMPLOI_SECONDAIRE(), getEmploiSecondaire() == null ? Const.CHAINE_VIDE
+				: getEmploiSecondaire().getRefMairie());
 	}
 
 	/**
@@ -563,10 +593,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getResponsable() != null) {
 			addZone(getNOM_ST_RESPONSABLE(), getResponsable().getNumFP());
 			if (getAgtResponsable() != null) {
-				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomAgent() + " " + getAgtResponsable().getPrenomAgent() + " ("
-						+ getAgtResponsable().getNoMatricule() + ") - " + getTitrePosteResponsable().getLibTitrePoste());
+				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomAgent() + " "
+						+ getAgtResponsable().getPrenomAgent() + " (" + getAgtResponsable().getNoMatricule() + ") - "
+						+ getTitrePosteResponsable().getLibTitrePoste());
 			} else {
-				addZone(getNOM_ST_INFO_RESP(), "Cette fiche de poste (" + getTitrePosteResponsable().getLibTitrePoste() + ") n'est pas affectée");
+				addZone(getNOM_ST_INFO_RESP(), "Cette fiche de poste (" + getTitrePosteResponsable().getLibTitrePoste()
+						+ ") n'est pas affectée");
 			}
 		} else {
 			addZone(getNOM_ST_RESPONSABLE(), Const.CHAINE_VIDE);
@@ -581,10 +613,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getRemplacement() != null) {
 			addZone(getNOM_ST_REMPLACEMENT(), getRemplacement().getNumFP());
 			if (getAgtRemplacement() != null) {
-				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomAgent() + " " + getAgtRemplacement().getPrenomAgent() + " ("
-						+ getAgtRemplacement().getNoMatricule() + ") - " + getTitrePosteRemplacement().getLibTitrePoste());
+				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomAgent() + " "
+						+ getAgtRemplacement().getPrenomAgent() + " (" + getAgtRemplacement().getNoMatricule() + ") - "
+						+ getTitrePosteRemplacement().getLibTitrePoste());
 			} else {
-				addZone(getNOM_ST_INFO_REMP(), "Cette fiche de poste (" + getTitrePosteRemplacement().getLibTitrePoste() + ") n'est pas affectée");
+				addZone(getNOM_ST_INFO_REMP(), "Cette fiche de poste ("
+						+ getTitrePosteRemplacement().getLibTitrePoste() + ") n'est pas affectée");
 			}
 		} else {
 			addZone(getNOM_ST_REMPLACEMENT(), Const.CHAINE_VIDE);
@@ -601,7 +635,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
 					+ getAffectationCourante().getDateDebutAff();
 			if (getContratCourant() != null && getContratCourant().getIdContrat() != null) {
-				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le " + getContratCourant().getDateDebut();
+				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le "
+						+ getContratCourant().getDateDebut();
 				if (getContratCourant().getDateFin() != null) {
 					chaine += " jusqu'au " + getContratCourant().getDateFin() + ")";
 				} else {
@@ -763,6 +798,26 @@ public class OePOSTEFichePoste extends BasicProcess {
 			String[] champs = { "libHor" };
 			setLB_BUDGETE(new FormateListe(tailles, getListeHoraire(), champs).getListeFormatee());
 		}
+
+		// Si liste nature credit vide alors affectation
+		if (getLB_NATURE_CREDIT() == LBVide) {
+			ArrayList<NatureCredit> listeNature = getNatureCreditDao().listerNatureCredit();
+			setListeNatureCredit(listeNature);
+			if (getListeNatureCredit().size() != 0) {
+				int tailles[] = { 50 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<NatureCredit> list = getListeNatureCredit().listIterator(); list.hasNext();) {
+					NatureCredit nature = (NatureCredit) list.next();
+					String ligne[] = { nature.getLibNatureCredit() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NATURE_CREDIT(aFormat.getListeFormatee());
+			} else {
+				setLB_NATURE_CREDIT(null);
+			}
+		}
 	}
 
 	/**
@@ -777,7 +832,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les competences de la FDP
-			setListeCompFP(CompetenceFP.listerCompetenceFPAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setListeCompFP(CompetenceFP.listerCompetenceFPAvecFP(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 			for (CompetenceFP compFP : getListeCompFP()) {
 				trouve = false;
 				Competence competence = Competence.chercherCompetence(getTransaction(), compFP.getIdCompetence());
@@ -862,7 +918,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < getListeToutesComp().size(); i++) {
 			dejaCoche = false;
 			Competence competence = (Competence) getListeToutesComp().get(i);
-			TypeCompetence typeComp = TypeCompetence.chercherTypeCompetence(getTransaction(), competence.getIdTypeCompetence());
+			TypeCompetence typeComp = TypeCompetence.chercherTypeCompetence(getTransaction(),
+					competence.getIdTypeCompetence());
 			String origineComp = (String) getHashOrigineCompetence().get(competence.getIdCompetence());
 
 			if (competence != null) {
@@ -877,7 +934,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// de la FDP
 					for (int j = 0; j < getListeCompFP().size(); j++) {
 						CompetenceFP compFP = (CompetenceFP) getListeCompFP().get(j);
-						Competence competenceFP = Competence.chercherCompetence(getTransaction(), compFP.getIdCompetence());
+						Competence competenceFP = Competence.chercherCompetence(getTransaction(),
+								compFP.getIdCompetence());
 						if (competenceFP.equals(competence)) {
 							addZone(getNOM_CK_SELECT_LIGNE_COMP(i), getCHECKED_ON());
 							dejaCoche = true;
@@ -927,21 +985,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	private void initialiseSpecificites() throws Exception {
 		// Avantages en nature
-		setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE));
+		setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
+				VariablesActivite.ACTIVITE_LST_AV_NATURE));
 		if (getListeAvantage() != null && getListeAvantage().size() > 0) {
-			setListeAvantageAAjouter((ArrayList<AvantageNature>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT));
-			setListeAvantageASupprimer((ArrayList<AvantageNature>) VariablesActivite
-					.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR));
+			setListeAvantageAAjouter((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT));
+			setListeAvantageASupprimer((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeAvantage(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setListeAvantage(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 		}
 		if (getListeAvantage() != null) {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage()) : null;
+					TypeAvantage typAv = TypeAvantage
+							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? NatureAvantage
+							.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage()) : null;
 					getHashtypAv().put(typAv.getIdTypeAvantage(), typAv);
 					getHashNatAv().put(natAv.getIdNatureAvantage(), natAv);
 				}
@@ -949,38 +1011,46 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Délégations
-		setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION));
+		setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this,
+				VariablesActivite.ACTIVITE_LST_DELEGATION));
 		if (getListeDelegation() != null && getListeDelegation().size() > 0) {
-			setListeDelegationAAjouter((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT));
-			setListeDelegationASupprimer((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR));
+			setListeDelegationAAjouter((ArrayList<Delegation>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT));
+			setListeDelegationASupprimer((ArrayList<Delegation>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeDelegation(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setListeDelegation(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 		}
 		if (getListeDelegation() != null) {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
+					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
+							aDel.getIdTypeDelegation());
 					getHashTypDel().put(typDel.getIdTypeDelegation(), typDel);
 				}
 			}
 		}
 
 		// Régimes indemnitaires
-		setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN));
+		setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
+				VariablesActivite.ACTIVITE_LST_REG_INDEMN));
 		if (getListeRegime() != null && getListeRegime().size() > 0) {
 			setListeRegimeAAjouter((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT));
 			setListeRegimeASupprimer((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeRegime(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setListeRegime(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 		}
 		if (getListeRegime() != null) {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(), aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
+							aReg.getIdTypeRegIndemn());
 					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn(), typReg);
 				}
 			}
@@ -999,7 +1069,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setListePrimePointageFPASupprimer((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
+			setListePrimePointageFP(getPrimePointageFPDao().listerPrimePointageFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 
 	}
@@ -1015,11 +1086,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeAvantage() != null) {
 			for (AvantageNature aAvNat : getListeAvantage()) {
 				addZone(getNOM_ST_AV_TYPE(indiceAvantage),
-						getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashtypAv()
-								.get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
+						getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+								: getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
 				addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant());
-				addZone(getNOM_ST_AV_NATURE(indiceAvantage),
-						aAvNat.getIdNatureAvantage() == null ? "&nbsp;" : getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
+				addZone(getNOM_ST_AV_NATURE(indiceAvantage), aAvNat.getIdNatureAvantage() == null ? "&nbsp;"
+						: getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
 				indiceAvantage++;
 			}
 		}
@@ -1029,8 +1100,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeDelegation() != null) {
 			for (Delegation aDel : getListeDelegation()) {
 				addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
-						getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel()
-								.get(aDel.getIdTypeDelegation()).getLibTypeDelegation());
+						getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation()
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation())
+								.getLibTypeDelegation());
 				addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
 						aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
 				indiceDelegation++;
@@ -1042,8 +1114,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeRegime() != null) {
 			for (RegimeIndemnitaire aReg : getListeRegime()) {
 				addZone(getNOM_ST_REG_TYPE(indiceRegime),
-						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-								: getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn());
+						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn()
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypRegIndemn().get(
+								aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn());
 				addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait());
 				addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
 				indiceRegime++;
@@ -1121,6 +1194,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_INFO_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_RESP(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_NATURE_CREDIT_SELECT(), "0");
 
 		setLB_NIVEAU_ETUDE(null);
 		setLB_DIPLOME_MULTI(null);
@@ -1316,7 +1390,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// **********************
 		// Verification Responsable hiérarchique
 		// **********************
-		if (responsableObligatoire && getVAL_ST_RESPONSABLE().length() == 0 && !getVAL_EF_TITRE_POSTE().equals(Const.TITRE_POSTE_MAIRE)) {
+		if (responsableObligatoire && getVAL_ST_RESPONSABLE().length() == 0
+				&& !getVAL_EF_TITRE_POSTE().equals(Const.TITRE_POSTE_MAIRE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "responsable hiérarchique"));
 			setFocus(getNOM_ST_RESPONSABLE());
@@ -1362,7 +1437,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// si statut = "validée" alors on ne peut avoir "indeterminé" dans
 		// reglementaire et budgete
 		// Récupération Statut de la fiche
-		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 		if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
 			return false;
@@ -1399,8 +1475,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFichePosteCourante() != null) {
 
 			// Récupération Statut de la fiche
-			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT()))
-					: -1);
+			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 
 			if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
@@ -1444,13 +1520,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
-						getTransaction()
-								.declarerErreur(
-										MessageUtils.getMessage(
-												"ERR124",
-												"'" + EnumStatutFichePoste.INACTIVE.getLibLong() + "'",
-												"'" + EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
-														+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR124", "'" + EnumStatutFichePoste.INACTIVE.getLibLong()
+										+ "'", "'" + EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
+										+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
 						return false;
 					}
 
@@ -1459,13 +1532,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
-						getTransaction()
-								.declarerErreur(
-										MessageUtils.getMessage(
-												"ERR124",
-												"'" + EnumStatutFichePoste.EN_MODIFICATION.getLibLong() + "'",
-												"'" + EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
-														+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR124",
+										"'" + EnumStatutFichePoste.EN_MODIFICATION.getLibLong() + "'", "'"
+												+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
+												+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
 						return false;
 					}
 
@@ -1509,7 +1580,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// Statut de la fiche
-		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 
 		if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
@@ -1519,7 +1591,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
 
 		// Budget
-		int numLigneBudget = (Services.estNumerique(getZone(getNOM_LB_BUDGET_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_BUDGET_SELECT())) : -1);
+		int numLigneBudget = (Services.estNumerique(getZone(getNOM_LB_BUDGET_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BUDGET_SELECT())) : -1);
 
 		if (numLigneBudget == -1 || getListeBudget().isEmpty() || numLigneBudget > getListeBudget().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "budgets"));
@@ -1529,7 +1602,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		Budget budget = (Budget) getListeBudget().get(numLigneBudget);
 
 		// Lieu
-		int numLigneLoc = (Services.estNumerique(getZone(getNOM_LB_LOC_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_LOC_SELECT())) : -1);
+		int numLigneLoc = (Services.estNumerique(getZone(getNOM_LB_LOC_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_LOC_SELECT())) : -1);
 
 		if (numLigneLoc == -1 || getListeLocalisation().isEmpty() || numLigneLoc > getListeLocalisation().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "localisations"));
@@ -1538,8 +1612,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		EntiteGeo lieu = (EntiteGeo) getListeLocalisation().get(numLigneLoc - 1);
 
-		int numLigneBudgete = (Services.estNumerique(getZone(getNOM_LB_BUDGETE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_BUDGETE_SELECT()))
-				: -1);
+		int numLigneBudgete = (Services.estNumerique(getZone(getNOM_LB_BUDGETE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BUDGETE_SELECT())) : -1);
 
 		if (numLigneBudgete == -1 || getListeHoraire().isEmpty() || numLigneBudgete > getListeHoraire().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "budgété"));
@@ -1551,12 +1625,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 		int numLigneReglementaire = (Services.estNumerique(getZone(getNOM_LB_REGLEMENTAIRE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_REGLEMENTAIRE_SELECT())) : -1);
 
-		if (numLigneReglementaire == -1 || getListeHoraire().isEmpty() || numLigneReglementaire > getListeHoraire().size()) {
+		if (numLigneReglementaire == -1 || getListeHoraire().isEmpty()
+				|| numLigneReglementaire > getListeHoraire().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "réglementaire"));
 			return false;
 		}
 
 		Horaire reglementaire = (Horaire) getListeHoraire().get(numLigneReglementaire);
+
+		// Nature des credits
+		int numLigneNatureCredit = (Services.estNumerique(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) : -1);
+
+		if (numLigneNatureCredit == -1 || getListeNatureCredit().isEmpty()
+				|| numLigneNatureCredit > getListeNatureCredit().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "nature des crédits"));
+			return false;
+		}
+
+		NatureCredit natureCredit = (NatureCredit) getListeNatureCredit().get(numLigneNatureCredit);
 
 		getFichePosteCourante().setAnneeCreation(annee);
 		getFichePosteCourante().setDateFinValiditeFP(dateFinValidite);
@@ -1574,6 +1661,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setIdCdthorBud(budgete.getCdtHor());
 		getFichePosteCourante().setIdCdthorReg(reglementaire.getCdtHor());
 		getFichePosteCourante().setDateDebAppliService(dateDebutAppliServ);
+		getFichePosteCourante().setIdNatureCredit(natureCredit.getIdNatureCredit().toString());
 
 		if (getFichePosteCourante().getIdStatutFP().equals(EnumStatutFichePoste.INACTIVE.getId())) {
 			getFichePosteCourante().setIdResponsable(null);
@@ -1592,9 +1680,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private boolean saveJoin(HttpServletRequest request) throws Exception {
 		// Sauvegarde des fiche emploi primaire et secondaire
-		FicheEmploi emploiPrimaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true);
+		FicheEmploi emploiPrimaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
+				getFichePosteCourante(), true);
 		if (emploiPrimaireTest == null) {
-			FEFP fefpPrimaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiPrimaire().getIdFicheEmploi(), true);
+			FEFP fefpPrimaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiPrimaire()
+					.getIdFicheEmploi(), true);
 			fefpPrimaire.creerFEFP(getTransaction());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -1602,40 +1692,48 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return false;
 			}
 		} else {
-			FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante().getIdFichePoste(), true);
+			FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste(), true);
 			ancienLien.setFePrimaire(true);
 			ancienLien.setIdFicheEmploi(getEmploiPrimaire().getIdFicheEmploi());
 			ancienLien.modifierFEFP(getTransaction());
 		}
 
 		if (getEmploiSecondaire() != null) {
-			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
+			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
+					getFichePosteCourante(), false);
 			if (emploiSecondaireTest == null) {
-				FEFP fefpSecondaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiSecondaire().getIdFicheEmploi(), false);
+				FEFP fefpSecondaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiSecondaire()
+						.getIdFicheEmploi(), false);
 				fefpSecondaire.creerFEFP(getTransaction());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "La liaison FicheEmploi-FichePoste"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "La liaison FicheEmploi-FichePoste"));
 					return false;
 				}
 			} else {
 				// on modifie le lien avec le num FE secondaire
-				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante().getIdFichePoste(), false);
+				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
+						.getIdFichePoste(), false);
 				ancienLien.setFePrimaire(false);
 				ancienLien.setIdFicheEmploi(getEmploiSecondaire().getIdFicheEmploi());
 				ancienLien.modifierFEFP(getTransaction());
 			}
 		} else {
 			// on supprime le lien eventuel
-			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false);
+			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
+					getFichePosteCourante(), false);
 			if (emploiSecondaireTest != null) {
 				// on modifie le lien avec le num FE secondaire
-				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante().getIdFichePoste(), false);
+				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
+						.getIdFichePoste(), false);
 				ancienLien.supprimerFEFP(getTransaction());
 			}
 		}
 		// on supprime tous les diplome de la FDP
-		ArrayList<DiplomeFP> diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante());
+		ArrayList<DiplomeFP> diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(),
+				getFichePosteCourante());
 		if (diplomeFPExistant != null && diplomeFPExistant.size() > 0) {
 			for (int i = 0; i < diplomeFPExistant.size(); i++) {
 				DiplomeFP diplomeFP = (DiplomeFP) diplomeFPExistant.get(i);
@@ -1644,11 +1742,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		// on ajoute le diplome dela FDP
 		DiplomeGenerique diplomeAAjouter = (DiplomeGenerique) getListeTousDiplomes().get(0);
-		DiplomeFP diplomeFP = new DiplomeFP(getFichePosteCourante().getIdFichePoste(), diplomeAAjouter.getIdDiplomeGenerique());
+		DiplomeFP diplomeFP = new DiplomeFP(getFichePosteCourante().getIdFichePoste(),
+				diplomeAAjouter.getIdDiplomeGenerique());
 		diplomeFP.creerDiplomeFP(getTransaction());
 
 		// on supprime tous les niveau etude de la FDP
-		ArrayList<NiveauEtudeFP> niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante());
+		ArrayList<NiveauEtudeFP> niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(),
+				getFichePosteCourante());
 		if (niveauFPExistant != null && niveauFPExistant.size() > 0) {
 			for (int i = 0; i < niveauFPExistant.size(); i++) {
 				NiveauEtudeFP niveauFP = (NiveauEtudeFP) niveauFPExistant.get(i);
@@ -1657,7 +1757,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		// on ajoute le niveau etude dela FDP
 		NiveauEtude niveauAAjouter = (NiveauEtude) getListeTousNiveau().get(0);
-		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(), niveauAAjouter.getIdNiveauEtude());
+		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(),
+				niveauAAjouter.getIdNiveauEtude());
 		niveauFP.creerNiveauEtudeFP(getTransaction());
 
 		// nouvelle gestion des activites
@@ -1672,15 +1773,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				// on regarde de quelle liste elle faisait partie
 				for (Activite actiFP : getListeActiFEP()) {
 					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-								acti.getIdActivite());
+						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
+								.getIdFichePoste(), acti.getIdActivite());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(), true);
+							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+									true);
 							actFP.creerActiviteFP(getTransaction());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
+								getTransaction().declarerErreur(
+										MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
 								return false;
 							}
 							break;
@@ -1692,15 +1795,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				for (Activite actiFP : getListeActiFES()) {
 					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-								acti.getIdActivite());
+						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
+								.getIdFichePoste(), acti.getIdActivite());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(), true);
+							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+									true);
 							actFP.creerActiviteFP(getTransaction());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
+								getTransaction().declarerErreur(
+										MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
 								return false;
 							}
 							break;
@@ -1713,15 +1818,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (getListeActiFP() != null) {
 					for (ActiviteFP actiFP : getListeActiFP()) {
 						if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-							ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-									acti.getIdActivite());
+							ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
+									.getIdFichePoste(), acti.getIdActivite());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(), false);
+								actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+										false);
 								actFP.creerActiviteFP(getTransaction());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
-									getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
+									getTransaction().declarerErreur(
+											MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite()
+													+ ")"));
 									return false;
 								}
 								break;
@@ -1735,15 +1843,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				for (Activite actiFP : getListeAjoutActiFP()) {
 					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-								acti.getIdActivite());
+						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
+								.getIdFichePoste(), acti.getIdActivite());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(), false);
+							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+									false);
 							actFP.creerActiviteFP(getTransaction());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
+								getTransaction().declarerErreur(
+										MessageUtils.getMessage("ERR976", "Activite (" + acti.getNomActivite() + ")"));
 								return false;
 							}
 							break;
@@ -1754,7 +1864,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					}
 				}
 			} else {
-				ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante().getIdFichePoste(), acti.getIdActivite());
+				ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
+						.getIdFichePoste(), acti.getIdActivite());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
@@ -1779,15 +1890,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				// on regarde de quelle liste elle faisait partie
 				for (Competence compFP : getListeCompFEP()) {
 					if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-								comp.getIdCompetence());
+						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
+								getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 							comFP.creerCompetenceFP(getTransaction());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence() + ")"));
+								getTransaction().declarerErreur(
+										MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence()
+												+ ")"));
 								return false;
 							}
 							break;
@@ -1798,15 +1911,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				for (Competence compFP : getListeCompFES()) {
 					if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-								comp.getIdCompetence());
+						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
+								getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 							comFP.creerCompetenceFP(getTransaction());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence() + ")"));
+								getTransaction().declarerErreur(
+										MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence()
+												+ ")"));
 								return false;
 							}
 							break;
@@ -1818,16 +1933,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (getListeCompFP() != null) {
 					for (CompetenceFP compFP : getListeCompFP()) {
 						if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-									comp.getIdCompetence());
+							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
+									getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
+								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(),
+										comp.getIdCompetence());
 								comFP.creerCompetenceFP(getTransaction());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
-									getTransaction()
-											.declarerErreur(MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence() + ")"));
+									getTransaction().declarerErreur(
+											MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence()
+													+ ")"));
 									return false;
 								}
 								break;
@@ -1841,16 +1958,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (getListeAjoutCompFP() != null) {
 					for (Competence compFP : getListeAjoutCompFP()) {
 						if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-									comp.getIdCompetence());
+							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
+									getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
-								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
+								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(),
+										comp.getIdCompetence());
 								comFP.creerCompetenceFP(getTransaction());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
-									getTransaction()
-											.declarerErreur(MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence() + ")"));
+									getTransaction().declarerErreur(
+											MessageUtils.getMessage("ERR976", "Compétence (" + comp.getNomCompetence()
+													+ ")"));
 									return false;
 								}
 								break;
@@ -1863,8 +1982,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 
 			} else {
-				CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante().getIdFichePoste(),
-						comp.getIdCompetence());
+				CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante()
+						.getIdFichePoste(), comp.getIdCompetence());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
@@ -1942,7 +2061,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// anciens
 			for (AvantageNature avNat : getListeAvantageAAjouter()) {
 				avNat.creerAvantageNature(getTransaction());
-				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(), avNat.getIdAvantage());
+				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(),
+						avNat.getIdAvantage());
 				avNatFP.creerAvantageNatureFP(getTransaction());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -1951,7 +2071,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 			for (AvantageNature avNat : getListeAvantageASupprimer()) {
-				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(), avNat.getIdAvantage());
+				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(),
+						avNat.getIdAvantage());
 				avNatFP.supprimerAvantageNatureFP(getTransaction());
 				avNat.supprimerAvantageNature(getTransaction());
 				if (getTransaction().isErreur()) {
@@ -1964,7 +2085,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Sauvegarde des nouvelles Delegation et suppression des anciennes
 			for (Delegation deleg : getListeDelegationAAjouter()) {
 				deleg.creerDelegation(getTransaction());
-				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(), deleg.getIdDelegation());
+				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(),
+						deleg.getIdDelegation());
 				delFP.creerDelegationFP(getTransaction());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -1973,7 +2095,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 			for (Delegation deleg : getListeDelegationASupprimer()) {
-				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(), deleg.getIdDelegation());
+				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(),
+						deleg.getIdDelegation());
 				delFP.supprimerDelegationFP(getTransaction());
 				deleg.supprimerDelegation(getTransaction());
 				if (getTransaction().isErreur()) {
@@ -2120,12 +2243,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private boolean sauvegardeFDP() throws Exception {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
-		String destination = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".xml";
+		String destination = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour
+				+ ".xml";
 
 		String modele = "ModeleFP.xml";
 		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_FICHEPOSTE");
 
-		creerModeleDocumentFP("SauvegardeFDP", repModeles + modele, repPartage + destination, getFichePosteCourante().getIdFichePoste());
+		creerModeleDocumentFP("SauvegardeFDP", repModeles + modele, repPartage + destination, getFichePosteCourante()
+				.getIdFichePoste());
 
 		// Tout s'est bien passé
 		// on crée le document en base de données
@@ -2178,7 +2303,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_RECHERCHE());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
 				return false;
 			}
 			if (fiche != null) {
@@ -2713,7 +2839,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_GRADE(HttpServletRequest request) throws Exception {
 		// Récupération du grade à ajouter
-		int indiceGrade = (Services.estNumerique(getVAL_LB_GRADE_SELECT()) ? Integer.parseInt(getVAL_LB_GRADE_SELECT()) : -1);
+		int indiceGrade = (Services.estNumerique(getVAL_LB_GRADE_SELECT()) ? Integer.parseInt(getVAL_LB_GRADE_SELECT())
+				: -1);
 		if (indiceGrade == -1 || indiceGrade == 0 || getListeGrade().isEmpty() || indiceGrade > getListeGrade().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "grade"));
 			return false;
@@ -2763,7 +2890,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_DIPLOME(HttpServletRequest request) throws Exception {
 		// Récupération du diplome à ajouter
-		int indiceDipl = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
+		int indiceDipl = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
 		if (indiceDipl == -1 || getListeDiplome().size() == 0 || indiceDipl > getListeDiplome().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Diplomes"));
 			return false;
@@ -2810,7 +2938,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_NIVEAU_ETUDE(HttpServletRequest request) throws Exception {
 		// Récupération du niveau d'étude à ajouter
-		int indiceNiv = (Services.estNumerique(getVAL_LB_NIVEAU_ETUDE_SELECT()) ? Integer.parseInt(getVAL_LB_NIVEAU_ETUDE_SELECT()) : -1);
+		int indiceNiv = (Services.estNumerique(getVAL_LB_NIVEAU_ETUDE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_NIVEAU_ETUDE_SELECT()) : -1);
 		if (indiceNiv == -1 || getListeNiveauEtude().size() == 0 || indiceNiv > getListeNiveauEtude().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Niveaux d'étude"));
 			return false;
@@ -2835,7 +2964,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 						nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
 					}
 				}
-				addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
+				addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
+						nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
 			}
 		}
 		setAfficherListeNivEt(false);
@@ -2909,7 +3039,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
 				}
 			}
-			addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
+			addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
+					nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
 
 		}
 
@@ -3222,43 +3353,54 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Vérifie l'affectation
 			setFpCouranteAffectee(getFichePosteCourante().estAffectee(getTransaction()));
 			// Init fiches emploi
-			setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), true));
-			setEmploiSecondaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(), false));
+			setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(),
+					true));
+			setEmploiSecondaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
+					getFichePosteCourante(), false));
 
 			// Init Service
 			if (getFichePosteCourante().getIdServi() != null && getFichePosteCourante().getIdServi().length() != 0) {
 				setService(Service.chercherService(getTransaction(), getFichePosteCourante().getIdServi()));
 			}
 			// Init Responsable
-			if (getFichePosteCourante().getIdResponsable() != null && getFichePosteCourante().getIdResponsable().length() != 0) {
-				setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdResponsable()));
+			if (getFichePosteCourante().getIdResponsable() != null
+					&& getFichePosteCourante().getIdResponsable().length() != 0) {
+				setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+						.getIdResponsable()));
 			}
 			// Init Remplacement
-			if (getFichePosteCourante().getIdRemplacement() != null && getFichePosteCourante().getIdRemplacement().length() != 0) {
-				setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante().getIdRemplacement()));
+			if (getFichePosteCourante().getIdRemplacement() != null
+					&& getFichePosteCourante().getIdRemplacement().length() != 0) {
+				setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourante()
+						.getIdRemplacement()));
 			}
 			// Init Infos Affectation FP
-			setAgentCourant(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setAgentCourant(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 			// si on a pas trouve d'gent affecté sur FP primaire, on recherche
 			// sur secondaire
 			if (getAgentCourant() == null) {
-				setAgentCourant(AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+				setAgentCourant(AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(),
+						getFichePosteCourante().getIdFichePoste()));
 			}
 			if (getAgentCourant() != null) {
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
+						.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					setAffectationCourante(null);
 				} else {
 					setAffectationCourante(aff);
 				}
-				Contrat c = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), Services.dateDuJour());
+				Contrat c = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(),
+						Services.dateDuJour());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
 				setContratCourant(c);
 				if (getContratCourant() != null && getContratCourant().getIdTypeContrat() != null) {
-					setTypeContratCourant(TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant().getIdTypeContrat()));
+					setTypeContratCourant(TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant()
+							.getIdTypeContrat()));
 				}
 			}
 
@@ -3274,7 +3416,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les activites de la FDP
-			setListeActiFP(ActiviteFP.listerActiviteFPAvecFP(getTransaction(), getFichePosteCourante().getIdFichePoste()));
+			setListeActiFP(ActiviteFP.listerActiviteFPAvecFP(getTransaction(), getFichePosteCourante()
+					.getIdFichePoste()));
 			for (ActiviteFP actiFP : getListeActiFP()) {
 				trouve = false;
 				Activite activite = Activite.chercherActivite(getTransaction(), actiFP.getIdActivite());
@@ -3466,14 +3609,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (NiveauEtude nivEt : getListeTousNiveau()) {
 			nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
 		}
-		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
+		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
+				nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
 
 		// diplome
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les diplomes de la FDP
 			setListeDiplomeFP(DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante()));
 			for (DiplomeFP diplomeFP : getListeDiplomeFP()) {
-				DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), diplomeFP.getIdDiplomeGenerique());
+				DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
+						diplomeFP.getIdDiplomeGenerique());
 				getListeTousDiplomes().add(diplome);
 			}
 		} else {
@@ -3540,7 +3685,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// Init observation
 		setObservation(Const.CHAINE_VIDE);
 		if (getFichePosteCourante() != null) {
-			if (getFichePosteCourante().getObservation() != null && getFichePosteCourante().getObservation().length() != 0) {
+			if (getFichePosteCourante().getObservation() != null
+					&& getFichePosteCourante().getObservation().length() != 0) {
 				setObservation(getObservation() + " " + getFichePosteCourante().getObservation());
 			}
 		}
@@ -3987,7 +4133,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_RESPONSABLE(HttpServletRequest request) throws Exception {
 		if (!getVAL_EF_CODESERVICE().equals(Const.CHAINE_VIDE)) {
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE, Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE,
+					Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
 		}
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
@@ -4054,8 +4201,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void setResponsable(FichePoste resp) throws Exception {
 		this.responsable = resp;
 		if (resp != null) {
-			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getResponsable().getIdFichePoste()));
-			setTitrePosteResponsable(TitrePoste.chercherTitrePoste(getTransaction(), getResponsable().getIdTitrePoste()));
+			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getResponsable()
+					.getIdFichePoste()));
+			setTitrePosteResponsable(TitrePoste
+					.chercherTitrePoste(getTransaction(), getResponsable().getIdTitrePoste()));
 		} else {
 			setAgtResponsable(null);
 			setTitrePosteResponsable(null);
@@ -4802,11 +4951,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// RG_PE_FP_A03
 		if (getFichePosteCourante() != null && getListeStatut() != null && getListeStatut().size() != 0) {
-			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT()))
-					: -1);
+			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 			StatutFP sfp = (StatutFP) getListeStatut().get(numLigneStatut);
-			return (!getFichePosteCourante().estAffectee(getTransaction()) && !sfp.getLibStatutFP()
-					.equals(EnumStatutFichePoste.INACTIVE.getLibLong()));
+			return (!getFichePosteCourante().estAffectee(getTransaction()) && !sfp.getLibStatutFP().equals(
+					EnumStatutFichePoste.INACTIVE.getLibLong()));
 		} else {
 			return false;
 		}
@@ -4850,8 +4999,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public void setRemplacement(FichePoste remp) throws Exception {
 		this.remplacement = remp;
 		if (remp != null) {
-			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement().getIdFichePoste()));
-			setTitrePosteRemplacement(TitrePoste.chercherTitrePoste(getTransaction(), getRemplacement().getIdTitrePoste()));
+			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement()
+					.getIdFichePoste()));
+			setTitrePosteRemplacement(TitrePoste.chercherTitrePoste(getTransaction(), getRemplacement()
+					.getIdTitrePoste()));
 		} else {
 			setAgtRemplacement(null);
 			setTitrePosteRemplacement(null);
@@ -4888,7 +5039,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_REMPLACEMENT(HttpServletRequest request) throws Exception {
 		if (!getVAL_EF_CODESERVICE().equals(Const.CHAINE_VIDE)) {
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE, Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_SERVICE,
+					Service.chercherService(getTransaction(), getVAL_EF_CODESERVICE()));
 		}
 
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE, Boolean.TRUE);
@@ -4937,7 +5089,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SELECT_STATUT(HttpServletRequest request) throws Exception {
 		// Statut de la fiche
-		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 		if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
 			return true;
 		}
@@ -5061,7 +5214,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String niveauEtude = nivEtu.getLibNiveauEtude();
 
 		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
-		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), dipFP.getIdDiplomeGenerique());
+		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
+				dipFP.getIdDiplomeGenerique());
 		String diplome = dip.getLibDiplomeGenerique();
 
 		// partie concernant l'emploi
@@ -5073,7 +5227,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getEmploiSecondaire() != null) {
 			emploiSecondaire = getEmploiSecondaire().getRefMairie();
 		}
-		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(),
+				fp.getIdBudget()).getLibBudget();
 
 		// partie concernant le temps de travail du poste
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
@@ -5085,7 +5240,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String titulaireNom = "Poste vacant.";
 		String dateAff = Const.CHAINE_VIDE;
 		if (getAgentCourant() != null) {
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
+					.getIdAgent());
 			if (aff != null && aff.getIdAffectation() != null) {
 				String prenomTitulaire = getAgentCourant().getPrenomAgent().toLowerCase();
 				String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
@@ -5094,7 +5250,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				String nomTitulaire = getAgentCourant().getNomAgent().toUpperCase();
 				titulaireNom = prenomTitulaire + " " + nomTitulaire;
 				titulaireMatr = getAgentCourant().getNoMatricule();
-				dateAff = aff.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le " + aff.getDateDebutAff();
+				dateAff = aff.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le "
+						+ aff.getDateDebutAff();
 			}
 		}
 
@@ -5110,7 +5267,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				respMatr = getAgtResponsable().getNoMatricule();
 				String prenomResponsable = getAgtResponsable().getPrenomAgent().toLowerCase();
 				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
-				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length()).toLowerCase();
+				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length())
+						.toLowerCase();
 				prenomResponsable = premLettreResponsable + restePrenomResponsable;
 				String nom = getAgtResponsable().getNomAgent().toUpperCase();
 				respNom = prenomResponsable + " " + nom;
@@ -5125,14 +5283,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String rempNom = Const.CHAINE_VIDE;
 		if (fp.getIdRemplacement() != null) {
 			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
-			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(), fpRemplacement.getIdTitrePoste());
-			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdRemplacement());
+			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(),
+					fpRemplacement.getIdTitrePoste());
+			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(),
+					fp.getIdRemplacement());
 			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
 				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
 				rempMatr = agentRemplacement.getNoMatricule();
 				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
 				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
-				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length()).toLowerCase();
+				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length())
+						.toLowerCase();
 				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
 				String nom = agentRemplacement.getNomAgent().toUpperCase();
 				rempNom = prenomRemplacement + " " + nom;
@@ -5256,7 +5417,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setURLFichier(getScriptOuverture(repertoireStockage + repertoire + destination));
 	}
 
-	private void creerModeleDocumentFP(String repertoire, String modele, String destination, String idFichePoste) throws Exception {
+	private void creerModeleDocumentFP(String repertoire, String modele, String destination, String idFichePoste)
+			throws Exception {
 		// on verifie que les repertoires existent
 		verifieRepertoire(repertoire);
 
@@ -5319,7 +5481,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String niveauEtude = nivEtu.getLibNiveauEtude();
 
 		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
-		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(), dipFP.getIdDiplomeGenerique());
+		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
+				dipFP.getIdDiplomeGenerique());
 		String diplome = dip.getLibDiplomeGenerique();
 
 		// partie concernant l'emploi
@@ -5331,7 +5494,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getEmploiSecondaire() != null) {
 			emploiSecondaire = getEmploiSecondaire().getRefMairie();
 		}
-		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(), fp.getIdBudget()).getLibBudget();
+		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(),
+				fp.getIdBudget()).getLibBudget();
 
 		// partie concernant le temps de travail du poste
 		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
@@ -5343,7 +5507,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String titulaireNom = "Poste vacant.";
 		String dateAff = Const.CHAINE_VIDE;
 		if (getAgentCourant() != null) {
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
+					.getIdAgent());
 			AgentNW agent = null;
 			Affectation affAgent = null;
 			if (getTransaction().isErreur()) {
@@ -5362,7 +5527,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				titulaireMatr = agent.getNoMatricule();
 			}
 			if (affAgent != null) {
-				dateAff = affAgent.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le " + affAgent.getDateDebutAff();
+				dateAff = affAgent.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le "
+						+ affAgent.getDateDebutAff();
 			}
 		}
 		// responsable hierarchique
@@ -5382,7 +5548,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				respMatr = agentResponsable.getNoMatricule();
 				String prenomResponsable = agentResponsable.getPrenomAgent().toLowerCase();
 				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
-				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length()).toLowerCase();
+				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length())
+						.toLowerCase();
 				prenomResponsable = premLettreResponsable + restePrenomResponsable;
 				String nom = agentResponsable.getNomAgent().toUpperCase();
 				respNom = prenomResponsable + " " + nom;
@@ -5397,8 +5564,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String rempNom = Const.CHAINE_VIDE;
 		if (fp.getIdRemplacement() != null) {
 			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
-			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(), fpRemplacement.getIdTitrePoste());
-			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdRemplacement());
+			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(),
+					fpRemplacement.getIdTitrePoste());
+			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(),
+					fp.getIdRemplacement());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -5407,7 +5576,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				rempMatr = agentRemplacement.getNoMatricule();
 				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
 				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
-				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length()).toLowerCase();
+				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length())
+						.toLowerCase();
 				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
 				String nom = agentRemplacement.getNomAgent().toUpperCase();
 				rempNom = prenomRemplacement + " " + nom;
@@ -5780,13 +5950,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public void majChangementFEAutorise() {
 		// Statut de la fiche
-		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 		if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
 			return;
 		}
 		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
-		setChangementFEAutorise(!estFpCouranteAffectee() && !statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())
+		setChangementFEAutorise(!estFpCouranteAffectee()
+				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())
 				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.VALIDEE.getLibLong()));
 	}
 
@@ -6691,5 +6863,48 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
 		this.primePointageFPDao = primePointageFPDao;
+	}
+
+	private String[] getLB_NATURE_CREDIT() {
+		if (LB_NATURE_CREDIT == null) {
+			LB_NATURE_CREDIT = initialiseLazyLB();
+		}
+		return LB_NATURE_CREDIT;
+	}
+
+	private void setLB_NATURE_CREDIT(String[] newLB_NATURE_CREDIT) {
+		LB_NATURE_CREDIT = newLB_NATURE_CREDIT;
+	}
+
+	public String getNOM_LB_NATURE_CREDIT() {
+		return "NOM_LB_NATURE_CREDIT";
+	}
+
+	public String getNOM_LB_NATURE_CREDIT_SELECT() {
+		return "NOM_LB_NATURE_CREDIT_SELECT";
+	}
+
+	public String[] getVAL_LB_NATURE_CREDIT() {
+		return getLB_NATURE_CREDIT();
+	}
+
+	public String getVAL_LB_NATURE_CREDIT_SELECT() {
+		return getZone(getNOM_LB_NATURE_CREDIT_SELECT());
+	}
+
+	public ArrayList<NatureCredit> getListeNatureCredit() {
+		return listeNatureCredit;
+	}
+
+	public void setListeNatureCredit(ArrayList<NatureCredit> listeNatureCredit) {
+		this.listeNatureCredit = listeNatureCredit;
+	}
+
+	public NatureCreditDao getNatureCreditDao() {
+		return natureCreditDao;
+	}
+
+	public void setNatureCreditDao(NatureCreditDao natureCreditDao) {
+		this.natureCreditDao = natureCreditDao;
 	}
 }

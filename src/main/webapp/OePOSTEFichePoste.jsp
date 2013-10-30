@@ -268,6 +268,11 @@
 							<br/><br/>			
 							<span class="sigp2" style="width:150px"> OPI : </span>
 							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_OPI() %>" size="6" type="text" value="<%= process.getVAL_EF_OPI() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<br/><br/>	
+							<span class="sigp2Mandatory" style="width:150px"> Nature des crédits : </span>
+							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATURE_CREDIT() %>" style="width:180px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+								<%=process.forComboHTML(process.getVAL_LB_NATURE_CREDIT(), process.getVAL_LB_NATURE_CREDIT_SELECT())%>
+							</SELECT>	
 						<%}%>
 						</fieldset>
 						

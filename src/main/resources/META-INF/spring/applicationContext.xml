@@ -88,6 +88,9 @@
 	<bean id="typeJourFerieDao" class="nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao">
 		<property name="dataSource" ref="dataSourceSIRH" />		
 	</bean>
+	<bean id="natureCreditDao" class="nc.mairie.spring.dao.metier.parametrage.NatureCreditDao">
+		<property name="dataSource" ref="dataSourceSIRH" />		
+	</bean>
 
 	<!-- DAO Mairie -->
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">

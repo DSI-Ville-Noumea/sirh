@@ -19,12 +19,18 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
+import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
+import nc.mairie.spring.domain.metier.parametrage.NatureCredit;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
@@ -43,6 +49,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private String[] LB_TYPE_DELEGATION;
 	private String[] LB_TYPE_REGIME;
 	private String[] LB_ECOLE;
+	private String[] LB_NFA;
+	private String[] LB_NATURE_CREDIT;
 
 	private ArrayList<EntiteGeo> listeEntite;
 	private EntiteGeo entiteGeoCourante;
@@ -68,12 +76,17 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private ArrayList<NFA> listeNFA;
 	private NFA NFACourant;
 
+	private ArrayList<NatureCredit> listeNatureCredit;
+	private NatureCredit NatureCreditCourant;
+
 	private ArrayList<Ecole> listeEcole;
 	private Ecole EcoleCourante;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
+	
+	private NatureCreditDao natureCreditDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -96,6 +109,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
@@ -111,6 +126,14 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				Ecole aEcole = (Ecole) a.get(i);
 				getHashEntiteEcole().put(aEcole.getCdecol(), aEcole);
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getNatureCreditDao() == null) {
+			setNatureCreditDao((NatureCreditDao) context.getBean("natureCreditDao"));
 		}
 	}
 
@@ -309,6 +332,29 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
+	 * Initialisation de la liste des Nature de credit Date de création :
+	 * (04/11/13)
+	 * 
+	 */
+	private void initialiseListeNatureCredit(HttpServletRequest request) throws Exception {
+		setListeNatureCredit(getNatureCreditDao().listerNatureCredit());
+		if (getListeNatureCredit().size() != 0) {
+			int tailles[] = { 50 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<NatureCredit> list = getListeNatureCredit().listIterator(); list.hasNext();) {
+				NatureCredit nature = (NatureCredit) list.next();
+				String ligne[] = { nature.getLibNatureCredit() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_NATURE_CREDIT(aFormat.getListeFormatee());
+		} else {
+			setLB_NATURE_CREDIT(null);
+		}
+	}
+
+	/**
 	 * Initialisation dede la liste des ecoles Date de création : (04/11/11)
 	 */
 	private void initialiseListeEcole(HttpServletRequest request) throws Exception {
@@ -381,6 +427,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Recherche des Ecoles
 			setListeEcole(Ecole.listerEcole(getTransaction()));
 			initialiseListeEcole(request);
+		}
+
+		if (getListeNatureCredit() == null) {
+			// Recherche des Nature credit
+			initialiseListeNatureCredit(request);
 		}
 	}
 
@@ -578,7 +629,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_ENTITE_GEO(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeEntite().size()) {
 			EntiteGeo entiteGeo = getListeEntite().get(indice);
@@ -743,7 +795,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_ENTITE_GEO(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ENTITE_GEO_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeEntite().size()) {
 			EntiteGeo eg = getListeEntite().get(indice);
@@ -780,7 +833,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_NATURE_AVANTAGE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeNatureAvantage().size()) {
 			NatureAvantage na = getListeNatureAvantage().get(indice);
@@ -844,7 +898,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_AVANTAGE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeAvantage().size()) {
 			TypeAvantage ta = getListeTypeAvantage().get(indice);
@@ -876,7 +931,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_DELEGATION(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeDelegation().size()) {
 			TypeDelegation tg = getListeTypeDelegation().get(indice);
@@ -908,7 +964,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_REGIME(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeRegime().size()) {
 			TypeRegIndemn tr = getListeTypeRegime().get(indice);
@@ -949,7 +1006,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_CREATION)) {
 				// on recupere l'école (si elle est saisie !)
 				setEntiteGeoCourante(new EntiteGeo());
-				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
+				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
+						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
 				if (indice != 0) {
 					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
 					getEntiteGeoCourante().setCdEcol(codeEcole);
@@ -970,7 +1028,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				setEntiteGeoCourante(null);
 			} else if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_MODIFICATION)) {
 				// on recupere l'école (si elle est saisie !)
-				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
+				int indice = (Services.estNumerique(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) ? Integer
+						.parseInt(getVAL_LB_ENTITE_GEO_ECOLE_SELECT()) : -1);
 				if (indice != 0) {
 					String codeEcole = ((Ecole) getListeEntiteEcole().get(indice - 1)).getCdecol();
 					getEntiteGeoCourante().setCdEcol(codeEcole);
@@ -1024,7 +1083,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entité géographique"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette entité géographique"));
 			return false;
 		}
 
@@ -1035,7 +1095,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (entite.getLibEntiteGeo().equals(getVAL_EF_ENTITE_GEO().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une entité géographique", "ce libellé"));
 					return false;
 				}
 			}
@@ -1117,11 +1178,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'une nature d'avantage en nature
 		// utilisée sur un avantage en nature
 		if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& AvantageNature.listerAvantageNatureAvecNatureAvantage(getTransaction(), getNatureAvantageCourant()).size() > 0) {
+				&& AvantageNature.listerAvantageNatureAvecNatureAvantage(getTransaction(), getNatureAvantageCourant())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avantage en nature", "cette nature d'avantage en nature"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "un avantage en nature", "cette nature d'avantage en nature"));
 			return false;
 		}
 
@@ -1132,7 +1195,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (nature.getLibNatureAvantage().equals(getVAL_EF_NATURE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une nature d'avantage en nature", "ce libellé"));
 					return false;
 				}
 			}
@@ -1218,7 +1282,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche de poste", "ce titre de poste"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "une fiche de poste", "ce titre de poste"));
 			return false;
 		}
 
@@ -1229,7 +1294,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de poste", "ce libellé"));
 					return false;
 				}
 			}
@@ -1311,11 +1377,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type d'avantage utilisé sur un
 		// avantage en nature
 		if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& AvantageNature.listerAvantageNatureAvecTypeAvantage(getTransaction(), getTypeAvantageCourant()).size() > 0) {
+				&& AvantageNature.listerAvantageNatureAvecTypeAvantage(getTransaction(), getTypeAvantageCourant())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un avantage en nature", "ce type d'avantage en nature"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "un avantage en nature", "ce type d'avantage en nature"));
 			return false;
 		}
 
@@ -1326,7 +1394,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeAvantage().equals(getVAL_EF_TYPE_AVANTAGE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un type d'avantage en nature", "ce libellé"));
 					return false;
 				}
 			}
@@ -1412,7 +1481,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une délégation", "ce type de délégation"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "une délégation", "ce type de délégation"));
 			return false;
 		}
 
@@ -1423,7 +1493,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeDelegation().equals(getVAL_EF_TYPE_DELEGATION().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un type de délégation", "ce libellé"));
 					return false;
 				}
 			}
@@ -1505,11 +1576,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type de régime idemnitaire utilisée
 		// sur un régime idemnitaire
 		if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_SUPPRESSION)
-				&& RegimeIndemnitaire.listerRegimeIndemnitaireAvecTypeRegime(getTransaction(), getTypeRegimeCourant()).size() > 0) {
+				&& RegimeIndemnitaire.listerRegimeIndemnitaireAvecTypeRegime(getTransaction(), getTypeRegimeCourant())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un régime indemnitaire", "ce type de régime idemnitaire"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "un régime indemnitaire", "ce type de régime idemnitaire"));
 			return false;
 		}
 
@@ -1520,7 +1593,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				if (type.getLibTypeRegIndemn().equals(getVAL_EF_TYPE_REGIME().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un type de régime idemnitaire", "ce libellé"));
 					return false;
 				}
 			}
@@ -2238,8 +2312,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		this.typeRegimeCourant = typeRegimeCourant;
 	}
 
-	private String[] LB_NFA;
-
 	/**
 	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (13/09/11 15:49:10)
@@ -2418,6 +2490,26 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_TYPE_REGIME
 			if (testerParametre(request, getNOM_PB_VALIDER_TYPE_REGIME())) {
 				return performPB_VALIDER_TYPE_REGIME(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_NATURE_CREDIT
+			if (testerParametre(request, getNOM_PB_ANNULER_NATURE_CREDIT())) {
+				return performPB_ANNULER_NATURE_CREDIT(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_NATURE_CREDIT
+			if (testerParametre(request, getNOM_PB_CREER_NATURE_CREDIT())) {
+				return performPB_CREER_NATURE_CREDIT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_NATURE_CREDIT
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_NATURE_CREDIT())) {
+				return performPB_SUPPRIMER_NATURE_CREDIT(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_NATURE_CREDIT
+			if (testerParametre(request, getNOM_PB_VALIDER_NATURE_CREDIT())) {
+				return performPB_VALIDER_NATURE_CREDIT(request);
 			}
 
 		}
@@ -3076,5 +3168,189 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	private void setListeEcole(ArrayList<Ecole> listeEcole) {
 		this.listeEcole = listeEcole;
+	}
+
+	public ArrayList<NatureCredit> getListeNatureCredit() {
+		return listeNatureCredit;
+	}
+
+	public void setListeNatureCredit(ArrayList<NatureCredit> listeNatureCredit) {
+		this.listeNatureCredit = listeNatureCredit;
+	}
+
+	public NatureCredit getNatureCreditCourant() {
+		return NatureCreditCourant;
+	}
+
+	public void setNatureCreditCourant(NatureCredit natureCreditCourant) {
+		NatureCreditCourant = natureCreditCourant;
+	}
+
+	public String getNOM_PB_ANNULER_NATURE_CREDIT() {
+		return "NOM_PB_ANNULER_NATURE_CREDIT";
+	}
+
+	public boolean performPB_ANNULER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_NATURE_CREDIT(), Const.CHAINE_VIDE);
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_CREER_NATURE_CREDIT() {
+		return "NOM_PB_CREER_NATURE_CREDIT";
+	}
+
+	public boolean performPB_CREER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_NATURE_CREDIT(), ACTION_CREATION);
+		addZone(getNOM_EF_LIB_NATURE_CREDIT(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_NATURE_CREDIT() {
+		return "NOM_PB_SUPPRIMER_NATURE_CREDIT";
+	}
+
+	public boolean performPB_SUPPRIMER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_NATURE_CREDIT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_NATURE_CREDIT_SELECT()) : -1);
+
+		if (indice != -1 && indice < getListeNatureCredit().size()) {
+			NatureCredit nature = getListeNatureCredit().get(indice);
+			setNatureCreditCourant(nature);
+			addZone(getNOM_EF_LIB_NATURE_CREDIT(), nature.getLibNatureCredit());
+			addZone(getNOM_ST_ACTION_NATURE_CREDIT(), ACTION_SUPPRESSION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "natures de crédit"));
+		}
+
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_NATURE_CREDIT() {
+		return "NOM_PB_VALIDER_NATURE_CREDIT";
+	}
+
+	public boolean performPB_VALIDER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
+
+		if (!performControlerSaisieNatureCredit(request))
+			return false;
+
+		if (!performControlerRegleGestionNatureCredit(request))
+			return false;
+
+		if (getVAL_ST_ACTION_NATURE_CREDIT() != null && getVAL_ST_ACTION_NATURE_CREDIT() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_CREATION)) {
+				setNatureCreditCourant(new NatureCredit());
+				getNatureCreditCourant().setLibNatureCredit(getVAL_EF_LIB_NATURE_CREDIT());
+				getNatureCreditDao().creerNatureCredit(getNatureCreditCourant().getLibNatureCredit());
+				if (!getTransaction().isErreur())
+					getListeNatureCredit().add(getNatureCreditCourant());
+			} else if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_SUPPRESSION)) {
+				getNatureCreditDao().supprimerNatureCredit(getNatureCreditCourant().getIdNatureCredit());
+				if (!getTransaction().isErreur())
+					getListeNatureCredit().remove(getNatureCreditCourant());
+				setNatureCreditCourant(null);
+			}
+
+			if (getTransaction().isErreur())
+				return false;
+
+			commitTransaction();
+			initialiseListeNatureCredit(request);
+			addZone(getNOM_ST_ACTION_NATURE_CREDIT(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+
+	private boolean performControlerSaisieNatureCredit(HttpServletRequest request) throws Exception {
+
+		// Verification lib nature credit not null
+		if (getZone(getNOM_EF_LIB_NATURE_CREDIT()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean performControlerRegleGestionNatureCredit(HttpServletRequest request) throws Exception {
+
+		// Vérification des contraintes d'unicité du NATURE_CREDIT
+		if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_CREATION)) {
+
+			for (NatureCredit nature : getListeNatureCredit()) {
+				if (nature.getLibNatureCredit().equals(getVAL_EF_LIB_NATURE_CREDIT().toUpperCase())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une nature de crédit", "ce libellé"));
+					return false;
+				}
+			}
+		} else if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_SUPPRESSION)
+				&& FichePoste.listerFichePosteAvecNatureCredit(getTransaction(), getNatureCreditCourant().getIdNatureCredit()).size() > 0) {
+			// "ERR989",
+			// "Suppression impossible. Il existe au moins @ rattaché à @."
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette nature de crédit"));
+			return false;
+		}
+
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_NATURE_CREDIT() {
+		return "NOM_ST_ACTION_NATURE_CREDIT";
+	}
+
+	public String getVAL_ST_ACTION_NATURE_CREDIT() {
+		return getZone(getNOM_ST_ACTION_NATURE_CREDIT());
+	}
+
+	private String[] getLB_NATURE_CREDIT() {
+		if (LB_NATURE_CREDIT == null)
+			LB_NATURE_CREDIT = initialiseLazyLB();
+		return LB_NATURE_CREDIT;
+	}
+
+	private void setLB_NATURE_CREDIT(String[] newLB_NATURE_CREDIT) {
+		LB_NATURE_CREDIT = newLB_NATURE_CREDIT;
+	}
+
+	public String getNOM_LB_NATURE_CREDIT() {
+		return "NOM_LB_NATURE_CREDIT";
+	}
+
+	public String getNOM_LB_NATURE_CREDIT_SELECT() {
+		return "NOM_LB_NATURE_CREDIT_SELECT";
+	}
+
+	public String[] getVAL_LB_NATURE_CREDIT() {
+		return getLB_NATURE_CREDIT();
+	}
+
+	public String getVAL_LB_NATURE_CREDIT_SELECT() {
+		return getZone(getNOM_LB_NATURE_CREDIT_SELECT());
+	}
+
+	public String getNOM_EF_LIB_NATURE_CREDIT() {
+		return "NOM_EF_LIB_NATURE_CREDIT";
+	}
+
+	public String getVAL_EF_LIB_NATURE_CREDIT() {
+		return getZone(getNOM_EF_LIB_NATURE_CREDIT());
+	}
+
+	public NatureCreditDao getNatureCreditDao() {
+		return natureCreditDao;
+	}
+
+	public void setNatureCreditDao(NatureCreditDao natureCreditDao) {
+		this.natureCreditDao = natureCreditDao;
 	}
 }
