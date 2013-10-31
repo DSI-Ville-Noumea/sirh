@@ -95,7 +95,7 @@
 				<legend class="sigp2Legend">Actions</legend>
 				<span class="sigp2Mandatory"> Recherche : </span> 
 				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE() %>" style="margin-right:10px;">
-				<span class="sigp2Mandatory"> Par agent : </span>
+				<span class="sigp2Mandatory"> Par matricule agent : </span>
 				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_BY_AGENT() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_BY_AGENT() %>" style="margin-right:10px;">
 				
           		<INPUT title="Recherche" tabindex="" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER()%>">
