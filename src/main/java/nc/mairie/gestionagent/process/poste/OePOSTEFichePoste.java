@@ -113,6 +113,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public static final int STATUT_RECHERCHE_AVANCEE = 11;
 	public static final int STATUT_REMPLACEMENT = 12;
 	public static final int STATUT_COMPETENCE = 13;
+	public static final int STATUT_FICHE_EMPLOI = 14;
 	public String ACTION_RECHERCHE = "Recherche.";
 	public String ACTION_CREATION = "Création.";
 	public String ACTION_DUPLICATION = "Duplication.";
@@ -1165,6 +1166,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_MISSIONS(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_OBSERVATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_RECHERCHE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_RECHERCHE_BY_AGENT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_TITRE_POSTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), Const.CHAINE_VIDE);
@@ -2301,9 +2303,56 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Mise à jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
-
-		// Recherche de la fiche de poste
-		if (getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)) {
+		
+		//////////////////////////////////
+		// dans le cas ou rien n est saisi
+		if((getVAL_EF_RECHERCHE() == null || getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)) 
+				&& (getVAL_EF_RECHERCHE_BY_AGENT() == null || getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) ) {
+			
+			getTransaction().traiterErreur();
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR982"));
+			return false; 
+			
+		//////////////////////////////////
+		// dans le cas ou les deux champ sont saisis
+		}else if(getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)
+					&& getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE) ) {
+			// recuperation agent
+			AgentNW agent = null;
+			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
+				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
+			}
+			// l agent n existe pas
+			if(null == agent || null == agent.getIdAgent()) {
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
+				return false;
+			}
+			
+			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), Const.CHAINE_VIDE, null, Const.CHAINE_VIDE,
+					getVAL_EF_RECHERCHE(), agent);
+			
+			// si aucun resultat ==> message erreur
+			if(null == fp || 0 == fp.size()) {
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "résultat"));
+				return false;
+			// si plusieurs resultats ==> message erreur
+			}else if(null != fp && 1 < fp.size()){
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1110"));
+				return false;
+			// sinon affiche fiche de poste
+			}else{
+				viderFichePoste();
+				viderObjetsFichePoste();
+				addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+				setFichePosteCourante(fp.get(0));
+			}
+			
+		//////////////////////////////////
+		// dans le cas ou seul le numero de poste est saisi
+		}else if(getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)){
 			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_RECHERCHE());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -2320,15 +2369,68 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
 				return false;
 			}
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR982"));
-			return false;
+			
+		//////////////////////////////////
+		// dans le cas ou seul le numero de poste est saisi
+		}else if(getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)){
+			// recuperation agent
+			AgentNW agent = null;
+			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
+				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
+			}
+			// l agent n existe pas
+			if(null == agent || null == agent.getIdAgent()) {
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
+				return false;
+			}
+			
+			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), Const.CHAINE_VIDE, null, Const.CHAINE_VIDE,
+					getVAL_EF_RECHERCHE(), agent);
+			
+			// si aucun resultat ==> message erreur
+			if(null == fp || 0 == fp.size()) {
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "résultat"));
+				return false;
+			// si plusieurs resultats ==> message erreur
+			}else if(null != fp && 1 < fp.size()){
+				getTransaction().traiterErreur();
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1110"));
+				return false;
+			// sinon affiche fiche de poste
+			}else{
+				viderFichePoste();
+				viderObjetsFichePoste();
+				addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+				setFichePosteCourante(fp.get(0));
+			}
 		}
 
 		setStatut(STATUT_RECHERCHE);
 		return true;
 	}
 
+	/**
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RECHERCHE_BY_AGENT Date de
+	 * création : (07/07/11 11:20:20)
+	 * 
+	 * 
+	 */
+	public String getNOM_EF_RECHERCHE_BY_AGENT() {
+		return "NOM_EF_RECHERCHE_BY_AGENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_RECHERCHE_BY_AGENT Date de création : (07/07/11 11:20:20)
+	 * 
+	 * 
+	 */
+	public String getVAL_EF_RECHERCHE_BY_AGENT() {
+		return getZone(getNOM_EF_RECHERCHE_BY_AGENT());
+	}
+	
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RECHERCHE Date de
 	 * création : (07/07/11 11:20:20)
@@ -6279,6 +6381,26 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_REMPLACEMENT())) {
 				return performPB_SUPPRIMER_REMPLACEMENT(request);
 			}
+			
+			// Si clic sur le bouton PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE
+			if (testerParametre(request, getNOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE())) {
+				return performPB_CONSULTER_FICHE_EMPLOI_PRIMAIRE(request);
+			}
+			
+			// Si clic sur le bouton PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE()
+			if (testerParametre(request, getNOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE())) {
+				return performPB_CONSULTER_FICHE_EMPLOI_SECONDAIRE(request);
+			}
+			
+			// Si clic sur le bouton PB_CONSULTER_RESPONSABLE_HIERARCHIQUE()
+			if (testerParametre(request, getNOM_PB_CONSULTER_RESPONSABLE_HIERARCHIQUE())) {
+				return performPB_CONSULTER_RESPONSABLE_HIERARCHIQUE(request);
+			}
+			
+			// Si clic sur le bouton PB_CONSULTER_REMPLACEMENT()
+			if (testerParametre(request, getNOM_PB_CONSULTER_REMPLACEMENT())) {
+				return performPB_CONSULTER_REMPLACEMENT(request);
+			}
 
 		}
 		// Si TAG INPUT non géré par le process
@@ -6918,5 +7040,140 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 	public String getVAL_EF_NUM_DELIBERATION() {
 		return getZone(getNOM_EF_NUM_DELIBERATION());
+	}
+	
+	
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_AJOUTER_COMPETENCE_COMPORTEMENT Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE() {
+		return "NOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public boolean performPB_CONSULTER_FICHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
+		
+		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
+		setStatut(STATUT_FICHE_EMPLOI, true);
+		return true;
+	}
+	
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_AJOUTER_COMPETENCE_COMPORTEMENT Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE() {
+		return "NOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public boolean performPB_CONSULTER_FICHE_EMPLOI_SECONDAIRE(HttpServletRequest request) throws Exception {
+		
+		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
+		setStatut(STATUT_FICHE_EMPLOI, true);
+		return true;
+	}
+	
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * PB_CONSULTER_RESPONSABLE_HIERARCHIQUE Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_RESPONSABLE_HIERARCHIQUE() {
+		return "NOM_PB_CONSULTER_RESPONSABLE_HIERARCHIQUE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public boolean performPB_CONSULTER_RESPONSABLE_HIERARCHIQUE(HttpServletRequest request) throws Exception {
+		
+		FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_ST_RESPONSABLE());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
+			return false;
+		}
+		if (fiche != null) {
+			viderFichePoste();
+			viderObjetsFichePoste();
+			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+			setFichePosteCourante(fiche);
+		} else {
+			setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
+			return false;
+		}
+		
+		setFichePosteCourante(fiche);
+		setStatut(STATUT_RECHERCHE, true);
+		return true;
+	}
+	
+	/**
+	 * Retourne le nom d'un bouton pour la JSP :
+	 * NOM_PB_CONSULTER_REMPLACEMENT Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_CONSULTER_REMPLACEMENT() {
+		return "NOM_PB_CONSULTER_REMPLACEMENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
+	 * 
+	 * 
+	 */
+	public boolean performPB_CONSULTER_REMPLACEMENT(HttpServletRequest request) throws Exception {
+		
+		FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_ST_REMPLACEMENT());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
+			return false;
+		}
+		if (fiche != null) {
+			viderFichePoste();
+			viderObjetsFichePoste();
+			addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
+			setFichePosteCourante(fiche);
+		} else {
+			setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
+			return false;
+		}
+		
+		setFichePosteCourante(fiche);
+		setStatut(STATUT_RECHERCHE, true);
+		return true;
 	}
 }

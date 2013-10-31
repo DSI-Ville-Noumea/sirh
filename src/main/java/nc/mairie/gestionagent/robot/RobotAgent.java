@@ -348,6 +348,8 @@ public class RobotAgent extends Robot {
 				OePOSTEFPSelection.class.getName());
 		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_REMPLACEMENT,
 				OePOSTEFPSelection.class.getName());
+		navigation.put(OePOSTEFichePoste.class.getName() + OePOSTEFichePoste.STATUT_FICHE_EMPLOI,
+				OePOSTEFicheEmploi.class.getName());
 
 		// Classe OePOSTESuiviRecrutement
 		navigation.put(OePOSTESuiviRecrutement.class.getName() + OePOSTESuiviRecrutement.STATUT_RECHERCHE_FP,

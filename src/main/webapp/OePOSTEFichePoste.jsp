@@ -93,8 +93,11 @@
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>" />
 			<fieldset class="sigp2Fieldset" style="width:1030px">
 				<legend class="sigp2Legend">Actions</legend>
-				<span class="sigp2Mandatory"> Recherche : </span>
+				<span class="sigp2Mandatory"> Recherche : </span> 
 				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE() %>" style="margin-right:10px;">
+				<span class="sigp2Mandatory"> Par agent : </span>
+				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_BY_AGENT() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_BY_AGENT() %>" style="margin-right:10px;">
+				
           		<INPUT title="Recherche" tabindex="" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER()%>">
        			<INPUT title="Recherche avancée" tabindex="" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
           		<INPUT title="Créer une FDP" tabindex="" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FP()%>">
@@ -227,12 +230,22 @@
 							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
 							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="5" size="6"	type="text" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 							<INPUT tabindex="" type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
+							<% if(null != process.getVAL_ST_EMPLOI_PRIMAIRE() && !"".equals(process.getVAL_ST_EMPLOI_PRIMAIRE().trim())) { %>
+							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE()%>">
+							<% } %>
+							
 							<br/><br/>
+							
 							<span class="sigp2" style="width:150px;"> Fiche emploi secondaire : </span>
 							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="5" size="6" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_SECONDAIRE()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 							<INPUT tabindex="" type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_SECONDAIRE()%>">							
 							<INPUT tabindex="" type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOI_SECONDAIRE()%>" src="images/suppression.gif" height="16px" width="16px" >
+							<% if(null != process.getVAL_ST_EMPLOI_SECONDAIRE() && !"".equals(process.getVAL_ST_EMPLOI_SECONDAIRE().trim())) { %>
+							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE()%>">
+							<% } %>
+							
 							<br/><br/>
+							
 							<span class="sigp2Mandatory" style="width:150px;"> Année : </span>
 							<% if (!process.estFpCouranteAffectee()){ %>
 								<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ANNEE() %>" size="6"
@@ -307,13 +320,21 @@
 						
 						<br/><br/>
 						<span class="<%= process.responsableObligatoire ? "sigp2Mandatory" : "sigp2" %> " style="width:150px;">Responsable hiér. :</span>
+						<% if(null != process.getVAL_ST_RESPONSABLE() && !"".equals(process.getVAL_ST_RESPONSABLE().trim())) { %>
+						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_RESPONSABLE_HIERARCHIQUE()%>">
+						<% } %>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" readonly="readonly" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
 							name="<%= process.getNOM_ST_RESPONSABLE() %>" style="margin-right:10px;width:100px"
 							type="text" value="<%= process.getVAL_ST_RESPONSABLE() %>">
 						<INPUT tabindex="" type="image" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER_RESPONSABLE()%>">
 						<span class="sigp2-saisie"><%= process.getVAL_ST_INFO_RESP()%></span>
+						
 						<br/><br/>
+						
 						<span class="sigp2" style="width:150px;">Fiche de poste remplacée :</span>
+						<% if(null != process.getVAL_ST_REMPLACEMENT() && !"".equals(process.getVAL_ST_REMPLACEMENT().trim())) { %>
+						<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_REMPLACEMENT()%>">
+						<% } %>
 						<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" readonly="readonly" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
 							name="<%= process.getNOM_ST_REMPLACEMENT() %>" style="margin-right:10px;width:100px"
 							type="text" value="<%= process.getVAL_ST_REMPLACEMENT() %>">

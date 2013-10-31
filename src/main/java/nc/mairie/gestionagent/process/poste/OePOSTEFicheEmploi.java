@@ -812,6 +812,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
+		// dans le cas ou l on vient de la fiche de poste, on retourne sur la fiche de poste
+		if(null != getProcessAppelant()
+				&& OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())){
+			setStatut(STATUT_PROCESS_APPELANT);
+		}
+		
 		return true;
 	}
 
@@ -1127,7 +1133,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			setFocus(null);
 			getTransaction().declarerErreur(messageInf);
 		}
-
+		
+		// dans le cas ou l on vient de la fiche de poste, on retourne sur la fiche de poste
+		if(null != getProcessAppelant()
+				&& OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())){
+			setStatut(STATUT_PROCESS_APPELANT);
+		}
+		
 		return true;
 	}
 
