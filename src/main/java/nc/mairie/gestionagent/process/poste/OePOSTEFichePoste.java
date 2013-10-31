@@ -472,6 +472,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_EF_DATE_DEBUT_APPLI_SERV(), getFichePosteCourante().getDateDebAppliService());
 			addZone(getNOM_EF_NFA(), getFichePosteCourante().getNFA());
 			addZone(getNOM_EF_OPI(), getFichePosteCourante().getOPI());
+			addZone(getNOM_EF_NUM_DELIBERATION(), getFichePosteCourante().getNumDeliberation());
 			if (getFichePosteCourante().getCodeGrade() != null) {
 				Grade g = Grade.chercherGrade(getTransaction(), getFichePosteCourante().getCodeGrade());
 				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
@@ -1177,6 +1178,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_NFA(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_NUMERO(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_OPI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_NUM_DELIBERATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_RESPONSABLE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_GRADE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_CODE_GRADE(), Const.CHAINE_VIDE);
@@ -1559,6 +1561,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		String dateDebutValidite = getVAL_EF_DATE_DEBUT_VALIDITE();
 		String dateDebutAppliServ = getVAL_EF_DATE_DEBUT_APPLI_SERV();
 		String opi = getVAL_EF_OPI().length() == 0 ? null : getVAL_EF_OPI();
+		String numDeliberation = getVAL_EF_NUM_DELIBERATION().length() == 0 ? null : getVAL_EF_NUM_DELIBERATION();
 		String _observation = getVAL_EF_OBSERVATION();
 		String nfa = getVAL_EF_NFA();
 		String missions = getVAL_EF_MISSIONS();
@@ -1653,6 +1656,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setIdStatutFP(statut.getIdStatutFP());
 		getFichePosteCourante().setIdBudget(budget.getIdBudget());
 		getFichePosteCourante().setOPI(opi);
+		getFichePosteCourante().setNumDeliberation(numDeliberation);
 		getFichePosteCourante().setNFA(nfa);
 		getFichePosteCourante().setIdEntiteGeo(lieu.getIdEntiteGeo());
 		getFichePosteCourante().setIdTitrePoste(idTitre);
@@ -6906,5 +6910,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setNatureCreditDao(NatureCreditDao natureCreditDao) {
 		this.natureCreditDao = natureCreditDao;
+	}
+
+
+	public String getNOM_EF_NUM_DELIBERATION() {
+		return "NOM_EF_NUM_DELIBERATION";
+	}
+	public String getVAL_EF_NUM_DELIBERATION() {
+		return getZone(getNOM_EF_NUM_DELIBERATION());
 	}
 }

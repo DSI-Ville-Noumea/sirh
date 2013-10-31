@@ -255,6 +255,9 @@
 								</SELECT>
 							<%} %>
 							<br/><br/>
+							<span class="sigp2" style="width:150px"> Numéro délibération : </span>
+							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NUM_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_DELIBERATION() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<br/><br/>
 							<span class="sigp2" style="width:150px;"> Date de début de validité : </span>
 							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 							<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>', 'dd/mm/y');" hspace="5">
