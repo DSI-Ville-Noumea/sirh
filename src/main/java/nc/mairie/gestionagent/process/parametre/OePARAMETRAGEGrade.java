@@ -57,7 +57,6 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	public String ACTION_CREATION_GRILLE = "Création d'une grille.";
 	public String ACTION_CREATION_GRADE = "Création d'un grade.";
 	public String ACTION_MODIFICATION_GRADE = "Modification d'un grade.";
-	public String ACTION_DESACTIVATION_GRILLE = "Désactivation d'une grille.";
 
 	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
 			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
@@ -768,19 +767,6 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			addZone(getNOM_EF_GRADE(), getVAL_EF_GRADE().trim());
 			addZone(getNOM_ST_ACTION_GRADE(), ACTION_CREATION_GRADE);
 			return true;
-		} else if (getVAL_ST_ACTION_GRILLE().equals(ACTION_DESACTIVATION_GRILLE)) {
-
-			for (Grade grade : getListeGrade()) {
-				grade.setCodeActif("I");
-				grade.modifierGrade(getTransaction());
-			}
-
-			getTransaction().commitTransaction();
-
-			initialiseListeGrille();
-			addZone(getNOM_ST_ACTION_GRADE(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_ACTION_GRILLE(), Const.CHAINE_VIDE);
-			setStatut(STATUT_MEME_PROCESS);
 		}
 
 		return true;
@@ -1438,41 +1424,6 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DESACTIVER_GRILLE Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public String getNOM_PB_DESACTIVER_GRILLE(int i) {
-		return "NOM_PB_DESACTIVER_GRILLE" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (06/10/11 10:46:13)
-	 * 
-	 */
-	public boolean performPB_DESACTIVER_GRILLE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-		// Récup du grille courant
-		Grade grilleGradeCourant = getListeGrille().get(indiceEltAConsulter);
-		setGrilleCourant(grilleGradeCourant);
-
-		// init de la grille courante
-		if (!initialiseGrilleCourante(request))
-			return false;
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_GRILLE(), ACTION_DESACTIVATION_GRILLE);
-		addZone(getNOM_ST_ACTION_GRADE(), Const.CHAINE_VIDE);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-
-	}
-
-	/**
 	 * Constructeur du process OePARAMETRAGEGrade. Date de création : (18/10/11
 	 * 16:01:01)
 	 * 
@@ -1572,13 +1523,6 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			for (int i = 0; i < getListeGrille().size(); i++) {
 				if (testerParametre(request, getNOM_PB_CONSULTER_GRILLE(i))) {
 					return performPB_CONSULTER_GRILLE(request, i);
-				}
-			}
-
-			// Si clic sur le bouton PB_DESACTIVER_GRILLE
-			for (int i = 0; i < getListeGrille().size(); i++) {
-				if (testerParametre(request, getNOM_PB_DESACTIVER_GRILLE(i))) {
-					return performPB_DESACTIVER_GRILLE(request, i);
 				}
 			}
 

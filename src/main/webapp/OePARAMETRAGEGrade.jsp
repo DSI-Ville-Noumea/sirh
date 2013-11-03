@@ -80,7 +80,6 @@
 										<%if(process.getCalculPaye().equals("")){ %>
 											<%if(grille.getCodeActif().equals("A")){ %>
 				    						<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_GRILLE(indiceGrille)%>">
-											<INPUT title="désactiver" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="15px" width="16px" name="<%=process.getNOM_PB_DESACTIVER_GRILLE(indiceGrille)%>">
 				    						<%} %>
 				    					<%}%>
 										</td>
@@ -126,10 +125,6 @@
 					
 					<legend class="sigp2Legend">Liste des grades</legend>
 					
-					<% if (process.ACTION_DESACTIVATION_GRILLE.equals(process.getVAL_ST_ACTION_GRILLE())){ %>
-						<FONT color='red'>L'ensemble des grades suivants va être désactivé. Veuillez valider votre choix.</FONT>
-						<BR/><BR/>
-					<% } %>
 					<%if(process.getListeGrade().size()!=0){ %>
 					<br/>
 				    <span style="position:relative;width:9px;"></span>
@@ -149,7 +144,6 @@
 							%>
 									<tr id="<%=indiceGrade%>" onmouseover="SelectLigne(<%=indiceGrade%>,<%=process.getListeGrade().size()%>)">
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
-										<%if(!process.ACTION_DESACTIVATION_GRILLE.equals(process.getVAL_ST_ACTION_GRILLE())){ %>
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER_GRADE(indiceGrade)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_GRADE(indiceGrade)%>">
 											<%if(grade.getCodeActif().equals("A") && process.getCalculPaye().equals("")){ %>
@@ -157,10 +151,7 @@
 						    					<%if(indiceGrade==process.getListeGrade().size()-1){ %>
 												<INPUT title="créer grade suivant" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GRADE_SUIVANT(indiceGrade)%>">
 												<%} %>	
-											<%} %>	
-										<%}else{%>
-											&nbsp;
-										<%} %>							
+											<%} %>							
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: left;"><%=process.getVAL_ST_CODE_GRADE(indiceGrade)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:380px;text-align: left;"><%=process.getVAL_ST_LIB_GRADE(indiceGrade)%></td>
@@ -258,12 +249,7 @@
 						<div style="text-align: center;">
 						    <INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 						</div>
-						<% }  %>						
-					<% }  else if(process.ACTION_DESACTIVATION_GRILLE.equals(process.getVAL_ST_ACTION_GRILLE())){ %>
-						<div style="text-align: center;">
-							<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRILLE()%>">
-							<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-						</div>
+						<% }  %>
 					<%} %>						
 				</FIELDSET>
 				</FORM>
