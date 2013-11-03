@@ -12,6 +12,7 @@ import nc.mairie.metier.carriere.Categorie;
 import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.FiliereGrade;
+import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
@@ -272,8 +273,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			String padding[] = { "G", "C", "C", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
-				String ligne[] = { gradeGenerique.getCdgeng(), gradeGenerique.getCodCadre(), gradeGenerique.getCodeInactif(),
-						gradeGenerique.getLibGradeGenerique() };
+				String ligne[] = { gradeGenerique.getCdgeng(), gradeGenerique.getCodCadre(),
+						gradeGenerique.getCodeInactif(), gradeGenerique.getLibGradeGenerique() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_GRADE_GENERIQUE(aFormat.getListeFormatee());
@@ -689,7 +690,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				baremePrev = baremeNext;
 				baremeNext = getListeBareme().get(i);
 
-				if (Services.estNumerique(baremeNext.getIban()) && Integer.parseInt(baremeNext.getIban()) > Integer.parseInt(getVAL_EF_IBAN_BAREME())) {
+				if (Services.estNumerique(baremeNext.getIban())
+						&& Integer.parseInt(baremeNext.getIban()) > Integer.parseInt(getVAL_EF_IBAN_BAREME())) {
 					if (baremePrev.getIban().equals(getVAL_EF_IBAN_BAREME())) {
 						if (i - 2 >= 0)
 							baremePrev = getListeBareme().get(i - 2);
@@ -914,7 +916,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	private boolean performControlerRegleGestionEchelon(HttpServletRequest request) throws Exception {
 
 		// verif conrainte unicité échelon
-		if (getVAL_ST_ACTION_ECHELON().equals(ACTION_CREATION) || getVAL_ST_ACTION_ECHELON().equals(ACTION_MODIFICATION)) {
+		if (getVAL_ST_ACTION_ECHELON().equals(ACTION_CREATION)
+				|| getVAL_ST_ACTION_ECHELON().equals(ACTION_MODIFICATION)) {
 
 			for (Echelon echelon : getListeEchelon()) {
 
@@ -958,11 +961,12 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		if (!performControlerRegleGestionGradeGenerique(request))
 			return false;
 
-		int numCategorie = (Services.estNumerique(getZone(getNOM_LB_CATEGORIE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CATEGORIE_SELECT()))
-				: -1);
+		int numCategorie = (Services.estNumerique(getZone(getNOM_LB_CATEGORIE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_CATEGORIE_SELECT())) : -1);
 		Categorie categorie = numCategorie > 0 ? (Categorie) getListeCategorie().get(numCategorie - 1) : null;
 
-		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_FILIERE_SELECT())) : -1);
+		int numFiliere = (Services.estNumerique(getZone(getNOM_LB_FILIERE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_FILIERE_SELECT())) : -1);
 		FiliereGrade filiere = numFiliere > 0 ? (FiliereGrade) getListeFiliere().get(numFiliere - 1) : null;
 
 		int numCadreEmp = (Services.estNumerique(getZone(getNOM_LB_CADRE_EMPLOI_GRADE_SELECT())) ? Integer
@@ -971,11 +975,13 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 		int numDelibTerr = (Services.estNumerique(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_DELIB_TERR_GRADE_SELECT())) : -1);
-		Deliberation delibTerr = numDelibTerr > 0 ? (Deliberation) getListeDeliberationTerr().get(numDelibTerr - 1) : null;
+		Deliberation delibTerr = numDelibTerr > 0 ? (Deliberation) getListeDeliberationTerr().get(numDelibTerr - 1)
+				: null;
 
 		int numDelibComm = (Services.estNumerique(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT())) : -1);
-		Deliberation delibComm = numDelibComm > 0 ? (Deliberation) getListeDeliberationComm().get(numDelibComm - 1) : null;
+		Deliberation delibComm = numDelibComm > 0 ? (Deliberation) getListeDeliberationComm().get(numDelibComm - 1)
+				: null;
 
 		if (getVAL_ST_ACTION_GRADE_GENERIQUE() != null && getVAL_ST_ACTION_GRADE_GENERIQUE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_CREATION)) {
@@ -983,29 +989,46 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
 				setGradeGeneriqueCourant(new GradeGenerique());
 				getGradeGeneriqueCourant().setCdgeng(getVAL_EF_CODE_GRADE_GENERIQUE());
-				getGradeGeneriqueCourant().setCodCadre(categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setCodCadre(
+						categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
-				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
-				getGradeGeneriqueCourant().setIdDeliberationCommunale(delibComm == null ? null : delibComm.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
+						delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationCommunale(
+						delibComm == null ? null : delibComm.getIdDeliberation().toString());
 				getGradeGeneriqueCourant().creerGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().add(getGradeGeneriqueCourant());
 			} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
-				getGradeGeneriqueCourant().setCodCadre(categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
+				getGradeGeneriqueCourant().setCodCadre(
+						categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
 				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
-				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
-				getGradeGeneriqueCourant().setIdDeliberationCommunale(delibComm == null ? null : delibComm.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
+						delibTerr == null ? null : delibTerr.getIdDeliberation().toString());
+				getGradeGeneriqueCourant().setIdDeliberationCommunale(
+						delibComm == null ? null : delibComm.getIdDeliberation().toString());
+				// si le gradeGenerique est inactif/actif alors on
+				// désactive/active tous les sous grades liés.
+				if (!mettreAjourActiveGrille(getGradeGeneriqueCourant(), inactif)) {
+					// "ERR145",
+					// "Impossible d'activer/désactiver des grilles associées au grade @. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR145", getGradeGeneriqueCourant().getCdgeng()));
+
+					return false;
+
+				}
 				getGradeGeneriqueCourant().modifierGradeGenerique(getTransaction());
 				if (!getTransaction().isErreur())
 					getListeGradeGenerique().remove(getGradeGeneriqueCourant());
@@ -1020,6 +1043,22 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			addZone(getNOM_ST_ACTION_GRADE_GENERIQUE(), Const.CHAINE_VIDE);
 		}
 
+		return true;
+	}
+
+	private boolean mettreAjourActiveGrille(GradeGenerique gradeGenerique, Boolean inactif) throws Exception {
+		// on cherche tous les grades associés
+		ArrayList<Grade> listeGrade = Grade.listerGradeAvecGradeGeneriqueEtGrade(getTransaction(),
+				gradeGenerique.getCdgeng(), gradeGenerique.getLibGradeGenerique());
+		// si la liste est vide alors message d'erreur
+		if (listeGrade.size() == 0 || getTransaction().isErreur()) {
+			return false;
+		}
+		for (Grade gr : listeGrade) {
+			gr.setCodeActif(inactif ? "I" : "A");
+			gr.modifierGrade(getTransaction());
+
+		}
 		return true;
 	}
 
@@ -1074,7 +1113,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			for (GradeGenerique gradeGenerique : getListeGradeGenerique()) {
 
 				if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 					return false;
 				}
 
@@ -1088,7 +1128,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 				if (!gradeGenerique.getCdgeng().equals(getVAL_EF_CODE_GRADE_GENERIQUE().toUpperCase())) {
 					if (gradeGenerique.getLibGradeGenerique().equals(getVAL_EF_LIBELLE_GRADE_GENERIQUE().toUpperCase())) {
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR974", "un grade générique", "ce libellé"));
 						return false;
 					}
 				}
@@ -1689,7 +1730,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_BAREME(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_BAREME_SELECT()) ? Integer.parseInt(getVAL_LB_BAREME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_BAREME_SELECT()) ? Integer.parseInt(getVAL_LB_BAREME_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeBareme().size()) {
 			Bareme bareme = getListeBareme().get(indice);
@@ -1722,7 +1764,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_GRADE_GENERIQUE(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_GRADE_GENERIQUE_SELECT()) ? Integer.parseInt(getVAL_LB_GRADE_GENERIQUE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_GRADE_GENERIQUE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_GRADE_GENERIQUE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeGradeGenerique().size()) {
 			GradeGenerique grade = getListeGradeGenerique().get(indice);
@@ -1750,7 +1793,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 			// delib communale
 			if (grade.getIdDeliberationCommunale() != null) {
-				Deliberation delibComm = (Deliberation) getHashDeliberationComm().get(grade.getIdDeliberationCommunale());
+				Deliberation delibComm = (Deliberation) getHashDeliberationComm().get(
+						grade.getIdDeliberationCommunale());
 				int ligneDelibComm = getListeDeliberationComm().indexOf(delibComm);
 				addZone(getNOM_LB_DELIB_COMM_GRADE_SELECT(), String.valueOf(ligneDelibComm + 1));
 			} else {
@@ -1759,7 +1803,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 			// delib territoriale
 			if (grade.getIdDeliberationTerritoriale() != null) {
-				Deliberation delibTerr = (Deliberation) getHashDeliberationTerr().get(grade.getIdDeliberationTerritoriale());
+				Deliberation delibTerr = (Deliberation) getHashDeliberationTerr().get(
+						grade.getIdDeliberationTerritoriale());
 				int ligneDelibTerr = getListeDeliberationTerr().indexOf(delibTerr);
 				addZone(getNOM_LB_DELIB_TERR_GRADE_SELECT(), String.valueOf(ligneDelibTerr + 1));
 			} else {
@@ -2047,7 +2092,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_CLASSE(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_CLASSE_SELECT()) ? Integer.parseInt(getVAL_LB_CLASSE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CLASSE_SELECT()) ? Integer.parseInt(getVAL_LB_CLASSE_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeClasse().size()) {
 			Classe classe = getListeClasse().get(indice);
@@ -2079,7 +2125,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_ECHELON(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_ECHELON_SELECT()) ? Integer.parseInt(getVAL_LB_ECHELON_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_ECHELON_SELECT()) ? Integer.parseInt(getVAL_LB_ECHELON_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeEchelon().size()) {
 			Echelon echelon = getListeEchelon().get(indice);
@@ -2347,7 +2394,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCadreEmploi().size()) {
 			CadreEmploi c = getListeCadreEmploi().get(indice);
@@ -2452,7 +2500,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
 				for (CadreEmploi cadre : getListeCadreEmploi()) {
 					if (cadre.getLibCadreEmploi().equals(getVAL_EF_CADRE_EMPLOI().toUpperCase())) {
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un cadre emploi", "ce libellé"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR974", "un cadre emploi", "ce libellé"));
 						return false;
 					}
 				}

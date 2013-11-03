@@ -74,7 +74,7 @@
 									Grade grille = (Grade) process.getListeGrille().get(i);
 							%>
 									<tr id="<%=indiceGrille%>" onmouseover="SelectLigneGrille(<%=indiceGrille%>,<%=process.getListeGrille().size()%>)">
-										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
+										<td class="sigp2NewTab-liste" style="position:relative;width:50px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER_GRILLE(indiceGrille)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_GRILLE(indiceGrille)%>">
 										<%if(process.getCalculPaye().equals("")){ %>
