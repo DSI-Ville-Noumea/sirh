@@ -71,7 +71,7 @@
                             {"bSortable": false},
                             {"bSortable": false}
                         ],
-                        "sDom": '<"H"fl>t<"F"rip>',
+                        "sDom": '<"H"flip>t<"F"rip>',
                         "oLanguage": {
                             "oPaginate": {
                                 "sFirst": "",
