@@ -95,14 +95,17 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private FichePoste fichePosteCourant;
 	private FichePoste fichePosteSecondaireCourant;
 	private Affectation affectationCourant;
-	private TypeCompetence typeCompetenceCourant;
+	private TypeCompetence typeCompetenceCourant; 
+	private FichePoste remplacement;
+	private AgentNW agtRemplacement;
+	private TitrePoste titrePosteRemplacement;
 
 	private String titrePoste;
 	private Service service;
 	private Service direction;
 	private Service section;
 	private String localisation;
-	private String responsable;
+	private FichePoste responsable;
 	private String cadreEmploi;
 	private String gradeFP;
 	private String gradeAgt;
@@ -216,11 +219,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 			setLocalisation(getFichePosteCourant().getIdEntiteGeo() == null ? Const.CHAINE_VIDE : EntiteGeo.chercherEntiteGeo(getTransaction(),
 					getFichePosteCourant().getIdEntiteGeo()).getLibEntiteGeo());
-			if (getFichePosteCourant().getIdResponsable() != null) {
-				FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourant().getIdResponsable());
-				setResponsable(fpResponsable.getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste.chercherTitrePoste(getTransaction(),
-						fpResponsable.getIdTitrePoste()).getLibTitrePoste());
-			}
+			
 			String gradeAffichage = Const.CHAINE_VIDE;
 			if (getFichePosteCourant().getCodeGrade() != null) {
 				Grade g = Grade.chercherGrade(getTransaction(), getFichePosteCourant().getCodeGrade());
@@ -283,6 +282,25 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			initialiserCompetence();
 			// Affiche les spécificités de la fiche de poste
 			initialiserSpecificites();
+			
+			// affichage du responsable hierarchique et le remplace
+			if (getFichePosteCourant() != null
+					&& getFichePosteCourant().getIdResponsable() != null) {
+				setResponsable(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourant()
+						.getIdResponsable()));
+			}else{
+				setResponsable(null);
+			}
+			afficheResponsable();
+			
+			if (getFichePosteCourant() != null
+					&& getFichePosteCourant().getIdRemplacement() != null) {
+				setRemplacement(FichePoste.chercherFichePoste(getTransaction(), getFichePosteCourant()
+						.getIdRemplacement()));
+			}else{
+				setRemplacement(null);
+			}
+			afficheRemplacement();
 		}
 	}
 
@@ -505,7 +523,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		addZone(getNOM_ST_LOCALISATION(), getLocalisation());
 		addZone(getNOM_ST_ETUDE(), getListeDiplomeGenFP());
-		addZone(getNOM_ST_RESPONSABLE(), getResponsable());
 		addZone(getNOM_ST_GRADE(), getGradeFP());
 		addZone(getNOM_ST_CADRE_EMPLOI(), getCadreEmploi());
 		addZone(getNOM_ST_MISSION(), getFichePosteCourant().getMissions());
@@ -1306,7 +1323,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		this.localisation = localisation;
 	}
 
-	private String getResponsable() {
+	private FichePoste getResponsable() {
 		return responsable;
 	}
 
@@ -1316,7 +1333,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * @param responsable
 	 *            responsable à définir
 	 */
-	private void setResponsable(String responsable) {
+	private void setResponsable(FichePoste responsable) {
 		this.responsable = responsable;
 	}
 
@@ -2241,21 +2258,189 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setPrimePointageFPDao(PrimePointageFPDao primePointageFPDao) {
 		this.primePointageFPDao = primePointageFPDao;
+	} 
+	
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_REMPLACEMENT Date de
+	 * création : (11/10/11 10:23:53)
+	 */
+	public String getNOM_ST_REMPLACEMENT() {
+		return "NOM_ST_REMPLACEMENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REMPLACEMENT
+	 * Date de création : (11/10/11 10:23:53)
+	 */
+	public String getVAL_ST_REMPLACEMENT() {
+		return getZone(getNOM_ST_REMPLACEMENT());
 	}
 	
-	public AgentNW getAgtResponsable() {
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_INFO_REMP Date de
+	 * création : (29/11/11 16:42:44)
+	 */
+	public String getNOM_ST_INFO_REMP() {
+		return "NOM_ST_INFO_REMP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_REMP Date
+	 * de création : (29/11/11 16:42:44)
+	 */
+	public String getVAL_ST_INFO_REMP() {
+		return getZone(getNOM_ST_INFO_REMP());
+	}
+	
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_INFO_RESP Date de
+	 * création : (29/11/11 16:42:44)
+	 */
+	public String getNOM_ST_INFO_RESP() {
+		return "NOM_ST_INFO_RESP";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_INFO_RESP Date
+	 * de création : (29/11/11 16:42:44)
+	 */
+	public String getVAL_ST_INFO_RESP() {
+		return getZone(getNOM_ST_INFO_RESP());
+	}
+	
+	/**
+	 * Affiche la fiche de poste "Responsable"
+	 */
+	private void afficheResponsable() {
+		if (getResponsable() != null) {
+			addZone(getNOM_ST_RESPONSABLE(), getTitrePosteResponsable().getLibTitrePoste() + " (" + getResponsable().getNumFP() + ")");
+			if (getAgtResponsable() != null) {
+				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomAgent() + " "
+						+ getAgtResponsable().getPrenomAgent() + " (" + getAgtResponsable().getNoMatricule() + ")");
+			} else {
+				addZone(getNOM_ST_INFO_RESP(), "Cette fiche de poste n'est pas affectée");
+			}
+		} else {
+			addZone(getNOM_ST_RESPONSABLE(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_INFO_RESP(), Const.CHAINE_VIDE);
+		}
+	}
+	
+	/**
+	 * Affiche la fiche de poste "Remplacement"
+	 */
+	private void afficheRemplacement() {
+		if (getRemplacement() != null) {
+			addZone(getNOM_ST_REMPLACEMENT(), getTitrePosteRemplacement().getLibTitrePoste() + " (" + getRemplacement().getNumFP() + ")");
+			if (getAgtRemplacement() != null) {
+				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomAgent() + " "
+						+ getAgtRemplacement().getPrenomAgent() + " (" + getAgtRemplacement().getNoMatricule() + ")");
+			} else {
+				addZone(getNOM_ST_INFO_REMP(), "Cette fiche de poste n'est pas affectée");
+			}
+		} else {
+			addZone(getNOM_ST_REMPLACEMENT(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
+		}
+	}
+	
+	/**
+	 * Getter de la FichePoste Remplacement.
+	 * 
+	 * @return FichePoste
+	 */
+	public FichePoste getRemplacement() {
+		return remplacement;
+	}
+
+	/**
+	 * Setter de la FichePoste Remplacement.
+	 * 
+	 * @param remp
+	 */
+	public void setRemplacement(FichePoste remp) throws Exception {
+		this.remplacement = remp;
+		if (remp != null) {
+			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement()
+					.getIdFichePoste()));
+			setTitrePosteRemplacement(TitrePoste.chercherTitrePoste(getTransaction(), getRemplacement()
+					.getIdTitrePoste()));
+		} else {
+			setAgtRemplacement(null);
+			setTitrePosteRemplacement(null);
+		}
+	}
+	
+	/**
+	 * Getter de l'agent responsable.
+	 * 
+	 * @return agtResponsable
+	 */
+	private AgentNW getAgtResponsable() {
 		return agtResponsable;
 	}
-	public void setAgtResponsable(AgentNW agtResponsable) {
+
+	/**
+	 * Setter de l'agent responsable.
+	 * 
+	 * @param agtResponsable
+	 */
+	private void setAgtResponsable(AgentNW agtResponsable) {
 		this.agtResponsable = agtResponsable;
 	}
 
-	public TitrePoste getTitrePosteResponsable() {
+	/**
+	 * Getter de l'agent remplacement.
+	 * 
+	 * @return agtRemplacement
+	 */
+	private AgentNW getAgtRemplacement() {
+		return agtRemplacement;
+	}
+
+	/**
+	 * Setter de l'agent remplacement.
+	 * 
+	 * @param agtRemplacement
+	 */
+	private void setAgtRemplacement(AgentNW agtRemplacement) {
+		this.agtRemplacement = agtRemplacement;
+	}
+
+	/**
+	 * Getter du TitrePoste Remplacement.
+	 * 
+	 * @return titrePosteRemplacement
+	 */
+	private TitrePoste getTitrePosteRemplacement() {
+		return titrePosteRemplacement;
+	}
+
+	/**
+	 * Setter du TitrePoste Remplacement.
+	 * 
+	 * @param titrePosteRemplacement
+	 */
+	private void setTitrePosteRemplacement(TitrePoste titrePosteRemplacement) {
+		this.titrePosteRemplacement = titrePosteRemplacement;
+	}
+
+	/**
+	 * Getter du TitrePoste Responsable.
+	 * 
+	 * @return titrePosteResponsable
+	 */
+	private TitrePoste getTitrePosteResponsable() {
 		return titrePosteResponsable;
 	}
-	public void setTitrePosteResponsable(TitrePoste titrePosteResponsable) {
+
+	/**
+	 * Setter du TitrePoste Responsable.
+	 * 
+	 * @param titrePosteResponsable
+	 */
+	private void setTitrePosteResponsable(TitrePoste titrePosteResponsable) {
 		this.titrePosteResponsable = titrePosteResponsable;
 	}
-	
 
 }
