@@ -562,7 +562,7 @@ public class OePTGSaisie extends BasicProcess {
 	private String getType0TabCell(String id, boolean check, String motif, String comment, String status, String title,
 			int idptg, int idrefetat) {
 		StringBuilder ret = new StringBuilder();
-		ret.append("<td><table cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
+		ret.append("<td><table style='vertical-align: top;'  cellpadding='0' cellspacing='0' border='0' class='display' id='Type0TabCell" + id + "'>");
 		ret.append(getHead(id, status, title));
 		ret.append("<tr bgcolor='#BFEFFF'><td><input type='checkbox' name='NOM_chk_" + id + "'"
 				+ (check ? "checked" : "") + "> accordée</td></tr>");
@@ -657,10 +657,10 @@ public class OePTGSaisie extends BasicProcess {
 				+ id + "' value='" + motif + "' title='Zone de saisie du motif'></td></tr>");
 		ret.append("<tr bgcolor='#BFEFFF'><td><textarea  cols='15' rows='3' name='NOM_comm_" + id
 				+ "' title='Zone de saisie du commentaire'>" + comment + "</textarea></td></tr>");
-		ret.append("<textarea  cols='10' rows='1'  style='visibility: hidden' name='NOM_idptg_" + id
-				+ "' title='Zone cachee idptg'>" + idptg + "</textarea>");
-		ret.append("<textarea  cols='10' rows='1' style='visibility: hidden' name='NOM_idrefetat_" + id
-				+ "' title='Zone cachee idrefetat'>" + idrefetat + "</textarea>");
+		ret.append("<tr style='display: none;'><td><textarea  cols='10' rows='1'  style='visibility: hidden' name='NOM_idptg_" + id
+				+ "' title='Zone cachee idptg'>" + idptg + "</textarea></td></tr>");
+		ret.append("<tr style='display: none;'><td><textarea  cols='10' rows='1' style='visibility: hidden' name='NOM_idrefetat_" + id
+				+ "' title='Zone cachee idrefetat'>" + idrefetat + "</textarea></td></tr>");
 
 		return ret.toString();
 	}
