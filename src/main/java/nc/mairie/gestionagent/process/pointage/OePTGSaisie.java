@@ -542,7 +542,7 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	private String getLineTitle(String title) {
-		return "<tr bgcolor='#009ACD'><TD colspan=8 align=center><b><H4>" + title + "<H3></b></TD></tr>";
+		return "<tr bgcolor='#009ACD'><TD colspan=8 align=center><b><H4>" + title + "</H4></b></TD></tr>";
 	}
 
 	private String getHead(String id, String status, String title) {
