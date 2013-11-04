@@ -196,7 +196,7 @@
                     <%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT())%>
                 </SELECT>
                   <span class="sigp2" style="width:75px;">Service :</span>
-                <INPUT tabindex="" id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE()%>" size="8" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE()%>">
+                <INPUT tabindex="" id="service" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SERVICE()%>" size="8" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE()%>">
                 <img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
                 <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
                 <INPUT type="submit" style="visibility : hidden;" width="1px"  name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	

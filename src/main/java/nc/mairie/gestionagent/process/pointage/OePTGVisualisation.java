@@ -768,11 +768,30 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 	}
 
-	private boolean performControlerFiltres() {
+	private boolean performControlerFiltres() throws Exception {
 		String dateDeb = getVAL_ST_DATE_MIN();
 		if (dateDeb.equals(Const.CHAINE_VIDE)) {
+			// "ERR500",
+			// "Le champ date de début est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
 			return false;
 		}
+
+		// on controle que le service saisie est bien un service
+		String sigleService = getVAL_EF_SERVICE().toUpperCase();
+		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+			// on cherche le code service associé
+			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
+			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
+				getTransaction().traiterErreur();
+				// ERR502", "Le sigle service saisie ne permet pas de trouver le
+				// service associé."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
+				return false;
+
+			}
+		}
+
 		return true;
 	}
 
@@ -785,9 +804,6 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public boolean performPB_FILTRER() throws Exception {
 		if (!performControlerFiltres()) {
-			// "ERR500",
-			// "Le champ date de début est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR500"));
 			return false;
 		}
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -843,25 +859,30 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		}
 
-		String codeService = getVAL_ST_CODE_SERVICE();
-		// Récupération des agents
-		// on recupere les sous-service du service selectionne
-		ArrayList<String> listeSousService = null;
-		if (!codeService.equals(Const.CHAINE_VIDE)) {
-			Service serv = Service.chercherService(getTransaction(), codeService);
-			listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
-		}
+		String sigleService = getVAL_EF_SERVICE().toUpperCase();
+		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+			// on cherche le code service associé
+			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
+			String codeService = siserv.getCodService();
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+			ArrayList<String> listeSousService = null;
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
+				Service serv = Service.chercherService(getTransaction(), codeService);
+				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			}
 
-		if (!codeService.equals(Const.CHAINE_VIDE)) {
-			ArrayList<String> codesServices = listeSousService;
-			if (!codesServices.contains(codeService))
-				codesServices.add(codeService);
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServicesETMatricules(getTransaction(), codesServices,
-					idAgentMin, idAgentMax);
-			idAgents.clear();
-			for (AgentNW ag : listAgent) {
-				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent()))) {
-					idAgents.add(ag.getIdAgent());
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
+				ArrayList<String> codesServices = listeSousService;
+				if (!codesServices.contains(codeService))
+					codesServices.add(codeService);
+				ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServicesETMatricules(getTransaction(),
+						codesServices, idAgentMin, idAgentMax);
+				idAgents.clear();
+				for (AgentNW ag : listAgent) {
+					if (!idAgents.contains(Integer.valueOf(ag.getIdAgent()))) {
+						idAgents.add(ag.getIdAgent());
+					}
 				}
 			}
 		}
