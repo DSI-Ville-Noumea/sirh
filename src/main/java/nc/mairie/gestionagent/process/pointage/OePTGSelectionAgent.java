@@ -23,7 +23,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<AgentNW> listeAgents;
+	private ArrayList<AgentNW> listeAgents = new ArrayList<AgentNW>();
 	private ArrayList<AgentNW> listeAgentsDepart;
 	private ArrayList<AgentNW> listAff = new ArrayList<AgentNW>();
 	private String typePopulation;
@@ -365,7 +365,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 			}
 		}
 		aListe.removeAll(listeAExclure);
-		setListeAgents(aListe);
+		getListeAgents().addAll(aListe);
 		afficheListeAgents();
 
 		return true;

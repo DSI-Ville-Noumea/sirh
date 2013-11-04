@@ -162,7 +162,7 @@ function SelectLigne(id,tailleTableau)
 				    $('#tabActiSelect').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false,"bSortable":false},null],
-						"sScrollY": "475px",
+						"sScrollY": "200px",
 						"bPaginate": false,
 						"sDom": '<"H"fl>t<"F"i>'						
 				    });

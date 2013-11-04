@@ -43,7 +43,6 @@ public class OePTGVentilationFonct extends BasicProcess {
      *
      */
 	private static final long serialVersionUID = 1L;
-	public static final int STATUT_RECHERCHER_AGENT = 1;
 	public static final int STATUT_AGENT = 2;
 	public static final int STATUT_RECHERCHER_AGENT_MIN = 3;
 	public static final int STATUT_RECHERCHER_AGENT_MAX = 4;
