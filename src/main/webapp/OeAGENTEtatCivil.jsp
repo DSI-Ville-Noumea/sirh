@@ -310,7 +310,7 @@ document.formu.elements[nom].focus();
 		
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
-			<legend class="sigp2Legend">Couverture</legend>
+			<legend class="sigp2Legend">Couverture sociale</legend>
 			<TABLE border="0" cellpadding="0" cellspacing="0">
 				<TBODY>
 					<TR>
