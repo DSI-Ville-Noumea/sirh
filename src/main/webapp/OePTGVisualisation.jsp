@@ -22,7 +22,7 @@
 
             <!-- <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>  -->
             <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
-            <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
+            <SCRIPT type="text/javascript" src="js/GestionCalendrierSemaine.js"></SCRIPT>
 
             <SCRIPT type="text/javascript">
 
