@@ -113,7 +113,8 @@ table.display {
 	margin: 0 auto;
 	clear: both;
 	width: 100%;
-
+	table-layout: fixed;
+	word-wrap: break-word;
 	/* Note Firefox 3.5 and before have a bug with border-collapse
 	 * ( https://bugzilla.mozilla.org/show%5Fbug.cgi?id=155955 ) 
 	 * border-spacing: 0; is one possible option. Conditional-css.com is
@@ -303,7 +304,7 @@ td.group {
 
 td.details {
 	background-color: #d1cfd0;
-	border: 2px solid #A19B9E;
+	border: 1px solid #A19B9E;
 }
 
 .example_alt_pagination div.dataTables_info {

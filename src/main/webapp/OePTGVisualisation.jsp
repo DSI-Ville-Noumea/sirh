@@ -11,7 +11,7 @@
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
         <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
-        <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+        <LINK href="theme/dataTablesVisuPtg.css" rel="stylesheet" type="text/css">
         <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVisualisation" id="process" scope="session"></jsp:useBean>
             <TITLE>Visualisation des pointages</TITLE>		
@@ -54,22 +54,23 @@
                 }
 
                 $(document).ready(function() {
-                    $('#VisualisationPointageList').dataTable({
+                    $('#VisualisationPointageList').dataTable({                        
+                        "bAutoWidth":false,
                         "aoColumns": [
-                            {"bSortable": false},
-                            {"bSortable": false},
-                            {"bSortable": true},
-                            {"bSortable": true},
-                            {"bSortable": true},
-                            {"bSortable": true},
-                            {"bSortable": true},
-                            {"bSortable": true},
-                            {"bSortable": false},
-                            {"bSortable": false},
-                            {"bSortable": false},
-                            {"bSortable": false},
-                            {"bSortable": false},
-                            {"bSortable": false}
+                            {"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                            {"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                            {"bSortable": true,"sWidth": "120px"},
+                            {"bSortable": true,"sWidth": "120px"},
+                            {"bSortable": true,"sWidth": "80px","sClass" : "center"},
+                            {"bSortable": false,"sWidth": "60px","sClass" : "center"},
+                            {"bSortable": false,"sWidth": "60px","sClass" : "center"},
+                            {"bSortable": false,"sWidth": "70px","sClass" : "center"},
+                            {"bSortable": false,"sWidth": "120px"},
+                            {"bSortable": true,"sWidth": "100px","sClass" : "center"},
+                            {"bSortable": true,"sWidth": "80px","sClass" : "center"},
+                            {"bSortable": false,"sClass" : "center"},
+                            {"bSortable": false,"sClass" : "center"},
+                            {"bSortable": false,"sClass" : "center"}
                         ],
                         "sDom": '<"H"flip>t<"F"rip>',
                         "oLanguage": {
@@ -120,15 +121,14 @@
                  */
                 function buildDetailTable(data) {
 
-                    var detailContainer = $(document.createElement("div"));
-
                     // Build the new table that will handle the detail (append the thead and all tr, th)
                     var detailTable = $(document.createElement("table"))
                             .addClass("detailContent")
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .css({width: "100%"})
+                            .attr("style", "margin-left: 288px;")
+                            .attr("width", "570px")
                             .append($(document.createElement("thead"))
                             );
 
@@ -142,22 +142,20 @@
                         var donnees = pointages[i].split(",");
                         tbody.append($(document.createElement("tr"))
                                 .addClass(i % 2 == 0 ? "even" : "odd")
-                                .append($(document.createElement("td")).html(donnees[0]))
-                                .append($(document.createElement("td")).html(donnees[1]))
-                                .append($(document.createElement("td")).html(donnees[2]))
-                                .append($(document.createElement("td")).html(donnees[3]))
-                                .append($(document.createElement("td")).html(donnees[4]))
-                                .append($(document.createElement("td")).html(donnees[5]))
-                                .append($(document.createElement("td")).html(donnees[6]))
+                                .append($(document.createElement("td")).html(donnees[0]).attr("style", "width: 58px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 40px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 43px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 52px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 100px"))
+                                .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 80px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 58px;text-align: center;"))
                                 );
                     }
-
                     // Append the detail table into the detail container
-                    detailContainer.append(detailTable);
+                    var detailContainer = detailTable;
                     // Finally return the table
                     return detailContainer;
                 }
-
 
 
             </SCRIPT>		
@@ -167,13 +165,8 @@
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
-
-
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:830px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
-             
-             
-            
                 <span class="sigp2Mandatory" style="width:75px">Date début : </span>
                 <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
                 <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">

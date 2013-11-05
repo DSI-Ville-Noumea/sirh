@@ -1234,8 +1234,8 @@ public class OePTGVisualisation extends BasicProcess {
 		int index = 0;
 		for (ConsultPointageDto p : data) {
 			ret[index][0] = formatDate(p.getDate());
-			ret[index][1] = formatHeure(p.getDebut());
-			ret[index][2] = formatHeure(p.getFin());
+			ret[index][1] = formatHeure(p.getDebut()).equals("00:00") ? "&nbsp;" : formatHeure(p.getDebut());
+			ret[index][2] = formatHeure(p.getFin()).equals("00:00") ? "&nbsp;" : formatHeure(p.getFin());
 			ret[index][3] = "" + p.getQuantite();
 			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
 			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
