@@ -130,15 +130,7 @@
                             .attr("cellspacing", "0")
                             .css({width: "100%"})
                             .append($(document.createElement("thead"))
-                            .append($(document.createElement("tr"))
-                            .append($(document.createElement("th")).html("Date"))
-                            .append($(document.createElement("th")).html("D&eacute;but"))
-                            .append($(document.createElement("th")).html("Fin"))
-                            .append($(document.createElement("th")).html("Quantit&eacute;"))
-                            .append($(document.createElement("th")).html("Motif<br />Commentaire"))
-                            .append($(document.createElement("th")).html("Etat"))
-                            .append($(document.createElement("th")).html("Date de saisie"))
-                            ));
+                            );
 
                     // Append the tbody element
                     var tbody = $(document.createElement("tbody")).appendTo(detailTable);
