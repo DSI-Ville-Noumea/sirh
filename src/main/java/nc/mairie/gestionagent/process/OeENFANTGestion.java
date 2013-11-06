@@ -173,6 +173,7 @@ public class OeENFANTGestion extends BasicProcess {
 				LienEnfantNWAgentNW aLien = (LienEnfantNWAgentNW) liens.get(i);
 				if (aLien.getIdAgent().equals(getAgentCourant().getIdAgent())) {
 					setLienEnfantAgentCourant(aLien);
+					setLienEnfantAutreParent(null);
 				} else {
 					setLienEnfantAutreParent(aLien);
 					AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent());

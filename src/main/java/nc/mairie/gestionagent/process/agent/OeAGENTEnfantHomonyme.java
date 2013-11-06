@@ -72,7 +72,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 			for (int i = 0; i < getListeEnfantHomonyme().size(); i++) {
 				EnfantNW enfant = (EnfantNW) getListeEnfantHomonyme().get(i);
 				ArrayList<AgentNW> parents = AgentNW.listerAgentNWAvecEnfant(getTransaction(), enfant);
-				if (parents.size() < 2) {
+				if (parents.size() < 2 && parents.size()>0) {
 					String colonnes[] = { parents.get(0).getNoMatricule(), parents.get(0).getNomAgent() + " " + parents.get(0).getPrenomAgent(), enfant.getCommentaire() };
 					aListeEnfantFormatee.ajouteLigne(colonnes);
 				}
