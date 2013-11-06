@@ -16,6 +16,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -344,7 +345,10 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 			addZone(getNOM_ST_AGENT(i),
 					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
+			addZone(getNOM_ST_DIRECTION(i),
+					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
+							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
+							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_DATE_CAP(i), av.getDateCap());
@@ -514,8 +518,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// car pour la simulation on prenait comme ref de calcul
 						// la duree MOY
 						calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
-						
-						//on recalcul la date d'avancement
+
+						// on recalcul la date d'avancement
 						if (avct.getIdAvisEmp() != null) {
 							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
 									.getLibCourtAvisCAP().toUpperCase();

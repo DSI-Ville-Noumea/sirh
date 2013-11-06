@@ -27,6 +27,7 @@ import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
@@ -179,7 +180,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 			addZone(getNOM_ST_AGENT(i),
 					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
+			addZone(getNOM_ST_DIRECTION(i),
+					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
+							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
+							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());

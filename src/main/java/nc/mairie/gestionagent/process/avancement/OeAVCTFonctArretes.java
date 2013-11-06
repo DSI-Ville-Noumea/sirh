@@ -23,6 +23,7 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
@@ -171,7 +172,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 			addZone(getNOM_ST_AGENT(i),
 					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
+			addZone(getNOM_ST_DIRECTION(i),
+					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
+							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
+							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_GRADE(i), av.getGrade()
@@ -378,10 +382,12 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*String anneeCourante = (String) VariablesActivite.recuperer(this,
-					VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
-			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);*/
+			/*
+			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
+			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
+			 * (anneeCourante == null || anneeCourante.length() == 0)
+			 * anneeCourante = Services.dateDuJour().substring(6, 10);
+			 */
 			String anneeCourante = "2014";
 			setListeAnnee(new String[5]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
@@ -631,9 +637,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		// Recuperation CAP
 		String idCap = null;
 		int indiceCap = (Services.estNumerique(getVAL_LB_CAP_SELECT()) ? Integer.parseInt(getVAL_LB_CAP_SELECT()) : -1);
-		if(indiceCap > getListeCap().size()){
+		if (indiceCap > getListeCap().size()) {
 			idCap = "null";
-		}else if (indiceCap > 0) {
+		} else if (indiceCap > 0) {
 			Cap cap = (Cap) getListeCap().get(indiceCap - 1);
 			idCap = cap.getIdCap().toString();
 		}

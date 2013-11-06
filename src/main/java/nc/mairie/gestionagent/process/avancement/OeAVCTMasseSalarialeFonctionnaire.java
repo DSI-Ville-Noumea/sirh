@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Bareme;
@@ -21,6 +22,7 @@ import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -630,7 +632,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
 							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
 						avct.setAgentVDN(false);
-					}else{
+					} else {
 						avct.setAgentVDN(true);
 					}
 					// BM/ACC
@@ -743,6 +745,24 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						Service section = Service.getSection(getTransaction(), fp.getIdServi());
 						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
 						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+						// on regarde si l'agent est AFFECTE dans une autre
+						// administration
+						if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
+								|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
+							avct.setDirectionService(null);
+							avct.setSectionService(null);
+							// alors on va chercher l'autre administration de
+							// l'agent
+							AutreAdministrationAgent autreAdminAgent = AutreAdministrationAgent
+									.chercherAutreAdministrationAgentActive(getTransaction(), a.getIdAgent());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							} else {
+								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
+									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin());
+								}
+							}
+						}
 
 						// on calcul le nouvel INM
 						if (bareme != null && bareme.getInm() != null) {
@@ -923,7 +943,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 			addZone(getNOM_ST_AGENT(i),
 					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
+			addZone(getNOM_ST_DIRECTION(i),
+					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
+							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
+							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());

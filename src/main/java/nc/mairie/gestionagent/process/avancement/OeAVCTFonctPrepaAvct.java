@@ -18,6 +18,7 @@ import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
@@ -169,40 +170,55 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
-			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-			addZone(getNOM_ST_CATEGORIE(i), (av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			addZone(getNOM_ST_AGENT(i),
+					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_DIRECTION(i),
+					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
+							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
+							+ " <br> " + av.getSectionService());
+			addZone(getNOM_ST_CATEGORIE(i),
+					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
-			addZone(getNOM_ST_IBA(i),
-					(av.getIban() == null ? "&nbsp;" : av.getIban()) + " <br> " + (av.getNouvIBAN() == null ? "&nbsp;" : av.getNouvIBAN()));
-			addZone(getNOM_ST_INM(i),
-					(av.getInm() == null ? "&nbsp;" : av.getInm()) + " <br> " + (av.getNouvINM() == null ? "&nbsp;" : av.getNouvINM()));
-			addZone(getNOM_ST_INA(i),
-					(av.getIna() == null ? "&nbsp;" : av.getIna()) + " <br> " + (av.getNouvINA() == null ? "&nbsp;" : av.getNouvINA()));
+			addZone(getNOM_ST_IBA(i), (av.getIban() == null ? "&nbsp;" : av.getIban()) + " <br> "
+					+ (av.getNouvIBAN() == null ? "&nbsp;" : av.getNouvIBAN()));
+			addZone(getNOM_ST_INM(i), (av.getInm() == null ? "&nbsp;" : av.getInm()) + " <br> "
+					+ (av.getNouvINM() == null ? "&nbsp;" : av.getNouvINM()));
+			addZone(getNOM_ST_INA(i), (av.getIna() == null ? "&nbsp;" : av.getIna()) + " <br> "
+					+ (av.getNouvINA() == null ? "&nbsp;" : av.getNouvINA()));
 			addZone(getNOM_ST_BM_A(i), av.getBMAnnee() + " <br> " + av.getNouvBMAnnee());
 			addZone(getNOM_ST_BM_M(i), av.getBMMois() + " <br> " + av.getNouvBMMois());
 			addZone(getNOM_ST_BM_J(i), av.getBMJour() + " <br> " + av.getNouvBMJour());
 			addZone(getNOM_ST_ACC_A(i), av.getACCAnnee() + " <br> " + av.getNouvACCAnnee());
 			addZone(getNOM_ST_ACC_M(i), av.getACCMois() + " <br> " + av.getNouvACCMois());
 			addZone(getNOM_ST_ACC_J(i), av.getACCJour() + " <br> " + av.getNouvACCJour());
-			addZone(getNOM_ST_GRADE(i),
-					av.getGrade() + " <br> " + (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
+			addZone(getNOM_ST_GRADE(i), av.getGrade()
+					+ " <br> "
+					+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade()
+							: "&nbsp;"));
 			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
 			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 			addZone(getNOM_ST_PERIODE_STD(i), av.getDureeStandard());
-			addZone(getNOM_ST_DATE_AVCT(i), (av.getDateAvctMini() == null||av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMini()) + " <br> " + av.getDateAvctMoy()
-					+ " <br> " + (av.getDateAvctMaxi() == null||av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;" : av.getDateAvctMaxi()));
+			addZone(getNOM_ST_DATE_AVCT(i),
+					(av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av
+							.getDateAvctMini())
+							+ " <br> "
+							+ av.getDateAvctMoy()
+							+ " <br> "
+							+ (av.getDateAvctMaxi() == null || av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;"
+									: av.getDateAvctMaxi()));
 
-			addZone(getNOM_CK_VALID_SGC(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+			addZone(getNOM_CK_VALID_SGC(i),
+					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			String user = av.getUserVerifSGC() == null ? "&nbsp;" : av.getUserVerifSGC();
 			String heure = av.getHeureVerifSGC() == null ? "&nbsp;" : av.getHeureVerifSGC();
-			String date = av.getDateVerifSGC() == null || av.getDateVerifSGC().equals(Const.DATE_NULL)? "&nbsp;" : av.getDateVerifSGC();
+			String date = av.getDateVerifSGC() == null || av.getDateVerifSGC().equals(Const.DATE_NULL) ? "&nbsp;" : av
+					.getDateVerifSGC();
 			addZone(getNOM_ST_USER_VALID_SGC(i), user + " <br> " + date + " <br> " + heure);
 
 		}
@@ -227,9 +243,12 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*String anneeCourante = (String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
-			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);*/
+			/*
+			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
+			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
+			 * (anneeCourante == null || anneeCourante.length() == 0)
+			 * anneeCourante = Services.dateDuJour().substring(6, 10);
+			 */
 			String anneeCourante = "2014";
 			setListeAnnee(new String[5]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
@@ -370,12 +389,14 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
+				: -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 
 		// Recuperation filiere
 		FiliereGrade filiere = null;
-		int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
+		int indiceFiliere = (Services.estNumerique(getVAL_LB_FILIERE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_FILIERE_SELECT()) : -1);
 		if (indiceFiliere > 0) {
 			filiere = (FiliereGrade) getListeFiliere().get(indiceFiliere - 1);
 		}
@@ -394,8 +415,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
 		}
 
-		String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='" + EnumEtatAvancement.SGC.getValue() + "')";
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere, agent, listeSousService, null, null));
+		String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='"
+				+ EnumEtatAvancement.SGC.getValue() + "')";
+		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere,
+				agent, listeSousService, null, null));
 
 		afficheListeAvancement();
 
@@ -467,10 +490,12 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(avct.getAnnee()));
+					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(
+							Integer.valueOf(avct.getAnnee()));
 					// on regarde si il y a une ligne dans EAE
 					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()), campagne.getIdCampagneEAE());
+						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
+								campagne.getIdCampagneEAE());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à true;
 							getEAEDao().modifierCAP(eaeAgentAnne.getIdEAE(), true);
@@ -499,10 +524,12 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(Integer.valueOf(avct.getAnnee()));
+					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(
+							Integer.valueOf(avct.getAnnee()));
 					// on regarde si il y a une ligne dans EAE
 					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()), campagne.getIdCampagneEAE());
+						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
+								campagne.getIdCampagneEAE());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à false;
 							getEAEDao().modifierCAP(eaeAgentAnne.getIdEAE(), false);
