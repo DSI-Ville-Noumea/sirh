@@ -97,7 +97,7 @@ public class OePTGSaisie extends BasicProcess {
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
 		initialiseDonnees();
 		UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		if (!uuser.getUserName().equals("nicno85") && !uuser.getUserName().equals("levch80")) {
+		if (!uuser.getUserName().equals("nicno85")) {
 			Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
