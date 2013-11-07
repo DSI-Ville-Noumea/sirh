@@ -87,11 +87,11 @@ public class OeAGENTCarriere extends BasicProcess {
 	public boolean showDateFin = false;
 	public boolean showAccBM = false;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
-			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
-			CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
 	/**
@@ -321,19 +321,25 @@ public class OeAGENTCarriere extends BasicProcess {
 				}
 
 				Horaire horaire = Horaire.chercherHoraire(getTransaction(), carriere.getCodeBaseHoraire2());
-				StatutCarriere statut = StatutCarriere.chercherStatutCarriere(getTransaction(), carriere.getCodeCategorie());
+				StatutCarriere statut = StatutCarriere.chercherStatutCarriere(getTransaction(),
+						carriere.getCodeCategorie());
 				Float taux = Float.parseFloat(horaire.getCdTaux()) * 100;
 
-				addZone(getNOM_ST_GRADE(indiceCarr), carriere.getCodeGrade().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere.getCodeGrade());
+				addZone(getNOM_ST_GRADE(indiceCarr), carriere.getCodeGrade().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: carriere.getCodeGrade());
 				addZone(getNOM_ST_TYPE_CONTRAT(indiceCarr),
 						carriere.getTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : carriere.getTypeContrat());
 				addZone(getNOM_ST_BASE_HORAIRE(indiceCarr), String.valueOf(taux.intValue()) + "%");
-				addZone(getNOM_ST_IBA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIban() : "&nbsp;");
-				addZone(getNOM_ST_INA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIna() : "&nbsp;");
-				addZone(getNOM_ST_INM(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getInm() : "&nbsp;");
+				addZone(getNOM_ST_IBA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIban()
+						: "&nbsp;");
+				addZone(getNOM_ST_INA(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getIna()
+						: "&nbsp;");
+				addZone(getNOM_ST_INM(indiceCarr), bareme != null && bareme.getIban() != null ? bareme.getInm()
+						: "&nbsp;");
 				addZone(getNOM_ST_DEBUT(indiceCarr), carriere.getDateDebut());
-				addZone(getNOM_ST_FIN(indiceCarr), carriere.getDateFin() == null || carriere.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;"
-						: carriere.getDateFin());
+				addZone(getNOM_ST_FIN(indiceCarr),
+						carriere.getDateFin() == null || carriere.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;"
+								: carriere.getDateFin());
 				addZone(getNOM_ST_REF_ARR(indiceCarr), carriere.getReferenceArrete());
 				addZone(getNOM_ST_STATUT(indiceCarr), statut.getLiCate());
 
@@ -425,7 +431,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		// si au moins une PA active
-		ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(),
+				getAgentCourant());
 		boolean uneEstActive = false;
 		for (int i = 0; i < listePA.size(); i++) {
 			PositionAdmAgent posAdm = (PositionAdmAgent) listePA.get(i);
@@ -483,7 +490,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		Grade grade = (Grade) getHashGrade().get(getCarriereCourante().getCodeGrade());
 		Horaire horaire = (Horaire) getHashHoraire().get(getCarriereCourante().getCodeBaseHoraire2());
 		BaseHoraire baseHoraire = (BaseHoraire) getHashBaseHorairePointage().get(getCarriereCourante().getCodeBase());
-		ModeReglement baseReglement = (ModeReglement) getHashModeReglement().get(getCarriereCourante().getModeReglement());
+		ModeReglement baseReglement = (ModeReglement) getHashModeReglement().get(
+				getCarriereCourante().getModeReglement());
 		MotifAvancement motif = (MotifAvancement) getHashMotifAvancement().get(getCarriereCourante().getCodeMotif());
 
 		// Alim zones
@@ -518,7 +526,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (baseHoraire != null) {
 			int ligneBHP = getListeBaseHorairePointage().indexOf(baseHoraire);
 			addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), String.valueOf(ligneBHP + 1));
-			addZone(getNOM_ST_BASE_HORAIRE_POINTAGE(), baseHoraire.getCodBaseHoraire() + " - " + baseHoraire.getLibBaseHoraire());
+			addZone(getNOM_ST_BASE_HORAIRE_POINTAGE(),
+					baseHoraire.getCodBaseHoraire() + " - " + baseHoraire.getLibBaseHoraire());
 		}
 
 		if (baseReglement != null) {
@@ -534,12 +543,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		addZone(getNOM_EF_DATE_DEBUT(), getCarriereCourante().getDateDebut());
-		addZone(getNOM_EF_DATE_FIN(),
-				getCarriereCourante().getDateFin() == null || getCarriereCourante().getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-						: getCarriereCourante().getDateFin());
-		addZone(getNOM_EF_DATE_ARR(),
-				getCarriereCourante().getDateArrete() == null || getCarriereCourante().getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-						: getCarriereCourante().getDateArrete());
+		addZone(getNOM_EF_DATE_FIN(), getCarriereCourante().getDateFin() == null
+				|| getCarriereCourante().getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+				: getCarriereCourante().getDateFin());
+		addZone(getNOM_EF_DATE_ARR(), getCarriereCourante().getDateArrete() == null
+				|| getCarriereCourante().getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+				: getCarriereCourante().getDateArrete());
 
 		Bareme bareme = null;
 		if (!getCarriereCourante().getIban().equals(Const.CHAINE_VIDE)) {
@@ -561,12 +570,14 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 			if (!getVAL_EF_DATE_DEBUT().equals(Const.CHAINE_VIDE) && Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
-				Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), getVAL_EF_DATE_DEBUT());
+				Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant()
+						.getIdAgent(), getVAL_EF_DATE_DEBUT());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
-					TypeContrat typeContrat = TypeContrat.chercherTypeContrat(getTransaction(), contrat.getIdTypeContrat());
+					TypeContrat typeContrat = TypeContrat.chercherTypeContrat(getTransaction(),
+							contrat.getIdTypeContrat());
 					addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 				} else {
 					addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
@@ -636,7 +647,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			setCarriereCourante(null);
 			setStatut(STATUT_MEME_PROCESS);
 
-		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION) || getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
+				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
 			// vérification de la validité du formulaire
 			if (!performControlerChamps(request))
@@ -659,7 +671,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			if (getCarriereCourante().isActive()) {
 				if (derniereCarriere != null
 						&& !derniereCarriere.getCodeCategorie().equals("8")
-						&& (derniereCarriere.getDateFin() == null || derniereCarriere.getDateFin().equals(Const.DATE_NULL) || !derniereCarriere
+						&& (derniereCarriere.getDateFin() == null
+								|| derniereCarriere.getDateFin().equals(Const.DATE_NULL) || !derniereCarriere
 								.getDateFin().equals(getCarriereCourante().getDateDebut()))) {
 					derniereCarriere.setDateFin(getCarriereCourante().getDateDebut());
 					derniereCarriere.modifierCarriere(getTransaction(), getAgentCourant(), user);
@@ -722,8 +735,8 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	private boolean performRegleGestionIBA(HttpServletRequest request) throws Exception {
 		// test IBA existant
-		if ((estFonctionnaire(getCarriereCourante().getCodeCategorie()) || estContractuel(getCarriereCourante().getCodeCategorie()))
-				&& !getCarriereCourante().getIban().equals(Const.CHAINE_VIDE)) {
+		if ((estFonctionnaire(getCarriereCourante().getCodeCategorie()) || estContractuel(getCarriereCourante()
+				.getCodeCategorie())) && !getCarriereCourante().getIban().equals(Const.CHAINE_VIDE)) {
 			Bareme.chercherBareme(getTransaction(), getCarriereCourante().getIban());
 
 			if (getTransaction().isErreur()) {
@@ -767,7 +780,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		// statut
-		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
+		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
 		if (numStatut == -1 || getListeStatut().size() == 0 || numStatut > getListeStatut().size())
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "statuts"));
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
@@ -785,7 +799,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// base horaire pointage
 		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-		if (numLigneBHP == -1 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size())
+		if (numLigneBHP == -1 || getListeBaseHorairePointage().size() == 0
+				|| numLigneBHP > getListeBaseHorairePointage().size())
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire pointage"));
 		BaseHoraire bhp = (BaseHoraire) getListeBaseHorairePointage().get(numLigneBHP - 1);
 
@@ -797,8 +812,10 @@ public class OeAGENTCarriere extends BasicProcess {
 		ModeReglement baseReg = (ModeReglement) getListeBaseReg().get(numLigneBR);
 
 		// motif
-		int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIFS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIFS_SELECT())) : -1);
-		MotifAvancement motif = numLigneMotif > 0 ? (MotifAvancement) getListeMotifAvancement().get(numLigneMotif - 1) : null;
+		int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIFS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_MOTIFS_SELECT())) : -1);
+		MotifAvancement motif = numLigneMotif > 0 ? (MotifAvancement) getListeMotifAvancement().get(numLigneMotif - 1)
+				: null;
 
 		if (getCarriereCourante() == null)
 			setCarriereCourante(new Carriere());
@@ -819,7 +836,8 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 
-			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), dateDebut);
+			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(),
+					getAgentCourant().getIdAgent(), dateDebut);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -839,7 +857,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// grade
 		if (gradeObligatoire) {
 			Grade g = getSelectedGrade();
-			getCarriereCourante().setCodeGrade(g != null && g.getCodeGrade() != null ? g.getCodeGrade() : Const.CHAINE_VIDE);
+			getCarriereCourante().setCodeGrade(
+					g != null && g.getCodeGrade() != null ? g.getCodeGrade() : Const.CHAINE_VIDE);
 		} else {
 			getCarriereCourante().setCodeGrade(Const.CHAINE_VIDE);
 		}
@@ -877,7 +896,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// RG_AG_CA_A05
 
 		// statut obligatoire
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUTS_SELECT()) ? Integer.parseInt(getVAL_LB_STATUTS_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUTS_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUTS_SELECT()) : -1);
 		if (indiceStatut < 1) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "statut"));
@@ -896,7 +916,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		// base horaire pointage obligatoire
 		int numLigneBHP = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
-		if (numLigneBHP <= 0 || getListeBaseHorairePointage().size() == 0 || numLigneBHP > getListeBaseHorairePointage().size()) {
+		if (numLigneBHP <= 0 || getListeBaseHorairePointage().size() == 0
+				|| numLigneBHP > getListeBaseHorairePointage().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire pointage"));
 			return false;
 		}
@@ -989,8 +1010,9 @@ public class OeAGENTCarriere extends BasicProcess {
 
 			PositionAdmAgent dernierePA = null;
 			// on verifie qu'il existe une PA comprise dans dateDebCarr
-			PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent.chercherPositionAdmAgentDateFinExclu(getTransaction(), getAgentCourant()
-					.getNoMatricule(), Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
+			PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent.chercherPositionAdmAgentDateFinExclu(
+					getTransaction(), getAgentCourant().getNoMatricule(),
+					Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
 			// si PA recupérée est ACTIVE
 			if (!posAdmAgtActiveAUneDate.estPAInactive(getTransaction())) {
 				dernierePA = posAdmAgtActiveAUneDate;
@@ -1034,7 +1056,8 @@ public class OeAGENTCarriere extends BasicProcess {
 					}
 				}
 			} else if (derniereCarriere != null) {
-				if (derniereCarriere.getDateFin() != null && !derniereCarriere.getDateFin().equals(Const.DATE_NULL)
+				if (derniereCarriere.getDateFin() != null
+						&& !derniereCarriere.getDateFin().equals(Const.DATE_NULL)
 						&& Services.compareDates(derniereCarriere.getDateFin(), getCarriereCourante().getDateDebut()) > 0) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR134"));
 					return false;
@@ -1050,14 +1073,16 @@ public class OeAGENTCarriere extends BasicProcess {
 			// on recupere la carr precedente
 			Carriere carrBase = (Carriere) getCarriereCourante().getBasicMetierBase();
 			if (carrBase != null) {
-				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant().getNoMatricule(),
-						Services.convertitDate(Services.formateDate(carrBase.getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
+						.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+						"dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// si pas de carriere precendente on regarde la carriere
 					// suivant
-					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant().getNoMatricule(),
-							Services.convertitDate(Services.formateDate(carrBase.getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
+							.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+							"dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						// aucune carriere ni avant ni apres donc on ne fait
@@ -1077,8 +1102,9 @@ public class OeAGENTCarriere extends BasicProcess {
 				} else {
 					// si on a une carriere precedente
 					// on cherche la carriere suivante
-					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant().getNoMatricule(),
-							Services.convertitDate(Services.formateDate(carrBase.getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
+							.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+							"dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						// aucune carriere apres
@@ -1105,14 +1131,16 @@ public class OeAGENTCarriere extends BasicProcess {
 				}
 			} else {
 				// c'est qu'on est en cretion d'une nouvelle carriere
-				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant().getNoMatricule(),
-						Services.convertitDate(Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
+						.getNoMatricule(), Services.convertitDate(
+						Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// si pas de carriere precendente on regarde la carriere
 					// suivant
-					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant().getNoMatricule(),
-							Services.convertitDate(Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
+							.getNoMatricule(), Services.convertitDate(
+							Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						// aucune carriere ni avant ni apres donc on ne fait
@@ -1132,8 +1160,9 @@ public class OeAGENTCarriere extends BasicProcess {
 				} else {
 					// si on a une carriere precedente
 					// on cherche la carriere suivante
-					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant().getNoMatricule(),
-							Services.convertitDate(Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
+					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
+							.getNoMatricule(), Services.convertitDate(
+							Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						// aucune carriere apres
@@ -1893,7 +1922,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		showIBA = false;
 		IBAEditable = false;
 
-		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
+		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
 		if (numStatut <= 0 || getListeStatut().size() == 0 || numStatut > getListeStatut().size())
 			return;
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
@@ -1924,7 +1954,8 @@ public class OeAGENTCarriere extends BasicProcess {
 					addZone(getNOM_ST_INM(), bareme.getInm());
 				}
 			}
-		} else if (codeStatut.equals("4") || codeStatut.equals("9") || codeStatut.equals("10") || codeStatut.equals("11")) {
+		} else if (codeStatut.equals("4") || codeStatut.equals("9") || codeStatut.equals("10")
+				|| codeStatut.equals("11")) {
 			showIBA = true;
 			IBAEditable = true;
 		}
@@ -1968,8 +1999,9 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	private boolean estFonctionnaire(String codeStatut) {
 
-		return codeStatut.equals("1") || codeStatut.equals("2") || codeStatut.equals("3") || codeStatut.equals("6") || codeStatut.equals("15")
-				|| codeStatut.equals("17") || codeStatut.equals("18") || codeStatut.equals("19") || codeStatut.equals("20");
+		return codeStatut.equals("1") || codeStatut.equals("2") || codeStatut.equals("3") || codeStatut.equals("6")
+				|| codeStatut.equals("15") || codeStatut.equals("17") || codeStatut.equals("18")
+				|| codeStatut.equals("19") || codeStatut.equals("20");
 	}
 
 	/**
@@ -1978,7 +2010,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	 * @return true si contractuel false sinon
 	 */
 	public boolean estContractuel() {
-		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
+		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
 		if (numStatut <= 0 || getListeStatut().size() == 0 || numStatut > getListeStatut().size())
 			return false;
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
@@ -1992,7 +2025,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	 * @return true si saisie IBA possible false sinon
 	 */
 	public boolean saisieIba() {
-		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
+		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
 		if (numStatut <= 0 || getListeStatut().size() == 0 || numStatut > getListeStatut().size())
 			return false;
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
@@ -2030,7 +2064,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	 */
 	public boolean performPB_SELECT_STATUT(HttpServletRequest request) throws Exception {
 
-		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
+		int numStatut = (Services.estNumerique(getZone(getNOM_LB_STATUTS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUTS_SELECT())) : -1);
 		if (numStatut <= 0 || getListeStatut().size() == 0 || numStatut > getListeStatut().size())
 			return false;
 		StatutCarriere statut = (StatutCarriere) getListeStatut().get(numStatut - 1);
@@ -2060,24 +2095,24 @@ public class OeAGENTCarriere extends BasicProcess {
 		showDateFin = false;
 
 		switch (Integer.parseInt(statut.getCdCate())) {
-		case 4:
-			gradeObligatoire = false;
-			break;
-		case 8:
-			showDateFin = true;
-			break;
-		case 9:
-			gradeObligatoire = false;
-			break;
-		case 10:
-			gradeObligatoire = false;
-			break;
-		case 11:
-			gradeObligatoire = false;
-			break;
-		case 15:
-			gradeObligatoire = false;
-			break;
+			case 4:
+				gradeObligatoire = false;
+				break;
+			case 8:
+				showDateFin = true;
+				break;
+			case 9:
+				gradeObligatoire = false;
+				break;
+			case 10:
+				gradeObligatoire = false;
+				break;
+			case 11:
+				gradeObligatoire = false;
+				break;
+			case 15:
+				gradeObligatoire = false;
+				break;
 		}
 
 	}
@@ -2423,16 +2458,21 @@ public class OeAGENTCarriere extends BasicProcess {
 			return false;
 		} else {
 			// on regarde si sa derniere PA n'est pas inactive
-			PositionAdmAgent posAdmn = PositionAdmAgent.chercherDernierePositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+			PositionAdmAgent posAdmn = PositionAdmAgent.chercherDernierePositionAdmAgentAvecAgent(getTransaction(),
+					getAgentCourant());
 			if (Services.estNumerique(posAdmn.getCdpadm())) {
 				if (carr != null && carr.getCodeCategorie().equals("4")) {
 					// alors on est dans les contractuels
 					performCalculContractuel(carr);
 				} else if (carr != null
-						&& (carr.getCodeCategorie().equals("1") || carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18")
-								|| carr.getCodeCategorie().equals("19") || carr.getCodeCategorie().equals("20"))) {
+						&& (carr.getCodeCategorie().equals("1") || carr.getCodeCategorie().equals("2")
+								|| carr.getCodeCategorie().equals("18") || carr.getCodeCategorie().equals("19") || carr
+								.getCodeCategorie().equals("20"))) {
 					// alors on est dans les fonctionnaires
-					performCalculFonctionnaire(carr);
+					if (!performCalculFonctionnaire(carr)) {
+						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+						return false;
+					}
 				} else {
 					// sinon on ne calcul pas d'avancement
 					// on affiche un message
@@ -2456,7 +2496,8 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	private void performCalculContractuel(Carriere carr) throws Exception {
 		// on recupere le grade et la filiere du poste
-		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant().getIdAgent());
+		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
+				.getIdAgent());
 		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
 		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
 		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
@@ -2506,11 +2547,11 @@ public class OeAGENTCarriere extends BasicProcess {
 		showAccBM = false;
 	}
 
-	private void performCalculFonctionnaire(Carriere carr) throws Exception {
+	private boolean performCalculFonctionnaire(Carriere carr) throws Exception {
 		// on regarde si il y a d'autre carrieres avec le meme grade
 		// si oui on prend la carriere plus lointaine
-		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant().getNoMatricule(),
-				carr.getCodeGrade());
+		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant()
+				.getNoMatricule(), carr.getCodeGrade());
 		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 			carr = (Carriere) listeCarrMemeGrade.get(0);
 		}
@@ -2521,7 +2562,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
 			// calcul BM/ACC applicables
 			int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
-			int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);			
+			int nbJoursACC = AvancementFonctionnaires.calculJourACC(gradeActuel, carr);
 
 			int nbJoursBonus = nbJoursBM + nbJoursACC;
 
@@ -2530,7 +2571,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
 					addZone(getNOM_EF_DATE_DEBUT(), carr.getDateDebut().substring(0, 6) + annee);
 					nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
-				} else {					
+				} else {
 					addZone(getNOM_EF_DATE_DEBUT(), AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr));
 					nbJoursBonus = 0;
 				}
@@ -2538,30 +2579,43 @@ public class OeAGENTCarriere extends BasicProcess {
 
 			// Calcul du grade suivant (BM/ACC)
 			Grade gradeSuivant = Grade.chercherGrade(getTransaction(), gradeActuel.getCodeGradeSuivant());
-			if (gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0 && Services.estNumerique(gradeSuivant.getDureeMoy())) {
+			if (gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0
+					&& Services.estNumerique(gradeSuivant.getDureeMoy())) {
 				boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
-				while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null && gradeSuivant.getCodeGradeSuivant().length() > 0
-						&& gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0) {
+				while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null
+						&& gradeSuivant.getCodeGradeSuivant().length() > 0 && gradeSuivant.getDureeMoy() != null
+						&& gradeSuivant.getDureeMoy().length() > 0) {
 					nbJoursBonus -= Integer.parseInt(gradeSuivant.getDureeMoy()) * 30;
 					gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
 					isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
 				}
 			}
 
-			int nbJoursRestantsBM = nbJoursBonus > nbJoursACC ? nbJoursBonus - nbJoursACC : Integer.parseInt(Const.ZERO);
+			int nbJoursRestantsBM = nbJoursBonus > nbJoursACC ? nbJoursBonus - nbJoursACC : Integer
+					.parseInt(Const.ZERO);
 			int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
 
-			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(), gradeSuivant.getCodeGradeGenerique());
+			GradeGenerique gradeGeneriqueSuivant = GradeGenerique.chercherGradeGenerique(getTransaction(),
+					gradeSuivant.getCodeGradeGenerique());
 			FiliereGrade filiere = null;
-			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getIdCadreEmploi() != null && gradeGeneriqueSuivant.getCdfili() != null) {
+			if (gradeGeneriqueSuivant != null && gradeGeneriqueSuivant.getIdCadreEmploi() != null
+					&& gradeGeneriqueSuivant.getCdfili() != null) {
 				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
 			}
 			Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 			// on recupere les points pour cette categorie (A,B,A+..)
 			// on calcul le nouvel INM
-			String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gradeGeneriqueSuivant.getNbPointsAvct()));
+			String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
+					+ Integer.valueOf(gradeGeneriqueSuivant.getNbPointsAvct()));
 			// avec ce nouvel INM on recupere l'iban et l'ina correspondant
-			Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(getTransaction(), nouvINM).get(0);
+			ArrayList<Bareme> listBarem = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
+			if (listBarem.size() == 0) {
+				// "ERR186",
+				// "Aucun barème suivant n'a été trouvé pour se grade. Le calcul de l'avancement ne peut donc se faire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR186"));
+				return false;
+			}
+			Bareme nouvBareme = listBarem.get(0);
 			addZone(getNOM_EF_IBA(), nouvBareme.getIban());
 			addZone(getNOM_ST_INA(), nouvBareme.getIna());
 			addZone(getNOM_ST_INM(), nouvBareme.getInm());
@@ -2577,20 +2631,20 @@ public class OeAGENTCarriere extends BasicProcess {
 			addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
 			addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
-			addZone(getNOM_ST_NOUV_GRADE(),
-					gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-			addZone(getNOM_ST_NOUV_GRADE_GEN(),
-					gradeSuivant.getCodeGradeGenerique() == null || gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant
-							.getCodeGradeGenerique());
-			addZone(getNOM_ST_NOUV_CLASSE(),
-					gradeSuivant.getCodeClasse() == null || gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
-			addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null || gradeSuivant.getCodeEchelon().length() == 0 ? null
-					: gradeSuivant.getCodeEchelon());
+			addZone(getNOM_ST_NOUV_GRADE(), gradeSuivant.getCodeGrade() == null
+					|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
+			addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeSuivant.getCodeGradeGenerique() == null
+					|| gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant.getCodeGradeGenerique());
+			addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null
+					|| gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
+			addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null
+					|| gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
 
 			// on indique que les champs des fonctionnaires ne sont pas à
 			// afficher
 			showAccBM = true;
 		}
+		return true;
 	}
 
 	/**
@@ -3035,7 +3089,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		if (!getVAL_EF_DATE_DEBUT().equals(Const.CHAINE_VIDE) && Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
-			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(), getVAL_EF_DATE_DEBUT());
+			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(),
+					getAgentCourant().getIdAgent(), getVAL_EF_DATE_DEBUT());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
