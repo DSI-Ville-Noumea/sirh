@@ -19,7 +19,6 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
-import nc.mairie.spring.dao.metier.parametrage.EmployeurDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.domain.metier.parametrage.NatureCredit;
 import nc.mairie.spring.utils.ApplicationContextProvider;
