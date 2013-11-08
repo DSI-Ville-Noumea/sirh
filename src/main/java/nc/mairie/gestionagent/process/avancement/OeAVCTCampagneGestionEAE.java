@@ -503,9 +503,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		ArrayList<AgentNW> laSuite = AgentNW.listerAgentWithListNomatr(getTransaction(), listeNomatrDetache);
 		logger.info("Req AS400 : FIN listerAgentEligibleEAE détachés : " + laSuite.size());
-		// Parcours des agents sans les détachés
+		// Parcours des agents avec les détachés
 		for (AgentNW a : laSuite) {
-			// Récupération de l'eae evntuel
+			// Récupération de l'eae eventuel
 			try {
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
 				if (eaeAgent == null) {
