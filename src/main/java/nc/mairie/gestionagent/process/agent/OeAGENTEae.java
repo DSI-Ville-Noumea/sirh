@@ -170,7 +170,8 @@ public class OeAGENTEae extends BasicProcess {
 	private void initialiseListeEae(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des EAE de l'agent
-		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalueSans2012(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalueSans2012(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
@@ -192,15 +193,16 @@ public class OeAGENTEae extends BasicProcess {
 				for (int j = 0; j < listeEvaluateur.size(); j++) {
 					EaeEvaluateur eval = listeEvaluateur.get(j);
 					AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " (" + agentEvaluateur.getNoMatricule()
-							+ ") <br/> ";
+					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
+							+ agentEvaluateur.getNoMatricule() + ") <br/> ";
 				}
 
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
 				addZone(getNOM_ST_EVALUATEUR(indiceEae), evaluateur.equals(Const.CHAINE_VIDE) ? "&nbsp;" : evaluateur);
-				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae), eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
-				addZone(getNOM_ST_SERVICE(indiceEae),
-						eaeFDP == null ? "&nbsp;" : eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
+				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae),
+						eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
+				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP == null ? "&nbsp;"
+						: eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
 				addZone(getNOM_ST_STATUT(indiceEae), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()));
 
 				indiceEae++;
@@ -669,23 +671,25 @@ public class OeAGENTEae extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Alim zone Informations
-		addZone(getNOM_ST_DATE_ENTRETIEN(), eae.getDateEntretien() == null ? "non renseigné" : sdf.format(eae.getDateEntretien()));
+		addZone(getNOM_ST_DATE_ENTRETIEN(),
+				eae.getDateEntretien() == null ? "non renseigné" : sdf.format(eae.getDateEntretien()));
 		ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
 		setListeEvaluateurEae(listeEvaluateur);
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
 			EaeEvaluateur eval = listeEvaluateur.get(j);
 			AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
-			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " (" + agentEvaluateur.getNoMatricule()
-					+ ") ";
+			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
+					+ agentEvaluateur.getNoMatricule() + ") ";
 
 			addZone(getNOM_ST_EVALUATEUR_NOM(j), evaluateur.equals(Const.CHAINE_VIDE) ? "non renseigné" : evaluateur);
-			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné" : eval.getFonction());
+			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné"
+					: eval.getFonction());
 		}
 		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
 		String direction = eaeFDP.getDirectionServ() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionServ();
 		String serv = eaeFDP.getServiceServ() == null ? Const.CHAINE_VIDE : eaeFDP.getServiceServ();
-		addZone(getNOM_ST_SERVICE(), direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;" : serv : direction + " / "
-				+ serv);
+		addZone(getNOM_ST_SERVICE(), direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;"
+				: serv : direction + " / " + serv);
 
 		// Alim zone evaluation
 		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
@@ -706,15 +710,19 @@ public class OeAGENTEae extends BasicProcess {
 		} else {
 			// commentaire de l'evaluateur
 			if (evaluation.getIdCommEvaluateur() != null) {
-				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommEvaluateur());
-				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getCommentaire());
+				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
+						evaluation.getIdCommEvaluateur());
+				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(),
+						commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getCommentaire());
 			} else {
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			}
 			// commentaire de l'evaluateur sur le rapport circonstancié
 			if (evaluation.getIdCommAvctEvaluateur() != null) {
-				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(evaluation.getIdCommAvctEvaluateur());
-				addZone(getNOM_ST_RAPPORT_CIRCON(), commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getCommentaire());
+				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
+						evaluation.getIdCommAvctEvaluateur());
+				addZone(getNOM_ST_RAPPORT_CIRCON(),
+						commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getCommentaire());
 			} else {
 				addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 			}
@@ -735,8 +743,10 @@ public class OeAGENTEae extends BasicProcess {
 				}
 			}
 
-			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee().toString());
-			addZone(getNOM_ST_AVIS_SHD(), evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
+			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee()
+					.toString());
+			addZone(getNOM_ST_AVIS_SHD(),
+					evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
 			// pour la modif
 			if (evaluation.getAvis_shd() == null) {
 				addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
@@ -754,7 +764,9 @@ public class OeAGENTEae extends BasicProcess {
 				}
 			}
 
-			addZone(getNOM_ST_AVCT_DIFF(), evaluation.getPropositionAvancement() == null ? "non renseigné" : evaluation.getPropositionAvancement());
+			addZone(getNOM_ST_AVCT_DIFF(),
+					evaluation.getPropositionAvancement() == null ? "non renseigné" : evaluation
+							.getPropositionAvancement());
 			// pour la modif
 			if (evaluation.getPropositionAvancement() == null) {
 				addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
@@ -767,9 +779,8 @@ public class OeAGENTEae extends BasicProcess {
 					addZone(getNOM_RG_AD(), getNOM_RB_AD_MOY());
 				}
 			}
-			addZone(getNOM_ST_CHANGEMENT_CLASSE(),
-					evaluation.getAvisChangementClasse() == null ? "non renseigné" : evaluation.getAvisChangementClasse() == 1 ? "favorable"
-							: "défavorable");
+			addZone(getNOM_ST_CHANGEMENT_CLASSE(), evaluation.getAvisChangementClasse() == null ? "non renseigné"
+					: evaluation.getAvisChangementClasse() == 1 ? "favorable" : "défavorable");
 			// pour la modif
 			if (evaluation.getAvisChangementClasse() == null) {
 				addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
@@ -780,8 +791,9 @@ public class OeAGENTEae extends BasicProcess {
 					addZone(getNOM_RG_CHGT(), getNOM_RB_CHGT_FAV());
 				}
 			}
-			addZone(getNOM_ST_AVIS_REVALO(), evaluation.getAvisRevalorisation() == null ? "non renseigné"
-					: evaluation.getAvisRevalorisation() == 1 ? "favorable" : "défavorable");
+			addZone(getNOM_ST_AVIS_REVALO(),
+					evaluation.getAvisRevalorisation() == null ? "non renseigné"
+							: evaluation.getAvisRevalorisation() == 1 ? "favorable" : "défavorable");
 			// pour la modif
 			if (evaluation.getAvisRevalorisation() == null) {
 				addZone(getNOM_RG_REVA(), getNOM_RB_REVA_FAV());
@@ -816,8 +828,10 @@ public class OeAGENTEae extends BasicProcess {
 		try {
 			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
 			if (evolution.getIdComEvolution() != null) {
-				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
-				addZone(getNOM_ST_COM_EVOLUTION(), commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getCommentaire());
+				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(
+						evolution.getIdComEvolution());
+				addZone(getNOM_ST_COM_EVOLUTION(),
+						commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getCommentaire());
 			} else {
 				addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 			}
@@ -842,7 +856,8 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_METIER(), getNOM_RB_METIER_OUI());
 			}
-			addZone(getNOM_ST_DELAI(), evolution.getDelaiEnvisage() == null ? "non renseigné" : evolution.getDelaiEnvisage());
+			addZone(getNOM_ST_DELAI(),
+					evolution.getDelaiEnvisage() == null ? "non renseigné" : evolution.getDelaiEnvisage());
 			// pour la modif
 			if (evolution.getDelaiEnvisage() == null) {
 				addZone(getNOM_RG_DELAI(), getNOM_RB_DELAI_4());
@@ -876,7 +891,8 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_MOB_COLL(), getNOM_RB_MOB_COLL_OUI());
 			}
-			addZone(getNOM_ST_NOM_COLL(), evolution.getNomCollectivite() == null ? Const.CHAINE_VIDE : evolution.getNomCollectivite());
+			addZone(getNOM_ST_NOM_COLL(),
+					evolution.getNomCollectivite() == null ? Const.CHAINE_VIDE : evolution.getNomCollectivite());
 			addZone(getNOM_ST_MOB_AUTRE(), evolution.isMobiliteAutre() ? "oui" : "non");
 			// pour la modif
 			if (!evolution.isMobiliteAutre()) {
@@ -891,7 +907,8 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_CONCOURS(), getNOM_RB_CONCOURS_OUI());
 			}
-			addZone(getNOM_ST_NOM_CONCOURS(), evolution.getNomConcours() == null ? Const.CHAINE_VIDE : evolution.getNomConcours());
+			addZone(getNOM_ST_NOM_CONCOURS(),
+					evolution.getNomConcours() == null ? Const.CHAINE_VIDE : evolution.getNomConcours());
 			addZone(getNOM_ST_VAE(), evolution.isVae() ? "oui" : "non");
 			// pour la modif
 			if (!evolution.isVae()) {
@@ -914,8 +931,9 @@ public class OeAGENTEae extends BasicProcess {
 				Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
 				int ligneHoraire = getListeHoraire().indexOf(tempsPart);
 				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), String.valueOf(ligneHoraire + 1));
-				addZone(getNOM_ST_POURC_TPS_PARTIEL(), tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
-						+ " - " + String.valueOf(taux.intValue()) + "%");
+				addZone(getNOM_ST_POURC_TPS_PARTIEL(),
+						tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
+								+ " - " + String.valueOf(taux.intValue()) + "%");
 			} else {
 				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
 				addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
@@ -928,7 +946,8 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_RETRAITE(), getNOM_RB_RETRAITE_OUI());
 			}
-			addZone(getNOM_ST_DATE_RETRAITE(), evolution.getDateRetraite() == null ? Const.CHAINE_VIDE : sdf.format(evolution.getDateRetraite()));
+			addZone(getNOM_ST_DATE_RETRAITE(),
+					evolution.getDateRetraite() == null ? Const.CHAINE_VIDE : sdf.format(evolution.getDateRetraite()));
 			addZone(getNOM_ST_AUTRE_PERSP(), evolution.isAutrePerspective() ? "oui" : "non");
 			// pour la modif
 			if (!evolution.isAutrePerspective()) {
@@ -936,20 +955,21 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_AUTRE_PERSP(), getNOM_RB_AUTRE_PERSP_OUI());
 			}
-			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? Const.CHAINE_VIDE : evolution.getLibAutrePerspective());
+			addZone(getNOM_ST_LIB_AUTRE_PERSP(), evolution.getLibAutrePerspective() == null ? Const.CHAINE_VIDE
+					: evolution.getLibAutrePerspective());
 
 			// Alim zones developpement
-			ArrayList<EaeDeveloppement> listeDeveloppement = getEaeDeveloppementDao().listerEaeDeveloppementParEvolution(
-					evolution.getIdEaeEvolution());
+			ArrayList<EaeDeveloppement> listeDeveloppement = getEaeDeveloppementDao()
+					.listerEaeDeveloppementParEvolution(evolution.getIdEaeEvolution());
 			setListeDeveloppement(listeDeveloppement);
 			for (int j = 0; j < listeDeveloppement.size(); j++) {
 				EaeDeveloppement dev = listeDeveloppement.get(j);
 				addZone(getNOM_ST_TYPE_DEV(j), dev.getTypeDeveloppement());
 				addZone(getNOM_ST_LIB_DEV(j), dev.getLibelleDeveloppement());
-				addZone(getNOM_ST_ECHEANCE_DEV(j),
-						dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE : new SimpleDateFormat("dd/MM/yyyy").format(dev
-								.getEcheanceDeveloppement()));
-				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation() == null ? Const.CHAINE_VIDE : dev.getPriorisation().toString());
+				addZone(getNOM_ST_ECHEANCE_DEV(j), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
+						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation() == null ? Const.CHAINE_VIDE : dev
+						.getPriorisation().toString());
 			}
 		} catch (Exception e) {
 			addZone(getNOM_ST_MOB_GEO(), "non renseigné");
@@ -2238,8 +2258,9 @@ public class OeAGENTEae extends BasicProcess {
 		} else {
 			evolution.setMobiliteAutre(true);
 		}
-		getEaeEvolutionDao().modifierMobiliteEaeEvolution(evolution.getIdEaeEvolution(), evolution.isMobiliteGeo(), evolution.isMobiliteFonct(),
-				evolution.isMobiliteService(), evolution.isMobiliteDirection(), evolution.isMobiliteCollectivite(), evolution.isMobiliteAutre());
+		getEaeEvolutionDao().modifierMobiliteEaeEvolution(evolution.getIdEaeEvolution(), evolution.isMobiliteGeo(),
+				evolution.isMobiliteFonct(), evolution.isMobiliteService(), evolution.isMobiliteDirection(),
+				evolution.isMobiliteCollectivite(), evolution.isMobiliteAutre());
 
 		// Changement de metier
 		String metier = getVAL_RG_METIER();
@@ -2248,7 +2269,8 @@ public class OeAGENTEae extends BasicProcess {
 		} else {
 			evolution.setChangementMetier(true);
 		}
-		getEaeEvolutionDao().modifierChangementMetierEaeEvolution(evolution.getIdEaeEvolution(), evolution.isChangementMetier());
+		getEaeEvolutionDao().modifierChangementMetierEaeEvolution(evolution.getIdEaeEvolution(),
+				evolution.isChangementMetier());
 
 		// Delai
 		String delai = getVAL_RG_DELAI();
@@ -2296,8 +2318,8 @@ public class OeAGENTEae extends BasicProcess {
 		} else {
 			evolution.setAutrePerspective(true);
 		}
-		getEaeEvolutionDao().modifierAutresInfosEaeEvolution(evolution.getIdEaeEvolution(), evolution.isConcours(), evolution.isVae(),
-				evolution.isTempsPartiel(), evolution.isRetraite(), evolution.isAutrePerspective());
+		getEaeEvolutionDao().modifierAutresInfosEaeEvolution(evolution.getIdEaeEvolution(), evolution.isConcours(),
+				evolution.isVae(), evolution.isTempsPartiel(), evolution.isRetraite(), evolution.isAutrePerspective());
 
 		// pour les libelles
 		// collectivite
@@ -2310,22 +2332,26 @@ public class OeAGENTEae extends BasicProcess {
 		String nomVae = getVAL_ST_NOM_VAE().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_NOM_VAE();
 		evolution.setNomVae(nomVae);
 		// autre persp
-		String nomAutrePersp = getVAL_ST_LIB_AUTRE_PERSP().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_LIB_AUTRE_PERSP();
+		String nomAutrePersp = getVAL_ST_LIB_AUTRE_PERSP().equals(Const.CHAINE_VIDE) ? null
+				: getVAL_ST_LIB_AUTRE_PERSP();
 		evolution.setLibAutrePerspective(nomAutrePersp);
-		getEaeEvolutionDao().modifierLibelleEaeEvolution(evolution.getIdEaeEvolution(), evolution.getNomCollectivite(), evolution.getNomConcours(),
-				evolution.getNomVae(), evolution.getLibAutrePerspective());
+		getEaeEvolutionDao().modifierLibelleEaeEvolution(evolution.getIdEaeEvolution(), evolution.getNomCollectivite(),
+				evolution.getNomConcours(), evolution.getNomVae(), evolution.getLibAutrePerspective());
 
 		// date de la retraite
-		String dateRetraire = getVAL_ST_DATE_RETRAITE().equals(Const.CHAINE_VIDE) ? null : Services.formateDate(getVAL_ST_DATE_RETRAITE());
+		String dateRetraire = getVAL_ST_DATE_RETRAITE().equals(Const.CHAINE_VIDE) ? null : Services
+				.formateDate(getVAL_ST_DATE_RETRAITE());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		evolution.setDateRetraite(dateRetraire != null ? sdf.parse(dateRetraire) : null);
-		getEaeEvolutionDao().modifierDateRetraiteEaeEvolution(evolution.getIdEaeEvolution(), evolution.getDateRetraite());
+		getEaeEvolutionDao().modifierDateRetraiteEaeEvolution(evolution.getIdEaeEvolution(),
+				evolution.getDateRetraite());
 
 		// commentaire de l'evolution
 		if (evolution.getIdComEvolution() != null && evolution.getIdComEvolution() != 0) {
 			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
 			commEvolution.setCommentaire(getVAL_ST_COM_EVOLUTION());
-			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommenatire(), commEvolution.getCommentaire());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommenatire(),
+					commEvolution.getCommentaire());
 		} else {
 			if (!getVAL_ST_COM_EVOLUTION().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
@@ -2340,7 +2366,8 @@ public class OeAGENTEae extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_SELECT())) : -1);
 		Horaire horaire = numLigneBH > 0 ? (Horaire) getListeHoraire().get(numLigneBH - 1) : null;
 		evolution.setIdSpbhorTpsPartiel(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
-		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(), evolution.getIdSpbhorTpsPartiel());
+		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(),
+				evolution.getIdSpbhorTpsPartiel());
 		return true;
 
 	}
@@ -2352,7 +2379,8 @@ public class OeAGENTEae extends BasicProcess {
 		if (eval.getIdCommEvaluateur() != null && eval.getIdCommEvaluateur() != 0) {
 			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommEvaluateur());
 			commEvaluateur.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
-			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(), commEvaluateur.getCommentaire());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(),
+					commEvaluateur.getCommentaire());
 		} else {
 			if (!getVAL_ST_COMMENTAIRE_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
@@ -2413,7 +2441,8 @@ public class OeAGENTEae extends BasicProcess {
 		} else {
 			eval.setAvisChangementClasse(1);
 		}
-		getEaeEvaluationDao().modifierChgtClasseEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisChangementClasse());
+		getEaeEvaluationDao()
+				.modifierChgtClasseEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisChangementClasse());
 
 		// Revalorisation
 		String reva = getVAL_RG_REVA();
@@ -2426,9 +2455,11 @@ public class OeAGENTEae extends BasicProcess {
 
 		// rapport circonstancié de l'evaluateur
 		if (eval.getIdCommAvctEvaluateur() != null && eval.getIdCommAvctEvaluateur() != 0) {
-			EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommAvctEvaluateur());
+			EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
+					eval.getIdCommAvctEvaluateur());
 			commAvctEvaluateur.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
-			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(), commAvctEvaluateur.getCommentaire());
+			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(),
+					commAvctEvaluateur.getCommentaire());
 		} else {
 			if (!getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
@@ -3176,16 +3207,16 @@ public class OeAGENTEae extends BasicProcess {
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
 			planActionIndi.setMesure(null);
 			planActionIndi.setIdTypeObjectif(2);
-			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdTypeObjectif(), planActionIndi.getObjectif(),
-					planActionIndi.getMesure());
+			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdTypeObjectif(),
+					planActionIndi.getObjectif(), planActionIndi.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_INDI)) {
 			if (!performControlerChampObjIndi(request)) {
 				return false;
 			}
 			EaePlanAction planActionIndi = getObjectifIndiCourant();
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
-			getEaePlanActionDao().modifierEaePlanAction(planActionIndi.getIdEaePlanAction(), planActionIndi.getIdTypeObjectif(),
-					planActionIndi.getObjectif(), planActionIndi.getMesure());
+			getEaePlanActionDao().modifierEaePlanAction(planActionIndi.getIdEaePlanAction(),
+					planActionIndi.getIdTypeObjectif(), planActionIndi.getObjectif(), planActionIndi.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_INDI)) {
 			EaePlanAction planActionIndi = getObjectifIndiCourant();
 			getEaePlanActionDao().supprimerEaePlanAction(planActionIndi.getIdEaePlanAction());
@@ -3406,8 +3437,8 @@ public class OeAGENTEae extends BasicProcess {
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
 			planActionPro.setIdTypeObjectif(1);
-			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdTypeObjectif(), planActionPro.getObjectif(),
-					planActionPro.getMesure());
+			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdTypeObjectif(),
+					planActionPro.getObjectif(), planActionPro.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_PRO)) {
 			if (!performControlerChampObjPro(request)) {
 				return false;
@@ -3415,8 +3446,8 @@ public class OeAGENTEae extends BasicProcess {
 			EaePlanAction planActionPro = getObjectifProCourant();
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
-			getEaePlanActionDao().modifierEaePlanAction(planActionPro.getIdEaePlanAction(), planActionPro.getIdTypeObjectif(),
-					planActionPro.getObjectif(), planActionPro.getMesure());
+			getEaePlanActionDao().modifierEaePlanAction(planActionPro.getIdEaePlanAction(),
+					planActionPro.getIdTypeObjectif(), planActionPro.getObjectif(), planActionPro.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_PRO)) {
 			EaePlanAction planActionPro = getObjectifProCourant();
 			getEaePlanActionDao().supprimerEaePlanAction(planActionPro.getIdEaePlanAction());
@@ -3517,16 +3548,16 @@ public class OeAGENTEae extends BasicProcess {
 
 		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltAModifier);
 		setDeveloppementCourant(dev);
-		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelleDeveloppement());
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(
+				dev.getLibelleDeveloppement());
 		if (typeDev != null) {
 			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
 			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
 		}
 		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
 		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
-		addZone(getNOM_ST_DATE_DEV(),
-				dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
-						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+		addZone(getNOM_ST_DATE_DEV(), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
+				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_DEV);
@@ -3558,16 +3589,16 @@ public class OeAGENTEae extends BasicProcess {
 
 		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltASuprimer);
 		setDeveloppementCourant(dev);
-		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelleDeveloppement());
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(
+				dev.getLibelleDeveloppement());
 		if (typeDev != null) {
 			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
 			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
 		}
 		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
 		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
-		addZone(getNOM_ST_DATE_DEV(),
-				dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
-						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+		addZone(getNOM_ST_DATE_DEV(), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
+				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_DEV);
@@ -3606,10 +3637,11 @@ public class OeAGENTEae extends BasicProcess {
 			// type developpement
 			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TYPE_DEV_SELECT())) : -1);
-			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement().get(numLigneTypeDev) : null;
+			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement()
+					.get(numLigneTypeDev) : null;
 			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
-			getEaeDeveloppementDao().creerEaeDeveloppement(dev.getIdEaeEvolution(), dev.getTypeDeveloppement(), dev.getLibelleDeveloppement(),
-					dev.getEcheanceDeveloppement(), dev.getPriorisation());
+			getEaeDeveloppementDao().creerEaeDeveloppement(dev.getIdEaeEvolution(), dev.getTypeDeveloppement(),
+					dev.getLibelleDeveloppement(), dev.getEcheanceDeveloppement(), dev.getPriorisation());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_DEV)) {
 			if (!performControlerChampDev(request)) {
 				return false;
@@ -3621,10 +3653,11 @@ public class OeAGENTEae extends BasicProcess {
 			// type developpement
 			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TYPE_DEV_SELECT())) : -1);
-			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement().get(numLigneTypeDev) : null;
+			EaeTypeDeveloppement typeDev = numLigneTypeDev > -1 ? (EaeTypeDeveloppement) getListeTypeDeveloppement()
+					.get(numLigneTypeDev) : null;
 			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
-			getEaeDeveloppementDao().modifierEaeDeveloppement(dev.getIdEaeDeveloppement(), dev.getTypeDeveloppement(), dev.getLibelleDeveloppement(),
-					dev.getEcheanceDeveloppement(), dev.getPriorisation());
+			getEaeDeveloppementDao().modifierEaeDeveloppement(dev.getIdEaeDeveloppement(), dev.getTypeDeveloppement(),
+					dev.getLibelleDeveloppement(), dev.getEcheanceDeveloppement(), dev.getPriorisation());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_DEV)) {
 			EaeDeveloppement dev = getDeveloppementCourant();
 			getEaeDeveloppementDao().supprimerEaeDeveloppement(dev.getIdEaeDeveloppement());
@@ -3953,7 +3986,8 @@ public class OeAGENTEae extends BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<EaeFinalisation> listeDocAgent = getEaeFinalisationDao().listerDocumentFinalise(getEaeCourant().getIdEAE());
+		ArrayList<EaeFinalisation> listeDocAgent = getEaeFinalisationDao().listerDocumentFinalise(
+				getEaeCourant().getIdEAE());
 		setListeDocuments(listeDocAgent);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -4056,8 +4090,9 @@ public class OeAGENTEae extends BasicProcess {
 		// Récup du document courant
 		EaeFinalisation finalisation = (EaeFinalisation) getListeDocuments().get(indiceEltAConsulter);
 		// on affiche le document
-		setURLFichier(getScriptOuverture(repertoireStockage + finalisation.getIdGedDocument() + "&version=" + finalisation.getVersionGedDocument()
-				+ ".0"));
+		int numVersion = (Integer.valueOf(finalisation.getVersionGedDocument()) + 1);
+		setURLFichier(getScriptOuverture(repertoireStockage + finalisation.getIdGedDocument() + "&version="
+				+ numVersion + ".0"));
 
 		return true;
 	}
@@ -4135,7 +4170,8 @@ public class OeAGENTEae extends BasicProcess {
 			result &= false;
 		}
 
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		if (!extension.equals(".pdf")) {
 			// "ERR165", "Le fichier doit être au format PDF."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
@@ -4183,8 +4219,10 @@ public class OeAGENTEae extends BasicProcess {
 		ArrayList<EaeEvaluateur> premierEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
 		Integer numIncrement = getEaeNumIncrementDocumentDao().chercherEaeNumIncrement();
 
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
-		String nom = "EAE_" + premierEvaluateur.get(0).getIdAgent() + "_" + eae.getIdEAE() + "_" + numIncrement.toString() + extension;
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
+		String nom = "EAE_" + premierEvaluateur.get(0).getIdAgent() + "_" + eae.getIdEAE() + "_"
+				+ numIncrement.toString() + extension;
 
 		// on upload le fichier
 		boolean upload = false;
@@ -4244,7 +4282,8 @@ public class OeAGENTEae extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
