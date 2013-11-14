@@ -114,6 +114,11 @@
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_PRENOM())%>>
 								Début du prénom de l'agent</TD>
 						</TR>
+						<TR>
+							<TD class="sigp2">
+								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_RECHERCHE(),process.getNOM_RB_RECH_CAFAT())%>>
+								Numéro de CAFAT ou RUAMM</TD>
+						</TR>
 						<tr><td><BR/></td></tr>
 						<TR>
 							<TD>
@@ -146,9 +151,19 @@
 				    		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_PRENOM())%>>
 				    	</span>
 				    	<span>Prenom</span>
+				    	<span style="width:135px;"></span>
+				    	<span>
+				    		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_CAFAT())%>>
+				    	</span>
+				    	<span>Cafat</span>
+				    	<span style="width:55px;"></span>
+				    	<span>
+				    		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")' <%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_RUAMM())%>>
+				    	</span>
+				    	<span>Ruamm</span>
 					</div>	            
-						<div style="overflow: auto;height: 250px;width:500px;margin-right: 0px;margin-left: 0px;">
-							<table class="sigp2NewTab" style="text-align:left;width:480px;">
+						<div style="overflow: auto;height: 250px;width:700px;margin-right: 0px;margin-left: 0px;">
+							<table class="sigp2NewTab" style="text-align:left;width:680px;">
 								<%
 								int indiceAgent = 0;
 								if (process.getListeAgent()!=null){
@@ -157,7 +172,9 @@
 									<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeAgent().size()%>)" ondblclick='executeBouton("<%=process.getNOM_PB_OK(indiceAgent)%>")'>
 										<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: left;"><%=process.getVAL_ST_MATR(indiceAgent)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM(indiceAgent)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_PRENOM(indiceAgent)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_PRENOM(indiceAgent)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: left;"><%=process.getVAL_ST_CAFAT(indiceAgent)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_RUAMM(indiceAgent)%></td>
 										<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_OK(indiceAgent)%>" value="x"></td>
 									</tr>
 										<%

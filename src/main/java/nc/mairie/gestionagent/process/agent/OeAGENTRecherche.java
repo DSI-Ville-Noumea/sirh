@@ -4,21 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import nc.mairie.gestionagent.dto.RefEtatDto;
-import nc.mairie.gestionagent.dto.RefPrimeDto;
-import nc.mairie.gestionagent.dto.RefTypePointageDto;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
-import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.technique.VariableGlobale;
@@ -222,14 +216,19 @@ public class OeAGENTRecherche extends BasicProcess {
 			aListe = AgentNW.listerAgent(getTransaction());
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			AgentNW aAgent = AgentNW.chercherAgent(getTransaction(), Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
-			// Si erreur alors pas trouvé. On traite
-			if (getTransaction().isErreur()) {
-				return false;
-			}
+			if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_CAFAT())) {
+				aListe = AgentNW.listerAgentAvecCafatCommencant(getTransaction(), zone);
+			} else {
+				AgentNW aAgent = AgentNW.chercherAgent(getTransaction(),
+						Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
+				// Si erreur alors pas trouvé. On traite
+				if (getTransaction().isErreur()) {
+					return false;
+				}
 
-			aListe = new ArrayList<AgentNW>();
-			aListe.add(aAgent);
+				aListe = new ArrayList<AgentNW>();
+				aListe.add(aAgent);
+			}
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
@@ -237,10 +236,14 @@ public class OeAGENTRecherche extends BasicProcess {
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
+			// sinon les agents dont le numero cafat commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
 			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
-			String prefixe = service.getCodService().substring(0,
-					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2 : Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service.getCodService()) ? 4 : 0);
+			String prefixe = service.getCodService().substring(
+					0,
+					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
+							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
+									.getCodService()) ? 4 : 0);
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 		}
 
@@ -270,6 +273,10 @@ public class OeAGENTRecherche extends BasicProcess {
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
 				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
 				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
+				addZone(getNOM_ST_CAFAT(indiceAgent),
+						agent.getNumCafat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNumCafat());
+				addZone(getNOM_ST_RUAMM(indiceAgent),
+						agent.getNumRuamm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNumRuamm());
 
 				indiceAgent++;
 			}
@@ -394,6 +401,15 @@ public class OeAGENTRecherche extends BasicProcess {
 	}
 
 	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_RECH_CAFAT Date de
+	 * création : (08/10/08 13:07:23)
+	 * 
+	 */
+	public String getNOM_RB_RECH_CAFAT() {
+		return "NOM_RB_RECH_CAFAT";
+	}
+
+	/**
 	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_NOM Date de création
 	 * : (08/10/08 13:07:23)
 	 * 
@@ -418,6 +434,24 @@ public class OeAGENTRecherche extends BasicProcess {
 	 */
 	public String getNOM_RB_TRI_PRENOM() {
 		return "NOM_RB_TRI_PRENOM";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_CAFAT Date de
+	 * création : (08/10/08 13:07:23)
+	 * 
+	 */
+	public String getNOM_RB_TRI_CAFAT() {
+		return "NOM_RB_TRI_CAFAT";
+	}
+
+	/**
+	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_RUAMM Date de
+	 * création : (08/10/08 13:07:23)
+	 * 
+	 */
+	public String getNOM_RB_TRI_RUAMM() {
+		return "NOM_RB_TRI_RUAMM";
 	}
 
 	private boolean isFirst() {
@@ -454,6 +488,10 @@ public class OeAGENTRecherche extends BasicProcess {
 			tri = "noMatricule";
 		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_PRENOM())) {
 			tri = "prenom";
+		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_CAFAT())) {
+			tri = "numCafat";
+		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_RUAMM())) {
+			tri = "numRuamm";
 		}
 
 		// Remplissage de la liste
@@ -470,6 +508,10 @@ public class OeAGENTRecherche extends BasicProcess {
 				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
 				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
 				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
+				addZone(getNOM_ST_CAFAT(indiceAgent),
+						agent.getNumCafat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNumCafat());
+				addZone(getNOM_ST_RUAMM(indiceAgent),
+						agent.getNumRuamm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : agent.getNumRuamm());
 
 				indiceAgent++;
 			}
@@ -728,5 +770,21 @@ public class OeAGENTRecherche extends BasicProcess {
 
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
+	}
+
+	public String getNOM_ST_CAFAT(int i) {
+		return "NOM_ST_CAFAT" + i;
+	}
+
+	public String getVAL_ST_CAFAT(int i) {
+		return getZone(getNOM_ST_CAFAT(i));
+	}
+
+	public String getNOM_ST_RUAMM(int i) {
+		return "NOM_ST_RUAMM" + i;
+	}
+
+	public String getVAL_ST_RUAMM(int i) {
+		return getZone(getNOM_ST_RUAMM(i));
 	}
 }
