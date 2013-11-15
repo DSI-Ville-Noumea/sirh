@@ -9,7 +9,7 @@ constraint SIRH2.PK_P_NATURE_CREDIT
 primary key (ID_NATURE_CREDIT)
 );
 
-+ ajouter cette table dans les autorisations de opensirh
++ ajouter cette table dans les autorisations de opensirh2
 ----------------------------------------------------------------
 -- PROD
 ----------------------------------------------------------------
