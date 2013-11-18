@@ -119,6 +119,11 @@ menuAVCTAvancementContractuels.ajouterFils(new Lien("AVCTTest", "test", "Page de
 <%}%>
 document.write(menuAVCTAvancementContractuels.afficher());
 
+var menuAVCTAvancementDetaches = new MenuHaut("Module_avct_simulationDetaches");
+menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTSimulationDetaches", "SIMU DETACHES", "Simulation pour les fonctionnaires détachés", true, false,"AVCT/SIMU"));
+menuAVCTAvancementDetaches.ajouterFils(new Lien("AVCTDetaches", "DETACHES", "Avancement des fonctionnaires détachés", true, false,"AVCT/DETA"));
+document.write(menuAVCTAvancementDetaches.afficher());
+
 var menuAVCTAvancementConvCol = new MenuHaut("Module_avct_simulationConvCol");
 menuAVCTAvancementConvCol.ajouterFils(new Lien("AVCTSimulationConvCol", "SIMU CONVENTIONS", "Simulation pour les conventions collectives", true, false,"AVCT/SIMU"));
 menuAVCTAvancementConvCol.ajouterFils(new Lien("AVCTConvCol", "CONVENTIONS", "Avancement des conventions collectives", true, false,"AVCT/CONV"));

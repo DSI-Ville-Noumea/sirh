@@ -88,6 +88,8 @@
 		listeDroits.add("AVCTMasseSalariale");
 		listeDroits.add("AVCTMasseSalarialeContr");
 		listeDroits.add("AVCTMasseSalarialeConv");
+		listeDroits.add("AVCTSimulationDetaches");
+		listeDroits.add("AVCTDetaches");
 		listeDroits.add("AVCTTest");
 		
 		/*Module POINTAGE*/

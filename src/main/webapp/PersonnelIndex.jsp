@@ -82,6 +82,7 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEME
 		Module_avct.ajouterFils(new Lien("simulationFonctionnaires", "AVCTSimulationFontionnaires", "Avancement Fonctionnaires", "Gestion des avancements des fontionnaires", true));
 		Module_avct.ajouterFils(new Lien("simulationContractuels", "AVCTSimulationContractuels", "Avancement Contractuels", "Gestion des avancements des contractuels", true));
 		Module_avct.ajouterFils(new Lien("simulationConvCol", "AVCTSimulationConvCol", "Avancement Conventions", "Gestion des avancements des conventions collectives", true));
+		Module_avct.ajouterFils(new Lien("simulationDetaches", "AVCTSimulationDetaches", "Avancement Détachés", "Gestion des avancements des détachés", true));
 	<%}%>
 	<% 
 	String affCampagneEAE =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_CAMPAGNE_EAE");

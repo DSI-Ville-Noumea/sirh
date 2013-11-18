@@ -94,6 +94,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private CapDao capDao;
 
+	private ArrayList<String> listeDocuments;
+	private String urlFichier;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -779,7 +782,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			try {
 				byte[] fileAsBytes = getArretesReportAsByteArray(
 						listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						true, Integer.valueOf(getAnneeSelect()));
+						true, Integer.valueOf(getAnneeSelect()), false);
 
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
 					// "ERR185",
@@ -800,7 +803,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 				byte[] fileAsBytes = getArretesReportAsByteArray(
 						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						false, Integer.valueOf(getAnneeSelect()));
+						false, Integer.valueOf(getAnneeSelect()), false);
 				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
 					// "ERR185",
 					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
@@ -819,8 +822,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		afficheListeAvancement();
 		return true;
 	}
-
-	private String urlFichier;
 
 	public String getUrlFichier() {
 		String res = urlFichier;
@@ -870,17 +871,19 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		return true;
 	}
 
-	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct)
-			throws Exception {
+	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct,
+			boolean isDetache) throws Exception {
 
-		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct);
+		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct, isDetache);
 
 		return readResponseAsByteArray(response);
 	}
 
-	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct) {
+	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct,
+			boolean isDetache) {
 		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT")
-				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct;
+				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct
+				+ "&isDetache=" + isDetache;
 
 		Client client = Client.create();
 
@@ -2025,8 +2028,6 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	public String getVAL_ST_DATE_CAP(int i) {
 		return getZone(getNOM_ST_DATE_CAP(i));
 	}
-
-	private ArrayList<String> listeDocuments;
 
 	public ArrayList<String> getListeDocuments() {
 		if (listeDocuments == null)

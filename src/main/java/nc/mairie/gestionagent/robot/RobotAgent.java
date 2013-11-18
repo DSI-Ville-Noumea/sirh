@@ -38,6 +38,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctArretes;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctCarrieres;
+import nc.mairie.gestionagent.process.avancement.OeAVCTFonctDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaAvct;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeContractuel;
@@ -47,6 +48,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionActeurs;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationContractuels;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
+import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
@@ -60,8 +62,8 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.pointage.OePTGDroits;
-import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
+import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
 import nc.mairie.gestionagent.process.pointage.OePTGSaisie;
 import nc.mairie.gestionagent.process.pointage.OePTGSelectionAgent;
@@ -213,6 +215,10 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeContractuel();
 		} else if (activite.equals("AVCTMasseSalarialeConv")) {
 			return new OeAVCTMasseSalarialeConvention();
+		} else if (activite.equals("AVCTSimulationDetaches")) {
+			return new OeAVCTSimulationDetaches();
+		} else if (activite.equals("AVCTDetaches")) {
+			return new OeAVCTFonctDetaches();
 		} // TEST
 		else if (activite.equals("AVCTTest")) {
 			return new OeAVCTTest();
@@ -395,6 +401,13 @@ public class RobotAgent extends Robot {
 
 		// Classe OeAVCTFonctCarrieres
 		navigation.put(OeAVCTFonctCarrieres.class.getName() + OeAVCTFonctCarrieres.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTSimulationDetaches
+		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+		// Classe OeAVCTFonctPrepaAvct
+		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// Classe OeAVCTCampagnePlanification
