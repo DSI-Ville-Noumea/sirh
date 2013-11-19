@@ -16,7 +16,6 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.VariablesActivite;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)

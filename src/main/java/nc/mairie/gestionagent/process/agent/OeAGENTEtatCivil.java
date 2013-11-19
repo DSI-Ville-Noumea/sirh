@@ -11,7 +11,6 @@ import nc.mairie.enums.EnumCivilite;
 import nc.mairie.enums.EnumCollectivite;
 import nc.mairie.enums.EnumNationalite;
 import nc.mairie.enums.EnumSexe;
-import nc.mairie.enums.EnumSituationFamiliale;
 import nc.mairie.enums.EnumTypeContact;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
