@@ -1,24 +1,27 @@
 package nc.mairie.gestionagent.process.avancement;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
-import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.AutreAdministrationAgent;
+import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementDetaches;
+import nc.mairie.metier.carriere.Bareme;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.metier.poste.Affectation;
+import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -26,25 +29,17 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.TreeHierarchy;
+import nc.mairie.utils.VariablesActivite;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
  */
-public class OeAVCTFonctDetaches extends BasicProcess {
+public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 	/**
 	 * 
@@ -53,21 +48,22 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	private Logger logger = LoggerFactory.getLogger(OeAVCTFonctDetaches.class);
+	private Logger logger = LoggerFactory.getLogger(OeAVCTMasseSalarialeDetaches.class);
 
 	private String[] LB_ANNEE;
 
 	private String[] listeAnnee;
-	private String anneeSelect;
 
 	private Hashtable<String, MotifAvancement> hashMotifAvct;
 	private ArrayList<MotifAvancement> listeMotifAvct;
 
+	private ArrayList<Service> listeServices;
+	public Hashtable<String, TreeHierarchy> hTree = null;
+
 	private ArrayList<AvancementDetaches> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
-	private ArrayList<String> listeDocuments;
-	private String urlFichier;
+	public String ACTION_CALCUL = "Calcul";
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -92,38 +88,21 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 		initialiseListeDeroulante();
 
-		// Initialisation de la liste des documents suivi medicaux
-		if (getListeDocuments() == null || getListeDocuments().size() == 0) {
-			setListeDocuments(listerDocumentsArretes());
-			afficheListeDocuments();
-
+		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			performPB_LANCER(request);
 		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*
-			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
-			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
-			 * (anneeCourante == null || anneeCourante.length() == 0)
-			 * anneeCourante = Services.dateDuJour().substring(6, 10);
-			 */
-			String anneeCourante = "2014";
-			setListeAnnee(new String[5]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
-
-			// TODO
-			// changement de l'année pour faire au mieux.
-			// getListeAnnee()[0] =
-			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
-			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
-			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
-			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
-			getListeAnnee()[4] = String.valueOf(Integer.parseInt(anneeCourante) + 5);
+			String anneeCourante = Services.dateDuJour().substring(6, 10);
+			setListeAnnee(new String[1]);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
 			setLB_ANNEE(getListeAnnee());
-			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
-			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
 		}
 		// Si liste motifs avancement vide alors affectation
 		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
@@ -134,6 +113,42 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			for (int i = 0; i < getListeMotifAvct().size(); i++) {
 				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
 				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
+			}
+		}
+		// Si la liste des services est nulle
+		if (getListeServices() == null || getListeServices().size() == 0) {
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
+			setListeServices(services);
+
+			// Tri par codeservice
+			Collections.sort(getListeServices(), new Comparator<Object>() {
+				public int compare(Object o1, Object o2) {
+					Service s1 = (Service) o1;
+					Service s2 = (Service) o2;
+					return (s1.getCodService().compareTo(s2.getCodService()));
+				}
+			});
+
+			// alim de la hTree
+			hTree = new Hashtable<String, TreeHierarchy>();
+			TreeHierarchy parent = null;
+			for (int i = 0; i < getListeServices().size(); i++) {
+				Service serv = (Service) getListeServices().get(i);
+
+				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
+					continue;
+
+				// recherche du supérieur
+				String codeService = serv.getCodService();
+				while (codeService.endsWith("A")) {
+					codeService = codeService.substring(0, codeService.length() - 1);
+				}
+				codeService = codeService.substring(0, codeService.length() - 1);
+				codeService = Services.rpad(codeService, 4, "A");
+				parent = hTree.get(codeService);
+				int indexParent = (parent == null ? 0 : parent.getIndex());
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
+
 			}
 		}
 
@@ -148,6 +163,25 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+			// Si clic sur le bouton PB_LANCER
+			if (testerParametre(request, getNOM_PB_LANCER())) {
+				return performPB_LANCER(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT())) {
+				return performPB_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_SERVICE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE())) {
+				return performPB_SUPPRIMER_RECHERCHER_SERVICE(request);
+			}
 
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
@@ -168,18 +202,6 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
 				return performPB_FILTRER(request);
 			}
-
-			// Si clic sur le bouton PB_IMPRIMER
-			if (testerParametre(request, getNOM_PB_IMPRIMER())) {
-				return performPB_IMPRIMER(request);
-			}
-
-			// Si clic sur le bouton PB_VISUALISER pour les documents
-			for (int i = 0; i < getListeDocuments().size(); i++) {
-				if (testerParametre(request, getNOM_PB_VISUALISATION(i))) {
-					return performPB_VISUALISATION(request, i);
-				}
-			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -191,7 +213,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	 * (21/11/11 09:55:36)
 	 * 
 	 */
-	public OeAVCTFonctDetaches() {
+	public OeAVCTMasseSalarialeDetaches() {
 		super();
 	}
 
@@ -201,14 +223,14 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	 * 
 	 */
 	public String getJSP() {
-		return "OeAVCTFonctDetaches.jsp";
+		return "OeAVCTMasseSalarialeDetaches.jsp";
 	}
 
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
-		return "ECR-AVCT-DETACHE";
+		return "ECR-SIMU-MASSE-DETA";
 	}
 
 	/**
@@ -353,8 +375,6 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
-			addZone(getNOM_CK_VALID_ARR_IMPR(i), getCHECKED_OFF());
-			addZone(getNOM_CK_REGUL_ARR_IMPR(i), av.isRegularisation() ? getCHECKED_ON() : getCHECKED_OFF());
 
 		}
 	}
@@ -857,13 +877,6 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 				// on traite le numero et la date d'arreté
 				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
-
-				// on traite la regularisation
-				if (getVAL_CK_REGUL_ARR_IMPR(i).equals(getCHECKED_ON())) {
-					avct.setRegularisation(true);
-				} else {
-					avct.setRegularisation(false);
-				}
 			}
 			avct.modifierAvancement(getTransaction());
 			if (getTransaction().isErreur())
@@ -1088,388 +1101,521 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
-				: -1);
-		String annee = (String) getListeAnnee()[indiceAnnee];
-		setAnneeSelect(annee);
+		agentEnErreur = Const.CHAINE_VIDE;
+		String annee = getListeAnnee()[0];
 
-		setListeAvct(AvancementDetaches.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, null, null,
-				null));
+		// recuperation du service
+		ArrayList<String> listeSousService = null;
+		if (getVAL_ST_CODE_SERVICE().length() != 0) {
+			// on recupere les sous-service du service selectionne
+			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
+			listeSousService = Service.listSousServiceBySigle(getTransaction(), serv.getSigleService());
+		}
 
+		// recuperation agent
+		AgentNW agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+		}
+
+		setListeAvct(AvancementDetaches.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent,
+				listeSousService, null));
 		afficherListeAvct(request);
+
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_VALID_ARR_IMPR Date de création : (21/11/11 09:55:36)
+	 * Retourne pour la JSP le nom de la zone statique : ST_CODE_SERVICE Date de
+	 * création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getNOM_CK_VALID_ARR_IMPR(int i) {
-		return "NOM_CK_VALID_ARR_IMPR_" + i;
+	public String getNOM_ST_CODE_SERVICE() {
+		return "NOM_ST_CODE_SERVICE";
 	}
 
 	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_VALID_SGC_ARR Date de création : (21/11/11 09:55:36)
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_CODE_SERVICE
+	 * Date de création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getVAL_CK_VALID_ARR_IMPR(int i) {
-		return getZone(getNOM_CK_VALID_ARR_IMPR(i));
+	public String getVAL_ST_CODE_SERVICE() {
+		return getZone(getNOM_ST_CODE_SERVICE());
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_IMPRIMER Date de création :
-	 * (21/11/11 09:55:36)
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_SERVICE Date de
+	 * création : (21/11/11 11:11:24)
 	 * 
 	 */
-	public String getNOM_PB_IMPRIMER() {
-		return "NOM_PB_IMPRIMER";
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_SERVICE Date de création : (21/11/11 11:11:24)
+	 * 
+	 */
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
+	}
+
+	/**
+	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getNOM_ST_AGENT() {
+		return "NOM_ST_AGENT";
+	}
+
+	/**
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
+	 * création : (02/08/11 09:40:42)
+	 * 
+	 */
+	public String getVAL_ST_AGENT() {
+		return getZone(getNOM_ST_AGENT());
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
+	 * création : (02/08/11 09:42:00)
+	 * 
+	 */
+	public String getNOM_PB_RECHERCHER_AGENT() {
+		return "NOM_PB_RECHERCHER_AGENT";
 	}
 
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 09:55:36)
+	 * setStatut(STATUT,Message d'erreur) Date de création : (02/08/11 09:42:00)
 	 * 
 	 */
-	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
+	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
-		verifieRepertoire("Avancement");
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
 
-		// on supprime les documents existants
-		String docuChangementClasse = "Avancement/arretesChangementClasseDetaches.doc";
-		String docuAvctDiff = "Avancement/arretesAvancementDiffDetaches.doc";
-		// on verifie l'existance de chaque fichier
-		File chgtClasse = new File(repPartage.substring(8, repPartage.length()) + docuChangementClasse);
-		if (chgtClasse.exists()) {
-			chgtClasse.delete();
+		setStatut(STATUT_RECHERCHER_AGENT, true);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_AGENT
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_ST_AGENT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_RECHERCHER_SERVICE
+	 * Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_SERVICE";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
+	 * 
+	 * 
+	 */
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
+	 * 
+	 */
+	public boolean performPB_SUPPRIMER_RECHERCHER_SERVICE(HttpServletRequest request) throws Exception {
+		// On enlève le service selectionnée
+		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	/**
+	 * Retourne la liste des services.
+	 * 
+	 * @return listeServices
+	 */
+	public ArrayList<Service> getListeServices() {
+		return listeServices;
+	}
+
+	/**
+	 * Met à jour la liste des services.
+	 * 
+	 * @param listeServices
+	 */
+	private void setListeServices(ArrayList<Service> listeServices) {
+		this.listeServices = listeServices;
+	}
+
+	/**
+	 * Retourne une hashTable de la hiérarchie des Service selon le code
+	 * Service.
+	 * 
+	 * @return hTree
+	 */
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
+	}
+
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_LANCER Date de création :
+	 * (21/11/11 11:11:24)
+	 * 
+	 */
+	public String getNOM_PB_LANCER() {
+		return "NOM_PB_LANCER";
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (21/11/11 11:11:24)
+	 * 
+	 */
+	public boolean performPB_LANCER(HttpServletRequest request) throws Exception {
+
+		// Mise à jour de l'action menée
+		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
+
+		String an = getListeAnnee()[0];
+
+		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
+		// et de l'année
+		AvancementDetaches.supprimerAvancementTravailAvecCategorie(getTransaction(), an);
+
+		// recuperation agent
+		AgentNW agent = null;
+		if (getVAL_ST_AGENT().length() != 0) {
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
-		File avctDiff = new File(repPartage.substring(8, repPartage.length()) + docuAvctDiff);
-		if (avctDiff.exists()) {
-			avctDiff.delete();
+
+		if (!performCalculDetache(getVAL_ST_CODE_SERVICE(), an, agent))
+			return false;
+
+		commitTransaction();
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT, an);
+
+		// "INF200","Simulation effectuée"
+		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF200"));
+
+		return true;
+	}
+
+	private boolean performCalculDetache(String codeService, String annee, AgentNW agent) throws Exception {
+		ArrayList<AgentNW> la = new ArrayList<AgentNW>();
+		if (agent != null) {
+			// il faut regarder si cet agent est de type Fonctionnaire détaché
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+			if (carr == null
+					|| carr.getCodeCategorie() == null
+					|| (!carr.getCodeCategorie().equals("6") && !carr.getCodeCategorie().equals("16")
+							&& !carr.getCodeCategorie().equals("17") && !carr.getCodeCategorie().equals("19"))) {
+				// "ERR181",
+				// "Cet agent n'est pas de type @. Il ne peut pas être soumis à l'avancement @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "détaché", "des détachés"));
+				return false;
+			}
+			la.add(agent);
+		} else {
+			// Récupération des agents
+			// on recupere les sous-service du service selectionne
+
+			ArrayList<String> listeSousService = null;
+			if (!codeService.equals(Const.CHAINE_VIDE)) {
+				Service serv = Service.chercherService(getTransaction(), codeService);
+				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
+			}
+
+			// Récupération des agents
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Detache");
+			String listeNomatrAgent = Const.CHAINE_VIDE;
+			for (Carriere carr : listeCarriereActive) {
+				listeNomatrAgent += carr.getNoMatricule() + ",";
+			}
+			if (!listeNomatrAgent.equals(Const.CHAINE_VIDE)) {
+				listeNomatrAgent = listeNomatrAgent.substring(0, listeNomatrAgent.length() - 1);
+			}
+			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
 		}
-		ArrayList<Integer> listeImpressionChangementClasse = new ArrayList<Integer>();
-		ArrayList<Integer> listeImpressionAvancementDiff = new ArrayList<Integer>();
+		// Parcours des agents
+		for (int i = 0; i < la.size(); i++) {
+			AgentNW a = la.get(i);
 
-		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		String heureAction = sdf.format(new Date());
-		String dateJour = Services.dateDuJour();
+			// Recuperation de la carriere en cours
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a);
+			if (getTransaction().isErreur() || carr == null || carr.getDateDebut() == null) {
+				getTransaction().traiterErreur();
+				continue;
+			}
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
+					a.getNoMatricule(),
+					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
+			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
+					|| paAgent.estPAInactive(getTransaction())) {
+				getTransaction().traiterErreur();
+				continue;
+			}
 
-		for (int j = 0; j < getListeAvct().size(); j++) {
-			AvancementDetaches avct = (AvancementDetaches) getListeAvct().get(j);
-			Integer idAvct = Integer.valueOf(avct.getIdAvct());
-			if (getVAL_CK_VALID_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-				if (avct.getIdMotifAvct().equals("4")) {
-					// on fait une liste des arretes changement classe
-					listeImpressionChangementClasse.add(Integer.valueOf(avct.getIdAgent()));
-				} else if (avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("6")
-						|| avct.getIdMotifAvct().equals("3")) {
-					// on fait une liste des arretes avancement diffé
-					listeImpressionAvancementDiff.add(Integer.valueOf(avct.getIdAgent()));
-				} else {
+			// Récupération de l'avancement
+			AvancementDetaches avct = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(getTransaction(), annee,
+					a.getIdAgent());
+			if (getTransaction().isErreur() || avct.getIdAvct() == null) {
+				if (getTransaction().isErreur())
+					getTransaction().traiterErreur();
+				// on regarde si il y a d'autre carrieres avec le meme grade
+				// si oui on prend la carriere plus lointaine
+				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(),
+						a.getNoMatricule(), carr.getCodeGrade());
+				if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
+					carr = (Carriere) listeCarrMemeGrade.get(0);
+				}
+				Grade gradeActuel = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
 					continue;
 				}
-				// si la ligne est cochée
-				// on regarde si l'etat est deja ARR
-				// --> oui on ne modifie pas le user
-				// --> non on passe l'etat à ARR et on met à jour le user
-				if (avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) {
-					// on sauvegarde qui a fait l'action
-					avct.setUserVerifArrImpr(user.getUserName());
-					avct.setDateVerifArrImpr(dateJour);
-					avct.setHeureVerifArrImpr(heureAction);
-				}
+				// Si pas de grade suivant, agent non éligible
+				if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
+					// Création de l'avancement
+					avct = new AvancementDetaches();
+					avct.setIdAgent(a.getIdAgent());
+					avct.setCodeCategorie(carr.getCodeCategorie());
+					avct.setAnnee(annee);
+					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
+					// on traite si l'agent est detaché ou non
+					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
+							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
+						avct.setAgentVDN(false);
+					} else {
+						avct.setAgentVDN(true);
+					}
+					// BM/ACC
+					avct.setNouvBMAnnee(carr.getBMAnnee());
+					avct.setNouvBMMois(carr.getBMMois());
+					avct.setNouvBMJour(carr.getBMJour());
+					avct.setNouvACCAnnee(carr.getACCAnnee());
+					avct.setNouvACCMois(carr.getACCMois());
+					avct.setNouvACCJour(carr.getACCJour());
 
-				// on sauvegarde les regularisations
+					// calcul BM/ACC applicables
+					int nbJoursBM = AvancementDetaches.calculJourBM(gradeActuel, carr);
+					int nbJoursACC = AvancementDetaches.calculJourACC(gradeActuel, carr);
 
-				if (getVAL_CK_REGUL_ARR_IMPR(idAvct).equals(getCHECKED_ON())) {
-					avct.setRegularisation(true);
-				} else {
-					avct.setRegularisation(false);
-				}
+					int nbJoursBonusDepart = nbJoursBM + nbJoursACC;
+					int nbJoursBonus = nbJoursBM + nbJoursACC;
+					// Calcul date avancement au Grade actuel
+					if (gradeActuel.getDureeMoy() != null && gradeActuel.getDureeMoy().length() != 0) {
+						avct.setDureeStandard(gradeActuel.getDureeMoy());
+						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
+							avct.setDateAvctMoy(carr.getDateDebut().substring(0, 6) + annee);
+							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
+						} else {
+							avct.setDateAvctMoy(AvancementDetaches.calculDateAvctMoy(gradeActuel, carr));
+							nbJoursBonus = 0;
+						}
+					}
+					// si la date avct moy (année ) sup à l'année choisie pour
+					// la simu alors on sort l'agent du calcul
+					Integer anneeNumerique = Integer.valueOf(avct.getAnnee());
+					Integer anneeDateAvctMoyNumerique = Integer.valueOf(avct.getDateAvctMoy().substring(6,
+							avct.getDateAvctMoy().length()));
+					if (anneeDateAvctMoyNumerique > anneeNumerique) {
+						continue;
+					}
 
-				if (!AvancementDetaches.modifierImpressionAvancement(getTransaction(), avct)) {
-					getTransaction()
-							.declarerErreur(
-									"Une erreur est survenue dans la sauvegarde des avancements. Merci de contacter le responsable du projet.");
-					return false;
+					// Calcul du grade suivant (BM/ACC)
+					Grade gradeSuivant = Grade.chercherGrade(getTransaction(), gradeActuel.getCodeGradeSuivant());
+					if (gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0
+							&& Services.estNumerique(gradeSuivant.getDureeMoy())) {
+						boolean isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
+						while (isReliquatSuffisant && gradeSuivant.getCodeGradeSuivant() != null
+								&& gradeSuivant.getCodeGradeSuivant().length() > 0
+								&& gradeSuivant.getDureeMoy() != null && gradeSuivant.getDureeMoy().length() > 0) {
+							nbJoursBonus -= Integer.parseInt(gradeSuivant.getDureeMoy()) * 30;
+							gradeSuivant = Grade.chercherGrade(getTransaction(), gradeSuivant.getCodeGradeSuivant());
+							isReliquatSuffisant = (nbJoursBonus > Integer.parseInt(gradeSuivant.getDureeMoy()) * 30);
+						}
+					}
+
+					int nbJoursRestantsBM = nbJoursBonus > nbJoursACC ? nbJoursBonus - nbJoursACC : Integer
+							.parseInt(Const.ZERO);
+					int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
+
+					avct.setNouvBMAnnee(String.valueOf(nbJoursRestantsBM / 365));
+					avct.setNouvBMMois(String.valueOf((nbJoursRestantsBM % 365) / 30));
+					avct.setNouvBMJour(String.valueOf((nbJoursRestantsBM % 365) % 30));
+
+					avct.setNouvACCAnnee(String.valueOf(nbJoursRestantsACC / 365));
+					avct.setNouvACCMois(String.valueOf((nbJoursRestantsACC % 365) / 30));
+					avct.setNouvACCJour(String.valueOf((nbJoursRestantsACC % 365) % 30));
+
+					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null
+							|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
+					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
+					avct.setCodeCadre(gradeActuel.getCodeCadre());
+
+					// avct.setDateArrete("01/01/" + annee);
+					// avct.setNumArrete(annee);
+
+					// IBA,INM,INA
+					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					}
+					avct.setIban(carr.getIban());
+					avct.setInm(bareme.getInm());
+					avct.setIna(bareme.getIna());
+
+					// on recupere le grade du poste
+					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
+					if (aff.getIdFichePoste() == null) {
+						// on ne fait rien
+					} else {
+						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+						Service section = Service.getSection(getTransaction(), fp.getIdServi());
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+						// on regarde si l'agent est AFFECTE dans une autre
+						// administration
+						if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
+								|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
+							avct.setDirectionService(null);
+							avct.setSectionService(null);
+							// alors on va chercher l'autre administration de
+							// l'agent
+							AutreAdministrationAgent autreAdminAgent = AutreAdministrationAgent
+									.chercherAutreAdministrationAgentActive(getTransaction(), a.getIdAgent());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							} else {
+								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
+									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin());
+								}
+							}
+						}
+
+						// on calcul le nouvel INM
+						if (bareme != null && bareme.getInm() != null) {
+							Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
+							GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(),
+									g.getCodeGradeGenerique());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							}
+							String nouvINM = Const.CHAINE_VIDE;
+							if (gg.getNbPointsAvct() == null) {
+								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()));
+							} else {
+								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
+										+ Integer.valueOf(gg.getNbPointsAvct()));
+							}
+							// avec ce nouvel INM on recupere l'iban et l'ina
+							// correspondant
+							ArrayList<Bareme> listeBarem = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
+							if (listeBarem.size() > 0) {
+								Bareme nouvBareme = (Bareme) listeBarem.get(0);
+								// on rempli les champs
+								avct.setNouvIBAN(nouvBareme.getIban());
+								avct.setNouvINM(nouvBareme.getInm());
+								avct.setNouvINA(nouvBareme.getIna());
+							}
+						}
+					}
+
+					if (carr != null) {
+						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
+							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
+							avct.setGrade(grd.getCodeGrade());
+							// avct.setLibelleGrade(grd.getLibGrade());
+
+							// on prend l'id motif de la colonne CDTAVA du grade
+							// si CDTAVA correspond à AVANCEMENT DIFF alors on
+							// calcul les 3 dates sinon on calcul juste la date
+							// moyenne
+							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
+								avct.setIdMotifAvct(grd.getCodeTava());
+							} else {
+								avct.setIdMotifAvct(null);
+							}
+
+							if (grd.getCodeGradeGenerique() != null) {
+								// on cherche le grade generique pour trouver la
+								// filiere
+								GradeGenerique ggCarr = GradeGenerique.chercherGradeGenerique(getTransaction(),
+										grd.getCodeGradeGenerique());
+								if (getTransaction().isErreur())
+									getTransaction().traiterErreur();
+
+								if (ggCarr != null && ggCarr.getCdfili() != null) {
+									FiliereGrade fil = FiliereGrade.chercherFiliereGrade(getTransaction(),
+											ggCarr.getCdfili());
+									avct.setFiliere(fil.getLibFiliere());
+								}
+							}
+						}
+					}
+					avct.setDateGrade(carr.getDateDebut());
+					avct.setBMAnnee(carr.getBMAnnee());
+					avct.setBMMois(carr.getBMMois());
+					avct.setBMJour(carr.getBMJour());
+					avct.setACCAnnee(carr.getACCAnnee());
+					avct.setACCMois(carr.getACCMois());
+					avct.setACCJour(carr.getACCJour());
+
+					// on regarde si l'agent a une carriere de simulation dejà
+					// saisie
+					// autrement dis si la carriere actuelle a pour datfin 0
+					if (carr.getDateFin() == null || carr.getDateFin().equals(Const.ZERO)) {
+						avct.setCarriereSimu(null);
+					} else {
+						avct.setCarriereSimu("S");
+					}
+
+					avct.setDateVerifSEF(Const.DATE_NULL);
+					avct.setDateVerifSGC(Const.DATE_NULL);
+					avct.creerAvancement(getTransaction());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					}
 				}
-				commitTransaction();
 			}
-			addZone(getNOM_CK_VALID_ARR_IMPR(idAvct), getCHECKED_OFF());
-
 		}
-		if (listeImpressionChangementClasse.size() > 0) {
-
-			try {
-				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionChangementClasse.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						true, Integer.valueOf(getAnneeSelect()), true);
-
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuChangementClasse)) {
-					// "ERR185",
-					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-					return false;
-				}
-			} catch (Exception e) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
-		}
-		if (listeImpressionAvancementDiff.size() > 0) {
-			try {
-
-				byte[] fileAsBytes = getArretesReportAsByteArray(
-						listeImpressionAvancementDiff.toString().replace("[", "").replace("]", "").replace(" ", ""),
-						false, Integer.valueOf(getAnneeSelect()), true);
-				if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, docuAvctDiff)) {
-					// "ERR185",
-					// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-					return false;
-				}
-			} catch (Exception e) {
-				// "ERR185",
-				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
-				return false;
-			}
-
-		}
-		setListeDocuments(null);
-		afficherListeAvct(request);
 		return true;
-	}
-
-	/**
-	 * Getter de l'annee sélectionnée.
-	 * 
-	 * @return anneeSelect
-	 */
-	public String getAnneeSelect() {
-		return anneeSelect;
-	}
-
-	/**
-	 * Setter de l'année sélectionnée
-	 * 
-	 * @param newAnneeSelect
-	 */
-	public void setAnneeSelect(String newAnneeSelect) {
-		this.anneeSelect = newAnneeSelect;
-	}
-
-	private void verifieRepertoire(String codTypeDoc) {
-		// on verifie déjà que le repertoire source existe
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-
-		File dossierParent = new File(repPartage);
-		if (!dossierParent.exists()) {
-			dossierParent.mkdir();
-		}
-		File ssDossier = new File(repPartage + codTypeDoc + "/");
-		if (!ssDossier.exists()) {
-			ssDossier.mkdir();
-		}
-	}
-
-	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) throws Exception {
-
-		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct, isDetache);
-
-		return readResponseAsByteArray(response);
-	}
-
-	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) {
-		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT")
-				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct
-				+ "&isDetache=" + isDetache;
-
-		Client client = Client.create();
-
-		WebResource webResource = client.resource(urlWSArretes);
-
-		ClientResponse response = webResource.get(ClientResponse.class);
-
-		return response;
-	}
-
-	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
-
-		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new Exception(String.format("An error occured ", response.getStatus()));
-		}
-
-		byte[] reponseData = null;
-		File reportFile = null;
-
-		try {
-			reportFile = response.getEntity(File.class);
-			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
-		} catch (Exception e) {
-			throw new Exception("An error occured while reading the downloaded report.", e);
-		} finally {
-			if (reportFile != null && reportFile.exists())
-				reportFile.delete();
-		}
-
-		return reponseData;
-	}
-
-	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
-
-		BufferedOutputStream bos = null;
-		FileObject pdfFile = null;
-
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s", chemin + filename));
-			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
-			IOUtils.write(fileAsBytes, bos);
-			IOUtils.closeQuietly(bos);
-
-			if (pdfFile != null) {
-				try {
-					pdfFile.close();
-				} catch (FileSystemException e) {
-					// ignore the exception
-				}
-			}
-		} catch (Exception e) {
-			logger.error(String.format("An error occured while writing the report file to the following path  : "
-					+ chemin + filename + " : " + e));
-			return false;
-		}
-		return true;
-	}
-
-	public ArrayList<String> getListeDocuments() {
-		if (listeDocuments == null)
-			return new ArrayList<String>();
-		return listeDocuments;
-	}
-
-	public void setListeDocuments(ArrayList<String> listeDocuments) {
-		this.listeDocuments = listeDocuments;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_NOM_DOC(int i) {
-		return "NOM_ST_NOM_DOC_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_NOM_DOC(int i) {
-		return getZone(getNOM_ST_NOM_DOC(i));
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public String getNOM_PB_VISUALISATION(int i) {
-		return "NOM_PB_VISUALISATION" + i;
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
-	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
-
-		String docSelection = getListeDocuments().get(indiceEltAConsulter);
-		String nomDoc = docSelection.substring(docSelection.lastIndexOf("/"), docSelection.length());
-
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + "Avancement" + nomDoc));
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	private void afficheListeDocuments() {
-		for (int i = 0; i < getListeDocuments().size(); i++) {
-			String nomDoc = getListeDocuments().get(i);
-			addZone(getNOM_ST_NOM_DOC(i), nomDoc.substring(nomDoc.lastIndexOf("/") + 1, nomDoc.length()));
-		}
-	}
-
-	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
-		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
-		scriptOuvPDF.append("</script>");
-		return scriptOuvPDF.toString();
-	}
-
-	public String getUrlFichier() {
-		String res = urlFichier;
-		setURLFichier(null);
-		if (res == null) {
-			return Const.CHAINE_VIDE;
-		} else {
-			return res;
-		}
-	}
-
-	private void setURLFichier(String scriptOuverture) {
-		urlFichier = scriptOuverture;
-	}
-
-	private ArrayList<String> listerDocumentsArretes() throws ParseException {
-		ArrayList<String> res = new ArrayList<String>();
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String docuArreteChangementClasse = repPartage + "Avancement/arretesChangementClasseDetaches.doc";
-		String docuArreteAvctDiff = repPartage + "Avancement/arretesAvancementDiffDetaches.doc";
-
-		// on verifie l'existance de chaque fichier
-		boolean existsDocuArreteChangementClasse = new File(docuArreteChangementClasse).exists();
-		if (existsDocuArreteChangementClasse) {
-			res.add(docuArreteChangementClasse);
-		}
-		boolean existsDocuArreteAvctDiff = new File(docuArreteAvctDiff).exists();
-		if (existsDocuArreteAvctDiff) {
-			res.add(docuArreteAvctDiff);
-		}
-		return res;
-	}
-
-	/**
-	 * Retourne le nom de la case à cocher sélectionnée pour la JSP :
-	 * CK_REGUL_ARR_IMPR Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_CK_REGUL_ARR_IMPR(int i) {
-		return "NOM_CK_REGUL_ARR_IMPR_" + i;
-	}
-
-	/**
-	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
-	 * à cocher : CK_REGUL_SGC_ARR Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_CK_REGUL_ARR_IMPR(int i) {
-		return getZone(getNOM_CK_REGUL_ARR_IMPR(i));
 	}
 }

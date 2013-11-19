@@ -43,6 +43,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaAvct;
 import nc.mairie.gestionagent.process.avancement.OeAVCTFonctPrepaCAP;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeContractuel;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeConvention;
+import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTMasseSalarialeFonctionnaire;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionActeurs;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSelectionEvaluateur;
@@ -215,6 +216,8 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeContractuel();
 		} else if (activite.equals("AVCTMasseSalarialeConv")) {
 			return new OeAVCTMasseSalarialeConvention();
+		} else if (activite.equals("AVCTMasseSalarialeDetaches")) {
+			return new OeAVCTMasseSalarialeDetaches();
 		} else if (activite.equals("AVCTSimulationDetaches")) {
 			return new OeAVCTSimulationDetaches();
 		} else if (activite.equals("AVCTDetaches")) {
@@ -406,6 +409,11 @@ public class RobotAgent extends Robot {
 		// Classe OeAVCTSimulationDetaches
 		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
+
+		// Classe OeAVCTSimulationDetaches
+		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+
 		// Classe OeAVCTFonctPrepaAvct
 		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
@@ -437,6 +445,8 @@ public class RobotAgent extends Robot {
 				+ OeAVCTMasseSalarialeConvention.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTMasseSalarialeFonctionnaire.class.getName()
 				+ OeAVCTMasseSalarialeFonctionnaire.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName()
+				+ OeAVCTMasseSalarialeDetaches.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// SUIVI MEDICAL //

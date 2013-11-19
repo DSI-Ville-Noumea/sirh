@@ -303,7 +303,8 @@ public class OeAVCTContractuels extends BasicProcess {
 						// on crée un nouvelle carriere
 						Carriere nouvelleCarriere = new Carriere();
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
-						nouvelleCarriere.setReferenceArrete(avct.getNumArrete());
+						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
+								: avct.getNumArrete());
 						nouvelleCarriere.setDateArrete(avct.getDateArrete());
 						nouvelleCarriere.setDateDebut(avct.getDateProchainGrade());
 						nouvelleCarriere.setDateFin(Const.ZERO);

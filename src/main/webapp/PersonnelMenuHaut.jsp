@@ -140,6 +140,7 @@ var menuAVCTMasseSalariale = new MenuHaut("Module_avct_simuMasseSalariale");
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalariale", "SIMU FONCT", "Simulation des fonctionnaires", true, false,"AVCT/FONCT"));
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeContr", "SIMU CONTR", "Simulation des contractuels", true, false,"AVCT/CONTR"));
 menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeConv", "SIMU CONV", "Simulation des conventions", true, false,"AVCT/CONV"));
+menuAVCTMasseSalariale.ajouterFils(new Lien("AVCTMasseSalarialeDetaches", "SIMU DETA", "Simulation des détachés", true, false,"AVCT/DETA"));
 document.write(menuAVCTMasseSalariale.afficher());
 
 //***************************************************************

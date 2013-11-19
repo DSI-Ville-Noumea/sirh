@@ -267,8 +267,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 							&& !carr.getCodeCategorie().equals("17") && !carr.getCodeCategorie().equals("19"))) {
 				// "ERR181",
 				// "Cet agent n'est pas de type @. Il ne peut pas être soumis à l'avancement @."
-				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR181", "fonctionnaire", "des fonctionnaires"));
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "détaché", "des détachés"));
 				return false;
 			}
 			la.add(agent);

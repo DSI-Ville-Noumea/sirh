@@ -88,6 +88,7 @@
 		listeDroits.add("AVCTMasseSalariale");
 		listeDroits.add("AVCTMasseSalarialeContr");
 		listeDroits.add("AVCTMasseSalarialeConv");
+		listeDroits.add("AVCTMasseSalarialeDetaches");
 		listeDroits.add("AVCTSimulationDetaches");
 		listeDroits.add("AVCTDetaches");
 		listeDroits.add("AVCTTest");
