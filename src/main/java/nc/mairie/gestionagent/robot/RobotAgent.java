@@ -190,6 +190,8 @@ public class RobotAgent extends Robot {
 			return new OeAVCTSimulationContractuels();
 		} else if (activite.equals("AVCTSimulationConvCol")) {
 			return new OeAVCTSimulationConvCol();
+		} else if (activite.equals("AVCTSimulationDetaches")) {
+			return new OeAVCTSimulationDetaches();
 		} else if (activite.equals("AVCTFonctPrepaAvct")) {
 			return new OeAVCTFonctPrepaAvct();
 		} else if (activite.equals("AVCTFonctPrepaCAP")) {
@@ -202,6 +204,8 @@ public class RobotAgent extends Robot {
 			return new OeAVCTContractuels();
 		} else if (activite.equals("AVCTConvCol")) {
 			return new OeAVCTConvCol();
+		} else if (activite.equals("AVCTDetaches")) {
+			return new OeAVCTFonctDetaches();
 		} else if (activite.equals("AVCTCampagneEAE")) {
 			return new OeAVCTCampagneEAE();
 		} else if (activite.equals("AVCTCampagnePlanification")) {
@@ -218,10 +222,6 @@ public class RobotAgent extends Robot {
 			return new OeAVCTMasseSalarialeConvention();
 		} else if (activite.equals("AVCTMasseSalarialeDetaches")) {
 			return new OeAVCTMasseSalarialeDetaches();
-		} else if (activite.equals("AVCTSimulationDetaches")) {
-			return new OeAVCTSimulationDetaches();
-		} else if (activite.equals("AVCTDetaches")) {
-			return new OeAVCTFonctDetaches();
 		} // TEST
 		else if (activite.equals("AVCTTest")) {
 			return new OeAVCTTest();
@@ -387,9 +387,14 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTSimulationContractuels.class.getName()
 				+ OeAVCTSimulationContractuels.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
 
+		// Classe OeAVCTSimulationDetaches
+		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT,
+				OeAGENTRecherche.class.getName());
+
 		// Classe OeAVCTSimulationFonctionnaires
 		navigation.put(OeAVCTSimulationFonctionnaires.class.getName()
 				+ OeAVCTSimulationFonctionnaires.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
+		
 		// Classe OeAVCTFonctPrepaAvct
 		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
@@ -406,15 +411,11 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTFonctCarrieres.class.getName() + OeAVCTFonctCarrieres.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
 
-		// Classe OeAVCTSimulationDetaches
-		navigation.put(OeAVCTSimulationDetaches.class.getName() + OeAVCTSimulationDetaches.STATUT_RECHERCHER_AGENT,
-				OeAGENTRecherche.class.getName());
-
-		// Classe OeAVCTSimulationDetaches
+		// Classe OeAVCTFonctPrepaAvct
 		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
 
-		// Classe OeAVCTFonctPrepaAvct
+		// Classe OeAVCTDetaches
 		navigation.put(OeAVCTFonctDetaches.class.getName() + OeAVCTFonctDetaches.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
 
@@ -566,6 +567,8 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTFonctDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTFonctPrepaCAP.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
@@ -579,6 +582,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTSimulationContractuels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTSimulationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTSimulationDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTCampagneEAE.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
@@ -594,6 +599,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OeAVCTMasseSalarialeContractuel.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeAVCTMasseSalarialeConvention.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAVCTMasseSalarialeDetaches.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// SM - Suivi Medical
