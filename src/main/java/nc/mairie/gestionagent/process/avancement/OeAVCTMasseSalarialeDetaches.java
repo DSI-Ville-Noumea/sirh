@@ -884,7 +884,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		}
 		// on enregistre
 		commitTransaction();
-		afficherListeAvct(request);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -994,6 +994,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
+		performPB_FILTRER(request);
 
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
