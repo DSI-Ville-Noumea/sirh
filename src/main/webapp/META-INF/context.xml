@@ -96,7 +96,7 @@
 		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" />
 	<!-- WS DES POINTAGES -->
 	<Parameter description="SIRH PTG WS url pour les droits"
-		name="SIRH_PTG_WS" override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
+		name="SIRH_PTG_WS" override="false" value="http://localhost:8080/sirh-ptg-ws/" />
 		
 		
 	<!-- Parametres pour l'affichage des nouveaux modules -->
