@@ -187,7 +187,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * Effectue la recherche de fiche de poste par numero de fiche de poste
 	 * 
 	 * @param request
-	 * @return
+	 * @return boolean
 	 * @throws Exception
 	 * 
 	 */
@@ -227,7 +227,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * Effectu la recherche par agent
 	 * 
 	 * @param request
-	 * @return
+	 * @return boolean
 	 * @throws Exception
 	 * 
 	 */
@@ -252,7 +252,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * Effectue la recherche par service
 	 * 
 	 * @param request
-	 * @return
+	 * @return boolean
 	 * @throws Exception
 	 * 
 	 */

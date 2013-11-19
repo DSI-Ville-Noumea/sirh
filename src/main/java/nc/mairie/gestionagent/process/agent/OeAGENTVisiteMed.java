@@ -1168,7 +1168,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * Test si la date1 est comprise entre date2 et date2 + annees + mois +
 	 * jours
 	 * 
-	 * @return
+	 * @return boolean
 	 */
 	private boolean testDate(String dateTest, String dateDebut, String annees, String mois, String jours) {
 

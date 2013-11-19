@@ -776,7 +776,7 @@ public class OeAGENTPrime extends BasicProcess {
 	/**
 	 * Récupere la rubrique selectionnée
 	 * 
-	 * @return
+	 * @return Rubrique
 	 * @throws Exception
 	 */
 	private Rubrique getSelectedRubrique() throws Exception {

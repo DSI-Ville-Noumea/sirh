@@ -948,7 +948,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
     /**
      *
      * @param request
-     * @return
+     * @return boolean
      * @throws Exception RG_AG_EC_C08
      */
     private boolean performControlerSaisieRIB(HttpServletRequest request) throws Exception {
@@ -3710,7 +3710,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
     /**
      * Retourne la liste des communes de la boîte postale.
      *
-     * @return
+     * @return ArrayList<CommunePostal>
      */
     private ArrayList<CommunePostal> getListeCommuneBP() {
         return listeCommuneBP;

@@ -1631,7 +1631,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	/***
 	 * methods called by jsp
 	 * 
-	 * @return
+	 * @return String
 	 */
 	public String getPosteCourantTitle() {
 		return fichePosteCourant.getNumFP();

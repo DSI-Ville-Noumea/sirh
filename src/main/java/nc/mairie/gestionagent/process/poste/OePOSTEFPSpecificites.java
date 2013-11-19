@@ -1875,7 +1875,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	/**
 	 * Met à jour la liste des PrimePointageIndemnitaire que l'on peut ajouter.
 	 * 
-	 * @param listePrimePointage
+	 * @param listePrimes
 	 */
 	public void setListePrimes(List<RefPrimeDto> listePrimes) {
 		this.listePrimes = listePrimes;

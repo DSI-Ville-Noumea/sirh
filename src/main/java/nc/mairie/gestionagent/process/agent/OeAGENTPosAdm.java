@@ -825,7 +825,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 	/**
 	 * Récupere la rubrique selectionnée
 	 * 
-	 * @return
+	 * @return PositionAdm
 	 * @throws Exception
 	 */
 	private PositionAdm getSelectedPA() throws Exception {

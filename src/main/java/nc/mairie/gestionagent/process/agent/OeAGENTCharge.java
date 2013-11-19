@@ -229,7 +229,7 @@ public class OeAGENTCharge extends BasicProcess {
 	 * 
 	 * @param c
 	 * @param code
-	 * @return
+	 * @return String
 	 */
 	private String getLibCharge(Charge c, String code) throws Exception {
 		Rubrique r = Rubrique.chercherRubrique(getTransaction(), c.getNoRubr());
@@ -504,7 +504,7 @@ public class OeAGENTCharge extends BasicProcess {
 	/**
 	 * Récupere la rubrique selectionnée
 	 * 
-	 * @return
+	 * @return Rubrique
 	 * @throws Exception
 	 */
 	private Rubrique getSelectedRubrique() throws Exception {
@@ -527,7 +527,7 @@ public class OeAGENTCharge extends BasicProcess {
 	/**
 	 * Récupere le créancier selectionné
 	 * 
-	 * @return
+	 * @return Creancier
 	 */
 	private Creancier getSelectedCreancier() {
 		int numLigne = (Services.estNumerique(getZone(getNOM_LB_CREANCIER_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CREANCIER_SELECT())) : -1);

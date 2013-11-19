@@ -776,7 +776,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	 * Controle si les champs du formulaire de création d'un grade sont remplis
 	 * correctement
 	 * 
-	 * @return
+	 * @return boolean
 	 */
 	private boolean performControlerChamp() {
 
@@ -858,7 +858,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	/**
 	 * Controle si les regles de gestion de création d'un grade sont respectées
 	 * 
-	 * @return
+	 * @return boolean
 	 */
 	private boolean performControlerRG() throws Exception {
 
