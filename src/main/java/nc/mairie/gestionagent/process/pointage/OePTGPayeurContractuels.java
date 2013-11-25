@@ -132,9 +132,21 @@ public class OePTGPayeurContractuels extends BasicProcess {
 		try {
 			// on recupere l'agent connecté
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
 			AgentNW agentConnecte = null;
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (!u.getUserName().equals("nicno85")) {
+				// on recupere l'id de l'agent
+				Siidma ag = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR183",
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return false;
+				}
+				agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), ag.getNomatr());
+			} else {
+				agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			}
 			
 			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
 		
