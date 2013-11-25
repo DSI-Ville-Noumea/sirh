@@ -51,17 +51,18 @@ function SelectLigne(id,tailleTableau)
 					int indice = 0;
 					if (null != process.getListEtatsPayeurDto()){
 						for (int i = 0; i < process.getListEtatsPayeurDto().size(); i++){
-							indice = process.getListEtatsPayeurDto().get(i).getIdEtatPayeur();
+							int idEtat = process.getListEtatsPayeurDto().get(i).getIdEtatPayeur();
 							%>
 						<tr id="<%=indice%>" onmouseover="SelectLigne(<%=indice%>, <%=process.getListEtatsPayeurDto().size()%>)">
 							
-							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(indice) %></td>
-							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(indice) %></td>
+							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(idEtat) %></td>
+							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(idEtat) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
-								<a href="UploadEtatPayeur?idEtatPayeur=<%=indice %>&nomFichier=<%=process.getVAL_FICHIER_EDITION(indice)%>" target="_blank"><img title="consulter" src="images/oeil.gif" height="15px" width="15px" border="0px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" /></a> 	
+								<a href="UploadEtatPayeur?idEtatPayeur=<%=idEtat %>&nomFichier=<%=process.getVAL_FICHIER_EDITION(idEtat)%>" target="_blank"><img title="consulter" src="images/oeil.gif" height="15px" width="15px" border="0px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" /></a> 	
 							</td>
 						</tr>
 						<%
+						indice++;
 						}
 					} %>
 				</table>
