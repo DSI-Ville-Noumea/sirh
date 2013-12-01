@@ -332,8 +332,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	private void initialiseTableauImpression() throws Exception {
 		for (int i = 0; i < getListeImpression().size(); i++) {
-			addZone(getNOM_CK_TAB(i), getCHECKED_OFF());
-			addZone(getNOM_CK_EAE(i), getCHECKED_OFF());
+			addZone(getNOM_CK_TAB_SHD(i), getCHECKED_OFF());
+			addZone(getNOM_CK_EAE_SHD(i), getCHECKED_OFF());
+			addZone(getNOM_CK_TAB_VDN(i), getCHECKED_OFF());
+			addZone(getNOM_CK_EAE_VDN(i), getCHECKED_OFF());
 		}
 
 		// Si liste impression
@@ -386,8 +388,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					listeTempCadreEmp.add(cadreEmp);
 					addZone(getNOM_ST_CODE_CAP(k), cap.getCodeCap());
 					addZone(getNOM_ST_CADRE_EMPLOI(k), cadreEmp.getLibCadreEmploi());
-					addZone(getNOM_CK_TAB(k), getCHECKED_OFF());
-					addZone(getNOM_CK_EAE(k), getCHECKED_OFF());
+					addZone(getNOM_CK_TAB_SHD(k), getCHECKED_OFF());
+					addZone(getNOM_CK_EAE_SHD(k), getCHECKED_OFF());
+					addZone(getNOM_CK_TAB_VDN(k), getCHECKED_OFF());
+					addZone(getNOM_CK_EAE_VDN(k), getCHECKED_OFF());
 					k++;
 				}
 
@@ -433,10 +437,12 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*String anneeCourante = (String) VariablesActivite.recuperer(this,
-					VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
-			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);*/
+			/*
+			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
+			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
+			 * (anneeCourante == null || anneeCourante.length() == 0)
+			 * anneeCourante = Services.dateDuJour().substring(6, 10);
+			 */
 			String anneeCourante = "2014";
 			setListeAnnee(new String[5]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
@@ -704,7 +710,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		}
 
 		for (int i = 0; i < getListeImpression().size(); i++) {
-			if (getVAL_CK_TAB(i).equals(getCHECKED_ON())) {
+			if (getVAL_CK_TAB_SHD(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
@@ -717,10 +723,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				// on crée l'entrée dans la table du job
 				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
 						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false);
+						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, true);
 
 			}
-			if (getVAL_CK_EAE(i).equals(getCHECKED_ON())) {
+			if (getVAL_CK_EAE_SHD(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
@@ -733,7 +739,39 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				// on crée l'entrée dans la table du job
 				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
 						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true);
+						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true, true);
+
+			}
+			if (getVAL_CK_TAB_VDN(i).equals(getCHECKED_ON())) {
+				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR182",
+					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+					return false;
+				}
+				// on crée l'entrée dans la table du job
+				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
+						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, false);
+
+			}
+			if (getVAL_CK_EAE_VDN(i).equals(getCHECKED_ON())) {
+				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR182",
+					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+					return false;
+				}
+				// on crée l'entrée dans la table du job
+				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
+						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true, false);
 
 			}
 		}
@@ -1326,8 +1364,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_CK_TAB(int i) {
-		return "NOM_CK_TAB_" + i;
+	public String getNOM_CK_TAB_SHD(int i) {
+		return "NOM_CK_TAB_SHD_" + i;
 	}
 
 	/**
@@ -1335,8 +1373,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * à cocher : CK_TAB Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getVAL_CK_TAB(int i) {
-		return getZone(getNOM_CK_TAB(i));
+	public String getVAL_CK_TAB_SHD(int i) {
+		return getZone(getNOM_CK_TAB_SHD(i));
 	}
 
 	/**
@@ -1344,8 +1382,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getNOM_CK_EAE(int i) {
-		return "NOM_CK_EAE_" + i;
+	public String getNOM_CK_EAE_SHD(int i) {
+		return "NOM_CK_EAE_SHD_" + i;
 	}
 
 	/**
@@ -1353,8 +1391,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 * à cocher : CK_EAE Date de création : (21/11/11 09:55:36)
 	 * 
 	 */
-	public String getVAL_CK_EAE(int i) {
-		return getZone(getNOM_CK_EAE(i));
+	public String getVAL_CK_EAE_SHD(int i) {
+		return getZone(getNOM_CK_EAE_SHD(i));
 	}
 
 	/**
@@ -2045,5 +2083,41 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_TAB
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_TAB_VDN(int i) {
+		return "NOM_CK_TAB_VDN_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_TAB Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_TAB_VDN(int i) {
+		return getZone(getNOM_CK_TAB_VDN(i));
+	}
+
+	/**
+	 * Retourne le nom de la case à cocher sélectionnée pour la JSP : CK_EAE
+	 * Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getNOM_CK_EAE_VDN(int i) {
+		return "NOM_CK_EAE_VDN_" + i;
+	}
+
+	/**
+	 * Retourne la valeur de la case à cocher à afficher par la JSP pour la case
+	 * à cocher : CK_EAE Date de création : (21/11/11 09:55:36)
+	 * 
+	 */
+	public String getVAL_CK_EAE_VDN(int i) {
+		return getZone(getNOM_CK_EAE_VDN(i));
 	}
 }

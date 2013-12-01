@@ -25,6 +25,7 @@ public class AvancementCapPrintJobResultSetExtractor implements ResultSetExtract
 		avctJob.setDateStatut(rs.getDate(AvancementCapPrintJobDao.CHAMP_DATE_STATUT));
 		avctJob.setStatut(rs.getString(AvancementCapPrintJobDao.CHAMP_STATUT));
 		avctJob.setJobId(rs.getString(AvancementCapPrintJobDao.CHAMP_JOB_ID));
+		avctJob.setAvisEAE(rs.getBoolean(AvancementCapPrintJobDao.CHAMP_AVIS_EAE));
 
 		return avctJob;
 	}

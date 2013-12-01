@@ -27,6 +27,7 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 	public static final String CHAMP_DATE_STATUT = "DATE_STATUT";
 	public static final String CHAMP_STATUT = "STATUT";
 	public static final String CHAMP_JOB_ID = "JOB_ID";
+	public static final String CHAMP_AVIS_EAE = "AVIS_EAE";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -42,10 +43,10 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 
 	@Override
 	public void creerAvancementCapPrintJob(Integer idAgent, String login, Integer idCap, String codeCap, Integer idCadreEmploi,
-			String libCadreEmploi, boolean isEaes) throws Exception {
+			String libCadreEmploi, boolean isEaes, boolean avisEAE) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_LOGIN + "," + CHAMP_ID_CAP + "," + CHAMP_CODE_CAP + ","
-				+ CHAMP_ID_CADRE_EMPLOI + "," + CHAMP_LIB_CADRE_EMPLOI + "," + CHAMP_IS_EAES + ") " + "VALUES (?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, login, idCap, codeCap, idCadreEmploi, libCadreEmploi, isEaes });
+				+ CHAMP_ID_CADRE_EMPLOI + "," + CHAMP_LIB_CADRE_EMPLOI + "," + CHAMP_IS_EAES + "," + CHAMP_AVIS_EAE + ") " + "VALUES (?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idAgent, login, idCap, codeCap, idCadreEmploi, libCadreEmploi, isEaes ,avisEAE});
 
 	}
 
@@ -72,6 +73,8 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 			job.setDateStatut((Date) row.get(CHAMP_DATE_STATUT));
 			job.setStatut((String) row.get(CHAMP_STATUT));
 			job.setJobId((String) row.get(CHAMP_JOB_ID));
+			Integer avisEAE = (Integer) row.get(CHAMP_AVIS_EAE);
+			job.setAvisEAE(avisEAE == 0 ? false : true);
 			listeAvancementCapPrintJob.add(job);
 		}
 
