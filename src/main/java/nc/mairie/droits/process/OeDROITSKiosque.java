@@ -1,4 +1,4 @@
-package nc.mairie.gestionagent.process.pointage;
+package nc.mairie.droits.process;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,23 +11,18 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
-
-import org.springframework.context.ApplicationContext;
-
 import flexjson.JSONSerializer;
 
 /**
- * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
- * 
+ * Process OeDROITSGestion Date de création : (10/10/11 14:37:55)
  */
-public class OePTGDroits extends BasicProcess {
+public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * 
@@ -42,29 +37,47 @@ public class OePTGDroits extends BasicProcess {
 
 	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
 
-	@Override
-	public String getJSP() {
-		return "OePTGDroits.jsp";
+	public String focus = null;
+
+	/**
+	 * @return Renvoie focus.
+	 */
+	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
+		return focus;
 	}
 
-	@Override
+	public String getDefaultFocus() {
+		return "";
+	}
+
+	/**
+	 * @param focus
+	 *            focus à définir.
+	 */
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+
+	/**
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
+	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
 
-		// ----------------------------------//
-		// Vérification des droits d'accès. //
-		// ----------------------------------//
+		// Vérification des droits d'accès.
 		if (MairieUtils.estInterdit(request, getNomEcran())) {
 			// "ERR190",
 			// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		initialiseDao();
-
-		// Initialisation des listes déroulantes
-		initialiseListeDeroulante();
 
 		if (etatStatut() == STATUT_APPROBATEUR) {
 			initialiseApprobateurs(request);
@@ -80,7 +93,8 @@ public class OePTGDroits extends BasicProcess {
 
 	private void initialiseApprobateurs(HttpServletRequest request) throws Exception {
 
-		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "APPROBATEURS");
+		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this,
+				"APPROBATEURS");
 		VariablesActivite.enlever(this, "APPROBATEURS");
 
 		if (listeEvaluateurSelect != null && listeEvaluateurSelect.size() > 0) {
@@ -90,7 +104,8 @@ public class OePTGDroits extends BasicProcess {
 
 				// on recupere l'agent ajouté eventuellement
 
-				Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
+				Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+						agt.getIdAgent());
 				if (getTransaction().isErreur()) {
 					// "ERR400", //
 					// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
@@ -119,20 +134,25 @@ public class OePTGDroits extends BasicProcess {
 		for (int i = 0; i < getListeApprobateurs().size(); i++) {
 			AgentWithServiceDto ag = getListeApprobateurs().get(i);
 
-			addZone(getNOM_ST_AGENT(i),
-					ag.getNom() + " " + ag.getPrenom() + " (" + ag.getIdAgent().toString().substring(3, ag.getIdAgent().toString().length()) + ")");
+			addZone(getNOM_ST_AGENT(i), ag.getNom() + " " + ag.getPrenom() + " ("
+					+ ag.getIdAgent().toString().substring(3, ag.getIdAgent().toString().length()) + ")");
 			addZone(getNOM_ST_SERVICE(i), ag.getService() + " (" + ag.getCodeService() + ")");
 		}
 
 	}
 
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
-
+	/**
+	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 */
+	public String getNomEcran() {
+		return "ECR-DROIT-KIOSQUE";
 	}
 
-	@Override
+	/**
+	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de création : (10/10/11 14:37:55)
+	 * 
+	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		// Si on arrive de la JSP alors on traite le get
@@ -167,18 +187,21 @@ public class OePTGDroits extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
+	 * Constructeur du process OeDROITSGestion. Date de création : (20/10/11
+	 * 11:05:27)
+	 * 
 	 */
-	private void initialiseListeDeroulante() throws Exception {
-
+	public OeDROITSKiosque() {
+		super();
 	}
 
 	/**
-	 * Getter du nom de l'écran (pour la gestion des droits)
+	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
+	 * dans chaque formulaire de la JSP. Date de création : (20/10/11 11:05:27)
+	 * 
 	 */
-	public String getNomEcran() {
-		return "ECR-PTG-DROITS";
+	public String getJSP() {
+		return "OeDROITSKiosque.jsp";
 	}
 
 	public ArrayList<AgentWithServiceDto> getListeApprobateurs() {

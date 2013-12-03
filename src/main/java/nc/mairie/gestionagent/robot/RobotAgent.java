@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.robot;
 import java.util.Hashtable;
 
 import nc.mairie.droits.process.OeDROITSGestion;
+import nc.mairie.droits.process.OeDROITSKiosque;
 import nc.mairie.droits.process.OeDROITSUtilisateurs;
 import nc.mairie.gestionagent.process.OeCOMMUNESelection;
 import nc.mairie.gestionagent.process.OeENFANTGestion;
@@ -62,7 +63,6 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGradeRef;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
-import nc.mairie.gestionagent.process.pointage.OePTGDroits;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurFonct;
@@ -231,9 +231,7 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("SMHistorique")) {
 			return new OeSMHistorique();
 		} // Module POINTAGE
-		else if (activite.equals("PTGDroits")) {
-			return new OePTGDroits();
-		} else if (activite.equals("PTGSaisie")) {
+		else if (activite.equals("PTGSaisie")) {
 			return new OePTGVisualisation();
 		} else if (activite.equals("PTGVentilationConvCol")) {
 			return new OePTGVentilationConvCol();
@@ -279,6 +277,8 @@ public class RobotAgent extends Robot {
 			return new OeDROITSUtilisateurs();
 		} else if (activite.equals("DroitsProfil")) {
 			return new OeDROITSGestion();
+		} else if (activite.equals("DroitsKiosque")) {
+			return new OeDROITSKiosque();
 		} else {
 			return null;
 		}
@@ -394,7 +394,7 @@ public class RobotAgent extends Robot {
 		// Classe OeAVCTSimulationFonctionnaires
 		navigation.put(OeAVCTSimulationFonctionnaires.class.getName()
 				+ OeAVCTSimulationFonctionnaires.STATUT_RECHERCHER_AGENT, OeAGENTRecherche.class.getName());
-		
+
 		// Classe OeAVCTFonctPrepaAvct
 		navigation.put(OeAVCTFonctPrepaAvct.class.getName() + OeAVCTFonctPrepaAvct.STATUT_RECHERCHER_AGENT,
 				OeAGENTRecherche.class.getName());
@@ -459,9 +459,6 @@ public class RobotAgent extends Robot {
 		// ///////////////////
 		// POINTAGE //
 		// ///////////////////
-		// Classe OePTGDroits
-		navigation.put(OePTGDroits.class.getName() + OePTGDroits.STATUT_APPROBATEUR,
-				OePTGSelectionApprobateur.class.getName());
 
 		// Classe OePTGVisualisation
 		navigation.put(OePTGVisualisation.class.getName() + OePTGVisualisation.STATUT_RECHERCHER_AGENT_MIN,
@@ -501,6 +498,13 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_SAISIE_PTG,
 				OePTGSaisie.class.getName());
+
+		// ///////////////////
+		// DROITS //
+		// ///////////////////
+		// Classe OeDROITSKiosque
+		navigation.put(OeDROITSKiosque.class.getName() + OeDROITSKiosque.STATUT_APPROBATEUR,
+				OePTGSelectionApprobateur.class.getName());
 
 		// //////////////////////////////////////
 		// pour la recherche d'un agent
@@ -610,7 +614,6 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 
 		// POINTAGE
-		navigation.put(OePTGDroits.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVisualisation.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
@@ -652,6 +655,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OeDROITSUtilisateurs.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OeDROITSGestion.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeDROITSKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// PERSONEL MAIN

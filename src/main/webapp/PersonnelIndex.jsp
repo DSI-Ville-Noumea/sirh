@@ -115,7 +115,6 @@ var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical",
 String affPointage =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_POINTAGE");
 if (affPointage.equals("TRUE")){ %>
 	var Module_pointage = new Dossier("Module_pointage", "Gestion des pointages","POINTAGE");
-	Module_pointage.ajouterFils(new Lien("droitsPointage", "PTGDroits", "Droits d'accès", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("saisiePointage", "PTGSaisie", "Visualisation et saisie", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
@@ -140,6 +139,7 @@ Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments 
 var Module_gestionDroits = new Dossier("Module_gestionDroits", "Gestion des droits","DROIT");
 	Module_gestionDroits.ajouterFils(new Lien("utilisateurs", "DroitsUtilisateur", "Utilisateurs", "Gestion des utilisateurs", true));
 	Module_gestionDroits.ajouterFils(new Lien("groupes", "DroitsProfil", "Groupes", "Gestion des droits par groupe", true));
+	Module_gestionDroits.ajouterFils(new Lien("kiosque", "DroitsKiosque", "Kiosque", "Gestion des droits du Kiosque RH", true));
 	
 menu.ajouterFils(Module_posteEtEmploi);
 menu.ajouterFils(Module_agent);

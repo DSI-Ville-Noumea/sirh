@@ -94,7 +94,6 @@
 		listeDroits.add("AVCTTest");
 		
 		/*Module POINTAGE*/
-		listeDroits.add("PTGDroits");
 		listeDroits.add("PTGSaisie");
 		listeDroits.add("PTGVentilationConvCol");
 		listeDroits.add("PTGVentilationTitu");
@@ -124,7 +123,8 @@
 		
 		/*Module GESTION DROITS*/
 		listeDroits.add("DroitsUtilisateur");
-		listeDroits.add("DroitsProfil");	
+		listeDroits.add("DroitsProfil");
+		listeDroits.add("DroitsKiosque");	
 
 	}
 %>
