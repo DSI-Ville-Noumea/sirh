@@ -74,6 +74,12 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 	}
 
 	public String toString() {
-		return " Agent:" + nom + " " + prenom + " id=" + idAgent + " service " + service + " codeService " + codeService;
+		return " Agent:" + nom + " " + prenom + " id=" + idAgent + " service " + service + " codeService "
+				+ codeService;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return idAgent.equals(((AgentWithServiceDto) obj).getIdAgent());
 	}
 }

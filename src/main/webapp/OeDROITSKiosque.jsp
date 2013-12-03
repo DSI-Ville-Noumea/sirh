@@ -41,12 +41,15 @@ document.formu.elements[nom].focus();
 				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
 			</span>
 			<span style="position:relative;width:200px;text-align: left;">Agent</span>
-			<span style="position:relative;text-align: left;">Service</span>
+			<span style="position:relative;width:640px;text-align: left;">Service</span>
+			<span style="position:relative;width:50px;text-align: left;">PTG</span>
+			<span style="position:relative;width:50px;text-align: left;">ABS</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:980px;">
 				<%
-				for (int i = 0;i<process.getListeApprobateurs().size();i++){
+				for (int indice = 0;indice<process.getListeApprobateurs().size();indice++){
+					int i = process.getListeApprobateurs().get(indice).getIdAgent();
 				%>
 					<tr>
 						<td class="sigp2NewTab-liste" style="position:relative;width:35px;" align="center">
@@ -54,13 +57,19 @@ document.formu.elements[nom].focus();
 				    	</td>
 						<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_AGENT(i)%></td>
 						<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(i)%></td>
+						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_PTG(i),process.getVAL_CK_DROIT_PTG(i))%>>
+						</td>
+						<td class="sigp2NewTab-liste" style="position:relative;width:50px;text-align: center;">
+							<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_DROIT_ABS(i),process.getVAL_CK_DROIT_ABS(i))%>>
+						</td>
 					</tr>
 				<%}%>
 				</table>	
 			</div>	
 			<BR/><BR/>
 			<div style="width:100%; text-align:center;">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Enregistrer" name="<%=process.getNOM_PB_VALIDER()%>">
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 			</div>
         </FIELDSET>
