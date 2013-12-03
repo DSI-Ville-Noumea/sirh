@@ -422,7 +422,7 @@ public class OeDROITSKiosque extends BasicProcess {
 				agents += " - " + agentDtoErreur.getNom() + " " + agentDtoErreur.getPrenom();
 			}
 			// "INF600",
-			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateurs : @"
+			// "Les agents suivants n'ont pu être ajouté en tant qu'approbateurs car ils sont dejà opérateurs/viseurs : @"
 			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
 			return false;
 		}
