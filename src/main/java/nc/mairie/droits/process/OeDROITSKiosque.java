@@ -426,6 +426,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("INF600", agents));
 			return false;
 		}
+		setFirst(true);
 		return true;
 	}
 
