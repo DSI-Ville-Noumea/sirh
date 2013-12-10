@@ -60,6 +60,9 @@
 		listeDroits.add("PosAdmGestion");
 		listeDroits.add("CarriereGestion");
 		
+		/*Module AGENT - ABSENCES*/
+		listeDroits.add("AgtAbsences");
+		
 		/*Module AGENT - EAE*/
 		listeDroits.add("AgtEae");
 
