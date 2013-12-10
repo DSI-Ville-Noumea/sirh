@@ -2,9 +2,13 @@ package nc.mairie.gestionagent.process.agent;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.dto.SoldeCongeDto;
+import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
+import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -60,11 +64,35 @@ public class OeAGENTAbsences extends BasicProcess {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
+				initialiseSoldesAgent(request);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
 		}
+	}
+
+	private void initialiseSoldesAgent(HttpServletRequest request) {
+
+		getSoldeConge(getAgentCourant());
+
+	}
+
+	private void getSoldeConge(AgentNW agentCourant) {
+		// Solde congé depuis SIRH-WS
+		SirhWSConsumer consuWs = new SirhWSConsumer();
+		SoldeCongeDto soldeConge = consuWs.getSoldeConge(agentCourant.getIdAgent());
+		addZone(getNOM_ST_SOLDE_CONGE(), soldeConge.getSoldeAnneeEnCours() == 0 ? "&nbsp;" : soldeConge
+				.getSoldeAnneeEnCours().toString() + " j");
+		addZone(getNOM_ST_SOLDE_CONGE_PREC(), soldeConge.getSoldeAnneePrec() == 0 ? "&nbsp;" : soldeConge
+				.getSoldeAnneePrec().toString() + " j");
+		// Solde recup depuis SIRH-ABS-WS
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		SoldeDto soldeRecup = consuAbs.getSoldeRecup(agentCourant.getIdAgent());
+		String soldeRecupHeure = (soldeRecup.getSolde() / 60) == 0 ? "" : soldeRecup.getSolde() / 60 + "h ";
+		String soldeRecupMinute = (soldeRecup.getSolde() % 60) == 0 ? "&nbsp;" : soldeRecup.getSolde() % 60 + "m";
+		addZone(getNOM_ST_SOLDE_RECUP(), soldeRecupHeure + soldeRecupMinute);
+
 	}
 
 	/**
@@ -120,5 +148,29 @@ public class OeAGENTAbsences extends BasicProcess {
 
 	private void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
+	}
+
+	public String getNOM_ST_SOLDE_CONGE_PREC() {
+		return "NOM_ST_SOLDE_CONGE_PREC";
+	}
+
+	public String getVAL_ST_SOLDE_CONGE_PREC() {
+		return getZone(getNOM_ST_SOLDE_CONGE_PREC());
+	}
+
+	public String getNOM_ST_SOLDE_CONGE() {
+		return "NOM_ST_SOLDE_CONGE";
+	}
+
+	public String getVAL_ST_SOLDE_CONGE() {
+		return getZone(getNOM_ST_SOLDE_CONGE());
+	}
+
+	public String getNOM_ST_SOLDE_RECUP() {
+		return "NOM_ST_SOLDE_RECUP";
+	}
+
+	public String getVAL_ST_SOLDE_RECUP() {
+		return getZone(getNOM_ST_SOLDE_RECUP());
 	}
 }

@@ -22,14 +22,6 @@
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 		}
-		//function pour changement couleur arriere plan ligne du tableau
-		function SelectLigne(id,tailleTableau)
-		{
-			for (i=0; i<tailleTableau; i++){
-		 		document.getElementById(i).className="";
-			} 
-		 document.getElementById(id).className="selectLigne";
-		}
 		
 		</SCRIPT>	
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -42,9 +34,23 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des soldes de l'agent</legend>
-				    
-				</FIELDSET>
-				
+				    <br/>
+				    <span style="position:relative;width:80px;text-align: center;">Congés<br> année prec.</span>
+					<span style="position:relative;width:80px;text-align: center;">Congés<br> année</span>
+					<span style="position:relative;width:80px;text-align: center;">Récup.</span>
+					<span style="position:relative;text-align: center;"></span>
+					<br/>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr>
+								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_CONGE_PREC()%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_CONGE()%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_RECUP()%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"></td>
+							</tr>
+						</table>	
+					</div>					    
+				</FIELDSET>				
 				<BR/>
 		</FORM>
 <%} %>	

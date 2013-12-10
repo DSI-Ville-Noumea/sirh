@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import flexjson.JSONDeserializer;
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
+	private static final String sirhAbsSoldeRecupAgent = "recuperations/soldeRecup";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -113,5 +115,42 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		result = new JSONDeserializer<List<T>>().use(Date.class, new MSDateTransformer()).use(null, ArrayList.class)
 				.use("values", targetClass).deserialize(output);
 		return result;
+	}
+
+	public <T> T readResponse(Class<T> targetClass, ClientResponse response, String url) {
+
+		T result = null;
+
+		try {
+			result = targetClass.newInstance();
+		} catch (Exception ex) {
+			throw new SirhPtgWSConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
+		}
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhPtgWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
+		return result;
+	}
+
+	@Override
+	public SoldeDto getSoldeRecup(String idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsSoldeRecupAgent;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent);
+		logger.debug("Call " + url + " with idAgent : " + idAgent);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(SoldeDto.class, res, url);
 	}
 }

@@ -94,12 +94,14 @@
 	<Parameter description="SIRH WS url pour les arretes des avancements"
 		name="SIRH_WS_URL_ARRETES_AVCT" override="false"
 		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" />
+	<Parameter description="SIRH WS url"
+		name="SIRH_WS" override="false" value="http://172.16.24.19:8085/sirhws/" />
 	<!-- WS DES POINTAGES -->
 	<Parameter description="SIRH PTG WS url"
 		name="SIRH_PTG_WS" override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
 	<!-- WS DES ABSENCES -->
 	<Parameter description="SIRH ABS WS url"
-		name="SIRH_ABS_WS" override="false" value="http://localhost:8090/sirh-abs-ws/" />
+		name="SIRH_ABS_WS" override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />
 		
 		
 	<!-- Parametres pour l'affichage des nouveaux modules -->
