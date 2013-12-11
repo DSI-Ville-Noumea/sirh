@@ -834,12 +834,15 @@ public class OePTGVisualisation extends BasicProcess {
 		if (numType != -1 && numType != 0) {
 			type = (RefTypePointageDto) getListeTypes().get(numType - 1);
 		}
-		String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MIN();
 
 		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
 		}
+		if (getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) && !getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
+		}
 
+		String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MIN();
 		String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MAX();
 
 		// si superieur à 1000 alors on bloque
