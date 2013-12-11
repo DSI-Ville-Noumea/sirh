@@ -26,13 +26,12 @@
         $(document).ready(function() {
            $('#VentilationTable').dataTable({
                 "sDom": '<"H"fl>t<"F"Trip>',
-                "sPaginationType": "full_numbers",
                 "oLanguage": {
                     "oPaginate": {
-                        "sFirst": "Début",
-                        "sLast": "Fin",
-                        "sNext": "Suivant",
-                        "sPrevious": "Précédent"
+                        "sFirst": "",
+                        "sLast": "",
+                        "sNext": "",
+                        "sPrevious": ""
                     },
                     "sZeroRecords": "Aucune information de ventilation à afficher",
                     "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
