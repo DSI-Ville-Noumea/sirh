@@ -501,6 +501,17 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public boolean performPB_AFFICHER_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
 		ArrayList<Carriere> listeCarr = new ArrayList<Carriere>();
 		List<Integer> agents = new ArrayList<Integer>();
+
+		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
+		}
+		if (getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) && !getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
+		}
+
+		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
+			return false;
+		}
 		if (!getVAL_ST_AGENT_MIN().equals("")) {
 			if (getVAL_ST_AGENT_MAX().equals("")) {
 				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT_MIN());
@@ -538,8 +549,47 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		return true;
 	}
 
+	public boolean verifieFiltres(String agentMin, String agentMax) throws Exception {
+
+		// on verifie que l'id agent min saisie existe
+		if (!agentMin.equals(Const.CHAINE_VIDE)) {
+			if (!Services.estNumerique(agentMin)) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent min"));
+				return false;
+			}
+			String idAgentMin = "900" + agentMin;
+			AgentNW agMin = AgentNW.chercherAgent(getTransaction(), idAgentMin);
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMin));
+				return false;
+			}
+		}
+		// on verifie que l'id agent max saisie existe
+		if (!agentMax.equals(Const.CHAINE_VIDE)) {
+			if (!Services.estNumerique(agentMax)) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent max"));
+				return false;
+			}
+			String idAgentMax = "900" + agentMax;
+			AgentNW agMax = AgentNW.chercherAgent(getTransaction(), idAgentMax);
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMax));
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public String getTabVisu() {
-		return tabVisu;
+		return tabVisu == null ? "" : tabVisu;
 	}
 
 	public void setTabVisu(String tabVisu) {

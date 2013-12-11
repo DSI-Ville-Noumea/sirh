@@ -377,7 +377,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
 		params.put("typePointage", idRefTypePointage.toString());
-		if (agentsJson.isEmpty())
+		if (agentsJson.equals("[]"))
 			return new ArrayList<T>();
 		ClientResponse res = createAndPostRequest(params, url, agentsJson);
 		return readResponseAsList(targetClass, res, url);
