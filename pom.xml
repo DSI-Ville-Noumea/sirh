@@ -80,7 +80,7 @@
 		<site>
 			<id>sirh.website</id>
 			<name>SIRH Website</name>
-			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH\</url>
+			<url>file:\\cristal\dsi$\DSI\PROJETS\doxia\SIRH\</url>
 		</site>
 	</distributionManagement>
 	<dependencies>
