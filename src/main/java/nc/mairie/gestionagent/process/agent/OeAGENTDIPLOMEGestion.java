@@ -571,6 +571,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
+				addZone(getNOM_ST_ACTION_FORMATION(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_ACTION_DIPLOME(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_ACTION_DOCUMENT(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_ACTION_PERMIS(), Const.CHAINE_VIDE);
 				setAgentCourant(aAgent);
 				initialiseListeDiplomesAgent(request);
 				initialiseListeFormationsAgent(request);
@@ -2020,6 +2024,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// On vide la zone de saisie
 		addZone(getNOM_ST_DUREE_FORMATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ANNEE_FORMATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_TITRE_FORM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_TITRE_FORM(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_CENTRE_FORM(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_CENTRE_FORM(), Const.CHAINE_VIDE);
 		setListeDocuments(null);
 
 		// init du diplome courant
