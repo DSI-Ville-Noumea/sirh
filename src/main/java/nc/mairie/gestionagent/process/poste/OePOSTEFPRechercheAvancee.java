@@ -142,25 +142,28 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	private boolean fillList() throws Exception {
 		int indiceFp = 0;
 		if (getListeFP() != null) {
+
+			// Si liste vide alors erreur
+			if (getListeFP().size() == 0) {	
+				//"ERR125", "Impossible de trouver @."
+				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR125", "une fiche de poste avec ces critères"));
+				return false;
+			}
+
 			for (int i = 0; i < getListeFP().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFP().get(i);
-				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(getTransaction(),
-						fp.getIdTitrePoste()).getLibTitrePoste();
+				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(
+						getTransaction(), fp.getIdTitrePoste()).getLibTitrePoste();
 				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste());
 				if (agent == null)
 					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste());
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFP());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
-				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " " + agent.getPrenomAgent());
+				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
+						+ agent.getPrenomAgent());
 
 				indiceFp++;
-			}
-
-			// Si liste vide alors erreur
-			if (getListeFP().size() == 0) {
-				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
-				return false;
 			}
 		}
 		return true;
@@ -214,13 +217,15 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			Service serv = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
 			prefixeServ = serv.getCodService().substring(
 					0,
-					Service.isEntite(serv.getCodService()) ? 1 : Service.isDirection(serv.getCodService()) ? 2 : Service.isDivision(serv
-							.getCodService()) ? 3 : Service.isSection(serv.getCodService()) ? 4 : 0);
+					Service.isEntite(serv.getCodService()) ? 1 : Service.isDirection(serv.getCodService()) ? 2
+							: Service.isDivision(serv.getCodService()) ? 3
+									: Service.isSection(serv.getCodService()) ? 4 : 0);
 		}
 
 		// Recuperation Statut
 		StatutFP statut = null;
-		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+		int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 		if (indiceStatut > 0)
 			statut = (StatutFP) getListeStatut().get(indiceStatut - 1);
 
@@ -244,8 +249,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
-		ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ, statut, idTitre,
-				getVAL_EF_NUM_FICHE_POSTE(), agent);
+		ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), prefixeServ,
+				statut, idTitre, getVAL_EF_NUM_FICHE_POSTE(), agent);
 		setListeFP(fp);
 
 		fillList();
@@ -277,7 +282,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request, int elemSelection) throws Exception {
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE, (FichePoste) getListeFP().get(elemSelection));
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_POSTE,
+				(FichePoste) getListeFP().get(elemSelection));
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
 	}
@@ -840,20 +846,24 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	public boolean performPB_RECHERCHER_AFF(HttpServletRequest request) throws Exception {
 		// Recherche de la fiche de poste
 		if (getVAL_EF_NUM_FICHE_POSTE_AFF() != null && !getVAL_EF_NUM_FICHE_POSTE_AFF().equals(Const.CHAINE_VIDE)) {
-			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_NUM_FICHE_POSTE_AFF());
+			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(),
+					getVAL_EF_NUM_FICHE_POSTE_AFF());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
 				return false;
 			}
 			if (fiche != null && fiche.getIdFichePoste() != null) {
 				// on alimente une liste d'affectation que l'on affiche
-				ArrayList<Affectation> listeAff = Affectation.listerAffectationAvecFPOrderDatDeb(getTransaction(), fiche);
+				ArrayList<Affectation> listeAff = Affectation.listerAffectationAvecFPOrderDatDeb(getTransaction(),
+						fiche);
 				setListeAffectation(listeAff);
 				initialiseListeAff();
 
 			} else {
-				setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
+				setStatut(STATUT_MEME_PROCESS, true,
+						MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_NUM_FICHE_POSTE_AFF()));
 				return false;
 			}
 		} else {
@@ -878,10 +888,12 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getCodService() : "&nbsp;");
 			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLibService() : "&nbsp;");
-			addZone(getNOM_ST_AGENT_AFF(i), agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNoMatricule() + ")");
+			addZone(getNOM_ST_AGENT_AFF(i),
+					agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNoMatricule() + ")");
 			addZone(getNOM_ST_DATE_DEBUT_AFF(i), a.getDateDebutAff());
 			addZone(getNOM_ST_DATE_FIN_AFF(i),
-					a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a.getDateFinAff());
+					a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a
+							.getDateFinAff());
 			addZone(getNOM_ST_NUM_FP_AFF(i), fp.getNumFP().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fp.getNumFP());
 			addZone(getNOM_ST_TITRE_AFF(i), tp == null ? "&nbsp;" : tp.getLibTitrePoste());
 
