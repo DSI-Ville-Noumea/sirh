@@ -32,7 +32,7 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 
 	@Override
 	public ArrayList<TitreFormation> listerTitreFormation() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_LIB_TITRE_FORMATION;
 
 		ArrayList<TitreFormation> listeTitreFormation = new ArrayList<TitreFormation>();
 
@@ -50,7 +50,8 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 	@Override
 	public TitreFormation chercherTitreFormation(Integer idTitreFormation) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TITRE_FORMATION + " = ? ";
-		TitreFormation titre = (TitreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idTitreFormation }, new TitreFormationRowMapper());
+		TitreFormation titre = (TitreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idTitreFormation },
+				new TitreFormationRowMapper());
 		return titre;
 	}
 
@@ -62,7 +63,8 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 
 	@Override
 	public void modifierTitreFormation(Integer idTitre, String libelleTitre) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_TITRE_FORMATION + "=? where " + CHAMP_ID_TITRE_FORMATION + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_TITRE_FORMATION + "=? where "
+				+ CHAMP_ID_TITRE_FORMATION + " =?";
 		jdbcTemplate.update(sql, new Object[] { libelleTitre, idTitre });
 	}
 

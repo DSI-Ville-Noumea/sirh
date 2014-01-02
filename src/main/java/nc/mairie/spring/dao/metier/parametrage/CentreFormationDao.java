@@ -32,7 +32,7 @@ public class CentreFormationDao implements CentreFormationDaoInterface {
 
 	@Override
 	public ArrayList<CentreFormation> listerCentreFormation() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
+		String sql = "select * from " + NOM_TABLE + " order by "+CHAMP_LIB_CENTRE_FORMATION;
 
 		ArrayList<CentreFormation> listeCentreFormation = new ArrayList<CentreFormation>();
 
