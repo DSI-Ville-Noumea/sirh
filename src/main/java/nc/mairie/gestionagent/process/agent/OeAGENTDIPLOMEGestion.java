@@ -69,9 +69,6 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private String[] LB_TITRE_DIPLOME;
 	private String[] LB_SPECIALITE_DIPLOME;
-
-	private String[] LB_TITRE_FORMATION;
-	private String[] LB_CENTRE_FORMATION;
 	private String[] LB_UNITE_DUREE;
 
 	private String[] LB_TITRE_PERMIS;
@@ -474,7 +471,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private void initialiseListeFormationsAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des formations de l'agent
-		ArrayList<FormationAgent> a = getFormationAgentDao().listerFormationAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<FormationAgent> a = getFormationAgentDao().listerFormationAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeFormationsAgent(a);
 
 		int indiceFormation = 0;
@@ -487,8 +485,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceFormation), d.getAnneeFormation().toString());
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
-						"DONNEES PERSONNELLES", "FORM", d.getIdFormation().toString());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "DONNEES PERSONNELLES", "FORM", d.getIdFormation().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -516,15 +514,17 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				DiplomeAgent d = (DiplomeAgent) getListeDiplomesAgent().get(i);
 				TitreDiplome t = (TitreDiplome) getHashTitreDiplome().get(d.getIdTitreDiplome());
 				String titre = t.getLibTitreDiplome();
-				SpecialiteDiplomeNW spec = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), d.getIdSpecialiteDiplome());
+				SpecialiteDiplomeNW spec = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(),
+						d.getIdSpecialiteDiplome());
 
 				addZone(getNOM_ST_TITRE_DIPLOME(indiceDiplome), titre);
 				addZone(getNOM_ST_SPE_DIPLOME(indiceDiplome), spec.getLibSpeDiplome());
-				addZone(getNOM_ST_NIVEAU(indiceDiplome), t.getNiveauEtude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude());
+				addZone(getNOM_ST_NIVEAU(indiceDiplome),
+						t.getNiveauEtude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude());
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
-						"DONNEES PERSONNELLES", "DIP", d.getIdDiplome());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "DONNEES PERSONNELLES", "DIP", d.getIdDiplome());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -633,18 +633,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 
 		// Si liste titre formation vide alors affectation
-		if (getLB_TITRE_FORMATION() == LBVide) {
+		if (getListeTitreFormation() == null || getListeTitreFormation().size() == 0) {
 			ArrayList<TitreFormation> listeTitreFormation = getTitreFormationDao().listerTitreFormation();
 			setListeTitreFormation(listeTitreFormation);
-			int[] tailles = { 70 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<TitreFormation> list = listeTitreFormation.listIterator(); list.hasNext();) {
-				TitreFormation titre = (TitreFormation) list.next();
-				String ligne[] = { titre.getLibTitreFormation() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_TITRE_FORMATION(aFormat.getListeFormatee(false));
-			addZone(getNOM_LB_TITRE_FORMATION_SELECT(), Const.ZERO);
 		}
 
 		// Si hashtable des titres formation vide
@@ -657,18 +648,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 
 		// Si liste centre formation vide alors affectation
-		if (getLB_CENTRE_FORMATION() == LBVide) {
+		if (getListeCentreFormation() == null || getListeCentreFormation().size() == 0) {
 			ArrayList<CentreFormation> listeCentreFormation = getCentreFormationDao().listerCentreFormation();
 			setListeCentreFormation(listeCentreFormation);
-			int[] tailles = { 70 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<CentreFormation> list = listeCentreFormation.listIterator(); list.hasNext();) {
-				CentreFormation centre = (CentreFormation) list.next();
-				String ligne[] = { centre.getLibCentreFormation() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_CENTRE_FORMATION(aFormat.getListeFormatee(false));
-			addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), Const.ZERO);
 		}
 
 		// Si hashtable des centres formation vide
@@ -851,8 +833,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(),
-						d.getIdDocument());
+				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
 				lien.supprimerLienDocumentAgent(getTransaction());
 				// Suppression dans la table DOCUMENT_ASSOCIE
@@ -882,11 +864,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// Recup du titre
 			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitreDiplome().size() == 0 || numligneTitre > getListeTitreDiplome().size()) {
+			if (numligneTitre == -1 || getListeTitreDiplome().size() == 0
+					|| numligneTitre > getListeTitreDiplome().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
 				return false;
 			}
-			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1) : null);
+			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
+					: null);
 
 			// Recup de la spécialité
 			int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
@@ -895,7 +879,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
 				return false;
 			}
-			SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome().get(numligneSpe - 1) : null);
+			SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome().get(
+					numligneSpe - 1) : null);
 
 			// Affectation des attributs
 			getDiplomeAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
@@ -918,7 +903,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				return false;
 
 			// on fait la gestion des documents
-			performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(request, Integer.valueOf(getDiplomeAgentCourant().getIdDiplome()));
+			performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(request,
+					Integer.valueOf(getDiplomeAgentCourant().getIdDiplome()));
 		}
 
 		// Tout s'est bien passé
@@ -938,11 +924,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// Recup du titre
 			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitreDiplome().size() == 0 || numligneTitre > getListeTitreDiplome().size()) {
+			if (numligneTitre == -1 || getListeTitreDiplome().size() == 0
+					|| numligneTitre > getListeTitreDiplome().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
 				return false;
 			}
-			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1) : null);
+			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
+					: null);
 
 			// Recup de la spécialité
 			int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
@@ -951,7 +939,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
 				return false;
 			}
-			SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome().get(numligneSpe - 1) : null);
+			SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome().get(
+					numligneSpe - 1) : null);
 
 			for (DiplomeAgent diplome : getListeDiplomesAgent()) {
 				if (diplome.getIdAgent().equals(getAgentCourant().getIdAgent())
@@ -978,7 +967,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * @param idDiplomeAgent
 	 * 
 	 */
-	public boolean performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(HttpServletRequest request, Integer idDiplomeAgent) throws Exception {
+	public boolean performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(HttpServletRequest request, Integer idDiplomeAgent)
+			throws Exception {
 		// on sauvegarde le nom du fichier parcourir
 		if (multi != null) {
 
@@ -1038,7 +1028,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "DIP";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idDiplomeAgent + "_" + dateJour + extension;
 
@@ -1092,7 +1083,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "FORM";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idFormationAgent + "_" + dateJour + extension;
 
@@ -1146,7 +1138,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "PERM";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + idPermisAgent + "_" + dateJour + extension;
 
@@ -1199,7 +1192,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	public boolean performControlerChampsDiplome(HttpServletRequest request) throws Exception {
 
 		// titre du diplôme
-		int indice = (Services.estNumerique(getVAL_LB_TITRE_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_DIPLOME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_DIPLOME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TITRE_DIPLOME_SELECT()) : -1);
 		if (indice < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Titre du diplôme"));
 			setFocus(getNOM_LB_TITRE_DIPLOME());
@@ -1207,7 +1201,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 
 		// spécialité obligatoire
-		int indiceSpe = (Services.estNumerique(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) : -1);
+		int indiceSpe = (Services.estNumerique(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_SPECIALITE_DIPLOME_SELECT()) : -1);
 		if (indiceSpe < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Spécialité du diplôme"));
 			setFocus(getNOM_LB_SPECIALITE_DIPLOME());
@@ -1229,7 +1224,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// "ERR202",
 			// "La date @ doit être comprise entre la date @ et la date @."
 			// RG_AG_DI_C01
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
 			setFocus(getNOM_EF_DATE_OBTENTION_DIPLOME());
 			return false;
 		}
@@ -1959,116 +1955,6 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		this.formationAgentCourant = formationAgentCourant;
 	}
 
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TITRE_FORMATION Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	private String[] getLB_TITRE_FORMATION() {
-		if (LB_TITRE_FORMATION == null)
-			LB_TITRE_FORMATION = initialiseLazyLB();
-		return LB_TITRE_FORMATION;
-	}
-
-	/**
-	 * Setter de la liste: LB_TITRE_FORMATION Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_TITRE_FORMATION(String[] newLB_TITRE_FORMATION) {
-		LB_TITRE_FORMATION = newLB_TITRE_FORMATION;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TITRE_FORMATION Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TITRE_FORMATION() {
-		return "NOM_LB_TITRE_FORMATION";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TITRE_FORMATION_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_TITRE_FORMATION_SELECT() {
-		return "NOM_LB_TITRE_FORMATION_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TITRE_FORMATION Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_TITRE_FORMATION() {
-		return getLB_TITRE_FORMATION();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TITRE_FORMATION Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_TITRE_FORMATION_SELECT() {
-		return getZone(getNOM_LB_TITRE_FORMATION_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_CENTRE_FORMATION Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	private String[] getLB_CENTRE_FORMATION() {
-		if (LB_CENTRE_FORMATION == null)
-			LB_CENTRE_FORMATION = initialiseLazyLB();
-		return LB_CENTRE_FORMATION;
-	}
-
-	/**
-	 * Setter de la liste: LB_CENTRE_FORMATION Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_CENTRE_FORMATION(String[] newLB_CENTRE_FORMATION) {
-		LB_CENTRE_FORMATION = newLB_CENTRE_FORMATION;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_CENTRE_FORMATION Date de
-	 * création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_CENTRE_FORMATION() {
-		return "NOM_LB_CENTRE_FORMATION";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_CENTRE_FORMATION_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_CENTRE_FORMATION_SELECT() {
-		return "NOM_LB_CENTRE_FORMATION_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_CENTRE_FORMATION Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_CENTRE_FORMATION() {
-		return getLB_CENTRE_FORMATION();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_CENTRE_FORMATION Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_CENTRE_FORMATION_SELECT() {
-		return getZone(getNOM_LB_CENTRE_FORMATION_SELECT());
-	}
-
 	public ArrayList<TitreFormation> getListeTitreFormation() {
 		if (listeTitreFormation == null)
 			return new ArrayList<TitreFormation>();
@@ -2132,8 +2018,6 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	public boolean performPB_CREER_FORMATION(HttpServletRequest request) throws Exception {
 
 		// On vide la zone de saisie
-		addZone(getNOM_LB_TITRE_FORMATION_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), Const.ZERO);
 		addZone(getNOM_ST_DUREE_FORMATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ANNEE_FORMATION(), Const.CHAINE_VIDE);
 		setListeDocuments(null);
@@ -2259,15 +2143,15 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		FormationAgent f = getFormationAgentCourant();
 		TitreFormation titre = (TitreFormation) getHashTitreFormation().get(f.getIdTitreFormation());
 		CentreFormation centre = (CentreFormation) getHashCentreFormation().get(f.getIdCentreFormation());
-		
+
 		// Alim zones
 		// Titre formation
-		int ligneTitre = getListeTitreFormation().indexOf(titre);
-		addZone(getNOM_LB_TITRE_FORMATION_SELECT(), String.valueOf(ligneTitre));
+		addZone(getNOM_ST_TITRE_FORM(), titre.getLibTitreFormation());
+		addZone(getNOM_EF_TITRE_FORM(), titre.getLibTitreFormation());
 
 		// Centre formation
-		int ligneCentre = getListeCentreFormation().indexOf(centre);
-		addZone(getNOM_LB_CENTRE_FORMATION_SELECT(), String.valueOf(ligneCentre));
+		addZone(getNOM_ST_CENTRE_FORM(), centre.getLibCentreFormation());
+		addZone(getNOM_EF_CENTRE_FORM(), centre.getLibCentreFormation());
 
 		// Duree
 		addZone(getNOM_ST_DUREE_FORMATION(), f.getDureeFormation().toString());
@@ -2408,8 +2292,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(),
-						d.getIdDocument());
+				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
 				lien.supprimerLienDocumentAgent(getTransaction());
 				// Suppression dans la table DOCUMENT_ASSOCIE
@@ -2436,22 +2320,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			if (!performControlerRGFormation(request)) {
 				return false;
 			}
-			// Recup du titre
-			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_FORMATION_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_TITRE_FORMATION_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitreFormation().size() == 0 || numligneTitre > getListeTitreFormation().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
-				return false;
-			}
-			TitreFormation titreForm = (numligneTitre >= 0 ? (TitreFormation) getListeTitreFormation().get(numligneTitre) : null);
+			// Recup du titre de formation
+			TitreFormation titreForm = getSelectedTitreFormation();
+
 			// Recup du centre
-			int numligneCentre = (Services.estNumerique(getZone(getNOM_LB_CENTRE_FORMATION_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_CENTRE_FORMATION_SELECT())) : -1);
-			if (numligneCentre == -1 || getListeCentreFormation().size() == 0 || numligneCentre > getListeCentreFormation().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "centres"));
-				return false;
-			}
-			CentreFormation centreForm = (numligneCentre >= 0 ? (CentreFormation) getListeCentreFormation().get(numligneCentre) : null);
+			CentreFormation centreForm = getSelectedCentreFormation();
+
 			// Recup de l'unite
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
@@ -2473,13 +2347,15 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION_FORMATION()).equals(ACTION_MODIFICATION_FORMATION)) {
 				// Modification
 				getFormationAgentDao().modifierFormationAgent(getFormationAgentCourant().getIdFormation(),
-						getFormationAgentCourant().getIdTitreFormation(), getFormationAgentCourant().getIdCentreFormation(),
-						getFormationAgentCourant().getIdAgent(), getFormationAgentCourant().getDureeFormation(),
-						getFormationAgentCourant().getUniteDuree(), getFormationAgentCourant().getAnneeFormation());
+						getFormationAgentCourant().getIdTitreFormation(),
+						getFormationAgentCourant().getIdCentreFormation(), getFormationAgentCourant().getIdAgent(),
+						getFormationAgentCourant().getDureeFormation(), getFormationAgentCourant().getUniteDuree(),
+						getFormationAgentCourant().getAnneeFormation());
 				idFormationAgent = getFormationAgentCourant().getIdFormation();
 			} else if (getZone(getNOM_ST_ACTION_FORMATION()).equals(ACTION_CREATION_FORMATION)) {
 				// Création
-				idFormationAgent = getFormationAgentDao().creerFormationAgent(getFormationAgentCourant().getIdTitreFormation(),
+				idFormationAgent = getFormationAgentDao().creerFormationAgent(
+						getFormationAgentCourant().getIdTitreFormation(),
 						getFormationAgentCourant().getIdCentreFormation(), getFormationAgentCourant().getIdAgent(),
 						getFormationAgentCourant().getDureeFormation(), getFormationAgentCourant().getUniteDuree(),
 						getFormationAgentCourant().getAnneeFormation());
@@ -2497,27 +2373,75 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		return true;
 	}
 
-	private boolean performControlerRGFormation(HttpServletRequest request) {
+	private CentreFormation getSelectedCentreFormation() throws Exception {
+		Integer idCentre = null;
+		for (int i = 0; i < getListeCentreFormation().size(); i++) {
+			CentreFormation centre = (CentreFormation) getListeCentreFormation().get(i);
+			String textCentre = centre.getLibCentreFormation();
+			if (textCentre.equals(getVAL_EF_CENTRE_FORM())) {
+				idCentre = centre.getIdCentreFormation();
+				break;
+			}
+		}
+		if (idCentre == null) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Centres"));
+		}
+
+		return getCentreFormationDao().chercherCentreFormation(idCentre);
+	}
+
+	private TitreFormation getSelectedTitreFormation() throws Exception {
+		Integer idTitre = null;
+		for (int i = 0; i < getListeTitreFormation().size(); i++) {
+			TitreFormation titre = (TitreFormation) getListeTitreFormation().get(i);
+			String textTitre = titre.getLibTitreFormation();
+			if (textTitre.equals(getVAL_EF_TITRE_FORM())) {
+				idTitre = titre.getIdTitreFormation();
+				break;
+			}
+		}
+		if (idTitre == null) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
+		}
+
+		return getTitreFormationDao().chercherTitreFormation(idTitre);
+	}
+
+	private boolean performControlerRGFormation(HttpServletRequest request) throws Exception {
 
 		// Vérification des contraintes d'unicité de la formation
 		if (getVAL_ST_ACTION_FORMATION().equals(ACTION_CREATION_FORMATION)) {
 
 			// Recup du titre
-			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_FORMATION_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_TITRE_FORMATION_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitreFormation().size() == 0 || numligneTitre > getListeTitreFormation().size()) {
+			Integer idTitre = null;
+			for (int i = 0; i < getListeTitreFormation().size(); i++) {
+				TitreFormation titre = (TitreFormation) getListeTitreFormation().get(i);
+				String textTitre = titre.getLibTitreFormation();
+				if (textTitre.equals(getVAL_EF_TITRE_FORM())) {
+					idTitre = titre.getIdTitreFormation();
+					break;
+				}
+			}
+			if (idTitre == null) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
 				return false;
 			}
-			TitreFormation titreForm = (numligneTitre >= 0 ? (TitreFormation) getListeTitreFormation().get(numligneTitre) : null);
+			TitreFormation titreForm = getTitreFormationDao().chercherTitreFormation(idTitre);
 			// Recup du centre
-			int numligneCentre = (Services.estNumerique(getZone(getNOM_LB_CENTRE_FORMATION_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_CENTRE_FORMATION_SELECT())) : -1);
-			if (numligneCentre == -1 || getListeCentreFormation().size() == 0 || numligneCentre > getListeCentreFormation().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "centres"));
+			Integer idCentre = null;
+			for (int i = 0; i < getListeCentreFormation().size(); i++) {
+				CentreFormation centre = (CentreFormation) getListeCentreFormation().get(i);
+				String textCentre = centre.getLibCentreFormation();
+				if (textCentre.equals(getVAL_EF_CENTRE_FORM())) {
+					idCentre = centre.getIdCentreFormation();
+					break;
+				}
+			}
+			if (idCentre == null) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Centres"));
 				return false;
 			}
-			CentreFormation centreForm = (numligneCentre >= 0 ? (CentreFormation) getListeCentreFormation().get(numligneCentre) : null);
+			CentreFormation centreForm = getCentreFormationDao().chercherCentreFormation(idCentre);
 			// Recup de l'unite
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
@@ -2529,8 +2453,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			for (FormationAgent formation : getListeFormationsAgent()) {
 				if (formation.getAnneeFormation().toString().equals(getVAL_ST_ANNEE_FORMATION())
 						&& formation.getIdAgent().toString().equals(getAgentCourant().getIdAgent())
-						&& formation.getIdTitreFormation().toString().equals(titreForm.getIdTitreFormation().toString())
-						&& formation.getIdCentreFormation().toString().equals(centreForm.getIdCentreFormation().toString())
+						&& formation.getIdTitreFormation().toString()
+								.equals(titreForm.getIdTitreFormation().toString())
+						&& formation.getIdCentreFormation().toString()
+								.equals(centreForm.getIdCentreFormation().toString())
 						&& formation.getDureeFormation().toString().equals(getVAL_ST_DUREE_FORMATION())
 						&& formation.getUniteDuree().equals(uniteDuree)) {
 					// "ERR974",
@@ -2552,7 +2478,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * @param idFormationAgent
 	 * 
 	 */
-	public boolean performPB_VALIDER_DOCUMENT_FORMATION_CREATION(HttpServletRequest request, Integer idFormationAgent) throws Exception {
+	public boolean performPB_VALIDER_DOCUMENT_FORMATION_CREATION(HttpServletRequest request, Integer idFormationAgent)
+			throws Exception {
 		// on sauvegarde le nom du fichier parcourir
 		if (multi != null) {
 
@@ -3084,8 +3011,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(),
-						d.getIdDocument());
+				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
 				lien.supprimerLienDocumentAgent(getTransaction());
 				// Suppression dans la table DOCUMENT_ASSOCIE
@@ -3115,11 +3042,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// Recup du titre
 			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_PERMIS_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TITRE_PERMIS_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitrePermis().size() == 0 || numligneTitre > getListeTitrePermis().size()) {
+			if (numligneTitre == -1 || getListeTitrePermis().size() == 0
+					|| numligneTitre > getListeTitrePermis().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
 				return false;
 			}
-			TitrePermis titrePermis = (numligneTitre >= 0 ? (TitrePermis) getListeTitrePermis().get(numligneTitre) : null);
+			TitrePermis titrePermis = (numligneTitre >= 0 ? (TitrePermis) getListeTitrePermis().get(numligneTitre)
+					: null);
 
 			// Recup de l'unite
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
@@ -3141,16 +3070,16 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			Integer idPermisAgent = null;
 			if (getZone(getNOM_ST_ACTION_PERMIS()).equals(ACTION_MODIFICATION_PERMIS)) {
 				// Modification
-				getPermisAgentDao().modifierPermisAgent(getPermisAgentCourant().getIdPermisAgent(), getPermisAgentCourant().getIdPermis(),
-						getPermisAgentCourant().getIdAgent(), getPermisAgentCourant().getDureePermis(), getPermisAgentCourant().getUniteDuree(),
+				getPermisAgentDao().modifierPermisAgent(getPermisAgentCourant().getIdPermisAgent(),
+						getPermisAgentCourant().getIdPermis(), getPermisAgentCourant().getIdAgent(),
+						getPermisAgentCourant().getDureePermis(), getPermisAgentCourant().getUniteDuree(),
 						getPermisAgentCourant().getDateObtention());
 				idPermisAgent = getPermisAgentCourant().getIdPermisAgent();
 			} else if (getZone(getNOM_ST_ACTION_PERMIS()).equals(ACTION_CREATION_PERMIS)) {
 				// Création
-				idPermisAgent = getPermisAgentDao()
-						.creerPermisAgent(getPermisAgentCourant().getIdPermis(), getPermisAgentCourant().getIdAgent(),
-								getPermisAgentCourant().getDureePermis(), getPermisAgentCourant().getUniteDuree(),
-								getPermisAgentCourant().getDateObtention());
+				idPermisAgent = getPermisAgentDao().creerPermisAgent(getPermisAgentCourant().getIdPermis(),
+						getPermisAgentCourant().getIdAgent(), getPermisAgentCourant().getDureePermis(),
+						getPermisAgentCourant().getUniteDuree(), getPermisAgentCourant().getDateObtention());
 			}
 
 			// on fait la gestion des documents
@@ -3174,11 +3103,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// Recup du titre
 			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_PERMIS_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_TITRE_PERMIS_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitrePermis().size() == 0 || numligneTitre > getListeTitrePermis().size()) {
+			if (numligneTitre == -1 || getListeTitrePermis().size() == 0
+					|| numligneTitre > getListeTitrePermis().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
 				return false;
 			}
-			TitrePermis titrePermis = (numligneTitre >= 0 ? (TitrePermis) getListeTitrePermis().get(numligneTitre) : null);
+			TitrePermis titrePermis = (numligneTitre >= 0 ? (TitrePermis) getListeTitrePermis().get(numligneTitre)
+					: null);
 
 			// Recup de l'unite
 			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
@@ -3192,7 +3123,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				if (permis.getIdPermis().toString().equals(titrePermis.getIdTitrePermis().toString())
 						&& permis.getIdAgent().toString().equals(getAgentCourant().getIdAgent())
 						&& permis.getDureePermis().toString().equals(getVAL_ST_DUREE_PERMIS())
-						&& permis.getDateObtention().toString().equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())
+						&& permis.getDateObtention().toString()
+								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())
 						&& permis.getUniteDuree().equals(uniteDuree)) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
@@ -3241,7 +3173,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// "ERR202",
 			// "La date @ doit être comprise entre la date @ et la date @."
 			// RG_AG_DI_C01
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR202", "d'obtention", "de naissance de l'agent", "du jour"));
 			setFocus(getVAL_EF_DATE_OBTENTION_PERMIS());
 			return false;
 		}
@@ -3255,7 +3188,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 */
 	private void initialiseListePermisAgent(HttpServletRequest request) throws Exception {
 		// Recherche des permis de l'agent
-		ArrayList<PermisAgent> a = getPermisAgentDao().listerPermisAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<PermisAgent> a = getPermisAgentDao().listerPermisAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListePermisAgent(a);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -3279,8 +3213,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				addZone(getNOM_ST_LIMITE_PERMIS(indicePermis), dateLimite);
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(),
-						"DONNEES PERSONNELLES", "PERM", p.getIdPermisAgent().toString());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "DONNEES PERSONNELLES", "PERM", p.getIdPermisAgent().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -3700,7 +3634,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
@@ -3717,7 +3652,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");
@@ -3749,17 +3684,19 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 */
 	private void initialiseListeDocumentsDiplome(HttpServletRequest request) throws Exception {
 		// Recherche des documents du diplome
-		ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-				"DIP", getDiplomeAgentCourant().getIdDiplome());
+		ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+				getAgentCourant(), "DONNEES PERSONNELLES", "DIP", getDiplomeAgentCourant().getIdDiplome());
 		setListeDocuments(listeDoc);
 
 		int indiceActeVM = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -3774,8 +3711,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private void initialiseListeDocumentsFormation(HttpServletRequest request) throws Exception {
 		// Recherche des documents de la formation
 		if (getFormationAgentCourant().getIdFormation() != null) {
-			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-					"FORM", getFormationAgentCourant().getIdFormation().toString());
+			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+					getAgentCourant(), "DONNEES PERSONNELLES", "FORM", getFormationAgentCourant().getIdFormation()
+							.toString());
 			setListeDocuments(listeDoc);
 		}
 
@@ -3783,9 +3721,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -3800,8 +3740,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private void initialiseListeDocumentsPermis(HttpServletRequest request) throws Exception {
 		// Recherche des documents du permis
 		if (getPermisAgentCourant().getIdPermisAgent() != null) {
-			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "DONNEES PERSONNELLES",
-					"PERM", getPermisAgentCourant().getIdPermisAgent().toString());
+			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+					getAgentCourant(), "DONNEES PERSONNELLES", "PERM", getPermisAgentCourant().getIdPermisAgent()
+							.toString());
 			setListeDocuments(listeDoc);
 		}
 
@@ -3809,9 +3750,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -3922,8 +3865,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), getDocumentCourant()
-				.getIdDocument());
+		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocument(lda);
 
 		// Alim zones
@@ -4005,7 +3948,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * @param idPermisAgent
 	 * 
 	 */
-	public boolean performPB_VALIDER_DOCUMENT_PERMIS_CREATION(HttpServletRequest request, Integer idPermisAgent) throws Exception {
+	public boolean performPB_VALIDER_DOCUMENT_PERMIS_CREATION(HttpServletRequest request, Integer idPermisAgent)
+			throws Exception {
 		// on sauvegarde le nom du fichier parcourir
 		if (multi != null) {
 
@@ -4127,5 +4071,37 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	public void setHashCentreFormation(Hashtable<Integer, CentreFormation> hashCentreFormation) {
 		this.hashCentreFormation = hashCentreFormation;
+	}
+
+	public String getNOM_EF_TITRE_FORM() {
+		return "NOM_EF_TITRE_FORM";
+	}
+
+	public String getVAL_EF_TITRE_FORM() {
+		return getZone(getNOM_EF_TITRE_FORM());
+	}
+
+	public String getNOM_ST_TITRE_FORM() {
+		return "NOM_ST_TITRE_FORM";
+	}
+
+	public String getVAL_ST_TITRE_FORM() {
+		return getZone(getNOM_ST_TITRE_FORM());
+	}
+
+	public String getNOM_EF_CENTRE_FORM() {
+		return "NOM_EF_CENTRE_FORM";
+	}
+
+	public String getVAL_EF_CENTRE_FORM() {
+		return getZone(getNOM_EF_CENTRE_FORM());
+	}
+
+	public String getNOM_ST_CENTRE_FORM() {
+		return "NOM_ST_CENTRE_FORM";
+	}
+
+	public String getVAL_ST_CENTRE_FORM() {
+		return getZone(getNOM_ST_CENTRE_FORM());
 	}
 }

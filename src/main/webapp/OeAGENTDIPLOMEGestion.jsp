@@ -1,4 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.spring.domain.metier.parametrage.CentreFormation"%>
+<%@page import="nc.mairie.spring.domain.metier.parametrage.TitreFormation"%>
 <%@page import="nc.mairie.metier.diplome.DiplomeAgent"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -75,6 +77,50 @@
 		<SCRIPT type="text/javascript">
 			$(document).ready(function(){
 				$("#listeEcoles").autocomplete({source:availableEcoles
+				});
+			});		
+		</SCRIPT>
+		<%
+		ArrayList<TitreFormation> listeTitreForm = process.getListeTitreFormation();
+		
+		String res2 = 	"<script language=\"javascript\">\n"+
+				"var availableTitreForm = new Array(\n";
+		
+		for (int i = 0; i < listeTitreForm.size(); i++){
+			res2+= "   \""+((TitreFormation)listeTitreForm.get(i)).getLibTitreFormation()+"\"";
+			if (i+1 < listeTitreForm.size())
+				res2+=",\n";
+			else	res2+="\n";
+		}
+		
+		res2+=")</script>";
+		%>
+		<%=res2%>
+		<SCRIPT type="text/javascript">
+			$(document).ready(function(){
+				$("#listeTitreForm").autocomplete({source:availableTitreForm
+				});
+			});		
+		</SCRIPT>
+		<%
+		ArrayList<CentreFormation> listeCentreForm = process.getListeCentreFormation();
+		
+		String res3 = 	"<script language=\"javascript\">\n"+
+				"var availableCentreForm = new Array(\n";
+		
+		for (int i = 0; i < listeCentreForm.size(); i++){
+			res3+= "   \""+((CentreFormation)listeCentreForm.get(i)).getLibCentreFormation()+"\"";
+			if (i+1 < listeCentreForm.size())
+				res3+=",\n";
+			else	res3+="\n";
+		}
+		
+		res3+=")</script>";
+		%>
+		<%=res3%>
+		<SCRIPT type="text/javascript">
+			$(document).ready(function(){
+				$("#listeCentreForm").autocomplete({source:availableCentreForm
 				});
 			});		
 		</SCRIPT>
@@ -358,16 +404,14 @@
 				<div>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Titre de la formation : </span>
 					<span>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 500px;">
-						<%=process.forComboHTML(process.getVAL_LB_TITRE_FORMATION(), process.getVAL_LB_TITRE_FORMATION_SELECT()) %>
-						</SELECT>
+						<INPUT id="listeTitreForm" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_TITRE_FORM() %>" size="100"
+							type="text" value="<%= process.getVAL_EF_TITRE_FORM() %>">
 					</span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Centre de formation : </span>
 					<span>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 500px;">
-						<%=process.forComboHTML(process.getVAL_LB_CENTRE_FORMATION(), process.getVAL_LB_CENTRE_FORMATION_SELECT()) %>
-						</SELECT>
+						<INPUT id="listeCentreForm" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CENTRE_FORM() %>" size="100"
+							type="text" value="<%= process.getVAL_EF_CENTRE_FORM() %>">
 					</span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée formation : </span>
@@ -452,18 +496,10 @@
 				    	<BR/><BR/>
 				    <% } %>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Titre de la formation : </span>
-					<span>
-						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_TITRE_FORMATION() %>"  style="width : 500px;">
-						<%=process.forComboHTML(process.getVAL_LB_TITRE_FORMATION(), process.getVAL_LB_TITRE_FORMATION_SELECT()) %>
-						</SELECT>
-					</span>
+					<span class="sigp2-saisie"><%=process.getVAL_ST_TITRE_FORM()%></span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Centre de formation : </span>
-					<span>
-						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_CENTRE_FORMATION() %>"  style="width : 500px;">
-						<%=process.forComboHTML(process.getVAL_LB_CENTRE_FORMATION(), process.getVAL_LB_CENTRE_FORMATION_SELECT()) %>
-						</SELECT>
-					</span>
+					<span class="sigp2-saisie"><%=process.getVAL_ST_CENTRE_FORM()%></span>
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée formation : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_FORMATION()%></span>
