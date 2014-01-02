@@ -2849,7 +2849,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 
 	private void initialisePrimePointage_spec() throws Exception {
-
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		// Primes pointages
 		if (getListePrimePointageFP().size() == 0 && getFichePosteCourant() != null
@@ -3572,10 +3571,33 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// On supprime la fiche de poste
 		setFichePosteCourant(null);
 		setFichePosteSecondaireCourant(null);
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
+
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	private void initialiseSpecificitesVide() {
+		setListeAvantageAFF(null);
+		setListeAvantageFP(null);
+		setListeDelegationAFF(null);
+		setListeDelegationFP(null);
+		setListePrimePointageAFF(null);
+		setListePrimePointageFP(null);
+		setListeRegimeAFF(null);
+		setListeRegimeFP(null);
+
+		setListeAvantageAAjouter(null);
+		setListeAvantageASupprimer(null);
+		setListeDelegationAAjouter(null);
+		setListeDelegationASupprimer(null);
+		setListePrimePointageAffAAjouter(null);
+		setListePrimePointageAffASupprimer(null);
+		setListeRegimeAAjouter(null);
+		setListeRegimeASupprimer(null);
+
 	}
 
 	/**
@@ -3648,22 +3670,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
-		setListeAvantageAFF(null);
-		setListeAvantageFP(null);
-		getListeAvantageAAjouter().clear();
-		getListeAvantageASupprimer().clear();
-		setListeDelegationAFF(null);
-		setListeDelegationFP(null);
-		getListeDelegationAAjouter().clear();
-		getListeDelegationASupprimer().clear();
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
-		getListePrimePointageAffAAjouter().clear();
-		getListePrimePointageAffASupprimer().clear();
-		setListeRegimeAFF(null);
-		setListeRegimeFP(null);
-		getListeRegimeAAjouter().clear();
-		getListeRegimeASupprimer().clear();
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
 		return true;
 	}
 
@@ -3716,8 +3725,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Récup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAConsulter);
 		setAffectationCourant(aff);
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
 
 		if (initialiseAffectationCourante(request)) {
 
@@ -3759,8 +3769,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Récup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAImprimer);
 		setAffectationCourant(aff);
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
 
 		if (getAffectationCourant().isActive()) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -3809,8 +3820,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Récup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltAModifier);
 		setAffectationCourant(aff);
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
 
 		if (initialiseAffectationCourante(request)) {
 
@@ -3881,8 +3893,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Récup du contrat courant
 		Affectation aff = (Affectation) getListeAffectation().get(indiceEltASuprimer);
 		setAffectationCourant(aff);
-		setListePrimePointageAFF(null);
-		setListePrimePointageFP(null);
+
+		// on vide les informations des specificites
+		initialiseSpecificitesVide();
 
 		if (getAffectationCourant().isActive()) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -5123,6 +5136,38 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			return false;
 		}
 
+	}
+
+	public void setListeAvantageAAjouter(ArrayList<AvantageNature> listeAvantageAAjouter) {
+		this.listeAvantageAAjouter = listeAvantageAAjouter;
+	}
+
+	public void setListeAvantageASupprimer(ArrayList<AvantageNature> listeAvantageASupprimer) {
+		this.listeAvantageASupprimer = listeAvantageASupprimer;
+	}
+
+	public void setListeDelegationAAjouter(ArrayList<Delegation> listeDelegationAAjouter) {
+		this.listeDelegationAAjouter = listeDelegationAAjouter;
+	}
+
+	public void setListeDelegationASupprimer(ArrayList<Delegation> listeDelegationASupprimer) {
+		this.listeDelegationASupprimer = listeDelegationASupprimer;
+	}
+
+	public void setListePrimePointageAffAAjouter(ArrayList<PrimePointageAff> listePrimePointageAffAAjouter) {
+		this.listePrimePointageAffAAjouter = listePrimePointageAffAAjouter;
+	}
+
+	public void setListePrimePointageAffASupprimer(ArrayList<PrimePointageAff> listePrimePointageAffASupprimer) {
+		this.listePrimePointageAffASupprimer = listePrimePointageAffASupprimer;
+	}
+
+	public void setListeRegimeAAjouter(ArrayList<RegimeIndemnitaire> listeRegimeAAjouter) {
+		this.listeRegimeAAjouter = listeRegimeAAjouter;
+	}
+
+	public void setListeRegimeASupprimer(ArrayList<RegimeIndemnitaire> listeRegimeASupprimer) {
+		this.listeRegimeASupprimer = listeRegimeASupprimer;
 	}
 
 }
