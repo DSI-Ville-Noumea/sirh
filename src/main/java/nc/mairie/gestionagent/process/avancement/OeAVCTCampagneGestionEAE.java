@@ -20,7 +20,6 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
-import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Classe;
@@ -536,8 +535,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// pour le CAP
 		// on cherche si il y a une ligne dans les avancements
 		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-		AvancementDetaches avct = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(getTransaction(),
-				anneeCampagne.toString(), a.getIdAgent());
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
+				getTransaction(), anneeCampagne.toString(), a.getIdAgent());
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
 		if (avct != null && avct.getIdAvct() != null) {
@@ -3431,33 +3430,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// on met à jour le champ CAP
 		// on cherche si il y a une ligne dans les avancements
 		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-		AvancementFonctionnaires avctFonct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
+		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
 				getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
 		EAE eae = getEaeCourant();
-		if (avctFonct != null && avctFonct.getIdAvct() != null) {
+		if (avct != null && avct.getIdAvct() != null) {
 			// on a trouvé une ligne dans avancement
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
-			if (avctFonct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-				eae.setCap(true);
-			} else {
-				eae.setCap(false);
-			}
-		} else {
-			eae.setCap(false);
-		}
-		// on cherche si il y a une ligne dans les avancements des détachés
-		AvancementDetaches avctDetache = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(getTransaction(),
-				getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
-		if (getTransaction().isErreur())
-			getTransaction().traiterErreur();
-		if (avctDetache != null && avctDetache.getIdAvct() != null) {
-			// on a trouvé une ligne dans avancement
-			// on regarde l'etat de la ligne
-			// si 'valid DRH' alors on met CAP à true;
-			if (avctDetache.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
+			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
 				eae.setCap(true);
 			} else {
 				eae.setCap(false);
