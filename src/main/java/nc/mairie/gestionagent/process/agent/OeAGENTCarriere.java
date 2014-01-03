@@ -2466,9 +2466,16 @@ public class OeAGENTCarriere extends BasicProcess {
 					performCalculContractuel(carr);
 				} else if (carr != null
 						&& (carr.getCodeCategorie().equals("1") || carr.getCodeCategorie().equals("2")
-								|| carr.getCodeCategorie().equals("18") || carr.getCodeCategorie().equals("19") || carr
-								.getCodeCategorie().equals("20"))) {
+								|| carr.getCodeCategorie().equals("18") || carr.getCodeCategorie().equals("20"))) {
 					// alors on est dans les fonctionnaires
+					if (!performCalculFonctionnaire(carr)) {
+						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+						return false;
+					}
+				} else if (carr != null
+						&& (carr.getCodeCategorie().equals("6") || carr.getCodeCategorie().equals("16")
+								|| carr.getCodeCategorie().equals("17") || carr.getCodeCategorie().equals("19"))) {
+					// alors on est dans les détachés
 					if (!performCalculFonctionnaire(carr)) {
 						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 						return false;
@@ -2478,7 +2485,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					// on affiche un message
 					addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 					// "ERR180",
-					// "Cet agent n'est ni fontionnaire ni contractuel.Il ne peut pas être soumis à l'avancement."
+					// "Cet agent n'est pas fontionnaire, contractuel ou détaché.Il ne peut pas être soumis à l'avancement."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR180"));
 				}
 			} else {
