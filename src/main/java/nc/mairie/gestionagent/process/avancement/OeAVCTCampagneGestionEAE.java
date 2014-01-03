@@ -20,6 +20,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
+import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Classe;
@@ -2628,20 +2629,72 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
 			// echelon
 			// et la date d'avancement
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
+			AvancementFonctionnaires avctFonct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
 					getTransaction(), getCampagneCourante().getAnnee().toString(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
+				// sinon, on cherche dans les détachés
+				AvancementDetaches avctDetache = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(
+						getTransaction(), getCampagneCourante().getAnnee().toString(), ag.getIdAgent());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+
+					if (!avctDetache.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
+						// attention dans le cas des categorie 4 on a pas de
+						// date
+						// moyenne avct
+						evalAModif.setDateEffetAvct(avctDetache.getDateAvctMoy() == null
+								|| avctDetache.getDateAvctMoy().equals(Const.DATE_NULL)
+								|| avctDetache.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf
+								.parse(avctDetache.getDateAvctMoy()));
+					}
+					Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctDetache.getIdNouvGrade());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						// on cherche la classe si elle existe
+						String classeString = Const.CHAINE_VIDE;
+						if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+							Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							}
+							if (classe != null && classe.getLibClasse() != null) {
+								classeString = classe.getLibClasse();
+							}
+						}
+						evalAModif.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+						if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
+							MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
+									gradeAvct.getCodeTava());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							}
+							if (motif != null && motif.getCodeMotifAvct() != null) {
+								evalAModif.setTypeAvct(motif.getCodeMotifAvct());
+							}
+						}
+					}
+					if (gradeAvct != null && gradeAvct.getCodeEchelon() != null) {
+						Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeAvct.getCodeEchelon());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							evalAModif.setNouvEchelon(echAvct.getLibEchelon());
+						}
+					}
+				}
 			} else {
-				if (!avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
+				if (!avctFonct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
 					// attention dans le cas des categorie 4 on a pas de date
 					// moyenne avct
-					evalAModif.setDateEffetAvct(avct.getDateAvctMoy() == null
-							|| avct.getDateAvctMoy().equals(Const.DATE_NULL)
-							|| avct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null
-							: sdf.parse(avct.getDateAvctMoy()));
+					evalAModif.setDateEffetAvct(avctFonct.getDateAvctMoy() == null
+							|| avctFonct.getDateAvctMoy().equals(Const.DATE_NULL)
+							|| avctFonct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avctFonct
+							.getDateAvctMoy()));
 				}
-				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avct.getIdNouvGrade());
+				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctFonct.getIdNouvGrade());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
