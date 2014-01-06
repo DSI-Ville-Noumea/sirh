@@ -49,14 +49,14 @@ public class OePTGVentilationUtils {
 					sb.append("<th>Mois-année</th>");
 					sb.append("<th>Semaine</th>");
 					sb.append("<th>HC</th>");
-					sb.append("<th>ABS</th>");					
+					sb.append("<th>ABS</th>");
 					sb.append("<th>CH</th>");
 					sb.append("<th>HS</th>");
 					sb.append("<th>HSJO</th>");
 					sb.append("<th>HSNU</th>");
 					sb.append("<th>HSDJF</th>");
 					sb.append("<th>HNO</th>");
-					sb.append("<th>HSI</th>");					
+					sb.append("<th>HSI</th>");
 					sb.append("<th>HCO</th>");
 					sb.append("<th>&nbsp;</th>");
 					sb.append("</tr></thead>");
@@ -73,18 +73,18 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 						sb.append("<td>" + moisAnnee.format(hsup.getDateLundi()) + "</td>");
 						sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
-						sb.append("<td>" + hsup.getmHorsContrat() + "</td>");
-						sb.append("<td>" + hsup.getMabs() + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmHorsContrat()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getMabs()) + "</td>");
 						sb.append("<td>"
 								+ (baseHoraire == null || baseHoraire.getNbasch() == null ? "" : baseHoraire
 										.getNbasch()) + "</td>");
-						sb.append("<td>" + hsup.getmSup() + "</td>");
-						sb.append("<td>" + hsup.getmSup() + "</td>");
-						sb.append("<td>" + hsup.getmNuit() + "</td>");
-						sb.append("<td>" + hsup.getmDjf() + "</td>");
-						sb.append("<td>" + hsup.getmNormales() + "</td>");
-						sb.append("<td>" + hsup.getmSimples() + "</td>");						
-						sb.append("<td>" + hsup.getmComposees() + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSup()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSup()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmNuit()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmNormales()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSimples()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmComposees()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
 								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
@@ -125,20 +125,20 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 						sb.append("<td>" + moisAnnee.format(hsup.getDateLundi()) + "</td>");
 						sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
-						sb.append("<td>" + hsup.getmHorsContrat() + "</td>");
-						sb.append("<td>" + hsup.getmNuit() + "</td>");
-						sb.append("<td>" + hsup.getmDjf() + "</td>");
-						sb.append("<td>" + hsup.getM1Mai() + "</td>");
-						sb.append("<td>" + hsup.getMabs() + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmHorsContrat()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmNuit()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getM1Mai()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getMabs()) + "</td>");
 						sb.append("<td>"
 								+ (baseHoraire == null || baseHoraire.getNbasch() == null ? "" : baseHoraire
 										.getNbasch()) + "</td>");
-						sb.append("<td>" + hsup.getmSup() + "</td>");
-						sb.append("<td>" + hsup.getmComplementaires() + "</td>");
-						sb.append("<td>" + hsup.getmSup25() + "</td>");
-						sb.append("<td>" + hsup.getmSup50() + "</td>");	
-						sb.append("<td>" + hsup.getmDjf25() + "</td>");
-						sb.append("<td>" + hsup.getmDjf50() + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSup()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmComplementaires()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSup25()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmSup50()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf25()) + "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf50()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
 								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
@@ -168,8 +168,8 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 					sb.append("<td>" + moisAnnee.format(abs.getDateLundi()) + "</td>");
 					sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
-					sb.append("<td>" + abs.getMinutesConcertees() + "</td>");
-					sb.append("<td>" + abs.getMinutesNonConcertees() + "</td>");
+					sb.append("<td>" + getHeureMinute(abs.getMinutesConcertees()) + "</td>");
+					sb.append("<td>" + getHeureMinute(abs.getMinutesNonConcertees()) + "</td>");
 					// sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
 					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
 							+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
@@ -211,6 +211,18 @@ public class OePTGVentilationUtils {
 		}
 		sb.append("</table>");
 		return sb.toString();
+	}
+
+	private static String getHeureMinute(int nombreMinute) {
+		int heure = nombreMinute / 60;
+		int minute = nombreMinute % 60;
+		String res = "";
+		if (heure > 0)
+			res += heure + "h";
+		if (minute > 0)
+			res += minute + "m";
+
+		return res;
 	}
 
 	public static boolean canProcessDeversementPaie(String statut) {
