@@ -190,8 +190,9 @@ public class OePTGVentilationContractuels extends BasicProcess {
 				if (s.startsWith("JMP_SAISIE:")) {
 					StringTokenizer tok = new StringTokenizer(s, ":");
 					tok.nextToken();
-					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG,
-							OePTGVentilationUtils.getMondayFromWeekNumber(Integer.parseInt(tok.nextToken())));
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, OePTGVentilationUtils
+							.getMondayFromWeekNumberAndYear(Integer.parseInt(tok.nextToken()),
+									Integer.parseInt(tok.nextToken())));
 					String rawAgent = tok.nextToken();
 					logger.info("\n rawAgent=" + rawAgent);
 					int index1 = 0;

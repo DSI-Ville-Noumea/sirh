@@ -31,6 +31,7 @@ public class OePTGVentilationUtils {
 			String agentsJson) throws Exception {
 
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
+		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 		GregorianCalendar greg = new GregorianCalendar();
 
 		StringBuilder sb = new StringBuilder();
@@ -84,7 +85,11 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + getHeureMinute(hsup.getmDjf()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getM1Mai()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
-								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
+								+ greg.get(Calendar.WEEK_OF_YEAR)
+								+ ":"
+								+ annee.format(hsup.getDateLundi())
+								+ ":"
+								+ agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
 					}
 
@@ -104,7 +109,7 @@ public class OePTGVentilationUtils {
 					sb.append("<th>50%</th>");
 					sb.append("<th>Nuit</th>");
 					sb.append("<th>DJF</th>");
-					sb.append("<th>Mai</th>");					
+					sb.append("<th>Mai</th>");
 					sb.append("<th>&nbsp;</th>");
 					sb.append("</tr></thead>");
 					List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, date, typePointage,
@@ -133,7 +138,11 @@ public class OePTGVentilationUtils {
 								+ "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getM1Mai()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
-								+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
+								+ greg.get(Calendar.WEEK_OF_YEAR)
+								+ ":"
+								+ annee.format(hsup.getDateLundi())
+								+ ":"
+								+ agent.getNoMatricule() + "'></td>");
 						sb.append("</tr>");
 					}
 					sb.append("</tbody>");
@@ -165,7 +174,11 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + getHeureMinute(abs.getMinutesNonConcertees()) + "</td>");
 					// sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
 					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
-							+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
+							+ greg.get(Calendar.WEEK_OF_YEAR)
+							+ ":"
+							+ annee.format(abs.getDateLundi())
+							+ ":"
+							+ agent.getNoMatricule() + "'></td>");
 					sb.append("</tr>");
 				}
 				sb.append("</tbody>");
@@ -195,7 +208,11 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + primeDetail.getLibelle() + "</td>");
 					sb.append("<td>" + prime.getQuantite() + "</td>");
 					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
-							+ greg.get(Calendar.WEEK_OF_YEAR) + ":" + agent.getNoMatricule() + "'></td>");
+							+ greg.get(Calendar.WEEK_OF_YEAR)
+							+ ":"
+							+ annee.format(prime.getDateDebutMois())
+							+ ":"
+							+ agent.getNoMatricule() + "'></td>");
 					sb.append("</tr>");
 				}
 				sb.append("</tbody>");
@@ -228,9 +245,10 @@ public class OePTGVentilationUtils {
 		return consum.isVentilAvailable(statut);
 	}
 
-	public static String getMondayFromWeekNumber(int week) {
+	public static String getMondayFromWeekNumberAndYear(int week, int year) {
 		GregorianCalendar cal = new GregorianCalendar();
 		// cal.setTime(listePointage.get(idPtg).getDate());
+		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.WEEK_OF_YEAR, week); // back to previous week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
 		return sdf.format(cal.getTime());
