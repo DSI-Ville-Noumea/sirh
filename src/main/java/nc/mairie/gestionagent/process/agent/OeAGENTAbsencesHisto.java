@@ -95,6 +95,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// gestion navigation
+			// Si clic sur le bouton PB_RESET
+			if (testerParametre(request, getNOM_PB_RESET())) {
+				return performPB_RESET(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -120,5 +125,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	private void setAgentCourant(AgentNW agentCourant) {
 		this.agentCourant = agentCourant;
+	}
+
+	public String getNOM_PB_RESET() {
+		return "NOM_PB_RESET";
+	}
+
+	public boolean performPB_RESET(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		return true;
 	}
 }
