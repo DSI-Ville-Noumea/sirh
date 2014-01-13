@@ -136,7 +136,7 @@ public class EAEDao implements EAEDaoInterface {
 	@Override
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut,
 			ArrayList<String> listeSousService, String capBool, AgentNW agentEvaluateur, AgentNW agentEvalue,
-			String detach) throws Exception {
+			String affecte) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		String reqInner = Const.CHAINE_VIDE;
 		if (!etat.equals(Const.CHAINE_VIDE)) {
@@ -162,8 +162,8 @@ public class EAEDao implements EAEDaoInterface {
 				reqWhere += " and " + CHAMP_CAP + " = 0";
 			}
 		}
-		if (!detach.equals(Const.CHAINE_VIDE)) {
-			if (detach.equals("oui")) {
+		if (!affecte.equals(Const.CHAINE_VIDE)) {
+			if (affecte.equals("oui")) {
 				reqWhere += " and eval.AGENT_DETACHE = 1 ";
 			} else {
 				reqWhere += " and eval.AGENT_DETACHE = 0 ";

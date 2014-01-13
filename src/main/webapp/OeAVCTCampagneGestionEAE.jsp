@@ -144,8 +144,8 @@ function reduireHierarchy() {
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
           	<span class="sigp2" style="width:70px">Détachés : </span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DETACHE() %>" style="width=50px;margin-right:20px;">
-				<%=process.forComboHTML(process.getVAL_LB_DETACHE(), process.getVAL_LB_DETACHE_SELECT()) %>
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_AFFECTE() %>" style="width=50px;margin-right:20px;">
+				<%=process.forComboHTML(process.getVAL_LB_AFFECTE(), process.getVAL_LB_AFFECTE_SELECT()) %>
 			</SELECT>
 			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
@@ -192,11 +192,11 @@ function reduireHierarchy() {
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentAffecte() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
-							<%if(!eaeEvalue.isAgentDetache()){ %>							
+							<%if(!eaeEvalue.isAgentAffecte()){ %>							
 								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 									<br/>
 									<%if(eae.getIdDelegataire()==null){ %>

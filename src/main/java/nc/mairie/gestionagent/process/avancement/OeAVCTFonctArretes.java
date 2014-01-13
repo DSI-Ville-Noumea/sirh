@@ -872,18 +872,18 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	}
 
 	public byte[] getArretesReportAsByteArray(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) throws Exception {
+			boolean isAffecte) throws Exception {
 
-		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct, isDetache);
+		ClientResponse response = createAndFireRequest(csvAgents, isChangementClasse, anneeAvct, isAffecte);
 
 		return readResponseAsByteArray(response);
 	}
 
 	public ClientResponse createAndFireRequest(String csvAgents, boolean isChangementClasse, int anneeAvct,
-			boolean isDetache) {
+			boolean isAffecte) {
 		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ARRETES_AVCT")
 				+ "?isChangementClasse=" + isChangementClasse + "&csvIdAgents=" + csvAgents + "&annee=" + anneeAvct
-				+ "&isDetache=" + isDetache;
+				+ "&isDetache=" + isAffecte;
 
 		Client client = Client.create();
 

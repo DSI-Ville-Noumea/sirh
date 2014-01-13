@@ -60,7 +60,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	public void creerEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
 			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
 			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
-			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentDetache) throws Exception {
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentAffecte) throws Exception {
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_EVALUE + "," + CHAMP_ID_EAE + "," + CHAMP_ID_AGENT + ","
 				+ CHAMP_DATE_ENTREE_SERVICE + "," + CHAMP_DATE_ENTREE_COLLECTIVITE + "," + CHAMP_DATE_ENTREE_FONCTIONNAIRE + ","
@@ -72,7 +72,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 
 		jdbcTemplate.update(sql, new Object[] { idEae, idAgent, dateEntreeService, dateEntreeCollectivite, dateEntreeFonctionnaire,
 				dateEntreeAdministration, statut, ancienneteEchelon, cadre, categorie, classification, grade, echelon, dateEffectAvct, nouvGrade,
-				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax, agentDetache });
+				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax, agentAffecte });
 
 	}
 
@@ -124,8 +124,8 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setNbMoisDureeMoy(moy == null ? null : moy.intValue());
 			BigDecimal max = (BigDecimal) row.get(CHAMP_AVCT_DUR_MAX);
 			evalue.setNbMoisDureeMax(max == null ? null : max.intValue());
-			BigDecimal detache = (BigDecimal) row.get(CHAMP_AGENT_DETACHE);
-			evalue.setAgentDetache(detache.intValue() == 0 ? false : true);
+			BigDecimal affecte = (BigDecimal) row.get(CHAMP_AGENT_DETACHE);
+			evalue.setAgentAffecte(affecte.intValue() == 0 ? false : true);
 
 			listeEaeEvalue.add(evalue);
 		}
@@ -136,7 +136,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	public void modifierEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
 			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
 			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
-			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentDetache) throws Exception {
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentAffecte) throws Exception {
 
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_DATE_ENTREE_SERVICE + "=?," + CHAMP_DATE_ENTREE_COLLECTIVITE
 				+ "=?," + CHAMP_DATE_ENTREE_FONCTIONNAIRE + "=?," + CHAMP_DATE_ENTREE_ADMINISTRATION + "=?," + CHAMP_STATUT + "=?,"
@@ -147,7 +147,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 
 		jdbcTemplate.update(sql, new Object[] { idAgent, dateEntreeService, dateEntreeCollectivite, dateEntreeFonctionnaire,
 				dateEntreeAdministration, statut, ancienneteEchelon, cadre, categorie, classification, grade, echelon, dateEffectAvct, nouvGrade,
-				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax, agentDetache, idEae });
+				nouvEchelon, position, typeAvct, statutPrecision, durMin, durMoy, durMax, agentAffecte, idEae });
 
 	}
 }

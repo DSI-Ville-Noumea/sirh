@@ -35,7 +35,7 @@ public class EaeEvalueResultSetExtractor implements ResultSetExtractor<Object> {
 		eaeEval.setNbMoisDureeMin(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MIN));
 		eaeEval.setNbMoisDureeMoy(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MOY));
 		eaeEval.setNbMoisDureeMax(rs.getInt(EaeEvalueDao.CHAMP_AVCT_DUR_MAX));
-		eaeEval.setAgentDetache(rs.getBoolean(EaeEvalueDao.CHAMP_AGENT_DETACHE));
+		eaeEval.setAgentAffecte(rs.getBoolean(EaeEvalueDao.CHAMP_AGENT_DETACHE));
 
 		return eaeEval;
 	}

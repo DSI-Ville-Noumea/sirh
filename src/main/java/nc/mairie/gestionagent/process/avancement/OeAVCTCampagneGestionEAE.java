@@ -107,12 +107,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private String[] LB_ETAT;
 	private String[] LB_STATUT;
 	private String[] LB_CAP;
-	private String[] LB_DETACHE;
+	private String[] LB_AFFECTE;
 	private ArrayList<CampagneEAE> listeCampagneEAE;
 	private ArrayList<EnumEtatEAE> listeEnumEtatEAE;
 	private ArrayList<String> listeStatut;
 	private ArrayList<String> listeCAP;
-	private ArrayList<String> listeDetache;
+	private ArrayList<String> listeAffecte;
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
@@ -259,7 +259,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// si EAE d'un détachés alors on passe le statut de l'EAE en
 			// "on debuté"
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEAE());
-			if (evalue.isAgentDetache()) {
+			if (evalue.isAgentAffecte()) {
 				getEaeCourant().setEtat(EnumEtatEAE.NON_DEBUTE.getCode());
 				getEaeDao().modifierEtat(getEaeCourant().getIdEAE(), getEaeCourant().getEtat());
 			}
@@ -464,7 +464,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// AND MAIRIE.SPCARR.CDCATE NOT IN (7, 9, 10, 11)
 		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat sdfSIRH = new SimpleDateFormat("yyyy-MM-dd");
-		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans détachés ");
+		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans affectés ");
 		ArrayList<Carriere> listeCarrierePAActive = Carriere.listerCarriereActiveAvecPA(getTransaction(),
 				sdfMairie.format(new Date()));
 		String listeNomatr = Const.CHAINE_VIDE;
@@ -476,7 +476,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		ArrayList<AgentNW> la = AgentNW.listerAgentEligibleEAE(getTransaction(), listeNomatr,
 				sdfSIRH.format(new Date()));
-		logger.info("Req AS400 : FIN listerAgentEligibleEAE sans détachés : " + la.size());
+		logger.info("Req AS400 : FIN listerAgentEligibleEAE sans affectés : " + la.size());
 
 		// Parcours des agents sans les détachés
 		for (AgentNW a : la) {
@@ -484,37 +484,37 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			try {
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
 				if (eaeAgent == null) {
-					performCreeEAESansDetache(request, a, idCampagneEAE, anneeCampagne);
+					performCreeEAESansAffecte(request, a, idCampagneEAE, anneeCampagne);
 				}
 				// si on trouve un EAE dejà existant alors on ne fait rien
 			} catch (Exception e) {
-				performCreeEAESansDetache(request, a, idCampagneEAE, anneeCampagne);
+				performCreeEAESansAffecte(request, a, idCampagneEAE, anneeCampagne);
 			}
 		}
 
-		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE détachés ");
-		ArrayList<Carriere> listeCarrierePAActiveDetache = Carriere.listerCarriereActiveAvecPADetache(getTransaction(),
+		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE affectés ");
+		ArrayList<Carriere> listeCarrierePAActiveAffecte = Carriere.listerCarriereActiveAvecPAAffecte(getTransaction(),
 				sdfMairie.format(new Date()));
-		String listeNomatrDetache = Const.CHAINE_VIDE;
-		for (Carriere carr : listeCarrierePAActiveDetache) {
-			listeNomatrDetache += carr.getNoMatricule() + ",";
+		String listeNomatrAffecte = Const.CHAINE_VIDE;
+		for (Carriere carr : listeCarrierePAActiveAffecte) {
+			listeNomatrAffecte += carr.getNoMatricule() + ",";
 		}
-		if (!listeNomatrDetache.equals(Const.CHAINE_VIDE)) {
-			listeNomatrDetache = listeNomatrDetache.substring(0, listeNomatrDetache.length() - 1);
+		if (!listeNomatrAffecte.equals(Const.CHAINE_VIDE)) {
+			listeNomatrAffecte = listeNomatrAffecte.substring(0, listeNomatrAffecte.length() - 1);
 		}
-		ArrayList<AgentNW> laSuite = AgentNW.listerAgentWithListNomatr(getTransaction(), listeNomatrDetache);
-		logger.info("Req AS400 : FIN listerAgentEligibleEAE détachés : " + laSuite.size());
-		// Parcours des agents avec les détachés
+		ArrayList<AgentNW> laSuite = AgentNW.listerAgentWithListNomatr(getTransaction(), listeNomatrAffecte);
+		logger.info("Req AS400 : FIN listerAgentEligibleEAE affectés : " + laSuite.size());
+		// Parcours des agents avec les affectes
 		for (AgentNW a : laSuite) {
 			// Récupération de l'eae eventuel
 			try {
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(a.getIdAgent()), idCampagneEAE);
 				if (eaeAgent == null) {
-					performCreeEAEDetache(request, a, idCampagneEAE, anneeCampagne);
+					performCreeEAEAffecte(request, a, idCampagneEAE, anneeCampagne);
 				}
 				// si on trouve un EAE dejà existant alors on ne fait rien
 			} catch (Exception e) {
-				performCreeEAEDetache(request, a, idCampagneEAE, anneeCampagne);
+				performCreeEAEAffecte(request, a, idCampagneEAE, anneeCampagne);
 			}
 		}
 
@@ -524,7 +524,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	}
 
-	private void performCreeEAEDetache(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
+	private void performCreeEAEAffecte(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
 			Integer anneeCampagne) throws Exception {
 		logger.info("Création de l'EAE pour l'agent : " + a.getIdAgent());
 		// Création de l'EAE
@@ -578,7 +578,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		performCreerFormation(request, a);
 	}
 
-	private void performCreeEAESansDetache(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
+	private void performCreeEAESansAffecte(HttpServletRequest request, AgentNW a, Integer idCampagneEAE,
 			Integer anneeCampagne) throws Exception {
 		logger.info("Création de l'EAE pour l'agent : " + a.getIdAgent());
 		// Création de l'EAE
@@ -791,7 +791,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			addZone(getNOM_ST_AGENT(i),
 					agentEAE.getNomAgent() + " " + agentEAE.getPrenomAgent() + " (" + agentEAE.getNoMatricule() + ") ");
 			addZone(getNOM_ST_STATUT(i), (evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut()) + " <br> "
-					+ (evalue.isAgentDetache() ? "oui" : "&nbsp;"));
+					+ (evalue.isAgentAffecte() ? "oui" : "&nbsp;"));
 			// on recupere les evaluateurs
 			ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
 			String eval = Const.CHAINE_VIDE;
@@ -929,21 +929,21 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			setLB_ETAT(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_ETAT_SELECT(), Const.ZERO);
 		}
-		// Si liste détachés vide alors affectation
-		if (getLB_DETACHE() == LBVide) {
-			ArrayList<String> listeDetache = new ArrayList<String>();
-			listeDetache.add("oui");
-			listeDetache.add("non");
-			setListeDetache(listeDetache);
+		// Si liste affecte vide alors affectation
+		if (getLB_AFFECTE() == LBVide) {
+			ArrayList<String> listeAffecte = new ArrayList<String>();
+			listeAffecte.add("oui");
+			listeAffecte.add("non");
+			setListeAffecte(listeAffecte);
 			int[] tailles = { 15 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<String> list = listeDetache.listIterator(); list.hasNext();) {
-				String detache = (String) list.next();
-				String ligne[] = { detache };
+			for (ListIterator<String> list = listeAffecte.listIterator(); list.hasNext();) {
+				String affecte = (String) list.next();
+				String ligne[] = { affecte };
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_DETACHE(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_DETACHE_SELECT(), Const.ZERO);
+			setLB_AFFECTE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_AFFECTE_SELECT(), Const.ZERO);
 		}
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
@@ -1225,12 +1225,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			cap = getListeCAP().get(indiceCAP - 1);
 		}
 
-		// Recherche des eae de la campagne en fonction du détachés
-		int indiceDetache = (Services.estNumerique(getVAL_LB_DETACHE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_DETACHE_SELECT()) : -1);
-		String detach = Const.CHAINE_VIDE;
-		if (indiceDetache > 0) {
-			detach = getListeDetache().get(indiceDetache - 1);
+		// Recherche des eae de la campagne en fonction du affectes
+		int indiceAffecte = (Services.estNumerique(getVAL_LB_AFFECTE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_AFFECTE_SELECT()) : -1);
+		String affecte = Const.CHAINE_VIDE;
+		if (indiceAffecte > 0) {
+			affecte = getListeAffecte().get(indiceAffecte - 1);
 		}
 
 		// recuperation agent evaluateur
@@ -1247,7 +1247,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// on affiche la liste des EAE avec le filtre
 		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEAE(), etat,
-				statut, listeSousService, cap, agentEvaluateur, agentEvalue, detach);
+				statut, listeSousService, cap, agentEvaluateur, agentEvalue, affecte);
 		setListeEAE(listeEAE);
 		return true;
 	}
@@ -1700,7 +1700,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		getEaeDao().modifierDelegataire(eaeSelection.getIdEAE(), eaeSelection.getIdDelegataire());
 		// si EAE d'un détaché alors on repasse le statut a "NA"
 		EaeEvalue eval = getEaeEvalueDao().chercherEaeEvalue(eaeSelection.getIdEAE());
-		if (eval.isAgentDetache()) {
+		if (eval.isAgentAffecte()) {
 			eaeSelection.setEtat(EnumEtatEAE.NON_AFFECTE.getCode());
 			getEaeDao().modifierEtat(eaeSelection.getIdEAE(), eaeSelection.getEtat());
 		}
@@ -2383,7 +2383,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void performCreerEvalue(HttpServletRequest request, AgentNW ag, boolean miseAjourDateAdministration,
-			boolean agentDetach, boolean modeCreation) throws Exception {
+			boolean agentAffecte, boolean modeCreation) throws Exception {
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		EaeEvalue evalAModif = null;
@@ -2740,7 +2740,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				evalAModif.setPosition(paCours.getPositionAdmEAE(paCours.getCdpadm()));
 			}
 
-			evalAModif.setAgentDetache(agentDetach);
+			evalAModif.setAgentAffecte(agentAffecte);
 			if (modeCreation) {
 				// enfin on créer la ligne
 				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
@@ -2751,7 +2751,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
 						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
 						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(),
-						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
+						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentAffecte());
 			} else {
 				getEaeEvalueDao().modifierEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
 						evalAModif.getDateEntreeService(), evalAModif.getDateEntreeCollectivite(),
@@ -2761,7 +2761,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
 						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
 						evalAModif.getPrecisionStatut(), evalAModif.getNbMoisDureeMin(),
-						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentDetache());
+						evalAModif.getNbMoisDureeMoy(), evalAModif.getNbMoisDureeMax(), evalAModif.isAgentAffecte());
 			}
 		}
 	}
@@ -3439,7 +3439,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		performCreerEvalue(request, ag, false, evalue.isAgentDetache(), false);
+		performCreerEvalue(request, ag, false, evalue.isAgentAffecte(), false);
 		// on met les données dans EAE-FichePoste
 		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
@@ -3884,67 +3884,38 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			return res;
 		}
 	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_DETACHE Date de création
-	 * : (28/11/11)
-	 * 
-	 */
-	private String[] getLB_DETACHE() {
-		if (LB_DETACHE == null)
-			LB_DETACHE = initialiseLazyLB();
-		return LB_DETACHE;
+	
+	private String[] getLB_AFFECTE() {
+		if (LB_AFFECTE == null)
+			LB_AFFECTE = initialiseLazyLB();
+		return LB_AFFECTE;
 	}
 
-	/**
-	 * Setter de la liste: LB_DETACHE Date de création : (28/11/11)
-	 * 
-	 */
-	private void setLB_DETACHE(String[] newLB_DETACHE) {
-		LB_DETACHE = newLB_DETACHE;
+	private void setLB_AFFECTE(String[] newLB_AFFECTE) {
+		LB_AFFECTE = newLB_AFFECTE;
 	}
 
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DETACHE Date de création
-	 * : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_DETACHE() {
-		return "NOM_LB_DETACHE";
+	public String getNOM_LB_AFFECTE() {
+		return "NOM_LB_AFFECTE";
 	}
 
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DETACHE_SELECT Date de création : (28/11/11)
-	 * 
-	 */
-	public String getNOM_LB_DETACHE_SELECT() {
-		return "NOM_LB_DETACHE_SELECT";
+	public String getNOM_LB_AFFECTE_SELECT() {
+		return "NOM_LB_AFFECTE_SELECT";
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DETACHE Date de création : (28/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_DETACHE() {
-		return getLB_DETACHE();
+	public String[] getVAL_LB_AFFECTE() {
+		return getLB_AFFECTE();
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DETACHE Date de création : (28/11/11)
-	 * 
-	 */
-	public String getVAL_LB_DETACHE_SELECT() {
-		return getZone(getNOM_LB_DETACHE_SELECT());
+	public String getVAL_LB_AFFECTE_SELECT() {
+		return getZone(getNOM_LB_AFFECTE_SELECT());
 	}
 
-	public ArrayList<String> getListeDetache() {
-		return listeDetache == null ? new ArrayList<String>() : listeDetache;
+	public ArrayList<String> getListeAffecte() {
+		return listeAffecte == null ? new ArrayList<String>() : listeAffecte;
 	}
 
-	public void setListeDetache(ArrayList<String> listeDetache) {
-		this.listeDetache = listeDetache;
+	public void setListeAffecte(ArrayList<String> listeAffecte) {
+		this.listeAffecte = listeAffecte;
 	}
 }
