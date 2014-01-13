@@ -11,5 +11,5 @@ public interface ISirhAbsWSConsumer {
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
 
-	SoldeDto getSoldeRecup(String idAgent);
+	SoldeDto getSoldeAgent(String idAgent);
 }

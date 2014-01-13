@@ -27,7 +27,7 @@ import flexjson.JSONDeserializer;
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
-	private static final String sirhAbsSoldeRecupAgent = "recuperations/soldeRecup";
+	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -144,7 +144,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public SoldeDto getSoldeRecup(String idAgent) {
+	public SoldeDto getSoldeAgent(String idAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsSoldeRecupAgent;
 		HashMap<String, String> params = new HashMap<>();

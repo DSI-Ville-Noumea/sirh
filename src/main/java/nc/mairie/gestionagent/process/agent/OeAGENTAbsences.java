@@ -2,13 +2,11 @@ package nc.mairie.gestionagent.process.agent;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.SoldeCongeDto;
 import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
-import nc.mairie.spring.ws.SirhWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -79,18 +77,20 @@ public class OeAGENTAbsences extends BasicProcess {
 	}
 
 	private void getSoldeConge(AgentNW agentCourant) {
-		// Solde congé depuis SIRH-WS
-		SirhWSConsumer consuWs = new SirhWSConsumer();
-		SoldeCongeDto soldeConge = consuWs.getSoldeConge(agentCourant.getIdAgent());
-		addZone(getNOM_ST_SOLDE_CONGE(), soldeConge.getSoldeAnneeEnCours() == 0 ? "&nbsp;" : soldeConge
-				.getSoldeAnneeEnCours().toString() + " j");
-		addZone(getNOM_ST_SOLDE_CONGE_PREC(), soldeConge.getSoldeAnneePrec() == 0 ? "&nbsp;" : soldeConge
-				.getSoldeAnneePrec().toString() + " j");
-		// Solde recup depuis SIRH-ABS-WS
+		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		SoldeDto soldeRecup = consuAbs.getSoldeRecup(agentCourant.getIdAgent());
-		String soldeRecupHeure = (soldeRecup.getSolde() / 60) == 0 ? "" : soldeRecup.getSolde() / 60 + "h ";
-		String soldeRecupMinute = (soldeRecup.getSolde() % 60) == 0 ? "&nbsp;" : soldeRecup.getSolde() % 60 + "m";
+		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(agentCourant.getIdAgent());
+
+		// solde congés
+		addZone(getNOM_ST_SOLDE_CONGE(), soldeGlobal.getSoldeCongeAnnee() == 0 ? "&nbsp;" : soldeGlobal
+				.getSoldeCongeAnnee().toString() + " j");
+		addZone(getNOM_ST_SOLDE_CONGE_PREC(), soldeGlobal.getSoldeCongeAnneePrec() == 0 ? "&nbsp;" : soldeGlobal
+				.getSoldeCongeAnneePrec().toString() + " j");
+
+		// Solde recup
+		int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
+		String soldeRecupHeure = (soldeRecup / 60) == 0 ? "" : soldeRecup / 60 + "h ";
+		String soldeRecupMinute = (soldeRecup % 60) == 0 ? "&nbsp;" : soldeRecup % 60 + "m";
 		addZone(getNOM_ST_SOLDE_RECUP(), soldeRecupHeure + soldeRecupMinute);
 
 	}
