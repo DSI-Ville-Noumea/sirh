@@ -10,12 +10,12 @@ public interface EaeEvalueDaoInterface {
 	public void creerEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
 			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
 			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
-			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentDetache) throws Exception;
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentAffecte) throws Exception;
 
 	public void modifierEaeEvalue(Integer idEae, Integer idAgent, Date dateEntreeService, Date dateEntreeCollectivite, Date dateEntreeFonctionnaire,
 			Date dateEntreeAdministration, String statut, Integer ancienneteEchelon, String cadre, String categorie, String classification,
 			String grade, String echelon, Date dateEffectAvct, String nouvGrade, String nouvEchelon, String position, String typeAvct,
-			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentDetache) throws Exception;
+			String statutPrecision, Integer durMin, Integer durMoy, Integer durMax, boolean agentAffecte) throws Exception;
 
 	public EaeEvalue chercherEaeEvalue(Integer idEae) throws Exception;
 
