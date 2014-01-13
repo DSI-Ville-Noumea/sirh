@@ -66,7 +66,7 @@ var Module_agent = new Dossier("Module_agent", "Agent","AGENT");
 	<%}%>
 	Module_agent.ajouterFils(new Lien("emplois", "AgtEmploisAffectations", "Emplois", "Gestion des emplois d'un agent", true));
 	Module_agent.ajouterFils(new Lien("eltsSalaires", "PAGestion", "Eléments de salaire", "Gestion des éléments de salaire d'un agent", true));
-	Module_agent.ajouterFils(new Lien("absences", "AgtAbsences", "Absences", "Gestion des absences d'un agent", true));
+	Module_agent.ajouterFils(new Lien("absences", "AgtAbsencesSolde", "Absences", "Gestion des absences d'un agent", true));
 	<% 
 	String affEAEAgent =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_EAE_AGENT");
 	if (affEAEAgent.equals("TRUE")){ %>

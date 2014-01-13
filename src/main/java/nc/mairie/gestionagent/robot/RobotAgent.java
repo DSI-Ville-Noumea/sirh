@@ -11,7 +11,8 @@ import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
 import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
-import nc.mairie.gestionagent.process.agent.OeAGENTAbsences;
+import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesHisto;
+import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesSolde;
 import nc.mairie.gestionagent.process.agent.OeAGENTAccidentTravail;
 import nc.mairie.gestionagent.process.agent.OeAGENTActesDonneesPerso;
 import nc.mairie.gestionagent.process.agent.OeAGENTActesHSCT;
@@ -167,9 +168,11 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("CarriereGestion")) {
 			return new OeAGENTCarriere();
 		} // Module AGENT - ABSENCES
-		else if (activite.equals("AgtAbsences")) {
-			return new OeAGENTAbsences();
-		}  // Module AGENT - EAE
+		else if (activite.equals("AgtAbsencesSolde")) {
+			return new OeAGENTAbsencesSolde();
+		}else if (activite.equals("AgtAbsencesHisto")) {
+			return new OeAGENTAbsencesHisto();
+		}   // Module AGENT - EAE
 		else if (activite.equals("AgtEae")) {
 			return new OeAGENTEae();
 		} // Module POSTE
@@ -555,7 +558,8 @@ public class RobotAgent extends Robot {
 				.put(OeAGENTPrime.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCES
-		navigation.put(OeAGENTAbsences.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesSolde.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesHisto.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// EAE
 		navigation.put(OeAGENTEae.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());

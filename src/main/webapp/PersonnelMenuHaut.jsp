@@ -82,6 +82,11 @@ menuAgentEltsSalaires.ajouterFils(new Lien("ChargeGestion", "CHARGES", "Gestion 
 menuAgentEltsSalaires.ajouterFils(new Lien("PrimeGestion", "PRIMES", "Gestion des primes", true, false,"AGENT/SALAIRE/PRIME"));
 document.write(menuAgentEltsSalaires.afficher());
 
+var menuAgentAbsence = new MenuHaut("Module_agent_absences");
+menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesSolde", "ABS", "Solde des Absences", true, false,"AGENT/ABSENCE/SOLDE"));
+menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesHisto", "ABS", "Historique des Absences", true, false,"AGENT/ABSENCE/HISTO"));
+document.write(menuAgentAbsence.afficher());
+
 var menuAgentEAE = new MenuHaut("Module_agent_eae");
 menuAgentEAE.ajouterFils(new Lien("AgtEae", "EAE", "Gestion des EAE", true, false,"AGENT/EAE/EAE"));
 document.write(menuAgentEAE.afficher());

@@ -61,7 +61,8 @@
 		listeDroits.add("CarriereGestion");
 		
 		/*Module AGENT - ABSENCES*/
-		listeDroits.add("AgtAbsences");
+		listeDroits.add("AgtAbsencesSolde");
+		listeDroits.add("AgtAbsencesHisto");
 		
 		/*Module AGENT - EAE*/
 		listeDroits.add("AgtEae");

@@ -16,7 +16,7 @@ import nc.mairie.utils.MessageUtils;
  * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
  * 
  */
-public class OeAGENTAbsences extends BasicProcess {
+public class OeAGENTAbsencesSolde extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -30,7 +30,7 @@ public class OeAGENTAbsences extends BasicProcess {
 	 * 11:39:24)
 	 * 
 	 */
-	public OeAGENTAbsences() {
+	public OeAGENTAbsencesSolde() {
 		super();
 	}
 
@@ -135,7 +135,7 @@ public class OeAGENTAbsences extends BasicProcess {
 	 * 
 	 */
 	public String getJSP() {
-		return "OeAGENTAbsences.jsp";
+		return "OeAGENTAbsencesSolde.jsp";
 	}
 
 	public String getNomEcran() {
