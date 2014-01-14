@@ -23,6 +23,14 @@
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 		}
+		//function pour changement couleur arriere plan ligne du tableau
+		function SelectLigne(id,tailleTableau)
+		{
+			for (i=0; i<tailleTableau; i++){
+		 		document.getElementById(i).className="";
+			} 
+		 document.getElementById(id).className="selectLigne";
+		}
 		
 		</SCRIPT>	
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -57,8 +65,33 @@
 			<div id="corpsOngletNonPrises" title="NonPrises" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					    <legend class="sigp2Legend">Demandes non prises</legend>				    
-						
+					<legend class="sigp2Legend">Demandes non prises</legend>				    
+					<br/>
+				    <span style="position:relative;width:9px;"></span>
+				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
+					<span style="position:relative;width:90px;text-align: center;">Date début</span>
+					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
+					<span style="position:relative;width:90px;text-align: center;">Durée</span>
+					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
+					<span style="position:relative;text-align: left;">Etat</span>
+					<br/>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							for (int i = 0;i<process.getListeDemandeNonPrises().size();i++){
+							%>
+							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeNonPrises().size()%>)">
+								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_NP(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_NP(i)%></td>
+							</tr>
+							<%
+							}%>
+						</table>	
+					</div>	
 				</FIELDSET>	
 			</div>		
 		
@@ -68,8 +101,33 @@
 			<div id="corpsOngletEnCours" title="EnCours" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					    <legend class="sigp2Legend">Demandes en cours</legend>				    
-						
+					<legend class="sigp2Legend">Demandes en cours</legend>					    
+					<br/>
+				    <span style="position:relative;width:9px;"></span>
+				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
+					<span style="position:relative;width:90px;text-align: center;">Date début</span>
+					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
+					<span style="position:relative;width:90px;text-align: center;">Durée</span>
+					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
+					<span style="position:relative;text-align: left;">Etat</span>
+					<br/>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							for (int i = 0;i<process.getListeDemandeEnCours().size();i++){
+							%>
+							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeEnCours().size()%>)">
+								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_EC(i)%></td>
+							</tr>
+							<%
+							}%>
+						</table>	
+					</div>
 				</FIELDSET>	
 			</div>	
 		
@@ -79,8 +137,33 @@
 			<div id="corpsOngletToutes" title="Toutes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					    <legend class="sigp2Legend">Toutes les demandes</legend>				    
-						
+					<legend class="sigp2Legend">Toutes les demandes</legend>						    
+					<br/>
+				    <span style="position:relative;width:9px;"></span>
+				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
+					<span style="position:relative;width:90px;text-align: center;">Date début</span>
+					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
+					<span style="position:relative;width:90px;text-align: center;">Durée</span>
+					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
+					<span style="position:relative;text-align: left;">Etat</span>
+					<br/>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<%
+							for (int i = 0;i<process.getListeToutesDemandes().size();i++){
+							%>
+							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeToutesDemandes().size()%>)">
+								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_TT(i)%></td>
+							</tr>
+							<%
+							}%>
+						</table>	
+					</div>
 				</FIELDSET>	
 			</div>
 	<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	

@@ -1,11 +1,13 @@
 package nc.mairie.spring.ws;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.mairie.abs.dto.DemandeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -28,6 +30,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
+	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -125,7 +128,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
 			throw new SirhPtgWSConsumerException(
-					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.", ex);
+					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
+					ex);
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -152,5 +156,33 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(SoldeDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, Date dateDebut, Date dateFin,
+			Date dateDemande, Integer idRefEtat, Integer idRefType) {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd");
+
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsDemandesAgent;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("ongletDemande", onglet);
+		if (dateDebut != null)
+			params.put("from", sdf.format(dateDebut));
+		if (dateFin != null)
+			params.put("to", sdf.format(dateFin));
+		if (dateDemande != null)
+			params.put("dateDemande", sdf.format(dateDemande));
+		if (idRefEtat != null)
+			params.put("etat", idRefEtat.toString());
+		if (idRefType != null)
+			params.put("type", idRefType.toString());
+		logger.debug("Call " + url + " with idAgent : " + idAgent + ",ongletDemande : " + onglet + ",from : "
+				+ dateDebut + ",to : " + dateFin + ",dateDemande : " + dateDemande + ",etat : " + idRefEtat
+				+ ",type : " + idRefType);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(DemandeDto.class, res, url);
+
 	}
 }
