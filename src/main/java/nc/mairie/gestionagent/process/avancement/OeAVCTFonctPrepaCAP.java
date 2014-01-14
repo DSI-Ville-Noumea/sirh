@@ -493,7 +493,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		}
 
-		// Si liste medecins vide alors affectation
+		// Si liste filiere vide alors affectation
 		if (getListeFiliere() == null || getListeFiliere().size() == 0) {
 			setListeFiliere(FiliereGrade.listerFiliereGrade(getTransaction()));
 

@@ -64,6 +64,19 @@
 		<% }else {%>
 			<div id="corpsOngletNonPrises" title="NonPrises" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
+			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+					<span class="sigp2" style="width:100px">Famille d'absence : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_NP() %>" style="width=150px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_NP(), process.getVAL_LB_TYPE_ABSENCE_NP_SELECT()) %>
+					</SELECT>
+					<span class="sigp2" style="width:40px">Etat : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_NP() %>" style="width=120px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_NP(), process.getVAL_LB_ETAT_ABSENCE_NP_SELECT()) %>
+					</SELECT>
+		          	<BR/><BR/>
+					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_NP()%>">
+				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Demandes non prises</legend>				    
 					<br/>
@@ -100,6 +113,19 @@
 		<% }else {%>
 			<div id="corpsOngletEnCours" title="EnCours" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
+			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+					<span class="sigp2" style="width:100px">Famille d'absence : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_EC() %>" style="width=150px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_EC(), process.getVAL_LB_TYPE_ABSENCE_EC_SELECT()) %>
+					</SELECT>
+					<span class="sigp2" style="width:40px">Etat : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_EC() %>" style="width=120px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_EC(), process.getVAL_LB_ETAT_ABSENCE_EC_SELECT()) %>
+					</SELECT>
+		          	<BR/><BR/>
+					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_EC()%>">
+				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Demandes en cours</legend>					    
 					<br/>
@@ -136,6 +162,19 @@
 		<% }else {%>
 			<div id="corpsOngletToutes" title="Toutes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
+			    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+				    <legend class="sigp2Legend">Tri des absences à afficher</legend>
+					<span class="sigp2" style="width:100px">Famille d'absence : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_TT() %>" style="width=150px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_TT(), process.getVAL_LB_TYPE_ABSENCE_TT_SELECT()) %>
+					</SELECT>
+					<span class="sigp2" style="width:40px">Etat : </span>
+					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_TT() %>" style="width=120px;margin-right:20px;">
+						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_TT(), process.getVAL_LB_ETAT_ABSENCE_TT_SELECT()) %>
+					</SELECT>
+		          	<BR/><BR/>
+					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_TT()%>">
+				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Toutes les demandes</legend>						    
 					<br/>

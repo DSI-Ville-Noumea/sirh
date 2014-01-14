@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,8 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -32,6 +35,17 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private ArrayList<DemandeDto> listeDemandeNonPrises;
 	private ArrayList<DemandeDto> listeDemandeEnCours;
 	private ArrayList<DemandeDto> listeToutesDemandes;
+
+	private String[] LB_TYPE_ABSENCE_NP;
+	private String[] LB_TYPE_ABSENCE_EC;
+	private String[] LB_TYPE_ABSENCE_TT;
+	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+	private String[] LB_ETAT_ABSENCE_NP;
+	private String[] LB_ETAT_ABSENCE_EC;
+	private String[] LB_ETAT_ABSENCE_TT;
+	private ArrayList<EnumEtatAbsence> listeEtatAbsenceNP;
+	private ArrayList<EnumEtatAbsence> listeEtatAbsenceEC;
+	private ArrayList<EnumEtatAbsence> listeEtatAbsenceTT;
 
 	public OeAGENTAbsencesHisto() {
 		super();
@@ -60,14 +74,17 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			throw new Exception();
 		}
 
+		// Initialisation des listes déroulantes
+		initialiseListeDeroulante();
+
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				initialiseHistoAgentNonPrises(request);
-				initialiseHistoAgentEnCours(request);
-				initialiseHistoAgentToutes(request);
+				initialiseHistoAgentNonPrises(request, null, null);
+				initialiseHistoAgentEnCours(request, null, null);
+				initialiseHistoAgentToutes(request, null, null);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -75,12 +92,89 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentToutes(HttpServletRequest request) {
+	private void initialiseListeDeroulante() {
+
+		// Si liste Type absence vide alors affectation
+		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
+			setListeTypeAbsence(EnumTypeAbsence.getValues());
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
+				String ligne[] = { type.getValue() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_ABSENCE_NP(aFormat.getListeFormatee(true));
+			setLB_TYPE_ABSENCE_EC(aFormat.getListeFormatee(true));
+			setLB_TYPE_ABSENCE_TT(aFormat.getListeFormatee(true));
+		}
+
+		// Si liste Etat absence vide alors affectation
+		if (getListeEtatAbsenceTT() == null || getListeEtatAbsenceTT().size() == 0) {
+			setListeEtatAbsenceTT(EnumEtatAbsence.getValues());
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<EnumEtatAbsence> list = getListeEtatAbsenceTT().listIterator(); list.hasNext();) {
+				EnumEtatAbsence etat = (EnumEtatAbsence) list.next();
+				String ligne[] = { etat.getValue() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ETAT_ABSENCE_TT(aFormat.getListeFormatee(true));
+		}
+
+		// Si liste Etat absence vide alors affectation
+		if (getListeEtatAbsenceNP() == null || getListeEtatAbsenceNP().size() == 0) {
+			ArrayList<EnumEtatAbsence> tousEtats = EnumEtatAbsence.getValues();
+			tousEtats.remove(EnumEtatAbsence.PRISE);
+			setListeEtatAbsenceNP(tousEtats);
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<EnumEtatAbsence> list = getListeEtatAbsenceNP().listIterator(); list.hasNext();) {
+				EnumEtatAbsence etat = (EnumEtatAbsence) list.next();
+				String ligne[] = { etat.getValue() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ETAT_ABSENCE_NP(aFormat.getListeFormatee(true));
+		}
+
+		// Si liste Etat absence vide alors affectation
+		if (getListeEtatAbsenceEC() == null || getListeEtatAbsenceEC().size() == 0) {
+			ArrayList<EnumEtatAbsence> etats = new ArrayList<EnumEtatAbsence>();
+			etats.add(EnumEtatAbsence.SAISIE);
+			etats.add(EnumEtatAbsence.VISEE_FAV);
+			etats.add(EnumEtatAbsence.VISEE_DEFAV);
+			etats.add(EnumEtatAbsence.APPROUVE);
+			setListeEtatAbsenceEC(etats);
+
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<EnumEtatAbsence> list = getListeEtatAbsenceEC().listIterator(); list.hasNext();) {
+				EnumEtatAbsence etat = (EnumEtatAbsence) list.next();
+				String ligne[] = { etat.getValue() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_ETAT_ABSENCE_EC(aFormat.getListeFormatee(true));
+		}
+	}
+
+	private void initialiseHistoAgentToutes(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "TOUTES", null, null, null, null, null);
+				Integer.valueOf(getAgentCourant().getIdAgent()), "TOUTES", null, null, null, idRefEtat,
+				idRefTypeAbsence);
 		setListeToutesDemandes(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -102,12 +196,13 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentEnCours(HttpServletRequest request) {
+	private void initialiseHistoAgentEnCours(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "EN_COURS", null, null, null, null, null);
+				Integer.valueOf(getAgentCourant().getIdAgent()), "EN_COURS", null, null, null, idRefEtat,
+				idRefTypeAbsence);
 		setListeDemandeEnCours(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -129,12 +224,13 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentNonPrises(HttpServletRequest request) {
+	private void initialiseHistoAgentNonPrises(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "NON_PRISES", null, null, null, null, null);
+				Integer.valueOf(getAgentCourant().getIdAgent()), "NON_PRISES", null, null, null, idRefEtat,
+				idRefTypeAbsence);
 		setListeDemandeNonPrises(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -196,6 +292,19 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_FILTRER_NP
+			if (testerParametre(request, getNOM_PB_FILTRER_NP())) {
+				return performPB_FILTRER_NP(request);
+			}
+			// Si clic sur le bouton PB_FILTRER_EC
+			if (testerParametre(request, getNOM_PB_FILTRER_EC())) {
+				return performPB_FILTRER_EC(request);
+			}
+			// Si clic sur le bouton PB_FILTRER_TT
+			if (testerParametre(request, getNOM_PB_FILTRER_TT())) {
+				return performPB_FILTRER_TT(request);
+			}
 
 			// gestion navigation
 			// Si clic sur le bouton PB_RESET
@@ -410,5 +519,271 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	public String getVAL_ST_ETAT_DEMANDE_TT(int i) {
 		return getZone(getNOM_ST_ETAT_DEMANDE_TT(i));
+	}
+
+	private String[] getLB_TYPE_ABSENCE_NP() {
+		if (LB_TYPE_ABSENCE_NP == null)
+			LB_TYPE_ABSENCE_NP = initialiseLazyLB();
+		return LB_TYPE_ABSENCE_NP;
+	}
+
+	private void setLB_TYPE_ABSENCE_NP(String[] newLB_TYPE_ABSENCE_NP) {
+		LB_TYPE_ABSENCE_NP = newLB_TYPE_ABSENCE_NP;
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_NP() {
+		return "NOM_LB_TYPE_ABSENCE_NP";
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_NP_SELECT() {
+		return "NOM_LB_TYPE_ABSENCE_NP_SELECT";
+	}
+
+	public String[] getVAL_LB_TYPE_ABSENCE_NP() {
+		return getLB_TYPE_ABSENCE_NP();
+	}
+
+	public String getVAL_LB_TYPE_ABSENCE_NP_SELECT() {
+		return getZone(getNOM_LB_TYPE_ABSENCE_NP_SELECT());
+	}
+
+	public String getNOM_PB_FILTRER_EC() {
+		return "NOM_PB_FILTRER_EC";
+	}
+
+	public boolean performPB_FILTRER_EC(HttpServletRequest request) throws Exception {
+
+		// Recuperation type absence
+		EnumTypeAbsence typeAbsence = null;
+		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_EC_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_ABSENCE_EC_SELECT()) : -1);
+		if (indiceTypeAbsence > 0) {
+			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+		}
+
+		// Recuperation etat absence
+		EnumEtatAbsence etatAbsence = null;
+		int indiceEtatAbsence = (Services.estNumerique(getVAL_LB_ETAT_ABSENCE_EC_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ETAT_ABSENCE_EC_SELECT()) : -1);
+		if (indiceEtatAbsence > 0) {
+			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceEC().get(indiceEtatAbsence - 1);
+		}
+		initialiseHistoAgentEnCours(request, etatAbsence == null ? null : etatAbsence.getCode(),
+				typeAbsence == null ? null : typeAbsence.getCode());
+		return true;
+	}
+
+	public String getNOM_PB_FILTRER_NP() {
+		return "NOM_PB_FILTRER_NP";
+	}
+
+	public boolean performPB_FILTRER_NP(HttpServletRequest request) throws Exception {
+
+		// Recuperation type absence
+		EnumTypeAbsence typeAbsence = null;
+		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_NP_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_ABSENCE_NP_SELECT()) : -1);
+		if (indiceTypeAbsence > 0) {
+			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+		}
+
+		// Recuperation etat absence
+		EnumEtatAbsence etatAbsence = null;
+		int indiceEtatAbsence = (Services.estNumerique(getVAL_LB_ETAT_ABSENCE_NP_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ETAT_ABSENCE_NP_SELECT()) : -1);
+		if (indiceEtatAbsence > 0) {
+			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceNP().get(indiceEtatAbsence - 1);
+		}
+		initialiseHistoAgentNonPrises(request, etatAbsence == null ? null : etatAbsence.getCode(),
+				typeAbsence == null ? null : typeAbsence.getCode());
+		return true;
+	}
+
+	public String getNOM_PB_FILTRER_TT() {
+		return "NOM_PB_FILTRER_TT";
+	}
+
+	public boolean performPB_FILTRER_TT(HttpServletRequest request) throws Exception {
+
+		// Recuperation type absence
+		EnumTypeAbsence typeAbsence = null;
+		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_TT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_ABSENCE_TT_SELECT()) : -1);
+		if (indiceTypeAbsence > 0) {
+			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+		}
+
+		// Recuperation etat absence
+		EnumEtatAbsence etatAbsence = null;
+		int indiceEtatAbsence = (Services.estNumerique(getVAL_LB_ETAT_ABSENCE_TT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ETAT_ABSENCE_TT_SELECT()) : -1);
+		if (indiceEtatAbsence > 0) {
+			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceTT().get(indiceEtatAbsence - 1);
+		}
+		initialiseHistoAgentToutes(request, etatAbsence == null ? null : etatAbsence.getCode(),
+				typeAbsence == null ? null : typeAbsence.getCode());
+		return true;
+	}
+
+	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
+		return listeTypeAbsence;
+	}
+
+	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+		this.listeTypeAbsence = listeTypeAbsence;
+	}
+
+	private String[] getLB_ETAT_ABSENCE_NP() {
+		if (LB_ETAT_ABSENCE_NP == null)
+			LB_ETAT_ABSENCE_NP = initialiseLazyLB();
+		return LB_ETAT_ABSENCE_NP;
+	}
+
+	private void setLB_ETAT_ABSENCE_NP(String[] newLB_ETAT_ABSENCE_NP) {
+		LB_ETAT_ABSENCE_NP = newLB_ETAT_ABSENCE_NP;
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_NP() {
+		return "NOM_LB_ETAT_ABSENCE_NP";
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_NP_SELECT() {
+		return "NOM_LB_ETAT_ABSENCE_NP_SELECT";
+	}
+
+	public String[] getVAL_LB_ETAT_ABSENCE_NP() {
+		return getLB_ETAT_ABSENCE_NP();
+	}
+
+	public String getVAL_LB_ETAT_ABSENCE_NP_SELECT() {
+		return getZone(getNOM_LB_ETAT_ABSENCE_NP_SELECT());
+	}
+
+	private String[] getLB_ETAT_ABSENCE_EC() {
+		if (LB_ETAT_ABSENCE_EC == null)
+			LB_ETAT_ABSENCE_EC = initialiseLazyLB();
+		return LB_ETAT_ABSENCE_EC;
+	}
+
+	private void setLB_ETAT_ABSENCE_EC(String[] newLB_ETAT_ABSENCE_EC) {
+		LB_ETAT_ABSENCE_EC = newLB_ETAT_ABSENCE_EC;
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_EC() {
+		return "NOM_LB_ETAT_ABSENCE_EC";
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_EC_SELECT() {
+		return "NOM_LB_ETAT_ABSENCE_EC_SELECT";
+	}
+
+	public String[] getVAL_LB_ETAT_ABSENCE_EC() {
+		return getLB_ETAT_ABSENCE_EC();
+	}
+
+	public String getVAL_LB_ETAT_ABSENCE_EC_SELECT() {
+		return getZone(getNOM_LB_ETAT_ABSENCE_EC_SELECT());
+	}
+
+	private String[] getLB_ETAT_ABSENCE_TT() {
+		if (LB_ETAT_ABSENCE_TT == null)
+			LB_ETAT_ABSENCE_TT = initialiseLazyLB();
+		return LB_ETAT_ABSENCE_TT;
+	}
+
+	private void setLB_ETAT_ABSENCE_TT(String[] newLB_ETAT_ABSENCE_TT) {
+		LB_ETAT_ABSENCE_TT = newLB_ETAT_ABSENCE_TT;
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_TT() {
+		return "NOM_LB_ETAT_ABSENCE_TT";
+	}
+
+	public String getNOM_LB_ETAT_ABSENCE_TT_SELECT() {
+		return "NOM_LB_ETAT_ABSENCE_TT_SELECT";
+	}
+
+	public String[] getVAL_LB_ETAT_ABSENCE_TT() {
+		return getLB_ETAT_ABSENCE_TT();
+	}
+
+	public String getVAL_LB_ETAT_ABSENCE_TT_SELECT() {
+		return getZone(getNOM_LB_ETAT_ABSENCE_TT_SELECT());
+	}
+
+	private String[] getLB_TYPE_ABSENCE_EC() {
+		if (LB_TYPE_ABSENCE_EC == null)
+			LB_TYPE_ABSENCE_EC = initialiseLazyLB();
+		return LB_TYPE_ABSENCE_EC;
+	}
+
+	private void setLB_TYPE_ABSENCE_EC(String[] newLB_TYPE_ABSENCE_EC) {
+		LB_TYPE_ABSENCE_EC = newLB_TYPE_ABSENCE_EC;
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_EC() {
+		return "NOM_LB_TYPE_ABSENCE_EC";
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_EC_SELECT() {
+		return "NOM_LB_TYPE_ABSENCE_EC_SELECT";
+	}
+
+	public String[] getVAL_LB_TYPE_ABSENCE_EC() {
+		return getLB_TYPE_ABSENCE_EC();
+	}
+
+	public String getVAL_LB_TYPE_ABSENCE_EC_SELECT() {
+		return getZone(getNOM_LB_TYPE_ABSENCE_EC_SELECT());
+	}
+
+	private String[] getLB_TYPE_ABSENCE_TT() {
+		if (LB_TYPE_ABSENCE_TT == null)
+			LB_TYPE_ABSENCE_TT = initialiseLazyLB();
+		return LB_TYPE_ABSENCE_TT;
+	}
+
+	private void setLB_TYPE_ABSENCE_TT(String[] newLB_TYPE_ABSENCE_TT) {
+		LB_TYPE_ABSENCE_TT = newLB_TYPE_ABSENCE_TT;
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_TT() {
+		return "NOM_LB_TYPE_ABSENCE_TT";
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_TT_SELECT() {
+		return "NOM_LB_TYPE_ABSENCE_TT_SELECT";
+	}
+
+	public String[] getVAL_LB_TYPE_ABSENCE_TT() {
+		return getLB_TYPE_ABSENCE_TT();
+	}
+
+	public String getVAL_LB_TYPE_ABSENCE_TT_SELECT() {
+		return getZone(getNOM_LB_TYPE_ABSENCE_TT_SELECT());
+	}
+
+	public ArrayList<EnumEtatAbsence> getListeEtatAbsenceNP() {
+		return listeEtatAbsenceNP;
+	}
+
+	public void setListeEtatAbsenceNP(ArrayList<EnumEtatAbsence> listeEtatAbsenceNP) {
+		this.listeEtatAbsenceNP = listeEtatAbsenceNP;
+	}
+
+	public ArrayList<EnumEtatAbsence> getListeEtatAbsenceEC() {
+		return listeEtatAbsenceEC;
+	}
+
+	public void setListeEtatAbsenceEC(ArrayList<EnumEtatAbsence> listeEtatAbsenceEC) {
+		this.listeEtatAbsenceEC = listeEtatAbsenceEC;
+	}
+
+	public ArrayList<EnumEtatAbsence> getListeEtatAbsenceTT() {
+		return listeEtatAbsenceTT;
+	}
+
+	public void setListeEtatAbsenceTT(ArrayList<EnumEtatAbsence> listeEtatAbsenceTT) {
+		this.listeEtatAbsenceTT = listeEtatAbsenceTT;
 	}
 }
