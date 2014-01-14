@@ -63,6 +63,7 @@
 		/*Module AGENT - ABSENCES*/
 		listeDroits.add("AgtAbsencesSolde");
 		listeDroits.add("AgtAbsencesHisto");
+		listeDroits.add("AgtAbsencesCompteur");
 		
 		/*Module AGENT - EAE*/
 		listeDroits.add("AgtEae");

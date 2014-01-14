@@ -85,6 +85,7 @@ document.write(menuAgentEltsSalaires.afficher());
 var menuAgentAbsence = new MenuHaut("Module_agent_absences");
 menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesSolde", "ABS", "Solde des Absences", true, false,"AGENT/ABSENCE/SOLDE"));
 menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesHisto", "ABS", "Historique des Absences", true, false,"AGENT/ABSENCE/HISTO"));
+menuAgentAbsence.ajouterFils(new Lien("AgtAbsencesCompteur", "ABS", "Compteur de récupération", true, false,"AGENT/ABSENCE/COMPTEUR"));
 document.write(menuAgentAbsence.afficher());
 
 var menuAgentEAE = new MenuHaut("Module_agent_eae");

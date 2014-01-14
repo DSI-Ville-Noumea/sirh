@@ -11,6 +11,7 @@ import nc.mairie.gestionagent.process.OeSMConvocation;
 import nc.mairie.gestionagent.process.OeSMHistorique;
 import nc.mairie.gestionagent.process.OeVOIESelection;
 import nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion;
+import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesCompteur;
 import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesHisto;
 import nc.mairie.gestionagent.process.agent.OeAGENTAbsencesSolde;
 import nc.mairie.gestionagent.process.agent.OeAGENTAccidentTravail;
@@ -170,9 +171,11 @@ public class RobotAgent extends Robot {
 		} // Module AGENT - ABSENCES
 		else if (activite.equals("AgtAbsencesSolde")) {
 			return new OeAGENTAbsencesSolde();
-		}else if (activite.equals("AgtAbsencesHisto")) {
+		} else if (activite.equals("AgtAbsencesHisto")) {
 			return new OeAGENTAbsencesHisto();
-		}   // Module AGENT - EAE
+		} else if (activite.equals("AgtAbsencesCompteur")) {
+			return new OeAGENTAbsencesCompteur();
+		} // Module AGENT - EAE
 		else if (activite.equals("AgtEae")) {
 			return new OeAGENTEae();
 		} // Module POSTE
@@ -558,8 +561,12 @@ public class RobotAgent extends Robot {
 				.put(OeAGENTPrime.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
 
 		// ABSENCES
-		navigation.put(OeAGENTAbsencesSolde.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
-		navigation.put(OeAGENTAbsencesHisto.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesSolde.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesHisto.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeAGENTAbsencesCompteur.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
 
 		// EAE
 		navigation.put(OeAGENTEae.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT, OeAGENTRecherche.class.getName());
