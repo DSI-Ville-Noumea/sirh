@@ -753,16 +753,7 @@ public class OePTGVisualisation extends BasicProcess {
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
 			}
-		}
-		UserAppli uuser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		if (!uuser.getUserName().equals("nicno85")) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), uuser.getUserName().toUpperCase()); 
-			if (user != null && user.getNomatr() != null) {
-				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
-			}
-		} else {
-			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
-		}
+		} 
 	}
 
 	private boolean performControlerFiltres() throws Exception {
