@@ -134,7 +134,7 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + getHeureMinute(hsup.getmSup25()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmSup50()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmNuit()) + "</td>");
-						sb.append("<td>" + getHeureMinute(hsup.getmDjf() + hsup.getmDjf25() + hsup.getmDjf50())
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf())
 								+ "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getM1Mai()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
