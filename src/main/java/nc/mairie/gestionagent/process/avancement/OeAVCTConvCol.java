@@ -34,6 +34,8 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	private ArrayList<AvancementConvCol> listeAvct;
 
+	public String agentEnErreur = Const.CHAINE_VIDE;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -58,8 +60,9 @@ public class OeAVCTConvCol extends BasicProcess {
 		initialiseListeDeroulante();
 
 		// Si liste avancements vide alors initialisation.
-		if ( getListeAvct().size() == 0) {
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		if (getListeAvct().size() == 0) {
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(AvancementConvCol.listerAvancementConvColAvecAnnee(getTransaction(), annee));
 
@@ -71,24 +74,29 @@ public class OeAVCTConvCol extends BasicProcess {
 				addZone(getNOM_ST_GRADE(i), av.getGrade());
 				addZone(getNOM_ST_GRADE_LIB(i), av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i),
+						agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 
-				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_VALID_DRH(i),
+						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-				addZone(getNOM_CK_PROJET_ARRETE(i),
-						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
-								: getCHECKED_ON());
+				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
+						|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-				addZone(getNOM_CK_AFFECTER(i),
-						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-								: getCHECKED_OFF());
+				addZone(getNOM_EF_DATE_ARRETE(i),
+						av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
+				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
+						|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
+						: getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 				addZone(getNOM_ST_MONTANT_PRIME(i),
-						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()) + " <br> "
-								+ (av.getMontantPrime1200() == null || av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
+								+ " <br> "
+								+ (av.getMontantPrime1200() == null
+										|| av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : String
+										.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
 			}
 		}
 	}
@@ -99,9 +107,12 @@ public class OeAVCTConvCol extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*String anneeCourante = (String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
-			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);*/
+			/*
+			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
+			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
+			 * (anneeCourante == null || anneeCourante.length() == 0)
+			 * anneeCourante = Services.dateDuJour().substring(6, 10);
+			 */
 			String anneeCourante = "2014";
 			setListeAnnee(new String[5]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
@@ -225,7 +236,8 @@ public class OeAVCTConvCol extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
+				: -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 		if (!annee.equals(getAnneeSelect())) {
 			setListeAvct(null);
@@ -262,6 +274,30 @@ public class OeAVCTConvCol extends BasicProcess {
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
+
+					// on crée une ligne de prime
+					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
+
+					// on regarde si la prime existe dejà ou pas
+					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNoMatricule(),
+							avct.getAnnee() + "0101");
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						// c'est qu'il existe une prime pour cette date
+
+						// si ce n'est pas la derniere carriere du tableau ie :
+						// si datfin!=0
+						// on met l'agent dans une variable et on affiche cette
+						// liste à l'ecran
+						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " ("
+								+ agent.getNoMatricule() + "); ";
+						// on met un 'S' dans son avancement
+						avct.setCarriereSimu("S");
+						avct.modifierAvancementConvCol(getTransaction());
+						continue;
+					}
+
 					// alors on fait les modifs sur avancement
 					avct.setEtat(EnumEtatAvancement.AFFECTE.getValue());
 					addZone(getNOM_ST_ETAT(i), avct.getEtat());
@@ -271,11 +307,10 @@ public class OeAVCTConvCol extends BasicProcess {
 					avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 					avct.modifierAvancementConvCol(getTransaction());
 
-					// on crée une ligne de prime
-					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recherche la derniere ligne de prime pour la rubrique
 					// 1200(prime ancienneté)
-					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNoMatricule(), "1200");
+					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
+							agent.getNoMatricule(), "1200");
 					// si il y en a une alors on la ferme et on en crée une
 					// nouvelle
 					if (!getTransaction().isErreur()) {
@@ -287,9 +322,9 @@ public class OeAVCTConvCol extends BasicProcess {
 
 							Prime newPrime = new Prime();
 							newPrime.setNoMatr(agent.getNoMatricule());
-							if((Integer.valueOf(prime.getMtPri()) + 1)>30){
+							if ((Integer.valueOf(prime.getMtPri()) + 1) > 30) {
 								newPrime.setMtPri("30");
-							}else{
+							} else {
 								newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
 							}
 							newPrime.setDatDeb("01/01/" + avct.getAnnee());
@@ -300,8 +335,8 @@ public class OeAVCTConvCol extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(), newPrime.getNoRubr(),
-									newPrime.getDatDeb());
+							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
+									newPrime.getNoRubr(), newPrime.getDatDeb());
 							primeAgent.creerPrimeAgent(getTransaction());
 						}
 					} else {
@@ -318,7 +353,8 @@ public class OeAVCTConvCol extends BasicProcess {
 						newPrime.creerPrime(getTransaction(), user);
 
 						// on crée aussi une prime agent
-						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(), newPrime.getNoRubr(), newPrime.getDatDeb());
+						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
+								newPrime.getNoRubr(), newPrime.getDatDeb());
 						primeAgent.creerPrimeAgent(getTransaction());
 					}
 
@@ -332,7 +368,8 @@ public class OeAVCTConvCol extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
-
+		//on remet à vide pour réinitialiser l'affichage
+		setListeAvct(new ArrayList<AvancementConvCol>());
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
 		return true;
@@ -380,7 +417,7 @@ public class OeAVCTConvCol extends BasicProcess {
 			// on recupère la ligne concernée
 			AvancementConvCol avct = (AvancementConvCol) getListeAvct().get(j);
 			Integer i = Integer.valueOf(avct.getIdAvct());
-			
+
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				// on traite l'etat

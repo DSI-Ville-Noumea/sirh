@@ -170,7 +170,7 @@ document.formu.elements[nom].focus();
 										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>
-									<%if(process.getVAL_ST_ETAT(indiceAvct).equals("A")){ %>
+									<%if(process.getVAL_ST_ETAT(indiceAvct).equals("E")){ %>
 										<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> ></td>																
 									<%}else{ %>
 										<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																
@@ -221,6 +221,12 @@ document.formu.elements[nom].focus();
 				%>
 				</tbody>
 			</table>
+			
+				<% if (!process.agentEnErreur.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
+					<BR/><BR/>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de prime n'a pu être crée car il y avait déjà une prime pour cette date. Merci de corriger manuellement les primes de ces agents.</span>
+				<%} %>
 			<script type="text/javascript">
 				$(document).ready(function() {
 				    $('#tabAvctConvColl').dataTable({

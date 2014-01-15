@@ -294,9 +294,9 @@ function reduireHierarchy() {
 					</tbody>
 				</table>
 				<% if (!process.agentEnErreur.equals("")){ %>
-					<span class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies : <%=process.agentEnErreur %></span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents une ligne de carrière n'a pu être crée car il y avait déjà une carrière suivante de saisie. Merci de corriger manuellement les carrières de ces agents.</span>
 				<%} %>
 				<script type="text/javascript">
 					$(document).ready(function() {
