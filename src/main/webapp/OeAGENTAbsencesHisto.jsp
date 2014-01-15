@@ -6,9 +6,11 @@
 		<META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 		<META http-equiv="Content-Style-Type" content="text/css">
 		<LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
+        <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 		<TITLE>Historique des absences</TITLE>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
 		
 		<SCRIPT language="JavaScript">
 		//afin de sélectionner un élément dans une liste
@@ -70,12 +72,21 @@
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_NP() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_NP(), process.getVAL_LB_TYPE_ABSENCE_NP_SELECT()) %>
 					</SELECT>
+					<span class="sigp2" style="width:65px">Date début : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_NP()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_NP()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_NP()%>', 'dd/mm/y');">
+	                <span class="sigp2" style="width:55px">Date fin : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN_NP()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN_NP()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN_NP()%>', 'dd/mm/y');">
+	                <BR/><BR/>
 					<span class="sigp2" style="width:40px">Etat : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_NP() %>" style="width=120px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_NP(), process.getVAL_LB_ETAT_ABSENCE_NP_SELECT()) %>
 					</SELECT>
-		          	<BR/><BR/>
-					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_NP()%>">
+		          	<span class="sigp2" style="width:85px">Date demande : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEMANDE_NP()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEMANDE_NP()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEMANDE_NP()%>', 'dd/mm/y');">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_NP()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Demandes non prises</legend>				    
@@ -119,12 +130,21 @@
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_EC() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_EC(), process.getVAL_LB_TYPE_ABSENCE_EC_SELECT()) %>
 					</SELECT>
+					<span class="sigp2" style="width:65px">Date début : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_EC()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_EC()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_EC()%>', 'dd/mm/y');">
+	                <span class="sigp2" style="width:55px">Date fin : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN_EC()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN_EC()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN_EC()%>', 'dd/mm/y');">
+	                <BR/><BR/>
 					<span class="sigp2" style="width:40px">Etat : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_EC() %>" style="width=120px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_EC(), process.getVAL_LB_ETAT_ABSENCE_EC_SELECT()) %>
 					</SELECT>
-		          	<BR/><BR/>
-					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_EC()%>">
+		          	<span class="sigp2" style="width:85px">Date demande : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEMANDE_EC()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEMANDE_EC()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEMANDE_EC()%>', 'dd/mm/y');">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_EC()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Demandes en cours</legend>					    
@@ -168,12 +188,21 @@
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_TT() %>" style="width=150px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_TT(), process.getVAL_LB_TYPE_ABSENCE_TT_SELECT()) %>
 					</SELECT>
+					<span class="sigp2" style="width:65px">Date début : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEB_TT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEB_TT()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEB_TT()%>', 'dd/mm/y');">
+	                <span class="sigp2" style="width:55px">Date fin : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN_TT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN_TT()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN_TT()%>', 'dd/mm/y');">
+	                <BR/><BR/>
 					<span class="sigp2" style="width:40px">Etat : </span>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_ETAT_ABSENCE_TT() %>" style="width=120px;margin-right:20px;">
 						<%=process.forComboHTML(process.getVAL_LB_ETAT_ABSENCE_TT(), process.getVAL_LB_ETAT_ABSENCE_TT_SELECT()) %>
 					</SELECT>
-		          	<BR/><BR/>
-					<INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_TT()%>">
+		          	<span class="sigp2" style="width:85px">Date demande : </span>
+	                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEMANDE_TT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEMANDE_TT()%>" >
+	                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEMANDE_TT()%>', 'dd/mm/y');">
+	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_TT()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend">Toutes les demandes</legend>						    

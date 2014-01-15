@@ -15,6 +15,6 @@ public interface ISirhAbsWSConsumer {
 
 	SoldeDto getSoldeAgent(String idAgent);
 
-	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, Date dateDebut, Date dateFin,
-			Date dateDemande, Integer idRefEtat, Integer idRefType);
+	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefType);
 }

@@ -82,9 +82,9 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				initialiseHistoAgentNonPrises(request, null, null);
-				initialiseHistoAgentEnCours(request, null, null);
-				initialiseHistoAgentToutes(request, null, null);
+				initialiseHistoAgentNonPrises(request, null, null, null, null, null);
+				initialiseHistoAgentEnCours(request, null, null, null, null, null);
+				initialiseHistoAgentToutes(request, null, null, null, null, null);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -168,12 +168,13 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentToutes(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
+	private void initialiseHistoAgentToutes(HttpServletRequest request, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "TOUTES", null, null, null, idRefEtat,
+				Integer.valueOf(getAgentCourant().getIdAgent()), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat,
 				idRefTypeAbsence);
 		setListeToutesDemandes(a);
 
@@ -196,13 +197,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentEnCours(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
+	private void initialiseHistoAgentEnCours(HttpServletRequest request, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "EN_COURS", null, null, null, idRefEtat,
-				idRefTypeAbsence);
+				Integer.valueOf(getAgentCourant().getIdAgent()), "EN_COURS", dateDebut, dateFin, dateDemande,
+				idRefEtat, idRefTypeAbsence);
 		setListeDemandeEnCours(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -224,13 +226,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 	}
 
-	private void initialiseHistoAgentNonPrises(HttpServletRequest request, Integer idRefEtat, Integer idRefTypeAbsence) {
+	private void initialiseHistoAgentNonPrises(HttpServletRequest request, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefTypeAbsence) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "NON_PRISES", null, null, null, idRefEtat,
-				idRefTypeAbsence);
+				Integer.valueOf(getAgentCourant().getIdAgent()), "NON_PRISES", dateDebut, dateFin, dateDemande,
+				idRefEtat, idRefTypeAbsence);
 		setListeDemandeNonPrises(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -568,8 +571,23 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceEC().get(indiceEtatAbsence - 1);
 		}
-		initialiseHistoAgentEnCours(request, etatAbsence == null ? null : etatAbsence.getCode(),
-				typeAbsence == null ? null : typeAbsence.getCode());
+
+		// Recuperation des dates
+		String dateDebut = null;
+		if (!getVAL_ST_DATE_DEB_EC().equals(Const.CHAINE_VIDE)) {
+			dateDebut = Services.convertitDate(getVAL_ST_DATE_DEB_EC(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateFin = null;
+		if (!getVAL_ST_DATE_FIN_EC().equals(Const.CHAINE_VIDE)) {
+			dateFin = Services.convertitDate(getVAL_ST_DATE_FIN_EC(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateDemande = null;
+		if (!getVAL_ST_DATE_DEMANDE_EC().equals(Const.CHAINE_VIDE)) {
+			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_EC(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+
+		initialiseHistoAgentEnCours(request, dateDebut, dateFin, dateDemande,
+				etatAbsence == null ? null : etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
 		return true;
 	}
 
@@ -594,8 +612,23 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceNP().get(indiceEtatAbsence - 1);
 		}
-		initialiseHistoAgentNonPrises(request, etatAbsence == null ? null : etatAbsence.getCode(),
-				typeAbsence == null ? null : typeAbsence.getCode());
+
+		// Recuperation des dates
+		String dateDebut = null;
+		if (!getVAL_ST_DATE_DEB_NP().equals(Const.CHAINE_VIDE)) {
+			dateDebut = Services.convertitDate(getVAL_ST_DATE_DEB_NP(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateFin = null;
+		if (!getVAL_ST_DATE_FIN_NP().equals(Const.CHAINE_VIDE)) {
+			dateFin = Services.convertitDate(getVAL_ST_DATE_FIN_NP(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateDemande = null;
+		if (!getVAL_ST_DATE_DEMANDE_NP().equals(Const.CHAINE_VIDE)) {
+			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_NP(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+
+		initialiseHistoAgentNonPrises(request, dateDebut, dateFin, dateDemande, etatAbsence == null ? null
+				: etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
 		return true;
 	}
 
@@ -620,8 +653,23 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		if (indiceEtatAbsence > 0) {
 			etatAbsence = (EnumEtatAbsence) getListeEtatAbsenceTT().get(indiceEtatAbsence - 1);
 		}
-		initialiseHistoAgentToutes(request, etatAbsence == null ? null : etatAbsence.getCode(),
-				typeAbsence == null ? null : typeAbsence.getCode());
+
+		// Recuperation des dates
+		String dateDebut = null;
+		if (!getVAL_ST_DATE_DEB_TT().equals(Const.CHAINE_VIDE)) {
+			dateDebut = Services.convertitDate(getVAL_ST_DATE_DEB_TT(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateFin = null;
+		if (!getVAL_ST_DATE_FIN_TT().equals(Const.CHAINE_VIDE)) {
+			dateFin = Services.convertitDate(getVAL_ST_DATE_FIN_TT(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+		String dateDemande = null;
+		if (!getVAL_ST_DATE_DEMANDE_TT().equals(Const.CHAINE_VIDE)) {
+			dateDemande = Services.convertitDate(getVAL_ST_DATE_DEMANDE_TT(), "dd/MM/yyyy", "yyyyMMdd");
+		}
+
+		initialiseHistoAgentToutes(request, dateDebut, dateFin, dateDemande,
+				etatAbsence == null ? null : etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
 		return true;
 	}
 
@@ -785,5 +833,77 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 	public void setListeEtatAbsenceTT(ArrayList<EnumEtatAbsence> listeEtatAbsenceTT) {
 		this.listeEtatAbsenceTT = listeEtatAbsenceTT;
+	}
+
+	public String getNOM_ST_DATE_DEB_NP() {
+		return "NOM_ST_DATE_DEB_NP";
+	}
+
+	public String getVAL_ST_DATE_DEB_NP() {
+		return getZone(getNOM_ST_DATE_DEB_NP());
+	}
+
+	public String getNOM_ST_DATE_FIN_NP() {
+		return "NOM_ST_DATE_FIN_NP";
+	}
+
+	public String getVAL_ST_DATE_FIN_NP() {
+		return getZone(getNOM_ST_DATE_FIN_NP());
+	}
+
+	public String getNOM_ST_DATE_DEMANDE_NP() {
+		return "NOM_ST_DATE_DEMANDE_NP";
+	}
+
+	public String getVAL_ST_DATE_DEMANDE_NP() {
+		return getZone(getNOM_ST_DATE_DEMANDE_NP());
+	}
+
+	public String getNOM_ST_DATE_DEB_EC() {
+		return "NOM_ST_DATE_DEB_EC";
+	}
+
+	public String getVAL_ST_DATE_DEB_EC() {
+		return getZone(getNOM_ST_DATE_DEB_EC());
+	}
+
+	public String getNOM_ST_DATE_FIN_EC() {
+		return "NOM_ST_DATE_FIN_EC";
+	}
+
+	public String getVAL_ST_DATE_FIN_EC() {
+		return getZone(getNOM_ST_DATE_FIN_EC());
+	}
+
+	public String getNOM_ST_DATE_DEMANDE_EC() {
+		return "NOM_ST_DATE_DEMANDE_EC";
+	}
+
+	public String getVAL_ST_DATE_DEMANDE_EC() {
+		return getZone(getNOM_ST_DATE_DEMANDE_EC());
+	}
+
+	public String getNOM_ST_DATE_DEB_TT() {
+		return "NOM_ST_DATE_DEB_TT";
+	}
+
+	public String getVAL_ST_DATE_DEB_TT() {
+		return getZone(getNOM_ST_DATE_DEB_TT());
+	}
+
+	public String getNOM_ST_DATE_FIN_TT() {
+		return "NOM_ST_DATE_FIN_TT";
+	}
+
+	public String getVAL_ST_DATE_FIN_TT() {
+		return getZone(getNOM_ST_DATE_FIN_TT());
+	}
+
+	public String getNOM_ST_DATE_DEMANDE_TT() {
+		return "NOM_ST_DATE_DEMANDE_TT";
+	}
+
+	public String getVAL_ST_DATE_DEMANDE_TT() {
+		return getZone(getNOM_ST_DATE_DEMANDE_TT());
 	}
 }

@@ -1,6 +1,5 @@
 package nc.mairie.spring.ws;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -159,9 +158,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, Date dateDebut, Date dateFin,
-			Date dateDemande, Integer idRefEtat, Integer idRefType) {
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd");
+	public List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefType) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDemandesAgent;
@@ -169,11 +167,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgent.toString());
 		params.put("ongletDemande", onglet);
 		if (dateDebut != null)
-			params.put("from", sdf.format(dateDebut));
+			params.put("from", dateDebut);
 		if (dateFin != null)
-			params.put("to", sdf.format(dateFin));
+			params.put("to", dateFin);
 		if (dateDemande != null)
-			params.put("dateDemande", sdf.format(dateDemande));
+			params.put("dateDemande", dateDemande);
 		if (idRefEtat != null)
 			params.put("etat", idRefEtat.toString());
 		if (idRefType != null)
