@@ -283,6 +283,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							avct.getAnnee() + "0101");
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
+						avct.setCarriereSimu(null);
 					} else {
 						// c'est qu'il existe une prime pour cette date
 
