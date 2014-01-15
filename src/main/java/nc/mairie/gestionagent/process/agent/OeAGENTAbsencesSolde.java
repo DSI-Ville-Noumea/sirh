@@ -71,15 +71,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	private void initialiseSoldesAgent(HttpServletRequest request) {
-
-		getSoldeConge(getAgentCourant());
-
-	}
-
-	private void getSoldeConge(AgentNW agentCourant) {
 		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(agentCourant.getIdAgent());
+		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent());
 
 		// solde congés
 		addZone(getNOM_ST_SOLDE_CONGE(), soldeGlobal.getSoldeCongeAnnee() == 0 ? "&nbsp;" : soldeGlobal
