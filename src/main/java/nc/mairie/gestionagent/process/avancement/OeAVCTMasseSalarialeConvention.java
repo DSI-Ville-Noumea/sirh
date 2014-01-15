@@ -552,15 +552,16 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					}
 					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
 					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
-
-					// on regarde si l'agent a une carriere de simulation dejà
-					// saisie
-					// autrement dis si la carriere actuelle a pour datfin 0
-					if (carr.getDateFin() == null || carr.getDateFin().equals(Const.ZERO)) {
+					
+					//On regarde si il y a deja une prime de saisie
+					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(), annee+"0101");
+					if(getTransaction().isErreur()){
+						getTransaction().traiterErreur();
 						avct.setCarriereSimu(null);
-					} else {
-						avct.setCarriereSimu("S");
+					}else{
+						avct.setCarriereSimu("S");						
 					}
+					
 					// on cherche la derniere prime 1200
 					Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), a.getNoMatricule(), "1200");
 					if (getTransaction().isErreur()) {
