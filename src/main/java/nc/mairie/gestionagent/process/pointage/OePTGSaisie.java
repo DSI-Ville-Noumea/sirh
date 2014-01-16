@@ -23,6 +23,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.UserAppli;
@@ -375,7 +376,8 @@ public class OePTGSaisie extends BasicProcess {
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
-					service = fp.getIdServi();
+					Service serviceAgent = Service.chercherService(getTransaction(), fp.getIdServi());
+					service = serviceAgent.getLibService();
 				}
 			}
 		}
