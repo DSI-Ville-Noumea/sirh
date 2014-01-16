@@ -114,7 +114,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
+			throw new SirhAbsWSConsumerException(String.format(
 					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
 		}
 
@@ -132,7 +132,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		try {
 			result = targetClass.newInstance();
 		} catch (Exception ex) {
-			throw new SirhPtgWSConsumerException(
+			throw new SirhAbsWSConsumerException(
 					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
 					ex);
 		}
@@ -142,8 +142,30 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhPtgWSConsumerException(String.format(
+			throw new SirhAbsWSConsumerException(String.format(
 					"An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
+		return result;
+	}
+
+	public <T> T readResponseWithReturnMessageDto(Class<T> targetClass, ClientResponse response, String url) {
+
+		T result = null;
+
+		try {
+			result = targetClass.newInstance();
+		} catch (Exception ex) {
+			throw new SirhAbsWSConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from SIRH ABS WS request.",
+					ex);
+		}
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
 		}
 
 		String output = response.getEntity(String.class);
@@ -211,7 +233,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsMotifRefusSauvegarde;
 		ClientResponse res = createAndPostRequest(url, json);
-		return readResponse(ReturnMessageDto.class, res, url);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
@@ -219,7 +241,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsMotifCompteurSauvegarde;
 		ClientResponse res = createAndPostRequest(url, json);
-		return readResponse(ReturnMessageDto.class, res, url);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 }

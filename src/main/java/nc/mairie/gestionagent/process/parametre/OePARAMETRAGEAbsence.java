@@ -5,6 +5,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.abs.dto.MotifCompteurDto;
 import nc.mairie.abs.dto.MotifRefusDto;
 import nc.mairie.abs.dto.ReturnMessageDto;
 import nc.mairie.enums.EnumTypeAbsence;
@@ -34,7 +35,11 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	private ArrayList<MotifRefusDto> listeMotifRefus;
 
 	private String[] LB_TYPE_ABSENCE_REFUS;
+	private String[] LB_TYPE_ABSENCE_COMPTEUR;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+
+	private String[] LB_MOTIF_COMPTEUR;
+	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
@@ -64,10 +69,36 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			initialiseListeMotifRefus(request);
 		}
 
+		if (getListeMotifCompteur().size() == 0) {
+			initialiseListeMotifCompteur(request);
+		}
+
 		if (getListeTypeAbsence().size() == 0) {
 			initialiseListeTypeAbsence(request);
 		}
 
+	}
+
+	private void initialiseListeMotifCompteur(HttpServletRequest request) {
+		// Liste depuis SIRH-ABS-WS
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs.getListeTousMotifCompteur();
+
+		setListeMotifCompteur(listeMotifs);
+		if (getListeMotifCompteur().size() != 0) {
+			int tailles[] = { 40, 40 };
+			String padding[] = { "G", "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (MotifCompteurDto motif : getListeMotifCompteur()) {
+				String type = EnumTypeAbsence.getValueEnumTypeAbsence(motif.getIdRefTypeAbsence());
+				String ligne[] = { motif.getLibelle(), type };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_MOTIF_COMPTEUR(aFormat.getListeFormatee());
+		} else {
+			setLB_MOTIF_COMPTEUR(null);
+		}
 	}
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
@@ -86,6 +117,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_TYPE_ABSENCE_REFUS(aFormat.getListeFormatee(false));
+			setLB_TYPE_ABSENCE_COMPTEUR(aFormat.getListeFormatee(false));
 		}
 
 	}
@@ -149,6 +181,26 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_MOTIF_REFUS
 			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_REFUS())) {
 				return performPB_VALIDER_MOTIF_REFUS(request);
+			}
+
+			// Si clic sur le bouton PB_ANNULER_MOTIF_COMPTEUR
+			if (testerParametre(request, getNOM_PB_ANNULER_MOTIF_COMPTEUR())) {
+				return performPB_ANNULER_MOTIF_COMPTEUR(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_MOTIF_COMPTEUR
+			if (testerParametre(request, getNOM_PB_CREER_MOTIF_COMPTEUR())) {
+				return performPB_CREER_MOTIF_COMPTEUR(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_MOTIF_COMPTEUR
+			if (testerParametre(request, getNOM_PB_MODIFIER_MOTIF_COMPTEUR())) {
+				return performPB_MODIFIER_MOTIF_COMPTEUR(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_MOTIF_COMPTEUR
+			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_COMPTEUR())) {
+				return performPB_VALIDER_MOTIF_COMPTEUR(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -261,8 +313,13 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	private void viderZonesSaisie() {
 		// Motif refus
 		addZone(getNOM_ST_ACTION_MOTIF_REFUS(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_MOTIF_REFUS(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_REFUS_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_TYPE_ABSENCE_REFUS_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), Const.ZERO);
+		addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_MOTIF_COMPTEUR_SELECT(), Const.ZERO);
 	}
 
 	public String getNOM_PB_MODIFIER_MOTIF_REFUS() {
@@ -326,7 +383,6 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 				ReturnMessageDto message = consuAbs.saveMotifRefus(new JSONSerializer().serialize(motifRefus));
 
-				// TODO
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
 					for (String erreur : message.getErrors()) {
@@ -406,5 +462,201 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
+	}
+
+	private String[] getLB_MOTIF_COMPTEUR() {
+		if (LB_MOTIF_COMPTEUR == null)
+			LB_MOTIF_COMPTEUR = initialiseLazyLB();
+		return LB_MOTIF_COMPTEUR;
+	}
+
+	private void setLB_MOTIF_COMPTEUR(String[] newLB_MOTIF_COMPTEUR) {
+		LB_MOTIF_COMPTEUR = newLB_MOTIF_COMPTEUR;
+	}
+
+	public String getNOM_LB_MOTIF_COMPTEUR() {
+		return "NOM_LB_MOTIF_COMPTEUR";
+	}
+
+	public String getNOM_LB_MOTIF_COMPTEUR_SELECT() {
+		return "NOM_LB_MOTIF_COMPTEUR_SELECT";
+	}
+
+	public String[] getVAL_LB_MOTIF_COMPTEUR() {
+		return getLB_MOTIF_COMPTEUR();
+	}
+
+	public String getVAL_LB_MOTIF_COMPTEUR_SELECT() {
+		return getZone(getNOM_LB_MOTIF_COMPTEUR_SELECT());
+	}
+
+	public ArrayList<MotifCompteurDto> getListeMotifCompteur() {
+		if (listeMotifCompteur == null)
+			return new ArrayList<MotifCompteurDto>();
+		return listeMotifCompteur;
+	}
+
+	public void setListeMotifCompteur(ArrayList<MotifCompteurDto> listeMotifCompteur) {
+		this.listeMotifCompteur = listeMotifCompteur;
+	}
+
+	public String getNOM_PB_ANNULER_MOTIF_COMPTEUR() {
+		return "NOM_PB_ANNULER_MOTIF_COMPTEUR";
+	}
+
+	public boolean performPB_ANNULER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
+		viderZonesSaisie();
+		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_MOTIF_COMPTEUR());
+		return true;
+	}
+
+	public String getNOM_PB_CREER_MOTIF_COMPTEUR() {
+		return "NOM_PB_CREER_MOTIF_COMPTEUR";
+	}
+
+	public boolean performPB_CREER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
+		viderZonesSaisie();
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), ACTION_CREATION);
+
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_MOTIF_COMPTEUR());
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_MOTIF_COMPTEUR() {
+		return "NOM_PB_MODIFIER_MOTIF_COMPTEUR";
+	}
+
+	public boolean performPB_MODIFIER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
+
+		int indice = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer
+				.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
+		if (indice != -1 && indice < getListeMotifCompteur().size()) {
+			MotifCompteurDto motifCompteur = getListeMotifCompteur().get(indice);
+			addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), motifCompteur.getLibelle());
+			EnumTypeAbsence enumType = EnumTypeAbsence.getEnumTypeAbsence(motifCompteur.getIdRefTypeAbsence());
+			int ligneTypeAbsence = getListeTypeAbsence().indexOf(enumType);
+			addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), String.valueOf(ligneTypeAbsence));
+
+			addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), ACTION_MODIFICATION);
+		} else {
+			viderZonesSaisie();
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs de compteur"));
+		}
+
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_MOTIF_COMPTEUR());
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_MOTIF_COMPTEUR() {
+		return "NOM_PB_VALIDER_MOTIF_COMPTEUR";
+	}
+
+	public boolean performPB_VALIDER_MOTIF_COMPTEUR(HttpServletRequest request) throws Exception {
+
+		if (getVAL_ST_ACTION_MOTIF_COMPTEUR() != null && getVAL_ST_ACTION_MOTIF_COMPTEUR() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_CREATION)
+					|| getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_MODIFICATION)) {
+
+				if (!performControlerSaisieMotifCompteur(request))
+					return false;
+
+				MotifCompteurDto motifCompteur = null;
+				if (getVAL_ST_ACTION_MOTIF_COMPTEUR().equals(ACTION_CREATION)) {
+					motifCompteur = new MotifCompteurDto();
+				} else {
+					// modification
+					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_COMPTEUR_SELECT()) ? Integer
+							.parseInt(getVAL_LB_MOTIF_COMPTEUR_SELECT()) : -1);
+					motifCompteur = getListeMotifCompteur().get(indiceMotif);
+				}
+
+				int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
+						.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
+				EnumTypeAbsence typeAbsence = getListeTypeAbsence().get(indiceType);
+
+				motifCompteur.setLibelle(getVAL_EF_LIB_MOTIF_COMPTEUR());
+				motifCompteur.setIdRefTypeAbsence(typeAbsence.getCode());
+
+				// on sauvegarde
+				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().serialize(motifCompteur));
+
+				if (message.getErrors().size() > 0) {
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : message.getErrors()) {
+						err += " " + erreur;
+					}
+					getTransaction().declarerErreur(err);
+				}
+
+			}
+		}
+
+		viderZonesSaisie();
+		setListeMotifCompteur(null);
+
+		setStatut(STATUT_MEME_PROCESS);
+
+		setFocus(getNOM_PB_ANNULER_MOTIF_COMPTEUR());
+		return true;
+	}
+
+	private boolean performControlerSaisieMotifCompteur(HttpServletRequest request) {
+		// Verification libelle not null
+		if (getZone(getNOM_EF_LIB_MOTIF_COMPTEUR()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			setFocus(getDefaultFocus());
+			return false;
+		}
+		return true;
+	}
+
+	public String getNOM_EF_LIB_MOTIF_COMPTEUR() {
+		return "NOM_EF_LIB_MOTIF_COMPTEUR";
+	}
+
+	public String getVAL_EF_LIB_MOTIF_COMPTEUR() {
+		return getZone(getNOM_EF_LIB_MOTIF_COMPTEUR());
+	}
+
+	public String getNOM_ST_ACTION_MOTIF_COMPTEUR() {
+		return "NOM_ST_ACTION_MOTIF_COMPTEUR";
+	}
+
+	public String getVAL_ST_ACTION_MOTIF_COMPTEUR() {
+		return getZone(getNOM_ST_ACTION_MOTIF_COMPTEUR());
+	}
+
+	private String[] getLB_TYPE_ABSENCE_COMPTEUR() {
+		if (LB_TYPE_ABSENCE_COMPTEUR == null)
+			LB_TYPE_ABSENCE_COMPTEUR = initialiseLazyLB();
+		return LB_TYPE_ABSENCE_COMPTEUR;
+	}
+
+	private void setLB_TYPE_ABSENCE_COMPTEUR(String[] newLB_TYPE_ABSENCE_COMPTEUR) {
+		LB_TYPE_ABSENCE_COMPTEUR = newLB_TYPE_ABSENCE_COMPTEUR;
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_COMPTEUR() {
+		return "NOM_LB_TYPE_ABSENCE_COMPTEUR";
+	}
+
+	public String getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT() {
+		return "NOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT";
+	}
+
+	public String[] getVAL_LB_TYPE_ABSENCE_COMPTEUR() {
+		return getLB_TYPE_ABSENCE_COMPTEUR();
+	}
+
+	public String getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT() {
+		return getZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT());
 	}
 }
