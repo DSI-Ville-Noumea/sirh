@@ -315,11 +315,9 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		addZone(getNOM_ST_ACTION_MOTIF_REFUS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_MOTIF_REFUS(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_MOTIF_REFUS_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_TYPE_ABSENCE_REFUS_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), Const.ZERO);
 		addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_MOTIF_COMPTEUR_SELECT(), Const.ZERO);
 	}
 
 	public String getNOM_PB_MODIFIER_MOTIF_REFUS() {
