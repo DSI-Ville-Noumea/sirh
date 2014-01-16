@@ -56,6 +56,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
@@ -282,6 +283,8 @@ public class RobotAgent extends Robot {
 			return new OePARAMETRAGECarriere();
 		} else if (activite.equals("ParamJour")) {
 			return new OePARAMETRAGEJour();
+		} else if (activite.equals("ParamAbs")) {
+			return new OePARAMETRAGEAbsence();
 		} // Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {
 			return new OeDROITSUtilisateurs();
@@ -667,6 +670,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGECarriere.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// DROITS

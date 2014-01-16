@@ -134,6 +134,7 @@ String affParamElementSalaire =  (String) ServletAgent.getMesParametres().get("A
 if (affParamElementSalaire.equals("TRUE")){ %>
 Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments salaire", "Gestion des paramètres des éléments de salaire", true));
 <%}%>
+	Module_parametres.ajouterFils(new Lien("absence", "ParamAbs", "Absence", "Gestion des paramètres des absences", true));
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************

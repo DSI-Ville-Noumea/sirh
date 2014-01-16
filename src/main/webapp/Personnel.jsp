@@ -123,7 +123,8 @@
 		listeDroits.add("ParamGradeRef");
 		listeDroits.add("ParamElemSalaire");	
 		listeDroits.add("ParamCarriere");		
-		listeDroits.add("ParamJour");	
+		listeDroits.add("ParamJour");		
+		listeDroits.add("ParamAbs");	
 		
 		
 		/*Module GESTION DROITS*/

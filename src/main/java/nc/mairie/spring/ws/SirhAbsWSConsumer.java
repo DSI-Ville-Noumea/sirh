@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.abs.dto.DemandeDto;
+import nc.mairie.abs.dto.MotifCompteurDto;
+import nc.mairie.abs.dto.MotifRefusDto;
+import nc.mairie.abs.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -30,6 +33,10 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
+	private static final String sirhAbsMotifRefus = "motifRefus/getListeMotifRefus";
+	private static final String sirhAbsMotifRefusSauvegarde = "motifRefus/setMotifRefus";
+	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
+	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -47,7 +54,6 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String url = urlWS + sirhAbsAgentsApprobateurs;
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseAsList(AgentWithServiceDto.class, res, url);
-
 	}
 
 	/**
@@ -183,4 +189,37 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		return readResponseAsList(DemandeDto.class, res, url);
 
 	}
+
+	@Override
+	public List<MotifRefusDto> getListeTousMotifRefus() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsMotifRefus;
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		return readResponseAsList(MotifRefusDto.class, res, url);
+	}
+
+	@Override
+	public List<MotifCompteurDto> getListeTousMotifCompteur() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsMotifCompteur;
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		return readResponseAsList(MotifCompteurDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveMotifRefus(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsMotifRefusSauvegarde;
+		ClientResponse res = createAndPostRequest(url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveMotifCompteur(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsMotifCompteurSauvegarde;
+		ClientResponse res = createAndPostRequest(url, json);
+		return readResponse(ReturnMessageDto.class, res, url);
+	}
+
 }
