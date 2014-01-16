@@ -231,7 +231,7 @@
              </FIELDSET>
 
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-                <legend class="sigp2Legend">Visualisation des pointages</legend>
+                <legend class="sigp2Legend">Visualisation et saise des pointages</legend>
                 <BR/>
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
@@ -298,7 +298,7 @@
                         <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
                         <span class="sigp2Mandatory" style="width:100px">Agent :</span>
-                        <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
+                        <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
                         <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
                         <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		

@@ -1162,6 +1162,11 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 
 			if (testerParametre(request, getNOM_PB_CREATE())) {
+				//on verifie que l'agent exist
+				if(!performControlerSaisie(getVAL_ST_DATE_CREATE(),getVAL_ST_AGENT_CREATE())){
+					return false;
+				}
+				
 				status = "EDIT";
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundiCreate());
@@ -1178,6 +1183,29 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private boolean performControlerSaisie(String dateCreation, String idAgent) throws Exception  {
+		if(dateCreation.equals(Const.CHAINE_VIDE)){
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date"));
+			return false;			
+		}
+		if(idAgent.equals(Const.CHAINE_VIDE)){
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
+			return false;			
+		}
+		AgentNW agent= AgentNW.chercherAgent(getTransaction(), idAgent);
+		if(getTransaction().isErreur()){
+			getTransaction().traiterErreur();
+			// "ERR503",
+			// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
+			return false;				
+			
+		}
 		return true;
 	}
 
@@ -1294,7 +1322,7 @@ public class OePTGVisualisation extends BasicProcess {
 		if (d != null) {
 			return hrs.format(d);
 		} else {
-			return "";
+			return "00:00";
 		}
 	}
 
