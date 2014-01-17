@@ -20,11 +20,13 @@ public interface ISirhAbsWSConsumer {
 	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
 			String dateDemande, Integer idRefEtat, Integer idRefType);
 
-	List<MotifRefusDto> getListeTousMotifRefus();
+	List<MotifRefusDto> getListeMotifRefus(Integer idRefType);
 
-	List<MotifCompteurDto> getListeTousMotifCompteur();
+	List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType);
 
 	ReturnMessageDto saveMotifRefus(String json);
 
 	ReturnMessageDto saveMotifCompteur(String json);
+
+	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
 }

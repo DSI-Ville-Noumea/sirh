@@ -5,18 +5,24 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.abs.dto.CompteurDto;
+import nc.mairie.abs.dto.MotifCompteurDto;
+import nc.mairie.abs.dto.ReturnMessageDto;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import flexjson.JSONSerializer;
 
 /**
  * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
@@ -37,6 +43,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private EnumTypeAbsence typeAbsenceCourant;
 
 	private String[] LB_MOTIF;
+	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
 	public String ACTION_CREATION = "Alimenter le compteur";
 
@@ -80,7 +87,6 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				initialiseCompteurAgent(request);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -105,10 +111,6 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 			setLB_TYPE_ABSENCE(aFormat.getListeFormatee(false));
 		}
-	}
-
-	private void initialiseCompteurAgent(HttpServletRequest request) {
-
 	}
 
 	/**
@@ -229,6 +231,22 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			setTypeAbsenceCourant(typeAbsence);
 		}
 
+		// Liste depuis SIRH-ABS-WS
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
+				.getListeMotifCompteur(getTypeAbsenceCourant().getCode());
+		setListeMotifCompteur(listeMotifs);
+
+		int[] tailles = { 30 };
+		String padding[] = { "G" };
+		FormateListe aFormat = new FormateListe(tailles, padding, false);
+		for (MotifCompteurDto motif : getListeMotifCompteur()) {
+			String ligne[] = { motif.getLibelle() };
+
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_MOTIF(aFormat.getListeFormatee(false));
+
 		afficheSolde(getTypeAbsenceCourant());
 
 		// On nomme l'action
@@ -304,14 +322,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		boolean ajout = false;
 		if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
 				|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
-			dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT();
-			dureeMin = getVAL_ST_DUREE_MIN_AJOUT();
+			dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_AJOUT();
+			dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
 			ajout = true;
 		}
 		if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
 				|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-			dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT();
-			dureeMin = getVAL_ST_DUREE_MIN_RETRAIT();
+			dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+					: getVAL_ST_DUREE_HEURE_RETRAIT();
+			dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_RETRAIT();
 			ajout = false;
 		}
 
@@ -335,11 +354,73 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				return false;
 			}
 		}
-		
-		//TODO on sauvegarde les données
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 
-		// TODO afficher message opération ok
+		// motif
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
+				: -1);
+		MotifCompteurDto motif = null;
+		if (indiceMotif >= 0) {
+			motif = getListeMotifCompteur().get(indiceMotif);
+		}
+
+		CompteurDto compteurDto = new CompteurDto();
+		compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+		compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : 0);
+		compteurDto.setDureeARetrancher(ajout ? 0 : dureeTotaleSaisie);
+
+		// TODO on sauvegarde les données
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ReturnMessageDto message = new ReturnMessageDto();
+
+		// on recupere l'agent connecté
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via la
+		// table SIIDMA
+		AgentNW agentConnecte = null;
+		if (!(u.getUserName().equals("nicno85"))) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+		} else {
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+
+		switch (getTypeAbsenceCourant()) {
+			case CONGE:
+				break;
+			case REPOS_COMP:
+				break;
+			case RECUP:
+				message = consuAbs.addCompteurRecup(agentConnecte.getIdAgent(),
+						new JSONSerializer().serialize(compteurDto));
+				break;
+			case ASA:
+				break;
+			case AUTRE:
+				break;
+			case MALADIE:
+				break;
+		}
+
+		if (message.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur(err);
+		}
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -350,7 +431,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// motif obligatoire
 		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
 				: -1);
-		if (indiceMotif < 1) {
+		if (indiceMotif < 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 			return false;
@@ -473,5 +554,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public void setSoldeCourantMinute(Integer soldeCourantMinute) {
 		this.soldeCourantMinute = soldeCourantMinute;
+	}
+
+	public ArrayList<MotifCompteurDto> getListeMotifCompteur() {
+		if (listeMotifCompteur == null)
+			return new ArrayList<MotifCompteurDto>();
+		return listeMotifCompteur;
+	}
+
+	public void setListeMotifCompteur(ArrayList<MotifCompteurDto> listeMotifCompteur) {
+		this.listeMotifCompteur = listeMotifCompteur;
 	}
 }

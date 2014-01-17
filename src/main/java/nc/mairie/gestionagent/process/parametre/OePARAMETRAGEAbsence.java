@@ -82,7 +82,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	private void initialiseListeMotifCompteur(HttpServletRequest request) {
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs.getListeTousMotifCompteur();
+		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs.getListeMotifCompteur(null);
 
 		setListeMotifCompteur(listeMotifs);
 		if (getListeMotifCompteur().size() != 0) {
@@ -125,7 +125,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	private void initialiseListeMotifRefus(HttpServletRequest request) throws Exception {
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifRefusDto> listeMotifs = (ArrayList<MotifRefusDto>) consuAbs.getListeTousMotifRefus();
+		ArrayList<MotifRefusDto> listeMotifs = (ArrayList<MotifRefusDto>) consuAbs.getListeMotifRefus(null);
 
 		setListeMotifRefus(listeMotifs);
 		if (getListeMotifRefus().size() != 0) {

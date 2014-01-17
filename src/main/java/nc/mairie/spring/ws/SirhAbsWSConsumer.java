@@ -37,6 +37,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsMotifRefusSauvegarde = "motifRefus/setMotifRefus";
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
 	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
+	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -213,18 +214,26 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<MotifRefusDto> getListeTousMotifRefus() {
+	public List<MotifRefusDto> getListeMotifRefus(Integer idRefType) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsMotifRefus;
-		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		HashMap<String, String> params = new HashMap<>();
+		if (idRefType != null) {
+			params.put("idRefType", idRefType.toString());
+		}
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MotifRefusDto.class, res, url);
 	}
 
 	@Override
-	public List<MotifCompteurDto> getListeTousMotifCompteur() {
+	public List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsMotifCompteur;
-		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		HashMap<String, String> params = new HashMap<>();
+		if (idRefType != null) {
+			params.put("idRefType", idRefType.toString());
+		}
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(MotifCompteurDto.class, res, url);
 	}
 
@@ -241,6 +250,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsMotifCompteurSauvegarde;
 		ClientResponse res = createAndPostRequest(url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCompteurRecup;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
