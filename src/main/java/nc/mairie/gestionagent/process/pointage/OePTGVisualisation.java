@@ -19,6 +19,7 @@ import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
@@ -749,6 +750,10 @@ public class OePTGVisualisation extends BasicProcess {
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
+
+		// Initialisation des infos sur la ventilation
+		initialiseInfoVentilation();
+
 		if (etatStatut() == STATUT_SAISIE_PTG) {
 			performPB_FILTRER();
 		}
@@ -773,6 +778,29 @@ public class OePTGVisualisation extends BasicProcess {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
 			}
 		}
+	}
+
+	private void initialiseInfoVentilation() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		addZone(getNOM_ST_DATE_VENTIL_CC(),"Aucune");
+		addZone(getNOM_ST_DATE_VENTIL_F_C(), "Aucune");
+
+		VentilDateDto ventilEnCoursCC = getInfoVentilation("CC");
+		if (ventilEnCoursCC != null) {
+			addZone(getNOM_ST_DATE_VENTIL_CC(), sdf.format(ventilEnCoursCC.getDateVentil()));
+		}
+
+		VentilDateDto ventilEnCoursF = getInfoVentilation("F");
+		if (ventilEnCoursF != null) {
+			addZone(getNOM_ST_DATE_VENTIL_F_C(), sdf.format(ventilEnCoursF.getDateVentil()));
+		}
+
+	}
+
+	private VentilDateDto getInfoVentilation(String statut) {
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		VentilDateDto dto = t.getVentilationEnCours(statut);
+		return dto;
 	}
 
 	private boolean performControlerFiltres() throws Exception {
@@ -954,7 +982,6 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		}
 
-		// TODO
 		// on fait l'intersection des listes d'agent
 		Collection intersectionCollection = new ArrayList<>();
 		if (idAgentPopulation.size() > 0) {
@@ -1462,6 +1489,22 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public void setListePopulation(ArrayList<String> listePopulation) {
 		this.listePopulation = listePopulation;
+	}
+
+	public String getNOM_ST_DATE_VENTIL_CC() {
+		return "NOM_ST_DATE_VENTIL_CC";
+	}
+
+	public String getVAL_ST_DATE_VENTIL_CC() {
+		return getZone(getNOM_ST_DATE_VENTIL_CC());
+	}
+
+	public String getNOM_ST_DATE_VENTIL_F_C() {
+		return "NOM_ST_DATE_VENTIL_F_C";
+	}
+
+	public String getVAL_ST_DATE_VENTIL_F_C() {
+		return getZone(getNOM_ST_DATE_VENTIL_F_C());
 	}
 
 }

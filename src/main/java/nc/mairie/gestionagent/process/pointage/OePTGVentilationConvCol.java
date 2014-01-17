@@ -92,9 +92,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			}
 		}
 
-		// Initialisation des listes déroulantes
-		initialiseListeDeroulante();
-
 		// initialisation de la liste des agents
 		initialiseListeAgent();
 
@@ -214,13 +211,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
-	}
-
-	/**
-	 * Initialisation des liste déroulantes de l'écran convocation du suivi
-	 * médical.
-	 */
-	private void initialiseListeDeroulante() throws Exception {
 	}
 
 	/**
