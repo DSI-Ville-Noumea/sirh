@@ -71,7 +71,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public String focus = getNOM_PB_FILTRER();
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
-	private void afficheListePointages() {
+	private void afficheListePointages() {	
 
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			Integer i = ptg.getIdPointage();
@@ -782,7 +782,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	private void initialiseInfoVentilation() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		addZone(getNOM_ST_DATE_VENTIL_CC(),"Aucune");
+		addZone(getNOM_ST_DATE_VENTIL_CC(), "Aucune");
 		addZone(getNOM_ST_DATE_VENTIL_F_C(), "Aucune");
 
 		VentilDateDto ventilEnCoursCC = getInfoVentilation("CC");
@@ -1019,13 +1019,6 @@ public class OePTGVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
-		/*
-		 * if (idAgents.isEmpty()) { idAgents = null; } else if (idAgents.size()
-		 * >= 1000) { // "ERR501", //
-		 * "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
-		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
-		 * return false; }
-		 */
 
 		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax,
 				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,

@@ -72,6 +72,7 @@
                             {"bSortable": false,"sClass" : "center"},
                             {"bSortable": false,"sClass" : "center"}
                         ],
+						"aaSorting": [[ 4, "asc" ]],
                         "sDom": '<"H"flip>t<"F"rip>',
                         "oLanguage": {
                             "oPaginate": {
