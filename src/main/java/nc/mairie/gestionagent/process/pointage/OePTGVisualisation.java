@@ -71,7 +71,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public String focus = getNOM_PB_FILTRER();
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
-	private void afficheListePointages() {	
+	private void afficheListePointages() {
 
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			Integer i = ptg.getIdPointage();
@@ -1193,6 +1193,8 @@ public class OePTGVisualisation extends BasicProcess {
 				return performPB_VALID(request);
 			}
 			if (testerParametre(request, getCreatBox())) {
+				addZone(getNOM_ST_DATE_CREATE(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 				status = "CREATION";
 				setFocus(getNOM_PB_CREATE());
 				setStatut(STATUT_MEME_PROCESS);
@@ -1261,7 +1263,7 @@ public class OePTGVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
 			return false;
 		}
-		AgentNW agent = AgentNW.chercherAgent(getTransaction(), idAgent);
+		AgentNW agent = AgentNW.chercherAgent(getTransaction(), "900" + idAgent);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR503",

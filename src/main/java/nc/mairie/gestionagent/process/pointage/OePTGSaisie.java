@@ -220,6 +220,7 @@ public class OePTGSaisie extends BasicProcess {
 				rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
 				rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
 				getTransaction().declarerErreur(rep);
+				return false;
 			}
 		}
 
