@@ -201,9 +201,14 @@
                 <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE()%>" style="width:125px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT())%>
                 </SELECT>
-                  <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-             <div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-                    <script type="text/javascript">
+                <span class="sigp2" style="width:60px">Population : </span>
+                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_POPULATION()%>" style="width:125px;margin-right:20px;">
+                    <%=process.forComboHTML(process.getVAL_LB_POPULATION(), process.getVAL_LB_POPULATION_SELECT())%>
+                </SELECT>
+                <BR/><BR/>
+                <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
+             	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+                <script type="text/javascript">
                 d = new dTree('d');
                 d.add(0, -1, "Services");
 

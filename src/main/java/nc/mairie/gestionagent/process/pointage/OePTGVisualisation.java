@@ -22,19 +22,18 @@ import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
-import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +56,8 @@ public class OePTGVisualisation extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
+	private String[] LB_POPULATION;
+	private ArrayList<String> listePopulation;
 	private ArrayList<RefEtatDto> listeEtats;
 	private HashMap<Integer, ConsultPointageDto> listePointage;
 	private ArrayList<Service> listeServices;
@@ -673,6 +674,24 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_LB_TYPE_SELECT(), Const.ZERO);
 
 		}
+		// Si liste population vide alors affectation
+		if (getLB_POPULATION() == LBVide) {
+			ArrayList<String> listeStatut = new ArrayList<String>();
+			listeStatut.add("Fontionnaire");
+			listeStatut.add("Convention collective");
+			listeStatut.add("Contractuel");
+			setListePopulation(listeStatut);
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (String pop : listeStatut) {
+				String ligne[] = { pop };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_POPULATION(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_POPULATION_SELECT(), Const.ZERO);
+
+		}
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().isEmpty()) {
 			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
@@ -753,7 +772,7 @@ public class OePTGVisualisation extends BasicProcess {
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
 			}
-		} 
+		}
 	}
 
 	private boolean performControlerFiltres() throws Exception {
@@ -869,24 +888,47 @@ public class OePTGVisualisation extends BasicProcess {
 		String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MAX();
 
 		// si superieur à 1000 alors on bloque
-		List<String> idAgents = new ArrayList<String>();
+		boolean filtreAgent = false;
 
-		if (idAgentMin != null && idAgentMax == null) {
-			if (!idAgents.contains(idAgentMin)) {
-				idAgents.add(idAgentMin);
-			}
-		} else if (idAgentMin != null && idAgentMax != null) {
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(),
-					Integer.valueOf(idAgentMin), Integer.valueOf(idAgentMax));
+		Collection<String> idAgentPopulation = new ArrayList<>();
+		// population
+		int numPopulation = (Services.estNumerique(getZone(getNOM_LB_POPULATION_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_POPULATION_SELECT())) : -1);
+		String population = null;
+		if (numPopulation != -1 && numPopulation != 0) {
+			filtreAgent = true;
+			population = getListePopulation().get(numPopulation - 1);
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentWithStatut(getTransaction(), population);
 			for (AgentNW ag : listAgent) {
-				if (!idAgents.contains(Integer.valueOf(ag.getIdAgent()))) {
-					idAgents.add(ag.getIdAgent());
+				if (!idAgentPopulation.contains(Integer.valueOf(ag.getIdAgent()))) {
+					idAgentPopulation.add(ag.getIdAgent());
 				}
 			}
 		}
 
+		// Agent Min et/ou MAx
+		Collection<String> idAgentMinMax = new ArrayList<>();
+		if (idAgentMin != null && idAgentMax == null) {
+			filtreAgent = true;
+			if (!idAgentMinMax.contains(idAgentMin)) {
+				idAgentMinMax.add(idAgentMin);
+			}
+		} else if (idAgentMin != null && idAgentMax != null) {
+			filtreAgent = true;
+			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(),
+					Integer.valueOf(idAgentMin), Integer.valueOf(idAgentMax));
+			for (AgentNW ag : listAgent) {
+				if (!idAgentMinMax.contains(ag.getIdAgent())) {
+					idAgentMinMax.add(ag.getIdAgent());
+				}
+			}
+		}
+
+		// SERVICE
+		Collection<String> idAgentService = new ArrayList<>();
 		String sigleService = getVAL_EF_SERVICE().toUpperCase();
 		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+			filtreAgent = true;
 			// on cherche le code service associé
 			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
 			String codeService = siserv.getCodService();
@@ -904,26 +946,63 @@ public class OePTGVisualisation extends BasicProcess {
 					codesServices.add(codeService);
 				ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServicesETMatricules(getTransaction(),
 						codesServices, idAgentMin, idAgentMax);
-				idAgents.clear();
 				for (AgentNW ag : listAgent) {
-					if (!idAgents.contains(Integer.valueOf(ag.getIdAgent()))) {
-						idAgents.add(ag.getIdAgent());
+					if (!idAgentService.contains(Integer.valueOf(ag.getIdAgent()))) {
+						idAgentService.add(ag.getIdAgent());
 					}
 				}
 			}
 		}
 
-		if (idAgents.isEmpty()) {
-			idAgents = null;
-		} else if (idAgents.size() >= 1000) {
+		// TODO
+		// on fait l'intersection des listes d'agent
+		Collection intersectionCollection = new ArrayList<>();
+		if (idAgentPopulation.size() > 0) {
+			intersectionCollection = idAgentPopulation;
+			if (idAgentMinMax.size() > 0) {
+				intersectionCollection = CollectionUtils.intersection(intersectionCollection, idAgentMinMax);
+				if (idAgentService.size() > 0) {
+					intersectionCollection = CollectionUtils.intersection(intersectionCollection, idAgentService);
+				}
+			} else {
+				if (idAgentService.size() > 0) {
+					intersectionCollection = CollectionUtils.intersection(intersectionCollection, idAgentService);
+				}
+			}
+		} else {
+			if (idAgentMinMax.size() > 0) {
+				intersectionCollection = idAgentMinMax;
+				if (idAgentService.size() > 0) {
+					intersectionCollection = CollectionUtils.intersection(intersectionCollection, idAgentService);
+				}
+			} else {
+				if (idAgentService.size() > 0) {
+					intersectionCollection = idAgentService;
+				}
+			}
+		}
+
+		if (intersectionCollection.size() == 0) {
+			if (!filtreAgent) {
+				intersectionCollection = null;
+			}
+		} else if (intersectionCollection.size() >= 1000) {
 			// "ERR501",
 			// "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
 			return false;
 		}
+		/*
+		 * if (idAgents.isEmpty()) { idAgents = null; } else if (idAgents.size()
+		 * >= 1000) { // "ERR501", //
+		 * "La sélection des filtres engendre plus de 1000 agents. Merci de réduire la sélection."
+		 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR501"));
+		 * return false; }
+		 */
 
-		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax, idAgents,
-				etat != null ? etat.getIdRefEtat() : null, type != null ? type.getIdRefTypePointage() : null);
+		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax,
+				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
+				type != null ? type.getIdRefTypePointage() : null);
 		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
 		loadHistory();
 
@@ -1162,11 +1241,11 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 
 			if (testerParametre(request, getNOM_PB_CREATE())) {
-				//on verifie que l'agent exist
-				if(!performControlerSaisie(getVAL_ST_DATE_CREATE(),getVAL_ST_AGENT_CREATE())){
+				// on verifie que l'agent exist
+				if (!performControlerSaisie(getVAL_ST_DATE_CREATE(), getVAL_ST_AGENT_CREATE())) {
 					return false;
 				}
-				
+
 				status = "EDIT";
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundiCreate());
@@ -1186,25 +1265,25 @@ public class OePTGVisualisation extends BasicProcess {
 		return true;
 	}
 
-	private boolean performControlerSaisie(String dateCreation, String idAgent) throws Exception  {
-		if(dateCreation.equals(Const.CHAINE_VIDE)){
+	private boolean performControlerSaisie(String dateCreation, String idAgent) throws Exception {
+		if (dateCreation.equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date"));
-			return false;			
+			return false;
 		}
-		if(idAgent.equals(Const.CHAINE_VIDE)){
+		if (idAgent.equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
-			return false;			
+			return false;
 		}
-		AgentNW agent= AgentNW.chercherAgent(getTransaction(), idAgent);
-		if(getTransaction().isErreur()){
+		AgentNW agent = AgentNW.chercherAgent(getTransaction(), idAgent);
+		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR503",
 			// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
-			return false;				
-			
+			return false;
+
 		}
 		return true;
 	}
@@ -1349,4 +1428,40 @@ public class OePTGVisualisation extends BasicProcess {
 	public List<ConsultPointageDto> getHistoryTable(int ptgId) {
 		return history.get(ptgId);
 	}
+
+	private String[] getLB_POPULATION() {
+		if (LB_POPULATION == null) {
+			LB_POPULATION = initialiseLazyLB();
+		}
+		return LB_POPULATION;
+	}
+
+	private void setLB_POPULATION(String[] newLB_POPULATION) {
+		LB_POPULATION = newLB_POPULATION;
+	}
+
+	public String getNOM_LB_POPULATION() {
+		return "NOM_LB_POPULATION";
+	}
+
+	public String getNOM_LB_POPULATION_SELECT() {
+		return "NOM_LB_POPULATION_SELECT";
+	}
+
+	public String[] getVAL_LB_POPULATION() {
+		return getLB_POPULATION();
+	}
+
+	public String getVAL_LB_POPULATION_SELECT() {
+		return getZone(getNOM_LB_POPULATION_SELECT());
+	}
+
+	public ArrayList<String> getListePopulation() {
+		return listePopulation;
+	}
+
+	public void setListePopulation(ArrayList<String> listePopulation) {
+		this.listePopulation = listePopulation;
+	}
+
 }
