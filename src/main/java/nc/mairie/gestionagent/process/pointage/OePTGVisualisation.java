@@ -827,41 +827,6 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 		}
 
-		// on verifie que l'id agent min saisie existe
-		if (!getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE)) {
-			if (!Services.estNumerique(getVAL_ST_AGENT_MIN())) {
-				// "ERR992", "La zone @ doit être numérique.");
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent min"));
-				return false;
-			}
-			String idAgentMin = "900" + getVAL_ST_AGENT_MIN();
-			AgentNW agMin = AgentNW.chercherAgent(getTransaction(), idAgentMin);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "ERR503",
-				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMin));
-				return false;
-			}
-		}
-		// on verifie que l'id agent max saisie existe
-		if (!getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
-			if (!Services.estNumerique(getVAL_ST_AGENT_MAX())) {
-				// "ERR992", "La zone @ doit être numérique.");
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Agent max"));
-				return false;
-			}
-			String idAgentMax = "900" + getVAL_ST_AGENT_MAX();
-			AgentNW agMax = AgentNW.chercherAgent(getTransaction(), idAgentMax);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "ERR503",
-				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMax));
-				return false;
-			}
-		}
-
 		return true;
 	}
 
