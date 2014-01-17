@@ -313,9 +313,9 @@
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
             <legend class="sigp2Legend">Informations sur les dates de ventilation</legend>
 	            <span class="sigp2" style="width:150px">Conventions collectives :</span>
-				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_DATE_VENTIL_CC() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_CC() %>" style="margin-right:10px;">
-				<span class="sigp2" style="width:150px">Fonctionnaire / Contractuels :  :</span>
-				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_DATE_VENTIL_F_C() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_F_C() %>" style="margin-right:10px;">
+				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_VENTIL_CC() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_CC() %>" style="margin-right:10px;">
+				<span class="sigp2" style="width:150px">Fonctionnaire / Contractuels :</span>
+				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_DATE_VENTIL_F_C() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_DATE_VENTIL_F_C() %>" style="margin-right:10px;">
 				
             
             </FIELDSET>
