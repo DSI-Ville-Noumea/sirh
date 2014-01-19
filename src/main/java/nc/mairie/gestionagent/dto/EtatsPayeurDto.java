@@ -2,7 +2,7 @@ package nc.mairie.gestionagent.dto;
 
 import java.util.Date;
 
-public class ListEtatsPayeurDto {
+public class EtatsPayeurDto {
 	
 	private Integer idEtatPayeur;
 	private String statut;
@@ -15,11 +15,11 @@ public class ListEtatsPayeurDto {
 	private String displayNom;
 	private String displayPrenom;
 	
-	public ListEtatsPayeurDto(){
+	public EtatsPayeurDto(){
 		
 	}
 	
-	public ListEtatsPayeurDto(Integer idEtatPayeur, String statut, Integer type,
+	public EtatsPayeurDto(Integer idEtatPayeur, String statut, Integer type,
 			Date dateEtatPayeur, String label, String fichier, Integer idAgent, Date dateEdition) {
 		this.idEtatPayeur = idEtatPayeur;
 		this.statut = statut;

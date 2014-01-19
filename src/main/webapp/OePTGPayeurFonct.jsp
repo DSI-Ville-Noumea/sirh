@@ -1,5 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.gestionagent.dto.ListEtatsPayeurDto"%>
+<%@page import="nc.mairie.gestionagent.dto.EtatsPayeurDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 
@@ -14,6 +14,11 @@
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT language="JavaScript">
+//afin de sélectionner un élément dans une liste
+function executeBouton(nom)
+{
+	document.formu.elements[nom].click();
+}
 //function pour changement couleur arriere plan ligne du tableau
 function SelectLigne(id,tailleTableau)
 {
@@ -48,28 +53,27 @@ function SelectLigne(id,tailleTableau)
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:650px;">
 					<%
-					int indice = 0;
 					if (null != process.getListEtatsPayeurDto()){
 						for (int i = 0; i < process.getListEtatsPayeurDto().size(); i++){
 							int idEtat = process.getListEtatsPayeurDto().get(i).getIdEtatPayeur();
 							%>
-						<tr id="<%=indice%>" onmouseover="SelectLigne(<%=indice%>, <%=process.getListEtatsPayeurDto().size()%>)">
+						<tr id="<%=idEtat%>" onmouseover="SelectLigne(<%=idEtat%>, <%=process.getListEtatsPayeurDto().size()%>)">
 							
 							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(idEtat) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(idEtat) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
-								<a href="UploadEtatPayeur?idEtatPayeur=<%=idEtat %>&nomFichier=<%=process.getVAL_FICHIER_EDITION(idEtat)%>" target="_blank"><img title="consulter" src="images/oeil.gif" height="15px" width="15px" border="0px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" /></a> 	
-							</td>
+								<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(idEtat)%>">
+				    		</td>
 						</tr>
 						<%
-						indice++;
 						}
 					} %>
 				</table>
 			</div>
 		
-		</FIELDSET>
+		</FIELDSET>	
 		
+	<%=process.getUrlFichier()%>		
 	</FORM>
 	</BODY>
 </HTML>

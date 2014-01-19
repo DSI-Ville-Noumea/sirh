@@ -12,7 +12,7 @@ import nc.mairie.gestionagent.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
-import nc.mairie.gestionagent.dto.ListEtatsPayeurDto;
+import nc.mairie.gestionagent.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
@@ -486,14 +486,14 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 	
 	@Override
-	public List<ListEtatsPayeurDto> getListEtatsPayeurByStatut(String statut) {
+	public List<EtatsPayeurDto> getListEtatsPayeurByStatut(String statut) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgListEtatsPayeur;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statutAgent", statut);
 		ClientResponse res = createAndFireRequest(params, url);
 		
-		return readResponseAsList(ListEtatsPayeurDto.class, res, url);
+		return readResponseAsList(EtatsPayeurDto.class, res, url);
 	}
 	
 	@Override

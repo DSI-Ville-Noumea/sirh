@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.ListEtatsPayeurDto;
+import nc.mairie.gestionagent.dto.EtatsPayeurDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -37,7 +37,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
-	private ArrayList<ListEtatsPayeurDto> listEtatsPayeurDto;
+	private ArrayList<EtatsPayeurDto> listEtatsPayeurDto;
 
 	private String libelleStatut = "contractuels";
 	
@@ -103,14 +103,14 @@ public class OePTGPayeurContractuels extends BasicProcess {
 		
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
-			setListEtatsPayeurDto(new ArrayList<ListEtatsPayeurDto>());
+			setListEtatsPayeurDto(new ArrayList<EtatsPayeurDto>());
 			getListEtatsPayeurDto().addAll(t.getListEtatsPayeurByStatut(STATUT));
 		} catch(Exception e){
 			logger.debug("Erreur OePTGPayeurContractuels.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
 		}
 		
-		for(ListEtatsPayeurDto dto : getListEtatsPayeurDto()) {
+		for(EtatsPayeurDto dto : getListEtatsPayeurDto()) {
 			Integer vI = dto.getIdEtatPayeur();
 			
 			addZone(getNOM_ST_USER_DATE_EDITION(vI), sdf.format(dto.getDateEdition()) + "<br />" + dto.getDisplayPrenom() + " " + dto.getDisplayNom());
@@ -163,7 +163,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	/**
 	 * @return the listEtatsPayeurDto
 	 */
-	public ArrayList<ListEtatsPayeurDto> getListEtatsPayeurDto() {
+	public ArrayList<EtatsPayeurDto> getListEtatsPayeurDto() {
 		return listEtatsPayeurDto;
 	}
 
@@ -171,7 +171,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	 * @param listEtatsPayeurDto the listEtatsPayeurDto to set
 	 */
 	public void setListEtatsPayeurDto(
-			ArrayList<ListEtatsPayeurDto> listEtatsPayeurDto) {
+			ArrayList<EtatsPayeurDto> listEtatsPayeurDto) {
 		this.listEtatsPayeurDto = listEtatsPayeurDto;
 	}
 	

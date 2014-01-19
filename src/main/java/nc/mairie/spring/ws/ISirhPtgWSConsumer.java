@@ -7,7 +7,7 @@ import java.util.List;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.dto.FichePointageDto;
-import nc.mairie.gestionagent.dto.ListEtatsPayeurDto;
+import nc.mairie.gestionagent.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
@@ -59,7 +59,7 @@ public interface ISirhPtgWSConsumer {
 	
 	boolean canStartExportEtatsPayeur(String statut);
 	
-	List<ListEtatsPayeurDto> getListEtatsPayeurByStatut(String statut);
+	List<EtatsPayeurDto> getListEtatsPayeurByStatut(String statut);
 	
 	byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur);
 
