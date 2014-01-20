@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -32,16 +34,17 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	private Logger logger = LoggerFactory.getLogger(OePTGPayeurContractuels.class);
-	
+
 	public static final String STATUT = "C";
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	
+
 	private ArrayList<EtatsPayeurDto> listEtatsPayeurDto;
 
 	private String libelleStatut = "contractuels";
-	
-	
+
+	private String urlFichier;
+
 	@Override
 	public String getJSP() {
 		return "OePTGPayeurContractuels.jsp";
@@ -68,26 +71,32 @@ public class OePTGPayeurContractuels extends BasicProcess {
 
 	// affichage ou non du bouton "lancer editions"
 	public boolean isBoutonLancerEditionAffiche() throws Exception {
-		
+
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
 			return t.canStartExportEtatsPayeur(STATUT);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.isBoutonLancerEditionAffiche() " + e.getMessage());
 			return false;
 		}
 	}
-	
 
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-				// clic sur le bouton Lancer editions
-				if (testerParametre(request, getNOM_PB_LANCER_EDITIONS())) {
-					return performPB_LANCER_EDITIONS(request);
+			// clic sur le bouton Lancer editions
+			if (testerParametre(request, getNOM_PB_LANCER_EDITIONS())) {
+				return performPB_LANCER_EDITIONS(request);
+			}
+
+			// Si clic sur le bouton PB_VISUALISER_DOC
+			for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISUALISER_DOC(i))) {
+					return performPB_VISUALISER_DOC(request, i);
 				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -99,27 +108,25 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	 * médical.
 	 */
 	private void initialiseHistoriqueEditions() throws Exception {
-		
-		
+
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
-			setListEtatsPayeurDto(new ArrayList<EtatsPayeurDto>());
-			getListEtatsPayeurDto().addAll(t.getListEtatsPayeurByStatut(STATUT));
-		} catch(Exception e){
+			setListEtatsPayeurDto((ArrayList<EtatsPayeurDto>) t.getListEtatsPayeurByStatut(STATUT));
+		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
 		}
-		
-		for(EtatsPayeurDto dto : getListEtatsPayeurDto()) {
-			Integer vI = dto.getIdEtatPayeur();
-			
-			addZone(getNOM_ST_USER_DATE_EDITION(vI), sdf.format(dto.getDateEdition()) + "<br />" + dto.getDisplayPrenom() + " " + dto.getDisplayNom());
-			addZone(getNOM_ST_LIBELLE_EDITION(vI), dto.getLabel());
-			addZone(getNOM_FICHIER_EDITION(vI), dto.getFichier());
+
+		for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
+			EtatsPayeurDto dto = getListEtatsPayeurDto().get(i);
+
+			addZone(getNOM_ST_USER_DATE_EDITION(i),
+					sdf.format(dto.getDateEdition()) + "<br />" + dto.getDisplayPrenom() + " " + dto.getDisplayNom());
+			addZone(getNOM_ST_LIBELLE_EDITION(i), dto.getLabel());
 		}
-		
+
 	}
-	
+
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
 	 * règles de gestion du process - Positionne un statut en fonction de ces
@@ -128,7 +135,7 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_LANCER_EDITIONS(HttpServletRequest request) throws Exception {
-		
+
 		try {
 			// on recupere l'agent connecté
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
@@ -147,16 +154,16 @@ public class OePTGPayeurContractuels extends BasicProcess {
 			} else {
 				agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
 			}
-			
+
 			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
-		
+
 			ptg.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurContractuels.performPB_LANCER_EDITIONS() " + e.getMessage());
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR702", libelleStatut)); 
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR702", libelleStatut));
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -164,29 +171,28 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	 * @return the listEtatsPayeurDto
 	 */
 	public ArrayList<EtatsPayeurDto> getListEtatsPayeurDto() {
-		return listEtatsPayeurDto;
+		return listEtatsPayeurDto == null ? new ArrayList<EtatsPayeurDto>() : listEtatsPayeurDto;
 	}
 
 	/**
-	 * @param listEtatsPayeurDto the listEtatsPayeurDto to set
+	 * @param listEtatsPayeurDto
+	 *            the listEtatsPayeurDto to set
 	 */
-	public void setListEtatsPayeurDto(
-			ArrayList<EtatsPayeurDto> listEtatsPayeurDto) {
+	public void setListEtatsPayeurDto(ArrayList<EtatsPayeurDto> listEtatsPayeurDto) {
 		this.listEtatsPayeurDto = listEtatsPayeurDto;
 	}
-	
-	
+
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
 	public String getNomEcran() {
 		return "ECR-PTG-PAY-NON-TITU";
 	}
-	
+
 	public String getNOM_ST_ACTION() {
 		return "NOM_ST_ACTION";
 	}
-	
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
 	 * création : (29/09/11 10:03:38)
@@ -195,26 +201,66 @@ public class OePTGPayeurContractuels extends BasicProcess {
 	public String getNOM_PB_LANCER_EDITIONS() {
 		return "NOM_PB_LANCER_EDITIONS";
 	}
-	
-	
+
 	public String getNOM_ST_USER_DATE_EDITION(int i) {
 		return "NOM_ST_USER_DATE_EDITION_" + i;
 	}
+
 	public String getVAL_ST_USER_DATE_EDITION(int i) {
 		return getZone(getNOM_ST_USER_DATE_EDITION(i));
 	}
-	
+
 	public String getNOM_ST_LIBELLE_EDITION(int i) {
 		return "NOM_ST_LIBELLE_EDITION_" + i;
 	}
+
 	public String getVAL_ST_LIBELLE_EDITION(int i) {
 		return getZone(getNOM_ST_LIBELLE_EDITION(i));
 	}
-	
-	public String getNOM_FICHIER_EDITION(int i) {
-		return "NOM_FICHIER_EDITION_" + i;
+
+	public String getNOM_PB_VISUALISER_DOC(int i) {
+		return "NOM_PB_VISUALISER_DOC" + i;
 	}
-	public String getVAL_FICHIER_EDITION(int i) {
-		return getZone(getNOM_FICHIER_EDITION(i));
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_VISUALISER_DOC(HttpServletRequest request, int indiceEltAVisualiser) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+
+		// Récup de l'Etat
+		EtatsPayeurDto etat = getListEtatsPayeurDto().get(indiceEltAVisualiser);
+		// on affiche le document
+		setURLFichier(getScriptOuverture(repertoireStockage + "Pointages/" + etat.getFichier()));
+
+		return true;
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
 	}
 }

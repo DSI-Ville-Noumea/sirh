@@ -94,9 +94,8 @@ public class OePTGPayeurFonct extends BasicProcess {
 
 			// Si clic sur le bouton PB_VISUALISER_DOC
 			for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
-				int idEtat = getListEtatsPayeurDto().get(i).getIdEtatPayeur();
-				if (testerParametre(request, getNOM_PB_VISUALISER_DOC(idEtat))) {
-					return performPB_VISUALISER_DOC(request, idEtat);
+				if (testerParametre(request, getNOM_PB_VISUALISER_DOC(i))) {
+					return performPB_VISUALISER_DOC(request, i);
 				}
 			}
 		}
@@ -119,12 +118,11 @@ public class OePTGPayeurFonct extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
 		}
 
-		for (EtatsPayeurDto dto : getListEtatsPayeurDto()) {
-			Integer vI = dto.getIdEtatPayeur();
-
-			addZone(getNOM_ST_USER_DATE_EDITION(vI),
+		for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
+			EtatsPayeurDto dto = getListEtatsPayeurDto().get(i);
+			addZone(getNOM_ST_USER_DATE_EDITION(i),
 					sdf.format(dto.getDateEdition()) + "<br />" + dto.getDisplayPrenom() + " " + dto.getDisplayNom());
-			addZone(getNOM_ST_LIBELLE_EDITION(vI), dto.getLabel());
+			addZone(getNOM_ST_LIBELLE_EDITION(i), dto.getLabel());
 		}
 
 	}
@@ -237,7 +235,7 @@ public class OePTGPayeurFonct extends BasicProcess {
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 
 		// Récup de l'Etat
-		EtatsPayeurDto etat = getListEtatsPayeurDto().get(indiceEltAVisualiser - 1);
+		EtatsPayeurDto etat = getListEtatsPayeurDto().get(indiceEltAVisualiser);
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + "Pointages/" + etat.getFichier()));
 

@@ -40,7 +40,7 @@ function SelectLigne(id,tailleTableau)
 		<INPUT type="submit" class="sigp2-Bouton-100" value="Lancer éditions" name="<%=process.getNOM_PB_LANCER_EDITIONS() %>" <%if(!process.isBoutonLancerEditionAffiche()){ %> disabled="disabled"<% } %> />
 		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		    <legend class="sigp2Legend">Historique des éditions</legend>
+		    <legend class="sigp2Legend">Historique des éditions des contractuels</legend>
 		    <br/>
 		    <span style="position:relative;width:210px;text-align: center;">Imprimé le <br> A <br> PAR</span>
 		    <span style="position:relative;width:290px;text-align: center;">Libellé</span>
@@ -50,20 +50,17 @@ function SelectLigne(id,tailleTableau)
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:650px;">
 					<%
-					int indice = 0;
 					if (null != process.getListEtatsPayeurDto()){
 						for (int i = 0; i < process.getListEtatsPayeurDto().size(); i++){
-							int idEtat = process.getListEtatsPayeurDto().get(i).getIdEtatPayeur();
 							%>
-						<tr id="<%=indice%>" onmouseover="SelectLigne(<%=indice%>, <%=process.getListEtatsPayeurDto().size()%>)">							
-							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(idEtat) %></td>
-							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(idEtat) %></td>
+						<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>, <%=process.getListEtatsPayeurDto().size()%>)">							
+							<td class="sigp2NewTab-liste" style="position:relative;width:210px;text-align: center;"><%=process.getVAL_ST_USER_DATE_EDITION(i) %></td>
+							<td class="sigp2NewTab-liste" style="position:relative;width:290px;text-align: center;"><%=process.getVAL_ST_LIBELLE_EDITION(i) %></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: center;" align="center">
-								<a href="UploadEtatPayeur?idEtatPayeur=<%=idEtat %>&nomFichier=<%=process.getVAL_FICHIER_EDITION(idEtat)%>" target="_blank"><img title="consulter" src="images/oeil.gif" height="15px" width="15px" border="0px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" /></a> 	
-							</td>
+								<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(i)%>">
+				    		</td>
 						</tr>
 						<%
-						indice++;
 						}
 					} %>
 				</table>
@@ -71,6 +68,7 @@ function SelectLigne(id,tailleTableau)
 		
 		</FIELDSET>
 		
+	<%=process.getUrlFichier()%>		
 	</FORM>
 	</BODY>
 </HTML>

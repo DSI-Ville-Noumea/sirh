@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -40,6 +42,8 @@ public class OePTGPayeurConvCol extends BasicProcess {
 	private ArrayList<EtatsPayeurDto> listEtatsPayeurDto;
 
 	private String libelleStatut = "conventions collectives";
+
+	private String urlFichier;
 
 	@Override
 	public String getJSP() {
@@ -87,6 +91,13 @@ public class OePTGPayeurConvCol extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_LANCER_EDITIONS())) {
 				return performPB_LANCER_EDITIONS(request);
 			}
+
+			// Si clic sur le bouton PB_VISUALISER_DOC
+			for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISUALISER_DOC(i))) {
+					return performPB_VISUALISER_DOC(request, i);
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -101,20 +112,18 @@ public class OePTGPayeurConvCol extends BasicProcess {
 
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		try {
-			setListEtatsPayeurDto(new ArrayList<EtatsPayeurDto>());
-			getListEtatsPayeurDto().addAll(t.getListEtatsPayeurByStatut(STATUT));
+			setListEtatsPayeurDto((ArrayList<EtatsPayeurDto>) t.getListEtatsPayeurByStatut(STATUT));
 		} catch (Exception e) {
 			logger.debug("Erreur OePTGPayeurConvCol.initialiseHistoriqueEditions() " + e.getMessage());
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR700", libelleStatut));
 		}
 
-		for (EtatsPayeurDto dto : getListEtatsPayeurDto()) {
-			Integer vI = dto.getIdEtatPayeur();
+		for (int i = 0; i < getListEtatsPayeurDto().size(); i++) {
+			EtatsPayeurDto dto = getListEtatsPayeurDto().get(i);
 
-			addZone(getNOM_ST_USER_DATE_EDITION(vI),
+			addZone(getNOM_ST_USER_DATE_EDITION(i),
 					sdf.format(dto.getDateEdition()) + "<br />" + dto.getDisplayPrenom() + " " + dto.getDisplayNom());
-			addZone(getNOM_ST_LIBELLE_EDITION(vI), dto.getLabel());
-			addZone(getNOM_FICHIER_EDITION(vI), dto.getFichier());
+			addZone(getNOM_ST_LIBELLE_EDITION(i), dto.getLabel());
 		}
 
 	}
@@ -163,7 +172,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 	 * @return the listEtatsPayeurDto
 	 */
 	public ArrayList<EtatsPayeurDto> getListEtatsPayeurDto() {
-		return listEtatsPayeurDto;
+		return listEtatsPayeurDto == null ? new ArrayList<EtatsPayeurDto>() : listEtatsPayeurDto;
 	}
 
 	/**
@@ -210,12 +219,50 @@ public class OePTGPayeurConvCol extends BasicProcess {
 		return getZone(getNOM_ST_LIBELLE_EDITION(i));
 	}
 
-	public String getNOM_FICHIER_EDITION(int i) {
-		return "NOM_FICHIER_EDITION_" + i;
+	public String getNOM_PB_VISUALISER_DOC(int i) {
+		return "NOM_PB_VISUALISER_DOC" + i;
 	}
 
-	public String getVAL_FICHIER_EDITION(int i) {
-		return getZone(getNOM_FICHIER_EDITION(i));
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
+	 * 
+	 */
+	public boolean performPB_VISUALISER_DOC(HttpServletRequest request, int indiceEltAVisualiser) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+
+		// Récup de l'Etat
+		EtatsPayeurDto etat = getListEtatsPayeurDto().get(indiceEltAVisualiser);
+		// on affiche le document
+		setURLFichier(getScriptOuverture(repertoireStockage + "Pointages/" + etat.getFichier()));
+
+		return true;
+	}
+
+	private void setURLFichier(String scriptOuverture) {
+		urlFichier = scriptOuverture;
+	}
+
+	public String getScriptOuverture(String cheminFichier) throws Exception {
+		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
+		scriptOuvPDF.append("</script>");
+		return scriptOuvPDF.toString();
+	}
+
+	public String getUrlFichier() {
+		String res = urlFichier;
+		setURLFichier(null);
+		if (res == null) {
+			return Const.CHAINE_VIDE;
+		} else {
+			return res;
+		}
 	}
 
 }
