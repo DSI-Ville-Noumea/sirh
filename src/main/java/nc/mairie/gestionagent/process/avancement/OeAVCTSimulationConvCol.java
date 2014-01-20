@@ -399,8 +399,6 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 						avct.creerAvancementConvCol(getTransaction());
 					}
 				}
-			} else {
-				System.out.println("ici");
 			}
 		}
 		return true;
