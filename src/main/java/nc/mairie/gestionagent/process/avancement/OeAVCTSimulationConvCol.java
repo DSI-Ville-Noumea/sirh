@@ -304,72 +304,103 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 			}
 			// L'agent doit avoir 3 ans d'ancienneté minimum et 30 maximum pour
 			// être éligible.
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 3), "30/06/"
-					+ annee) <= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 30),
-							"30/06/" + annee) > 0) {
-				// Récupération de l'avancement
-				AvancementConvCol avct = AvancementConvCol.chercherAvancementConvColAvecAnneeEtAgent(getTransaction(),
-						annee, a.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					// Création de l'avancement
-					avct = new AvancementConvCol();
-					avct.setIdAgent(a.getIdAgent());
-					avct.setAnnee(annee);
-					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
-
-					avct.setDateArrete("01/01/" + annee);
-					avct.setNumArrete(annee);
-					avct.setDateEmbauche(a.getDateDerniereEmbauche());
-
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (aff == null || aff.getIdFichePoste() == null) {
-						continue;
-					}
-					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-					Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-					Service section = Service.getSection(getTransaction(), fp.getIdServi());
-					if (carr != null) {
-						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
-							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
-							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade());
+			// on cherche la carriere consecutive en tant que Convention
+			// collective pour savoir si l'agent repond à la regle de
+			// l'anciennete
+			ArrayList<Carriere> listeCarriereConvCol = Carriere.listerCarriereAgentByType(getTransaction(),
+					a.getNoMatricule(), "CC");
+			Carriere plusAnciennCarrConvColl = null;
+			for (int i = 0; i < listeCarriereConvCol.size(); i++) {
+				Carriere carrCours = listeCarriereConvCol.get(i);
+				if (listeCarriereConvCol.size() > i + 1) {
+					if (listeCarriereConvCol.get(i + 1) != null) {
+						Carriere carrPrecedente = listeCarriereConvCol.get(i + 1);
+						if (carrCours.getDateDebut().equals(carrPrecedente.getDateFin())) {
+							plusAnciennCarrConvColl = carrPrecedente;
+						} else {
+							plusAnciennCarrConvColl = carrCours;
 						}
+					} else {
+						plusAnciennCarrConvColl = carrCours;
 					}
-					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+				} else {
+					plusAnciennCarrConvColl = carrCours;
+				}
+			}
 
-					// On regarde si il y a deja une prime de saisie
-					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(), annee
-							+ "0101");
+			if (plusAnciennCarrConvColl != null) {
+				if (Services.compareDates(
+						Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 3), "30/06/"
+								+ annee) <= 0
+						&& Services.compareDates(
+								Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 30),
+								"30/06/" + annee) > 0) {
+					// Récupération de l'avancement
+					AvancementConvCol avct = AvancementConvCol.chercherAvancementConvColAvecAnneeEtAgent(
+							getTransaction(), annee, a.getIdAgent());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
-						avct.setCarriereSimu(null);
-					} else {
-						avct.setCarriereSimu("S");
-					}
+						// Création de l'avancement
+						avct = new AvancementConvCol();
+						avct.setIdAgent(a.getIdAgent());
+						avct.setAnnee(annee);
+						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 
-					// on cherche la derniere prime 1200
-					Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
-							a.getNoMatricule(), "1200");
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
-						if (prime1200 != null && prime1200.getMtPri() != null) {
-							if (Integer.valueOf(prime1200.getMtPri()) > 30) {
-								avct.setMontantPrime1200("30");
-							} else {
-								avct.setMontantPrime1200(prime1200.getMtPri());
+						avct.setDateArrete("01/01/" + annee);
+						avct.setNumArrete(annee);
+						avct.setDateEmbauche(a.getDateDerniereEmbauche());
+
+						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+								a.getIdAgent());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						}
+						if (aff == null || aff.getIdFichePoste() == null) {
+							continue;
+						}
+						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+						Service section = Service.getSection(getTransaction(), fp.getIdServi());
+						if (carr != null) {
+							if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
+								Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
+								avct.setGrade(grd.getCodeGrade());
+								avct.setLibelleGrade(grd.getLibGrade());
 							}
 						}
-					}
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
 
-					avct.creerAvancementConvCol(getTransaction());
+						// On regarde si il y a deja une prime de saisie
+						Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(),
+								annee + "0101");
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+							avct.setCarriereSimu(null);
+						} else {
+							avct.setCarriereSimu("S");
+						}
+
+						// on cherche la derniere prime 1200
+						Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
+								a.getNoMatricule(), "1200");
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							if (prime1200 != null && prime1200.getMtPri() != null) {
+								if (Integer.valueOf(prime1200.getMtPri()) > 30) {
+									avct.setMontantPrime1200("30");
+								} else {
+									avct.setMontantPrime1200(prime1200.getMtPri());
+								}
+							}
+						}
+
+						avct.creerAvancementConvCol(getTransaction());
+					}
 				}
+			} else {
+				System.out.println("ici");
 			}
 		}
 		return true;

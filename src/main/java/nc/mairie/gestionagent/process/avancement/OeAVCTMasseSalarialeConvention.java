@@ -478,7 +478,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			if (carr == null || carr.getCodeCategorie() == null || !carr.getCodeCategorie().equals("7")) {
 				// "ERR181",
 				// "Cet agent n'est pas de type @. Il ne peut pas être soumis à l'avancement @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR181", "convention collective", "des conventions collectives"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR181", "convention collective", "des conventions collectives"));
 				return false;
 			}
 			la.add(agent);
@@ -490,7 +491,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			}
 
 			// Récupération des agents
-			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Convention collective");
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee,
+					"Convention collective");
 			String listeNomatrAgent = Const.CHAINE_VIDE;
 			for (Carriere carr : listeCarriereActive) {
 				listeNomatrAgent += carr.getNoMatricule() + ",";
@@ -509,70 +511,110 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(), a.getNoMatricule(), Services
-					.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
-			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null || paAgent.estPAInactive(getTransaction())) {
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
+					a.getNoMatricule(),
+					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
+			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
+					|| paAgent.estPAInactive(getTransaction())) {
 				getTransaction().traiterErreur();
 				continue;
 			}
 			// L'agent doit avoir 3 ans d'ancienneté minimum et 30 maximum pour
 			// être éligible.
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 3), "30/06/" + annee) <= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 30), "30/06/" + annee) > 0) {
-				// Récupération de l'avancement
-				AvancementConvCol avct = AvancementConvCol.chercherAvancementConvColAvecAnneeEtAgent(getTransaction(), annee, a.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					// Création de l'avancement
-					avct = new AvancementConvCol();
-					avct.setIdAgent(a.getIdAgent());
-					avct.setAnnee(annee);
-					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
-
-					avct.setDateArrete("01/01/" + annee);
-					avct.setNumArrete(annee);
-					avct.setDateEmbauche(a.getDateDerniereEmbauche());
-
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (aff == null || aff.getIdFichePoste() == null) {
-						continue;
-					}
-					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-					Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-					Service section = Service.getSection(getTransaction(), fp.getIdServi());
-					if (carr != null) {
-						if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
-							Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
-							avct.setGrade(grd.getCodeGrade());
-							avct.setLibelleGrade(grd.getLibGrade());
+			// on cherche la carriere consecutive en tant que Convention
+			// collective pour savoir si l'agent repond à la regle de
+			// l'anciennete
+			ArrayList<Carriere> listeCarriereConvCol = Carriere.listerCarriereAgentByType(getTransaction(),
+					a.getNoMatricule(), "CC");
+			Carriere plusAnciennCarrConvColl = null;
+			for (int i = 0; i < listeCarriereConvCol.size(); i++) {
+				Carriere carrCours = listeCarriereConvCol.get(i);
+				if (listeCarriereConvCol.size() > i + 1) {
+					if (listeCarriereConvCol.get(i + 1) != null) {
+						Carriere carrPrecedente = listeCarriereConvCol.get(i + 1);
+						if (carrCours.getDateDebut().equals(carrPrecedente.getDateFin())) {
+							plusAnciennCarrConvColl = carrPrecedente;
+						} else {
+							plusAnciennCarrConvColl = carrCours;
 						}
-					}
-					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
-					
-					//On regarde si il y a deja une prime de saisie
-					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(), annee+"0101");
-					if(getTransaction().isErreur()){
-						getTransaction().traiterErreur();
-						avct.setCarriereSimu(null);
-					}else{
-						avct.setCarriereSimu("S");						
-					}
-					
-					// on cherche la derniere prime 1200
-					Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), a.getNoMatricule(), "1200");
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
 					} else {
-						if (prime1200 != null && prime1200.getMtPri() != null) {
-							avct.setMontantPrime1200(prime1200.getMtPri());
-						}
+						plusAnciennCarrConvColl = carrCours;
 					}
+				} else {
+					plusAnciennCarrConvColl = carrCours;
+				}
+			}
 
-					avct.creerAvancementConvCol(getTransaction());
+			if (plusAnciennCarrConvColl != null) {
+				if (Services.compareDates(
+						Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 3), "30/06/"
+								+ annee) <= 0
+						&& Services.compareDates(
+								Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 30),
+								"30/06/" + annee) > 0) {
+					// Récupération de l'avancement
+					AvancementConvCol avct = AvancementConvCol.chercherAvancementConvColAvecAnneeEtAgent(
+							getTransaction(), annee, a.getIdAgent());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+						// Création de l'avancement
+						avct = new AvancementConvCol();
+						avct.setIdAgent(a.getIdAgent());
+						avct.setAnnee(annee);
+						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
+
+						avct.setDateArrete("01/01/" + annee);
+						avct.setNumArrete(annee);
+						avct.setDateEmbauche(a.getDateDerniereEmbauche());
+
+						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+								a.getIdAgent());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						}
+						if (aff == null || aff.getIdFichePoste() == null) {
+							continue;
+						}
+						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+						Service section = Service.getSection(getTransaction(), fp.getIdServi());
+						if (carr != null) {
+							if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
+								Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
+								avct.setGrade(grd.getCodeGrade());
+								avct.setLibelleGrade(grd.getLibGrade());
+							}
+						}
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+
+						// On regarde si il y a deja une prime de saisie
+						Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(),
+								annee + "0101");
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+							avct.setCarriereSimu(null);
+						} else {
+							avct.setCarriereSimu("S");
+						}
+
+						// on cherche la derniere prime 1200
+						Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
+								a.getNoMatricule(), "1200");
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							if (prime1200 != null && prime1200.getMtPri() != null) {
+								if (Integer.valueOf(prime1200.getMtPri()) > 30) {
+									avct.setMontantPrime1200("30");
+								} else {
+									avct.setMontantPrime1200(prime1200.getMtPri());
+								}
+							}
+						}
+
+						avct.creerAvancementConvCol(getTransaction());
+					}
 				}
 			}
 		}
@@ -678,24 +720,27 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			addZone(getNOM_ST_GRADE(i), av.getGrade());
 			addZone(getNOM_ST_GRADE_LIB(i), av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_AGENT(i),
+					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 
-			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+			addZone(getNOM_CK_VALID_DRH(i),
+					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-			addZone(getNOM_CK_PROJET_ARRETE(i),
-					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
-							: getCHECKED_ON());
+			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
+					|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-			addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-			addZone(getNOM_CK_AFFECTER(i),
-					av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-							: getCHECKED_OFF());			
+			addZone(getNOM_EF_DATE_ARRETE(i),
+					av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
+			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
+					|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			addZone(getNOM_ST_MONTANT_PRIME(i),
-					(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200()) + " <br> "
-							+ (av.getMontantPrime1200() == null ? "&nbsp;" : String.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+					(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
+							+ " <br> "
+							+ (av.getMontantPrime1200() == null ? "&nbsp;" : String.valueOf(Integer.valueOf(av
+									.getMontantPrime1200()) + 1)));
 		}
 	}
 
@@ -789,7 +834,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recherche la derniere ligne de prime pour la rubrique
 					// 1200(prime ancienneté)
-					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNoMatricule(), "1200");
+					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
+							agent.getNoMatricule(), "1200");
 					// si il y en a une alors on la ferme et on en crée une
 					// nouvelle
 					if (!getTransaction().isErreur()) {
@@ -810,8 +856,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(), newPrime.getNoRubr(),
-									newPrime.getDatDeb());
+							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
+									newPrime.getNoRubr(), newPrime.getDatDeb());
 							primeAgent.creerPrimeAgent(getTransaction());
 						}
 					} else {
@@ -828,7 +874,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						newPrime.creerPrime(getTransaction(), user);
 
 						// on crée aussi une prime agent
-						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(), newPrime.getNoRubr(), newPrime.getDatDeb());
+						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
+								newPrime.getNoRubr(), newPrime.getDatDeb());
 						primeAgent.creerPrimeAgent(getTransaction());
 					}
 
