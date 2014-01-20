@@ -366,10 +366,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-		compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : 0);
-		compteurDto.setDureeARetrancher(ajout ? 0 : dureeTotaleSaisie);
+		compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
+		compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
 
-		// TODO on sauvegarde les données
+		// on sauvegarde les données
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
@@ -420,6 +420,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				err += " " + erreur;
 			}
 			getTransaction().declarerErreur(err);
+		} else {
+			// "INF010", "Le compteur @ a bien été mis à jour."
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getValue()));
 		}
 
 		// On nomme l'action
