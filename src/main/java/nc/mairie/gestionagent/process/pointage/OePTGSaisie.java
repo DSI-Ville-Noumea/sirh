@@ -75,15 +75,7 @@ public class OePTGSaisie extends BasicProcess {
 	private void initialiseDonnees() throws Exception {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		String date = wsdf.format(getDateLundi(0));
-		listeFichePointage = t.getSaisiePointage(idAgent, date);
-		absences.clear();
-		primess.clear();
-		hsups.clear();
-		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
-			primess.add(jour.getPrimes());
-			absences.put(sdf.format(jour.getDate()), jour.getAbsences());
-			hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
-		}
+		setListeFichePointage(t.getSaisiePointage(idAgent, date));
 	}
 
 	@Override
@@ -96,7 +88,9 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
-		initialiseDonnees(); 
+		if(!getTransaction().isErreur()) {
+			initialiseDonnees(); 
+		}
 	}
 
 	private boolean save(HttpServletRequest request) throws Exception {
@@ -109,83 +103,12 @@ public class OePTGSaisie extends BasicProcess {
 			return false;
 		}
 
-		List<JourPointageDto> newList = new ArrayList<>();
-
-		int nbrPrime = primess.get(0).size();
-
-		int i = 0;
-		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
-			JourPointageDto temp = new JourPointageDto();
-			temp.setDate(jour.getDate());
-			for (int j = 0; j < 2; j++) {
-				AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
-				if (dto != null) {
-					// vérification date debut > date fin
-					if (dto.getHeureDebut().getTime() >= dto.getHeureFin().getTime()) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une absence de durée nulle ou négative");
-						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " est de durée  nulle ou négative.");
-						return false;
-					}
-					// vérification motif obligatoire
-					if (dto.getMotif().equals(Const.CHAINE_VIDE)) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une absence sans motif.");
-						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
-						return false;
-					}
-					temp.getAbsences().add(dto);
-				}
-				HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
-				if (hsdto != null) {
-					// vérification date debut > date fin
-					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une heure supplémentaire de durée nulle ou négative");
-						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " est de durée nulle ou négative.");
-						return false;
-					}
-					// vérification motif obligatoire
-					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
-						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
-						return false;
-					}
-					temp.getHeuresSup().add(hsdto);
-				}
-			}
-
-			for (int prim = 0; prim < nbrPrime; prim++) {
-				PrimeDto ptemp = primess.get(i).get(prim);
-				PrimeDto primeAajouter = getPrime(temp.getDate(),
-						"PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":" + i, ptemp.getTitre(),
-						ptemp.getTypeSaisie());
-				if (primeAajouter != null) {
-					// vérification motif obligatoire
-					if (primeAajouter.getMotif().equals(Const.CHAINE_VIDE)) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une prime sans motif");
-						getTransaction().declarerErreur("La prime " + ptemp.getTitre() + " saisie le " + sdf.format(jour.getDate())	+ " n'a pas de motif.");
-						return false;
-					}
-					// verification si prime 7704 que le nombre ne soit pas supérieur à 2 
-					if (primeAajouter.getNumRubrique() == 7704 && primeAajouter.getQuantite() > 2) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde de la prime 7704 avec une quantité supérieure à 2");
-						getTransaction().declarerErreur("La prime " + ptemp.getTitre() + " saisie le " + sdf.format(jour.getDate()) + " ne peut pas excéder 2 en quantité.");
-						return false;
-					}
-
-					temp.getPrimes().add(primeAajouter);
-				}
-			}
-
-			newList.add(temp);
-			i++;
-		}
-
-		listeFichePointage.setSaisies(newList);
+		// on recupere l ensemble des donnees 
+		setJourPointageSaisi(getListData());
+		
+		// on controle les donnees saisies
+		if(!controlSaisie(listeFichePointage.getSaisies()))
+			return false;
 		
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
@@ -209,6 +132,7 @@ public class OePTGSaisie extends BasicProcess {
 			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
 		}
 		
+		// on enregistre les pointages
 		if (loggedAgent == null) {
 			logger.debug("OePTGSaisie.Java : Objet Agent nul");
 		} else {
@@ -227,8 +151,118 @@ public class OePTGSaisie extends BasicProcess {
 		return true;
 	}
 
+	private List<JourPointageDto> getListData() {
+		
+		List<JourPointageDto> newList = new ArrayList<>();
+
+		int nbrPrime = primess.get(0).size();
+		int i = 0;
+		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
+			JourPointageDto temp = new JourPointageDto();
+			temp.setDate(jour.getDate());
+			for (int j = 0; j < 2; j++) {
+				AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
+				if (dto != null) {
+					temp.getAbsences().add(dto);
+				}
+				HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
+				if (hsdto != null) {
+					temp.getHeuresSup().add(hsdto);
+				}
+			}
+
+			for (int prim = 0; prim < nbrPrime; prim++) {
+				PrimeDto ptemp = primess.get(i).get(prim);
+				PrimeDto primeAajouter = getPrime(temp.getDate(),
+						"PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":" + i, ptemp.getTitre(),
+						ptemp.getTypeSaisie());
+				if (primeAajouter != null) {
+					temp.getPrimes().add(primeAajouter);
+				}
+			}
+
+			newList.add(temp);
+			i++;
+		}
+		
+		return newList;
+	}
+	
+	private boolean controlSaisie(List<JourPointageDto> newList) {
+		
+		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
+			
+			for (AbsenceDto absDto : jour.getAbsences()){
+				if (absDto != null) {
+					// vérification date debut > date fin
+					if (absDto.getHeureDebut().getTime() >= absDto.getHeureFin().getTime()) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une absence de durée nulle ou négative");
+						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " est de durée nulle ou négative.");
+						return false;
+					}
+					// vérification motif obligatoire
+					if (absDto.getMotif().equals(Const.CHAINE_VIDE)) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une absence sans motif.");
+						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
+						return false;
+					}
+				}
+			}
+			
+			for (HeureSupDto hsdto : jour.getHeuresSup()) {
+				if (hsdto != null) {
+					// vérification date debut > date fin
+					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une heure supplémentaire de durée nulle ou négative");
+						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " est de durée nulle ou négative.");
+						return false;
+					}
+					// vérification motif obligatoire
+					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
+						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
+						return false;
+					}
+				}
+			}
+			
+			for(PrimeDto primeDto : jour.getPrimes()){
+				if (primeDto != null
+						&& null != primeDto.getMotif()
+						&& null != primeDto.getQuantite()) {
+					// vérification motif obligatoire
+					if (primeDto.getMotif().equals(Const.CHAINE_VIDE)) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une prime sans motif");
+						getTransaction().declarerErreur("La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())	+ " n'a pas de motif.");
+						return false;
+					}
+					// verification si prime 7704 que le nombre ne soit pas supérieur à 2 
+					if (primeDto.getNumRubrique() == 7704 && primeDto.getQuantite() > 2) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde de la prime 7704 avec une quantité supérieure à 2");
+						getTransaction().declarerErreur("La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate()) + " ne peut pas excéder 2 en quantité.");
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	
 	private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
-		PrimeDto ret = null;
+		PrimeDto ret = new PrimeDto();
+			ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
+			ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+			ret.setTypeSaisie(typesaisie);
+			ret.setTitre(title);
+		
 		DataContainer data = getData(id, d);
 		boolean saisie = true;
 		switch (typesaisie) {
@@ -252,7 +286,7 @@ public class OePTGSaisie extends BasicProcess {
 				break;
 			case "CASE_A_COCHER":
 				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
-						&& data.getChk().equals("")) {
+						&& (data.getChk().equals("") || data.getChk().equals("CHECKED_OFF"))) {
 					saisie = false;
 				}
 				break;
@@ -261,7 +295,6 @@ public class OePTGSaisie extends BasicProcess {
 				break;
 		}
 		if (saisie) {
-			ret = new PrimeDto();
 			ret.setMotif(data.getMotif());
 			if (typesaisie.equals("NB_INDEMNITES")) {
 				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
@@ -270,18 +303,15 @@ public class OePTGSaisie extends BasicProcess {
 					ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()) * 60
 							+ (Integer.parseInt(data.getMins())));
 				} else {
-					ret.setQuantite(data.getChk().equals("on") ? 1 : 0);
+					ret.setQuantite(data.getChk().equals("CHECKED_ON") ? 1 : 0);
 				}
 			}
-			ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
-			ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+			
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
 			ret.setIdPointage(data.getIdPtg());
 			ret.setIdRefEtat(data.getIdRefEtat());
-			ret.setTitre(title);
-			ret.setTypeSaisie(typesaisie);
 			logger.debug("Prime " + id);
 		}
 		return ret;
@@ -298,7 +328,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new AbsenceDto();
-				ret.setConcertee(data.getChk().equals("on"));
+				ret.setConcertee(data.getChk().equals("CHECKED_ON"));
 				ret.setHeureDebut(data.getTimeD());
 				ret.setHeureFin(data.getTimeF());
 				ret.setCommentaire(data.getComment());
@@ -321,7 +351,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new HeureSupDto();
-				ret.setRecuperee(data.getChk().equals("on"));
+				ret.setRecuperee(data.getChk().equals("CHECKED_ON"));
 				ret.setHeureDebut(data.getTimeD());
 				ret.setHeureFin(data.getTimeF());
 				ret.setCommentaire(data.getComment());
@@ -335,7 +365,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private DataContainer getData(String id, Date d) {
 		DataContainer ret = new DataContainer();
-			ret.setChk(getZone("NOM_chk_" + id));
+			ret.setChk(getZone("NOM_CK_" + id));
 			ret.setMotif(getZone("NOM_motif_" + id));
 			ret.setComment(getZone("NOM_comm_" + id));
 			ret.setNbr(getZone("NOM_nbr_" + id));
@@ -512,7 +542,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		return ret.toString();
 	}
-	///////////////////////////////////// COMBOX BOX POUR LA JSP //////////////////////////////////////////////////////
+	///////////////////////////////////// FIN COMBOX BOX POUR LA JSP //////////////////////////////////////////////////////
 	
 	public void addZone(String zone, String valeur) {
 		super.addZone(zone, valeur);
@@ -555,5 +585,34 @@ public class OePTGSaisie extends BasicProcess {
 	public void setIdAgent(String idAgent) {
 		this.idAgent = idAgent;
 	}
+
+	public FichePointageDto getListeFichePointage() {
+		return listeFichePointage;
+	}
+
+	public void setListeFichePointage(FichePointageDto listeFichePointage) {
+		this.listeFichePointage = listeFichePointage;
+		
+		absences.clear();
+		primess.clear();
+		hsups.clear();
+		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
+			primess.add(jour.getPrimes());
+			absences.put(sdf.format(jour.getDate()), jour.getAbsences());
+			hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
+		}
+	}
 	
+	public void setJourPointageSaisi(List<JourPointageDto> listJourPtg) {
+		this.listeFichePointage.setSaisies(listJourPtg);
+		
+		absences.clear();
+		primess.clear();
+		hsups.clear();
+		for (JourPointageDto jour : listJourPtg) {
+			primess.add(jour.getPrimes());
+			absences.put(sdf.format(jour.getDate()), jour.getAbsences());
+			hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
+		}
+	}
 }

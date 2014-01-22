@@ -20,7 +20,7 @@
     	<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>   <!--  -->
         <SCRIPT type="text/javascript">
             function suppr(id) {
-                if (document.getElementById("NOM_chk_" + id) !== null) {  document.getElementById("NOM_chk_" + id).checked = false;  }
+                if (document.getElementById("NOM_CK_" + id) !== null) {  document.getElementById("NOM_CK_" + id).checked = false;  }
                 if (document.getElementById("NOM_nbr_" + id) !== null) {  document.getElementById("NOM_nbr_" + id).value = '';       }
                 document.getElementById("NOM_motif_" + id).value = '';
                 document.getElementById("NOM_comm_" + id).value = '';
@@ -69,7 +69,7 @@
 									String titre = pl.get(i).getTitre() != null ? pl.get(i).getTitre() : "";
 									String commentaire = pl.get(i).getCommentaire() != null ? pl.get(i).getCommentaire() : "";
 									String qte = pl.get(i).getQuantite() != null ? "" + pl.get(i).getQuantite() : "";
-									boolean checked = qte.equals("1");
+									String checked = qte.equals("1") ? "CHECKED_ON" : "CHECKED_OFF"; 
 									int nbrMinsTot = qte == "" ? 0 : Integer.parseInt(qte);
 									int idRefEtat = pl.get(i).getIdRefEtat() != null ? pl.get(i).getIdRefEtat() : 0;
 									int idPtg = pl.get(i).getIdPointage() != null ? pl.get(i).getIdPointage() : 0;
@@ -87,7 +87,7 @@
 														<CENTER>
 														<%=status %> 
 														<% if(status.equals("Saisi")){ %>
-															 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr(<%=id %>)">
+															 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr('<%=id %>')">
 														<% } %>
 														</CENTER>
 													</td>
@@ -96,9 +96,8 @@
 													<td>
 												<%	switch (TypeSaisieEnum.valueOf(pl.get(i).getTypeSaisie())) {
 														case CASE_A_COCHER: %>
-															<input type="checkbox" name="NOM_chk_<%=id %>" <% if(checked){ %> checked <% } %> > accordée
-													<%		process.addZone("acc_" + id, "" + checked);
-															break;
+															<INPUT type="checkbox" <%= process.forCheckBoxHTML("NOM_CK_"+id, checked)%>> accordée
+													<%		break;
 														case NB_INDEMNITES: %>
 															Nbre d'indemnités
 															<input type="text" size="4" name="NOM_nbr_<%=id %>" value="<%=qte %>">
@@ -194,7 +193,7 @@
 												<CENTER>
 												<%=status %> 
 												<% if(status.equals("Saisi")){ %>
-													 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr(<%=id %>)">
+													 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr('<%=id %>')">
 												<% } %>
 												</CENTER>
 											</TD>
@@ -208,7 +207,7 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox" name="NOM_chk_<%=id %>" <% if(checkedRecupere){ %> checked <% } %> /> A récupérer
+												<input type="checkbox" name="NOM_CK_<%=id %>" <% if(checkedRecupere){ %> checked <% } %> /> A récupérer
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
@@ -280,7 +279,7 @@
 												<CENTER>
 												<%=status %> 
 												<% if(status.equals("Saisi")){ %>
-													 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr(<%=id %>)">
+													 <img src="images/suppression.gif" height="16px" width="16px" onClick="suppr('<%=id %>')">
 												<% } %>
 												</CENTER>
 											</TD>
@@ -293,7 +292,7 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox" name="NOM_chk_<%=id %>" <% if(chkAbs){ %> checked <% } %> /> Concertée
+												<input type="checkbox" name="NOM_CK_<%=id %>" <% if(chkAbs){ %> checked <% } %> /> Concertée
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
