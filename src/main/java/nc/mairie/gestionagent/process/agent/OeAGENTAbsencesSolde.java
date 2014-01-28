@@ -87,6 +87,17 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		String soldeRecupMinute = (soldeRecup % 60) == 0 ? "&nbsp;" : soldeRecup % 60 + "m";
 		addZone(getNOM_ST_SOLDE_RECUP(), soldeRecupHeure + soldeRecupMinute);
 
+		// Solde repos comp
+		int soldeReposComp = soldeGlobal.getSoldeReposCompAnnee().intValue();
+		String soldeReposCompHeure = (soldeReposComp / 60) == 0 ? "" : soldeReposComp / 60 + "h ";
+		String soldeReposCompMinute = (soldeReposComp % 60) == 0 ? "&nbsp;" : soldeReposComp % 60 + "m";
+		addZone(getNOM_ST_SOLDE_REPOS_COMP(), soldeReposCompHeure + soldeReposCompMinute);
+
+		int soldeReposCompPrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
+		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? "" : soldeReposCompPrec / 60 + "h ";
+		String soldeReposCompPrecMinute = (soldeReposCompPrec % 60) == 0 ? "&nbsp;" : soldeReposCompPrec % 60 + "m";
+		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
+
 	}
 
 	/**
@@ -166,5 +177,21 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_SOLDE_RECUP() {
 		return getZone(getNOM_ST_SOLDE_RECUP());
+	}
+
+	public String getNOM_ST_SOLDE_REPOS_COMP_PREC() {
+		return "NOM_ST_SOLDE_REPOS_COMP_PREC";
+	}
+
+	public String getVAL_ST_SOLDE_REPOS_COMP_PREC() {
+		return getZone(getNOM_ST_SOLDE_REPOS_COMP_PREC());
+	}
+
+	public String getNOM_ST_SOLDE_REPOS_COMP() {
+		return "NOM_ST_SOLDE_REPOS_COMP";
+	}
+
+	public String getVAL_ST_SOLDE_REPOS_COMP() {
+		return getZone(getNOM_ST_SOLDE_REPOS_COMP());
 	}
 }

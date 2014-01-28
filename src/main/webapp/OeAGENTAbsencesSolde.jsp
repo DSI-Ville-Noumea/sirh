@@ -38,6 +38,8 @@
 				    <span style="position:relative;width:80px;text-align: center;">Congés<br> année prec.</span>
 					<span style="position:relative;width:80px;text-align: center;">Congés<br> année</span>
 					<span style="position:relative;width:80px;text-align: center;">Récup.</span>
+				    <span style="position:relative;width:80px;text-align: center;">Repos Comp<br> année prec.</span>
+					<span style="position:relative;width:80px;text-align: center;">Repos Comp<br> année</span>
 					<span style="position:relative;text-align: center;"></span>
 					<br/>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -46,6 +48,8 @@
 								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_CONGE_PREC()%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_CONGE()%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_RECUP()%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_REPOS_COMP_PREC()%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_SOLDE_REPOS_COMP()%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"></td>
 							</tr>
 						</table>	

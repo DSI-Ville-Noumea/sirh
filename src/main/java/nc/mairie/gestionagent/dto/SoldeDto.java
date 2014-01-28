@@ -5,6 +5,8 @@ public class SoldeDto {
 	private Double soldeCongeAnnee;
 	private Double soldeCongeAnneePrec;
 	private Double soldeRecup;
+	private Double soldeReposCompAnnee;
+	private Double soldeReposCompAnneePrec;
 
 	public Double getSoldeCongeAnnee() {
 		return soldeCongeAnnee;
@@ -28,6 +30,22 @@ public class SoldeDto {
 
 	public void setSoldeRecup(Double soldeRecup) {
 		this.soldeRecup = soldeRecup;
+	}
+
+	public Double getSoldeReposCompAnnee() {
+		return soldeReposCompAnnee;
+	}
+
+	public void setSoldeReposCompAnnee(Double soldeReposCompAnnee) {
+		this.soldeReposCompAnnee = soldeReposCompAnnee;
+	}
+
+	public Double getSoldeReposCompAnneePrec() {
+		return soldeReposCompAnneePrec;
+	}
+
+	public void setSoldeReposCompAnneePrec(Double soldeReposCompAnneePrec) {
+		this.soldeReposCompAnneePrec = soldeReposCompAnneePrec;
 	}
 
 }
