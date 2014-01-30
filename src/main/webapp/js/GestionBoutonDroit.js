@@ -16,7 +16,7 @@ return false;
 else
 if (event.button == 2 || event.button == 3)
 {
-event.touche_pas_a_ma_page = true
+event.touche_pas_a_ma_page = true;
 event.returnValue = false;
 return false;
 }
