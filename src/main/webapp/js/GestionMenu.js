@@ -51,18 +51,18 @@ function afficherLien() {
 
 //	Si droit trouvé
 	if (trouve) {
-		var comment=''
+		var comment='';
 //		Si menu actif
 		if (this.isActif) {
 			classe = 'LienActif';
-			onclick = 'envoieFormulaire(this); changerMenuHaut(\'' + this.parent.nom + '_' + this.ssModule + '\');'
+			onclic = 'envoieFormulaire(this); changerMenuHaut(\'' + this.parent.nom + '_' + this.ssModule + '\');';
 		} else {
 			classe = 'LienInactif';
-			onclick = ''
+			onclic = 'envoieFormulaire(this); changerMenuHaut(\'' + this.parent.nom + '_' + this.ssModule + '\');';
 			comment=' EN CONSTRUCTION ';
 		}
 
-		var temp = 	'<span onmouseover="this.style.color=\'#00b4ff\';" onmouseout="this.style.color=\'black\';" id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclick+'">'+
+		var temp = 	'<span onmouseover="this.style.color=\'#00b4ff\';" onmouseout="this.style.color=\'black\';" id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'">'+
 				this.titreLien+comment+'<br></span>';
 		return temp;
 	} else {
@@ -102,12 +102,12 @@ function incrementeNiveau(obj){
 //      parcours des éléments et incrémente niveau
 	var a;
 	for (a in obj.listeObjet) {
-		var v = obj.incrementeFils(obj.listeObjet[a])
+		var v = obj.incrementeFils(obj.listeObjet[a]);
 		obj.listeObjet[a] = v;
 	}
 
    }
-   return obj
+   return obj;
 }
 
 // Implantation du code de la fonction membre 
@@ -142,17 +142,17 @@ function afficherDossier() {
 	return res;
  } 
 
-var Open = ""
-var Closed = ""
+var Open = "";
+var Closed = "";
 
 var choix = '';
 
 function preload(){
     if(document.images){
-        Open = new Image(16,13)
-        Closed = new Image(16,13)
-        Open.src = "images/menu_dossier_ouvert.gif"
-        Closed.src = "images/menu_dossier_clos.gif"
+        Open = new Image(16,13);
+        Closed = new Image(16,13);
+        Open.src = "images/menu_dossier_ouvert.gif";
+        Closed.src = "images/menu_dossier_clos.gif";
     }
 }
 
@@ -206,5 +206,5 @@ function changerTitre(titre) {
 
 //Change le menu secondaire (en haut)
 function changerMenuHaut(ssModule) {
-	window.parent.frames("MenuHaut").changerMenuHaut(ssModule)
+	window.parent.frames["MenuHaut"].changerMenuHaut(ssModule);
 }

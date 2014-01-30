@@ -57,20 +57,20 @@ function afficherLien() {
 			if (this.isSelected){
 				courant = this;
 				classe = 'LienHautCourant';
-				onclick = '';
+				onclic = '';
 			}else{
-				onclick = 'envoieFormulaire(this);'
+				onclic = 'envoieFormulaire(this);';
 				classe = 'LienHautActif';
 			}
 		} else {
 			classe = 'LienHautInactif';
-			onclick = '';
+			onclic = '';
 		}
 
 		/*var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclick+'">'+
 				this.titreLien + '</span>';*/
 
-		var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclick+'"><img height="47" id="menuhaut_'+this.droit+'" onmouseover="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'_Rollover.gif\'" onmouseout="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'.gif\'" src="images/navigation/menuHaut/'+this.img+'.gif"/></span>';
+		var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'"><img height="47" id="menuhaut_'+this.droit+'" onmouseover="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'_Rollover.gif\'" onmouseout="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'.gif\'" src="images/navigation/menuHaut/'+this.img+'.gif"/></span>';
 		
 		return temp;
 	} else {
@@ -92,12 +92,12 @@ function incrementeNiveau(obj){
 	//parcours des éléments et incrémente niveau
 	var a;
 	for (a in obj.listeObjet) {
-		var v = obj.incrementeFils(obj.listeObjet[a])
+		var v = obj.incrementeFils(obj.listeObjet[a]);
 		obj.listeObjet[a] = v;
 	}
 
    }
-   return obj
+   return obj;
 }
 
 //Change le sous-menu secondaire (en haut)
@@ -129,7 +129,7 @@ function envoieFormulaire(lien) {
 	if (courant != '') {
 		courant.className="LienHautActif";
 	}else{
-		var eltsDuMenuHaut = document
+		var eltsDuMenuHaut = document;
 	}
 	courant = lien;
 	courant.className="LienHautCourant";

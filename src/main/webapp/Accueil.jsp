@@ -8,13 +8,13 @@
 function simpleDialog(msg) { 
 features = 
    'toolbar=no,location=no,directories=no,status=no,menubar=no,' +
-   'scrollbars=no,resizable=no,width=200,height=100' 
-dlg = window.open ("","Dialog",features) 
-dlg.document.write ("<BODY bgColor='black' text='white'>") 
-dlg.document.write ("<H2><CENTER>",msg,"</CENTER></H2>") 
-dlg.document.write ("<FORM><CENTER>") 
-dlg.document.write ("<INPUT type='button' value='OK' onClick = 'self.close()'>") 
-dlg.document.write ("</CENTER></FORM>") 
+   'scrollbars=no,resizable=no,width=200,height=100' ;
+dlg = window.open ("","Dialog",features) ;
+dlg.document.write ("<BODY bgColor='black' text='white'>") ;
+dlg.document.write ("<H2><CENTER>",msg,"</CENTER></H2>") ;
+dlg.document.write ("<FORM><CENTER>") ;
+dlg.document.write ("<INPUT type='button' value='OK' onClick = 'self.close()'>") ;
+dlg.document.write ("</CENTER></FORM>") ;
 } 
 
 function principal(fenetre) { 
@@ -30,12 +30,12 @@ window.open('','_parent','');
 window.close();
 
 var frm = window.frames;
-var res=''
+var res='';
 for (i=0; i < frm.length; i++) 
 	res += i;
 
-res=window.frames.length
-liste.innerText=res
+res=window.frames.length;
+liste.innerText=res;
 
 //alert (dlg.frames("Main").title)
 

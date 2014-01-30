@@ -135,23 +135,23 @@
 	}
 %>
 
-<frameset rows="*" cols="200,*" frameborder="0" border="0"
+<frameset id="1" rows="*" cols="200,*" frameborder="0" border="0"
 	framespacing="0">
-	<FRAMESET rows="47,120,20,*">
-		<FRAME src="PersonnelCarreBleu.jsp" name="carreBleu" scrolling="NO"
+	<FRAMESET id="2" rows="47,120,20,*">
+		<FRAME id="3" src="PersonnelCarreBleu.jsp" name="carreBleu" scrolling="NO"
 			noresize marginwidth="0" marginheight="0">
-		<FRAME src="CartoucheAgentMenu.jsp" name="refAgent" frameborder="no"
+		<FRAME id="4" src="CartoucheAgentMenu.jsp" name="refAgent" frameborder="no"
 			noresize marginwidth="0" marginheight="0" scrolling="no"
 			style="margin-top:10px;">
-		<FRAME src="CartoucheAgentMenuNew.jsp" name="actionAgent" frameborder="no" noresize
+		<FRAME id="5" src="CartoucheAgentMenuNew.jsp" name="actionAgent" frameborder="no" noresize
 			marginwidth="0" marginheight="0" scrolling="no">
-		<FRAME src="PersonnelIndex.jsp" name="Index" frameborder="no" noresize
+		<FRAME id="6" src="PersonnelIndex.jsp" name="Index" frameborder="no" noresize
 			marginwidth="0" marginheight="0" scrolling="no">
 	</FRAMESET>
-	<frameset rows="47,*" cols="*" framespacing="0" frameborder="NO"
+	<frameset id="8" rows="47,*" cols="*" framespacing="0" frameborder="NO"
 		border="0">
-		<FRAME src="PersonnelMenuHaut.jsp" name="MenuHaut" scrolling="NO" noresize marginwidth="0">
-		<FRAME src="PersonnelMain.jsp" name="Main" marginwidth="0"
+		<FRAME id="9" src="PersonnelMenuHaut.jsp" name="MenuHaut" scrolling="NO" noresize marginwidth="0">
+		<FRAME id="10" src="PersonnelMain.jsp" name="Main" marginwidth="0"
 			marginheight="0">
 	</frameset>
 	<NOFRAMES>
