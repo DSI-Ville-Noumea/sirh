@@ -53,7 +53,7 @@
 
 <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED"
 	background="images/fond.jpg" lang="FR" link="blue" vlink="purple"
-	onload="window.parent.frames('refAgent').location.reload();
+	onload="window.parent.frames['refAgent'].location.reload();
                 return setfocus('<%=process.getFocus()%>')">
 	<%@ include file="BanniereErreur.jsp"%>
 	<%

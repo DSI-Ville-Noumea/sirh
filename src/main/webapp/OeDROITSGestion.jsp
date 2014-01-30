@@ -42,7 +42,7 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 <jsp:useBean
  class="nc.mairie.droits.process.OeDROITSGestion"
  id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames('refAgent').location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
