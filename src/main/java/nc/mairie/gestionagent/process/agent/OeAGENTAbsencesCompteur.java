@@ -37,6 +37,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	private AgentNW agentCourant;
 	private Integer soldeCourantMinute;
+	private Integer soldeCourantPrecMinute;
 
 	private String[] LB_TYPE_ABSENCE;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
@@ -45,7 +46,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
-	public String ACTION_CREATION = "Alimenter le compteur";
+	public String ACTION_CREATION_RECUP = "Alimenter le compteur de récupération";
+	public String ACTION_CREATION_REPOS_COMP = "Alimenter le compteur de repos compensateur";
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -250,7 +252,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		afficheSolde(getTypeAbsenceCourant());
 
 		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+		if (getTypeAbsenceCourant().equals(EnumTypeAbsence.RECUP)) {
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_RECUP);
+		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
+		} else {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		}
 		return true;
 	}
 
@@ -267,7 +276,18 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				setSoldeCourantMinute((int) (soldeGlobal.getSoldeCongeAnnee() * 24));
 				break;
 			case REPOS_COMP:
+				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
+				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? "" : soldeRecupAnnee / 60 + "h ";
+				String soldeRecupAnneeMinute = soldeRecupAnnee % 60 + "m";
+				int soldeRecupAnneePrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
+				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? "" : soldeRecupAnneePrec / 60
+						+ "h ";
+				String soldeRecupAnneePrecMinute = soldeRecupAnneePrec % 60 + "m";
+				setSoldeCourantMinute(soldeRecupAnnee);
+				setSoldeCourantPrecMinute(soldeRecupAnneePrec);
 
+				addZone(getNOM_ST_SOLDE(), soldeRecupAnneeHeure + soldeRecupAnneeMinute);
+				addZone(getNOM_ST_SOLDE_PREC(), soldeRecupAnneePrecHeure + soldeRecupAnneePrecMinute);
 				break;
 			case RECUP:
 				int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
@@ -291,11 +311,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	private void viderZoneSaisie() {
 		addZone(getNOM_ST_SOLDE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_SOLDE_PREC(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DUREE_HEURE_AJOUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DUREE_MIN_AJOUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DUREE_HEURE_RETRAIT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DUREE_MIN_RETRAIT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
+		addZone(getNOM_RG_COMPTEUR(), Const.CHAINE_VIDE);
 	}
 
 	public EnumTypeAbsence getTypeAbsenceCourant() {
@@ -316,102 +338,152 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		if (!performControlerChamps(request))
 			return false;
 
-		// on recupere la saisie
-		String dureeHeure = null;
-		String dureeMin = null;
-		boolean ajout = false;
-		if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-				|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
-			dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_HEURE_AJOUT();
-			dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
-			ajout = true;
+		// on recupere l'agent connecté
+		AgentNW agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
 		}
-		if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-				|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-			dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
-					: getVAL_ST_DUREE_HEURE_RETRAIT();
-			dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_RETRAIT();
-			ajout = false;
-		}
-
-		// verifier nouveau solde pas négatif
-		int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
-		int ancienSolde = getSoldeCourantMinute();
-		if (ajout) {
-			// cas de l'ajout
-			if (ancienSolde + dureeTotaleSaisie < 0) {
-				// "ERR801",
-				// "Le nouveau solde du compteur ne peut être négatif."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
-				return false;
-			}
-		} else {
-			// cas du retrait
-			if (ancienSolde - dureeTotaleSaisie < 0) {
-				// "ERR801",
-				// "Le nouveau solde du compteur ne peut être négatif."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
-				return false;
-			}
-		}
-
-		// motif
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
-				: -1);
-		MotifCompteurDto motif = null;
-		if (indiceMotif >= 0) {
-			motif = getListeMotifCompteur().get(indiceMotif);
-		}
-
-		CompteurDto compteurDto = new CompteurDto();
-		compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
-		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-		compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
-		compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
 
 		// on sauvegarde les données
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ReturnMessageDto message = new ReturnMessageDto();
 
-		// on recupere l'agent connecté
-		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via la
-		// table SIIDMA
-		AgentNW agentConnecte = null;
-		if (!(u.getUserName().equals("nicno85"))) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-				return false;
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP)
+				&& getTypeAbsenceCourant().equals(EnumTypeAbsence.RECUP)) {
+			// on recupere la saisie
+			String dureeHeure = null;
+			String dureeMin = null;
+			boolean ajout = false;
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_HEURE_AJOUT();
+				dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
+				ajout = true;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-				return false;
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_HEURE_RETRAIT();
+				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_MIN_RETRAIT();
+				ajout = false;
 			}
-		} else {
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
-		}
 
-		switch (getTypeAbsenceCourant()) {
-			case CONGE:
-				break;
-			case REPOS_COMP:
-				break;
-			case RECUP:
-				message = consuAbs.addCompteurRecup(agentConnecte.getIdAgent(),
-						new JSONSerializer().serialize(compteurDto));
-				break;
-			case ASA:
-				break;
-			case AUTRE:
-				break;
-			case MALADIE:
-				break;
+			// verifier nouveau solde pas négatif
+			int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
+			int ancienSolde = getSoldeCourantMinute();
+			if (ajout) {
+				// cas de l'ajout
+				if (ancienSolde + dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			} else {
+				// cas du retrait
+				if (ancienSolde - dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			}
+
+			// motif
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
+					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			MotifCompteurDto motif = null;
+			if (indiceMotif >= 0) {
+				motif = getListeMotifCompteur().get(indiceMotif);
+			}
+
+			CompteurDto compteurDto = new CompteurDto();
+			compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
+			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+
+			// on sauvegarde
+			message = consuAbs
+					.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().serialize(compteurDto));
+
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP)
+				&& getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+			// on recupere la saisie
+			String dureeHeure = null;
+			String dureeMin = null;
+			boolean ajout = false;
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_HEURE_AJOUT();
+				dureeMin = getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_MIN_AJOUT();
+				ajout = true;
+			}
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				dureeHeure = getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_HEURE_RETRAIT();
+				dureeMin = getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_MIN_RETRAIT();
+				ajout = false;
+			}
+
+			Boolean anneePrec = getZone(getNOM_RG_COMPTEUR()).equals(getNOM_RB_COMPTEUR_ANNEE_PREC());
+
+			// verifier nouveau solde pas négatif
+			int dureeTotaleSaisie = (Integer.valueOf(dureeHeure) * 60) + (Integer.valueOf(dureeMin));
+			int ancienSolde = 0;
+			if (anneePrec) {
+				ancienSolde = getSoldeCourantPrecMinute();
+			} else {
+				ancienSolde = getSoldeCourantMinute();
+			}
+			if (ajout) {
+				// cas de l'ajout
+				if (ancienSolde + dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			} else {
+				// cas du retrait
+				if (ancienSolde - dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			}
+
+			// motif
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
+					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			MotifCompteurDto motif = null;
+			if (indiceMotif >= 0) {
+				motif = getListeMotifCompteur().get(indiceMotif);
+			}
+
+			CompteurDto compteurDto = new CompteurDto();
+			compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
+			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+			// TODO alimenter le bon champ pour savoir si sur compteur precedent
+			// ou pas.
+
+			// on sauvegarde
+			// TODO
+			/*
+			 * message = consuAbs
+			 * .addCompteurReposComp(agentConnecte.getIdAgent(), new
+			 * JSONSerializer().serialize(compteurDto));
+			 */
 		}
 
 		if (message.getErrors().size() > 0) {
@@ -428,6 +500,28 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via la
+		// table SIIDMA
+		AgentNW agentConnecte = null;
+		if (!(u.getUserName().equals("nicno85"))) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				return null;
+			}
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				return null;
+			}
+		} else {
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+		return agentConnecte;
 	}
 
 	private boolean performControlerChamps(HttpServletRequest request) {
@@ -453,13 +547,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// pas 2 durées de saisie
 		boolean ajoutSaisie = false;
 		if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-				&& !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
 			ajoutSaisie = true;
 		}
 
 		boolean retraitSaisie = false;
 		if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-				&& !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
 			retraitSaisie = true;
 		}
 
@@ -491,6 +585,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public String getVAL_ST_SOLDE() {
 		return getZone(getNOM_ST_SOLDE());
+	}
+
+	public String getNOM_ST_SOLDE_PREC() {
+		return "NOM_ST_SOLDE_PREC";
+	}
+
+	public String getVAL_ST_SOLDE_PREC() {
+		return getZone(getNOM_ST_SOLDE_PREC());
 	}
 
 	private String[] getLB_MOTIF() {
@@ -567,5 +669,29 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public void setListeMotifCompteur(ArrayList<MotifCompteurDto> listeMotifCompteur) {
 		this.listeMotifCompteur = listeMotifCompteur;
+	}
+
+	public Integer getSoldeCourantPrecMinute() {
+		return soldeCourantPrecMinute;
+	}
+
+	public void setSoldeCourantPrecMinute(Integer soldeCourantPrecMinute) {
+		this.soldeCourantPrecMinute = soldeCourantPrecMinute;
+	}
+
+	public String getNOM_RG_COMPTEUR() {
+		return "NOM_RG_COMPTEUR";
+	}
+
+	public String getVAL_RG_COMPTEUR() {
+		return getZone(getNOM_RG_COMPTEUR());
+	}
+
+	public String getNOM_RB_COMPTEUR_ANNEE() {
+		return "NOM_RB_COMPTEUR_ANNEE";
+	}
+
+	public String getNOM_RB_COMPTEUR_ANNEE_PREC() {
+		return "NOM_RB_COMPTEUR_ANNEE_PREC";
 	}
 }
