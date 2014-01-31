@@ -6,7 +6,7 @@
 <TITLE>Main</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionMenu.js"> </SCRIPT></HEAD>
-<BODY onload='window.parent.frames("refAgent").location.reload();'>
+<BODY onload='window.parent.frames["refAgent"].location.reload();'>
 <%@ include file="BanniereErreur.jsp" %>
 <DIV style="width : 100%;height : 100%;
   position : absolute;

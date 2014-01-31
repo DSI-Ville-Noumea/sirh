@@ -195,7 +195,7 @@ dTree.prototype.s = function(id) {
 			eOld = document.getElementById("s" + this.obj + this.selectedNode);
 			eOld.className = "node";
 		}
-		eNew = document.getElementById("s" + this.obj + id);
+		var eNew = document.getElementById("s" + this.obj + id);
 		eNew.className = "nodeSel";
 		this.selectedNode = id;
 		if (this.config.useCookies) this.setCookie('cs' + this.obj, cn.id);
