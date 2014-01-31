@@ -40,17 +40,17 @@ function agrandirHierarchy() {
 
 	hier = 	document.getElementById('treeHierarchy');
 
-	if (hier.style.display!='none') {
+	if (hier.style.display!="none") {
 		reduireHierarchy();
 	} else {
-		hier.style.display='block';
+		hier.style.display="block";
 	}
 }
 
 // afin de cacher la hiérarchie des services
 function reduireHierarchy() {
 	hier = 	document.getElementById('treeHierarchy');
-	hier.style.display='none';
+	hier.style.display="none";
 }
 </SCRIPT>					
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

@@ -144,7 +144,7 @@ dTree.prototype.node = function(node, nodeId) {
 	if (node.url || ((!this.config.folderLinks || !node.url) && node._hc)) str += '</a>';
 	str += '</div>';
 	if (node._hc) {
-		str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? 'block' : 'none') + ';">';
+		str += '<div id="d' + this.obj + nodeId + '" class="clip" style="display:' + ((this.root.id == node.pid || node._io) ? "block" : "none") + ';">';
 		str += this.addNode(node);
 		str += '</div>';
 	}
@@ -275,7 +275,7 @@ dTree.prototype.nodeStatus = function(status, id, bottom) {
 	eJoin.src = (this.config.useLines)?
 	((status)?((bottom)?this.icon.minusBottom:this.icon.minus):((bottom)?this.icon.plusBottom:this.icon.plus)):
 	((status)?this.icon.nlMinus:this.icon.nlPlus);
-	eDiv.style.display = (status) ? 'block': 'none';
+	eDiv.style.display = (status) ? "block": "none";
 };
 
 

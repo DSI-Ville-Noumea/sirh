@@ -104,7 +104,7 @@ function incrementeNiveau(obj){
 function changerMenuHaut(ssModule) {
 	if (ssModuleCourant != ''){
 		var menuAEffacer = document.getElementById(ssModuleCourant);
-		menuAEffacer.style.display = 'none';
+		menuAEffacer.style.display = "none";
 	}
 	if (ssModule != ''){
 		var menuAAfficher = document.getElementById(ssModule);

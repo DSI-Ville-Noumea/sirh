@@ -64,14 +64,14 @@
 				<span align="left" class="sigp2-saisie"><%=process.getVAL_ST_SERVICE()%></span>
 				<br/><br/>
 				<% } %>			
-			<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display : 'none';">
+			<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 			<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER()%>" accesskey="R">
 			<% } else { %>
 			
 			<INPUT class="sigp2-saisie" maxlength="100"	name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="50"
 				type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
 			<span style="width:20px;"></span>
-			<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display : 'none';">
+			<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 			<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER()%>" accesskey="R">
 			
 			<% } %>

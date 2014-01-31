@@ -41,7 +41,7 @@ function SelectLigne(id,tailleTableau)
 			<legend class="sigp2Legend">Sélection d'une voie</legend>
 			<span class="sigp2">Libellé de la voie :</span>
 			<span>
-				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display : 'none';">
+				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 				<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_VOIE() %>" size="20" type="text" value="<%= process.getVAL_EF_VOIE() %>">
 			</span>
 			<span>
