@@ -607,7 +607,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
+					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
 					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_DUREE_PERMIS() %>" size="10" type="text"  value="<%= process.getVAL_ST_DUREE_PERMIS() %>">
 					<span style="margin-left:20px;">
 						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">
@@ -698,7 +698,7 @@
 						</SELECT>
 					</span>
 					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
+					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée de validité : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_PERMIS()%></span>
 					<span style="margin-left:20px;">
 						<SELECT disabled="disabled" class="sigp2-liste" name="<%= process.getNOM_LB_UNITE_DUREE() %>"  style="width : 70px;">

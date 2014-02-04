@@ -62,28 +62,43 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 	}
 
 	@Override
-	public Integer creerPermisAgent(Integer idPermis, Integer idAgent, Integer dureePermis, String uniteDuree, Date dateObtention) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_PERMIS + "," + CHAMP_ID_AGENT + "," + CHAMP_DUREE_PERMIS + "," + CHAMP_UNITE_DUREE
-				+ "," + CHAMP_DATE_OBTENTION + ") " + "VALUES (?,?,?,?,?)";
+	public Integer creerPermisAgent(Integer idPermis, Integer idAgent, Integer dureePermis, String uniteDuree,
+			Date dateObtention) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_PERMIS + "," + CHAMP_ID_AGENT + ","
+				+ CHAMP_DUREE_PERMIS + "," + CHAMP_UNITE_DUREE + "," + CHAMP_DATE_OBTENTION + ") "
+				+ "VALUES (?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention });
+		if (dureePermis == null && uniteDuree == null) {
+			String sqlId = "select * from " + NOM_TABLE + " where " + CHAMP_ID_PERMIS + "=? and " + CHAMP_ID_AGENT
+					+ "=? and " + CHAMP_DUREE_PERMIS + " is null and " + CHAMP_UNITE_DUREE + " is null and "
+					+ CHAMP_DATE_OBTENTION + "=?";
 
-		String sqlId = "select * from " + NOM_TABLE + " where " + CHAMP_ID_PERMIS + "=? and " + CHAMP_ID_AGENT + "=? and " + CHAMP_DUREE_PERMIS
-				+ "=? and " + CHAMP_UNITE_DUREE + "=? and " + CHAMP_DATE_OBTENTION + "=?";
+			PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idPermis, idAgent,
+					dateObtention }, new PermisAgentRowMapper());
 
-		PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId,
-				new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention }, new PermisAgentRowMapper());
+			return perm.getIdPermisAgent();
+		} else {
+			String sqlId = "select * from " + NOM_TABLE + " where " + CHAMP_ID_PERMIS + "=? and " + CHAMP_ID_AGENT
+					+ "=? and " + CHAMP_DUREE_PERMIS + "=? and " + CHAMP_UNITE_DUREE + "=? and " + CHAMP_DATE_OBTENTION
+					+ "=?";
 
-		return perm.getIdPermisAgent();
+			PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idPermis, idAgent,
+					dureePermis, uniteDuree, dateObtention }, new PermisAgentRowMapper());
+
+			return perm.getIdPermisAgent();
+		}
 	}
 
 	@Override
-	public void modifierPermisAgent(Integer idPermisAgent, Integer idPermis, Integer idAgent, Integer dureePermis, String uniteDuree,
-			Date dateObtention) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_PERMIS + "=? , " + CHAMP_ID_AGENT + "=?," + CHAMP_DUREE_PERMIS + "=?,"
-				+ CHAMP_UNITE_DUREE + "=?," + CHAMP_DATE_OBTENTION + "=? where " + CHAMP_ID_PERMIS_AGENT + " =?";
+	public void modifierPermisAgent(Integer idPermisAgent, Integer idPermis, Integer idAgent, Integer dureePermis,
+			String uniteDuree, Date dateObtention) throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_PERMIS + "=? , " + CHAMP_ID_AGENT + "=?,"
+				+ CHAMP_DUREE_PERMIS + "=?," + CHAMP_UNITE_DUREE + "=?," + CHAMP_DATE_OBTENTION + "=? where "
+				+ CHAMP_ID_PERMIS_AGENT + " =?";
 
-		jdbcTemplate.update(sql, new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention, idPermisAgent });
+		jdbcTemplate.update(sql, new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention,
+				idPermisAgent });
 	}
 
 	@Override

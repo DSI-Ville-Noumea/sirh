@@ -2852,10 +2852,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		addZone(getNOM_LB_TITRE_PERMIS_SELECT(), String.valueOf(ligneTitre + 1));
 
 		// Duree
-		addZone(getNOM_ST_DUREE_PERMIS(), p.getDureePermis().toString());
+		addZone(getNOM_ST_DUREE_PERMIS(), p.getDureePermis() == null ? Const.CHAINE_VIDE : p.getDureePermis()
+				.toString());
 		addZone(getNOM_EF_DATE_OBTENTION_PERMIS(), sdf.format(p.getDateObtention()));
 		// unite
-		int ligneUnite = getListeUniteDuree().indexOf(p.getUniteDuree());
+		int ligneUnite = p.getUniteDuree() == null ? 0 : getListeUniteDuree().indexOf(p.getUniteDuree());
 		addZone(getNOM_LB_UNITE_DUREE_SELECT(), String.valueOf(ligneUnite));
 
 		return true;
@@ -3070,8 +3071,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// Affectation des attributs
 			getPermisAgentCourant().setIdPermis(titrePermis.getIdTitrePermis());
 			getPermisAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
-			getPermisAgentCourant().setDureePermis(Integer.valueOf(dureePermis));
-			getPermisAgentCourant().setUniteDuree(uniteDuree);
+			getPermisAgentCourant().setDureePermis(
+					dureePermis.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureePermis));
+			getPermisAgentCourant().setUniteDuree(dureePermis.equals(Const.CHAINE_VIDE) ? null : uniteDuree);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			getPermisAgentCourant().setDateObtention(sdf.parse(dateObtention));
 
@@ -3119,21 +3121,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			TitrePermis titrePermis = (numligneTitre >= 0 ? (TitrePermis) getListeTitrePermis().get(numligneTitre)
 					: null);
 
-			// Recup de l'unite
-			int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
-			if (numligneUnite == -1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
-				return false;
-			}
-			String uniteDuree = (numligneUnite >= 0 ? (String) getListeUniteDuree().get(numligneUnite) : null);
 			for (PermisAgent permis : getListePermisAgent()) {
 				if (permis.getIdPermis().toString().equals(titrePermis.getIdTitrePermis().toString())
 						&& permis.getIdAgent().toString().equals(getAgentCourant().getIdAgent())
-						&& permis.getDureePermis().toString().equals(getVAL_ST_DUREE_PERMIS())
 						&& permis.getDateObtention().toString()
-								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())
-						&& permis.getUniteDuree().equals(uniteDuree)) {
+								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un permis", "ces valeurs"));
@@ -3153,13 +3145,17 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 */
 	public boolean performControlerChampsPermis(HttpServletRequest request) throws Exception {
 		// durée permis
-		if (getZone(getNOM_ST_DUREE_PERMIS()).length() == 0) {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée de validité"));
-			setFocus(getNOM_ST_DUREE_PERMIS());
+
+		// Recup de l'unite
+		int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
+		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals("") && numligneUnite == -1) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
 			return false;
 		}
-		if (!Services.estNumerique(getZone(getNOM_ST_DUREE_PERMIS()))) {
+
+		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals(Const.CHAINE_VIDE)
+				&& !Services.estNumerique(getZone(getNOM_ST_DUREE_PERMIS()))) {
 			// "ERR992", "La zone @ doit être numérique."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée de validité"));
 			setFocus(getNOM_ST_DUREE_FORMATION());
@@ -3210,12 +3206,14 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 				addZone(getNOM_ST_PERMIS(indicePermis), t.getLibTitrePermis());
 				String dateLimite = "&nbsp;";
-				if (p.getUniteDuree().equals("heures")) {
-					dateLimite = sdf.format(p.getDateObtention());
-				} else if (p.getUniteDuree().equals("jours")) {
-					dateLimite = Services.ajouteJours(sdf.format(p.getDateObtention()), p.getDureePermis());
-				} else if (p.getUniteDuree().equals("mois")) {
-					dateLimite = Services.ajouteMois(sdf.format(p.getDateObtention()), p.getDureePermis());
+				if (p.getUniteDuree() != null) {
+					if (p.getUniteDuree().equals("heures")) {
+						dateLimite = sdf.format(p.getDateObtention());
+					} else if (p.getUniteDuree().equals("jours")) {
+						dateLimite = Services.ajouteJours(sdf.format(p.getDateObtention()), p.getDureePermis());
+					} else if (p.getUniteDuree().equals("mois")) {
+						dateLimite = Services.ajouteMois(sdf.format(p.getDateObtention()), p.getDureePermis());
+					}
 				}
 
 				addZone(getNOM_ST_LIMITE_PERMIS(indicePermis), dateLimite);
