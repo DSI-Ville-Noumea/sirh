@@ -88,14 +88,15 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
-		if(!getTransaction().isErreur()) {
-			initialiseDonnees(); 
+		if (!getTransaction().isErreur()) {
+			initialiseDonnees();
 		}
 	}
 
 	private boolean save(HttpServletRequest request) throws Exception {
 
-		// compare date lundi avec aujourd'hui pour savoir si autorisé à enregister
+		// compare date lundi avec aujourd'hui pour savoir si autorisé à
+		// enregister
 		if (((new Date().getTime() - getDateLundi(0).getTime()) / (1000l * 60 * 60 * 24 * 30)) >= 3) {
 			getTransaction().traiterErreur();
 			logger.debug("Tentative de sauvegarde d'un pointage de plus de 3 mois");
@@ -103,13 +104,13 @@ public class OePTGSaisie extends BasicProcess {
 			return false;
 		}
 
-		// on recupere l ensemble des donnees 
+		// on recupere l ensemble des donnees
 		setJourPointageSaisi(getListData());
-		
+
 		// on controle les donnees saisies
-		if(!controlSaisie(listeFichePointage.getSaisies()))
+		if (!controlSaisie(listeFichePointage.getSaisies()))
 			return false;
-		
+
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
 			Siidma user = Siidma.chercherSiidma(getTransaction(), uUser.getUserName().toUpperCase());
@@ -131,7 +132,7 @@ public class OePTGSaisie extends BasicProcess {
 		} else {
 			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
 		}
-		
+
 		// on enregistre les pointages
 		if (loggedAgent == null) {
 			logger.debug("OePTGSaisie.Java : Objet Agent nul");
@@ -152,7 +153,7 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	private List<JourPointageDto> getListData() {
-		
+
 		List<JourPointageDto> newList = new ArrayList<>();
 
 		int nbrPrime = primess.get(0).size();
@@ -177,6 +178,19 @@ public class OePTGSaisie extends BasicProcess {
 						"PRIME:" + ptemp.getNumRubrique() + ":" + ptemp.getIdRefPrime() + ":" + i, ptemp.getTitre(),
 						ptemp.getTypeSaisie());
 				if (primeAajouter != null) {
+					// HEURE INDEMNITE ROULEMENT DPM
+					// vérification date debut > date fin
+					if (primeAajouter.getNumRubrique() == 7715 && primeAajouter.getHeureDebut() != null) {
+						if (primeAajouter.getHeureDebut().getTime() > primeAajouter.getHeureFin().getTime()) {
+							Calendar cal = Calendar.getInstance();
+							cal.set(Calendar.YEAR, primeAajouter.getHeureFin().getYear());
+							cal.setTime(primeAajouter.getHeureFin());
+							cal.add(Calendar.DATE, 1);
+
+							primeAajouter.setHeureFin(cal.getTime());
+						}
+					}
+
 					temp.getPrimes().add(primeAajouter);
 				}
 			}
@@ -184,85 +198,95 @@ public class OePTGSaisie extends BasicProcess {
 			newList.add(temp);
 			i++;
 		}
-		
+
 		return newList;
 	}
-	
+
 	private boolean controlSaisie(List<JourPointageDto> newList) {
-		
+
 		for (JourPointageDto jour : listeFichePointage.getSaisies()) {
-			
-			for (AbsenceDto absDto : jour.getAbsences()){
+
+			for (AbsenceDto absDto : jour.getAbsences()) {
 				if (absDto != null) {
 					// vérification date debut > date fin
 					if (absDto.getHeureDebut().getTime() >= absDto.getHeureFin().getTime()) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence de durée nulle ou négative");
-						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " est de durée nulle ou négative.");
+						getTransaction().declarerErreur(
+								"L'absence saisie le " + sdf.format(jour.getDate())
+										+ " est de durée nulle ou négative.");
 						return false;
 					}
 					// vérification motif obligatoire
 					if (absDto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence sans motif.");
-						getTransaction().declarerErreur("L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
+						getTransaction().declarerErreur(
+								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
 						return false;
 					}
 				}
 			}
-			
+
 			for (HeureSupDto hsdto : jour.getHeuresSup()) {
 				if (hsdto != null) {
 					// vérification date debut > date fin
 					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une heure supplémentaire de durée nulle ou négative");
-						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " est de durée nulle ou négative.");
+						getTransaction().declarerErreur(
+								"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
+										+ " est de durée nulle ou négative.");
 						return false;
 					}
 					// vérification motif obligatoire
 					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
-						getTransaction().declarerErreur("L'heure supplémentaire saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
+						getTransaction()
+								.declarerErreur(
+										"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
+												+ " n'a pas de motif.");
 						return false;
 					}
 				}
 			}
-			
-			for(PrimeDto primeDto : jour.getPrimes()){
-				if (primeDto != null
-						&& null != primeDto.getMotif()
-						&& null != primeDto.getQuantite()) {
+
+			for (PrimeDto primeDto : jour.getPrimes()) {
+				if (primeDto != null && null != primeDto.getMotif() && null != primeDto.getQuantite()) {
 					// vérification motif obligatoire
 					if (primeDto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une prime sans motif");
-						getTransaction().declarerErreur("La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())	+ " n'a pas de motif.");
+						getTransaction().declarerErreur(
+								"La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())
+										+ " n'a pas de motif.");
 						return false;
 					}
-					// verification si prime 7704 que le nombre ne soit pas supérieur à 2 
+					// verification si prime 7704 que le nombre ne soit pas
+					// supérieur à 2
 					if (primeDto.getNumRubrique() == 7704 && primeDto.getQuantite() > 2) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde de la prime 7704 avec une quantité supérieure à 2");
-						getTransaction().declarerErreur("La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate()) + " ne peut pas excéder 2 en quantité.");
+						getTransaction().declarerErreur(
+								"La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())
+										+ " ne peut pas excéder 2 en quantité.");
 						return false;
 					}
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	
+
 	private PrimeDto getPrime(Date d, String id, String title, String typesaisie) {
 		PrimeDto ret = new PrimeDto();
-			ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
-			ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
-			ret.setTypeSaisie(typesaisie);
-			ret.setTitre(title);
-		
+		ret.setNumRubrique(Integer.parseInt(id.split(":")[1]));
+		ret.setIdRefPrime(Integer.parseInt(id.split(":")[2]));
+		ret.setTypeSaisie(typesaisie);
+		ret.setTitre(title);
+
 		DataContainer data = getData(id, d);
 		boolean saisie = true;
 		switch (typesaisie) {
@@ -306,7 +330,7 @@ public class OePTGSaisie extends BasicProcess {
 					ret.setQuantite(data.getChk().equals("CHECKED_ON") ? 1 : 0);
 				}
 			}
-			
+
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
@@ -321,20 +345,20 @@ public class OePTGSaisie extends BasicProcess {
 		AbsenceDto ret = null;
 		DataContainer data = getData(id, d);
 		boolean saisie = true;
-		
+
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
 				&& data.getTimeD().getTime() == d.getTime() && data.getTimeF().getTime() == d.getTime()) {
 			saisie = false;
 		}
 		if (saisie) {
 			ret = new AbsenceDto();
-				ret.setConcertee(data.getChk().equals("CHECKED_ON"));
-				ret.setHeureDebut(data.getTimeD());
-				ret.setHeureFin(data.getTimeF());
-				ret.setCommentaire(data.getComment());
-				ret.setMotif(data.getMotif());
-				ret.setIdRefEtat(data.getIdRefEtat());
-				ret.setIdPointage(data.getIdPtg());
+			ret.setConcertee(data.getChk().equals("CHECKED_ON"));
+			ret.setHeureDebut(data.getTimeD());
+			ret.setHeureFin(data.getTimeF());
+			ret.setCommentaire(data.getComment());
+			ret.setMotif(data.getMotif());
+			ret.setIdRefEtat(data.getIdRefEtat());
+			ret.setIdPointage(data.getIdPtg());
 			logger.debug("Absence " + id);
 		}
 		return ret;
@@ -344,20 +368,20 @@ public class OePTGSaisie extends BasicProcess {
 		HeureSupDto ret = null;
 		DataContainer data = getData(id, d);
 		boolean saisie = true;
-		
+
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
 				&& data.getTimeD().getTime() == d.getTime() && data.getTimeF().getTime() == d.getTime()) {
 			saisie = false;
 		}
 		if (saisie) {
 			ret = new HeureSupDto();
-				ret.setRecuperee(data.getChk().equals("CHECKED_ON"));
-				ret.setHeureDebut(data.getTimeD());
-				ret.setHeureFin(data.getTimeF());
-				ret.setCommentaire(data.getComment());
-				ret.setMotif(data.getMotif());
-				ret.setIdPointage(data.getIdPtg());
-				ret.setIdRefEtat(data.getIdRefEtat());
+			ret.setRecuperee(data.getChk().equals("CHECKED_ON"));
+			ret.setHeureDebut(data.getTimeD());
+			ret.setHeureFin(data.getTimeF());
+			ret.setCommentaire(data.getComment());
+			ret.setMotif(data.getMotif());
+			ret.setIdPointage(data.getIdPtg());
+			ret.setIdRefEtat(data.getIdRefEtat());
 			logger.debug("Heure sup " + id);
 		}
 		return ret;
@@ -365,15 +389,15 @@ public class OePTGSaisie extends BasicProcess {
 
 	private DataContainer getData(String id, Date d) {
 		DataContainer ret = new DataContainer();
-			ret.setChk(getZone("NOM_CK_" + id));
-			ret.setMotif(getZone("NOM_motif_" + id));
-			ret.setComment(getZone("NOM_comm_" + id));
-			ret.setNbr(getZone("NOM_nbr_" + id));
-			ret.setMins(getZone("NOM_mins_" + id));
-			ret.setTimeD(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
-			ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
-			ret.setIdPtg(Integer.parseInt("0" + getZone("NOM_idptg_" + id)));
-			ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
+		ret.setChk(getZone("NOM_CK_" + id));
+		ret.setMotif(getZone("NOM_motif_" + id));
+		ret.setComment(getZone("NOM_comm_" + id));
+		ret.setNbr(getZone("NOM_nbr_" + id));
+		ret.setMins(getZone("NOM_mins_" + id));
+		ret.setTimeD(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_D"), Integer.parseInt(id.split(":")[1])));
+		ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
+		ret.setIdPtg(Integer.parseInt("0" + getZone("NOM_idptg_" + id)));
+		ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
 		return ret;
 	}
 
@@ -416,12 +440,10 @@ public class OePTGSaisie extends BasicProcess {
 				+ (service.equals("") ? "" : " - " + service);
 	}
 
-	
-
 	public Date getDateLundi(int inc) {
 		GregorianCalendar calendar = new java.util.GregorianCalendar();
-			calendar.setTime(dateLundi);
-			calendar.add(Calendar.DATE, inc);
+		calendar.setTime(dateLundi);
+		calendar.add(Calendar.DATE, inc);
 		return calendar.getTime();
 	}
 
@@ -450,23 +472,23 @@ public class OePTGSaisie extends BasicProcess {
 			return ret;
 		}
 		GregorianCalendar calendar = new java.util.GregorianCalendar();
-			calendar.setTime(ret);
-			calendar.add(GregorianCalendar.HOUR, Integer.parseInt(h.substring(0, h.indexOf(":"))));
-			calendar.add(GregorianCalendar.MINUTE, Integer.parseInt(h.substring(h.indexOf(":") + 1)));
+		calendar.setTime(ret);
+		calendar.add(GregorianCalendar.HOUR, Integer.parseInt(h.substring(0, h.indexOf(":"))));
+		calendar.add(GregorianCalendar.MINUTE, Integer.parseInt(h.substring(h.indexOf(":") + 1)));
 		return calendar.getTime();
 	}
 
-
-	///////////////////////////////////// COMBOX BOX POUR LA JSP //////////////////////////////////////////////////////
+	// /////////////////////////////////// COMBOX BOX POUR LA JSP
+	// //////////////////////////////////////////////////////
 	public String getTimeCombo(Date heure) {
-		
+
 		String selected = "";
-		if(null != heure) {
+		if (null != heure) {
 			DateFormat df = new SimpleDateFormat("HH:mm");
 			selected = df.format(heure);
 		}
 		String val = "";
-		
+
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
 		for (int hours = 0; hours <= 23; hours++) {
@@ -484,11 +506,11 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		return ret.toString();
 	}
-	
+
 	public String getTimeFinCombo(Date heure) {
-		
+
 		String selected = "";
-		if(null != heure) {
+		if (null != heure) {
 			DateFormat df = new SimpleDateFormat("HH:mm");
 			selected = df.format(heure);
 			selected = selected.equals("00:00") ? "24:00" : selected;
@@ -496,20 +518,20 @@ public class OePTGSaisie extends BasicProcess {
 		String val = "";
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
-		
+
 		for (int hours = 0; hours <= 24; hours++) {
-			
+
 			int minMin = 0;
 			int maxMin = 60;
-			if(hours == 0) {
+			if (hours == 0) {
 				minMin = 15;
 				maxMin = 60;
 			}
-			if(hours == 24) {
+			if (hours == 24) {
 				minMin = 0;
 				maxMin = 15;
 			}
-			
+
 			for (int min = minMin; min < maxMin; min += 15) {
 				val = hours + ":" + min;
 				if (min == 0) {
@@ -542,12 +564,14 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		return ret.toString();
 	}
-	///////////////////////////////////// FIN COMBOX BOX POUR LA JSP //////////////////////////////////////////////////////
-	
+
+	// /////////////////////////////////// FIN COMBOX BOX POUR LA JSP
+	// //////////////////////////////////////////////////////
+
 	public void addZone(String zone, String valeur) {
 		super.addZone(zone, valeur);
 	}
-	
+
 	public String getNOM_PB_BACK() {
 		return "NOM_PB_BACK";
 	}
@@ -555,8 +579,8 @@ public class OePTGSaisie extends BasicProcess {
 	public String getNOM_PB_VALIDATION() {
 		return "NOM_PB_VALIDATION";
 	}
-	
-	//////////////////////GETTER SETTER /////////////////////
+
+	// ////////////////////GETTER SETTER /////////////////////
 
 	public List<List<PrimeDto>> getPrimess() {
 		return primess;
@@ -581,7 +605,7 @@ public class OePTGSaisie extends BasicProcess {
 	public void setHsups(HashMap<String, List<HeureSupDto>> hsups) {
 		this.hsups = hsups;
 	}
-	
+
 	public void setIdAgent(String idAgent) {
 		this.idAgent = idAgent;
 	}
@@ -592,7 +616,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setListeFichePointage(FichePointageDto listeFichePointage) {
 		this.listeFichePointage = listeFichePointage;
-		
+
 		absences.clear();
 		primess.clear();
 		hsups.clear();
@@ -602,10 +626,10 @@ public class OePTGSaisie extends BasicProcess {
 			hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
 		}
 	}
-	
+
 	public void setJourPointageSaisi(List<JourPointageDto> listJourPtg) {
 		this.listeFichePointage.setSaisies(listJourPtg);
-		
+
 		absences.clear();
 		primess.clear();
 		hsups.clear();
