@@ -1710,13 +1710,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void performCreerFormation(HttpServletRequest request, AgentNW ag) throws Exception {
-		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgent(
-				Integer.valueOf(ag.getIdAgent()));
-		Integer tailleListe = listFormationAgent.size();
-		if (tailleListe > 6) {
-			tailleListe = 6;
-		}
-		for (int i = 0; i < tailleListe; i++) {
+		ArrayList<FormationAgent> listFormationAgent = getFormationAgentDao().listerFormationAgentByAnnee(
+				Integer.valueOf(ag.getIdAgent()), getCampagneCourante().getAnnee() - 1);
+		for (int i = 0; i < listFormationAgent.size(); i++) {
 			FormationAgent formation = listFormationAgent.get(i);
 			TitreFormation titre = getTitreFormationDao().chercherTitreFormation(formation.getIdTitreFormation());
 			CentreFormation centre = getCentreFormationDao().chercherCentreFormation(formation.getIdCentreFormation());
@@ -3884,7 +3880,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			return res;
 		}
 	}
-	
+
 	private String[] getLB_AFFECTE() {
 		if (LB_AFFECTE == null)
 			LB_AFFECTE = initialiseLazyLB();

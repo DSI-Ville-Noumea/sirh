@@ -10,14 +10,17 @@ public interface FormationAgentDaoInterface {
 
 	public void supprimerFormationAgent(Integer idFormationAgent) throws Exception;
 
-	public Integer creerFormationAgent(Integer idTitreFormation, Integer idCentreFormation, Integer idAgent, Integer dureeFormation, String uniteDuree,
-			Integer anneeFormation) throws Exception;
-
-	public void modifierFormationAgent(Integer idFormation, Integer idTitreFormation, Integer idCentreFormation, Integer idAgent,
+	public Integer creerFormationAgent(Integer idTitreFormation, Integer idCentreFormation, Integer idAgent,
 			Integer dureeFormation, String uniteDuree, Integer anneeFormation) throws Exception;
+
+	public void modifierFormationAgent(Integer idFormation, Integer idTitreFormation, Integer idCentreFormation,
+			Integer idAgent, Integer dureeFormation, String uniteDuree, Integer anneeFormation) throws Exception;
 
 	public ArrayList<FormationAgent> listerFormationAgentAvecTitreFormation(Integer idTitreFormation) throws Exception;
 
-	public ArrayList<FormationAgent> listerFormationAgentAvecCentreFormation(Integer idCentreFormation) throws Exception;
+	public ArrayList<FormationAgent> listerFormationAgentAvecCentreFormation(Integer idCentreFormation)
+			throws Exception;
+
+	public ArrayList<FormationAgent> listerFormationAgentByAnnee(Integer idAgent, Integer annee) throws Exception;
 
 }
