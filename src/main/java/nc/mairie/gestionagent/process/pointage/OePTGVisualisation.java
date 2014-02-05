@@ -678,7 +678,7 @@ public class OePTGVisualisation extends BasicProcess {
 		// Si liste population vide alors affectation
 		if (getLB_POPULATION() == LBVide) {
 			ArrayList<String> listeStatut = new ArrayList<String>();
-			listeStatut.add("Fontionnaire");
+			listeStatut.add("Fonctionnaire");
 			listeStatut.add("Convention collective");
 			listeStatut.add("Contractuel");
 			setListePopulation(listeStatut);
@@ -892,9 +892,16 @@ public class OePTGVisualisation extends BasicProcess {
 			filtreAgent = true;
 			population = getListePopulation().get(numPopulation - 1);
 			ArrayList<AgentNW> listAgent = AgentNW.listerAgentWithStatut(getTransaction(), population);
+			ArrayList<Integer> listeTempAgent = new ArrayList<Integer>();
 			for (AgentNW ag : listAgent) {
-				if (!idAgentPopulation.contains(Integer.valueOf(ag.getIdAgent()))) {
-					idAgentPopulation.add(ag.getIdAgent());
+				listeTempAgent.add(Integer.valueOf(ag.getIdAgent()));
+			}
+			// on receupere tous les agents qui ont des pointages
+			// on regarde si il sont du type de population choisi
+			ArrayList<Integer> listIdAgentPtg = t.getListeIdAgentPointage();
+			for (Integer idAgentPtg : listIdAgentPtg) {
+				if (listeTempAgent.contains(idAgentPtg) && !idAgentPopulation.contains(idAgentPtg.toString())) {
+					idAgentPopulation.add(idAgentPtg.toString());
 				}
 			}
 		}

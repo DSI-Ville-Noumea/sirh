@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
-import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
@@ -37,7 +38,7 @@ import flexjson.JSONSerializer;
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
-	private static final String sirhPtgVisulaisationPointage = "visualisation/pointagesSIRH";
+	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
 	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
 	private static final String sirhPtgVisualisationSetState = "visualisation/changerEtatsSIRH";
 	private static final String sirhPtgSaisie = "saisie/ficheSIRH";
@@ -58,7 +59,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgListEtatsPayeur = "etatsPayeur/listEtatsPayeur";
 	private static final String sirhPtgDownloadFicheEtatsPayeur = "etatsPayeur/downloadFicheEtatsPayeur";
 	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
-	
+	private static final String sirhPtgVisualisationIdAgentPointage = "visualisation/listeAgentsPointagesForSIRH";
+
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
 	@Override
@@ -194,9 +196,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
-	
+
 	public byte[] readResponseWithFile(ClientResponse response, String url) {
-		
+
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
 			return null;
 		}
@@ -254,7 +256,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			Integer idRefEtat, Integer idRefType) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = urlWS + sirhPtgVisulaisationPointage;
+		String url = urlWS + sirhPtgVisualisationPointage;
 
 		Map<String, String> parameters = new HashMap<String, String>();
 
@@ -467,7 +469,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean canStartExportEtatsPayeur(String statut) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
@@ -484,7 +486,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public List<EtatsPayeurDto> getListEtatsPayeurByStatut(String statut) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
@@ -492,37 +494,50 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("statutAgent", statut);
 		ClientResponse res = createAndFireRequest(params, url);
-		
+
 		return readResponseAsList(EtatsPayeurDto.class, res, url);
 	}
-	
+
 	@Override
 	public byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur) {
-		
+
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgDownloadFicheEtatsPayeur;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idEtatPayeur", idEtatPayeur.toString());
 		ClientResponse res = createAndFireRequest(params, url);
-		
+
 		return readResponseWithFile(res, url);
 	}
-	
+
 	@Override
 	public boolean startExportEtatsPayeur(String idAgentExporting, String statutString) {
-		
+
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgStartExportEtatsPayeur;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentExporting);
 		params.put("statut", statutString);
 		ClientResponse res = createAndFireRequest(params, url);
-		
+
 		if (res.getStatus() == HttpStatus.OK.value()) {
 			return true;
 		} else {
 			logger.debug("startExportEtatsPayeur NON OK : " + res.getStatus());
 			return false;
-		} 
+		}
+	}
+
+	@Override
+	public ArrayList<Integer> getListeIdAgentPointage() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgVisualisationIdAgentPointage;
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		List<AgentDto> liste = readResponseAsList(AgentDto.class, res, url);
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (AgentDto agDto : liste) {
+			result.add(agDto.getIdAgent());
+		}
+		return result;
 	}
 }

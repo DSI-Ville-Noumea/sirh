@@ -56,12 +56,14 @@ public interface ISirhPtgWSConsumer {
 	boolean isValidAvailable(String agentStatus);
 
 	boolean startDeversementPaie(String idAgent, String statut);
-	
+
 	boolean canStartExportEtatsPayeur(String statut);
-	
+
 	List<EtatsPayeurDto> getListEtatsPayeurByStatut(String statut);
-	
+
 	byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur);
 
 	boolean startExportEtatsPayeur(String idAgentExporting, String statutString);
+
+	public ArrayList<Integer> getListeIdAgentPointage();
 }
