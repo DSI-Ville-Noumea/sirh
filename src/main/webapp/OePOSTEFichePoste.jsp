@@ -284,24 +284,22 @@
 							<br/><br/>			
 							<span class="sigp2" style="width:150px"> OPI : </span>
 							<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> tabindex="" class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_OPI() %>" size="6" type="text" value="<%= process.getVAL_EF_OPI() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-							<br/><br/>	
-							<span class="sigp2Mandatory" style="width:150px"> Nature des crédits : </span>
-							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATURE_CREDIT() %>" style="width:180px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-								<%=process.forComboHTML(process.getVAL_LB_NATURE_CREDIT(), process.getVAL_LB_NATURE_CREDIT_SELECT())%>
-							</SELECT>	
 						<%}%>
 						</fieldset>
 						
 						<fieldset class="sigp2Fieldset" style="width:400px;">
 							<legend class="sigp2Legend">Temps de travail sur le poste</legend>							
-							<span class="sigp2Mandatory" style="width:150px"> Réglementaire : </span>
-							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_REGLEMENTAIRE() %>" style="width=150px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<span class="sigp2Mandatory" style="width:190px"> Réglementaire : </span>
+							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_REGLEMENTAIRE() %>" style="width=120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 								<%=process.forComboHTML(process.getVAL_LB_REGLEMENTAIRE(), process.getVAL_LB_REGLEMENTAIRE_SELECT())%>
 							</SELECT>
 							<br/><br/>
 							
-							<span class="sigp2Mandatory" style="width:150px"> Budgété : </span>
-							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_BUDGETE() %>" style="width=150px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<span class="sigp2Mandatory" style="width:70px"> Budgété : </span>
+							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATURE_CREDIT() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+								<%=process.forComboHTML(process.getVAL_LB_NATURE_CREDIT(), process.getVAL_LB_NATURE_CREDIT_SELECT())%>
+							</SELECT>	
+							<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_BUDGETE() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 								<%=process.forComboHTML(process.getVAL_LB_BUDGETE(), process.getVAL_LB_BUDGETE_SELECT())%>
 							</SELECT>
 						</fieldset>

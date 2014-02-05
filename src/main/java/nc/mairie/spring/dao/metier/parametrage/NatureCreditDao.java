@@ -16,6 +16,7 @@ public class NatureCreditDao implements NatureCreditDaoInterface {
 
 	public static final String CHAMP_ID_NATURE_CREDIT = "ID_NATURE_CREDIT";
 	public static final String CHAMP_LIB_NATURE_CREDIT = "LIB_NATURE_CREDIT";
+	public static final String CHAMP_ORDRE_AFF_NATURE_CREDIT = "ORDRE_AFF";
 
 	private JdbcTemplate jdbcTemplate;
 	private DataSource dataSource;
@@ -30,8 +31,8 @@ public class NatureCreditDao implements NatureCreditDaoInterface {
 	}
 
 	@Override
-	public ArrayList<NatureCredit> listerNatureCredit() {
-		String sql = "select *  from " + NOM_TABLE + "  WITH UR";
+	public ArrayList<NatureCredit> listerNatureCreditOrderBy() {
+		String sql = "select *  from " + NOM_TABLE + " order by " + CHAMP_ORDRE_AFF_NATURE_CREDIT + " WITH UR";
 
 		ArrayList<NatureCredit> listeNatureCredit = new ArrayList<NatureCredit>();
 
@@ -40,22 +41,10 @@ public class NatureCreditDao implements NatureCreditDaoInterface {
 			NatureCredit nature = new NatureCredit();
 			nature.setIdNatureCredit((Integer) row.get(CHAMP_ID_NATURE_CREDIT));
 			nature.setLibNatureCredit((String) row.get(CHAMP_LIB_NATURE_CREDIT));
+			nature.setOrdreAffichage((Integer) row.get(CHAMP_ORDRE_AFF_NATURE_CREDIT));
 			listeNatureCredit.add(nature);
 		}
 
 		return listeNatureCredit;
-	}
-
-	@Override
-	public void creerNatureCredit(String libelleNatureCredit) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_LIB_NATURE_CREDIT + ") " + "VALUES (?)";
-		jdbcTemplate.update(sql, new Object[] { libelleNatureCredit.toUpperCase() });
-
-	}
-
-	@Override
-	public void supprimerNatureCredit(Integer idNatureCredit) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_NATURE_CREDIT + "=?";
-		jdbcTemplate.update(sql, new Object[] { idNatureCredit });
 	}
 }

@@ -19,17 +19,12 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
-import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
-import nc.mairie.spring.domain.metier.parametrage.NatureCredit;
-import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
@@ -49,7 +44,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private String[] LB_TYPE_REGIME;
 	private String[] LB_ECOLE;
 	private String[] LB_NFA;
-	private String[] LB_NATURE_CREDIT;
 
 	private ArrayList<EntiteGeo> listeEntite;
 	private EntiteGeo entiteGeoCourante;
@@ -75,17 +69,12 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private ArrayList<NFA> listeNFA;
 	private NFA NFACourant;
 
-	private ArrayList<NatureCredit> listeNatureCredit;
-	private NatureCredit NatureCreditCourant;
-
 	private ArrayList<Ecole> listeEcole;
 	private Ecole EcoleCourante;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
-	
-	private NatureCreditDao natureCreditDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -108,8 +97,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			throw new Exception();
 		}
 
-		initialiseDao();
-
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
@@ -125,14 +112,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				Ecole aEcole = (Ecole) a.get(i);
 				getHashEntiteEcole().put(aEcole.getCdecol(), aEcole);
 			}
-		}
-	}
-
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
-		if (getNatureCreditDao() == null) {
-			setNatureCreditDao((NatureCreditDao) context.getBean("natureCreditDao"));
 		}
 	}
 
@@ -331,29 +310,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la liste des Nature de credit Date de création :
-	 * (04/11/13)
-	 * 
-	 */
-	private void initialiseListeNatureCredit(HttpServletRequest request) throws Exception {
-		setListeNatureCredit(getNatureCreditDao().listerNatureCredit());
-		if (getListeNatureCredit().size() != 0) {
-			int tailles[] = { 50 };
-			String padding[] = { "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<NatureCredit> list = getListeNatureCredit().listIterator(); list.hasNext();) {
-				NatureCredit nature = (NatureCredit) list.next();
-				String ligne[] = { nature.getLibNatureCredit() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_NATURE_CREDIT(aFormat.getListeFormatee());
-		} else {
-			setLB_NATURE_CREDIT(null);
-		}
-	}
-
-	/**
 	 * Initialisation dede la liste des ecoles Date de création : (04/11/11)
 	 */
 	private void initialiseListeEcole(HttpServletRequest request) throws Exception {
@@ -426,11 +382,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Recherche des Ecoles
 			setListeEcole(Ecole.listerEcole(getTransaction()));
 			initialiseListeEcole(request);
-		}
-
-		if (getListeNatureCredit() == null) {
-			// Recherche des Nature credit
-			initialiseListeNatureCredit(request);
 		}
 	}
 
@@ -2491,26 +2442,6 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				return performPB_VALIDER_TYPE_REGIME(request);
 			}
 
-			// Si clic sur le bouton PB_ANNULER_NATURE_CREDIT
-			if (testerParametre(request, getNOM_PB_ANNULER_NATURE_CREDIT())) {
-				return performPB_ANNULER_NATURE_CREDIT(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_NATURE_CREDIT
-			if (testerParametre(request, getNOM_PB_CREER_NATURE_CREDIT())) {
-				return performPB_CREER_NATURE_CREDIT(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_NATURE_CREDIT
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_NATURE_CREDIT())) {
-				return performPB_SUPPRIMER_NATURE_CREDIT(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_NATURE_CREDIT
-			if (testerParametre(request, getNOM_PB_VALIDER_NATURE_CREDIT())) {
-				return performPB_VALIDER_NATURE_CREDIT(request);
-			}
-
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -3167,189 +3098,5 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	private void setListeEcole(ArrayList<Ecole> listeEcole) {
 		this.listeEcole = listeEcole;
-	}
-
-	public ArrayList<NatureCredit> getListeNatureCredit() {
-		return listeNatureCredit;
-	}
-
-	public void setListeNatureCredit(ArrayList<NatureCredit> listeNatureCredit) {
-		this.listeNatureCredit = listeNatureCredit;
-	}
-
-	public NatureCredit getNatureCreditCourant() {
-		return NatureCreditCourant;
-	}
-
-	public void setNatureCreditCourant(NatureCredit natureCreditCourant) {
-		NatureCreditCourant = natureCreditCourant;
-	}
-
-	public String getNOM_PB_ANNULER_NATURE_CREDIT() {
-		return "NOM_PB_ANNULER_NATURE_CREDIT";
-	}
-
-	public boolean performPB_ANNULER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_NATURE_CREDIT(), Const.CHAINE_VIDE);
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public String getNOM_PB_CREER_NATURE_CREDIT() {
-		return "NOM_PB_CREER_NATURE_CREDIT";
-	}
-
-	public boolean performPB_CREER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_NATURE_CREDIT(), ACTION_CREATION);
-		addZone(getNOM_EF_LIB_NATURE_CREDIT(), Const.CHAINE_VIDE);
-
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public String getNOM_PB_SUPPRIMER_NATURE_CREDIT() {
-		return "NOM_PB_SUPPRIMER_NATURE_CREDIT";
-	}
-
-	public boolean performPB_SUPPRIMER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_NATURE_CREDIT_SELECT()) ? Integer
-				.parseInt(getVAL_LB_NATURE_CREDIT_SELECT()) : -1);
-
-		if (indice != -1 && indice < getListeNatureCredit().size()) {
-			NatureCredit nature = getListeNatureCredit().get(indice);
-			setNatureCreditCourant(nature);
-			addZone(getNOM_EF_LIB_NATURE_CREDIT(), nature.getLibNatureCredit());
-			addZone(getNOM_ST_ACTION_NATURE_CREDIT(), ACTION_SUPPRESSION);
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "natures de crédit"));
-		}
-
-		return true;
-	}
-
-	public String getNOM_PB_VALIDER_NATURE_CREDIT() {
-		return "NOM_PB_VALIDER_NATURE_CREDIT";
-	}
-
-	public boolean performPB_VALIDER_NATURE_CREDIT(HttpServletRequest request) throws Exception {
-
-		if (!performControlerSaisieNatureCredit(request))
-			return false;
-
-		if (!performControlerRegleGestionNatureCredit(request))
-			return false;
-
-		if (getVAL_ST_ACTION_NATURE_CREDIT() != null && getVAL_ST_ACTION_NATURE_CREDIT() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_CREATION)) {
-				setNatureCreditCourant(new NatureCredit());
-				getNatureCreditCourant().setLibNatureCredit(getVAL_EF_LIB_NATURE_CREDIT());
-				getNatureCreditDao().creerNatureCredit(getNatureCreditCourant().getLibNatureCredit());
-				if (!getTransaction().isErreur())
-					getListeNatureCredit().add(getNatureCreditCourant());
-			} else if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_SUPPRESSION)) {
-				getNatureCreditDao().supprimerNatureCredit(getNatureCreditCourant().getIdNatureCredit());
-				if (!getTransaction().isErreur())
-					getListeNatureCredit().remove(getNatureCreditCourant());
-				setNatureCreditCourant(null);
-			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
-			initialiseListeNatureCredit(request);
-			addZone(getNOM_ST_ACTION_NATURE_CREDIT(), Const.CHAINE_VIDE);
-		}
-
-		return true;
-	}
-
-	private boolean performControlerSaisieNatureCredit(HttpServletRequest request) throws Exception {
-
-		// Verification lib nature credit not null
-		if (getZone(getNOM_EF_LIB_NATURE_CREDIT()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean performControlerRegleGestionNatureCredit(HttpServletRequest request) throws Exception {
-
-		// Vérification des contraintes d'unicité du NATURE_CREDIT
-		if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_CREATION)) {
-
-			for (NatureCredit nature : getListeNatureCredit()) {
-				if (nature.getLibNatureCredit().equals(getVAL_EF_LIB_NATURE_CREDIT().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "une nature de crédit", "ce libellé"));
-					return false;
-				}
-			}
-		} else if (getVAL_ST_ACTION_NATURE_CREDIT().equals(ACTION_SUPPRESSION)
-				&& FichePoste.listerFichePosteAvecNatureCredit(getTransaction(), getNatureCreditCourant().getIdNatureCredit()).size() > 0) {
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR989", "une fiche de poste", "cette nature de crédit"));
-			return false;
-		}
-
-		return true;
-	}
-
-	public String getNOM_ST_ACTION_NATURE_CREDIT() {
-		return "NOM_ST_ACTION_NATURE_CREDIT";
-	}
-
-	public String getVAL_ST_ACTION_NATURE_CREDIT() {
-		return getZone(getNOM_ST_ACTION_NATURE_CREDIT());
-	}
-
-	private String[] getLB_NATURE_CREDIT() {
-		if (LB_NATURE_CREDIT == null)
-			LB_NATURE_CREDIT = initialiseLazyLB();
-		return LB_NATURE_CREDIT;
-	}
-
-	private void setLB_NATURE_CREDIT(String[] newLB_NATURE_CREDIT) {
-		LB_NATURE_CREDIT = newLB_NATURE_CREDIT;
-	}
-
-	public String getNOM_LB_NATURE_CREDIT() {
-		return "NOM_LB_NATURE_CREDIT";
-	}
-
-	public String getNOM_LB_NATURE_CREDIT_SELECT() {
-		return "NOM_LB_NATURE_CREDIT_SELECT";
-	}
-
-	public String[] getVAL_LB_NATURE_CREDIT() {
-		return getLB_NATURE_CREDIT();
-	}
-
-	public String getVAL_LB_NATURE_CREDIT_SELECT() {
-		return getZone(getNOM_LB_NATURE_CREDIT_SELECT());
-	}
-
-	public String getNOM_EF_LIB_NATURE_CREDIT() {
-		return "NOM_EF_LIB_NATURE_CREDIT";
-	}
-
-	public String getVAL_EF_LIB_NATURE_CREDIT() {
-		return getZone(getNOM_EF_LIB_NATURE_CREDIT());
-	}
-
-	public NatureCreditDao getNatureCreditDao() {
-		return natureCreditDao;
-	}
-
-	public void setNatureCreditDao(NatureCreditDao natureCreditDao) {
-		this.natureCreditDao = natureCreditDao;
 	}
 }

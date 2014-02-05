@@ -803,7 +803,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Si liste nature credit vide alors affectation
 		if (getLB_NATURE_CREDIT() == LBVide) {
-			ArrayList<NatureCredit> listeNature = getNatureCreditDao().listerNatureCredit();
+			ArrayList<NatureCredit> listeNature = getNatureCreditDao().listerNatureCreditOrderBy();
 			setListeNatureCredit(listeNature);
 			if (getListeNatureCredit().size() != 0) {
 				int tailles[] = { 50 };
@@ -1546,6 +1546,104 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 				}
 			}
+		}
+
+		// *********************** //
+		// Verification information bugetaire //
+		// *********************** //
+		if (getFichePosteCourante() != null) {
+
+			int numLigneReglementaire = (Services.estNumerique(getZone(getNOM_LB_REGLEMENTAIRE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_REGLEMENTAIRE_SELECT())) : -1);
+
+			if (numLigneReglementaire == -1 || getListeHoraire().isEmpty()
+					|| numLigneReglementaire > getListeHoraire().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "réglementaire"));
+				return false;
+			}
+
+			Horaire reglementaire = (Horaire) getListeHoraire().get(numLigneReglementaire);
+
+			int numLigneBudgete = (Services.estNumerique(getZone(getNOM_LB_BUDGETE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_BUDGETE_SELECT())) : -1);
+
+			if (numLigneBudgete == -1 || getListeHoraire().isEmpty() || numLigneBudgete > getListeHoraire().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "budgété"));
+				return false;
+			}
+
+			Horaire budgete = (Horaire) getListeHoraire().get(numLigneBudgete);
+
+			// Nature des credits
+			int numLigneNatureCredit = (Services.estNumerique(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) : -1);
+
+			if (numLigneNatureCredit == -1 || getListeNatureCredit().isEmpty()
+					|| numLigneNatureCredit > getListeNatureCredit().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "nature des crédits"));
+				return false;
+			}
+
+			NatureCredit natureCredit = (NatureCredit) getListeNatureCredit().get(numLigneNatureCredit);
+
+			// si nature credit = NON alors budgeté doit etre egal à 0
+			if (natureCredit.getLibNatureCredit().equals("NON")
+					&& !budgete.getLibHor().trim().toLowerCase().equals("non")) {
+				// "ERR1111",
+				// "Si la nature des crédits est @, alors budgété doit être @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1111", "NON", "Non"));
+				return false;
+			}
+			// si nature credit = PERMANENT ou REMPLACEMENT ou TEMPORAIRE ou
+			// SURNUMERAIRE alors budgeté >0 et <=100
+			if (natureCredit.getLibNatureCredit().equals("PERMANENT")
+					|| natureCredit.getLibNatureCredit().equals("REMPLACEMENT")
+					|| natureCredit.getLibNatureCredit().equals("TEMPORAIRE")
+					|| natureCredit.getLibNatureCredit().equals("SURNUMERAIRE")) {
+				if (budgete.getLibHor().trim().toLowerCase().equals("non")) {
+					// "ERR1112",
+					// "Si la nature des crédits est @, alors budgété ne doit pas être @."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1112", "PERMANENT", "Non"));
+					return false;
+				}
+			}
+
+			// si nature credit = REMPLACEMENT, alors fiche poste remplacée doit
+			// etre renseigné et insersement
+			if (natureCredit.getLibNatureCredit().equals("REMPLACEMENT")
+					&& getVAL_ST_REMPLACEMENT().equals(Const.CHAINE_VIDE)) {
+				// "ERR1113",
+				// "Budget de remplacement : fiche de poste remplacée nécessaire.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1113"));
+				return false;
+
+			}
+			if (!getVAL_ST_REMPLACEMENT().equals(Const.CHAINE_VIDE)) {
+				if (!natureCredit.getLibNatureCredit().equals("REMPLACEMENT")) {
+					// "ERR1114",
+					// "Fiche de poste remplacée mais budget différent de remplacement."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1114"));
+					return false;
+				}
+			}
+
+			// si relementaire > 0 alors budget doit etre différent de permanent
+			// et inversement
+			if (natureCredit.getLibNatureCredit().equals("PERMANENT")
+					&& reglementaire.getLibHor().trim().toLowerCase().equals("non")) {
+				//"ERR1115", "Le poste n'est pas règlementaire, le budget ne peut pas être permanent."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1115"));
+				return false;
+
+			}
+			if (!reglementaire.getLibHor().trim().toLowerCase().equals("non")) {
+				if (!natureCredit.getLibNatureCredit().equals("PERMANENT")) {
+					//"ERR1116", "Le poste est règlementaire, le budget doit être permanent."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1116"));
+					return false;
+				}
+			}
+
 		}
 
 		return true;
@@ -2303,56 +2401,56 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Mise à jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
-		
-		//////////////////////////////////
+
+		// ////////////////////////////////
 		// dans le cas ou rien n est saisi
-		if((getVAL_EF_RECHERCHE() == null || getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)) 
-				&& (getVAL_EF_RECHERCHE_BY_AGENT() == null || getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) ) {
-			
+		if ((getVAL_EF_RECHERCHE() == null || getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE))
+				&& (getVAL_EF_RECHERCHE_BY_AGENT() == null || getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE))) {
+
 			getTransaction().traiterErreur();
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR982"));
-			return false; 
-			
-		//////////////////////////////////
-		// dans le cas ou les deux champ sont saisis
-		}else if(getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)
-					&& getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE) ) {
+			return false;
+
+			// ////////////////////////////////
+			// dans le cas ou les deux champ sont saisis
+		} else if (getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)
+				&& getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) {
 			// recuperation agent
 			AgentNW agent = null;
 			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
 				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
 			}
 			// l agent n existe pas
-			if(null == agent || null == agent.getIdAgent()) {
+			if (null == agent || null == agent.getIdAgent()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
 				return false;
 			}
-			
-			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), Const.CHAINE_VIDE, null, Const.CHAINE_VIDE,
-					getVAL_EF_RECHERCHE(), agent);
-			
+
+			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(),
+					Const.CHAINE_VIDE, null, Const.CHAINE_VIDE, getVAL_EF_RECHERCHE(), agent);
+
 			// si aucun resultat ==> message erreur
-			if(null == fp || 0 == fp.size()) {
+			if (null == fp || 0 == fp.size()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "résultat"));
 				return false;
-			// si plusieurs resultats ==> message erreur
-			}else if(null != fp && 1 < fp.size()){
+				// si plusieurs resultats ==> message erreur
+			} else if (null != fp && 1 < fp.size()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1110"));
 				return false;
-			// sinon affiche fiche de poste
-			}else{
+				// sinon affiche fiche de poste
+			} else {
 				viderFichePoste();
 				viderObjetsFichePoste();
 				addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 				setFichePosteCourante(fp.get(0));
 			}
-			
-		//////////////////////////////////
-		// dans le cas ou seul le numero de poste est saisi
-		}else if(getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)){
+
+			// ////////////////////////////////
+			// dans le cas ou seul le numero de poste est saisi
+		} else if (getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)) {
 			FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_RECHERCHE());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -2369,37 +2467,37 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
 				return false;
 			}
-			
-		//////////////////////////////////
-		// dans le cas ou seul le numero de poste est saisi
-		}else if(getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)){
+
+			// ////////////////////////////////
+			// dans le cas ou seul le numero de poste est saisi
+		} else if (getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) {
 			// recuperation agent
 			AgentNW agent = null;
 			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
 				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
 			}
 			// l agent n existe pas
-			if(null == agent || null == agent.getIdAgent()) {
+			if (null == agent || null == agent.getIdAgent()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "agent"));
 				return false;
 			}
-			
-			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(), Const.CHAINE_VIDE, null, Const.CHAINE_VIDE,
-					getVAL_EF_RECHERCHE(), agent);
-			
+
+			ArrayList<FichePoste> fp = FichePoste.listerFichePosteAvecCriteresAvances(getTransaction(),
+					Const.CHAINE_VIDE, null, Const.CHAINE_VIDE, getVAL_EF_RECHERCHE(), agent);
+
 			// si aucun resultat ==> message erreur
-			if(null == fp || 0 == fp.size()) {
+			if (null == fp || 0 == fp.size()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR005", "résultat"));
 				return false;
-			// si plusieurs resultats ==> message erreur
-			}else if(null != fp && 1 < fp.size()){
+				// si plusieurs resultats ==> message erreur
+			} else if (null != fp && 1 < fp.size()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1110"));
 				return false;
-			// sinon affiche fiche de poste
-			}else{
+				// sinon affiche fiche de poste
+			} else {
 				viderFichePoste();
 				viderObjetsFichePoste();
 				addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
@@ -2412,8 +2510,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RECHERCHE_BY_AGENT Date de
-	 * création : (07/07/11 11:20:20)
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RECHERCHE_BY_AGENT
+	 * Date de création : (07/07/11 11:20:20)
 	 * 
 	 * 
 	 */
@@ -2430,7 +2528,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public String getVAL_EF_RECHERCHE_BY_AGENT() {
 		return getZone(getNOM_EF_RECHERCHE_BY_AGENT());
 	}
-	
+
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_RECHERCHE Date de
 	 * création : (07/07/11 11:20:20)
@@ -6381,22 +6479,22 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_REMPLACEMENT())) {
 				return performPB_SUPPRIMER_REMPLACEMENT(request);
 			}
-			
+
 			// Si clic sur le bouton PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE
 			if (testerParametre(request, getNOM_PB_CONSULTER_FICHE_EMPLOI_PRIMAIRE())) {
 				return performPB_CONSULTER_FICHE_EMPLOI_PRIMAIRE(request);
 			}
-			
+
 			// Si clic sur le bouton PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE()
 			if (testerParametre(request, getNOM_PB_CONSULTER_FICHE_EMPLOI_SECONDAIRE())) {
 				return performPB_CONSULTER_FICHE_EMPLOI_SECONDAIRE(request);
 			}
-			
+
 			// Si clic sur le bouton PB_CONSULTER_RESPONSABLE_HIERARCHIQUE()
 			if (testerParametre(request, getNOM_PB_CONSULTER_RESPONSABLE_HIERARCHIQUE())) {
 				return performPB_CONSULTER_RESPONSABLE_HIERARCHIQUE(request);
 			}
-			
+
 			// Si clic sur le bouton PB_CONSULTER_REMPLACEMENT()
 			if (testerParametre(request, getNOM_PB_CONSULTER_REMPLACEMENT())) {
 				return performPB_CONSULTER_REMPLACEMENT(request);
@@ -7034,15 +7132,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.natureCreditDao = natureCreditDao;
 	}
 
-
 	public String getNOM_EF_NUM_DELIBERATION() {
 		return "NOM_EF_NUM_DELIBERATION";
 	}
+
 	public String getVAL_EF_NUM_DELIBERATION() {
 		return getZone(getNOM_EF_NUM_DELIBERATION());
 	}
-	
-	
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_AJOUTER_COMPETENCE_COMPORTEMENT Date de création : (18/07/11 16:08:47)
@@ -7062,13 +7159,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_FICHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
-		
+
 		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
 		setStatut(STATUT_FICHE_EMPLOI, true);
 		return true;
 	}
-	
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_AJOUTER_COMPETENCE_COMPORTEMENT Date de création : (18/07/11 16:08:47)
@@ -7088,16 +7185,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_FICHE_EMPLOI_SECONDAIRE(HttpServletRequest request) throws Exception {
-		
+
 		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
 		setStatut(STATUT_FICHE_EMPLOI, true);
 		return true;
 	}
-	
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_CONSULTER_RESPONSABLE_HIERARCHIQUE Date de création : (18/07/11 16:08:47)
+	 * PB_CONSULTER_RESPONSABLE_HIERARCHIQUE Date de création : (18/07/11
+	 * 16:08:47)
 	 * 
 	 * 
 	 */
@@ -7114,11 +7212,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_RESPONSABLE_HIERARCHIQUE(HttpServletRequest request) throws Exception {
-		
+
 		FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_ST_RESPONSABLE());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
 			return false;
 		}
 		if (fiche != null) {
@@ -7130,15 +7229,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
 			return false;
 		}
-		
+
 		setFichePosteCourante(fiche);
 		setStatut(STATUT_RECHERCHE, true);
 		return true;
 	}
-	
+
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * NOM_PB_CONSULTER_REMPLACEMENT Date de création : (18/07/11 16:08:47)
+	 * Retourne le nom d'un bouton pour la JSP : NOM_PB_CONSULTER_REMPLACEMENT
+	 * Date de création : (18/07/11 16:08:47)
 	 * 
 	 * 
 	 */
@@ -7155,11 +7254,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CONSULTER_REMPLACEMENT(HttpServletRequest request) throws Exception {
-		
+
 		FichePoste fiche = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_ST_REMPLACEMENT());
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR125", "la fiche de poste " + getVAL_EF_RECHERCHE()));
 			return false;
 		}
 		if (fiche != null) {
@@ -7171,7 +7271,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setStatut(STATUT_RECHERCHE, true, MessageUtils.getMessage("ERR008"));
 			return false;
 		}
-		
+
 		setFichePosteCourante(fiche);
 		setStatut(STATUT_RECHERCHE, true);
 		return true;

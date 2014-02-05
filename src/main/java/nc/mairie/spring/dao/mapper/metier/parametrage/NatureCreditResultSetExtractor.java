@@ -15,6 +15,7 @@ public class NatureCreditResultSetExtractor implements ResultSetExtractor<Object
 		NatureCredit nature = new NatureCredit();
 		nature.setIdNatureCredit(rs.getInt(NatureCreditDao.CHAMP_ID_NATURE_CREDIT));
 		nature.setLibNatureCredit(rs.getString(NatureCreditDao.CHAMP_LIB_NATURE_CREDIT));
+		nature.setOrdreAffichage(rs.getInt(NatureCreditDao.CHAMP_ORDRE_AFF_NATURE_CREDIT));
 
 		return nature;
 	}

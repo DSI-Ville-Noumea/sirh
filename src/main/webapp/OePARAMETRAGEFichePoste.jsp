@@ -385,47 +385,6 @@
 			
 			</FIELDSET>
 			</div>
-			
-			
-			<div style="width:100%">
-	    	<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
-		    	<legend class="sigp2Legend">Nature des crédits</legend>
-				<span class="sigp2-titre" >
-				<SELECT name="<%= process.getNOM_LB_NATURE_CREDIT() %>" size="10"
-					style="width:100%;" class="sigp2-liste">
-					<%=process.forComboHTML(process.getVAL_LB_NATURE_CREDIT(), process.getVAL_LB_NATURE_CREDIT_SELECT()) %>
-				</SELECT>
-            	</span>
-
-				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_NATURE_CREDIT()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_NATURE_CREDIT()%>">
-    	        </div>
-            	
-            	<% if (process.getVAL_ST_ACTION_NATURE_CREDIT()!= null && !process.getVAL_ST_ACTION_NATURE_CREDIT().equals("")) {%>
-            	<br>
-	            
-				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_NATURE_CREDIT())) { %>
-					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="250" name="<%= process.getNOM_EF_LIB_NATURE_CREDIT() %>" size="70" type="text" value="<%= process.getVAL_EF_LIB_NATURE_CREDIT() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<div Style="width:100%" align="center">
-					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_NATURE_CREDIT())) { %>
-						<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_NATURE_CREDIT()%>"></span>
-					<% } %>
-				<%} else {%>					
-					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="250" readonly="readonly" name="<%= process.getNOM_EF_LIB_NATURE_CREDIT() %>" size="70" type="text" value="<%= process.getVAL_EF_LIB_NATURE_CREDIT() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<div Style="width:100%" align="center">
-					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_NATURE_CREDIT()%>"></span>
-			   <%}%>
-				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_NATURE_CREDIT()%>"></span>
-				</div>
-				<% } %>
-
-			</FIELDSET>
-			</div>
 		</FORM>
 	</BODY>
 </HTML>
