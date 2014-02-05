@@ -13,6 +13,7 @@ import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -233,6 +234,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			setTypeAbsenceCourant(typeAbsence);
 		}
 
+		if (!performVerifRG(request)) {
+			return false;
+		}
+
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
@@ -259,6 +264,28 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
 		} else {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		}
+		return true;
+	}
+
+	private boolean performVerifRG(HttpServletRequest request) throws Exception {
+		// si l'agent n'est pas contractuel ou convention collectives, alors il
+		// n'a pas le droit au repos compensateur
+
+		if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				//"ERR136", "Cet agent n'a aucune carrière active."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
+				return false;
+			}
+			
+			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
+				//"ERR802", "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
+				return false;
+			}
 		}
 		return true;
 	}
