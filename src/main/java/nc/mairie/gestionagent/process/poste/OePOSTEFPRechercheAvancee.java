@@ -144,9 +144,10 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		if (getListeFP() != null) {
 
 			// Si liste vide alors erreur
-			if (getListeFP().size() == 0) {	
-				//"ERR125", "Impossible de trouver @."
-				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR125", "une fiche de poste avec ces critères"));
+			if (getListeFP().size() == 0) {
+				// "ERR125", "Impossible de trouver @."
+				setStatut(STATUT_MEME_PROCESS, false,
+						MessageUtils.getMessage("ERR125", "une fiche de poste avec ces critères"));
 				return false;
 			}
 
@@ -158,10 +159,13 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				if (agent == null)
 					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste());
 
+				Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
+				
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFP());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
 				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
 						+ agent.getPrenomAgent());
+				addZone(getNOM_ST_SERVICE(indiceFp), serv.getLibService());
 
 				indiceFp++;
 			}
@@ -1032,5 +1036,13 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public void setListeAffectation(ArrayList<Affectation> listeAffectation) {
 		this.listeAffectation = listeAffectation;
+	}
+
+	public String getNOM_ST_SERVICE(int i) {
+		return "NOM_ST_SERVICE" + i;
+	}
+
+	public String getVAL_ST_SERVICE(int i) {
+		return getZone(getNOM_ST_SERVICE(i));
 	}
 }

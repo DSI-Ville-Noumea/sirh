@@ -151,9 +151,10 @@
 				<LEGEND class="sigp2Legend">Sélection d'une fiche de poste</LEGEND>
             	<%if(process.getListeFP()!= null && process.getListeFP().size()>0){ %>
 				<BR>	            
-	            <span style="position:relative;width:90px;">Numéro</span>
-				<span style="position:relative;width:555px;">Titre</span>
-				<span style="position:relative;">Agent affecté</span>
+	            <span style="position:relative;width:70px;">Numéro</span>
+				<span style="position:relative;width:455px;">Titre</span>
+				<span style="position:relative;width:150px;">Agent affecté</span>
+				<span style="position:relative;">Service</span>
 				<BR/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -163,9 +164,10 @@
 						for (int i = 0;i<process.getListeFP().size();i++){
 					%>
 							<tr id="<%=indiceFp%>" onmouseover="SelectLigne(<%=indiceFp%>,<%=process.getListeFP().size()%>)" ondblclick='executeBouton("<%=process.getNOM_PB_VALIDER(indiceFp)%>")'>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: left;"><%=process.getVAL_ST_NUM(indiceFp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:550px;text-align: left;"><%=process.getVAL_ST_TITRE(indiceFp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_AGENT(indiceFp)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: left;"><%=process.getVAL_ST_NUM(indiceFp)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:450px;text-align: left;"><%=process.getVAL_ST_TITRE(indiceFp)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: left;"><%=process.getVAL_ST_AGENT(indiceFp)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_SERVICE(indiceFp)%></td>
 								<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_VALIDER(indiceFp)%>" value="x"></td>
 							</tr>
 							<%
