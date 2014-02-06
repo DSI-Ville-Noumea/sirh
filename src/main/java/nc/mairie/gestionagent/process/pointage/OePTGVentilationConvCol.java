@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -450,7 +451,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			// "ERR600",
 			// "La date de ventilation choisie est un @. Impossible de ventiler les pointages à une date autre qu'un dimanche."
 			getTransaction().declarerErreur(
-					MessageUtils.getMessage("ERR600", givenVentilationDate.dayOfWeek().getAsText()));
+					MessageUtils.getMessage("ERR600", givenVentilationDate.dayOfWeek().getAsText(Locale.FRANCE)));
 			return false;
 		}
 		return true;
