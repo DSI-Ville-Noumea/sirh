@@ -68,7 +68,7 @@ public class OePTGVisualisation extends BasicProcess {
 	private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
 	private AgentNW loggedAgent;
 	public String status = "VISU";
-	public String focus = getNOM_PB_FILTRER();
+	public String focus = null;
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
 	private void afficheListePointages() {
@@ -113,9 +113,16 @@ public class OePTGVisualisation extends BasicProcess {
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
-
+	
 	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
 		return focus;
+	}
+
+	public String getDefaultFocus() {
+		return getNOM_PB_FILTRER();
 	}
 
 	/**
@@ -630,10 +637,6 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getVal_ValidAll() {
 		return "Valid_All";
-	}
-
-	public String getCreatBox() {
-		return "Create_Box";
 	}
 
 	public String getValHistory(int id) {
@@ -1199,11 +1202,10 @@ public class OePTGVisualisation extends BasicProcess {
 			if (testerParametre(request, getVal_ValidAll())) {
 				return performPB_VALID(request);
 			}
-			if (testerParametre(request, getCreatBox())) {
+			if (testerParametre(request, getNOM_PB_CREATE_BOX())) {
 				addZone(getNOM_ST_DATE_CREATE(), Const.CHAINE_VIDE);
 				addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 				status = "CREATION";
-				setFocus(getNOM_PB_CREATE());
 				setStatut(STATUT_MEME_PROCESS);
 				return true;
 			}
@@ -1249,7 +1251,6 @@ public class OePTGVisualisation extends BasicProcess {
 
 			if (testerParametre(request, getNOM_PB_CREATE_CANCEL())) {
 				status = "EDIT";
-				setFocus(focus = getNOM_PB_FILTRER());
 				setStatut(STATUT_MEME_PROCESS);
 				return true;
 			}
@@ -1472,6 +1473,9 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getVAL_ST_DATE_VENTIL_F_C() {
 		return getZone(getNOM_ST_DATE_VENTIL_F_C());
+	}
+	public String getNOM_PB_CREATE_BOX() {
+		return "NOM_PB_CREATE_BOX";
 	}
 
 }

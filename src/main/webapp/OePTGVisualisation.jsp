@@ -25,8 +25,6 @@
             <SCRIPT type="text/javascript" src="js/GestionCalendrierSemaine.js"></SCRIPT>
 
             <SCRIPT type="text/javascript">
-
-
                 function executeBouton(nom)
                 {
                     document.formu.elements[nom].click();
@@ -158,11 +156,10 @@
                     return detailContainer;
                 }
 
-
             </SCRIPT>		
             <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         </HEAD>
-        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();   return setfocus('<%=process.getFocus()%>')">	
+        <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
@@ -206,7 +203,7 @@
                 <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_POPULATION()%>" style="width:125px;margin-right:20px;">
                     <%=process.forComboHTML(process.getVAL_LB_POPULATION(), process.getVAL_LB_POPULATION_SELECT())%>
                 </SELECT>
-                <BR/><BR/>
+                <BR/><BR/>           	
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
              	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
                 <script type="text/javascript">
@@ -242,7 +239,9 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
                         <tr>
-                            <th> <INPUT title="Creer un pointage" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getCreatBox()%>"></th>  
+                            <th> 
+                            	<img title="Creer un pointage" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_CREATE_BOX()%>');">
+                			</th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
@@ -325,6 +324,7 @@
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>" value="RECHERCHERAGENTMAX">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>" value="SUPPRECHERCHERAGENTMAX">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CREATE_BOX()%>" value="CREATEBOX">
         </FORM>
     </BODY>
 </HTML>
