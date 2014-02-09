@@ -2609,20 +2609,10 @@ public class OeAGENTCarriere extends BasicProcess {
 					&& gradeGeneriqueSuivant.getCdfili() != null) {
 				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
 			}
-			Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
-			// on recupere les points pour cette categorie (A,B,A+..)
-			// on calcul le nouvel INM
-			String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
-					+ Integer.valueOf(gradeGeneriqueSuivant.getNbPointsAvct()));
-			// avec ce nouvel INM on recupere l'iban et l'ina correspondant
-			ArrayList<Bareme> listBarem = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
-			if (listBarem.size() == 0) {
-				// "ERR186",
-				// "Aucun barème suivant n'a été trouvé pour se grade. Le calcul de l'avancement ne peut donc se faire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR186"));
-				return false;
-			}
-			Bareme nouvBareme = listBarem.get(0);
+
+			// on cherche le nouveau bareme
+			Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
+
 			addZone(getNOM_EF_IBA(), nouvBareme.getIban());
 			addZone(getNOM_ST_INA(), nouvBareme.getIna());
 			addZone(getNOM_ST_INM(), nouvBareme.getInm());

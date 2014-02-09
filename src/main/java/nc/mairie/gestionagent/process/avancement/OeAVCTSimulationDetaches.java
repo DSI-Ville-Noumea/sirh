@@ -421,6 +421,15 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					avct.setInm(bareme.getInm());
 					avct.setIna(bareme.getIna());
 
+					// on cherche le nouveau bareme
+					if (gradeSuivant != null && gradeSuivant.getIban() != null) {
+						Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
+						// on rempli les champs
+						avct.setNouvIBAN(nouvBareme.getIban());
+						avct.setNouvINM(nouvBareme.getInm());
+						avct.setNouvINA(nouvBareme.getIna());
+					}
+
 					// on recupere le grade du poste
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
 					if (aff.getIdFichePoste() == null) {
@@ -447,33 +456,6 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
 									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin());
 								}
-							}
-						}
-
-						// on calcul le nouvel INM
-						if (bareme != null && bareme.getInm() != null) {
-							Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-							GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(),
-									g.getCodeGradeGenerique());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-							}
-							String nouvINM = Const.CHAINE_VIDE;
-							if (gg.getNbPointsAvct() == null) {
-								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()));
-							} else {
-								nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
-										+ Integer.valueOf(gg.getNbPointsAvct()));
-							}
-							// avec ce nouvel INM on recupere l'iban et l'ina
-							// correspondant
-							ArrayList<Bareme> listeBarem = Bareme.listerBaremeByINM(getTransaction(), nouvINM);
-							if (listeBarem.size() > 0) {
-								Bareme nouvBareme = (Bareme) listeBarem.get(0);
-								// on rempli les champs
-								avct.setNouvIBAN(nouvBareme.getIban());
-								avct.setNouvINM(nouvBareme.getInm());
-								avct.setNouvINA(nouvBareme.getIna());
 							}
 						}
 					}
