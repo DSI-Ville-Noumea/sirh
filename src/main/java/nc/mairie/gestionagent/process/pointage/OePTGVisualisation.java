@@ -72,8 +72,10 @@ public class OePTGVisualisation extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
 	private void afficheListePointages() {
+		GregorianCalendar greg = new GregorianCalendar();
 
 		for (ConsultPointageDto ptg : getListePointage().values()) {
+			greg.setTime(ptg.getDate());
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
@@ -82,6 +84,8 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getMATRICULE_ST_AGENT(i),
 					agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+			addZone(getNOM_ST_SEMAINE(i), String.valueOf(greg.get(Calendar.WEEK_OF_YEAR)));
+
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 
 			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()).equals("00:00") ? "" : hrs.format(ptg.getDebut()));
@@ -1468,6 +1472,14 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getNOM_PB_CREATE_BOX() {
 		return "NOM_PB_CREATE_BOX";
+	}
+
+	public String getVAL_ST_SEMAINE(int i) {
+		return getZone(getNOM_ST_SEMAINE(i));
+	}
+
+	public String getNOM_ST_SEMAINE(int i) {
+		return "NOM_ST_SEMAINE_" + i;
 	}
 
 }
