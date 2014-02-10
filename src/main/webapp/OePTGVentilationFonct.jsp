@@ -156,6 +156,8 @@
 						<BR/><BR/>
 						<%if( OePTGVentilationUtils.canProcessVentilation("F")){ %>
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Ventiler" name="<%=process.getNOM_PB_VENTILER()%>">
+						<%}else{ %>		
+						<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 						<%} %>		
                     </FIELDSET>
                 </div>

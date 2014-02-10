@@ -138,6 +138,11 @@ public class OePTGVentilationConvCol extends BasicProcess {
 				return performPB_RESET(request);
 			}
 
+			// Si clic sur le bouton PB_RAFRAICHIR
+			if (testerParametre(request, getNOM_PB_RAFRAICHIR())) {
+				return performPB_RAFRAICHIR(request);
+			}
+
 			// Si clic sur le bouton PB_AJOUTER_AGENT
 			if (testerParametre(request, getNOM_PB_AJOUTER_AGENT())) {
 				return performPB_AJOUTER_AGENT(request);
@@ -653,6 +658,14 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR603", "conventions collectives"));
 			return false;
 		}
+		return true;
+	}
+
+	public String getNOM_PB_RAFRAICHIR() {
+		return "NOM_PB_RAFRAICHIR";
+	}
+
+	public boolean performPB_RAFRAICHIR(HttpServletRequest request) throws Exception {
 		return true;
 	}
 
