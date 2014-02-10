@@ -23,11 +23,13 @@ import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -787,6 +789,34 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 	}
 
+	private boolean verifieDroitAgents(HttpServletRequest request) throws Exception {
+
+		// on recupere l'agent connecté
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), uUser.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
+			}
+			if (user != null && user.getNomatr() != null) {
+				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return false;
+				}
+			}
+		} else {
+			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+		return true;
+
+	}
+
 	private void initialiseInfoVentilation() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		addZone(getNOM_ST_DATE_VENTIL_CC(), "Aucune");
@@ -1011,31 +1041,50 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
 		changeState(getListePointage().values(), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_VALID(HttpServletRequest request, int i) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
 		changeState(getListePointage().get(i), EtatPointageEnum.APPROUVE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
+
 		changeState(getListePointage().values(), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DEL(HttpServletRequest request, int i) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
 		changeState(getListePointage().get(i), EtatPointageEnum.REJETE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
 		changeState(getListePointage().values(), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
 
 	public boolean performPB_DELAY(HttpServletRequest request, int i) throws Exception {
+		if (!verifieDroitAgents(request)) {
+			return false;
+		}
 		changeState(getListePointage().get(i), EtatPointageEnum.EN_ATTENTE);
 		return true;
 	}
@@ -1055,7 +1104,6 @@ public class OePTGVisualisation extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		if (getLoggedAgent() == null) {
 			logger.debug("Agent nul dans jsp visualisation");
-
 		} else {
 
 			Carriere carr;
