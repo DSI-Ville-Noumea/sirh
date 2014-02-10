@@ -113,7 +113,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public void setFocus(String focus) {
 		this.focus = focus;
 	}
-	
+
 	public String getFocus() {
 		if (focus == null) {
 			focus = getDefaultFocus();
@@ -1043,15 +1043,6 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	private void changeState(Collection<ConsultPointageDto> ptg, EtatPointageEnum state) {
-
-		long now = new Date().getTime();
-		for (ConsultPointageDto pt : ptg) {
-			if ((now - pt.getDate().getTime()) / (1000l * 60 * 60 * 24 * 30) >= 3) {
-				getTransaction().declarerErreur(
-						"Au moins un pointage sélectionné est trop ancien pour être modifié (>3 mois)");
-				return;
-			}
-		}
 		ArrayList<Integer> ids = new ArrayList<>();
 		for (ConsultPointageDto pt : ptg) {
 			ids.add(pt.getIdPointage());
@@ -1474,6 +1465,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public String getVAL_ST_DATE_VENTIL_F_C() {
 		return getZone(getNOM_ST_DATE_VENTIL_F_C());
 	}
+
 	public String getNOM_PB_CREATE_BOX() {
 		return "NOM_PB_CREATE_BOX";
 	}
