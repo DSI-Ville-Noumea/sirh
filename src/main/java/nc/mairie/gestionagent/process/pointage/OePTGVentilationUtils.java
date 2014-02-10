@@ -150,8 +150,8 @@ public class OePTGVentilationUtils {
 				sb.append("<th>Nom prénom</th>");
 				sb.append("<th>Mois-année</th>");
 				sb.append("<th>Semaine</th>");
-				sb.append("<th>Minutes concertées</th>");
-				sb.append("<th>Minutes non concertées</th>");
+				sb.append("<th>Abs concertées</th>");
+				sb.append("<th>Abs non concertées</th>");
 				sb.append("<th>&nbsp;</th>");
 				sb.append("</tr></thead>");
 				List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, date, typePointage,
