@@ -66,17 +66,13 @@ public class OePTGVentilationUtils {
 					for (VentilHSupDto hsup : rep) {
 						greg.setTime(hsup.getDateLundi());
 						agent = AgentNW.chercherAgent(aTransaction, String.valueOf(hsup.getId_agent()));
-						Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(aTransaction, agent);
-						BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(aTransaction, carr.getCodeBase());
 						sb.append("<tr>");
 						sb.append("<td>" + agent.getNoMatricule() + "</td>");
 						sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 						sb.append("<td>" + moisAnnee.format(hsup.getDateLundi()) + "</td>");
 						sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getMabs()) + "</td>");
-						sb.append("<td>"
-								+ (baseHoraire == null || baseHoraire.getNbasch() == null ? "" : baseHoraire
-										.getNbasch()) + "</td>");
+						sb.append("<td>&nbsp;</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmHorsContrat()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmNormales()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmSimples()) + "</td>");
@@ -134,8 +130,7 @@ public class OePTGVentilationUtils {
 						sb.append("<td>" + getHeureMinute(hsup.getmSup25()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmSup50()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getmNuit()) + "</td>");
-						sb.append("<td>" + getHeureMinute(hsup.getmDjf())
-								+ "</td>");
+						sb.append("<td>" + getHeureMinute(hsup.getmDjf()) + "</td>");
 						sb.append("<td>" + getHeureMinute(hsup.getM1Mai()) + "</td>");
 						sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
 								+ greg.get(Calendar.WEEK_OF_YEAR)
