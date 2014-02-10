@@ -55,10 +55,16 @@
                     $('#VisualisationPointageList').dataTable({                        
                         "bAutoWidth":false,
                         "aoColumns": [
+                            {"bSortable": false,"sWidth": "0px"},
+                            {"bSortable": false,"sWidth": "0px"},
+                            {"bSortable": false,"sWidth": "0px"},
+                            {"bSortable": false,"sWidth": "0px"},
+                            {"bSortable": false,"sWidth": "1px"},
                             {"bSortable": false,"sWidth": "30px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "30px","sClass" : "center"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "120px"},
+                            {"bSortable": true,"sWidth": "40px","sClass" : "center"},
                             {"bSortable": true,"sWidth": "80px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
@@ -70,7 +76,7 @@
                             {"bSortable": false,"sClass" : "center"},
                             {"bSortable": false,"sClass" : "center"}
                         ],
-						"aaSorting": [[ 4, "asc" ]],
+						"aaSorting": [[ 10, "asc" ]],
                         "sDom": '<"H"flip>t<"F"rip>',
                         "oLanguage": {
                             "oPaginate": {
@@ -126,7 +132,7 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 288px;")
+                            .attr("style", "margin-left: 329px;")
                             .attr("width", "570px")
                             .append($(document.createElement("thead"))
                             );
@@ -155,13 +161,18 @@
                     // Finally return the table
                     return detailContainer;
                 }
+                function test(){
+                	if(event.keyCode == 13){
+                		executeBouton('NOM_PB_FILTRER');
+                	}
+                }
 
             </SCRIPT>		
             <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         </HEAD>
         <BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
-        <FORM name="formu" method="POST" class="sigp2-titre">		
+        <FORM onkeypress="test();" name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:830px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
@@ -239,12 +250,18 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
                         <tr>
-                            <th> 
-                            	<img title="Creer un pointage" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_CREATE_BOX()%>');">
-                			</th>  
+                        	<th></th>
+                        	<th></th>
+                        	<th></th>
+                        	<th></th>
+                        	<th></th>
+                            <th>
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/ajout.gif" height="16px" width="16px" title="Creer un pointage" onClick="executeBouton('<%=process.getNOM_PB_CREATE_BOX()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
+                            <th>S</th>
                             <th>Date</th>
                             <th>Début</th>
                             <th>Fin</th>
@@ -252,22 +269,45 @@
                             <th>Motif<br>Commentaires</th>
                             <th>Etat</th>
                             <th>Date de saisie</th>
-                            <th align="center"><INPUT tabindex="" title="Approuver tous les pointages" type="image"	src="images/valid.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_ValidAll()%>"></th>
-                            <th align="center"><INPUT tabindex="" type="image"  title="Rejeter tous les pointages" 	src="images/del.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_DelAll()%>"></th>
-                            <th align="center"><INPUT tabindex="" type="image"	 title="Mettre en attente tous les pointages" src="images/clock.png"	class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_DelayAll()%>"></th>
+                            <th align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/valid.png" height="16px" width="16px" title="Approuver tous les pointages" onClick="executeBouton('<%=process.getVal_ValidAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </th>
+                            <th align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/del.png" height="16px" width="16px" title="Rejeter tous les pointages" onClick="executeBouton('<%=process.getVal_DelAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </th>
+                            <th align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/clock.png" height="16px" width="16px" title="Mettre en attente tous les pointages" onClick="executeBouton('<%=process.getVal_DelayAll()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <%    for (int indicePtg : process.getListePointage().keySet()) {
                         %>
                         <tr id="tr<%=process.getValHistory(indicePtg)%>">
-                            <td><INPUT title="Editer le pointage" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getSAISIE_PTG(indicePtg)%>"></td>  
-                            <td><img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')"></td>
+                        	<td>
+                        		<INPUT type="submit" style="visibility: hidden;" name="<%=process.getSAISIE_PTG(indicePtg)%>" value="1">
+                            </td>
+                        	<td>
+                        		<INPUT type="submit" style="visibility: hidden;" name="<%=process.getValHistory(indicePtg)%>" value="2">
+                            </td>
+                        	<td>
+                        		<INPUT type="submit" style="visibility: hidden;" name="<%=process.getVal_Valid(indicePtg)%>" value="3">
+                            </td>
+                        	<td>
+                        		<INPUT type="submit" style="visibility: hidden;" name="<%=process.getVal_Del(indicePtg)%>" value="4">
+                            </td>
+                        	<td>
+                        		<INPUT type="submit" style="visibility: hidden;" name="<%=process.getVal_Delay(indicePtg)%>" value="5">
+                            </td>
+                            <td align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" onClick="executeBouton('<%=process.getSAISIE_PTG(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+            				</td>  
+                            <td align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')">
+                            </td>
                             <td><%=process.getVAL_ST_AGENT(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
+                            <td><%=process.getVAL_ST_SEMAINE(indicePtg)%></td>	
                             <td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_DATE_FIN(indicePtg)%></td>							
@@ -275,12 +315,15 @@
                             <td><%=process.getVAL_ST_MOTIF(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
                             <td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
-                            <td align="center"><INPUT type="image" title="Approuver le pointage"	src="images/valid.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_Valid(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image" title="Rejeter le pointage"	src="images/del.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_Del(indicePtg)%>"></td>
-                            <td align="center"><INPUT type="image" title="Mettre en attente le pointage" src="images/clock.png" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-                                                      height="16px" width="16px"	name="<%=process.getVal_Delay(indicePtg)%>"></td>				
+                            <td align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/valid.png" height="16px" width="16px" title="Approuver le pointage" onClick="executeBouton('<%=process.getVal_Valid(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </td>
+                            <td align="center">
+								<img onkeydown="" onkeypress="" onkeyup="" src="images/del.png" height="16px" width="16px" title="Rejeter le pointage" onClick="executeBouton('<%=process.getVal_Del(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </td>
+                            <td align="center">                                               
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/clock.png" height="16px" width="16px" title="Mettre en attente le pointage" onClick="executeBouton('<%=process.getVal_Delay(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+                            </td>				
                         </tr>
                         <%}%>
                     </tbody>
@@ -306,7 +349,8 @@
                         <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATE()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATE()%>" style="margin-right:10px;">
                         <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
-                        <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		
+                        <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATE()%>">	 
+                        <INPUT onkeydown="" onkeypress="" onkeyup="" type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_CREATE_CANCEL()%>">		
                         <BR/><BR/>				
                     </FIELDSET>
                 </div>
@@ -325,6 +369,9 @@
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>" value="SUPPRECHERCHERAGENTMAX">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CREATE_BOX()%>" value="CREATEBOX">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getVal_ValidAll()%>" value="VALIDALL">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getVal_DelAll()%>" value="DELALL">
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getVal_DelayAll()%>" value="DELAYALL">
         </FORM>
     </BODY>
 </HTML>
