@@ -276,13 +276,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-				//"ERR136", "Cet agent n'a aucune carrière active."
+				// "ERR136", "Cet agent n'a aucune carrière active."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
 				return false;
 			}
-			
+
 			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
-				//"ERR802", "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
+				// "ERR802",
+				// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
 				return false;
 			}
@@ -433,6 +434,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+			compteurDto.setAnneePrecedente(false);
 
 			// on sauvegarde
 			message = consuAbs
@@ -501,16 +503,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
-			// TODO alimenter le bon champ pour savoir si sur compteur precedent
-			// ou pas.
+			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			// TODO
-			/*
-			 * message = consuAbs
-			 * .addCompteurReposComp(agentConnecte.getIdAgent(), new
-			 * JSONSerializer().serialize(compteurDto));
-			 */
+			message = consuAbs.addCompteurReposComp(agentConnecte.getIdAgent(),
+					new JSONSerializer().serialize(compteurDto));
+
 		}
 
 		if (message.getErrors().size() > 0) {

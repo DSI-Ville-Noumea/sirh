@@ -38,6 +38,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
 	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
 	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
+	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -257,6 +258,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	public ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurRecup;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCompteurReposComp;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte);
 		ClientResponse res = createAndPostRequest(params, url, json);

@@ -29,4 +29,6 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto saveMotifCompteur(String json);
 
 	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
 }
