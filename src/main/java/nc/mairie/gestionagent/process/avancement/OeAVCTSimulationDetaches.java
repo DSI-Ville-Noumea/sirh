@@ -319,8 +319,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					getTransaction().traiterErreur();
 				// on regarde si il y a d'autre carrieres avec le meme grade
 				// si oui on prend la carriere plus lointaine
-				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(),
-						a.getNoMatricule(), carr.getCodeGrade());
+				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(),
+						a.getNoMatricule(), carr.getCodeGrade(), carr.getCodeCategorie());
 				if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 					carr = (Carriere) listeCarrMemeGrade.get(0);
 				}

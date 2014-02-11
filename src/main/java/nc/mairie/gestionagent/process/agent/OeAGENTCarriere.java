@@ -2557,8 +2557,8 @@ public class OeAGENTCarriere extends BasicProcess {
 	private boolean performCalculFonctionnaire(Carriere carr) throws Exception {
 		// on regarde si il y a d'autre carrieres avec le meme grade
 		// si oui on prend la carriere plus lointaine
-		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGrade(getTransaction(), getAgentCourant()
-				.getNoMatricule(), carr.getCodeGrade());
+		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(),
+				getAgentCourant().getNoMatricule(), carr.getCodeGrade(), carr.getCodeCategorie());
 		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 			carr = (Carriere) listeCarrMemeGrade.get(0);
 		}
@@ -2610,32 +2610,69 @@ public class OeAGENTCarriere extends BasicProcess {
 				filiere = FiliereGrade.chercherFiliereGrade(getTransaction(), gradeGeneriqueSuivant.getCdfili());
 			}
 
-			// on cherche le nouveau bareme
-			Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
+			if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18"))
+					&& (!gradeActuel.getDureeMoy().equals("12"))) {
+				// la date d'avancement est la meme +1an
+				addZone(getNOM_EF_DATE_DEBUT(), Services.ajouteAnnee(carr.getDateDebut(), 1));
 
-			addZone(getNOM_EF_IBA(), nouvBareme.getIban());
-			addZone(getNOM_ST_INA(), nouvBareme.getIna());
-			addZone(getNOM_ST_INM(), nouvBareme.getInm());
+				// on cherche le bareme
+				Bareme bareme = Bareme.chercherBareme(getTransaction(), gradeActuel.getIban());
 
-			addZone(getNOM_EF_BM_ANNEES(), String.valueOf(nbJoursRestantsBM / 365));
-			addZone(getNOM_EF_BM_MOIS(), String.valueOf((nbJoursRestantsBM % 365) / 30));
-			addZone(getNOM_EF_BM_JOURS(), String.valueOf((nbJoursRestantsBM % 365) % 30));
+				addZone(getNOM_EF_IBA(), carr.getIban());
+				addZone(getNOM_ST_INA(), bareme.getIna());
+				addZone(getNOM_ST_INM(), bareme.getInm());
 
-			addZone(getNOM_EF_ACC_ANNEES(), String.valueOf(nbJoursRestantsACC / 365));
-			addZone(getNOM_EF_ACC_MOIS(), String.valueOf((nbJoursRestantsACC % 365) / 30));
-			addZone(getNOM_EF_ACC_JOURS(), String.valueOf((nbJoursRestantsACC % 365) % 30));
+				Integer nouvACCStage = Integer.valueOf(carr.getACCAnnee()) + 1;
+
+				addZone(getNOM_EF_BM_ANNEES(), carr.getBMAnnee());
+				addZone(getNOM_EF_BM_MOIS(), carr.getBMMois());
+				addZone(getNOM_EF_BM_JOURS(), carr.getBMJour());
+
+				addZone(getNOM_EF_ACC_ANNEES(), nouvACCStage.toString());
+				addZone(getNOM_EF_ACC_MOIS(), carr.getACCMois());
+				addZone(getNOM_EF_ACC_JOURS(), carr.getACCJour());
+
+				addZone(getNOM_ST_NOUV_GRADE(), gradeActuel.getCodeGrade() == null
+						|| gradeActuel.getCodeGrade().length() == 0 ? null : gradeActuel.getCodeGrade());
+				addZone(getNOM_ST_NOUV_GRADE_GEN(),
+						gradeActuel.getCodeGradeGenerique() == null
+								|| gradeActuel.getCodeGradeGenerique().length() == 0 ? null : gradeActuel
+								.getCodeGradeGenerique());
+				addZone(getNOM_ST_NOUV_CLASSE(), gradeActuel.getCodeClasse() == null
+						|| gradeActuel.getCodeClasse().length() == 0 ? null : gradeActuel.getCodeClasse());
+				addZone(getNOM_ST_NOUV_ECHELON(), gradeActuel.getCodeEchelon() == null
+						|| gradeActuel.getCodeEchelon().length() == 0 ? null : gradeActuel.getCodeEchelon());
+
+			} else {
+
+				// on cherche le nouveau bareme
+				Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
+
+				addZone(getNOM_EF_IBA(), nouvBareme.getIban());
+				addZone(getNOM_ST_INA(), nouvBareme.getIna());
+				addZone(getNOM_ST_INM(), nouvBareme.getInm());
+				addZone(getNOM_EF_BM_ANNEES(), String.valueOf(nbJoursRestantsBM / 365));
+				addZone(getNOM_EF_BM_MOIS(), String.valueOf((nbJoursRestantsBM % 365) / 30));
+				addZone(getNOM_EF_BM_JOURS(), String.valueOf((nbJoursRestantsBM % 365) % 30));
+
+				addZone(getNOM_EF_ACC_ANNEES(), String.valueOf(nbJoursRestantsACC / 365));
+				addZone(getNOM_EF_ACC_MOIS(), String.valueOf((nbJoursRestantsACC % 365) / 30));
+				addZone(getNOM_EF_ACC_JOURS(), String.valueOf((nbJoursRestantsACC % 365) % 30));
+
+				addZone(getNOM_ST_NOUV_GRADE(), gradeSuivant.getCodeGrade() == null
+						|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
+				addZone(getNOM_ST_NOUV_GRADE_GEN(),
+						gradeSuivant.getCodeGradeGenerique() == null
+								|| gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant
+								.getCodeGradeGenerique());
+				addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null
+						|| gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
+				addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null
+						|| gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
+			}
 
 			addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
 			addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
-
-			addZone(getNOM_ST_NOUV_GRADE(), gradeSuivant.getCodeGrade() == null
-					|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-			addZone(getNOM_ST_NOUV_GRADE_GEN(), gradeSuivant.getCodeGradeGenerique() == null
-					|| gradeSuivant.getCodeGradeGenerique().length() == 0 ? null : gradeSuivant.getCodeGradeGenerique());
-			addZone(getNOM_ST_NOUV_CLASSE(), gradeSuivant.getCodeClasse() == null
-					|| gradeSuivant.getCodeClasse().length() == 0 ? null : gradeSuivant.getCodeClasse());
-			addZone(getNOM_ST_NOUV_ECHELON(), gradeSuivant.getCodeEchelon() == null
-					|| gradeSuivant.getCodeEchelon().length() == 0 ? null : gradeSuivant.getCodeEchelon());
 
 			// on indique que les champs des fonctionnaires ne sont pas à
 			// afficher

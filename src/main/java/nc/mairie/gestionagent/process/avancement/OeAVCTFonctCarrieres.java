@@ -517,7 +517,19 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// si AVIS_CAP != MOY
 						// car pour la simulation on prenait comme ref de calcul
 						// la duree MOY
-						calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
+						if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18"))
+								&& avct.getDureeStandard().equals("12")) {
+							nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
+							nouvelleCarriere.setACCAnnee(avct.getNouvACCAnnee());
+							nouvelleCarriere.setACCMois(avct.getNouvACCMois());
+							nouvelleCarriere.setACCJour(avct.getNouvACCJour());
+							nouvelleCarriere.setBMAnnee(avct.getNouvBMAnnee());
+							nouvelleCarriere.setBMMois(avct.getNouvBMMois());
+							nouvelleCarriere.setBMJour(avct.getNouvBMJour());
+							avct.modifierAvancement(getTransaction());
+						} else {
+							calculAccBm(avct, carr, nouvelleCarriere, idAvisEmp);
+						}
 
 						// on recalcul la date d'avancement
 						if (avct.getIdAvisEmp() != null) {
@@ -549,8 +561,14 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// on ferme cette carriere
 						carr.setDateFin(dateAvctFinale);
 						carr.modifierCarriere(getTransaction(), agentCarr, user);
+						if (avct.getCodeCategorie().equals("2")) {
+							nouvelleCarriere.setCodeCategorie("1");
+						} else if (avct.getCodeCategorie().equals("18")) {
+							nouvelleCarriere.setCodeCategorie("20");
+						} else {
+							nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
+						}
 
-						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete() == null ? Const.ZERO : avct
 								.getNumArrete());
 						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null
@@ -1505,7 +1523,11 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// si AVIS_CAP != MOY
 						// car pour la simulation on prenait comme ref de calcul
 						// la duree MOY
-						calculAccBm(avct, carr, null, idAvisEmp);
+						if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18"))
+								&& avct.getDureeStandard().equals("12")) {
+						} else {
+							calculAccBm(avct, carr, null, idAvisEmp);
+						}
 
 						if (getTransaction().isErreur()) {
 							return false;
