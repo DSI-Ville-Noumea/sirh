@@ -18,6 +18,7 @@ import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.dto.VentilDateDto;
+import nc.mairie.gestionagent.dto.VentilErreurDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgDownloadFicheEtatsPayeur = "etatsPayeur/downloadFicheEtatsPayeur";
 	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
 	private static final String sirhPtgVisualisationIdAgentPointage = "visualisation/listeAgentsPointagesForSIRH";
+	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
 
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -539,5 +541,15 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			result.add(agDto.getIdAgent());
 		}
 		return result;
+	}
+
+	@Override
+	public List<VentilErreurDto> getErreursVentilation(String type) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgErreursVentilation;
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("statut", type);
+		ClientResponse res = createAndFireRequest(parameters, url);
+		return readResponseAsList(VentilErreurDto.class, res, url);
 	}
 }

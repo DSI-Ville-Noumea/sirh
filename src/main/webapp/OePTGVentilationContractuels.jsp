@@ -159,6 +159,11 @@
 						<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 						<%} %>		
                     </FIELDSET>
+                    <br/><br/>
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
+                        <legend class="sigp2Legend">Erreurs eventuelles sur la ventilation des pointages des contractuels</legend>
+                        <%=process.getTabErreurVentil()%>		
+                    </FIELDSET>
                 <% } else {%>
                 <div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
                     <% }%>

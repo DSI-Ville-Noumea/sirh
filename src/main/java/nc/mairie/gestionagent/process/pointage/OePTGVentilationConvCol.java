@@ -53,6 +53,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	private ArrayList<AgentNW> listeAgentsVentil;
 	private String tabVisu;
+	private String tabErreurVentil;
 
 	@Override
 	public String getJSP() {
@@ -96,6 +97,12 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		// initialisation de la liste des agents
 		initialiseListeAgent();
 
+		initialiseTabErreurVentil();
+
+	}
+
+	private void initialiseTabErreurVentil() {
+		setTabErreurVentil(OePTGVentilationUtils.getTabErreurVentil("CC"));
 	}
 
 	private void initialiseListeAgent() {
@@ -667,6 +674,14 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public boolean performPB_RAFRAICHIR(HttpServletRequest request) throws Exception {
 		return true;
+	}
+
+	public String getTabErreurVentil() {
+		return tabErreurVentil == null ? "" : tabErreurVentil;
+	}
+
+	public void setTabErreurVentil(String tabErreurVentil) {
+		this.tabErreurVentil = tabErreurVentil;
 	}
 
 }

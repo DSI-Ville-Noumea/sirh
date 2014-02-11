@@ -53,6 +53,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	private ArrayList<AgentNW> listeAgentsVentil;
 	private String tabVisu;
+	private String tabErreurVentil;
 
 	@Override
 	public String getJSP() {
@@ -100,6 +101,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// initialisation de la liste des agents
 		initialiseListeAgent();
 
+		initialiseTabErreurVentil();
+
+	}
+
+	private void initialiseTabErreurVentil() {
+		setTabErreurVentil(OePTGVentilationUtils.getTabErreurVentil("F"));
 	}
 
 	private void initialiseListeAgent() {
@@ -249,6 +256,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
 		setTabVisu("");
+		setTabErreurVentil("");
 		addZone(getNOM_ST_AGENT_MIN(), "");
 		addZone(getNOM_ST_AGENT_MAX(), "");
 
@@ -679,5 +687,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public boolean performPB_RAFRAICHIR(HttpServletRequest request) throws Exception {
 		return true;
+	}
+
+	public String getTabErreurVentil() {
+		return tabErreurVentil == null ? "" : tabErreurVentil;
+	}
+
+	public void setTabErreurVentil(String tabErreurVentil) {
+		this.tabErreurVentil = tabErreurVentil;
 	}
 }

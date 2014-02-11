@@ -6,12 +6,13 @@ import java.util.List;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ConsultPointageDto;
-import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.dto.VentilDateDto;
+import nc.mairie.gestionagent.dto.VentilErreurDto;
 
 import com.sun.jersey.api.client.ClientResponse;
 
@@ -66,4 +67,6 @@ public interface ISirhPtgWSConsumer {
 	boolean startExportEtatsPayeur(String idAgentExporting, String statutString);
 
 	public ArrayList<Integer> getListeIdAgentPointage();
+
+	List<VentilErreurDto> getErreursVentilation(String type);
 }

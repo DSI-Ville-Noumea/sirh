@@ -5,12 +5,14 @@
 package nc.mairie.gestionagent.process.pointage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.VentilAbsenceDto;
+import nc.mairie.gestionagent.dto.VentilErreurDto;
 import nc.mairie.gestionagent.dto.VentilHSupDto;
 import nc.mairie.gestionagent.dto.VentilPrimeDto;
 import nc.mairie.metier.agent.AgentNW;
@@ -247,6 +249,37 @@ public class OePTGVentilationUtils {
 		cal.set(Calendar.WEEK_OF_YEAR, week); // back to previous week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
 		return sdf.format(cal.getTime());
+	}
+
+	public static String getTabErreurVentil(String type) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		StringBuilder sb = new StringBuilder();
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+
+		ArrayList<VentilErreurDto> listeErreurs = (ArrayList<VentilErreurDto>) consum.getErreursVentilation(type);
+		sb.append("<table class=\"sigp2NewTab\" style=\"text-align:left;width:980px;\"> ");
+
+		sb.append("<tr>");
+		sb.append("<td class=\"sigp2NewTab-liste\" style=\"width:100px;\" > Agent en erreur </td>");
+		sb.append("<td class=\"sigp2NewTab-liste\" style=\"width:90px;\" > Date ventilation </td>");
+		sb.append("<td class=\"sigp2NewTab-liste\" >Erreur</td>");
+		sb.append("</tr>");
+
+		for (VentilErreurDto dto : listeErreurs) {
+			sb.append("<tr>");
+			sb.append("<td class=\"sigp2NewTab-liste\" style=\"width:100px;\" >"
+					+ dto.getIdAgent().toString().substring(3, dto.getIdAgent().toString().length()) + "</td>");
+			sb.append("<td class=\"sigp2NewTab-liste\" style=\"width:90px;\" >" + sdf.format(dto.getDateCreation())
+					+ "</td>");
+			sb.append("<td class=\"sigp2NewTab-liste\">" + dto.getTaskStatus() + "</td>");
+			sb.append("</tr>");
+		}
+
+		sb.append("</table>");
+		return sb.toString();
+
 	}
 
 }
