@@ -222,7 +222,7 @@
 		value="SITE-MAIRIE" />
 	<Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE"
 		override="false"
-		value="svq-sp" />
+		value="qual.portail.ville-noumea.nc" />
 	<Parameter description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE"
 		override="false"
 		value="80" />
