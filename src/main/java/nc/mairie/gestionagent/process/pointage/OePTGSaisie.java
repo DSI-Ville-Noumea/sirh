@@ -18,6 +18,7 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.HeureSupDto;
 import nc.mairie.gestionagent.dto.JourPointageDto;
 import nc.mairie.gestionagent.dto.PrimeDto;
+import nc.mairie.gestionagent.dto.TypeAbsenceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;
@@ -342,13 +343,13 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new AbsenceDto();
-			ret.setConcertee(data.getChk().equals("CHECKED_ON"));
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
 			ret.setMotif(data.getMotif());
 			ret.setIdRefEtat(data.getIdRefEtat());
 			ret.setIdPointage(data.getIdPtg());
+			ret.setIdTypeAbsence(data.getIdTypeAbsence());
 			logger.debug("Absence " + id);
 		}
 		return ret;
@@ -388,6 +389,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
 		ret.setIdPtg(Integer.parseInt("0" + getZone("NOM_idptg_" + id)));
 		ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
+		ret.setIdTypeAbsence(Integer.parseInt("0" + getZone("NOM_typeAbs_" + id)));
 		return ret;
 	}
 
@@ -551,6 +553,38 @@ public class OePTGSaisie extends BasicProcess {
 			}
 			ret.append("<option value='" + val + "'" + (selected.equals(val) ? "selected" : "") + ">" + val
 					+ "</option>");
+		}
+		return ret.toString();
+	}
+
+	public String getTypeAbsenceCombo(Integer idTypeAbs) {
+
+		String selected = "";
+		if (null != idTypeAbs) {
+			selected = idTypeAbs.toString();
+		}
+
+		StringBuilder ret = new StringBuilder();
+		ret.append("<option value=''></option>");
+		// on recupere la liste des types d'absence absence
+		SirhPtgWSConsumer consu = new SirhPtgWSConsumer();
+		// TODO
+		// ArrayList<TrucDto> listeTypeAbs = consu.getListeTypeAbsence();
+		ArrayList<TypeAbsenceDto> listeTypeAbs = new ArrayList<>();
+		TypeAbsenceDto t = new TypeAbsenceDto();
+		t.setIdTypeAbsence(1);
+		t.setLibelleTypeAbsence("abs. immédiate");
+		TypeAbsenceDto t2 = new TypeAbsenceDto();
+		t2.setIdTypeAbsence(2);
+		t2.setLibelleTypeAbsence("abs. concertée");
+		listeTypeAbs.add(t);
+		listeTypeAbs.add(t2);
+
+		for (TypeAbsenceDto typeAbs : listeTypeAbs) {
+			ret.append("<option value='" + typeAbs.getLibelleTypeAbsence() + "'"
+					+ (selected.equals(typeAbs.getIdTypeAbsence()) ? "selected" : "") + ">"
+					+ typeAbs.getLibelleTypeAbsence() + "</option>");
+
 		}
 		return ret.toString();
 	}

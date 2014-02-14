@@ -249,13 +249,13 @@
 					    		AbsenceDto abs = null;
 					    		String id = "ABS:" + i + ":" + j;
 					    		String status = "";
-					    		boolean chkAbs = false;
 								Date heureDebut = null;
 								Date heureFin = null;
 								String motif = "";
 								String commentaire = "";
 								Integer idPtg = 0;
 								Integer idRefEtat = 0;
+								Integer idTypeAbs = 0;
 					    		
 								if (process.getAbsences().containsKey(dateIndex) && process.getAbsences().get(dateIndex).size() > j) {
 									abs = process.getAbsences().get(dateIndex).get(j);
@@ -263,13 +263,13 @@
 								
 								if(null != abs) {
 									status = abs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(abs.getIdRefEtat()) : "";
-									chkAbs = abs.getConcertee() != null ? abs.getConcertee() : false;
 									heureDebut = abs.getHeureDebut();
 									heureFin = abs.getHeureFin();
 									motif = abs.getMotif();
 									commentaire = abs.getCommentaire();
 									idPtg = abs.getIdPointage();
 									idRefEtat = abs.getIdRefEtat();
+									idTypeAbs = abs.getIdTypeAbsence();
 								}
 								%>
 								<td>
@@ -292,7 +292,7 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox" name="NOM_CK_<%=id %>" <% if(chkAbs){ %> checked <% } %> /> Concertée
+												<select name="NOM_typeAbs_<%=id %>"><%=process.getTypeAbsenceCombo(idTypeAbs) %></select>
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">

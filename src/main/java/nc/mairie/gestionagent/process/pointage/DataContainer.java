@@ -13,6 +13,7 @@ public class DataContainer {
 	private String mins = "";
 	private int idPtg = 0;
 	private int idRefEtat = 0;
+	private int idTypeAbsence = 0;
 
 	public DataContainer() {
 	}
@@ -87,6 +88,14 @@ public class DataContainer {
 
 	public void setMins(String mins) {
 		this.mins = mins;
+	}
+
+	public int getIdTypeAbsence() {
+		return idTypeAbsence;
+	}
+
+	public void setIdTypeAbsence(int idTypeAbsence) {
+		this.idTypeAbsence = idTypeAbsence;
 	}
 
 }

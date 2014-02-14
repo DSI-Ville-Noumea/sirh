@@ -6,6 +6,7 @@ public class VentilAbsenceDto extends VentilDto {
 
 	private int minutesConcertees;
 	private int minutesNonConcertees;
+	private int minutesImmediates;
 
 	public VentilAbsenceDto() {
 	}
@@ -40,5 +41,13 @@ public class VentilAbsenceDto extends VentilDto {
 
 	public void setMinutesNonConcertees(int minutesNonConcertees) {
 		this.minutesNonConcertees = minutesNonConcertees;
+	}
+
+	public int getMinutesImmediates() {
+		return minutesImmediates;
+	}
+
+	public void setMinutesImmediates(int minutesImmediates) {
+		this.minutesImmediates = minutesImmediates;
 	}
 }

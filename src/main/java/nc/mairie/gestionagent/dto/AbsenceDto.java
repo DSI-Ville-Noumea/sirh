@@ -2,16 +2,16 @@ package nc.mairie.gestionagent.dto;
 
 public class AbsenceDto extends PointageDto {
 
-	private Boolean concertee;
+	private Integer idTypeAbsence;
 
 	public AbsenceDto() {
 	}
 
-	public Boolean getConcertee() {
-		return concertee;
+	public Integer getIdTypeAbsence() {
+		return idTypeAbsence;
 	}
 
-	public void setConcertee(Boolean concertee) {
-		this.concertee = concertee;
+	public void setIdTypeAbsence(Integer idTypeAbsence) {
+		this.idTypeAbsence = idTypeAbsence;
 	}
 }

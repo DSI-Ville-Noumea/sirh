@@ -154,6 +154,8 @@ public class OePTGVentilationUtils {
 				sb.append("<th>Semaine</th>");
 				sb.append("<th>Abs concertées</th>");
 				sb.append("<th>Abs non concertées</th>");
+				sb.append("<th>Abs immédiates</th>");
+				sb.append("<th>Total</th>");
 				sb.append("<th>&nbsp;</th>");
 				sb.append("</tr></thead>");
 				List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, date, typePointage,
@@ -169,7 +171,10 @@ public class OePTGVentilationUtils {
 					sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
 					sb.append("<td>" + getHeureMinute(abs.getMinutesConcertees()) + "</td>");
 					sb.append("<td>" + getHeureMinute(abs.getMinutesNonConcertees()) + "</td>");
-					// sb.append("<td><img border=\"0\" src=\"images/loupe.gif\" width=\"16px\" height=\"16px\" style=\"cursor : pointer;\"></td>");
+					sb.append("<td>" + getHeureMinute(abs.getMinutesImmediates()) + "</td>");
+					sb.append("<td>"
+							+ getHeureMinute(abs.getMinutesConcertees() + abs.getMinutesNonConcertees()
+									+ abs.getMinutesImmediates()) + "</td>");
 					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
 							+ greg.get(Calendar.WEEK_OF_YEAR)
 							+ ":"
