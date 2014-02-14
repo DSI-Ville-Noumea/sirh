@@ -216,6 +216,14 @@ public class OePTGSaisie extends BasicProcess {
 								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de motif.");
 						return false;
 					}
+					// vérification type Absence obligatoire
+					if (absDto.getIdTypeAbsence().equals(Const.CHAINE_VIDE)) {
+						getTransaction().traiterErreur();
+						logger.debug("Tentative de sauvegarde d'une absence sans type.");
+						getTransaction().declarerErreur(
+								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de type (concertée, non concertée, immédiate).");
+						return false;
+					}
 				}
 			}
 
