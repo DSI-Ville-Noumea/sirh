@@ -923,40 +923,36 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	private boolean performControlerRGDiplome(HttpServletRequest request) {
 		// Vérification des contraintes d'unicité du diplome
-		if (getVAL_ST_ACTION_DIPLOME().equals(ACTION_CREATION_DIPLOME)) {
 
-			// Recup du titre
-			int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) : -1);
-			if (numligneTitre == -1 || getListeTitreDiplome().size() == 0
-					|| numligneTitre > getListeTitreDiplome().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
+		// Recup du titre
+		int numligneTitre = (Services.estNumerique(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_TITRE_DIPLOME_SELECT())) : -1);
+		if (numligneTitre == -1 || getListeTitreDiplome().size() == 0 || numligneTitre > getListeTitreDiplome().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Titres"));
+			return false;
+		}
+		TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
+				: null);
+
+		// Recup de la spécialité
+		int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) : -1);
+		if (numligneSpe == -1 || getListeSpeDiplome().size() == 0 || numligneSpe > getListeSpeDiplome().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
+			return false;
+		}
+		SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome()
+				.get(numligneSpe - 1) : null);
+
+		for (DiplomeAgent diplome : getListeDiplomesAgent()) {
+			if (diplome.getIdAgent().equals(getAgentCourant().getIdAgent())
+					&& diplome.getIdSpecialiteDiplome().equals(newSpec.getIdSpeDiplome())
+					&& diplome.getNomEcole().equals(getVAL_EF_NOM_ECOLE().toUpperCase())
+					&& diplome.getIdTitreDiplome().equals(newTitre.getIdTitreDiplome())) {
+				// "ERR974",
+				// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplôme", "ces valeurs"));
 				return false;
-			}
-			TitreDiplome newTitre = (numligneTitre > 0 ? (TitreDiplome) getListeTitreDiplome().get(numligneTitre - 1)
-					: null);
-
-			// Recup de la spécialité
-			int numligneSpe = (Services.estNumerique(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_SPECIALITE_DIPLOME_SELECT())) : -1);
-			if (numligneSpe == -1 || getListeSpeDiplome().size() == 0 || numligneSpe > getListeSpeDiplome().size()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Spécialités"));
-				return false;
-			}
-			SpecialiteDiplomeNW newSpec = (numligneSpe > 0 ? (SpecialiteDiplomeNW) getListeSpeDiplome().get(
-					numligneSpe - 1) : null);
-
-			for (DiplomeAgent diplome : getListeDiplomesAgent()) {
-				if (diplome.getIdAgent().equals(getAgentCourant().getIdAgent())
-						&& diplome.getDateObtention().equals(Services.formateDate(getVAL_EF_DATE_OBTENTION_DIPLOME()))
-						&& diplome.getIdSpecialiteDiplome().equals(newSpec.getIdSpeDiplome())
-						&& diplome.getNomEcole().equals(getVAL_EF_NOM_ECOLE().toUpperCase())
-						&& diplome.getIdTitreDiplome().equals(newTitre.getIdTitreDiplome())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplôme", "ces valeurs"));
-					return false;
-				}
 			}
 		}
 		return true;
