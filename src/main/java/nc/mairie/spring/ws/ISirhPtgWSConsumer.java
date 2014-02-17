@@ -11,6 +11,7 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.gestionagent.dto.VentilErreurDto;
 
@@ -69,4 +70,6 @@ public interface ISirhPtgWSConsumer {
 	public ArrayList<Integer> getListeIdAgentPointage();
 
 	List<VentilErreurDto> getErreursVentilation(String type);
+
+	List<TypeAbsenceDto> getListeRefTypeAbsence();
 }

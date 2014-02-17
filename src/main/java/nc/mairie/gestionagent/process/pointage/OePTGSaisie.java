@@ -217,11 +217,12 @@ public class OePTGSaisie extends BasicProcess {
 						return false;
 					}
 					// vérification type Absence obligatoire
-					if (absDto.getIdTypeAbsence().equals(Const.CHAINE_VIDE)) {
+					if (absDto.getIdTypeAbsence() == 0) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence sans type.");
 						getTransaction().declarerErreur(
-								"L'absence saisie le " + sdf.format(jour.getDate()) + " n'a pas de type (concertée, non concertée, immédiate).");
+								"L'absence saisie le " + sdf.format(jour.getDate())
+										+ " n'a pas de type (concertée, non concertée, immédiate).");
 						return false;
 					}
 				}
@@ -286,7 +287,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setTypeSaisie(typesaisie);
 		ret.setTitre(title);
 
-		DataContainer data = getData(id, d);
+		DataContainer data = getData(id, d, false);
 		boolean saisie = true;
 		switch (typesaisie) {
 			case "PERIODE_HEURES":
@@ -342,7 +343,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private AbsenceDto getAbsence(Date d, String id) {
 		AbsenceDto ret = null;
-		DataContainer data = getData(id, d);
+		DataContainer data = getData(id, d, true);
 		boolean saisie = true;
 
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
@@ -358,6 +359,8 @@ public class OePTGSaisie extends BasicProcess {
 			ret.setIdRefEtat(data.getIdRefEtat());
 			ret.setIdPointage(data.getIdPtg());
 			ret.setIdTypeAbsence(data.getIdTypeAbsence());
+			// TODO à supprimer
+			ret.setConcertee(data.getIdTypeAbsence() == 1);
 			logger.debug("Absence " + id);
 		}
 		return ret;
@@ -365,7 +368,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private HeureSupDto getHS(Date d, String id) {
 		HeureSupDto ret = null;
-		DataContainer data = getData(id, d);
+		DataContainer data = getData(id, d, false);
 		boolean saisie = true;
 
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
@@ -386,9 +389,8 @@ public class OePTGSaisie extends BasicProcess {
 		return ret;
 	}
 
-	private DataContainer getData(String id, Date d) {
+	private DataContainer getData(String id, Date d, boolean isAbsence) {
 		DataContainer ret = new DataContainer();
-		ret.setChk(getZone("NOM_CK_" + id));
 		ret.setMotif(getZone("NOM_motif_" + id));
 		ret.setComment(getZone("NOM_comm_" + id));
 		ret.setNbr(getZone("NOM_nbr_" + id));
@@ -397,7 +399,11 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setTimeF(getDateFromTimeCombo(d, getZone("NOM_time_" + id + "_F"), Integer.parseInt(id.split(":")[1])));
 		ret.setIdPtg(Integer.parseInt("0" + getZone("NOM_idptg_" + id)));
 		ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
-		ret.setIdTypeAbsence(Integer.parseInt("0" + getZone("NOM_typeAbs_" + id)));
+		if (isAbsence) {
+			ret.setIdTypeAbsence(Integer.parseInt("0" + getZone("NOM_typeAbs_" + id)));
+		} else {
+			ret.setChk(getZone("NOM_CK_" + id));
+		}
 		return ret;
 	}
 
@@ -567,31 +573,21 @@ public class OePTGSaisie extends BasicProcess {
 
 	public String getTypeAbsenceCombo(Integer idTypeAbs) {
 
-		String selected = "";
+		Integer selected = 0;
 		if (null != idTypeAbs) {
-			selected = idTypeAbs.toString();
+			selected = idTypeAbs;
 		}
 
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
 		// on recupere la liste des types d'absence absence
 		SirhPtgWSConsumer consu = new SirhPtgWSConsumer();
-		// TODO
-		// ArrayList<TrucDto> listeTypeAbs = consu.getListeTypeAbsence();
-		ArrayList<TypeAbsenceDto> listeTypeAbs = new ArrayList<>();
-		TypeAbsenceDto t = new TypeAbsenceDto();
-		t.setIdTypeAbsence(1);
-		t.setLibelleTypeAbsence("abs. immédiate");
-		TypeAbsenceDto t2 = new TypeAbsenceDto();
-		t2.setIdTypeAbsence(2);
-		t2.setLibelleTypeAbsence("abs. concertée");
-		listeTypeAbs.add(t);
-		listeTypeAbs.add(t2);
+		ArrayList<TypeAbsenceDto> listeTypeAbs = (ArrayList<TypeAbsenceDto>) consu.getListeRefTypeAbsence();
 
 		for (TypeAbsenceDto typeAbs : listeTypeAbs) {
-			ret.append("<option value='" + typeAbs.getLibelleTypeAbsence() + "'"
-					+ (selected.equals(typeAbs.getIdTypeAbsence()) ? "selected" : "") + ">"
-					+ typeAbs.getLibelleTypeAbsence() + "</option>");
+			ret.append("<option value='" + typeAbs.getIdRefTypeAbsence() + "'"
+					+ (selected == typeAbs.getIdRefTypeAbsence() ? "selected" : "") + ">" + typeAbs.getLibelle()
+					+ "</option>");
 
 		}
 		return ret.toString();

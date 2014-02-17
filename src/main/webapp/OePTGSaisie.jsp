@@ -26,6 +26,7 @@
                 document.getElementById("NOM_comm_" + id).value = '';
                 if (document.getElementById("NOM_time_" + id + "_D") !== null) {document.getElementById("NOM_time_" + id + "_D").value = '';}
                 if (document.getElementById("NOM_time_" + id + "_F") !== null) {document.getElementById("NOM_time_" + id + "_F").value = '';}
+                if (document.getElementById("NOM_typeAbs_" + id ) !== null) {document.getElementById("NOM_typeAbs_" + id ).value = '';}
             }
         </SCRIPT>		
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

@@ -2,26 +2,26 @@ package nc.mairie.gestionagent.dto;
 
 public class TypeAbsenceDto {
 
-	private Integer idTypeAbsence;
-	private String libelleTypeAbsence;
+	private Integer idRefTypeAbsence;
+	private String libelle;
 
 	public TypeAbsenceDto() {
 
 	}
 
-	public Integer getIdTypeAbsence() {
-		return idTypeAbsence;
+	public Integer getIdRefTypeAbsence() {
+		return idRefTypeAbsence;
 	}
 
-	public void setIdTypeAbsence(Integer idTypeAbsence) {
-		this.idTypeAbsence = idTypeAbsence;
+	public void setIdRefTypeAbsence(Integer idRefTypeAbsence) {
+		this.idRefTypeAbsence = idRefTypeAbsence;
 	}
 
-	public String getLibelleTypeAbsence() {
-		return libelleTypeAbsence;
+	public String getLibelle() {
+		return libelle;
 	}
 
-	public void setLibelleTypeAbsence(String libelleTypeAbsence) {
-		this.libelleTypeAbsence = libelleTypeAbsence;
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
 	}
 }

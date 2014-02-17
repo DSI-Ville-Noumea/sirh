@@ -17,6 +17,7 @@ import nc.mairie.gestionagent.dto.FichePointageDto;
 import nc.mairie.gestionagent.dto.RefEtatDto;
 import nc.mairie.gestionagent.dto.RefPrimeDto;
 import nc.mairie.gestionagent.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.VentilDateDto;
 import nc.mairie.gestionagent.dto.VentilErreurDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -62,6 +63,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
 	private static final String sirhPtgVisualisationIdAgentPointage = "visualisation/listeAgentsPointagesForSIRH";
 	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
+	private static final String sirhPtgTypeAbsence = "filtres/getTypesAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -551,5 +553,13 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		parameters.put("statut", type);
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(VentilErreurDto.class, res, url);
+	}
+
+	@Override
+	public List<TypeAbsenceDto> getListeRefTypeAbsence() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgTypeAbsence;
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}
 }
