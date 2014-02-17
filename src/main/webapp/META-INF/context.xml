@@ -186,10 +186,10 @@
 	
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
 	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
-		override="false" value="http://svq-sp/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
+		override="false" value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
 	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
 		override="false"
-		value="http://svq-sp/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
+		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
 	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la GED Sharepoint -->
 	<Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE"
 		override="false"
