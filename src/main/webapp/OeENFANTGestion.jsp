@@ -83,67 +83,105 @@
 		<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
 		    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			    <legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-			    <br/>
-				<span class="sigp2Mandatory" style="width: 100px;"> Nom : </span>
-	    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
-					<INPUT class="sigp2-saisie" maxlength="40" style="width: 150px;margin-left: 10px;" name="<%= process.getNOM_EF_NOM() %>" type="text" value="<%= process.getVAL_EF_NOM() %>">
-				<%} else {%>
-					<INPUT class="sigp2-saisie" maxlength="40" style="width: 150px;margin-left: 10px;" name="<%= process.getNOM_EF_NOM() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_NOM() %>">
-				<%} %>
-				
-				<span class="sigp2Mandatory" style="margin-left: 150px;width: 100px;"> Prénom : </span>
-	    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
-					<INPUT class="sigp2-saisie" maxlength="40" style="width: 150px;margin-left: 10px;" name="<%= process.getNOM_EF_PRENOM() %>" type="text" value="<%= process.getVAL_EF_PRENOM() %>">
-				<%} else {%>
-					<INPUT class="sigp2-saisie" maxlength="40" style="width: 150px;margin-left: 10px;" name="<%= process.getNOM_EF_PRENOM() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_PRENOM() %>">
-				<%} %>
-				<br/><br/>
-				
-				<span class="sigp2Mandatory" style="width: 100px;"> Sexe : </span>
-				<INPUT style="margin-left: 10px;" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_M())%> >Masculin		
-				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_F())%> >Féminin
-				
-				<span style="margin-left: 165px;width: 100px;" class="sigp2Mandatory"> Nationalité :</span>
-				<SELECT class="sigp2-saisie" style="margin-left: 5px;" name="<%= process.getNOM_LB_NATIONALITE() %>">
-					<%=process.forComboHTML(process.getVAL_LB_NATIONALITE(), process.getVAL_LB_NATIONALITE_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-				
-				<span class="sigp2Mandatory"> Date de naissance :</span>
-	    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISS() %>">
-					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISS()%>', 'dd/mm/y');">
-				<%} else {%>
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_DATE_NAISS() %>">
-				<%} %>
-
-	            <span class="sigp2" style="margin-left: 210px;width: 100px;"> Lieu de naissance :</span>
-	            <INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_LIEU_NAISS()%>" height="20px" width="20px">
-	            <%if (! process.getVAL_ST_COMMUNE_NAISS().equals(null) ) {%>
-		            <span class="sigp2-saisie"><%=process.getVAL_ST_COMMUNE_NAISS() %> - <%=process.getVAL_ST_PAYS_NAISS() %></span>
-				<%}%>
-				<br/><br/>
-				
-				<span class="sigp2Mandatory" style="width: 100px;"> Enfant à charge :</span>
-				<INPUT style="margin-left: 10px;" type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHARGE(),process.getNOM_RB_CHARGE_O())%> >Oui
-				<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHARGE(),process.getNOM_RB_CHARGE_N())%> >Non
-				
-				<span style="margin-left: 215px;width: 100px;" class="sigp2" > Autre parent :</span>
-				<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_AUTRE_PARENT()%>" height="20px" width="20px" >
-				<INPUT type="image" name="<%=process.getNOM_PB_AUTRE_PARENT_VIRE()%>" src="images/suppression.gif" height="20px" width="20px" >
-				
-				<span class="sigp2-saisie"><%=process.getVAL_ST_AUTRE_PARENT()%></span>
-				<br/><br>
-				
-				<span style="width: 100px;" class="sigp2"> Date de décès :</span>
-				<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DECES() %>" type="text" value="<%= process.getVAL_EF_DATE_DECES() %>">
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DECES()%>', 'dd/mm/y');" hspace="5">
-				<br/><br/>
-				
-				<span style="width: 100px;" class="sigp2"> Commentaire :</span>
-				<INPUT class="sigp2-saisie" maxlength="30" style="width: 200px;" name="<%= process.getNOM_EF_COMMENTAIRE() %>"  type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
-				<br/><br/>
-				
+			    
+			    <table>
+			    	<tr>
+			    		<td width="120px;">
+							<span class="sigp2Mandatory"> Nom : </span>
+						</td>
+						<td width="220px;">
+				    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+								<INPUT class="sigp2-saisie" maxlength="40" name="<%= process.getNOM_EF_NOM() %>" type="text" value="<%= process.getVAL_EF_NOM() %>">
+							<%} else {%>
+								<INPUT class="sigp2-saisie" maxlength="40" name="<%= process.getNOM_EF_NOM() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_NOM() %>">
+							<%} %>
+			    		</td>
+			    		<td width="120px;">
+						    <span class="sigp2Mandatory"> Prénom : </span>
+						</td>
+						<td>
+				    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+								<INPUT class="sigp2-saisie" maxlength="40" name="<%= process.getNOM_EF_PRENOM() %>" type="text" value="<%= process.getVAL_EF_PRENOM() %>">
+							<%} else {%>
+								<INPUT class="sigp2-saisie" maxlength="40" name="<%= process.getNOM_EF_PRENOM() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_PRENOM() %>">
+							<%} %>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+							<span class="sigp2Mandatory"> Sexe : </span>
+						</td>
+						<td>
+							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_M())%> ><span class="sigp2Mandatory">Masculin</span>
+							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SEXE(),process.getNOM_RB_SEXE_F())%> ><span class="sigp2Mandatory">Féminin</span>
+			    		</td>
+			    		<td>				
+							<span class="sigp2Mandatory"> Nationalité :</span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NATIONALITE() %>">
+								<%=process.forComboHTML(process.getVAL_LB_NATIONALITE(), process.getVAL_LB_NATIONALITE_SELECT()) %>
+							</SELECT>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>			
+							<span class="sigp2Mandatory"> Date de naissance :</span>
+						</td>
+						<td>
+				    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
+								<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISS() %>">
+								<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISS()%>', 'dd/mm/y');">
+							<%} else {%>
+								<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_DATE_NAISS() %>">
+							<%} %>
+			    		</td>
+			    		<td>					
+				            <span class="sigp2"> Lieu de naissance :</span>
+						</td>
+						<td>
+				            <INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_LIEU_NAISS()%>" height="20px" width="20px">
+				            <%if (! process.getVAL_ST_COMMUNE_NAISS().equals(null) ) {%>
+					            <span class="sigp2-saisie"><%=process.getVAL_ST_COMMUNE_NAISS() %> - <%=process.getVAL_ST_PAYS_NAISS() %></span>
+							<%}%>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>	
+							<span class="sigp2Mandatory"> Enfant à charge :</span>
+						</td>
+						<td>
+							<INPUT style="margin-left: 10px;" type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHARGE(),process.getNOM_RB_CHARGE_O())%> ><span class="sigp2Mandatory">Oui</span>
+							<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_CHARGE(),process.getNOM_RB_CHARGE_N())%> ><span class="sigp2Mandatory">Non</span>
+			    		</td>
+			    		<td>					
+							<span class="sigp2" > Autre parent :</span>
+						</td>
+						<td>
+							<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_AUTRE_PARENT()%>" height="20px" width="20px" >
+							<INPUT type="image" name="<%=process.getNOM_PB_AUTRE_PARENT_VIRE()%>" src="images/suppression.gif" height="20px" width="20px" >
+							<span class="sigp2-saisie"><%=process.getVAL_ST_AUTRE_PARENT()%></span>	
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>	
+							<span class="sigp2"> Date de décès :</span>
+						</td>
+						<td colspan="2">
+							<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DECES() %>" type="text" value="<%= process.getVAL_EF_DATE_DECES() %>">
+							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DECES()%>', 'dd/mm/y');" hspace="5">
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>	
+							<span class="sigp2"> Commentaire :</span>
+						</td>
+						<td colspan="2">
+							<INPUT class="sigp2-saisie" maxlength="30" style="width: 200px;" name="<%= process.getNOM_EF_COMMENTAIRE() %>"  type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
+			    		</td>
+			    	</tr>
+			    </table>
+			    <br/>				
 				<FIELDSET>
 					<legend>Scolarité</legend>
 					<br/>
@@ -186,45 +224,74 @@
 			    <% if (process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION)){ %><FONT color='red'>Veuillez valider votre choix.</FONT>
 			    <br/><br/>
 			    <% } %>
-				<span class="sigp2" style="width: 100px">Nom : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px;"><%=process.getVAL_ST_NOM() %></span>
-				<span class="sigp2" style="width: 100px">Prénom : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_PRENOM() %></span>
+			    <table border="0">
+				    <tr>
+				    	<td width="300px;">
+				    		<span class="sigp2">Nom : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NOM() %></span>
+						</td>
+				    	<td>
+							<span class="sigp2">Prénom : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_PRENOM() %></span>
+						</td>
+				    </tr>	
+				    <tr>
+				    	<td width="300px;">
+							<span class="sigp2" >Sexe : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_SEXE() %></span>
+						</td>
+				    	<td>
+							<span class="sigp2">Nationalité : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NATIONALITE() %></span>
+						</td>
+				    </tr>	
+				    <tr>
+				    	<td width="300px;">
+							<span class="sigp2" >Date de naissance : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_DATENAISS() %></span>
+						</td>
+				    	<td>
+							<span class="sigp2">Lieu de naissance : </span>
+				            <%if (! process.getVAL_ST_COMMUNE_NAISS().equals(null) ) {%>
+					            <span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_COMMUNE_NAISS() %> - <%=process.getVAL_ST_PAYS_NAISS() %></span>
+							<%}%>
+						</td>
+				    </tr>	
+				    <tr>
+				    	<td width="300px;">
+							<span class="sigp2">Enfant à charge : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_ACHARGE() %></span>  
+						</td>
+				    	<td>				                               
+							<span class="sigp2">Autre parent : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_AUTRE_PARENT()%></span>
+						</td>
+				    </tr>
+				    <tr>
+				    	<td colspan="2" width="300px;">
+							<span class="sigp2">Date de décès : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_DATEDECES() %></span>
+						</td>
+				    </tr>
+				    <tr>
+				    	<td colspan="2" width="300px;">
+							<span class="sigp2">Commentaire : </span>
+							<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_COMMENTAIRE() %></span>
+						</td>
+				    </tr>
+			    </table>
 				<br/>
-				<span class="sigp2" style="width: 100px">Sexe : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_SEXE() %></span>
-				<span class="sigp2" style="width: 100px">Nationalité : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_NATIONALITE() %></span>
-				<br/>
-				<span class="sigp2" style="width: 100px">Date de naissance : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_DATENAISS() %></span>
-				<span class="sigp2" style="width: 100px">Lieu de naissance : </span>
-	            <%if (! process.getVAL_ST_COMMUNE_NAISS().equals(null) ) {%>
-		            <span class="sigp2-saisie" style="margin-left: 20px;width: 350px"><%=process.getVAL_ST_COMMUNE_NAISS() %> - <%=process.getVAL_ST_PAYS_NAISS() %></span>
-				<%}%>
-				<br/>
-				<span class="sigp2" style="width: 100px">Enfant à charge : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_ACHARGE() %></span>                                 
-				<span class="sigp2" style="width: 100px">Autre parent : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 350px"><%=process.getVAL_ST_AUTRE_PARENT()%></span>
-				<br/>
-				<span class="sigp2" style="width: 100px">Date de décès : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 120px"><%=process.getVAL_ST_DATEDECES() %></span>
-				<br/>
-				<span class="sigp2" style="width: 100px">Commentaire : </span>
-				<span class="sigp2-saisie" style="margin-left: 20px;width: 360px"><%=process.getVAL_ST_COMMENTAIRE() %></span>
-				<br/><br/>
 				<span class="sigp2">Scolarités : </span>
 					<br/>
 				    <div style="overflow: auto;height: 50px;width:300px;">
-						<table class="sigp2NewTab" style="text-align:left;width:280px;">
+						<table class="sigp2NewTab" width="280px" style="text-align:left;">
 							<%
 							int indiceScol = 0;
 							if (process.getListeScolarites()!=null){
 								for (int i = 0;i<process.getListeScolarites().size();i++){
 							%>
 									<tr>
-										<td class="sigp2NewTab-liste" style="width:120px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceScol)%></td>
+										<td class="sigp2NewTab-liste" width="120px;" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceScol)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;">&nbsp;<%=process.getVAL_ST_DATE_FIN(indiceScol)%></td>
 									</tr>
 									<%

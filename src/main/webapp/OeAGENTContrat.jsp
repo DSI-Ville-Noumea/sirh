@@ -101,11 +101,10 @@
 						</table>	
 						</div>	
 				</FIELDSET>
-		<BR/>
 <%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-				<%if (process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION)){ %>
+			<%if (process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION)){ %>
 				<div title="Saisie contrat">
 					<span class="sigp2-saisie"><%=process.getVAL_ST_WARNING()%></span>
 					<BR/><BR/>
@@ -232,39 +231,73 @@
 					<FONT color='red'><%=process.getVAL_ST_WARNING() %></FONT>
 					<BR/><BR/>
 				<% } %>
-				<span class="sigp2">Numéro de contrat : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NUM_CONTRAT()%></span>
-				<span class="sigp2" style="margin-left: 30px;">Type de contrat : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_TYPE_CONTRAT()%></span>
-				<BR/><BR/>
-				
-				<span class="sigp2">Avenant : </span>
-				<span class="sigp2" style="margin-left: 45px;">
-					<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%> > Oui
-					<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%> > Non
-				</span>
-				
-				<span class="sigp2" style="margin-left: 15px;">Contrat de référence : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
-				<BR/><BR/>
-
-				<span class="sigp2" >Date de début : </span>
-				<span class="sigp2-saisie" style="margin-left: 30px;"><%=process.getVAL_EF_DATE_DEB()%></span>
-
-				<span class="sigp2" style="margin-left: 35px;">Date de fin de période d'essai : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN_PERIODE_ESSAI()%></span>
-
-				<span class="sigp2" style="margin-left: 35px;">Date de fin : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN()%></span>
-				<BR/><BR/>
-				
-				<span class="sigp2" >Motif : </span>
-				<span class="sigp2-saisie"style="margin-left: 10px;"><%=process.getVAL_ST_MOTIF()%></span>
-
-				<span class="sigp2" style="margin-left: 70px;">Justification : </span>
-				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_JUSTIFICATION()%></span>
-				<BR/>
-				<BR/>
+				<table>
+					<tr>
+						<td width="100px">
+							<span class="sigp2">Numéro de contrat : </span>
+						</td>
+						<td width="100px">
+							<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT()%></span>
+						</td>
+						<td width="100px">
+							<span class="sigp2">Type de contrat : </span>
+						</td>
+						<td colspan="2" width="200px">
+							<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE_CONTRAT()%></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Avenant : </span>
+						</td>
+						<td>				
+							<span class="sigp2">
+								<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%>><span class="sigp2">Oui</span>
+								<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%>><span class="sigp2">Non</span>
+							</span>
+						</td>
+						<td>
+							<span class="sigp2">Contrat de référence : </span>
+						</td>
+						<td colspan="2">
+							<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2" >Date de début : </span>
+						</td>
+						<td>			
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEB()%></span>
+						</td>
+						<td>
+							<span class="sigp2">Date de fin de période d'essai : </span>
+						</td>
+						<td >
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN_PERIODE_ESSAI()%></span>
+						</td>
+						<td>
+							<span class="sigp2">Date de fin : </span>
+						</td>
+						<td >
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2" >Motif : </span>
+						</td>
+						<td>			
+							<span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
+						</td>
+						<td>
+							<span class="sigp2">Justification : </span>
+						</td>
+						<td colspan="2">
+							<span class="sigp2-saisie"><%=process.getVAL_EF_JUSTIFICATION()%></span>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div style="text-align: center">
 				<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>

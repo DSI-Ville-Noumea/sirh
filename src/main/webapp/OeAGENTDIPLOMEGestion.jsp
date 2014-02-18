@@ -196,45 +196,71 @@
 		<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_DIPLOME()%></legend>
 		<%if(!process.getVAL_ST_ACTION_DIPLOME().equals(process.ACTION_SUPPRESSION_DIPLOME) && !process.getVAL_ST_ACTION_DIPLOME().equals(process.ACTION_CONSULTATION_DIPLOME)){ %>
 		<div>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Titre du diplôme : </span>
-			<span>
-				<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_TITRE_DIPLOME() %>" onchange='executeBouton("<%=process.getNOM_PB_TITRE_DIPLOME()%>")' style="width : 350px;">
-				<%=process.forComboHTML(process.getVAL_LB_TITRE_DIPLOME(), process.getVAL_LB_TITRE_DIPLOME_SELECT()) %>
-				</SELECT>
-			</span>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:65px;">Niveau : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_NIVEAU()%></span>
-			<BR/><BR/>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Specialite du diplôme : </span>
-			<span>
-				<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_SPECIALITE_DIPLOME() %>" style="width : 530px;">
-				<%=process.forComboHTML(process.getVAL_LB_SPECIALITE_DIPLOME(), process.getVAL_LB_SPECIALITE_DIPLOME_SELECT()) %>
-				</SELECT>
-			</span>
-			<BR/><BR/>
-			<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Nom de l'école : </span>
-			<span>
-				<INPUT id="listeEcoles" class="sigp2-saisiemajusculenongras" maxlength="100" name="<%= process.getNOM_EF_NOM_ECOLE() %>" size="100"
-					type="text" value="<%= process.getVAL_EF_NOM_ECOLE() %>">
-			</span>
-			<BR/><BR/>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date d'obtention : </span>
-		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_DIPLOME() %>">
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>', 'dd/mm/y');">
-			</span>
-			<BR/><BR/>
-				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
+			<table>
+				<tr>
+					<td width="100px;">
+						<span class="sigp2Mandatory">Titre du diplôme : </span>
+					</td>
+					<td>
+						<span>
+							<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_TITRE_DIPLOME() %>" onchange='executeBouton("<%=process.getNOM_PB_TITRE_DIPLOME()%>")' style="width : 350px;">
+							<%=process.forComboHTML(process.getVAL_LB_TITRE_DIPLOME(), process.getVAL_LB_TITRE_DIPLOME_SELECT()) %>
+							</SELECT>
+						</span>
+					</td>
+					<td>
+						<span class="sigp2Mandatory">Niveau : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_NIVEAU()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Specialite du diplôme : </span>
+					</td>
+					<td colspan="2">
+						<span>
+							<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_SPECIALITE_DIPLOME() %>" style="width : 530px;">
+							<%=process.forComboHTML(process.getVAL_LB_SPECIALITE_DIPLOME(), process.getVAL_LB_SPECIALITE_DIPLOME_SELECT()) %>
+							</SELECT>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td >
+						<span class="sigp2">Nom de l'école : </span>
+					</td>
+					<td colspan="2">
+						<span>
+							<INPUT id="listeEcoles" class="sigp2-saisiemajusculenongras" maxlength="100" name="<%= process.getNOM_EF_NOM_ECOLE() %>" size="100"
+								type="text" value="<%= process.getVAL_EF_NOM_ECOLE() %>">
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date d'obtention : </span>
+					</td>
+					<td colspan="2">
+					    <span>
+							<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_DIPLOME() %>">
+							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>', 'dd/mm/y');">
+						</span>
+					</td>
+				</tr>
+			</table>
+			<BR/>
+			<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
-					<span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:55px;">	
-					<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC_DIPLOME()%>">
+					<span style="margin-left: 5px;">	
+						<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC_DIPLOME()%>">
 					</span>
-					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-					<span style="position:relative;width:120px;text-align: center;">Date</span> 
-					<span style="position:relative;text-align: left">Commentaire</span> 
+					<span style="margin-left: 45px;">Nom du document</span>
+					<span style="margin-left: 160px;">Date</span> 
+					<span style="margin-left: 40px;">Commentaire</span> 
 				
-					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
+					<div style="overflow: auto;height: 150px;width:900px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
 						<%
 						int indiceActes = 0;
@@ -315,11 +341,9 @@
 				<BR/><BR/>				
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
-					<span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:55px;"></span>
-					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-					<span style="position:relative;width:120px;text-align: center;">Date</span> 
-					<span style="position:relative;text-align: left">Commentaire</span> 
+					<span style="margin-left: 65px;">Nom du document</span>
+					<span style="margin-left: 160px;">Date</span> 
+					<span style="margin-left: 40px;">Commentaire</span> 
 				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
