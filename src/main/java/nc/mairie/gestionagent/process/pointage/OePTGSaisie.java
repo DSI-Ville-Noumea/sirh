@@ -217,7 +217,7 @@ public class OePTGSaisie extends BasicProcess {
 						return false;
 					}
 					// vérification type Absence obligatoire
-					if (absDto.getIdTypeAbsence() == 0) {
+					if (absDto.getIdRefTypeAbsence() == 0) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une absence sans type.");
 						getTransaction().declarerErreur(
@@ -358,9 +358,7 @@ public class OePTGSaisie extends BasicProcess {
 			ret.setMotif(data.getMotif());
 			ret.setIdRefEtat(data.getIdRefEtat());
 			ret.setIdPointage(data.getIdPtg());
-			ret.setIdTypeAbsence(data.getIdTypeAbsence());
-			// TODO à supprimer
-			ret.setConcertee(data.getIdTypeAbsence() == 1);
+			ret.setIdRefTypeAbsence(data.getIdTypeAbsence());
 			logger.debug("Absence " + id);
 		}
 		return ret;

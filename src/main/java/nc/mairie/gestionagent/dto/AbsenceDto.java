@@ -2,27 +2,16 @@ package nc.mairie.gestionagent.dto;
 
 public class AbsenceDto extends PointageDto {
 
-	private Integer idTypeAbsence;
-
-	//TODO à supprimer
-	private Boolean concertee ;
+	private Integer idRefTypeAbsence;
 
 	public AbsenceDto() {
 	}
 
-	public Integer getIdTypeAbsence() {
-		return idTypeAbsence;
+	public Integer getIdRefTypeAbsence() {
+		return idRefTypeAbsence;
 	}
 
-	public void setIdTypeAbsence(Integer idTypeAbsence) {
-		this.idTypeAbsence = idTypeAbsence;
-	}
-
-	public Boolean getConcertee() {
-		return concertee;
-	}
-
-	public void setConcertee(Boolean concertee) {
-		this.concertee = concertee;
+	public void setIdRefTypeAbsence(Integer idRefTypeAbsence) {
+		this.idRefTypeAbsence = idRefTypeAbsence;
 	}
 }
