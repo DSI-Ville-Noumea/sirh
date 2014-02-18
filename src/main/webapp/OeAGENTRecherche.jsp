@@ -60,13 +60,13 @@
 		</SCRIPT>
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</HEAD>
-	<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
+	<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%= process.getFocus() %>')">
 		<%@ include file="BanniereErreur.jsp"%>
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px" title="Recherche d'un agent">
 				<LEGEND class="sigp2Legend">Recherche d'un agent</LEGEND>
-				<TABLE border="0" cellpadding="0" cellspacing="0">
+				<TABLE border="0" cellpadding="0" cellspacing="0" width="100%">
 					<TBODY>
 						<TR>
 							<TD class="sigp2" width="100">
