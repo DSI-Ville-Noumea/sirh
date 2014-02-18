@@ -126,7 +126,7 @@
 		</SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
@@ -155,18 +155,17 @@
 		<% }else {%>
 			<div id="corpsOngletDiplome" title="Diplomes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 				    <legend class="sigp2Legend">Gestion des diplômes d'un agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DIPLOME()%>"></span>
-				    <span style="position:relative;width:400px;text-align: left;">Titre</span>
-					<span style="position:relative;width:300px;text-align: left;">Spécialité</span>
-					<span style="position:relative;width:100px;text-align: left;">Niveau</span>
-					<span style="position:relative;text-align: left;">Nb docs</span>
+				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DIPLOME()%>"></span>
+				    <span style="margin-left: 50px;">Titre</span>
+					<span style="margin-left: 375px;">Spécialité</span>
+					<span style="margin-left: 250px;">Niveau</span>
+					<span style="margin-left: 65px;">Nb docs</span>
 					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<div style="overflow: auto;height: 250px;width:980px;">
+						<table class="sigp2NewTab" style="text-align:left;width: 960px;">
 							<%
 							int indiceDiplome = 0;
 							if (process.getListeDiplomesAgent()!=null){
@@ -193,7 +192,7 @@
 				</FIELDSET>
 	<%if (! "".equals(process.getVAL_ST_ACTION_DIPLOME()) ) {%>
 		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_TITRE_DIPLOME()%>" value="go">
-	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 		<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_DIPLOME()%></legend>
 		<%if(!process.getVAL_ST_ACTION_DIPLOME().equals(process.ACTION_SUPPRESSION_DIPLOME) && !process.getVAL_ST_ACTION_DIPLOME().equals(process.ACTION_CONSULTATION_DIPLOME)){ %>
 		<div>
@@ -295,24 +294,24 @@
 		  	 	<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    	<BR/><BR/>
 		    <% } %>
-			<span class="sigp2" style="width:150px">Titre du diplôme : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_TITRE()%></span>
+			<span class="sigp2">Titre du diplôme : </span>
+			<span class="sigp2-saisie"  style="margin-left: 30px;"><%=process.getVAL_ST_TITRE()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2" style="width:150px">Spécialité du diplôme : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_SPECIALITE_DIPLOME()%></span>
+			<span class="sigp2">Spécialité du diplôme : </span>
+			<span class="sigp2-saisie" style="margin-left: 5px;"><%=process.getVAL_ST_SPECIALITE_DIPLOME()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2" style="width:150px">Niveau : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_NIVEAU()%></span>
+			<span class="sigp2">Niveau : </span>
+			<span class="sigp2-saisie" style="margin-left: 70px;"><%=process.getVAL_ST_NIVEAU()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2" style="width:150px">Nom de l'école : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_NOM_ECOLE()%></span>
+			<span class="sigp2">Nom de l'école : </span>
+			<span class="sigp2-saisie" style="margin-left: 35px;"><%=process.getVAL_EF_NOM_ECOLE()%></span>
 			<BR/>
 			<BR/>
-			<span class="sigp2" style="width:150px">Date d'obtention : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_OBTENTION_DIPLOME()%></span>
+			<span class="sigp2">Date d'obtention : </span>
+			<span class="sigp2-saisie" style="margin-left: 25px;"><%=process.getVAL_EF_DATE_OBTENTION_DIPLOME()%></span>
 				<BR/><BR/>				
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents du diplôme</legend>
@@ -362,17 +361,16 @@
 		<% }else {%>
 			<div id="corpsOngletFormation" title="Formations" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 				    <legend class="sigp2Legend">Gestion des formations d'un agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_FORMATION()%>"></span>
-				    <span style="position:relative;width:600px;text-align: left;">Titre de la formation</span>
-					<span style="position:relative;width:70px;text-align: center;">Année</span>
-					<span style="position:relative;text-align: left;">Nb docs</span>
+				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_FORMATION()%>"></span>
+				    <span style="margin-left: 50px;">Titre de la formation</span>
+					<span style="margin-left: 510px;">Année</span>
+					<span style="margin-left: 20px;">Nb docs</span>
 					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<div style="overflow: auto;height: 250px;width:980px;">
+						<table class="sigp2NewTab" style="text-align:left;width:960px;">
 							<%
 							int indiceFormation = 0;
 							if (process.getListeFormationsAgent()!=null){
@@ -398,7 +396,7 @@
 				</FIELDSET>
 				
 		<%if (! "".equals(process.getVAL_ST_ACTION_FORMATION()) ) {%>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 				<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_FORMATION()%></legend>
 				<%if(!process.getVAL_ST_ACTION_FORMATION().equals(process.ACTION_SUPPRESSION_FORMATION) && !process.getVAL_ST_ACTION_FORMATION().equals(process.ACTION_CONSULTATION_FORMATION)){ %>
 				<div>
@@ -560,17 +558,16 @@
 		<% }else {%>
 			<div id="corpsOngletPermis" title="Permis & Habilitations" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
 		<% } %>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 				    <legend class="sigp2Legend">Gestion des permis et habilitations d'un agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:60px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_PERMIS()%>"></span>
-				    <span style="position:relative;width:600px;text-align: left;">Titre</span>
-				    <span style="position:relative;width:105px;text-align: center;">Limite de validité</span>
-					<span style="position:relative;text-align: left;">Nb docs</span>
+				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_PERMIS()%>"></span>
+				    <span style="margin-left: 45px;">Titre</span>
+				    <span style="margin-left: 580px;">Limite de validité</span>
+					<span style="margin-left: 5px;">Nb docs</span>
 					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<div style="overflow: auto;height: 250px;width:980px;">
+						<table class="sigp2NewTab" style="text-align:left;width:960px;">
 							<%
 							int indicePermis = 0;
 							if (process.getListePermisAgent()!=null){
@@ -596,7 +593,7 @@
 				</FIELDSET>
 				
 		<%if (! "".equals(process.getVAL_ST_ACTION_PERMIS()) ) {%>
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">
 				<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_PERMIS()%></legend>
 				<%if(!process.getVAL_ST_ACTION_PERMIS().equals(process.ACTION_SUPPRESSION_PERMIS) && !process.getVAL_ST_ACTION_PERMIS().equals(process.ACTION_CONSULTATION_PERMIS)){ %>
 				<div>

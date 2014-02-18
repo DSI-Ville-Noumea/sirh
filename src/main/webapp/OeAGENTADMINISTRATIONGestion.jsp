@@ -38,7 +38,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean id="process" class="nc.mairie.gestionagent.process.agent.OeAGENTADMINISTRATIONGestion" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp"%>
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -46,14 +46,13 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Gestion des administrations d'un agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
-				    <span style="position:relative;width:600px;text-align: left;">Administration</span>
-				    <span style="position:relative;width:90px;text-align: center;">Fonctionnaire</span>
-					<span style="position:relative;width:90px;text-align: center;">Date d'entrée</span>
-					<span style="position:relative;text-align: left;">Date de sortie</span>
+				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
+				    <span style="margin-left: 50px;">Administration</span>
+				    <span style="margin-left: 525px;">Fonctionnaire</span>
+					<span style="margin-left: 15px;">Date d'entrée</span>
+					<span style="margin-left: 20px;">Date de sortie</span>
 					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<%
 							int indiceAdministration = 0;
@@ -126,15 +125,15 @@
 				<BR/><BR/>
 			<% } %>
 			<span class="sigp2">Administration</span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_ADMINISTRATION() %></span>
+			<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_ADMINISTRATION() %></span>
 			<BR/>
 			<span class="sigp2">Fonctionnaire</span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_FONCTIONNAIRE() %></span>
+			<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_FONCTIONNAIRE() %></span>
 			<BR/>
-			<span class="sigp2">Date d'entrée : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT() %></span>
-			<span style="padding-left:10px;" class="sigp2">Date de sortie : </span>
-			<span style="padding-left:10px;" class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN() %></span>
+			<span class="sigp2">Date d'entrée</span>
+			<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_DEBUT() %></span>
+			<span style="margin-left: 10px;" class="sigp2">Date de sortie</span>
+			<span class="sigp2-saisie"  style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN() %></span>
 			<BR/>
 	<%} %>
 			<BR>

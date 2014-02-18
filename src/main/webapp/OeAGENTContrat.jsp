@@ -39,7 +39,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTContrat" id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -47,18 +47,17 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des contrats de l'agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:85px;">
+				    <span style="margin-left: 5px;">
 				    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 				    </span>
-				    <span style="position:relative;width:80px;text-align: center;">Numéro</span>
-					<span style="position:relative;width:40px;text-align: center;">Type</span>
-					<span style="position:relative;width:40px;text-align: center;">Avenant</span>
-					<span style="position:relative;width:90px;text-align: center;">Date de début</span>
-					<span style="position:relative;width:90px;text-align: center;">Fin de période d'essai</span>
-					<span style="position:relative;width:90px;text-align: center;">Date de fin</span>
-					<span style="position:relative;width:200px;text-align: left;">Motif</span>
-					<span style="position:relative;text-align: left;">Justification</span>
+				    <span style="margin-left: 65px;">Numéro</span>
+					<span style="margin-left: 40px;">Type</span>
+					<span style="margin-left: 5px;">Avenant</span>
+					<span style="margin-left: 5px;">Date de début</span>
+					<span style="margin-left: 5px;">Fin période essai</span>
+					<span style="margin-left: 15px;">Date de fin</span>
+					<span style="margin-left: 15px;">Motif</span>
+					<span style="margin-left: 175px;">Justification</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -69,7 +68,7 @@
 									Contrat c = (Contrat) process.getListeContrat().get(i);
 							%>
 									<tr id="<%=indiceContrat%>" onmouseover="SelectLigne(<%=indiceContrat%>,<%=process.getListeContrat().size()%>)">
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
+										<td class="sigp2NewTab-liste" style="position:relative;width:80px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceContrat)%>">
 										<%if(c.getIdTypeContrat().equals("2") && c.getDateFin()==null){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
@@ -233,40 +232,37 @@
 					<FONT color='red'><%=process.getVAL_ST_WARNING() %></FONT>
 					<BR/><BR/>
 				<% } %>
-				<span class="sigp2" style="width:130px">Numéro de contrat : </span>
-				<span class="sigp2-saisie" style="width:100px"><%=process.getVAL_ST_NUM_CONTRAT()%></span>
-				<span class="sigp2" style="width:20px"></span>
-				<span class="sigp2" style="width:130px">Type de contrat : </span>
-				<span class="sigp2-saisie" style="width:100px"><%=process.getVAL_ST_TYPE_CONTRAT()%></span>
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="position:relative;width:130px;">Avenant : </span>
-				<span> 
-				<span class="sigp2" style="width:100px;">
-				<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%> > Oui
-				<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%> > Non
-				</span>
-				<span class="sigp2" style="width:20px"></span>
+				<span class="sigp2">Numéro de contrat : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NUM_CONTRAT()%></span>
+				<span class="sigp2" style="margin-left: 30px;">Type de contrat : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_TYPE_CONTRAT()%></span>
+				<BR/><BR/>
 				
-				<span class="sigp2" style="width:130px">Contrat de référence : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="width:130px">Date de début : </span>
-				<span class="sigp2-saisie" style="width:100px;"><%=process.getVAL_EF_DATE_DEB()%></span>
-				<span class="sigp2" style="width:20px"></span>
-				<span class="sigp2" style="width:130px">Date de fin de période d'essai : </span>
-				<span class="sigp2-saisie" style="width:100px;"><%=process.getVAL_EF_DATE_FIN_PERIODE_ESSAI()%></span>
-				<span class="sigp2" style="width:20px"></span>
-				<span class="sigp2" style="width:130px">Date de fin : </span>
-				<span class="sigp2-saisie" style="width:100px;"><%=process.getVAL_EF_DATE_FIN()%></span>
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="width:130px">Motif : </span>
-				<span class="sigp2-saisie"style="width:100px;"><%=process.getVAL_ST_MOTIF()%></span>
-				<span class="sigp2" style="width:20px"></span>
-				<span class="sigp2" style="width:130px">Justification : </span>
-				<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_EF_JUSTIFICATION()%></span>
+				<span class="sigp2">Avenant : </span>
+				<span class="sigp2" style="margin-left: 45px;">
+					<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_O())%> > Oui
+					<INPUT class="sigp2" type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_AVENANT(),process.getNOM_RB_AVENANT_N())%> > Non
+				</span>
+				
+				<span class="sigp2" style="margin-left: 15px;">Contrat de référence : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_ST_NUM_CONTRAT_REF()%></span>
+				<BR/><BR/>
+
+				<span class="sigp2" >Date de début : </span>
+				<span class="sigp2-saisie" style="margin-left: 30px;"><%=process.getVAL_EF_DATE_DEB()%></span>
+
+				<span class="sigp2" style="margin-left: 35px;">Date de fin de période d'essai : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN_PERIODE_ESSAI()%></span>
+
+				<span class="sigp2" style="margin-left: 35px;">Date de fin : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_DATE_FIN()%></span>
+				<BR/><BR/>
+				
+				<span class="sigp2" >Motif : </span>
+				<span class="sigp2-saisie"style="margin-left: 10px;"><%=process.getVAL_ST_MOTIF()%></span>
+
+				<span class="sigp2" style="margin-left: 70px;">Justification : </span>
+				<span class="sigp2-saisie" style="margin-left: 10px;"><%=process.getVAL_EF_JUSTIFICATION()%></span>
 				<BR/>
 				<BR/>
 			</div>
