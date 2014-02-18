@@ -41,7 +41,7 @@ document.formu.elements[nom].focus();
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTEtatCivil" id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="changerMenuHaut('Module_agent_donneesPerso');window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="changerMenuHaut('Module_agent_donneesPerso');window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp"%>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
@@ -49,16 +49,15 @@ document.formu.elements[nom].focus();
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Etat civil</legend>
 			<br/>
-			<div align="left" style="padding-right:20px;">
+			<div align="left" style="float:left;margin-left: 10px;margin-right: 10px;">
 				<span class="sigp2Mandatory" style="width:60px;margin-right:10px">Collectivité :</span>
 				<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_COLLECTIVITE() %>" style="width:200px;">
 					<%=process.forComboHTML(process.getVAL_LB_COLLECTIVITE(), process.getVAL_LB_COLLECTIVITE_SELECT())%>
 				</SELECT>
 			</div>
-			<br/>
-			<br/>
-			<div align="left" style="float:left;padding-right:20px;">
-				<span align="left" class="sigp2-saisie">
+			<br/><br/><br/>
+			<div align="left" style="float:left;margin-left: 10px;">
+				<span class="sigp2-saisie">
 					<%
 					String photo = process.getVAL_ST_PHOTO().equals("") ? "aucune": process.getVAL_ST_PHOTO();
 					%>
@@ -66,94 +65,84 @@ document.formu.elements[nom].focus();
 						border="0" align="middle" alt="<%=photo%>">
 				</span>
 			</div>
-			<div align="left" style="float:left;padding-right:10px;">
-				<span class="sigp2Mandatory" style="width:60px">Civilité :</span>
-				<SELECT tabindex="1" onchange='executeBouton("<%=process.getNOM_PB_CIVILITE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-				class="sigp2-saisie" name="<%= process.getNOM_LB_CIVILITE() %>" style="width:50px;margin-right:30px;">
+			<div align="left" style="float:left;margin-left: 10px;">
+				<span class="sigp2Mandatory" style="width:40px;">Civilité :</span>
+				<SELECT onchange='executeBouton("<%=process.getNOM_PB_CIVILITE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
+				class="sigp2-saisie" style="width:50px;" name="<%= process.getNOM_LB_CIVILITE() %>">
 					<%=process.forComboHTML(process.getVAL_LB_CIVILITE(), process.getVAL_LB_CIVILITE_SELECT())%>
 				</SELECT>
-				<span class="sigp2Mandatory" style="width:110px">Prénom :</span>
-				<INPUT tabindex="2" class="sigp2-saisie" maxlength="50"
-					name="<%= process.getNOM_EF_PRENOM() %>" size="40"
-					type="text" value="<%= process.getVAL_EF_PRENOM() %>" style="width:240px;margin-right:30px;" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-				<span class="sigp2Mandatory" style="width:120px">Nom patronymique :</span>
-				<INPUT tabindex="3" class="sigp2-saisie" maxlength="50"
-					name="<%= process.getNOM_EF_NOM_PATRONYMIQUE() %>" size="35"
-					type="text" value="<%= process.getVAL_EF_NOM_PATRONYMIQUE() %>" style="width:240px;" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+				<span class="sigp2Mandatory" style="width:90px;margin-left: 10px;">Prénom :</span>
+				<INPUT class="sigp2-saisie" maxlength="50" style="width:200px;" type="text" name="<%= process.getNOM_EF_PRENOM() %>" value="<%= process.getVAL_EF_PRENOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+				
+				<span class="sigp2Mandatory" style="width:120px;margin-left: 10px;">Nom patronymique :</span>
+				<INPUT class="sigp2-saisie" maxlength="50" style="width:200px;" type="text" name="<%= process.getNOM_EF_NOM_PATRONYMIQUE() %>" value="<%= process.getVAL_EF_NOM_PATRONYMIQUE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 				<br/><br/>
-				<span class="sigp2" style="width:60px">Sexe :</span>
-				<span class="sigp2-statique" style="width:80px"><%=process.getVAL_ST_SEXE()%></span>
-				<span class="sigp2" style="width:110px">Prénom d'usage :</span>
-				<INPUT tabindex="4" class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-					name="<%= process.getNOM_EF_PRENOM_USAGE() %>" size="40"
-					type="text" value="<%= process.getVAL_EF_PRENOM_USAGE() %>" style="width:240px;margin-right:30px;">
-				<span class="sigp2" style="width:120px">Nom marital :</span>
-				<INPUT tabindex="4" class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-					name="<%= process.getNOM_EF_NOM_MARITAL() %>" size="40"
-					type="text" value="<%= process.getVAL_EF_NOM_MARITAL() %>" style="width:240px;">
+				<span class="sigp2" style="width:40px;">Sexe :</span>
+				<span class="sigp2-statique" style="width:50px;"><%=process.getVAL_ST_SEXE()%></span>
+				
+				<span class="sigp2" style="width:90px;margin-left: 13px;">Prénom d'usage :</span>
+				<INPUT class="sigp2-saisie" maxlength="50" style="width:200px;" type="text" name="<%= process.getNOM_EF_PRENOM_USAGE() %>" value="<%= process.getVAL_EF_PRENOM_USAGE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+				
+				<span class="sigp2" style="width:120px;margin-left: 10px;">Nom marital :</span>
+				<INPUT class="sigp2-saisie" maxlength="50" style="width:200px;" type="text" name="<%= process.getNOM_EF_NOM_MARITAL() %>" value="<%= process.getVAL_EF_NOM_MARITAL() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 				<br/><br/>
-				<span class="sigp2" style="width:532px"></span>
-				<span class="sigp2" style="width:120px">Nom d'usage :</span>
-				<INPUT tabindex="5" class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-					name="<%= process.getNOM_EF_NOM_USAGE() %>" size="40"
-					type="text" value="<%= process.getVAL_EF_NOM_USAGE() %>" style="width:240px;">
-				<br/><br/><br/>
+				<span class="sigp2" style="width:120px;margin-left: 417px;">Nom d'usage :</span>
+				<INPUT class="sigp2-saisie" maxlength="50" style="width:200px;" type="text" name="<%= process.getNOM_EF_NOM_USAGE() %>" value="<%= process.getVAL_EF_NOM_USAGE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>				
 			</div>
-			<div>
-				<span style="width:180px;margin-left:80px;" class="sigp2Mandatory"> Situation familiale : </span>
-				<span align="left" style="width:150px">
-					<SELECT tabindex="6" onchange='executeBouton("<%=process.getNOM_PB_SITUATION() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_SITUATION() %>">
+			<div align="left" style="float:left;margin-left: 80px;margin-top: 30px;">
+				<span style="width:180px;" class="sigp2Mandatory"> Situation familiale : </span>
+				<span class="sigp2-saisie">
+					<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_SITUATION() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_SITUATION() %>">
 						<%=process.forComboHTML(process.getVAL_LB_SITUATION(), process.getVAL_LB_SITUATION_SELECT())%>
 					</SELECT>
 				</span>
-				<span style="width:180px;" class="sigp2Mandatory"> Nationalité : </span>
-				<span align="left" class="sigp2-saisie" style="margin-right:10px;">
-					<SELECT tabindex="7" onchange='executeBouton("<%=process.getNOM_PB_NATIONALITE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATIONALITE() %>">
+				
+				<span style="width:180px;margin-left: 70px;" class="sigp2Mandatory"> Nationalité : </span>
+				<span class="sigp2-saisie">
+					<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_NATIONALITE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_NATIONALITE() %>">
 						<%=process.forComboHTML(process.getVAL_LB_NATIONALITE(), process.getVAL_LB_NATIONALITE_SELECT())%>
 					</SELECT>
 				</span>
-			</div>
-			<br/>
-			<div >
-				<span style="width:180px;margin-left:80px;" class="sigp2Mandatory"> Date de naissance : </span>
+				<br/><br/>
+				
+				<span style="width:180px;" class="sigp2Mandatory"> Date de naissance : </span>
 				<span style="width:150px">
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_NAISSANCE() %>" size="10"
-						type="text" value="<%= process.getVAL_EF_DATE_NAISSANCE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-					<IMG class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif"
-						onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISSANCE()%>', 'dd/mm/y');" hspace="5">
+					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_NAISSANCE() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISSANCE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					<IMG class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISSANCE()%>', 'dd/mm/y');" hspace="5">
 				</span>
-				<span style="width:180px;" class="sigp2Mandatory">Lieu de naissance :
-				<img  tabindex="9" type="image" style="cursor:pointer;" src="images/loupe.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" height="20px" width="20px" onclick='executeBouton("<%=process.getNOM_PB_LIEU_NAISSANCE() %>")'>
-				</span>
-				<span align="left" class="sigp2-saisie">&nbsp;<%=process.getVAL_ST_LIEU_NAISSANCE()%></span>
-			</div>
-			<br/>
-			<div >
-				<span class="sigp2Mandatory" style="width:180px;margin-left:80px;">Date de première embauche : </span>
-				<span align="left" style="width:150px;">
-					<input tabindex="10" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_PREM_EMB() %>" size="10" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> type="text" value="<%= process.getVAL_EF_DATE_PREM_EMB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE() %>")'>
+				
+				<span style="width:180px;margin-left: 13px;" class="sigp2Mandatory">Lieu de naissance :</span>
+				<img  style="cursor:pointer;" src="images/loupe.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" height="20px" width="20px" onclick='executeBouton("<%=process.getNOM_PB_LIEU_NAISSANCE() %>")'>				
+				<span class="sigp2-saisie"><%=process.getVAL_ST_LIEU_NAISSANCE()%></span>
+				<br/><br/>
+				
+				<span class="sigp2Mandatory" style="width:180px">Date de première embauche : </span>
+				<span style="width:150px;">
+					<input class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_PREM_EMB() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> type="text" value="<%= process.getVAL_EF_DATE_PREM_EMB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE() %>")'>
 					<img src="images/calendrier.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_PREM_EMB()%>', 'dd/mm/y');" hspace="5">
 				</span>
-				<span class="sigp2" style="width:180px;">Date de dernière embauche : </span>
-				<INPUT tabindex="11" class="sigp2-saisie" maxlength="10" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	name="<%= process.getNOM_EF_DATE_DERN_EMB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DERN_EMB() %>">
-				<IMG src="images/calendrier.gif" style="margin-right:10px;" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DERN_EMB()%>', 'dd/mm/y');" hspace="5">
-			</div>
-			<br/>
-			<div>
-				<span class="sigp2" style="width:180px;margin-left:80px;">Numéro de carte de séjour : </span>
-				<span align="left" style="width:150px;">
-					<INPUT tabindex="12" class="sigp2-saisie" maxlength="20" name="<%= process.getNOM_EF_NUM_CARTE_SEJOUR() %>" size="20" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	type="text" value="<%= process.getVAL_EF_NUM_CARTE_SEJOUR() %>">
+				
+				<span class="sigp2" style="width:180px;margin-left: 13px;">Date de dernière embauche : </span>
+				<span style="width:150px;">
+					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	name="<%= process.getNOM_EF_DATE_DERN_EMB() %>" type="text" value="<%= process.getVAL_EF_DATE_DERN_EMB() %>">
+					<IMG src="images/calendrier.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DERN_EMB()%>', 'dd/mm/y');" hspace="5">
 				</span>
-				<span class="sigp2" style="width:180px;">Date de validité : </span>
-				<INPUT tabindex="13" class="sigp2-saisie" maxlength="10" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR() %>">
+				<br/><br/>
+			
+				<span class="sigp2" style="width:180px;">Numéro de carte de séjour : </span>
+				<span style="width:150px;">
+					<INPUT class="sigp2-saisie" maxlength="20" style="width: 90px;"	name="<%= process.getNOM_EF_NUM_CARTE_SEJOUR() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	type="text" value="<%= process.getVAL_EF_NUM_CARTE_SEJOUR() %>">
+				</span>
+				<span class="sigp2" style="width:180px;margin-left: 13px;">Date de validité : </span>
+				<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR() %>" type="text" value="<%= process.getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR() %>">
 				<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR()%>', 'dd/mm/y');" hspace="5">
 			</div>
 		</FIELDSET>
 	
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Adresse</legend>
-			<INPUT tabindex="14" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_NOUMEA())%>>Nouméa
-			<INPUT tabindex="15" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_AUTRE())%>>Autre
+			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_NOUMEA())%>>Nouméa
+			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> onclick='executeBouton("<%=process.getNOM_PB_ADRESSE() %>")' <%= process.forRadioHTML(process.getNOM_RG_VILLE_DOMICILE(),process.getNOM_RB_VILLE_DOMICILE_AUTRE())%>>Autre
 			<BR/>
 			<%if (!"".equals(process.getVAL_RG_VILLE_DOMICILE())) {%>
 				<%if (process.getVAL_RG_VILLE_DOMICILE().equals(process.getNOM_RB_VILLE_DOMICILE_NOUMEA()) ) {%>
@@ -161,30 +150,26 @@ document.formu.elements[nom].focus();
 					<hr>
 					<span class="sigp2-titre">Domicile</span>
 					<br/>
-					<span class="sigp2" style="width:90px">Numéro de rue :</span>
-					<INPUT tabindex="16" class="sigp2-saisie" maxlength="3" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_NUM_RUE() %>" size="3"
-						type="text" value="<%= process.getVAL_EF_NUM_RUE() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2" style="width:60px">Bis/Ter :</span>
-					<INPUT tabindex="17" class="sigp2-saisie" maxlength="3" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_BIS_TER() %>" size="3"
-						type="text" value="<%= process.getVAL_EF_BIS_TER() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2Mandatory" style="width:90px">Nom voie / rue :</span>
-					<img tabindex="18" style="cursor:pointer;" src="images/loupe.gif" height="20px" width="20px" onclick='executeBouton("<%=process.getNOM_PB_VOIE()%>")' class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" >
+					<span class="sigp2" style="width:80px">Numéro de rue :</span>
+					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_NUM_RUE() %>" type="text" value="<%= process.getVAL_EF_NUM_RUE() %>"  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					
+					<span class="sigp2" style="width:40px;margin-left: 10px;">Bis/Ter :</span>
+					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_BIS_TER() %>" type="text" value="<%= process.getVAL_EF_BIS_TER() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					
+					<span class="sigp2Mandatory" style="width:90px;margin-left: 10px;">Nom voie / rue :</span>
+					<img style="cursor:pointer;" src="images/loupe.gif" height="20px" width="20px" onclick='executeBouton("<%=process.getNOM_PB_VOIE()%>")' class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" >
 					<span class="sigp2-saisie"><%=process.getVAL_ST_VOIE()%></span>
 					<br/><br/>
+					
 					<span class="sigp2">Adresse complémentaire :</span>
-					<INPUT tabindex="19" class="sigp2-saisie" maxlength="100" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" style="width:600px;"
-						type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>">
+					<INPUT class="sigp2-saisie" maxlength="100" style="width:600px;margin-left: 10px;" name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
-					<span class="sigp2Mandatory" style="width:90px">Code postal :</span>
-					<INPUT tabindex="20" class="sigp2-saisie" maxlength="5" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_CODE_POSTAL_DOM() %>" size="5"
-						type="text" value="<%= process.getVAL_EF_CODE_POSTAL_DOM() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2Mandatory" style="width:60px">Ville :</span>
-						<SELECT tabindex="21" onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_DOM() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_DOM() %>">
+					
+					<span class="sigp2Mandatory" style="width:80px">Code postal :</span>
+					<INPUT class="sigp2-saisie" maxlength="5" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_CODE_POSTAL_DOM() %>" type="text" value="<%= process.getVAL_EF_CODE_POSTAL_DOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					
+					<span class="sigp2Mandatory" style="width:40px;margin-left: 10px;">Ville :</span>
+						<SELECT onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_DOM() %>")' class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_DOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 							<%=process.forComboHTML(process.getVAL_LB_COMMUNE_DOM(), process.getVAL_LB_COMMUNE_DOM_SELECT())%>
 						</SELECT>
 				</div>
@@ -193,50 +178,43 @@ document.formu.elements[nom].focus();
 					<hr>
 					<span class="sigp2-titre">Domicile</span>
 					<br/>
-					<span class="sigp2" style="width:90px">Numéro de rue :</span>
-					<INPUT tabindex="16" class="sigp2-saisie" maxlength="3" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_NUM_RUE() %>" size="3"
-						type="text" value="<%= process.getVAL_EF_NUM_RUE() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2" style="width:60px">Bis/Ter :</span>
-					<INPUT tabindex="17" class="sigp2-saisie" maxlength="3" name="<%= process.getNOM_EF_BIS_TER() %>" size="3" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> 
-						type="text" value="<%= process.getVAL_EF_BIS_TER() %>" style="width:40px;margin-right:20px;">
+					<span class="sigp2" style="width:80px">Numéro de rue :</span>
+					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_NUM_RUE() %>" type="text" value="<%= process.getVAL_EF_NUM_RUE() %>"  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					
+					<span class="sigp2" style="width:40px;margin-left: 10px;">Bis/Ter :</span>
+					<INPUT class="sigp2-saisie" maxlength="3" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_BIS_TER() %>" type="text" value="<%= process.getVAL_EF_BIS_TER() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> >
 					<br/><br/>
+					
 					<span class="sigp2">Rue :</span>
-					<INPUT tabindex="18" class="sigp2-saisie" maxlength="120" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_RUE_NON_NOUMEA() %>" style="width:723px;"
-						type="text" value="<%= process.getVAL_EF_RUE_NON_NOUMEA() %>">
+					<INPUT class="sigp2-saisie" maxlength="120" style="width:723px;margin-left: 10px;" name="<%= process.getNOM_EF_RUE_NON_NOUMEA() %>" type="text" value="<%= process.getVAL_EF_RUE_NON_NOUMEA() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
+					
 					<span class="sigp2Mandatory">Adresse complémentaire :</span>
-					<INPUT tabindex="18" class="sigp2-saisie" maxlength="100" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" style="width:600px;"
-						type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>">
+					<INPUT class="sigp2-saisie" maxlength="100" style="width:600px;margin-left: 10px;" name="<%= process.getNOM_EF_ADRESSE_COMPLEMENTAIRE() %>" type="text" value="<%= process.getVAL_EF_ADRESSE_COMPLEMENTAIRE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<br/><br/>
-					<span class="sigp2Mandatory" style="width:90px">Code postal :</span>
-					<INPUT tabindex="19" class="sigp2-saisie" maxlength="5" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_CODE_POSTAL_DOM() %>" size="5"
-						type="text" value="<%= process.getVAL_EF_CODE_POSTAL_DOM() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2Mandatory" style="width:60px">Ville :</span>
-						<SELECT tabindex="20" onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_DOM() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_DOM() %>">
+					
+					<span class="sigp2Mandatory" style="width:80px">Code postal :</span>
+					<INPUT class="sigp2-saisie" maxlength="5" style="width:40px;margin-left: 10px;" name="<%= process.getNOM_EF_CODE_POSTAL_DOM() %>" type="text" value="<%= process.getVAL_EF_CODE_POSTAL_DOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					
+					<span class="sigp2Mandatory" style="width:40px;margin-left: 10px;">Ville :</span>
+						<SELECT onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_DOM() %>")' class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_DOM() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 							<%=process.forComboHTML(process.getVAL_LB_COMMUNE_DOM(), process.getVAL_LB_COMMUNE_DOM_SELECT())%>
 						</SELECT>
 				</div>
 				<%} %>
+				<br/>
 				<hr>
 				<div>
 					<span class="sigp2-titre">Boîte postale</span>
-					<br/>
-					<span class="sigp2" style="width:90px">BP :</span>
-					<INPUT tabindex="22" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						maxlength="5" name="<%= process.getNOM_EF_BP() %>" size="5" type="text"	value="<%= process.getVAL_EF_BP() %>">
 					<br/><br/>
-					<span class="sigp2" style="width:90px">Code postal :</span>
-					<INPUT tabindex="23" class="sigp2-saisie" maxlength="5" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						name="<%= process.getNOM_EF_CODE_POSTAL_BP() %>" size="5"
-						type="text" value="<%= process.getVAL_EF_CODE_POSTAL_BP() %>" style="width:40px;margin-right:20px;">
-					<span class="sigp2" style="width:60px">Ville :</span>
-						<SELECT tabindex="24" onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_BP() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-						class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_BP() %>">
+					<span class="sigp2" style="width:30px;">BP :</span>
+					<INPUT class="sigp2-saisie" maxlength="5" style="width: 40px;" name="<%= process.getNOM_EF_BP() %>" type="text" value="<%= process.getVAL_EF_BP() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						
+					<span class="sigp2" style="width:80px;margin-left: 10px;">Code postal :</span>
+					<INPUT class="sigp2-saisie" maxlength="5" style="width:40px;" name="<%= process.getNOM_EF_CODE_POSTAL_BP() %>" type="text" value="<%= process.getVAL_EF_CODE_POSTAL_BP() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						
+					<span class="sigp2" style="width:40px;margin-left: 10px;">Ville :</span>
+						<SELECT onchange='executeBouton("<%=process.getNOM_PB_COMMUNE_BP() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_COMMUNE_BP() %>">
 							<%=process.forComboHTML(process.getVAL_LB_COMMUNE_BP(), process.getVAL_LB_COMMUNE_BP_SELECT())%>
 						</SELECT>
 				</div>
@@ -256,28 +234,20 @@ document.formu.elements[nom].focus();
 					</TR>
 					<TR>
 						<TD class="sigp2-saisie" style="text-align : center;" width="134">
-							<SELECT tabindex="30" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_LB_BANQUE_GUICHET() %>"
-							onchange='executeBouton("<%=process.getNOM_PB_BANQUE()%>")'
-							style="font-family : monospace;">
-							<%=process.forComboHTML(process.getVAL_LB_BANQUE_GUICHET(), process.getVAL_LB_BANQUE_GUICHET_SELECT())%>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BANQUE_GUICHET() %>" onchange='executeBouton("<%=process.getNOM_PB_BANQUE()%>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+								<%=process.forComboHTML(process.getVAL_LB_BANQUE_GUICHET(), process.getVAL_LB_BANQUE_GUICHET_SELECT())%>
 							</SELECT>
+						</TD>
 						<TD class="sigp2-saisie" style="text-align : center;" width="380"><%=process.getVAL_ST_BANQUE_GUICHET()%></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="116"><INPUT tabindex="31" class="sigp2-saisie"
-							maxlength="11" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_COMPTE() %>" size="11"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_COMPTE() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;" width="100"><INPUT
-							tabindex="32" class="sigp2-saisie" maxlength="2" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_RIB() %>" size="2"
-							type="text" value="<%= process.getVAL_EF_RIB() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"><INPUT
-							tabindex="33" class="sigp2-saisie" maxlength="30" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_INTITULE_COMPTE() %>"
-							size="30" type="text"
-							value="<%= process.getVAL_EF_INTITULE_COMPTE() %>"></TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="116">
+							<INPUT class="sigp2-saisie" maxlength="11" name="<%= process.getNOM_EF_NUM_COMPTE() %>" size="11" type="text"value="<%= process.getVAL_EF_NUM_COMPTE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="100">
+							<INPUT class="sigp2-saisie" maxlength="2"  name="<%= process.getNOM_EF_RIB() %>" size="2" type="text" value="<%= process.getVAL_EF_RIB() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;">
+							<INPUT class="sigp2-saisie" maxlength="30"  name="<%= process.getNOM_EF_INTITULE_COMPTE() %>" size="30" type="text" value="<%= process.getVAL_EF_INTITULE_COMPTE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+						</TD>
 					</TR>
 				</TBODY>
 			</TABLE>
@@ -287,24 +257,22 @@ document.formu.elements[nom].focus();
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Service national</legend>
 			<span class="sigp2">Etat de service : </span>
-				<SELECT tabindex="40" class="sigp2-liste" style="margin-right:30px" name="<%= process.getNOM_LB_TYPE_SERVICE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> >
+				<SELECT class="sigp2-liste" style="margin-right:30px" name="<%= process.getNOM_LB_TYPE_SERVICE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> >
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_SERVICE(), process.getVAL_LB_TYPE_SERVICE_SELECT())%> 
 				</SELECT>
 				<span class="sigp2">VCAT : </span>
 				<span class="sigp2-RadioBouton">
-					<INPUT tabindex="41" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_VCAT(),process.getNOM_RB_VCAT_OUI())%>>Oui
+					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_VCAT(),process.getNOM_RB_VCAT_OUI())%>>Oui
 					<span style="width:5px"></span>
-					<INPUT tabindex="42" type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_VCAT(),process.getNOM_RB_VCAT_NON())%>>Non
+					<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_VCAT(),process.getNOM_RB_VCAT_NON())%>>Non
 				</span>
 				<span style="width:30px"></span>
 				<span class="sigp2">Debut : </span>
-				<INPUT tabindex="43" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_DEBUT() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-					size="10" type="text" value="<%= process.getVAL_EF_SERVICE_DEBUT() %>">
+				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_DEBUT() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_DEBUT() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_SERVICE_DEBUT()%>', 'dd/mm/y');">
 				<span style="width:10px"></span>
 				<span class="sigp2">Fin : </span>
-				<INPUT tabindex="44" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_FIN() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-					size="10" type="text" value="<%= process.getVAL_EF_SERVICE_FIN() %>">
+				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_FIN() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_FIN() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_SERVICE_FIN()%>', 'dd/mm/y');">
 		</FIELDSET>	
 		
@@ -322,42 +290,24 @@ document.formu.elements[nom].focus();
 						<TD class="sigp2" style="text-align : center;" width="150">N° CLR</TD>
 					</TR>
 					<TR>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="50" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_CAFAT() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_CAFAT() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="51" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_RUAMM() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_RUAMM() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="52" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_MUTUELLE() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_MUTUELLE() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="53" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_CRE() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_CRE() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="54" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_IRCAFEX() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_IRCAFEX() %>"></TD>
-						<TD class="sigp2-saisie" style="text-align : center;"
-							width="150"><INPUT tabindex="55" class="sigp2-saisie"
-							maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-							name="<%= process.getNOM_EF_NUM_CLR() %>" size="15"
-							type="text"
-							value="<%= process.getVAL_EF_NUM_CLR() %>"></TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_CAFAT() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_CAFAT() %>">
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_RUAMM() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_RUAMM() %>">
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;"width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_MUTUELLE() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_MUTUELLE() %>">
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_CRE() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_CRE() %>">
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_IRCAFEX() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_IRCAFEX() %>">
+						</TD>
+						<TD class="sigp2-saisie" style="text-align : center;" width="150">
+							<INPUT class="sigp2-saisie" maxlength="15" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_NUM_CLR() %>" size="15" type="text" value="<%= process.getVAL_EF_NUM_CLR() %>">
+						</TD>
 					</TR>
 				</TBODY>
 			</TABLE>
@@ -410,8 +360,7 @@ document.formu.elements[nom].focus();
 							<BR/><BR/>
 							<span class="sigp2" style="width:90px">Contact :</span>
 							<span class="sigp2" style="width:400px">
-								<INPUT class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-									name="<%= process.getNOM_EF_LIBELLE_CONTACT() %>" size="55" type="text" value="<%= process.getVAL_EF_LIBELLE_CONTACT() %>">
+								<INPUT class="sigp2-saisie" maxlength="50" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_LIBELLE_CONTACT() %>" size="55" type="text" value="<%= process.getVAL_EF_LIBELLE_CONTACT() %>">
 							</span>
 							<BR/><BR/>
 							<span class="sigp2" style="width:90px">Diffusable :</span>
@@ -443,11 +392,11 @@ document.formu.elements[nom].focus();
 						} else {
 						%>
 							<BR/>
-							<span class="sigp2" width="90">Type contact :</span>
-							<span class="sigp2-saisie" width="400"><%=process.getVAL_ST_TCONTACT()%></span>
+							<span class="sigp2" >Type contact :</span>
+							<span class="sigp2-saisie" ><%=process.getVAL_ST_TCONTACT()%></span>
 							<BR/>
 							<span class="sigp2">Contact :</span>
-							<span width="400" class="sigp2-saisie"><%=process.getVAL_ST_LIBELLE_CONTACT()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_LIBELLE_CONTACT()%></span>
 							<BR/>
 							<span class="sigp2" style="width:90px">Diffusable :</span>
 							<span class="sigp2-RadioBouton" style="width:400px">
