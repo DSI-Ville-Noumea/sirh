@@ -91,31 +91,53 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche emploi">
 				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche emploi</LEGEND>
 				<BR/>
-				<span class="sigp2" style="width:150px">Domaine de l'emploi : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE_EMPLOI() %>" style="width=328px">
-					<%=process.forComboHTML(process.getVAL_LB_DOMAINE_EMPLOI(), process.getVAL_LB_DOMAINE_EMPLOI_SELECT()) %>
-				</SELECT>
-				<BR/><BR/>
-				<span class="sigp2" style="width:150px">Famille de l'emploi : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width=328px">
-					<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT()) %>
-				</SELECT>
-				<BR/><BR/>
-				<span class="sigp2" style="width:150px"> Ref. Mairie : </span>
-				<INPUT class="sigp2-saisiemajuscule" maxlength="8"
-					name="<%= process.getNOM_EF_REF_MAIRIE_RECH() %>" size="10"
-					type="text" value="<%= process.getVAL_EF_REF_MAIRIE_RECH() %>">
-				<BR/><BR/>
-				<span class="sigp2" style="width:150px">Nom du métier / emploi : </span>
-				<INPUT tabindex="" id="listeNomEmploi" class="sigp2-saisie" 
-					name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px" 
-					type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
-				<BR/><BR/>
-				<span class="sigp2" style="width:147px">Code Rome :</span>
-				<INPUT id="listeCodeRome" class="sigp2-saisiemajuscule"
-					name="<%= process.getNOM_EF_CODE_ROME_RECH() %>" maxlength="5" size="10"
-					type="text" value="<%= process.getVAL_EF_CODE_ROME_RECH() %>">
-				<BR/><BR/>
+				<table>
+					<tr>
+						<td width="130px;">
+							<span class="sigp2">Domaine de l'emploi : </span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE_EMPLOI() %>" style="width=328px">
+								<%=process.forComboHTML(process.getVAL_LB_DOMAINE_EMPLOI(), process.getVAL_LB_DOMAINE_EMPLOI_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Famille de l'emploi : </span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width=328px">
+								<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2"> Ref. Mairie : </span>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="8" name="<%= process.getNOM_EF_REF_MAIRIE_RECH() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_MAIRIE_RECH() %>">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Nom du métier / emploi : </span>
+						</td>
+						<td>
+							<INPUT tabindex="" id="listeNomEmploi" class="sigp2-saisie" name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px"  type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Code Rome :</span>
+						</td>
+						<td>
+							<INPUT id="listeCodeRome" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_CODE_ROME_RECH() %>" maxlength="5" size="10" type="text" value="<%= process.getVAL_EF_CODE_ROME_RECH() %>">
+						</td>
+					</tr>
+				</table>
+				<BR/>
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER()%>">
 				<BR>
 			</FIELDSET>

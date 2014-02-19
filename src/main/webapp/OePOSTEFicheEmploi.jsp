@@ -84,167 +84,280 @@ document.formu.elements[nom].focus();
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<fieldset class="sigp2Fieldset" style="text-align: center;width: 1030px; float: left">
 			<span class="sigp2Mandatory"> Recherche par Ref. Mairie : </span>
-			<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_REF_MAIRIE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_REF_MAIRIE() %>" style="margin-right:10px;">
-            <INPUT title="Recherche" tabindex="" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER_FE()%>">
-            <INPUT title="Recherche avancée" tabindex="" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
-            <INPUT title="Créer une FE" tabindex="" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FE()%>">
-            <INPUT title="Dupliquer une FE" tabindex="" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FE()%>">
-            <INPUT title="Supprimer une FE" tabindex="" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_FE()%>">
+			<INPUT class="sigp2-saisiemajuscule" maxlength="8" name="<%= process.getNOM_EF_RECHERCHE_REF_MAIRIE() %>" size="10"	type="text" value="<%= process.getVAL_EF_RECHERCHE_REF_MAIRIE() %>" style="margin-right:10px;">
+            <INPUT title="Recherche" type="image" src="images/loupe.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHER_FE()%>">
+            <INPUT title="Recherche avancée" type="image" src="images/rechercheAvancee.gif" height="16px" width="16px" name="<%=process.getNOM_PB_RECHERCHE_AVANCEE()%>" >
+            <INPUT title="Créer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_FE()%>">
+            <INPUT title="Dupliquer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/dupliquer.gif" height="16px" width="16px" name="<%=process.getNOM_PB_DUPLIQUER_FE()%>">
+            <INPUT title="Supprimer une FE" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_FE()%>">
 			<br/>
 		</fieldset>
 		
 	<% if (!process.ACTION_RECHERCHE.equals(process.getVAL_ST_ACTION())){ %>
 		<% if (!process.isSuppression() && !MairieUtils.estConsultation(request, process.getNomEcran())) {%>
-			<div style="width:1052px">
-				<fieldset class="sigp2Fieldset" style="text-align:left;width:505px;float:left;height:410px;">
-				<legend class="sigp2Legend">Identification</legend>
-				<br/>
-				<span class="sigp2Mandatory" style="width:150px"> Ref. Mairie : </span>
-				<INPUT tabindex="2" class="sigp2-saisie" maxlength="8" disabled="disabled"
-					name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10"
-					type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">
-				<br/><br/>
-				<br/>
-				<% if (process.isModification()) {%>
-					<span class="sigp2" style="width:147px">Code Rome :</span>
-					<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> tabindex="3" id="listeCodeRome" class="sigp2-saisiemajuscule"
-						name="<%= process.getNOM_EF_CODE_ROME() %>" maxlength="5" size="6" 
-						type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">						
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Domaine d'activité : </span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" style="width=328px" disabled="disabled">
-						<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
-					</SELECT>
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Famille de l'emploi : </span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width=328px" disabled="disabled">
-						<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
-					</SELECT>
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="100" disabled="disabled"
-						name="<%= process.getNOM_EF_NOM_METIER() %>"
-						type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:328px">
-				<%}else{ %>
-					<span class="sigp2" style="width:147px">Code Rome :</span>
-					<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> tabindex="3" id="listeCodeRome" class="sigp2-saisiemajuscule"
-						name="<%= process.getNOM_EF_CODE_ROME() %>" maxlength="5" size="6"
-						type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">						
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Domaine d'activité : </span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" style="width=328px">
-						<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
-					</SELECT>
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Famille de l'emploi : </span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width=328px">
-						<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
-					</SELECT>
-					<br/><br/>
-					<br/>
-					<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="100"
-						name="<%= process.getNOM_EF_NOM_METIER() %>"
-						type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:328px">
-				<%} %>
-				<br/><br/>
-				<br/>
-				<span class="sigp2" style="width:150px"> Autres Appellations <br/> métiers / emplois </span>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="100"	name="<%= process.getNOM_EF_AUTRE_APPELLATION() %>" 
-					type="text" value="<%= process.getVAL_EF_AUTRE_APPELLATION() %>" style="margin-right:10px;width: 280px">
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AUTRE_APPELLATION()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_AUTRE_APPELLATION()%>">
-				
-				<SELECT size="5" style="width:478px;font-family:monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_AUTRE_APPELLATION()%>" onchange="this.selectedIndex=-1;">
-					<%=process.forComboHTML(process.getVAL_LB_AUTRE_APPELLATION(), process.getVAL_LB_AUTRE_APPELLATION_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-			</fieldset>
-			
-			<fieldset class="sigp2Fieldset" style="text-align:left;width:505px;float:left;height:410px;">
-				<legend class="sigp2Legend">Cadre statutaire</legend>
-				<br/>
-				<span class="sigp2" style="width:150px"> Catégorie / classification : </span>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CATEGORIE()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_CATEGORIE()%>">
-				<% if (process.isAfficherListeCategorie()) {%>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>" style="width:290px;margin-bottom:5px" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_CATEGORIE() %>")'>
-					<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT())%>
-				</SELECT>
-				<%} %>
-				<br/>			
-				<span class="sigp2" style="width:150px"></span>
-				<INPUT tabindex="" class="sigp2-saisie" disabled="disabled"
-					name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:328px"
-					type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Cadres emploi : </span>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CADRE()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>">
-				<% if (process.isAfficherListeCadre()) {%>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" style="width:290px;margin-bottom:5px" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI() %>")'>
-					<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI(), process.getVAL_LB_CADRE_EMPLOI_SELECT())%>
-				</SELECT>
-				<%} %>
-				<br/>
-				<span class="sigp2" style="width:150px"></span>
-				<SELECT size="3" style="width :328px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_CADRE_EMPLOI_MULTI()%>" >
-					<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_MULTI(), process.getVAL_LB_CADRE_EMPLOI_MULTI_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Niveau d'étude : </span>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_NIVEAU()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_NIVEAU_ETUDE()%>">
-	            <% if (process.isAfficherListeNivEt()) {%>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NIVEAU_ETUDE() %>" style="width:290px;margin-bottom:5px" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE() %>")'>
-						<%=process.forComboHTML(process.getVAL_LB_NIVEAU_ETUDE(), process.getVAL_LB_NIVEAU_ETUDE_SELECT())%>
-					</SELECT>
-				<%} %>
-				<br />
-				<span class="sigp2" style="width:150px"></span>
-				<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:328px" type="text"
-					value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Diplôme(s) : </span>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_DIPLOME()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DIPLOME()%>">
-	            <% if (process.isAfficherListeDiplome()) {%>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DIPLOME() %>" style="width:290px;margin-bottom:5px" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_DIPLOME() %>")'>
-						<%=process.forComboHTML(process.getVAL_LB_DIPLOME(), process.getVAL_LB_DIPLOME_SELECT())%>
-					</SELECT>
-				<%} %>
-				<br />
-				<span class="sigp2" style="width:150px"></span>
-				<SELECT size="3" style="width :328px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>">
-					<%=process.forComboHTML(process.getVAL_LB_DIPLOME_MULTI(), process.getVAL_LB_DIPLOME_MULTI_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Précisions diplomes : </span>
-				<textarea tabindex="" rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:328px"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
-				
-				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI()%>">
-				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CATEGORIE()%>">
-				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_DIPLOME()%>">
-				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">
-			</fieldset>
-		</div>		
+			<table width="1030px" border="0">
+				<tr>
+					<td width="505px" height="410px" valign="top">
+						<fieldset class="sigp2Fieldset" style="text-align:left;">
+							<legend class="sigp2Legend">Identification</legend>
+							<br/>
+							<table border="0">
+								<tr>
+									<td width="150px">
+										<span class="sigp2Mandatory"> Ref. Mairie : </span>
+									</td>
+									<td width="260px">
+										<INPUT class="sigp2-saisie" maxlength="8" disabled="disabled" name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+							<% if (process.isModification()) {%>
+								<tr>
+									<td>
+										<span class="sigp2">Code Rome :</span>
+									</td>
+									<td>
+										<INPUT id="listeCodeRome" size="10" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_CODE_ROME() %>" maxlength="5" type="text" value="<%= process.getVAL_EF_CODE_ROME() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+									</td>
+									<td>
+										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
+										</SELECT>
+									</td>
+								</tr>	
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>	
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Famille de l'emploi : </span>
+									</td>
+									<td>
+										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
+										</SELECT>
+									</td>
+								</tr>	
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>	
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Nom du métier / emploi : </span>
+									</td>
+									<td>
+										<INPUT style="width: 300px;" class="sigp2-saisie" maxlength="100" disabled="disabled"name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+							<%}else{ %>
+								<tr>
+									<td>
+										<span class="sigp2">Code Rome :</span>
+									</td>
+									<td>
+										<INPUT size="10" id="listeCodeRome" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_CODE_ROME() %>" maxlength="5" type="text" value="<%= process.getVAL_EF_CODE_ROME() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>	
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+									</td>
+									<td>
+										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>">
+											<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
+										</SELECT>
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Famille de l'emploi : </span>
+									</td>
+									<td>
+										<SELECT style="width: 300px;" class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>">
+											<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
+										</SELECT>
+									</td>
+								</tr>	
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
+									</td>
+									<td>
+										<INPUT style="width: 300px;" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+							<%} %>
+								<tr>
+									<td>
+										<span class="sigp2"> Autres Appellations <br/> métiers / emplois </span>
+									</td>
+									<td>
+										<INPUT style="width: 260px;" class="sigp2-saisie" maxlength="100"	name="<%= process.getNOM_EF_AUTRE_APPELLATION() %>" type="text" value="<%= process.getVAL_EF_AUTRE_APPELLATION() %>">
+							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AUTRE_APPELLATION()%>">
+							            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_AUTRE_APPELLATION()%>">
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">										
+										<SELECT style="width: 100%;" size="5" class="sigp2-liste" name="<%=process.getNOM_LB_AUTRE_APPELLATION()%>" onchange="this.selectedIndex=-1;">
+											<%=process.forComboHTML(process.getVAL_LB_AUTRE_APPELLATION(), process.getVAL_LB_AUTRE_APPELLATION_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+					<td width="20px"></td>
+					<td width="505px" valign="top">
+						<fieldset class="sigp2Fieldset" style="text-align:left;">
+							<legend class="sigp2Legend">Cadre statutaire</legend>
+							<br/>
+							<table border="0">
+								<tr>
+									<td width="130px">
+										<span class="sigp2"> Catégorie / classification : </span>
+									</td>
+									<td width="280px">
+							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CATEGORIE()%>">
+							            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_CATEGORIE()%>">
+										<% if (process.isAfficherListeCategorie()) {%>							
+											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CATEGORIE() %>" style="width:240px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_CATEGORIE() %>")'>
+												<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT())%>
+											</SELECT>	
+										<%} %>
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:300px" type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Cadres emploi : </span>
+									</td>
+									<td>				
+							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_CADRE()%>">
+							            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>">	
+										<% if (process.isAfficherListeCadre()) {%>				
+											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CADRE_EMPLOI() %>" style="width:240px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI() %>")'>
+												<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI(), process.getVAL_LB_CADRE_EMPLOI_SELECT())%>
+											</SELECT>						
+										<%} %>								
+									</td>
+								</tr>	
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<SELECT size="3" style="width :300px;" class="sigp2-liste" name="<%=process.getNOM_LB_CADRE_EMPLOI_MULTI()%>" >
+											<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_MULTI(), process.getVAL_LB_CADRE_EMPLOI_MULTI_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Niveau d'étude : </span>
+									</td>
+									<td>				
+							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_NIVEAU()%>">
+							            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_NIVEAU_ETUDE()%>">		
+										<% if (process.isAfficherListeNivEt()) {%>	
+											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NIVEAU_ETUDE() %>" style="width:240px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE() %>")'>
+												<%=process.forComboHTML(process.getVAL_LB_NIVEAU_ETUDE(), process.getVAL_LB_NIVEAU_ETUDE_SELECT())%>
+											</SELECT>						
+										<%} %>						
+									</td>
+								</tr>	
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:300px" type="text" value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Diplôme(s) : </span>
+									</td>
+									<td>				
+							            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_DIPLOME()%>">
+							            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DIPLOME()%>">		
+										<% if (process.isAfficherListeDiplome()) {%>	
+											<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DIPLOME() %>" style="width:240px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_DIPLOME() %>")'>
+												<%=process.forComboHTML(process.getVAL_LB_DIPLOME(), process.getVAL_LB_DIPLOME_SELECT())%>
+											</SELECT>						
+										<%} %>					
+									</td>
+								</tr>		
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<SELECT size="3" style="width :300px;" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>">
+											<%=process.forComboHTML(process.getVAL_LB_DIPLOME_MULTI(), process.getVAL_LB_DIPLOME_MULTI_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Précisions diplomes : </span>
+									</td>
+									<td>
+										<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:300px"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
+									</td>
+								</tr>	
+							</table>							
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CADRE_EMPLOI()%>">
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CATEGORIE()%>">
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_DIPLOME()%>">
+							<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">
+						</fieldset>
+					</td>
+				</tr>
+			</table>	
 		
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; clear: both; width:1030px">
 			<legend class="sigp2Legend"><B>Définition de l'emploi</B></legend>
 			<br/>
-			<textarea tabindex="" rows="4" cols="190" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
+			<textarea rows="4" cols="190" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
 			<br/>
 		</fieldset>
 				
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; clear: both; width:1030px">
-			<legend class="sigp2Legend"><B>Activités</B></legend>
-			<span class="sigp2Mandatory" style="width:150px;margin:5px;"> Activités principales</span>
-	        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE_PRINC()%>">
+			<legend class="sigp2Legend">Activités principales</legend>
+	        <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_ACTIVITE_PRINC()%>">
 			<br/>
             <%if(process.getListeActiPrincMulti().size()>0){ %>
 				<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -282,7 +395,7 @@ document.formu.elements[nom].focus();
 			<br/><br/>
 			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode())){ %>
 				<div align="left">
-					<INPUT style="margin:5px;" tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>">
+					<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>">
 		            <BR/>
 		            <%if(process.getListeSavoirFaireMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -310,7 +423,7 @@ document.formu.elements[nom].focus();
 				<BR/>
 			<%}else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode())){ %>
 				<div align="left">
-					<INPUT style="margin:5px;" tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR()%>">
+					<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR()%>">
 					<BR/>
 		            <%if(process.getListeSavoirFaireMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -338,7 +451,7 @@ document.formu.elements[nom].focus();
 				<BR/>
 			<% }else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode())){ %>
 			<div align="left">
-				<INPUT style="margin:5px;" tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>">
+				<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>">
 				<BR/>
 		            <%if(process.getListeComportementMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -371,12 +484,12 @@ document.formu.elements[nom].focus();
 				<legend class="sigp2Legend">Identification</legend>
 				<br/>
 				<span class="sigp2Mandatory" style="width:150px"> Ref. Mairie : </span>
-				<INPUT tabindex="2" class="sigp2-saisie" maxlength="8" disabled="disabled"
+				<INPUT class="sigp2-saisie" maxlength="8" disabled="disabled"
 					name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10"
 					type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">
 				<br/><br/>
 				<span class="sigp2" style="width:150px"> Code Rome : </span>
-				<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> tabindex="3" class="sigp2-saisie" maxlength="5"
+				<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" maxlength="5"
 					name="<%= process.getNOM_EF_CODE_ROME() %>" size="6"
 					type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">
 				<br/><br/>
@@ -396,7 +509,7 @@ document.formu.elements[nom].focus();
 				</SELECT>
 				<br/><br/>
 				<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="100" disabled="disabled"
+				<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled"
 					name="<%= process.getNOM_EF_NOM_METIER() %>"
 					type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:328px">
 				<br/><br/>
@@ -410,7 +523,7 @@ document.formu.elements[nom].focus();
 				<legend class="sigp2Legend">Cadre statutaire</legend>
 				<br/>
 				<span class="sigp2" style="width:150px"> Catégorie / classification : </span>
-				<INPUT tabindex="" class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:328px"
+				<INPUT class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:328px"
 					type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
 				<br/><br/>
 				<span class="sigp2" style="width:150px"> Cadres emploi : </span>
@@ -419,7 +532,7 @@ document.formu.elements[nom].focus();
 				</SELECT>
 				<br/><br/>
 				<span class="sigp2" style="width:150px"> Niveau d'étude : </span>
-				<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:328px" type="text"
+				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:328px" type="text"
 					value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
 				<br/><br/>
 				<span class="sigp2" style="width:150px"> Diplôme(s) : </span>
@@ -428,14 +541,14 @@ document.formu.elements[nom].focus();
 				</SELECT>
 				<br/><br/>
 				<span class="sigp2" style="width:150px"> Précisions diplomes : </span>
-				<textarea tabindex="" rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:328px" disabled="disabled"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
+				<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:328px" disabled="disabled"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
 			</fieldset>
 		</div>
 		
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px">
 			<legend class="sigp2Legend"><B>Définition de l'emploi</B></legend>
 			<br/>
-			<textarea tabindex="" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>" style="margin-right:10px;" disabled="disabled"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
+			<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_EF_DEFINITION_EMPLOI() %>" style="margin-right:10px;" disabled="disabled"><%= process.getVAL_EF_DEFINITION_EMPLOI() %></textarea>
 			<br/>
 		</fieldset>
 		
