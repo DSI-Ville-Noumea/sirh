@@ -65,19 +65,18 @@ function SelectLigne(id,tailleTableau)
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Planning et liste de diffusion des alertes</legend>
 			<br/>
-			<span style="position:relative;width:9px;"></span>
-			<span style="position:relative;width:60px;">
+			<span style="margin-left: 5px;">
 			<%if(process.getCampagneCourante()!= null && process.getCampagneCourante().estOuverte()){ %>
 				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
 			<%} %>
 			</span>
-			<span style="position:relative;width:45px;text-align: center;">Docs joint</span>
-			<span style="position:relative;width:100px;text-align: center;">Action</span>
-			<span style="position:relative;width:90px;text-align: center;">Transmettre le</span>
-			<span style="position:relative;width:300px;text-align: center;">Message</span>
-			<span style="position:relative;width:150px;text-align: center;">Action à réaliser par</span>
-			<span style="position:relative;width:90px;text-align: center;">A faire pour le</span>
-			<span style="position:relative;width:70px;text-align: center;">Fait le</span>
+			<span style="margin-left: 35px;">Docs joint</span>
+			<span style="margin-left: 35px;">Action</span>
+			<span style="margin-left: 30px;">Transmettre le</span>
+			<span style="margin-left: 120px;">Message</span>
+			<span style="margin-left: 150px;">Action à réaliser par</span>
+			<span style="margin-left: 25px;">A faire pour le</span>
+			<span style="margin-left: 55px;">Fait le</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -119,102 +118,139 @@ function SelectLigne(id,tailleTableau)
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 			<div>	
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Action :</span>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-				<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_ST_NOM_ACTION() %>" size="100" type="text" value="<%= process.getVAL_ST_NOM_ACTION() %>">
-				<%}else{ %>	
-				<INPUT disabled="disabled" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_ST_NOM_ACTION() %>" size="100" type="text" value="<%= process.getVAL_ST_NOM_ACTION() %>">
-				<%} %>			
-				<BR/><BR/>
+				<table>
+					<tr>
+						<td width="120px">
+							<span class="sigp2Mandatory">Action :</span>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+							<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_ST_NOM_ACTION() %>" size="100" type="text" value="<%= process.getVAL_ST_NOM_ACTION() %>">
+							<%}else{ %>	
+							<INPUT disabled="disabled" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_ST_NOM_ACTION() %>" size="100" type="text" value="<%= process.getVAL_ST_NOM_ACTION() %>">
+							<%} %>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2Mandatory">Message :</span><br/>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+							<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
+							<%}else{ %>	
+							<textarea readonly="readonly" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
+							<%} %>	
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2Mandatory">A transmettre le :</span>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+							<input class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
+							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_TRANSMETTRE()%>', 'dd/mm/y');">
+							<%}else{ %>
+							<input disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
+							<%} %>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2Mandatory">A réaliser par :</span>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+								<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="100" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+								<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
+			          			<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+							<%}else{ %>
+								<INPUT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="100" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+							<%} %>
+							<INPUT name="<%= process.getNOM_ST_ID_AGENT() %>" type="hidden" value="<%= process.getVAL_ST_ID_AGENT() %>"> 
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2Mandatory">A faire pour le :</span>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+							<input class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
+							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_POUR_LE()%>', 'dd/mm/y');">
+							<%}else{ %>	
+							<input disabled="disabled" class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
+							<%} %>	
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Fait le :</span>
+						</td>
+						<td>
+							<input class="sigp2-saisie"	name="<%= process.getNOM_ST_FAIT_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_FAIT_LE() %>">
+							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_FAIT_LE()%>', 'dd/mm/y');">	
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Observation :</span><br/>
+						</td>
+						<td>
+							<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2Mandatory"> Destinataires des alertes : </span>
+						</td>
+						<td>
+							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
+					        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
+					        <%} %>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+				            <%if(process.getListeDestinataireMulti().size()>0){ %>
+								<div style="overflow: auto;height: 120px;width:800px;">
+									<table class="sigp2NewTab">
+									<%
+									int indiceActeur = 0;
+									if (process.getListeDestinataireMulti()!=null){
+										for (int i = 0;i<process.getListeDestinataireMulti().size();i++){
+									%>
+											<tr id="<%=indiceActeur%>" onmouseover="SelectLigne(<%=indiceActeur%>,<%=process.getListeDestinataireMulti().size()%>)" >
+														<td class="sigp2NewTab-liste" style="width:30px;" align="center">		
+															<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>									
+															<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DESTINATAIRE(indiceActeur)%>">
+															<%} %>
+														</td>
+												<td class="sigp2NewTab-liste" align="left" style="width:150px;"><%=process.getVAL_ST_LIB_AGENT(indiceActeur)%></td>
+											</tr>
+											<%
+											indiceActeur++;
+										}
+									}%>
+									</table>	
+								</div>
+							<%} %>
+						</td>
+					</tr>
+				</table>
 				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Message :</span><br/>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-				<textarea style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
-				<%}else{ %>	
-				<textarea style="margin-left:20px;position:relative;" readonly="readonly" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_MESSAGE()%>" ><%= process.getVAL_ST_MESSAGE() %></textarea>
-				<%} %>			
-				<BR/><BR/>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">A transmettre le :</span>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-				<input class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
-				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_TRANSMETTRE()%>', 'dd/mm/y');">
-				<%}else{ %>
-				<input disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
-				<%} %>
-				<BR/><BR/>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">A réaliser par :</span>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="100" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
-					<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
-          			<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
-				<%}else{ %>
-					<INPUT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="100" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
-				<%} %>
-				<INPUT name="<%= process.getNOM_ST_ID_AGENT() %>" type="hidden" value="<%= process.getVAL_ST_ID_AGENT() %>">          		
-          		<BR/><BR/>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">A faire pour le :</span>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-				<input class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
-				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_POUR_LE()%>', 'dd/mm/y');">
-				<%}else{ %>	
-				<input disabled="disabled" class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
-				<%} %>			
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Fait le :</span>
-				<input class="sigp2-saisie"	name="<%= process.getNOM_ST_FAIT_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_FAIT_LE() %>">
-				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_FAIT_LE()%>', 'dd/mm/y');">				
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:100px;">Observation :</span><br/>
-				<textarea style="margin-left:20px;position:relative;" rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
-				<BR/><BR/>
-				
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;"> Destinataires des alertes : </span>
-				<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-		        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
-		        <%} %>
-				<br/>
-	            <%if(process.getListeDestinataireMulti().size()>0){ %>
-					<div style="overflow: auto;height: 120px;width:1000px;margin-left:20px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-						<%
-						int indiceActeur = 0;
-						if (process.getListeDestinataireMulti()!=null){
-							for (int i = 0;i<process.getListeDestinataireMulti().size();i++){
-						%>
-								<tr id="<%=indiceActeur%>" onmouseover="SelectLigne(<%=indiceActeur%>,<%=process.getListeDestinataireMulti().size()%>)" >
-											<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">		
-												<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>									
-												<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DESTINATAIRE(indiceActeur)%>">
-												<%} %>
-											</td>
-									<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_AGENT(indiceActeur)%></td>
-								</tr>
-								<%
-								indiceActeur++;
-							}
-						}%>
-						</table>	
-					</div>
-				<br/>
-				<%} %>
-				<BR/><BR/>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
-					<span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:55px;">	
+					<span style="margin-left: 5px;">	
 					<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>	
 					<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
 					<%} %>
 					</span>
-					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-					<span style="position:relative;width:120px;text-align: center;">Date</span> 
-					<span style="position:relative;text-align: left">Commentaire</span> 
+					<span style="margin-left: 60px;">Nom du document</span>
+					<span style="margin-left: 155px;">Date</span> 
+					<span style="margin-left: 45px;">Commentaire</span> 
 				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">

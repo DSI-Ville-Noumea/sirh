@@ -64,19 +64,18 @@ function SelectLigneTabDoc(id,tailleTableau)
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Liste des campagnes EAE</legend>
 			<br/>
-			<span style="position:relative;width:9px;"></span>
-			<span style="position:relative;width:40px;">
+			<span style="margin-left: 5px;">
 				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
 			</span>
-			<span style="position:relative;width:45px;text-align: center;">Docs joint</span>
-			<span style="position:relative;width:45px;text-align: center;">Année</span>
-			<span style="position:relative;width:90px;text-align: center;">Date début</span>
-			<span style="position:relative;width:90px;text-align: center;">Date fin</span>
-			<span style="position:relative;width:90px;text-align: center;">Date début Kiosque</span>
-			<span style="position:relative;width:90px;text-align: center;">Date fin Kiosque</span>
-			<span style="position:relative;width:120px;text-align: center;">Kiosque</span>
-			<span style="position:relative;width:120px;text-align: center;">Kiosque</span>
-			<span style="position:relative;text-align: left;">Cloturer</span>
+			<span style="margin-left: 20px;">Docs joint</span>
+			<span style="margin-left: 0px;">Année</span>
+			<span style="margin-left: 15px;">Date début</span>
+			<span style="margin-left: 40px;">Date fin</span>
+			<span style="margin-left: 15px;">Date début Kiosque</span>
+			<span style="margin-left: 0px;">Date fin Kiosque</span>
+			<span style="margin-left: 25px;">Kiosque</span>
+			<span style="margin-left: 75px;">Kiosque</span>
+			<span style="margin-left: 45px;">Cloturer</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -123,35 +122,44 @@ function SelectLigneTabDoc(id,tailleTableau)
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 			<div>	
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Année :</span>
-				<INPUT <%=process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) ? "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_ANNEE() %>" size="4" type="text" value="<%= process.getVAL_ST_ANNEE() %>">
+			<table>
+				<tr>
+					<td width="70px">
+						<span class="sigp2Mandatory">Année :</span>
+					</td>
+					<td>
+						<INPUT <%=process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) ? "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_ANNEE() %>" size="4" type="text" value="<%= process.getVAL_ST_ANNEE() %>">
+					</td>
+				</tr>
 				
-				<BR/><BR/>
-
-
 				<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)|| process.dateDebutModifiable){%>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:70px;">Date début :</span>
-				<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
-				<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
-				
-				<BR/><BR/>
-				
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date début :</span>
+					</td>
+					<td>
+						<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT() %>">
+						<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+					</td>
+				</tr>
 				<%} %>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Commentaire :</span>
-				<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
-					
-				<BR/><BR/>
+				<tr>
+					<td>
+						<span class="sigp2">Commentaire :</span>
+					</td>
+					<td>
+						<textarea rows="4" cols="150" class="sigp2-saisie" name="<%= process.getNOM_ST_COMMENTAIRE()%>" ><%= process.getVAL_ST_COMMENTAIRE() %></textarea>
+					</td>
+				</tr>
+			</table>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
-					<span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:55px;">	
-					<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+					<span style="margin-left: 5px;">	
+						<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
 					</span>
-					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-					<span style="position:relative;width:120px;text-align: center;">Date</span> 
-					<span style="position:relative;text-align: left">Commentaire</span> 
+					<span style="margin-left: 40px;">Nom du document</span>
+					<span style="margin-left: 160px;">Date</span> 
+					<span style="margin-left: 35px;">Commentaire</span> 
 				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
@@ -180,29 +188,57 @@ function SelectLigneTabDoc(id,tailleTableau)
 					<% if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
 					<div>
 					    <FONT color='red'>Veuillez valider votre choix.</FONT>
-					    <BR/><BR/>
-						<span class="sigp2" style="width:130px;">Nom du document : </span>
-						<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
-						<BR/>
-						<span class="sigp2" style="width:130px;">Date : </span>
-						<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>
-						<BR/>
-						<span class="sigp2" style="width:130px;">Commentaire : </span>
-						<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
-						<BR/>		
+						<table>
+							<tr>
+								<td width="100px;">
+									<span class="sigp2">Nom du document : </span>
+								</td>
+								<td>
+									<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2">Date : </span>
+								</td>
+								<td>
+									<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2">Commentaire : </span>
+								</td>
+								<td>
+									<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
+								</td>
+							</tr>
+						</table>	
 					</div>
 					<% }else if(process.getVAL_ST_ACTION_DOCUMENT().equals(process.ACTION_DOCUMENT_CREATION)){ %>
 						<div>		
-							<span class="sigp2" style="width:130px;" >Commentaire :</span><INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
-							<BR/>
-							<BR/>
-							<span class="sigp2Mandatory" style="width:130px;">Fichier : </span> 
-							<% if(process.fichierUpload == null){ %>
-							<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
-							<%}else{ %>
-							<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
-							<% }%>
-							<br />
+							<table>
+								<tr>
+									<td width="100px;">
+										<span class="sigp2">Commentaire :</span>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2">Fichier : </span>
+									</td>
+									<td>
+										<% if(process.fichierUpload == null){ %>
+										<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+										<%}else{ %>
+										<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT() %>" >
+										<% }%>
+									</td>
+								</tr>
+							</table>
 						</div>
 					<%}%>
 					</FIELDSET>
@@ -210,26 +246,45 @@ function SelectLigneTabDoc(id,tailleTableau)
 			
 			<% } else { %>
 			<div>
-		    	<BR/>
-		    	<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Année : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_ANNEE()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Date début: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Date fin: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:70px;">Commentaire: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
-				<BR/><BR/>				
+			<table>
+				<tr>
+					<td width="70px;">
+		    			<span class="sigp2">Année : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_ANNEE()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date début: </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date fin: </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Commentaire: </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE()%></span>
+					</td>
+				</tr>
+			</table>			
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
 				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
-					<span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:55px;"></span>
-					<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-					<span style="position:relative;width:120px;text-align: center;">Date</span> 
-					<span style="position:relative;text-align: left">Commentaire</span> 
+					<span style="margin-left:65px;">Nom du document</span>
+					<span style="margin-left:160px;">Date</span> 
+					<span style="margin-left:35px;">Commentaire</span> 
 				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
