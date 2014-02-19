@@ -89,59 +89,81 @@
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" title="Recherche avancée d'une fiche de poste">
 				<LEGEND class="sigp2Legend">Recherche avancée d'une fiche de poste</LEGEND>
-				<BR/>
-				<span class="sigp2" style="width:60px;">Numero :</span>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
-				<BR/>
-				<BR/>
-				<span class="sigp2" style="width:60px;">Service :</span>
-				<INPUT tabindex="" id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
-				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
-				<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
-          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" 
-					value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">
-				<div id="treeHierarchy" style="display: none; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
-					<script type="text/javascript">
-						d = new dTree('d');
-						d.add(0,-1,"Services");
-						
-						<%
-						String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
-						int theNode = 0;
-						for (int i =1; i <  process.getListeServices().size(); i++) {
-							Service serv = (Service)process.getListeServices().get(i);
-							String code = serv.getCodService();
-							TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
-							if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
-								theNode=tree.getIndex();
-							}
-						%>
-						<%=tree.getJavaScriptLine()%>
-						<%}%>
-						document.write(d);
-				
-						d.closeAll();
-						<% if (theNode !=0) { %>
-							d.openTo(<%=theNode%>,true);
-						<%}%>
-					</script>
-				</div>
-				<span class="sigp2" style="width:80px"></span>
-				<span class="sigp2" style="width:60px">Statut : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>">
-					<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
-				</SELECT>
-				<BR/><BR/>
-				<span class="sigp2" style="width:60px">Titre :</span>
-				<INPUT tabindex="" id="listeTitrePoste" class="sigp2-saisie"
-					name="<%= process.getNOM_EF_TITRE_POSTE() %>" style="margin-right:10px;width:450px"
-					type="text" value="<%= process.getVAL_EF_TITRE_POSTE() %>">
-				<BR/><BR/>
-				<span class="sigp2" style="width:60px">Par agent :</span>
-				<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
-				<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
-          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
-          		<BR/><BR/>
+				<table>
+					<tr>
+						<td width="60px">
+							<span class="sigp2">Numero :</span>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE() %>" style="margin-right:10px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Service :</span>
+						</td>
+						<td>
+							<INPUT id="service" class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_EF_SERVICE() %>" size="10" style="margin-right:10px;" type="text" value="<%= process.getVAL_EF_SERVICE() %>">
+							<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
+							<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
+			          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">							
+								<div id="treeHierarchy" style="display: none; height: 360; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+									<script type="text/javascript">
+										d = new dTree('d');
+										d.add(0,-1,"Services");
+										
+										<%
+										String serviceSaisi = process.getVAL_EF_SERVICE().toUpperCase();
+										int theNode = 0;
+										for (int i =1; i <  process.getListeServices().size(); i++) {
+											Service serv = (Service)process.getListeServices().get(i);
+											String code = serv.getCodService();
+											TreeHierarchy tree = (TreeHierarchy)process.getHTree().get(code);
+											if (theNode ==0 && serviceSaisi.equals(tree.getService().getSigleService())) {
+												theNode=tree.getIndex();
+											}
+										%>
+										<%=tree.getJavaScriptLine()%>
+										<%}%>
+										document.write(d);
+								
+										d.closeAll();
+										<% if (theNode !=0) { %>
+											d.openTo(<%=theNode%>,true);
+										<%}%>
+									</script>
+								</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Statut : </span>
+						</td>
+						<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>">
+								<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Titre :</span>
+						</td>
+						<td>
+							<INPUT id="listeTitrePoste" class="sigp2-saisie" name="<%= process.getNOM_EF_TITRE_POSTE() %>" type="text" value="<%= process.getVAL_EF_TITRE_POSTE() %>">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Par agent :</span>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT() %>" style="margin-right:10px;">
+							<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT()%>');">
+			          		<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>');">
+						</td>
+					</tr>
+				</table>
 				<INPUT size="1" type="text" class="sigp2-saisie" maxlength="1" name="ZoneTampon" style="display:none;">
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER()%>" accesskey="R">
 				<BR>
@@ -151,10 +173,10 @@
 				<LEGEND class="sigp2Legend">Sélection d'une fiche de poste</LEGEND>
             	<%if(process.getListeFP()!= null && process.getListeFP().size()>0){ %>
 				<BR>	            
-	            <span style="position:relative;width:70px;">Numéro</span>
-				<span style="position:relative;width:455px;">Titre</span>
-				<span style="position:relative;width:150px;">Agent affecté</span>
-				<span style="position:relative;">Service</span>
+	            <span style="margin-left: 0px;">Numéro</span>
+				<span style="margin-left: 30px;">Titre</span>
+				<span style="margin-left: 425px;">Agent affecté</span>
+				<span style="margin-left: 75px;">Service</span>
 				<BR/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -184,19 +206,19 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;" >
 				<LEGEND class="sigp2Legend">Voir toutes les affectations d'une fiche de poste</LEGEND>
 				<span class="sigp2" style="width:60px;">Numero :</span>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE_AFF() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE_AFF() %>" style="margin-right:10px;">
+				<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_FICHE_POSTE_AFF() %>" size="10" type="text" value="<%= process.getVAL_EF_NUM_FICHE_POSTE_AFF() %>" style="margin-right:10px;">
 				<BR/>
 				<BR/>
 				<INPUT type="submit" value="Rechercher" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_RECHERCHER_AFF()%>" accesskey="R">
 				<BR/><BR/>
 				<%if (process.getListeAffectation().size()>0){ %>
-				    <span style="position:relative;width:50px;text-align:left;">Direction</span>
-					<span style="position:relative;width:250px;text-align:left;">Service/Section/...</span>
-					<span style="position:relative;width:200px;text-align:left;">Agent</span>
-					<span style="position:relative;width:80px;text-align: center;">Date début</span>
-					<span style="position:relative;width:85px;text-align: center;">Date fin</span>
-					<span style="position:relative;width:65px;text-align: left;">Fiche poste</span>
-					<span style="position:relative;text-align: left;">Titre poste</span>
+				    <span style="margin-left: 0px;">Direction</span>
+					<span style="margin-left: 0px;">Service/Section/...</span>
+					<span style="margin-left: 155px;">Agent</span>
+					<span style="margin-left: 180px;">Date début</span>
+					<span style="margin-left: 25px;">Date fin</span>
+					<span style="margin-left: 20px;">Fiche poste</span>
+					<span style="margin-left: 5px;">Titre poste</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
