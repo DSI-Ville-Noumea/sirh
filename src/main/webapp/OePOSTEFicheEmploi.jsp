@@ -479,72 +479,160 @@ document.formu.elements[nom].focus();
 			<%} %>
 		</fieldset>	
 		<%} else {%>
-		<div>
-			<fieldset class="sigp2Fieldset" style="text-align:left;width:505px;float:left;height:470px;">
-				<legend class="sigp2Legend">Identification</legend>
-				<br/>
-				<span class="sigp2Mandatory" style="width:150px"> Ref. Mairie : </span>
-				<INPUT class="sigp2-saisie" maxlength="8" disabled="disabled"
-					name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10"
-					type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Code Rome : </span>
-				<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" maxlength="5"
-					name="<%= process.getNOM_EF_CODE_ROME() %>" size="6"
-					type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px">Code Rome :</span>
-				<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> id="listeCodeRome" class="sigp2-saisie"
-						name="<%= process.getNOM_EF_CODE_ROME() %>" style="margin-right:10px;width:450px"
-						type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">						
-				<br/><br/>
-				<span class="sigp2Mandatory" style="width:150px"> Domaine d'activité : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" style="width=328px" disabled="disabled">
-					<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2Mandatory" style="width:150px"> Famille de l'emploi : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width=328px" disabled="disabled">
-					<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2Mandatory" style="width:150px"> Nom du métier / emploi : </span>
-				<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled"
-					name="<%= process.getNOM_EF_NOM_METIER() %>"
-					type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:328px">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Autres Appellations <br/> métiers / emplois </span>
-				<SELECT size="2" style="width : 328px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_AUTRE_APPELLATION()%>" disabled="disabled">
-					<%=process.forComboHTML(process.getVAL_LB_AUTRE_APPELLATION(), process.getVAL_LB_AUTRE_APPELLATION_SELECT()) %>
-				</SELECT>
-			</fieldset>
-			
-			<fieldset class="sigp2Fieldset" style="text-align:left;width:505px;float:left;height:470px;">
-				<legend class="sigp2Legend">Cadre statutaire</legend>
-				<br/>
-				<span class="sigp2" style="width:150px"> Catégorie / classification : </span>
-				<INPUT class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:328px"
-					type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Cadres emploi : </span>
-				<SELECT size="3" style="width :328px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_CADRE_EMPLOI_MULTI()%>" disabled="disabled">
-					<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_MULTI(), process.getVAL_LB_CADRE_EMPLOI_MULTI_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Niveau d'étude : </span>
-				<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:328px" type="text"
-					value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Diplôme(s) : </span>
-				<SELECT size="3" style="width :328px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>" disabled="disabled">
-					<%=process.forComboHTML(process.getVAL_LB_DIPLOME_MULTI(), process.getVAL_LB_DIPLOME_MULTI_SELECT()) %>
-				</SELECT>
-				<br/><br/>
-				<span class="sigp2" style="width:150px"> Précisions diplomes : </span>
-				<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:328px" disabled="disabled"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
-			</fieldset>
-		</div>
-		
+			<table width="1030px" border="0">
+				<tr>
+					<td width="505px" height="410px" valign="top">
+						<fieldset class="sigp2Fieldset" style="text-align:left;">
+							<legend class="sigp2Legend">Identification</legend>
+							<br/>
+							<table>
+								<tr>
+									<td width="150px;">
+										<span class="sigp2Mandatory"> Ref. Mairie : </span>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisie" maxlength="8" disabled="disabled" name="<%= process.getNOM_EF_REF_MAIRIE() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_MAIRIE() %>">									
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Code Rome : </span>
+									</td>
+									<td>
+										<INPUT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_CODE_ROME() %>" size="6" type="text" value="<%= process.getVAL_EF_CODE_ROME() %>">								
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Domaine d'activité : </span>
+									</td>
+									<td>
+										<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DOMAINE() %>" style="width:260px" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT())%>
+										</SELECT>								
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Famille de l'emploi : </span>
+									</td>
+									<td>
+										<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_EMPLOI() %>" style="width:260px" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_FAMILLE_EMPLOI(), process.getVAL_LB_FAMILLE_EMPLOI_SELECT())%>
+										</SELECT>								
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Nom du métier / emploi : </span>
+									</td>
+									<td>		
+										<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled" name="<%= process.getNOM_EF_NOM_METIER() %>" type="text" value="<%= process.getVAL_EF_NOM_METIER() %>" style="width:260px">					
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Autres Appellations <br/> métiers / emplois </span>
+									</td>
+									<td>
+										<SELECT size="2" style="width : 260px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_AUTRE_APPELLATION()%>" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_AUTRE_APPELLATION(), process.getVAL_LB_AUTRE_APPELLATION_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>					
+					<td width="20px"></td>
+					<td width="505px" valign="top">			
+						<fieldset class="sigp2Fieldset" style="text-align:left;">
+							<legend class="sigp2Legend">Cadre statutaire</legend>
+							<table>
+								<tr>
+									<td width="150px">
+								<span class="sigp2"> Catégorie / classification : </span>
+									</td>
+									<td>
+								<INPUT class="sigp2-saisie" disabled="disabled"	name="<%= process.getNOM_EF_CATEGORIE_MULTI() %>" style="width:260px" type="text" value="<%= process.getVAL_EF_CATEGORIE_MULTI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Cadres emploi : </span>
+									</td>
+									<td>
+										<SELECT size="3" style="width :260px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_CADRE_EMPLOI_MULTI()%>" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_CADRE_EMPLOI_MULTI(), process.getVAL_LB_CADRE_EMPLOI_MULTI_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Niveau d'étude : </span>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_EF_NIVEAU_ETUDE_MULTI() %>" style="width:260px" type="text" value="<%= process.getVAL_EF_NIVEAU_ETUDE_MULTI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Diplôme(s) : </span>
+									</td>
+									<td>
+										<SELECT size="3" style="width :260px;font-family : monospace;" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>" disabled="disabled">
+											<%=process.forComboHTML(process.getVAL_LB_DIPLOME_MULTI(), process.getVAL_LB_DIPLOME_MULTI_SELECT()) %>
+										</SELECT>
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<span class="sigp2"> Précisions diplomes : </span>
+									</td>
+									<td>
+										<textarea rows="2" cols="50" class="sigp2-saisie" name="<%= process.getNOM_EF_PRECISIONS_DIPLOMES() %>"	style="overflow:hidden;width:260px" disabled="disabled"><%= process.getVAL_EF_PRECISIONS_DIPLOMES() %></textarea>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
 		<fieldset class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:1030px">
 			<legend class="sigp2Legend"><B>Définition de l'emploi</B></legend>
 			<br/>
