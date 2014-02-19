@@ -78,7 +78,7 @@ document.formu.elements[nom].focus();
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 </HEAD>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">

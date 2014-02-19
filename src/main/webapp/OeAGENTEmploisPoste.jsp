@@ -30,7 +30,7 @@ document.formu.elements[nom].focus();
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <jsp:useBean class="nc.mairie.gestionagent.process.agent.OeAGENTEmploisPoste" id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>	
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">

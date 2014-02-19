@@ -39,7 +39,7 @@
 </HEAD>
 <jsp:useBean
  class="nc.mairie.gestionagent.process.agent.OeAGENTCasierJud" id="process" scope="session"></jsp:useBean>
-<BODY bgcolor="#FFFFFF" BGPROPERTIES="FIXED" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
+<BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%= process.getFocus() %>')">
 	<%@ include file="BanniereErreur.jsp" %>
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
@@ -47,12 +47,11 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Gestion des extraits de casier judiciaire d'un agent</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
-				    <span style="position:relative;width:90px;text-align: center;">Date de l'extrait</span>
-					<span style="position:relative;width:110px;text-align: left">Numéro</span>
-					<span style="position:relative;width:65px;text-align: center;">Privation des droits civiques</span>
-					<span style="position:relative;text-align: left;">Commentaire</span>
+				    <span style="margin-left: 5px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
+				    <span style="margin-left: 50px;">Date de l'extrait</span>
+					<span style="margin-left: 5px;">Numéro</span>
+					<span style="margin-left: 70px;">Privation</span>
+					<span style="margin-left: 10px;">Commentaire</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -62,7 +61,7 @@
 								for (int i = 0;i<process.getListeCasierJud().size();i++){
 							%>
 									<tr id="<%=indiceCasierJud%>" onmouseover="SelectLigne(<%=indiceCasierJud%>,<%=process.getListeCasierJud().size()%>)">
-										<td class="sigp2NewTab-liste" style="position:relative;width:70px;" align="center">
+										<td class="sigp2NewTab-liste" style="width:70px;" align="center">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceCasierJud)%>">
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceCasierJud)%>">
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceCasierJud)%>">
@@ -84,31 +83,52 @@
 <%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
-		<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) ){ %>
+		<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) ){ %>
 		<div>
-			<BR/>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Date de l'extrait : </span>
-		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_EXTRAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_EXTRAIT() %>">
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_EXTRAIT() %>', 'dd/mm/y');">
-			</span>
-			<BR/><BR/>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Numéro : </span>
-			<span>
-				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NUM_EXTRAIT() %>" size="10"
-					type="text" value="<%= process.getVAL_EF_NUM_EXTRAIT() %>">
-			</span>
-			<BR/><BR/>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:190px;">Privation des droits civiques : </span>
-			<INPUT type="radio"	<%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_O())%>> Oui
-			<INPUT type="radio"	<%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_N())%>> Non
-			<BR/><BR/>
-			<span class="sigp2" style="margin-left:20px;position:relative;width:180px;">Commentaire : </span>
+		<table>
+			<tr>
+				<td width="180px;">
+					<span class="sigp2Mandatory" >Date de l'extrait : </span>
+				</td>
+				<td>
+				    <span>
+						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_EXTRAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_EXTRAIT() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_EXTRAIT() %>', 'dd/mm/y');">
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<span class="sigp2Mandatory">Numéro : </span>
+				</td>
+				<td>
+					<span>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NUM_EXTRAIT() %>" size="10"
+							type="text" value="<%= process.getVAL_EF_NUM_EXTRAIT() %>">
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<span class="sigp2Mandatory">Privation des droits civiques : </span>
+				</td>
+				<td>
+					<INPUT type="radio"	<%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_O())%>> <span class="sigp2Mandatory">Oui</span>
+					<INPUT type="radio"	<%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_N())%>> <span class="sigp2Mandatory">Non</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			<span class="sigp2">Commentaire : </span>
+				</td>
+				<td>
 			<span>
 				<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE_EXTRAIT() %>" size="100"
 					type="text" value="<%= process.getVAL_EF_COMMENTAIRE_EXTRAIT() %>">
 			</span>
-			<BR/><BR/>
+				</td>
+			</tr>
+		</table>
 		</div>
 		<%}else{ %>
 		<div>
@@ -116,18 +136,41 @@
 			<FONT color='red'>Veuillez valider votre choix.</FONT>
 			<BR/><BR/>
 			<% } %>
-			<span class="sigp2">Date de l'extrait : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_EXTRAIT()%></span>
-			<BR/>
-			<span class="sigp2">Numéro : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_NUM_EXTRAIT()%></span>
-			<BR/>
-			<span class="sigp2">Privation des droits civiques : </span>
-			<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_O())%>> Oui
-			<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_N())%>> Non
-			<BR/>
-			<span class="sigp2">Commentaire : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_COMMENTAIRE_EXTRAIT()%></span>
+			<table>
+				<tr>
+					<td width="180px">
+						<span class="sigp2">Date de l'extrait : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_EXTRAIT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td width="180px">
+						<span class="sigp2">Numéro : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_NUM_EXTRAIT()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td width="180px">
+						<span class="sigp2">Privation des droits civiques : </span>
+					</td>
+					<td>
+						<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_O())%>><span class="sigp2">Oui</span>
+						<INPUT type="radio"	disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_PRIV_DROITS_CIVIQUE(),process.getNOM_RB_PRIV_DROITS_CIVIQUE_N())%>><span class="sigp2">Non</span>
+					</td>
+				</tr>
+				<tr>
+					<td width="180px">
+						<span class="sigp2">Commentaire : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_COMMENTAIRE_EXTRAIT()%></span>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<BR/>
 		<%} %>
