@@ -15,7 +15,7 @@
 </head>
 <BODY>
 	<FORM name="formu" method="POST" target="Main" action="GestionAgentServlet">
-		<div id="refAgent" class="refAgent" width="46">
+		<div id="refAgent" class="refAgent">
 			<span style="text-decoration: underline;">Agent :</span>
 			<nobr>
             <IMG name="AgentRecherche" title="Recherche d'un agent" src="images/loupe.gif" height="20" width="20" onclick='executeBouton(this);'>
@@ -24,7 +24,7 @@
 			<%String serviceAgent = (String)VariableGlobale.recuperer(request,"SERVICE_AGENT");%>
 			<%String res = serviceAgent; %>
             <%if (agent != null) {%>
-             	<span width="150" class="sigp2" style="font-size : 11px;font-family : Arial;font-weight : bold;color : #555555;text-align: center;">
+             	<span class="sigp2" style="font-size : 11px;font-family : Arial;font-weight : bold;color : #555555;text-align: center;">
              		<%= agent.nomUsage%>
              		<%= agent.prenom%>
              		<br>

@@ -12,7 +12,7 @@
 </head>
 <BODY bgcolor="#ffffff">
 	<FORM name="formu" method="POST" target="Main" action="GestionAgentServlet">
-		<div id="actionAgent" align="center" class="actionAgent" width="100%">
+		<div id="actionAgent" align="center" class="actionAgent">
             <IMG name="AgentCreation" title="Création d'un agent"  src="images/ajout.gif" height="15" width="15" onclick='executeBouton(this);'>  
             <IMG name="AgentDeselection" title="Déselectionner un agent" src="images/suppression.gif" height="15" width="15" onclick='executeBouton(this);'> 
 			<INPUT type="hidden" name="ACTIVITE" value="AgentCreation">

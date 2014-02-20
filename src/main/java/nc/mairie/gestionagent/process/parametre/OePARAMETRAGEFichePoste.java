@@ -2803,10 +2803,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	public boolean performPB_SUPPRIMER_NFA(HttpServletRequest request) throws Exception {
 		int indice = (Services.estNumerique(getVAL_LB_NFA_SELECT()) ? Integer.parseInt(getVAL_LB_NFA_SELECT()) : -1);
 
-		if (indice != -1 && indice < getListeTypeRegime().size()) {
+		if (indice != -1 && indice < getListeNFA().size()) {
 			NFA nfa = getListeNFA().get(indice);
 			setNFACourant(nfa);
-			addZone(getNOM_EF_NFA(), nfa.getCodeService());
+			addZone(getNOM_EF_NFA_CODE_SERVICE(), nfa.getCodeService());
 			addZone(getNOM_EF_NFA(), nfa.getNFA());
 			addZone(getNOM_ST_ACTION_NFA(), ACTION_SUPPRESSION);
 		} else {
@@ -2872,10 +2872,17 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 */
 	private boolean performControlerSaisieNFA(HttpServletRequest request) throws Exception {
 
-		// Verification lib domaine d'activite not null
-		if (getZone(getNOM_EF_NFA()).length() == 0) {
+		// Verification code service not null
+		if (getZone(getNOM_EF_NFA_CODE_SERVICE()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code service"));
+			return false;
+		}
+
+		// Verification nfa not null
+		if (getZone(getNOM_EF_NFA()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "NFA"));
 			return false;
 		}
 

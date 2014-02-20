@@ -270,7 +270,7 @@
 									commentaire = abs.getCommentaire();
 									idPtg = abs.getIdPointage();
 									idRefEtat = abs.getIdRefEtat();
-									idTypeAbs = abs.getIdTypeAbsence();
+									idTypeAbs = abs.getIdRefTypeAbsence();
 								}
 								%>
 								<td>
