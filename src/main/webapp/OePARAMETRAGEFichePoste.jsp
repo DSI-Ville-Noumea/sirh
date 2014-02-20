@@ -46,10 +46,10 @@
 								<%=process.forComboHTML(process.getVAL_LB_ENTITE_GEO(), process.getVAL_LB_ENTITE_GEO_SELECT()) %>
 							</SELECT>
 			            	</span>
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ENTITE_GEO()%>">
-								<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ENTITE_GEO()%>">
-			            		<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ENTITE_GEO()%>">
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ENTITE_GEO()%>">
+								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ENTITE_GEO()%>">
+			            		<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ENTITE_GEO()%>">
 			            	</div>   
 			            	
 			            	<% if (process.getVAL_ST_ACTION_ENTITE_GEO()!= null && !process.getVAL_ST_ACTION_ENTITE_GEO().equals("")) {%>
@@ -123,7 +123,7 @@
 								<%=process.forComboHTML(process.getVAL_LB_TITRE(), process.getVAL_LB_TITRE_SELECT()) %>
 							</SELECT>
 			            	</span>
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TITRE()%>">
 			        	    	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TITRE()%>">
 			        	    </div>  
@@ -180,7 +180,7 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_AVANTAGE()%>">
 			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_AVANTAGE()%>">
 			    	        </div>
@@ -234,7 +234,7 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_NATURE_AVANTAGE()%>">
 			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_NATURE_AVANTAGE()%>">
 			    	        </div>
@@ -290,9 +290,9 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_DELEGATION()%>">
-			    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_DELEGATION()%>">
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_DELEGATION()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_DELEGATION()%>">
 			    	        </div>
 			            	
 			            	<% if (process.getVAL_ST_ACTION_TYPE_DELEGATION()!= null && !process.getVAL_ST_ACTION_TYPE_DELEGATION().equals("")) {%>
@@ -344,9 +344,9 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_REGIME()%>">
-			    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_REGIME()%>">
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TYPE_REGIME()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TYPE_REGIME()%>">
 			    	        </div>
 			            	
 			            	<% if (process.getVAL_ST_ACTION_TYPE_REGIME()!= null && !process.getVAL_ST_ACTION_TYPE_REGIME().equals("")) {%>
@@ -400,9 +400,9 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_NFA()%>">
-			    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_NFA()%>">
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_NFA()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_NFA()%>">
 			    	        </div>
 			            	
 			            	<% if (process.getVAL_ST_ACTION_NFA()!= null && !process.getVAL_ST_ACTION_NFA().equals("")) {%>
@@ -471,10 +471,10 @@
 							</SELECT>
 			            	</span>
 			
-							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECOLE()%>">
-								<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECOLE()%>">
-			    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ECOLE()%>">
+							<div class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECOLE()%>">
+								<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECOLE()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_ECOLE()%>">
 			    	        </div>
 			            	
 			            	<% if (process.getVAL_ST_ACTION_ECOLE()!= null && !process.getVAL_ST_ACTION_ECOLE().equals("")) {%>
