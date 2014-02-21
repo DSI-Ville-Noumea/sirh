@@ -383,6 +383,9 @@
 					<span class="sigp2-saisie"><%=process.getVAL_EF_BM_MOIS()%></span>
 					<span class="sigp2-saisie"><%=process.getVAL_EF_BM_JOURS()%></span>
 				<%} %>
+				<BR/><BR/>
+				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Type avancement : </span>
+				<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE_AVCT()%></span>
 			</div>
 		<%} %>
 			<BR/>

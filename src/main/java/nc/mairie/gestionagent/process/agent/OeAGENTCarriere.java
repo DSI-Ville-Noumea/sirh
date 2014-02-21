@@ -2674,6 +2674,17 @@ public class OeAGENTCarriere extends BasicProcess {
 			addZone(getNOM_ST_GRADE(), carr.getCodeGrade());
 			addZone(getNOM_ST_FILIERE(), filiere == null ? Const.CHAINE_VIDE : filiere.getLibFiliere());
 
+			// motif de l'avancement
+			MotifAvancement motif = null;
+			if (gradeActuel.getCodeTava() != null && !gradeActuel.getCodeTava().equals(Const.CHAINE_VIDE)) {
+				motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
+						gradeActuel.getCodeTava());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				}
+			}
+			addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());
+
 			// on indique que les champs des fonctionnaires ne sont pas à
 			// afficher
 			showAccBM = true;
@@ -3136,5 +3147,13 @@ public class OeAGENTCarriere extends BasicProcess {
 				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
 		}
 		return true;
+	}
+
+	public String getNOM_ST_TYPE_AVCT() {
+		return "NOM_ST_TYPE_AVCT";
+	}
+
+	public String getVAL_ST_TYPE_AVCT() {
+		return getZone(getNOM_ST_TYPE_AVCT());
 	}
 }

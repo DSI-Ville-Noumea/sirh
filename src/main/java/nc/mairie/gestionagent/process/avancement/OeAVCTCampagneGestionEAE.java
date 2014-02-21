@@ -2645,14 +2645,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								|| avctDetache.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf
 								.parse(avctDetache.getDateAvctMoy()));
 					}
-					Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctDetache.getIdNouvGrade());
+					Grade gradeSuivAvct = Grade.chercherGrade(getTransaction(), avctDetache.getIdNouvGrade());
+					Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctDetache.getGrade());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
 						// on cherche la classe si elle existe
 						String classeString = Const.CHAINE_VIDE;
-						if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
-							Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
+						if (gradeSuivAvct.getCodeClasse() != null
+								&& !gradeSuivAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+							Classe classe = Classe.chercherClasse(getTransaction(), gradeSuivAvct.getCodeClasse());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							}
@@ -2660,7 +2662,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 								classeString = classe.getLibClasse();
 							}
 						}
-						evalAModif.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+						evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
 						if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
 							MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
 									gradeAvct.getCodeTava());
@@ -2672,8 +2674,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							}
 						}
 					}
-					if (gradeAvct != null && gradeAvct.getCodeEchelon() != null) {
-						Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeAvct.getCodeEchelon());
+					if (gradeSuivAvct != null && gradeSuivAvct.getCodeEchelon() != null) {
+						Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeSuivAvct.getCodeEchelon());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
@@ -2690,14 +2692,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							|| avctFonct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avctFonct
 							.getDateAvctMoy()));
 				}
-				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctFonct.getIdNouvGrade());
+				Grade gradeSuivAvct = Grade.chercherGrade(getTransaction(), avctFonct.getIdNouvGrade());
+				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctFonct.getGrade());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
 					// on cherche la classe si elle existe
 					String classeString = Const.CHAINE_VIDE;
-					if (gradeAvct.getCodeClasse() != null && !gradeAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
-						Classe classe = Classe.chercherClasse(getTransaction(), gradeAvct.getCodeClasse());
+					if (gradeSuivAvct.getCodeClasse() != null
+							&& !gradeSuivAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+						Classe classe = Classe.chercherClasse(getTransaction(), gradeSuivAvct.getCodeClasse());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -2705,7 +2709,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							classeString = classe.getLibClasse();
 						}
 					}
-					evalAModif.setNouvGrade(gradeAvct.getGrade() + " " + classeString);
+					evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
 					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
 						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
 								gradeAvct.getCodeTava());
@@ -2717,8 +2721,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						}
 					}
 				}
-				if (gradeAvct != null && gradeAvct.getCodeEchelon() != null) {
-					Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeAvct.getCodeEchelon());
+				if (gradeSuivAvct != null && gradeSuivAvct.getCodeEchelon() != null) {
+					Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeSuivAvct.getCodeEchelon());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
