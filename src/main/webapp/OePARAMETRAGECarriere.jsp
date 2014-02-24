@@ -35,13 +35,12 @@
 			<br/>
 			<FIELDSET class="sigp2Fieldset"  style="text-align: left; margin: 10px; width:500px; float:left;">
 		    	<legend class="sigp2Legend">Liste des bases horaires</legend>
-				<span class="sigp2-saisie" style="position:relative;width:50px;">Code</span>
-				<span class="sigp2-saisie" style="position:relative;">Libellé</span>
+				<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
+				<span class="sigp2-saisie" style="margin-left: 20px;">Libellé</span>
 				<SELECT name="<%= process.getNOM_LB_SPBASE() %>" size="10"
 					style="width:100%;" class="sigp2-liste">
 					<%=process.forComboHTML(process.getVAL_LB_SPBASE(), process.getVAL_LB_SPBASE_SELECT()) %>
 				</SELECT>
-            	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_SPBASE()%>">
@@ -51,112 +50,230 @@
             	<% if (process.getVAL_ST_ACTION_SPBASE()!= null && !process.getVAL_ST_ACTION_SPBASE().equals("")) {%>
             	<br>
             	<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_SPBASE())) { %>
-					<label class="sigp2Mandatory" Style="width:60px">Code :</label>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="1" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Libellé :</label>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Lundi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Vendredi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Mardi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Samedi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Mercredi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Dimanche :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Jeudi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:170px">Base légale hebdomadaire :</label>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<div Style="width:100%" align="center">				
-					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>					
+            	<table>
+            		<tr>
+            			<td>
+							<label class="sigp2Mandatory">Code :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="1" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>">
+            			</td>
+            			<td>
+							<label class="sigp2Mandatory">Libellé :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td>
+							<label class="sigp2Mandatory">Lundi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            			<td>
+							<label class="sigp2Mandatory">Vendredi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td>
+							<label class="sigp2Mandatory">Mardi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            			<td>
+							<label class="sigp2Mandatory">Samedi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td>
+							<label class="sigp2Mandatory">Mercredi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            			<td>
+							<label class="sigp2Mandatory">Dimanche :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
+							</SELECT>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td>
+							<label class="sigp2Mandatory">Jeudi :</label>
+            			</td>
+            			<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
+							</SELECT>
+            			</td>
+            			<td>&nbsp;
+            			</td>
+            			<td>&nbsp;
+            			</td>
+            		</tr>
+            		<tr>
+            			<td colspan="2">
+							<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>">
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>">
+            			</td>           			
+            		</tr>
+            		<tr>
+            			<td colspan="2">
+							<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>">
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>">
+            			</td>          			
+            		</tr>
+            		<tr>
+            			<td colspan="4" align="center">
+            			<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>">
+            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_SPBASE()%>">
+            			</td>
+            		</tr>
+            	</table>					
 				<%} else {%>
-					<label class="sigp2Mandatory" Style="width:60px">Code :</label>
-					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Libellé :</label>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Lundi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Vendredi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Mardi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Samedi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Mercredi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
-					</SELECT>
-					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
-					<label class="sigp2Mandatory" Style="width:60px">Dimanche :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:60px">Jeudi :</label>
-					<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
-							<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
-					</SELECT>
-					<br />
-					<label class="sigp2Mandatory" Style="width:170px">Base légale hebdomadaire :</label>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<br />
-					<div Style="width:100%" align="center">
-					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>
+				<table>
+					<tr>
+						<td>
+							<label class="sigp2Mandatory">Code :</label>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>">
+						</td>
+						<td>
+							<label class="sigp2Mandatory">Libellé :</label>
+						</td>
+						<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label class="sigp2Mandatory">Lundi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
+							</SELECT>
+						</td>
+						<td>
+							<label class="sigp2Mandatory">Vendredi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label class="sigp2Mandatory">Mardi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
+							</SELECT>
+						</td>
+						<td>
+							<label class="sigp2Mandatory">Samedi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label class="sigp2Mandatory">Mercredi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
+							</SELECT>
+						</td>
+						<td>
+							<label class="sigp2Mandatory">Dimanche :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label class="sigp2Mandatory">Jeudi :</label>
+						</td>
+						<td>
+							<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
+							</SELECT>
+						</td>
+						<td colspan="2">&nbsp;
+						</td>
+					</tr>
+            		<tr>
+            			<td colspan="2">
+							<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>">
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>">
+            			</td>           			
+            		</tr>
+            		<tr>
+            			<td colspan="2">
+							<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>">
+            			</td>
+            			<td>
+							<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>">
+            			</td>          			
+            		</tr>
+            		<tr>
+            			<td colspan="4" align="center">
+            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>">
+            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_SPBASE()%>">
+            			</td>
+            		</tr>
+				</table>
 			   <%}%>
-				<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_SPBASE()%>"></span>
-				</div>
 				<%} %>
 				
 			</FIELDSET>		

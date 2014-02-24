@@ -38,10 +38,7 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des jours fériés par année</legend>
 				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"></span>
-				    <span style="position:relative;width:150px;text-align: left;">Année</span>
-				    <span style="position:relative;"></span>
+				    <span style="margin-left:90px; ">Année</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -76,12 +73,10 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:45px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_JOUR()%>">
-				    </span>
-				    <span style="position:relative;width:90px;text-align: center;">Date</span>
-				    <span style="position:relative;width:95px;text-align: left;">Type</span>
-				    <span style="position:relative;text-align: left;">Description</span>
+				    <INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_JOUR()%>">				    
+				    <span style="margin-left: 65px;">Date</span>
+				    <span style="margin-left: 35px;">Type</span>
+				    <span style="margin-left: 65px;">Description</span>
 					<br/>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -103,37 +98,78 @@
 						</table>
 					</div>
 					<BR/>
-					<%if(process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_MODIFICATION_JOUR)||process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_CREATION_JOUR)){%>							
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Type :</span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_JOUR() %>">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_JOUR(), process.getVAL_LB_TYPE_JOUR_SELECT()) %>
-					</SELECT>
-					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date :</span>
-					<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
-					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_JOUR()%>', 'dd/mm/y');">					
-					<BR/><BR/>
-					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Description :</span>
-					<INPUT class="sigp2-saisie" maxlength="250" name="<%= process.getNOM_ST_DESCRIPTION() %>" size="70" type="text"  value="<%= process.getVAL_ST_DESCRIPTION() %>">				
-					<BR/><BR/>
-					<%}else if(process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_SUPPRESSION_JOUR)){ %>						
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Type :</span>
-					<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_TYPE_JOUR() %>">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_JOUR(), process.getVAL_LB_TYPE_JOUR_SELECT()) %>
-					</SELECT>
-					<BR/><BR/>
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date :</span>
-					<input class="sigp2-saisie" disabled="disabled" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
-					<BR/><BR/>
-					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Description :</span>
-					<INPUT class="sigp2-saisie" disabled="disabled" maxlength="250" name="<%= process.getNOM_ST_DESCRIPTION() %>" size="70" type="text"  value="<%= process.getVAL_ST_DESCRIPTION() %>">				
-					<BR/><BR/>
+					<%if(process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_MODIFICATION_JOUR)||process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_CREATION_JOUR)){%>	
+					<table>
+						<tr>
+							<td width="60px;">
+								<span class="sigp2Mandatory">Type :</span>
+							</td>
+							<td>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_JOUR() %>">
+								<%=process.forComboHTML(process.getVAL_LB_TYPE_JOUR(), process.getVAL_LB_TYPE_JOUR_SELECT()) %>
+							</SELECT>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Date :</span>
+							</td>
+							<td>
+								<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
+								<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_JOUR()%>', 'dd/mm/y');">	
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2">Description :</span>
+							</td>
+							<td>
+								<INPUT class="sigp2-saisie" maxlength="250" name="<%= process.getNOM_ST_DESCRIPTION() %>" size="70" type="text"  value="<%= process.getVAL_ST_DESCRIPTION() %>">	
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+							</td>
+						</tr>
+					</table>	
+					<%}else if(process.getVAL_ST_ACTION_JOUR().equals(process.ACTION_SUPPRESSION_JOUR)){ %>	
+					<table>
+						<tr>
+							<td width="60px;">
+								<span class="sigp2Mandatory">Type :</span>
+							</td>
+							<td>
+								<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_TYPE_JOUR() %>">
+									<%=process.forComboHTML(process.getVAL_LB_TYPE_JOUR(), process.getVAL_LB_TYPE_JOUR_SELECT()) %>
+								</SELECT>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Date :</span>
+							</td>
+							<td>
+								<input class="sigp2-saisie" disabled="disabled" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2">Description :</span>
+							</td>
+							<td>
+								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="250" name="<%= process.getNOM_ST_DESCRIPTION() %>" size="70" type="text"  value="<%= process.getVAL_ST_DESCRIPTION() %>">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+							</td>
+						</tr>
+					</table>	
 					<%} %>
-					<BR/>
-					<div style="width:100%; text-align:center;">
-						<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
-						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-					</div>
 			<%} %>
 		</FIELDSET>
 		<%} %>
