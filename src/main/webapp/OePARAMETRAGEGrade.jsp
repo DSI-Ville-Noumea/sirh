@@ -56,14 +56,13 @@
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Liste des grilles</legend>
 		   	<br/>					
-			<span style="position:relative;width:9px;"></span>
-			<span style="position:relative;width:70px;">
+			<span style="margin-left: 5px;">
 			<%if(process.getCalculPaye().equals("")){ %>
 				<INPUT title="créer" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_GRILLE()%>">
 			<%} %>
 			</span>
-			<span style="position:relative;width:345px;">Nom</span>
-			<span style="position:relative;">Actif</span>
+			<span style="margin-left: 30px;">Nom</span>
+			<span style="margin-left: 320px;">Actif</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -101,22 +100,32 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION_GRILLE()%></legend>
-					
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Grade générique :</span>
-					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_GRADE_GENERIQUE()%>")'>
-						<%=process.forComboHTML(process.getVAL_LB_GRADE_GENERIQUE(), process.getVAL_LB_GRADE_GENERIQUE_SELECT()) %>
-					</SELECT>
-					
-					<BR/><BR/>
-					
-					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Grade :</span>
-					<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
-					
-					<BR/><BR/>
-					<div style="text-align: center;">
-						<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRILLE()%>">
-						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-					</div>
+					<table>
+						<tr>
+							<td width="130px">
+								<span class="sigp2Mandatory">Grade générique :</span>
+							</td>
+							<td>
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_GRADE_GENERIQUE()%>")'>
+									<%=process.forComboHTML(process.getVAL_LB_GRADE_GENERIQUE(), process.getVAL_LB_GRADE_GENERIQUE_SELECT()) %>
+								</SELECT>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Grade :</span>
+							</td>
+							<td>
+								<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRILLE()%>">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+							</td>
+						</tr>
+					</table>
 				</FIELDSET>
 					
 			<% } else { %>
@@ -127,12 +136,10 @@
 					
 					<%if(process.getListeGrade().size()!=0){ %>
 					<br/>
-				    <span style="position:relative;width:9px;"></span>
-					<span style="position:relative;width:70px;"></span>
-				    <span style="position:relative;width:45px;">Code</span>
-					<span style="position:relative;width:380px;">Libellé</span>
-					<span style="position:relative;width:100px;">IBA</span>
-					<span style="position:relative;">Grade suivant</span>
+				    <span style="margin-left: 80px;">Code</span>
+					<span style="margin-left: 15px;">Libellé</span>
+					<span style="margin-left: 340px;">IBA</span>
+					<span style="margin-left: 80px;">Grade suivant</span>
 					<br/>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -170,86 +177,146 @@
 							process.ACTION_MODIFICATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ||
 								process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE())){  %>
 								
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Grade générique :</span>
-						<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" >
-							<%=process.forComboHTML(process.getVAL_LB_GRADE_GENERIQUE(), process.getVAL_LB_GRADE_GENERIQUE_SELECT()) %>
-						</SELECT>
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:130px;">Grade :</span>
-						<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
-						
-						<BR/><BR/>
-						
-						<span class="sigp2" style="margin-left:20px;position:relative;width:130px;">Classe:</span>
-						<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_CLASSE() %>">
-							<%=process.forComboHTML(process.getVAL_LB_CLASSE(), process.getVAL_LB_CLASSE_SELECT()) %>
-						</SELECT>
-		
-						<BR/><BR/>
-						<span class="sigp2" style="margin-left:20px;position:relative;width:130px;">Echelon :</span>
-						<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_ECHELON() %>">
-							<%=process.forComboHTML(process.getVAL_LB_ECHELON(), process.getVAL_LB_ECHELON_SELECT()) %>
-						</SELECT>
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Code grade :</span>
-						<INPUT class="sigp2-saisiemajuscule" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="4" name="<%= process.getNOM_EF_CODE_GRADE() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_GRADE() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-						
-	
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Montant forfait :</span>
-						<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="9" name="<%= process.getNOM_EF_MONTANT_FORFAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_MONTANT_FORFAIT() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-	
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Montant prime :</span>
-						<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="7" name="<%= process.getNOM_EF_MONTANT_PRIME() %>" size="10" type="text" value="<%= process.getVAL_EF_MONTANT_PRIME() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">IBA :</span>
-						<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_BAREME() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-							<%=process.forComboHTML(process.getVAL_LB_BAREME(), process.getVAL_LB_BAREME_SELECT()) %>
-						</SELECT>
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Code grille:</span>
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_CODE_GRILLE(), process.getNOM_RB_NC()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> NC 
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_CODE_GRILLE(), process.getNOM_RB_FR()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> FR 
-	
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">ACC:</span>
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_ACC(), process.getNOM_RB_OUI()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> Oui
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_ACC(), process.getNOM_RB_NON()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> Non
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">BM:</span>
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_BM(), process.getNOM_RB_OUI()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> Oui
-						<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_BM(), process.getNOM_RB_NON()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>> Non
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Durée min.:</span>
-						<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="2" name="<%= process.getNOM_EF_DUREE_MIN() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MIN() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Durée moy.:</span>
-						<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MOY() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MOY() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-						
-						<BR/><BR/>
-						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Durée max.:</span>
-						<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MAX() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MAX() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
-						
-						<BR/><BR/>
+						<table>
+							<tr>
+								<td width="130px;">
+									<span class="sigp2Mandatory">Grade générique :</span>
+								</td>
+								<td>
+									<SELECT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_LB_GRADE_GENERIQUE() %>" >
+										<%=process.forComboHTML(process.getVAL_LB_GRADE_GENERIQUE(), process.getVAL_LB_GRADE_GENERIQUE_SELECT()) %>
+									</SELECT>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Grade :</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2">Classe:</span>
+								</td>
+								<td>
+									<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_CLASSE() %>">
+										<%=process.forComboHTML(process.getVAL_LB_CLASSE(), process.getVAL_LB_CLASSE_SELECT()) %>
+									</SELECT>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								<span class="sigp2">Echelon :</span>
+								</td>
+								<td>
+									<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_ECHELON() %>">
+										<%=process.forComboHTML(process.getVAL_LB_ECHELON(), process.getVAL_LB_ECHELON_SELECT()) %>
+									</SELECT>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Code grade :</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisiemajuscule" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="4" name="<%= process.getNOM_EF_CODE_GRADE() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_GRADE() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Montant forfait :</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="9" name="<%= process.getNOM_EF_MONTANT_FORFAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_MONTANT_FORFAIT() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>	
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Montant prime :</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="7" name="<%= process.getNOM_EF_MONTANT_PRIME() %>" size="10" type="text" value="<%= process.getVAL_EF_MONTANT_PRIME() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">IBA :</span>
+								</td>
+								<td>
+									<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_BAREME() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+										<%=process.forComboHTML(process.getVAL_LB_BAREME(), process.getVAL_LB_BAREME_SELECT()) %>
+									</SELECT>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Code grille:</span>
+								</td>
+								<td>
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_CODE_GRILLE(), process.getNOM_RB_NC()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">NC</span> 
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_CODE_GRILLE(), process.getNOM_RB_FR()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">FR</span>  
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">ACC:</span>
+								</td>
+								<td>
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_ACC(), process.getNOM_RB_OUI()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">Oui</span> 
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_ACC(), process.getNOM_RB_NON()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">Non</span>  
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">BM:</span>
+								</td>
+								<td>
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_BM(), process.getNOM_RB_OUI()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">Oui</span>  
+									<input type="radio" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> <%= process.forRadioHTML(process.getNOM_RG_BM(), process.getNOM_RB_NON()) %> <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>><span class="sigp2Mandatory">Non</span> 
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Durée min.:</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="2" name="<%= process.getNOM_EF_DUREE_MIN() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MIN() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Durée moy.:</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MOY() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MOY() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="sigp2Mandatory">Durée max.:</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisie" maxlength="2" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_EF_DUREE_MAX() %>" size="2" type="text" value="<%= process.getVAL_EF_DUREE_MAX() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
 						
 						<% if (process.ACTION_MODIFICATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE())||process.ACTION_CREATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE())){  %>
-						<div style="text-align: center;">
-							<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRADE()%>">
-							<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-						</div>
+							<tr>
+								<td colspan="2" align="center">
+									<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Valider" name="<%=process.getNOM_PB_VALIDER_GRADE()%>">
+									<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+								</td>
+							</tr>
 						<% } else if (process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE())){  %>
-						<div style="text-align: center;">
-						    <INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-						</div>
-						<% }  %>
+							<tr>
+								<td colspan="2" align="center">
+						    		<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+								</td>
+							</tr>
+						<% }  %>						
+						</table>
 					<%} %>						
 				</FIELDSET>
 				</FORM>
