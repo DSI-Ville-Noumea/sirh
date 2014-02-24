@@ -40,13 +40,13 @@ document.formu.elements[nom].focus();
 		    <br/>
 		    <div align="left">
 				<span class="sigp2-RadioBouton">
-					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_PP())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Prime pointage
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_PP())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Prime pointage
 					<span style="width:5px"></span>
-					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_AN())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Avantage en nature
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_AN())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Avantage en nature
 					<span style="width:5px"></span>
-					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Délégation
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_D())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Délégation
 					<span style="width:5px"></span>
-					<INPUT tabindex="" type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Régime indemnitaire
+					<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_SPECIFICITE(),process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE() %>")'>Régime indemnitaire
 					</span>
 				<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 		    </div>
@@ -65,8 +65,8 @@ document.formu.elements[nom].focus();
 					</SELECT>
 				</span>
 				<BR/>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AVANTAGE()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE()%>">
+	            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AVANTAGE()%>">
+	            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE()%>">
 			</div>
 			<%} else if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_D())){ %>
 			<div align="left" style="float:left;width:100%;">
@@ -81,8 +81,8 @@ document.formu.elements[nom].focus();
 					</SELECT>
 				</span>
 				<BR/>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DELEGATION()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION()%>">
+	            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DELEGATION()%>">
+	            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION()%>">
 			</div>
 			<%} else if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_PP())){ %>
 			<div align="left" style="float:left;width:100%;">
@@ -96,8 +96,8 @@ document.formu.elements[nom].focus();
 					</SELECT>
 				</span>
 				<BR/>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE()%>">
+	            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE()%>">
+	            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE()%>">
 			</div>
 			<%} else { %>
 			<div align="left" style="float:left;width:100%;">
@@ -113,8 +113,8 @@ document.formu.elements[nom].focus();
 					</SELECT>
 				</span>
 				<BR/>
-	            <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_REGIME()%>">
-	            <INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REGIME()%>">
+	            <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_REGIME()%>">
+	            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REGIME()%>">
 			</div>
 			<%} %>
 			<BR/>

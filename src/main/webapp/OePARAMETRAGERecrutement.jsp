@@ -37,8 +37,8 @@
 			<br/>
 			<table width="1030px;" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+					<td width="500px">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Motif de recrutement</legend>
 							<span class="sigp2-titre">
 							<SELECT name="<%= process.getNOM_LB_MOTIF() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -77,7 +77,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Motif de non recrutement</legend>
 							<span class="sigp2-titre" align="center" colspan="2">
 							<SELECT name="<%= process.getNOM_LB_NON_REC() %>" size="10" style="width:100%;" class="sigp2-liste">

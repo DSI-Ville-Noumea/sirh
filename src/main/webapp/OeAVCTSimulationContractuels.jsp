@@ -59,7 +59,7 @@
 				</SELECT>
 				<BR/><BR/>
 				<span class="sigp2" style="width:70px;">Service :</span>
-				<INPUT tabindex="" id="service" class="sigp2-saisie" readonly="readonly"
+				<INPUT id="service" class="sigp2-saisie" readonly="readonly"
 					name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
 					type="text" value="<%= process.getVAL_EF_SERVICE() %>">
 				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"

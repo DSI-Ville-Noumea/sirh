@@ -123,13 +123,13 @@ document.formu.elements[nom].focus();
 			    </div>
     			<div align="center" style="float:left;display:block;vertical-align:middle;text-align:center;width:20%;height:100%;" >
 					<BR/><BR/>
-					<INPUT tabindex="" type="image" src="images/fleche-droite.png" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
+					<INPUT type="image" src="images/fleche-droite.png" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
 					<BR/>
-					<INPUT tabindex="" type="image" src="images/fleche-double-droite.png" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_TOUT()%>">
+					<INPUT type="image" src="images/fleche-double-droite.png" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_TOUT()%>">
 					<BR/><BR/>
-					<INPUT tabindex="" type="image" src="images/fleche-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_GROUPE()%>">
+					<INPUT type="image" src="images/fleche-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_GROUPE()%>">
 					<BR/>
-					<INPUT tabindex="" type="image" src="images/fleche-double-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_TOUT()%>">
+					<INPUT type="image" src="images/fleche-double-gauche.png" height="20px" width="20px" name="<%=process.getNOM_PB_RETIRER_TOUT()%>">
 			    </div>
 				<div align="left" style="float:right;display:block;width:40%;">
 			    	<span style="margin-left:5px;position:relative;width:250px;">Groupes de l'utilisateur</span>

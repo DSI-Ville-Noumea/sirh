@@ -134,7 +134,7 @@
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
 			<div>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rubrique :</span>
-			<INPUT tabindex="" id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
+			<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
 				name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
 			
 			<BR/><BR/>

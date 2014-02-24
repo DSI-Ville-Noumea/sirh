@@ -47,18 +47,18 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CLASSE()%>">
-					<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_CLASSE()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CLASSE()%>">
+					<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_CLASSE()%>">
         		</div>
 				
             	<% if (process.getVAL_ST_ACTION_CLASSE()!= null && !process.getVAL_ST_ACTION_CLASSE().equals("")) {%>
             	<br>
 	            
 				<label class="sigp2Mandatory" Style="width:100px">Code:</label>
-				<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_CODE_CLASSE() %>" size="2" type="text" value="<%= process.getVAL_EF_CODE_CLASSE() %>" style="margin-right:10px; margin-bottom:10px">
+				<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_CODE_CLASSE() %>" size="2" type="text" value="<%= process.getVAL_EF_CODE_CLASSE() %>" style="margin-right:10px; margin-bottom:10px">
 				<br />
 				<label class="sigp2Mandatory" Style="width:100px">Libellé:</label>
-				<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_CLASSE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_CLASSE() %>" style="margin-right:10px;margin-bottom:10px">
+				<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_CLASSE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_CLASSE() %>" style="margin-right:10px;margin-bottom:10px">
 				<br />
 					
 				<div Style="width:100%" align="center">
@@ -83,17 +83,17 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECHELON()%>">
-					<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECHELON()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_ECHELON()%>">
+					<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_ECHELON()%>">
         		</div>
 
             <% if (process.getVAL_ST_ACTION_ECHELON()!= null && !process.getVAL_ST_ACTION_ECHELON().equals("")) {%>
             	<br>
 	            <label class="sigp2Mandatory" Style="width:100px">Code:</label>
-				<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="3" name="<%= process.getNOM_EF_CODE_ECHELON() %>" size="3" type="text" value="<%= process.getVAL_EF_CODE_ECHELON() %>" style="margin-right:10px; margin-bottom:10px">
+				<INPUT class="sigp2-saisiemajuscule" maxlength="3" name="<%= process.getNOM_EF_CODE_ECHELON() %>" size="3" type="text" value="<%= process.getVAL_EF_CODE_ECHELON() %>" style="margin-right:10px; margin-bottom:10px">
 				<br />
 				<label class="sigp2Mandatory" Style="width:100px">Libellé:</label>
-				<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_ECHELON() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_ECHELON() %>" style="margin-right:10px;margin-bottom:10px">
+				<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_ECHELON() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_ECHELON() %>" style="margin-right:10px;margin-bottom:10px">
 				<br />
 				
 				<div Style="width:100%" align="center">
@@ -126,26 +126,26 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_BAREME()%>">
-        	    	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_BAREME()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_BAREME()%>">
+        	    	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_BAREME()%>">
         	    </div>
             	
             	<% if (process.getVAL_ST_ACTION_BAREME()!= null && !process.getVAL_ST_ACTION_BAREME().equals("")) {%>
             	<br>
             	<label class="sigp2Mandatory" Style="width:100px">IBA:</label>
 				<% if (process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_BAREME())){ %>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="7" disabled="disabled" name="<%= process.getNOM_EF_IBAN_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_IBAN_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="7" disabled="disabled" name="<%= process.getNOM_EF_IBAN_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_IBAN_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
 				<% } else { %>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="7" name="<%= process.getNOM_EF_IBAN_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_IBAN_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="7" name="<%= process.getNOM_EF_IBAN_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_IBAN_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
 				<% } %>
 				 	
 				<br />
 				
 				<label class="sigp2Mandatory" Style="width:100px">INA:</label>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_INA_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_INA_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
+				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_INA_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_INA_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
 				<br />
 				<label class="sigp2Mandatory" Style="width:100px">INM:</label>
-				<INPUT tabindex="" class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_INM_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_INM_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
+				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_INM_BAREME() %>" size="7" type="text" value="<%= process.getVAL_EF_INM_BAREME() %>" style="margin-right:10px;margin-bottom:10px">
 				<br />
 				
 				<div Style="width:100%" align="center">
@@ -181,18 +181,18 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_GRADE_GENERIQUE()%>">
-        	    	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_GRADE_GENERIQUE()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_GRADE_GENERIQUE()%>">
+        	    	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_GRADE_GENERIQUE()%>">
         	    </div>
             	
             	<% if (process.getVAL_ST_ACTION_GRADE_GENERIQUE()!= null && !process.getVAL_ST_ACTION_GRADE_GENERIQUE().equals(Const.CHAINE_VIDE)) {%>
 	            	<br>
 					<label class="sigp2Mandatory" Style="width:100px">Code :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="4" <%= process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_GRADE_GENERIQUE()) ? "disabled='disabled'" : Const.CHAINE_VIDE %> name="<%= process.getNOM_EF_CODE_GRADE_GENERIQUE() %>" size="4" type="text" value="<%= process.getVAL_EF_CODE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="4" <%= process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_GRADE_GENERIQUE()) ? "disabled='disabled'" : Const.CHAINE_VIDE %> name="<%= process.getNOM_EF_CODE_GRADE_GENERIQUE() %>" size="4" type="text" value="<%= process.getVAL_EF_CODE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					
 					<label class="sigp2Mandatory" Style="width:100px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50"	  name="<%= process.getNOM_EF_LIBELLE_GRADE_GENERIQUE() %>" size="50" type="text" value="<%= process.getVAL_EF_LIBELLE_GRADE_GENERIQUE() %>" style="margin-right:10px;margin-bottom:10px">
 					
 					<br />
 					
@@ -267,14 +267,14 @@
 				</SELECT>
             	</span>            	
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CADRE_EMPLOI()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CADRE_EMPLOI()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CADRE_EMPLOI()%>">
     	        </div>
             	<% if (process.getVAL_EF_ACTION_CADRE_EMPLOI()!= null && !process.getVAL_EF_ACTION_CADRE_EMPLOI().equals("")) {%>
             	<br>
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_EF_ACTION_CADRE_EMPLOI())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />	
 					<br />				
 					<div Style="width:100%" align="center">					
@@ -283,7 +283,7 @@
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT disabled="disabled" tabindex="" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT disabled="disabled" class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CADRE_EMPLOI() %>" size="35" type="text" value="<%= process.getVAL_EF_CADRE_EMPLOI() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />	
 					<br />					
 					<div Style="width:100%" align="center">

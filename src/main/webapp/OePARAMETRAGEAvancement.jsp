@@ -50,8 +50,8 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_MOTIF()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_MOTIF()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_MOTIF()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_MOTIF()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_MOTIF()!= null && !process.getVAL_ST_ACTION_MOTIF().equals("")) {%>
@@ -59,10 +59,10 @@
 	            
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_MOTIF())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_MOTIF() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="5" name="<%= process.getNOM_EF_CODE_MOTIF() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					
 					<div Style="width:100%" align="center">
@@ -71,10 +71,10 @@
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="5" disabled="disabled" name="<%= process.getNOM_EF_CODE_MOTIF() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="5" disabled="disabled" name="<%= process.getNOM_EF_CODE_MOTIF() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_MOTIF()%>"></span>
@@ -97,8 +97,8 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_REPRESENTANT()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_REPRESENTANT()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_REPRESENTANT()!= null && !process.getVAL_ST_ACTION_REPRESENTANT().equals("")) {%>
@@ -111,10 +111,10 @@
 					</SELECT>				
 					<br />	<br />	
 					<label class="sigp2Mandatory" Style="width:50px">Nom:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_NOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_NOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_NOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_NOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Prénom:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					
 					<div Style="width:100%" align="center">
@@ -128,10 +128,10 @@
 					</SELECT>				
 					<br />		<br />	
 					<label class="sigp2Mandatory" Style="width:50px">Nom:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_NOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_NOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_NOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_NOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Prénom:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="50" disabled="disabled" name="<%= process.getNOM_EF_PRENOM_REPRESENTANT() %>" size="35" type="text" value="<%= process.getVAL_EF_PRENOM_REPRESENTANT() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_REPRESENTANT()%>"></span>
@@ -154,8 +154,8 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_EMPLOYEUR()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_EMPLOYEUR()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_EMPLOYEUR()!= null && !process.getVAL_ST_ACTION_EMPLOYEUR().equals("")) {%>
@@ -163,10 +163,10 @@
 	            
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_EMPLOYEUR())) { %>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Titre:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TITRE_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_TITRE_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TITRE_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_TITRE_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					
 					<div Style="width:100%" align="center">
@@ -175,10 +175,10 @@
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="100" disabled="disabled" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="100" disabled="disabled" name="<%= process.getNOM_EF_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Titre:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TITRE_EMPLOYEUR() %>" size="100" type="text" value="<%= process.getVAL_EF_TITRE_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TITRE_EMPLOYEUR() %>" size="100" type="text" value="<%= process.getVAL_EF_TITRE_EMPLOYEUR() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_EMPLOYEUR()%>"></span>
@@ -202,9 +202,9 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_DELIBERATION()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_DELIBERATION()%>">
-    	        	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_DELIBERATION()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_DELIBERATION()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_DELIBERATION()%>">
+    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_DELIBERATION()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_DELIBERATION()!= null && !process.getVAL_ST_ACTION_DELIBERATION().equals("")) {%>
@@ -219,10 +219,10 @@
 					<%} %>
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:70px">Texte CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />					
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
@@ -238,13 +238,13 @@
 					<%} %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_DELIBERATION() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:50px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_LIB_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_LIB_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:70px">Texte CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisie" maxlength="255" disabled="disabled" name="<%= process.getNOM_EF_TEXTE_CAP_DELIBERATION() %>" size="80" type="text" value="<%= process.getVAL_EF_TEXTE_CAP_DELIBERATION() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />						
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_DELIBERATION() %>">
@@ -272,9 +272,9 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CAP()%>">
-    	        	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_CAP()%>">
-    	        	<INPUT tabindex="" type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CAP()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_CAP()%>">
+    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_CAP()%>">
+    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_CAP()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_CAP()!= null && !process.getVAL_ST_ACTION_CAP().equals("")) {%>
@@ -285,7 +285,7 @@
 					<INPUT class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="10" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />	
 					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
 					<br/>
@@ -323,7 +323,7 @@
 					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:120px;"> Employeurs : </span>
 					<span >
-						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP()%>" style="margin-bottom:5px">
+						<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR_CAP()%>" style="margin-bottom:5px">
 					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_EMP_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_EMPLOYEUR_CAP() %>")'>
 							<%=process.forComboHTML(process.getVAL_LB_EMP_CAP(), process.getVAL_LB_EMP_CAP_SELECT())%>
 						</SELECT>
@@ -336,7 +336,7 @@
 					<br/>
 					<span class="sigp2Mandatory" style="position:relative;width:120px;"> Représentants : </span>
 					<span >
-						<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>" style="margin-bottom:5px">
+						<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_REPRESENTANT_CAP()%>" style="margin-bottom:5px">
 					    <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REPRE_CAP() %>" style="width:250px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_REPRESENTANT_CAP() %>")'>
 							<%=process.forComboHTML(process.getVAL_LB_REPRE_CAP(), process.getVAL_LB_REPRE_CAP_SELECT())%>
 						</SELECT>
@@ -355,14 +355,14 @@
 					<% } %>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:50px">Code:</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_CODE_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:100px">Référence CAP :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="10" disabled="disabled" name="<%= process.getNOM_EF_REF_CAP() %>" size="10" type="text" value="<%= process.getVAL_EF_REF_CAP() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:60px">Description :</label>
 					<br/>
-					<INPUT tabindex="" class="sigp2-saisie" disabled="disabled" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
+					<INPUT class="sigp2-saisie" disabled="disabled" maxlength="255" name="<%= process.getNOM_EF_DESCRIPTION_CAP() %>" size="80" type="text" value="<%= process.getVAL_EF_DESCRIPTION_CAP() %>" style="margin-bottom:10px">
 					<br />					
 					<label class="sigp2Mandatory" Style="width:50px">Type:</label>
 					<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_CAP() %>">

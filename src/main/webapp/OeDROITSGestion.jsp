@@ -67,8 +67,8 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 									<td>
 										<%= g.getLibGroupe() %>
 										&nbsp;
-										<INPUT tabindex="" type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
-										<INPUT tabindex="" type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
+										<INPUT type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
+										<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
 									</td>
 								<%} %>
 							<%} %>
@@ -104,14 +104,14 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 				<%} %>
 			</div>
 			<div style="position:absolute;left:960px;width:30px">
-				<INPUT  <%=MairieUtils.getDisabled(request, process.getNomEcran()) %> tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
+				<INPUT  <%=MairieUtils.getDisabled(request, process.getNomEcran()) %> type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
 			</div>
 			<%
 			UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")|| aUser.getUserName().equals("rebjo84")) {%>
 			<BR/>
 			<div style="position:absolute;top:535px;">
-				<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_ELEMENT()%>">
+				<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_ELEMENT()%>">
 			</div>				
 			<%}%>		
 		</FIELDSET>
@@ -121,24 +121,24 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 			    <legend class="sigp2Legend"><%=process.getVAL_ST_ACTION() %></legend>
 				<% if (process.ACTION_CREATION_ELEMENT.equals(process.getVAL_ST_ACTION())) {%>
 					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_ELEMENT() %>" size="120"
+					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_ELEMENT() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_ELEMENT() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT()%>"></span>
 				<%}else if (process.ACTION_CREATION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
 					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
+					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT()%>"></span>
 				<%}else if (process.ACTION_MODIFICATION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
 					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
+					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_MODIFICATION_GRPE()%>"></span>
 				<%}else if (process.ACTION_SUPPRESSION_GROUPE.equals(process.getVAL_ST_ACTION())) {%>
 					<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    		<BR/><BR/>
 					<label class="sigp2Mandatory" Style="width:70px">Libellé:</label>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
+					<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_NOM_GROUPE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_NOM_GROUPE() %>" disabled="disabled">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_SUPPRESSION_GRPE()%>"></span>
 				<%} %>

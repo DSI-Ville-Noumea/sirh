@@ -238,7 +238,7 @@
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_AN_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Avantage en nature <span style="width: 5px"></span> 
 						<INPUT tabindex=""	type="radio"
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_D_spec())%>	onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Délégation	<span style="width: 5px"></span> 
-						<INPUT tabindex="" type="radio"
+						<INPUT type="radio"
 						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_RI_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Régime indemnitaire <span style="width: 5px"></span>  
 						<INPUT type="submit" style="visibility: hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>" value="OK">
 					</div>
@@ -256,7 +256,7 @@
 							<%
 							if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) ) ) {
 							%>
-							<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
+							<th class="sigp2-tabTitre"><INPUT type="image"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								src="images/ajout.gif" height="16px" width="16px"
 								name="<%=process.getNOM_PB_AJOUTER_AVANTAGE_spec()%>"></th>
@@ -347,7 +347,7 @@
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
-					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
+					<th class="sigp2-tabTitre"><INPUT type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
@@ -432,7 +432,7 @@
 					<%
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION))  ) {
 					%>
-					<th class="sigp2-tabTitre"><INPUT tabindex="" type="image"
+					<th class="sigp2-tabTitre"><INPUT type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
@@ -529,7 +529,7 @@
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
 											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable() ) {
 					%>
-						<INPUT tabindex="" type="image"
+						<INPUT type="image"
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
@@ -800,34 +800,34 @@
 				value="<%=process.getVAL_EF_REF_ARRETE()%>"
 				style="margin-right: 60px;"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 112px;">Date
-				arrêté : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				arrêté : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_ARRETE()%>"> <IMG
 				src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARRETE()%>', 'dd/mm/y');"
 				hspace="5"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 85px;">Date
-				début : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				début : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_DEBUT()%>"> <IMG
 				src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');"
 				hspace="5"> <span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 65px;">Date
-				fin : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				fin : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_FIN()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_FIN()%>"> <IMG
 				src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');"
 				hspace="5"> <BR /> <BR /> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 120px;">Motif
-				d'affectation :</span> <SELECT tabindex="" class="sigp2-saisie"
+				d'affectation :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_MOTIF_AFFECTATION()%>"
 				style="width: 140px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF_AFFECTATION(), process.getVAL_LB_MOTIF_AFFECTATION_SELECT())%>
 			</SELECT> <span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 110px">Temps
-				de travail :</span> <SELECT tabindex="" class="sigp2-saisie"
+				de travail :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_TEMPS_TRAVAIL()%>" style="width: 50px;">
 				<%=process.forComboHTML(process.getVAL_LB_TEMPS_TRAVAIL(), process.getVAL_LB_TEMPS_TRAVAIL_SELECT())%>
 			</SELECT> <span class="sigp2"
@@ -842,7 +842,7 @@
 			%>
 			<span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 200px;">Choix
-				du document à imprimer :</span> <SELECT tabindex="" class="sigp2-saisie"
+				du document à imprimer :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_LISTE_IMPRESSION()%>"
 				style="width: 250px;">
 				<%=process.forComboHTML(process.getVAL_LB_LISTE_IMPRESSION(), process.getVAL_LB_LISTE_IMPRESSION_SELECT())%>
@@ -859,28 +859,28 @@
 				style="margin-right: 60px;" disabled="disabled"> <span
 				class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 112px;">Date
-				arrêté : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				arrêté : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_ARRETE()%>" disabled="disabled">
 			<span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 85px;">Date
-				début : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				début : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_DEBUT()%>" disabled="disabled">
 			<span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 65px;">Date
-				fin : </span> <INPUT tabindex="" class="sigp2-saisie" maxlength="10"
+				fin : </span> <INPUT class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_FIN()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_FIN()%>" disabled="disabled">
 			<BR /> <BR /> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 120px;">Motif
-				d'affectation :</span> <SELECT tabindex="" class="sigp2-saisie"
+				d'affectation :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_MOTIF_AFFECTATION()%>"
 				style="width: 140px;" disabled="disabled">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF_AFFECTATION(), process.getVAL_LB_MOTIF_AFFECTATION_SELECT())%>
 			</SELECT> <span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 110px">Temps
-				de travail :</span> <SELECT tabindex="" class="sigp2-saisie"
+				de travail :</span> <SELECT class="sigp2-saisie"
 				name="<%=process.getNOM_LB_TEMPS_TRAVAIL()%>" style="width: 50px;"
 				disabled="disabled">
 				<%=process.forComboHTML(process.getVAL_LB_TEMPS_TRAVAIL(), process.getVAL_LB_TEMPS_TRAVAIL_SELECT())%>

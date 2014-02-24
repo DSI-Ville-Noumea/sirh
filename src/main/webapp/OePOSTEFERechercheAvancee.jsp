@@ -125,7 +125,7 @@
 							<span class="sigp2">Nom du métier / emploi : </span>
 						</td>
 						<td>
-							<INPUT tabindex="" id="listeNomEmploi" class="sigp2-saisie" name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px"  type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
+							<INPUT id="listeNomEmploi" class="sigp2-saisie" name="<%= process.getNOM_EF_NOM_EMPLOI() %>" style="margin-right:10px;width:328px"  type="text" value="<%= process.getVAL_EF_NOM_EMPLOI() %>">
 						</td>
 					</tr>
 					<tr>

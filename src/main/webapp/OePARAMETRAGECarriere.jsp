@@ -44,18 +44,18 @@
             	</span>
 
 				<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-					<INPUT tabindex="" type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_SPBASE()%>">
-    	        	<INPUT tabindex="" type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_SPBASE()%>">
+					<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_SPBASE()%>">
+    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_SPBASE()%>">
     	        </div>
             	
             	<% if (process.getVAL_ST_ACTION_SPBASE()!= null && !process.getVAL_ST_ACTION_SPBASE().equals("")) {%>
             	<br>
             	<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_SPBASE())) { %>
 					<label class="sigp2Mandatory" Style="width:60px">Code :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="1" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="1" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
 					<label class="sigp2Mandatory" Style="width:60px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:60px">Lundi :</label>
 					<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
@@ -93,21 +93,21 @@
 					</SELECT>
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base légale hebdomadaire :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">				
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>					
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:60px">Code :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<span class="sigp2-saisie" style="position:relative;width:50px;"></span>
 					<label class="sigp2Mandatory" Style="width:60px">Libellé :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="20" name="<%= process.getNOM_EF_LIB_SPBASE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:60px">Lundi :</label>
 					<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
@@ -145,12 +145,12 @@
 					</SELECT>
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base légale hebdomadaire :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<label class="sigp2Mandatory" Style="width:170px">Base hebdomadaire (calc) :</label>
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
-					<INPUT tabindex="" class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
+					<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>" style="margin-right:10px;margin-bottom:10px">
 					<br />
 					<div Style="width:100%" align="center">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_SPBASE()%>"></span>

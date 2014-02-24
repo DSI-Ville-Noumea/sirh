@@ -69,7 +69,7 @@ function reduireHierarchy() {
 				</SELECT>
 				<BR/><BR/>
 				<span class="sigp2" style="width:70px;">Service :</span>
-				<INPUT tabindex="" id="service" class="sigp2-saisie" readonly="readonly"
+				<INPUT id="service" class="sigp2-saisie" readonly="readonly"
 					name="<%= process.getNOM_EF_SERVICE() %>" style="margin-right:10px;width:100px"
 					type="text" value="<%= process.getVAL_EF_SERVICE() %>">
 				<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"
@@ -187,11 +187,11 @@ function reduireHierarchy() {
 									</td>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
-										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
+										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
 											type="text" value="<%= process.getVAL_EF_NUM_ARRETE(indiceAvct) %>">
 									</td>
 									<td>
-										<INPUT tabindex="" disabled="disabled" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
+										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>									
 									<%if(process.getVAL_ST_ETAT(indiceAvct).equals("E")){ %>
@@ -209,11 +209,11 @@ function reduireHierarchy() {
 									</td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
+										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8"
 											type="text" value="<%= process.getVAL_EF_NUM_ARRETE(indiceAvct) %>">
 									</td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
+										<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																
@@ -227,11 +227,11 @@ function reduireHierarchy() {
 									</td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
+										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
 											type="text" value="<%= process.getVAL_EF_NUM_ARRETE(indiceAvct) %>">
 									</td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10" style="visibility:hidden"
+										<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10" style="visibility:hidden"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>								
@@ -245,11 +245,11 @@ function reduireHierarchy() {
 									</td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
+										<INPUT class="sigp2-saisie" maxlength="8" name="<%= process.getNOM_EF_NUM_ARRETE(indiceAvct) %>" size="8" style="visibility:hidden"
 											type="text" value="<%= process.getVAL_EF_NUM_ARRETE(indiceAvct) %>">
 									</td>
 									<td>
-										<INPUT tabindex="" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10" style="visibility:hidden"
+										<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_ARRETE(indiceAvct) %>" size="10" style="visibility:hidden"
 											type="text" value="<%= process.getVAL_EF_DATE_ARRETE(indiceAvct) %>">
 									</td>
 									<td><INPUT type="checkbox" style="visibility:hidden" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>

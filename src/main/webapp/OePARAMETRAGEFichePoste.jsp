@@ -37,8 +37,8 @@
 			<br/>
 			<table width="1030px;" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+					<td width="500px">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Entités géographiques</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_ENTITE_GEO() %>" size="10"
@@ -115,7 +115,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Titres de poste</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TITRE() %>" size="10"
@@ -171,7 +171,7 @@
 				</tr>
 				<tr>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Types d'avantage en nature</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TYPE_AVANTAGE() %>" size="10"
@@ -226,7 +226,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Natures d'avantage en nature</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_NATURE_AVANTAGE() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -282,7 +282,7 @@
 				</tr>
 				<tr>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Types de délégation</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TYPE_DELEGATION() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -336,7 +336,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Types de régime</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_TYPE_REGIME() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -392,7 +392,7 @@
 				</tr>
 				<tr>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">NFA</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_NFA() %>" size="10" style="width:100%;" class="sigp2-liste">
@@ -462,7 +462,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Ecoles</legend>
 							<span class="sigp2-titre" >
 							<SELECT name="<%= process.getNOM_LB_ECOLE() %>" size="10"

@@ -264,7 +264,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private void initialiseListeMaladie(HttpServletRequest request) throws Exception {
 		setListeMaladie(MaladiePro.listerMaladiePro(getTransaction()));
 		if (getListeMaladie().size() != 0) {
-			int tailles[] = { 30, 255 };
+			int tailles[] = { 20, 50 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<MaladiePro> list = getListeMaladie().listIterator(); list.hasNext();) {

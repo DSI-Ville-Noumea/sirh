@@ -138,7 +138,7 @@
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
 			<div>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Position administrative :</span>
-			<INPUT tabindex="" id="listePA" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
+			<INPUT id="listePA" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
 				name="<%= process.getNOM_EF_POSA() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_POSA() %>">
 			
 			<BR/><BR/>

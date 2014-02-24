@@ -83,7 +83,7 @@ document.formu.elements[nom].focus();
 	            <div style="display:block">
 				<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION())) { %>
 					<label class="sigp2Mandatory" Style="width:100px">Libellé:</label><br/>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255"
+					<INPUT class="sigp2-saisie" maxlength="255"
 						name="<%= process.getNOM_EF_DESC_ACTIVITE() %>" size="120"
 						type="text" value="<%= process.getVAL_EF_DESC_ACTIVITE() %>" style="margin-right:10px;">
 					<% if (process.ACTION_AJOUT.equals(process.getVAL_ST_ACTION())) { %>
@@ -94,7 +94,7 @@ document.formu.elements[nom].focus();
 					<%}%>
 				<%} else {%>
 					<label class="sigp2Mandatory" Style="width:100px">Libellé:</label><br/>
-					<INPUT tabindex="" class="sigp2-saisie" maxlength="255"
+					<INPUT class="sigp2-saisie" maxlength="255"
 						name="<%= process.getNOM_EF_DESC_ACTIVITE() %>" size="120" disabled="disabled"
 						type="text" value="<%= process.getVAL_EF_DESC_ACTIVITE() %>" style="margin-right:10px;">
 					<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_ACTIVITE()%>"></span>

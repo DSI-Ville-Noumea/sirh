@@ -207,7 +207,7 @@ function SelectLigne(id,tailleTableau)
 						</td>
 						<td>
 							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-					        <INPUT tabindex="" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
+					        <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_DESTINATAIRE()%>">
 					        <%} %>
 						</td>
 					</tr>

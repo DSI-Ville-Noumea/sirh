@@ -106,7 +106,7 @@ document.formu.elements[nom].focus();
    			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">agent remplacé : </span>
 			<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP()%>">
 			<span class="sigp2Mandatory" style="width:150px">Motif de recrutement :</span>
-			<SELECT tabindex="" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_RECRUTEMENT() %>" style="width:150px;margin-right:30px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_RECRUTEMENT() %>" style="width:150px;margin-right:30px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF_RECRUTEMENT(), process.getVAL_LB_MOTIF_RECRUTEMENT_SELECT())%>
 			</SELECT>
 			<BR/><BR/>
@@ -141,7 +141,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<BR/><BR/>
 			<span class="sigp2Mandatory" style="margin-left:20px;width:180px">Motif de non recrutement :</span>
-			<SELECT tabindex="" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_NON_RECRUTEMENT() %>" style="width:150px;">
+			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF_NON_RECRUTEMENT() %>" style="width:150px;">
 				<%=process.forComboHTML(process.getVAL_LB_MOTIF_NON_RECRUTEMENT(), process.getVAL_LB_MOTIF_NON_RECRUTEMENT_SELECT())%>
 			</SELECT>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Nom de l'agent recruté : </span>

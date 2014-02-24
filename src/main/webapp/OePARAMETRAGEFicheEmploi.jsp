@@ -37,8 +37,8 @@
 			<br/>
 			<table width="1030px;" cellpadding="0" cellspacing="0">
 				<tr>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+					<td width="500px">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Domaines d'emploi</legend>
 							<SELECT style="width: 100%;" name="<%= process.getNOM_LB_DOMAINE() %>" size="10" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_DOMAINE(), process.getVAL_LB_DOMAINE_SELECT()) %>
@@ -105,8 +105,8 @@
 				            <%}%>			
 						</FIELDSET>								
 					</td>
-					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+					<td width="500px">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Famille d'emploi</legend>
 							<SELECT name="<%= process.getNOM_LB_FAMILLE() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_FAMILLE(), process.getVAL_LB_FAMILLE_SELECT()) %>
@@ -176,7 +176,7 @@
 				</tr>
 				<tr>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Diplômes génériques</legend>
 							<SELECT name="<%= process.getNOM_LB_DIPLOME() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_DIPLOME(), process.getVAL_LB_DIPLOME_SELECT()) %>
@@ -227,7 +227,7 @@
 						</FIELDSET>
 					</td>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left;width:500px;">
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Catégories</legend>
 							<SELECT name="<%= process.getNOM_LB_CATEGORIE() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_CATEGORIE(), process.getVAL_LB_CATEGORIE_SELECT()) %>
@@ -281,7 +281,7 @@
 				</tr>
 				<tr>
 					<td>
-						<FIELDSET class="sigp2Fieldset"  style="text-align: left; width:500px; ">			
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">			
 					    	<legend class="sigp2Legend">Code rome</legend>
 							<SELECT name="<%= process.getNOM_LB_CODE_ROME() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_CODE_ROME(), process.getVAL_LB_CODE_ROME_SELECT()) %>
