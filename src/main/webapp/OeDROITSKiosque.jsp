@@ -36,14 +36,11 @@ document.formu.elements[nom].focus();
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Liste des approbateurs des pointages</legend>
-			<span style="position:relative;width:9px;"></span>
-			<span style="position:relative;width:35px;">
-				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-			</span>
-			<span style="position:relative;width:200px;text-align: left;">Agent</span>
-			<span style="position:relative;width:640px;text-align: left;">Service</span>
-			<span style="position:relative;width:50px;text-align: left;">PTG</span>
-			<span style="position:relative;width:50px;text-align: left;">ABS</span>
+			<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+			<span style="margin-left: 20px;">Agent</span>
+			<span style="margin-left: 165px;">Service</span>
+			<span style="margin-left: 605px;">PTG</span>
+			<span style="margin-left: 30px;">ABS</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:980px;">

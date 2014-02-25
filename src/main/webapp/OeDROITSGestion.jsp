@@ -46,71 +46,77 @@ document.getElementById("entete").style.left=(200-mondiv.scrollLeft)+"px"
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;height:580px;">
 		    <legend class="sigp2Legend">Gestion des droits de l'application</legend>
 			<BR/>
-			<div class="general">
-				<div class="titre">
-					<table>
-						<tr>
-							<td></td>
-						</tr>
-					</table>
-				</div>
-				<div id="entete" class="entete">
-					<table>
-						<tr>
-							<%if (process.getListeGroupe()!=null && process.getListeGroupe().size()>0){%>
-								<%for (int i = 0;i<process.getListeGroupe().size();i++){
-									Groupe g = (Groupe)process.getListeGroupe().get(i); %>
-									<td>
-										<%= g.getLibGroupe() %>
-										&nbsp;
-										<INPUT type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
-										<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
-									</td>
-								<%} %>
+			<table>
+				<tr>
+					<td>
+						<div class="general">
+							<div class="titre">
+								<table>
+									<tr>
+										<td></td>
+									</tr>
+								</table>
+							</div>
+							<div id="entete" class="entete">
+								<table>
+									<tr>
+										<%if (process.getListeGroupe()!=null && process.getListeGroupe().size()>0){%>
+											<%for (int i = 0;i<process.getListeGroupe().size();i++){
+												Groupe g = (Groupe)process.getListeGroupe().get(i); %>
+												<td>
+													<%= g.getLibGroupe() %>
+													&nbsp;
+													<INPUT type="image" src="images/modifier.gif" height="16px" width="16px" name="<%=process.getNOM_PB_MODIFIER_GROUPE(i)%>">
+													<INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_GROUPE(i)%>">
+												</td>
+											<%} %>
+										<%} %>
+									</tr>
+								</table>
+							</div>
+							<%if (process.getListeElement()!=null){%>
+								<div id="first_col" class="first_col">
+									<table>
+										<%for (int i = 0;i<process.getListeElement().size();i++){
+											Element elt = (Element)process.getListeElement().get(i);%>
+											<tr>
+												<td><%= elt.getLibElement() %></td>
+											</tr>
+										<%} %>
+									</table>
+								</div>
+								<div class="the_table" onscroll="doOnScroll(this);">
+									<table>
+										<%for (int i = 0;i<process.getListeElement().size();i++){%>
+											<tr>
+												<%for (int j = 0;j<process.getListeGroupe().size();j++){%>
+													<td>
+														<SELECT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_LB_TYPE_DROIT(i,j) %>" class="sigp2-liste">
+															<%=process.forComboHTML(process.getVAL_LB_TYPE_DROIT(i,j), process.getVAL_LB_TYPE_DROIT_SELECT(i,j)) %>
+														</SELECT>
+													</td>
+												<%} %>
+											</tr>
+										<%} %>
+									</table>
+								</div>
 							<%} %>
-						</tr>
-					</table>
-				</div>
-				<%if (process.getListeElement()!=null){%>
-					<div id="first_col" class="first_col">
-						<table>
-							<%for (int i = 0;i<process.getListeElement().size();i++){
-								Element elt = (Element)process.getListeElement().get(i);%>
-								<tr>
-									<td><%= elt.getLibElement() %></td>
-								</tr>
-							<%} %>
-						</table>
-					</div>
-					<div class="the_table" onscroll="doOnScroll(this);">
-						<table>
-							<%for (int i = 0;i<process.getListeElement().size();i++){%>
-								<tr>
-									<%for (int j = 0;j<process.getListeGroupe().size();j++){%>
-										<td>
-											<SELECT <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_LB_TYPE_DROIT(i,j) %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_TYPE_DROIT(i,j), process.getVAL_LB_TYPE_DROIT_SELECT(i,j)) %>
-											</SELECT>
-										</td>
-									<%} %>
-								</tr>
-							<%} %>
-						</table>
-					</div>
-				<%} %>
-			</div>
-			<div style="position:absolute;left:960px;width:30px">
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<div style="margin-left:960px;">
 				<INPUT  <%=MairieUtils.getDisabled(request, process.getNomEcran()) %> type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_GROUPE()%>">
 			</div>
 			<%
 			UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			if (aUser.getUserName().equals("chata73") || aUser.getUserName().equals("nicno85")|| aUser.getUserName().equals("rebjo84")) {%>
 			<BR/>
-			<div style="position:absolute;top:535px;">
+			<div style="margin-top: 485px;">
 				<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_AJOUTER_ELEMENT()%>">
 			</div>				
 			<%}%>		
