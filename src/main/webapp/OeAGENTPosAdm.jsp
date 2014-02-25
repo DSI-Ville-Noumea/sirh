@@ -146,13 +146,13 @@
 			<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Ref. arrêté :</span>
 			<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
 			<span class="sigp2"  style="margin-left:20px;position:relative;width:100px;">Date d'arrêté :</span>
-			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
+			<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
 			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
 
 			<BR/><BR/>
 
 			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-			<input class="sigp2-saisie" <%= !process.DateDebutEditable ? "disabled='disabled'" : Const.CHAINE_VIDE %> maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+			<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" <%= !process.DateDebutEditable ? "disabled='disabled'" : Const.CHAINE_VIDE %> maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
 			<%if(process.DateDebutEditable){ %>
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
 			<%} %>

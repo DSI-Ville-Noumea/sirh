@@ -107,7 +107,7 @@ document.formu.elements[nom].focus();
 				
 				<span style="width:180px;" class="sigp2Mandatory"> Date de naissance : </span>
 				<span style="width:150px">
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_NAISSANCE() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISSANCE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+					<INPUT id="<%=process.getNOM_EF_DATE_NAISSANCE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_NAISSANCE() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISSANCE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 					<IMG class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISSANCE()%>', 'dd/mm/y');" hspace="5">
 				</span>
 				
@@ -118,13 +118,13 @@ document.formu.elements[nom].focus();
 				
 				<span class="sigp2Mandatory" style="width:180px">Date de première embauche : </span>
 				<span style="width:150px;">
-					<input class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_PREM_EMB() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> type="text" value="<%= process.getVAL_EF_DATE_PREM_EMB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE() %>")'>
+					<input id="<%=process.getNOM_EF_DATE_PREM_EMB()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	name="<%= process.getNOM_EF_DATE_PREM_EMB() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> type="text" value="<%= process.getVAL_EF_DATE_PREM_EMB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_DATE_DERNIERE_EMBAUCHE() %>")'>
 					<img src="images/calendrier.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_PREM_EMB()%>', 'dd/mm/y');" hspace="5">
 				</span>
 				
 				<span class="sigp2" style="width:180px;margin-left: 13px;">Date de dernière embauche : </span>
 				<span style="width:150px;">
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	name="<%= process.getNOM_EF_DATE_DERN_EMB() %>" type="text" value="<%= process.getVAL_EF_DATE_DERN_EMB() %>">
+					<INPUT id="<%=process.getNOM_EF_DATE_DERN_EMB()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	name="<%= process.getNOM_EF_DATE_DERN_EMB() %>" type="text" value="<%= process.getVAL_EF_DATE_DERN_EMB() %>">
 					<IMG src="images/calendrier.gif" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DERN_EMB()%>', 'dd/mm/y');" hspace="5">
 				</span>
 				<br/><br/>
@@ -134,7 +134,7 @@ document.formu.elements[nom].focus();
 					<INPUT class="sigp2-saisie" maxlength="20" style="width: 90px;"	name="<%= process.getNOM_EF_NUM_CARTE_SEJOUR() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>	type="text" value="<%= process.getVAL_EF_NUM_CARTE_SEJOUR() %>">
 				</span>
 				<span class="sigp2" style="width:180px;margin-left: 13px;">Date de validité : </span>
-				<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR() %>" type="text" value="<%= process.getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;"	<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR() %>" type="text" value="<%= process.getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR() %>">
 				<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR()%>', 'dd/mm/y');" hspace="5">
 			</div>
 		</FIELDSET>
@@ -268,11 +268,11 @@ document.formu.elements[nom].focus();
 				</span>
 				<span style="width:30px"></span>
 				<span class="sigp2">Debut : </span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_DEBUT() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_DEBUT() %>">
+				<INPUT id="<%=process.getNOM_EF_SERVICE_DEBUT()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_DEBUT() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_DEBUT() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_SERVICE_DEBUT()%>', 'dd/mm/y');">
 				<span style="width:10px"></span>
 				<span class="sigp2">Fin : </span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_FIN() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_FIN() %>">
+				<INPUT id="<%=process.getNOM_EF_SERVICE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_SERVICE_FIN() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> size="10" type="text" value="<%= process.getVAL_EF_SERVICE_FIN() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_SERVICE_FIN()%>', 'dd/mm/y');">
 		</FIELDSET>	
 		

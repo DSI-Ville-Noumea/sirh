@@ -244,7 +244,7 @@
 					</td>
 					<td colspan="2">
 					    <span>
-							<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_DIPLOME() %>">
+							<INPUT id="<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_DIPLOME() %>">
 							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_OBTENTION_DIPLOME() %>', 'dd/mm/y');">
 						</span>
 					</td>
@@ -638,7 +638,7 @@
 					<BR/><BR/>
 					<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date d'obtention : </span>
 		    		<span>
-						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_PERMIS() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_PERMIS() %>">
+						<INPUT id="<%=process.getNOM_EF_DATE_OBTENTION_PERMIS()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OBTENTION_PERMIS() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OBTENTION_PERMIS() %>">
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_OBTENTION_PERMIS() %>', 'dd/mm/y');">
 					</span>
 					<BR/><BR/>

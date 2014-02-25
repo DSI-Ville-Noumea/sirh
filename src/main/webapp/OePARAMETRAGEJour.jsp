@@ -115,7 +115,7 @@
 								<span class="sigp2Mandatory">Date :</span>
 							</td>
 							<td>
-								<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
+								<input id="<%=process.getNOM_ST_DATE_JOUR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_JOUR() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_JOUR() %>">
 								<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_JOUR()%>', 'dd/mm/y');">	
 							</td>
 						</tr>

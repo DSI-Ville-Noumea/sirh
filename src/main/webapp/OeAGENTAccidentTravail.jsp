@@ -98,14 +98,14 @@
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 			<div>
-			<span sclass="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date d'AT :</span>
-			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE() %>">
+			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date d'AT :</span>
+			<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE() %>">
 			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE()%>', 'dd/mm/y');">
 
 			<BR/><BR/>
 			
 			<span class="sigp2"  style="margin-left:20px;position:relative;width:150px;">Date de rechute :</span>
-			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_INITIALE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_INITIALE() %>">
+			<input id="<%=process.getNOM_EF_DATE_INITIALE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_INITIALE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_INITIALE() %>">
 			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_INITIALE()%>', 'dd/mm/y');">
 
 			<BR/><BR/>

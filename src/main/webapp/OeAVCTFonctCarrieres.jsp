@@ -169,7 +169,7 @@ function activeAffecter() {
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Date de l'arrêté</legend>
           	<span class="sigp2" style="width:100px">Date de l'arrêté : </span>
-			<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_ARR_GLOBALE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_ARR_GLOBALE() %>" >
+			<input id="<%=process.getNOM_ST_DATE_ARR_GLOBALE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_ARR_GLOBALE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_ARR_GLOBALE() %>" >
 			<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_ARR_GLOBALE()%>', 'dd/mm/y');">
 			<BR/><BR/>
 		</FIELDSET>

@@ -101,19 +101,14 @@
 			<BR/><BR/>
 			<span class="sigp2Mandatory">Date d'entrée : </span>
 			<span style="padding-left:5px;">
-				<INPUT class="sigp2-saisie" maxlength="10"
-					name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10"
-					type="text"
-					value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT() %>">
 			</span>
 			<span>
 				<IMG src="images/calendrier.gif" hspace="5"	onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
 			</span>
 			<span class="sigp2" style="padding-left:10px;">Date de sortie : </span>
 			<span style="padding-left:10px;">
-				<INPUT class="sigp2-saisie" maxlength="10"
-					name="<%= process.getNOM_EF_DATE_FIN() %>" size="10"
-					type="text" value="<%= process.getVAL_EF_DATE_FIN() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>">
 			</span>
 			<span>
 				<IMG src="images/calendrier.gif" hspace="5"	onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">

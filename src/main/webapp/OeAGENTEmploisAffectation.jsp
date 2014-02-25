@@ -795,28 +795,33 @@
 			%>
 			<span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 123px;">Réf.
-				Arrêté : </span> <INPUT class="sigp2-saisiemajusculenongras" maxlength="6"
+				Arrêté : </span> 
+				<INPUT class="sigp2-saisiemajusculenongras" maxlength="6"
 				name="<%=process.getNOM_EF_REF_ARRETE()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_REF_ARRETE()%>"
 				style="margin-right: 60px;"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 112px;">Date
-				arrêté : </span> <INPUT class="sigp2-saisie" maxlength="10"
+				arrêté : </span> 
+				<INPUT id="<%=process.getNOM_EF_DATE_ARRETE()%>" class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_ARRETE()%>" size="10" type="text"
-				value="<%=process.getVAL_EF_DATE_ARRETE()%>"> <IMG
-				src="images/calendrier.gif"
+				value="<%=process.getVAL_EF_DATE_ARRETE()%>"> 
+				<IMG src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARRETE()%>', 'dd/mm/y');"
 				hspace="5"> <span class="sigp2Mandatory"
 				style="margin-left: 20px; position: relative; width: 85px;">Date
-				début : </span> <INPUT class="sigp2-saisie" maxlength="10"
+				début : </span> 
+				<INPUT id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"
 				value="<%=process.getVAL_EF_DATE_DEBUT()%>"> <IMG
 				src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');"
 				hspace="5"> <span class="sigp2"
 				style="margin-left: 20px; position: relative; width: 65px;">Date
-				fin : </span> <INPUT class="sigp2-saisie" maxlength="10"
+				fin : </span> 
+				<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"
 				name="<%=process.getNOM_EF_DATE_FIN()%>" size="10" type="text"
-				value="<%=process.getVAL_EF_DATE_FIN()%>"> <IMG
+				value="<%=process.getVAL_EF_DATE_FIN()%>"> 
+				<IMG
 				src="images/calendrier.gif"
 				onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');"
 				hspace="5"> <BR /> <BR /> <span class="sigp2Mandatory"

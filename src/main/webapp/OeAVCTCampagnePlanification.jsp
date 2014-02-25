@@ -149,7 +149,7 @@ function SelectLigne(id,tailleTableau)
 						</td>
 						<td>
 							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-							<input class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
+							<input id="<%=process.getNOM_ST_TRANSMETTRE()%>" class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
 							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_TRANSMETTRE()%>', 'dd/mm/y');">
 							<%}else{ %>
 							<input disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_ST_TRANSMETTRE() %>" size="10" type="text"	value="<%= process.getVAL_ST_TRANSMETTRE() %>">
@@ -177,7 +177,7 @@ function SelectLigne(id,tailleTableau)
 						</td>
 						<td>
 							<%if(process.getActionCourante()==null || !process.isMailDiffuse(process.getActionCourante())){ %>
-							<input class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
+							<input id="<%=process.getNOM_ST_POUR_LE()%>" class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
 							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_POUR_LE()%>', 'dd/mm/y');">
 							<%}else{ %>	
 							<input disabled="disabled" class="sigp2-saisie"	name="<%= process.getNOM_ST_POUR_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_POUR_LE() %>">
@@ -189,7 +189,7 @@ function SelectLigne(id,tailleTableau)
 							<span class="sigp2">Fait le :</span>
 						</td>
 						<td>
-							<input class="sigp2-saisie"	name="<%= process.getNOM_ST_FAIT_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_FAIT_LE() %>">
+							<input id="<%=process.getNOM_ST_FAIT_LE()%>" class="sigp2-saisie"	name="<%= process.getNOM_ST_FAIT_LE() %>" size="10" type="text"	value="<%= process.getVAL_ST_FAIT_LE() %>">
 							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_FAIT_LE()%>', 'dd/mm/y');">	
 						</td>
 					</tr>

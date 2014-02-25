@@ -654,7 +654,7 @@
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_RETRAITE(),process.getNOM_RB_RETRAITE_NON())%>>Non
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date retraite : </span>
-								<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_RETRAITE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_RETRAITE() %>" >
+								<input id="<%=process.getNOM_ST_DATE_RETRAITE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_RETRAITE() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_RETRAITE() %>" >
 								<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_RETRAITE()%>', 'dd/mm/y');">
 								<BR/><BR/>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Autre perspective : </span>
@@ -720,7 +720,7 @@
 									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
 									<BR/>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
-									<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
+									<input id="<%=process.getNOM_ST_DATE_DEV()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
 									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
 								
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_DEV()%>">
@@ -741,7 +741,7 @@
 									<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_ST_PRIO_DEV() %>" size="5" type="text" value="<%= process.getVAL_ST_PRIO_DEV() %>">
 									<BR/>
 									<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:80px;">Echéance :</span>
-									<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
+									<input id="<%=process.getNOM_ST_DATE_DEV()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEV() %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEV() %>">
 									<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEV()%>', 'dd/mm/y');">
 								
 									<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_DEV()%>">

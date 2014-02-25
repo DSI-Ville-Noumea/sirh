@@ -197,13 +197,13 @@
 				<%if(process.getCarriereCourante()!=null && !process.getCarriereCourante().isActive()&& !process.getCarriereCourante().getCodeCategorie().equals("8")){ %>
 					<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
 				<%}else{ %>
-					<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_TYPE_CONTRAT()%>")'>
+					<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_TYPE_CONTRAT()%>")'>
 					<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
 				<%} %>
 				<BR/><BR/>
 				<%if(process.showDateFin){ %>
 					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date de fin :</span>
-					<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
+					<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
 					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">					
 					<BR/><BR/>
 				<%} %>
@@ -260,7 +260,7 @@
 				<BR/><BR/>
 	
 				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date arrêté :</span>
-				<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
+				<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
 				
 				<BR/><BR/>

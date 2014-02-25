@@ -130,7 +130,7 @@
 						</td>
 						<td>
 				    		<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
-								<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISS() %>">
+								<INPUT id="<%=process.getNOM_EF_DATE_NAISS()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" value="<%= process.getVAL_EF_DATE_NAISS() %>">
 								<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_NAISS()%>', 'dd/mm/y');">
 							<%} else {%>
 								<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_NAISS() %>" type="text" disabled="disabled" value="<%= process.getVAL_EF_DATE_NAISS() %>">
@@ -168,7 +168,7 @@
 							<span class="sigp2"> Date de décès :</span>
 						</td>
 						<td colspan="2">
-							<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DECES() %>" type="text" value="<%= process.getVAL_EF_DATE_DECES() %>">
+							<INPUT id="<%=process.getNOM_EF_DATE_DECES()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DECES() %>" type="text" value="<%= process.getVAL_EF_DATE_DECES() %>">
 							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DECES()%>', 'dd/mm/y');" hspace="5">
 			    		</td>
 			    	</tr>
@@ -186,11 +186,11 @@
 					<legend>Scolarité</legend>
 					<br/>
 					<span class="sigp2" style="width: 120px;" > Date début scolarité :</span>
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DEBUT_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_SCOLARITE() %>">
+					<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_SCOLARITE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_DEBUT_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_SCOLARITE() %>">
 					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_SCOLARITE()%>', 'dd/mm/y');">
 					
 					<span class="sigp2" style="width: 120px;margin-left: 10px;" > Date fin scolarité :</span>
-					<INPUT class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_FIN_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_FIN_SCOLARITE() %>">
+					<INPUT id="<%=process.getNOM_EF_DATE_FIN_SCOLARITE()%>" class="sigp2-saisie" maxlength="10" style="width: 90px;" name="<%= process.getNOM_EF_DATE_FIN_SCOLARITE() %>" type="text" value="<%= process.getVAL_EF_DATE_FIN_SCOLARITE() %>">
 					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN_SCOLARITE()%>', 'dd/mm/y');">
 					
 					<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_SCOLARITE()%>">

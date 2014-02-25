@@ -92,7 +92,7 @@
 				</td>
 				<td>
 				    <span>
-						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_EXTRAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_EXTRAIT() %>">
+						<INPUT id="<%=process.getNOM_EF_DATE_EXTRAIT()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_EXTRAIT() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_EXTRAIT() %>">
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_EXTRAIT() %>', 'dd/mm/y');">
 					</span>
 				</td>

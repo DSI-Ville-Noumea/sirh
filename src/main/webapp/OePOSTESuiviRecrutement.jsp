@@ -112,23 +112,23 @@ document.formu.elements[nom].focus();
 			<BR/><BR/>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Date ouverture : </span>
 		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OUVERTURE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OUVERTURE() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_OUVERTURE()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_OUVERTURE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_OUVERTURE() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_OUVERTURE() %>', 'dd/mm/y');">
 			</span>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Date validation : </span>
 		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_VALIDATION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_VALIDATION() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_VALIDATION()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_VALIDATION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_VALIDATION() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_VALIDATION() %>', 'dd/mm/y');">
 			</span>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date clôture : </span>
 		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_CLOTURE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_CLOTURE() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_CLOTURE()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_CLOTURE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_CLOTURE() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_CLOTURE() %>', 'dd/mm/y');">
 			</span>
 			<BR/>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Date transmission : </span>
 		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_TRANSMISSION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_TRANSMISSION() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_TRANSMISSION()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_TRANSMISSION() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_TRANSMISSION() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_TRANSMISSION() %>', 'dd/mm/y');">
 			</span>
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Nb candidatures reçues : </span>
@@ -136,7 +136,7 @@ document.formu.elements[nom].focus();
 				type="text" value="<%= process.getVAL_EF_NB_CAND_RECUES() %>">
 			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:100px;">Date réponse : </span>
 		    <span>
-				<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_REPONSE_CAND() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_REPONSE_CAND() %>">
+				<INPUT id="<%=process.getNOM_EF_DATE_REPONSE_CAND()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_REPONSE_CAND() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_REPONSE_CAND() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_REPONSE_CAND() %>', 'dd/mm/y');">
 			</span>
 			<BR/><BR/>

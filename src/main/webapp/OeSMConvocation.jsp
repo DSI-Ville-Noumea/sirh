@@ -269,7 +269,7 @@
 									</SELECT>
 								</td>										
 								<td>
-									<input <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
+									<input id="<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>" <%= process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())||process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())  ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM) %>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_PROCHAIN_RDV(indiceSM) %>">
 									<%if(!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.ACCOMP.getCode())&&!process.getVAL_ST_ETAT(indiceSM).equals(EnumEtatSuiviMed.CONVOQUE.getCode())){ %>
 									<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_PROCHAIN_RDV(indiceSM)%>', 'dd/mm/y');">
 									<%} %>

@@ -182,7 +182,7 @@
                				<span class="sigp2Mandatory">Date début : </span>
                 		</td>
                 		<td width="130px">
-			                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
+			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
 			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
                 		</td>
                 		<td width="75px">
@@ -216,7 +216,7 @@
                  			<span class="sigp2">Date fin : </span>
                 		</td>
                 		<td>
-			                <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
+			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
                 		</td>
                 		<td>
@@ -372,7 +372,7 @@
                         <legend class="sigp2Legend">Création d'un pointage
                         </legend>
                         <span class="sigp2Mandatory" style="width:80px">Date : </span>
-                        <input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
+                        <input id="<%=process.getNOM_ST_DATE_CREATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_CREATE()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_CREATE()%>" >
                         <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_CREATE()%>', 'dd/mm/y');">
                         <span class="sigp2Mandatory" style="width:80px"></span>
                         <span class="sigp2Mandatory" style="width:100px">Agent :</span>

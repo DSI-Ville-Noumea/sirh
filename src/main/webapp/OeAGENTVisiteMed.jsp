@@ -125,7 +125,7 @@
 			<BR/><BR/>
 			
 			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de visite :</span>
-			<input class="sigp2-saisie" <%= process.elementModifibale ? "" : "disabled='disabled'" %> maxlength="10"	name="<%= process.getNOM_EF_DATE_VISITE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_VISITE() %>">
+			<input id="<%=process.getNOM_EF_DATE_VISITE()%>" class="sigp2-saisie" <%= process.elementModifibale ? "" : "disabled='disabled'" %> maxlength="10"	name="<%= process.getNOM_EF_DATE_VISITE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_VISITE() %>">
 			<%if(process.elementModifibale){ %>
 			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_VISITE()%>', 'dd/mm/y');">
 			<%} %>
@@ -347,8 +347,8 @@
 
 				<BR/><BR/>
 
-				<span sclass="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-				<input class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DEBUT_INAPTITUDE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DEBUT_INAPTITUDE() %>">
+				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
+				<input id="<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DEBUT_INAPTITUDE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DEBUT_INAPTITUDE() %>">
 				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DEBUT_INAPTITUDE()%>', 'dd/mm/y');">
 
 				<BR/><BR/>

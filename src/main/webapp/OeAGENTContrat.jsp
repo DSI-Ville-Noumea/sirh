@@ -164,23 +164,23 @@
 							</span>
 						<%} else{%>	
 							<span style="width:120px">
-							<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>">
+							<INPUT id="<%=process.getNOM_EF_DATE_DEB()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>">
 							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_DEB() %>', 'dd/mm/y');">
 							</span>
 						<%} %>
 					<% } else { %>
 						<span style="width:120px">
-						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
+						<INPUT id="<%=process.getNOM_EF_DATE_DEB()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_DEB() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEB() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_DEB() %>', 'dd/mm/y');">
 						</span>
 					<% } %>
 					<%if(process.getVAL_LB_TYPE_CONTRAT_SELECT().equals("0")){ %>
 						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:110px;">Date de fin : </span>
-						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
+						<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_FIN_PERIODE_ESSAI()%>")'>
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN() %>', 'dd/mm/y');">
 						<%}else{ %>
 						<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Date de fin : </span>
-						<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>">
+						<INPUT id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN() %>">
 						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN() %>', 'dd/mm/y');">
 						<%} %>
 					<%if(!process.getVAL_RG_AVENANT().equals(process.getNOM_RB_AVENANT_O())){ %>					
@@ -192,7 +192,7 @@
 							<span class="sigp2Mandatory" style="margin-left:10px;position:relative;width:180px;">Date de fin de période d'essai : </span>
 						<%} %>
 						<span style="width:120px">
-							<INPUT class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_PERIODE_ESSAI() %>">
+							<INPUT id="<%=process.getNOM_EF_DATE_FIN_PERIODE_ESSAI()%>" class="sigp2-saisie" maxlength="10" name="<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_PERIODE_ESSAI() %>">
 							<IMG src="images/calendrier.gif" hspace="5"  onclick="return showCalendar('<%= process.getNOM_EF_DATE_FIN_PERIODE_ESSAI() %>', 'dd/mm/y');">					
 						</span>
 					<%} %>

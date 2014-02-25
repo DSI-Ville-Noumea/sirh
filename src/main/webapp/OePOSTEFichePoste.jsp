@@ -178,7 +178,7 @@
 										<span class="sigp2Mandatory"> Date d'application : </span>
 									</td>
 									<td>
-										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_APPLI_SERV() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_APPLI_SERV() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_APPLI_SERV() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_APPLI_SERV() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 										<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_APPLI_SERV()%>', 'dd/mm/y');" hspace="5">
 									</td>
 								</tr>
@@ -345,8 +345,8 @@
 										<span class="sigp2"> Date de début de validité : </span>
 									</td>
 									<td>
-										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-										<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>', 'dd/mm/y');" hspace="5">
+										<INPUT id="<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_DEBUT_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+										<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT_VALIDITE()%>', 'dd/mm/y');" hspace="5" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 									</td>
 								</tr>
 								<tr>
@@ -354,8 +354,8 @@
 										<span class="sigp2"> Date de fin de validité : </span>
 									</td>
 									<td>
-										<INPUT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
-										<IMG class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>', 'dd/mm/y');" hspace="5">
+										<INPUT id="<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN_VALIDITE() %>" size="10" type="text" value="<%= process.getVAL_EF_DATE_FIN_VALIDITE() %>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+										<IMG src="images/calendrier.gif" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN_VALIDITE()%>', 'dd/mm/y');" hspace="5" class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 									</td>
 								</tr>
 								<tr>
