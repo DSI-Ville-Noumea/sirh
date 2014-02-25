@@ -1791,7 +1791,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	}
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuffer scriptOuvPDF = new StringBuffer("<script type=\"text/javascript\">");
+		StringBuffer scriptOuvPDF = new StringBuffer("<script language=\"JavaScript\" type=\"text/javascript\">");
 		scriptOuvPDF.append("window.open('" + cheminFichier + "');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();

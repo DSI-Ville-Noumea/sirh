@@ -5906,7 +5906,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	public String getScriptOuverture(String cheminFichier) throws Exception {
-		StringBuilder scriptOuvPDF = new StringBuilder("<script type=\"text/javascript\">");
+		StringBuilder scriptOuvPDF = new StringBuilder("<script language=\"JavaScript\" type=\"text/javascript\">");
 		scriptOuvPDF.append("window.open('").append(cheminFichier).append("');");
 		scriptOuvPDF.append("</script>");
 		return scriptOuvPDF.toString();
