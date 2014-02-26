@@ -55,22 +55,23 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des handicaps de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:85px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
-				    <span style="position:relative;width:100px;text-align: left;">Type</span>
-				    <span style="position:relative;width:90px;text-align: center;">Début</span>
-					<span style="position:relative;width:95px;text-align: center;">Fin</span>
-					<span style="position:relative;width:60px;text-align: center;">% incapacité</span>
-					<span style="position:relative;width:90px;text-align: center;">Reconnaissance maladie prof.</span>
-					<span style="position:relative;width:90px;text-align: center;">Handicap reconnu CRDHNC</span>
-					<span style="position:relative;width:90px;text-align: center;">N° de carte CRDHNC</span>
-					<span style="position:relative;width:95px;text-align: center;">CRDHNC en cours renouvellement</span>
-					<span style="position:relative;width:95px;text-align: center;">Amenagement</span>
-					<span style="position:relative;text-align: center;">Nb docs</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF" valign="bottom">
+								<td align="left">
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
+								</td>
+								<td align="left">Type</td>
+								<td align="center">Début</td>
+								<td align="center">Fin</td>
+								<td align="center">% incapacité</td>
+								<td align="center">Reconnaissance maladie prof.</td>
+								<td align="center">Handicap reconnu CRDHNC</td>
+								<td align="center">N° de carte CRDHNC</td>
+								<td align="center">CRDHNC en cours renouvellement</td>
+								<td align="center">Amenagement</td>
+								<td align="center">Nb docs</td>
+							</tr>
 							<%
 							int indiceHandi = 0;
 							if (process.getListeHandicap()!=null){
@@ -93,7 +94,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: right;"><%=process.getVAL_ST_NUM_CARTE(indiceHandi)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_RENOUVELLEMENT(indiceHandi)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;">&nbsp;<%=process.getVAL_ST_AMENAGEMENT(indiceHandi)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceHandi)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">&nbsp;<%=process.getVAL_ST_NB_DOC(indiceHandi)%></td>
 									</tr>
 									<%
 									indiceHandi++;

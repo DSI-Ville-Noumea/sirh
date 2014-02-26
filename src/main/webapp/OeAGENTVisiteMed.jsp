@@ -63,54 +63,54 @@
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" <%=process.isImporting ? "ENCTYPE=\"multipart/form-data\"" : ""%> method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+				<FIELDSET class="sigp2Fieldset" style="width:1030px;">
 				    <legend class="sigp2Legend">Liste des visites médicales de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:85px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
-				    <span style="position:relative;width:85px;text-align: center;">Date dernière visite</span>
-					<span style="position:relative;width:30px;text-align: left;">Durée de validité (mois)</span>
-					<span style="position:relative;width:150px;text-align: left;">Nom du medecin</span>
-					<span style="position:relative;width:150px;text-align: left;">Motif</span>
-					<span style="position:relative;width:80px;text-align: left;">Avis</span>
-					<span style="position:relative;width:300px;text-align: left;">Recommandation</span>
-					<span style="position:relative;text-align: center;">Nb docs</span>
-					<br/>
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
-						<table class="sigp2NewTab" style="text-align:left;width:980px;">
-							<%
-							int indiceVisite = 0;
-							if (process.getListeVisites()!=null){
-								for (int i = 0;i<process.getListeVisites().size();i++){
-									VisiteMedicale vm = (VisiteMedicale) process.getListeVisites().get(i);
-							%>
-									<tr id="<%=indiceVisite%>" <%if(vm.getIdVisite()==null){%> bgcolor="#B0C4DE"<%}else{%> onmouseover="SelectLigne(<%=indiceVisite%>,<%=process.getListeVisites().size()%>)"  <%} %>  ondblclick='executeBouton("<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>")'>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
-										<%if(vm.getIdVisite()!=null){ %>
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">
-										<%}%>
-											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceVisite)%>">
-										<%if(vm.getIdVisite()!=null){ %>
-											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">
-											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceVisite)%>">										
-											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceVisite)%>">
-										<%} %>
-										</td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:85px;text-align: center;"><%=process.getVAL_ST_DATE_VISITE(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:30px;text-align: right;"><%=process.getVAL_ST_DUREE(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: left;"><%=process.getVAL_ST_NOM_MEDECIN(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:150px;text-align: left;"><%=process.getVAL_ST_MOTIF(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: left;"><%=process.getVAL_ST_AVIS(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_RECOMMANDATION(indiceVisite)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceVisite)%></td>
-										<td><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>" value="x"></td>
-									</tr>
-									<%
-									indiceVisite++;
-								}
-							}%>
-						</table>	
-						</div>	
+					    		<div style="overflow: auto;height: 250px;width:980px;">
+									<table class="sigp2NewTab" style="text-align:left;width:960px;">
+								    	<tr bgcolor="#EFEFEF" valign="bottom">
+								    		<td align="left">
+								    			<INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
+								    		</td>
+								    		<td align="center">Date dernière visite</td>
+								    		<td align="center">Durée de validité (mois)</td>
+								    		<td align="left">Nom du medecin</td>
+								    		<td align="left">Motif</td>
+								    		<td align="center">Avis</td>
+								    		<td align="left">Recommandation</td>
+								    		<td align="center">Nb docs</td>
+								    	</tr>
+										<%
+										int indiceVisite = 0;
+										if (process.getListeVisites()!=null){
+											for (int i = 0;i<process.getListeVisites().size();i++){
+												VisiteMedicale vm = (VisiteMedicale) process.getListeVisites().get(i);
+										%>
+												<tr id="<%=indiceVisite%>" <%if(vm.getIdVisite()==null){%> bgcolor="#B0C4DE"<%}else{%> onmouseover="SelectLigne(<%=indiceVisite%>,<%=process.getListeVisites().size()%>)"  <%} %>  ondblclick='executeBouton("<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>")'>
+													<td class="sigp2NewTab-liste" style="position:relative;width:90px;" align="center">
+													<%if(vm.getIdVisite()!=null){ %>
+														<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">
+													<%}%>
+														<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceVisite)%>">
+													<%if(vm.getIdVisite()!=null){ %>
+														<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceVisite)%>">
+														<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceVisite)%>">										
+														<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceVisite)%>">
+													<%} %>
+													</td>
+													<td class="sigp2NewTab-liste" style="width:85px;text-align: center;"><%=process.getVAL_ST_DATE_VISITE(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="width:50px;text-align: center;"><%=process.getVAL_ST_DUREE(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="width:150px;text-align: left;"><%=process.getVAL_ST_NOM_MEDECIN(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="width:150px;text-align: left;"><%=process.getVAL_ST_MOTIF(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="width:80px;text-align: center;"><%=process.getVAL_ST_AVIS(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="width:300px;text-align: left;"><%=process.getVAL_ST_RECOMMANDATION(indiceVisite)%></td>
+													<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceVisite)%><INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_INIT_INAPT(indiceVisite)%>" value="x"></td>
+												</tr>
+												<%
+												indiceVisite++;
+											}
+										}%>
+									</table>	
+								</div>					
 				</FIELDSET>
 		<%if (! Const.CHAINE_VIDE.equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">

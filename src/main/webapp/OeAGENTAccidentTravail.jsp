@@ -54,18 +54,19 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des accidents du travail de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;"><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>"></span>
-				    <span style="position:relative;width:90px;text-align: center;">Date</span>
-					<span style="position:relative;width:90px;text-align: center;">Date de rechute</span>
-					<span style="position:relative;width:40px;text-align: center;">Nbr jour(s) IIT</span>
-					<span style="position:relative;width:305px;text-align: left;">Type</span>
-					<span style="position:relative;width:320px;text-align: left;">Siège des lésions</span>
-					<span style="position:relative;text-align: center;">Nb docs</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF"  valign="bottom">
+								<td align="left">
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
+								</td>
+								<td align="center">Date</td>
+								<td align="center">Date de rechute</td>
+								<td align="center">Nbr jour(s) IIT</td>
+								<td align="left">Type</td>
+								<td align="left">Siège des lésions</td>
+								<td align="center">Nb docs</td>
+							</tr>
 							<%
 							int indiceAcc = 0;
 							if (process.getListeAT()!=null){

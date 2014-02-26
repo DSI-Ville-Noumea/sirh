@@ -49,19 +49,19 @@
 
 <FIELDSET class="sigp2Fieldset"	style="text-align:left;margin-right:10px;width:1030px;">
 	<legend	class="sigp2Legend">Liste des documents HSCT d'un agent</legend> 
-	<br/><BR/>
-	<span style="position:relative;width:9px;"></span>
-	<span style="position:relative;width:45px;">	
-	<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
-	</span>
-	<span style="margin-left:5px;position:relative;width:200px;text-align: left;">Nom du document</span>
-	<span style="position:relative;width:120px;text-align: center;">Type</span> 
-	<span style="position:relative;width:90px;text-align: center;">Date</span> 
-	<span style="position:relative;width:305px;text-align: left">Commentaire</span> 
-	<span style="position:relative;text-align: left">Infos</span> 
 
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF" valign="bottom">
+								<td align="left">
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
+								</td>
+								<td align="left">Nom du document</td>
+								<td align="center">Type</td>
+								<td align="center">Date</td>
+								<td align="left">Commentaire</td>
+								<td align="left">Infos</td>
+							</tr>
 							<%
 							int indiceActes = 0;
 							if (process.getListeDocuments()!=null){
