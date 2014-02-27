@@ -738,7 +738,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 				dernierGrade.modifierGrade(getTransaction());
 			}
 			getGradeCourant().creerGrade(getTransaction());
-			addZone(getNOM_ST_ACTION_GRILLE(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_ACTION_GRILLE(), ACTION_CONSULTATION_GRILLE);
 		}
 
 		getTransaction().commitTransaction();
