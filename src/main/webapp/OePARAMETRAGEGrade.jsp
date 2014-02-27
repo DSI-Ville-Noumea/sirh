@@ -224,6 +224,16 @@
 									<INPUT class="sigp2-saisiemajuscule" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="4" name="<%= process.getNOM_EF_CODE_GRADE() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_GRADE() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
 								</td>
 							</tr>
+							<% if(process.ACTION_MODIFICATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE())){ %>
+							<tr>
+								<td>
+									<span class="sigp2">Code grade suivant :</span>
+								</td>
+								<td>
+									<INPUT class="sigp2-saisiemajuscule" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> maxlength="4" name="<%= process.getNOM_EF_CODE_GRADE_SUIVANT() %>" size="10" type="text" value="<%= process.getVAL_EF_CODE_GRADE_SUIVANT() %>" <%=MairieUtils.getDisabled(request, process.getNomEcran()) %>/>
+								</td>
+							</tr>
+							<%} %>
 							<tr>
 								<td>
 									<span class="sigp2Mandatory">Montant forfait :</span>

@@ -451,6 +451,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		addZone(getNOM_LB_BAREME_SELECT(), Const.ZERO);
 
 		addZone(getNOM_EF_CODE_GRADE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_CODE_GRADE_SUIVANT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_MONTANT_FORFAIT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_MONTANT_PRIME(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DUREE_MIN(), Const.CHAINE_VIDE);
@@ -506,6 +507,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			addZone(getNOM_LB_ECHELON_SELECT(), String.valueOf(getListeEchelon().indexOf(echelon) + 1));
 
 		addZone(getNOM_EF_CODE_GRADE(), getGradeCourant().getCodeGrade());
+		addZone(getNOM_EF_CODE_GRADE_SUIVANT(), getGradeCourant().getCodeGradeSuivant());
 		addZone(getNOM_EF_MONTANT_FORFAIT(),
 				getGradeCourant().getMontantForfait().indexOf(".") == -1 ? getGradeCourant().getMontantForfait()
 						: getGradeCourant().getMontantForfait().substring(0,
@@ -713,6 +715,19 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			return false;
 
 		if (getVAL_ST_ACTION_GRADE().equals(ACTION_MODIFICATION_GRADE)) {
+			// on verifie que le grade suivant existe
+			String cdgrad = getVAL_EF_CODE_GRADE_SUIVANT();
+			if (cdgrad != Const.CHAINE_VIDE) {
+				Grade gradeSuiv = Grade.chercherGrade(getTransaction(), cdgrad);
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+					// "ERR146",
+					// "Le code @ du grade suivant ne correspond à aucun grade."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR146", cdgrad));
+					return false;
+				}
+				getGradeCourant().setCodeGradeSuivant(cdgrad);
+			}
 			getGradeCourant().modifierGrade(getTransaction());
 			addZone(getNOM_ST_ACTION_GRILLE(), ACTION_CONSULTATION_GRILLE);
 		} else {
@@ -1768,5 +1783,13 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	public void setGrilleCourant(Grade grilleCourant) {
 		this.grilleCourant = grilleCourant;
+	}
+
+	public String getNOM_EF_CODE_GRADE_SUIVANT() {
+		return "NOM_EF_CODE_GRADE_SUIVANT";
+	}
+
+	public String getVAL_EF_CODE_GRADE_SUIVANT() {
+		return getZone(getNOM_EF_CODE_GRADE_SUIVANT());
 	}
 }
