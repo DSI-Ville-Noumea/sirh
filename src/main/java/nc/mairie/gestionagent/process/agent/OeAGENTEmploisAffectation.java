@@ -30,7 +30,6 @@ import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.diplome.DiplomeAgent;
-import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.MotifAffectation;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
@@ -306,12 +305,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		String missions = fp.getMissions();
 		String grade = g.getGrade();
 		String responsable = tpResponsable.getLibTitrePoste();
-		// Liste Diplomes FP
-		String formationRequise = Const.CHAINE_VIDE;
-		ArrayList<DiplomeGenerique> dg = DiplomeGenerique.listerDiplomeGeneriqueAvecFP(getTransaction(), fp);
-		for (DiplomeGenerique d : dg) {
-			formationRequise += d.getLibDiplomeGenerique();
-		}
 		String tachesPrincipales = Const.CHAINE_VIDE;
 		// activites principales
 		ArrayList<Activite> lActi = Activite.listerActiviteAvecFP(getTransaction(), fp);
@@ -370,7 +363,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_RESPONSABLE", responsable);
 			ligne = StringUtils.replace(ligne, "$_TITULAIRE", titulaire);
 			ligne = StringUtils.replace(ligne, "$_DIPLOMES", listeDiplome);
-			ligne = StringUtils.replace(ligne, "$_FORMATION_REQUISE", formationRequise);
 			ligne = StringUtils.replace(ligne, "$_TACHES_PRINCIPALES", tachesPrincipales);
 			ligne = StringUtils.replace(ligne, "$_GRADE_TITULAIRE", gradeTitulaire);
 			ligne = StringUtils.replace(ligne, "$_DATE_JOUR", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));

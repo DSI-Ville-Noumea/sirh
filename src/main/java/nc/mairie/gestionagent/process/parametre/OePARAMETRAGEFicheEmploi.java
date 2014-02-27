@@ -13,7 +13,6 @@ import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.CategorieFE;
 import nc.mairie.metier.poste.FicheEmploi;
-import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -304,7 +303,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_DOMAINE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer.parseInt(getVAL_LB_DOMAINE_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeDomaine().size()) {
 			DomaineEmploi de = getListeDomaine().get(indice);
@@ -413,11 +413,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				if (domaine.getCodeDomaineEmploi().equals(getVAL_EF_CODE_DOMAINE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce code"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce code"));
 					return false;
 				}
 				if (domaine.getLibDomaineEmploi().equals(getVAL_EF_LIB_DOMAINE().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce libellé"));
 					return false;
 				}
 			}
@@ -585,7 +587,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_FAMILLE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_FAMILLE_SELECT()) ? Integer.parseInt(getVAL_LB_FAMILLE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_FAMILLE_SELECT()) ? Integer.parseInt(getVAL_LB_FAMILLE_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeFamille().size()) {
 			FamilleEmploi f = getListeFamille().get(indice);
@@ -685,7 +688,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "cette famille d'emploi"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "une fiche emploi", "cette famille d'emploi"));
 			return false;
 		}
 
@@ -696,11 +700,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				if (famille.getCodeFamilleEmploi().equals(getVAL_EF_CODE_FAMILLE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @ – Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce code"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce code"));
 					return false;
 				}
 				if (famille.getLibFamilleEmploi().equals(getVAL_EF_FAMILLE().toUpperCase())) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une famille d'emploi", "ce libellé"));
 					return false;
 				}
 			}
@@ -865,7 +871,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_DIPLOME(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeDiplome().size()) {
 			DiplomeGenerique d = getListeDiplome().get(indice);
@@ -959,15 +966,6 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "ce diplome"));
-			return false;
-		}
-
-		// Verification si suppression d'un diplome utilisée sur une fiche poste
-		if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)
-				&& FichePoste.listerFichePosteAvecDiplome(getTransaction(), getDiplomeCourant()).size() > 0) {
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche de poste", "ce diplome"));
 			return false;
 		}
 
@@ -1141,7 +1139,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_CATEGORIE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_CATEGORIE_SELECT()) ? Integer.parseInt(getVAL_LB_CATEGORIE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CATEGORIE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CATEGORIE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCategorie().size()) {
 			Categorie cat = getListeCategorie().get(indice);
@@ -1653,7 +1652,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_CODE_ROME(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_CODE_ROME_SELECT()) ? Integer.parseInt(getVAL_LB_CODE_ROME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CODE_ROME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CODE_ROME_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCodeRome().size()) {
 			CodeRome cr = getListeCodeRome().get(indice);
@@ -1753,7 +1753,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// emploi
 		// **********************************************************************
 		if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecCodeRome(getTransaction(), getCodeRomeCourant().getIdCodeRome()).size() > 0) {
+				&& FicheEmploi.listerFicheEmploiAvecCodeRome(getTransaction(), getCodeRomeCourant().getIdCodeRome())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."

@@ -33,7 +33,6 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
-import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
@@ -44,7 +43,6 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFP;
-import nc.mairie.metier.poste.DiplomeFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
@@ -126,8 +124,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_BUDGETE;
 	private String[] LB_REGLEMENTAIRE;
 	private String[] LB_STATUT;
-	private String[] LB_DIPLOME;
-	private String[] LB_DIPLOME_MULTI;
 	private String[] LB_NIVEAU_ETUDE;
 	private String[] LB_NATURE_CREDIT;
 	// nouvelle liste suite remaniement fdp/activites
@@ -154,13 +150,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<NiveauEtude> listeTousNiveau;
 	// niveau etude de la fiche poste
 	private ArrayList<NiveauEtudeFP> listeNiveauFP;
-	// Nouvelle gestion des diplomes
-	private ArrayList<DiplomeGenerique> listeTousDiplomes;
-	// diplomes de la fiche poste
-	private ArrayList<DiplomeFP> listeDiplomeFP;
 	// pour les liste deroulante
 	private ArrayList<NiveauEtude> listeNiveauEtude;
-	private ArrayList<DiplomeGenerique> listeDiplome;
 	private ArrayList<Budget> listeBudget;
 	private ArrayList<StatutFP> listeStatut;
 	private ArrayList<TitrePoste> listeTitre;
@@ -185,7 +176,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String mission;
 	private boolean afficherListeGrade = false;
 	private boolean afficherListeNivEt = false;
-	private boolean afficherListeDiplome = false;
 	private boolean fpCouranteAffectee = false;
 	public HashMap<String, TreeHierarchy> hTree = null;
 	public HashMap<String, TypeAvantage> hashtypAv = null;
@@ -480,7 +470,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_EF_GRADE(), g.getGrade());
 				// on récupère la categorie et la filiere de ce grade
 				if (gg.getCodCadre() != null && (!gg.getCodCadre().equals(Const.CHAINE_VIDE))) {
-					String info = "Cat : " + gg.getCodCadre();
+					String info = "Catégorie : " + gg.getCodCadre();
 
 					if (gg.getIdCadreEmploi() != null) {
 						if (gg.getCdfili() != null) {
@@ -488,7 +478,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 							if (fi == null || getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							} else {
-								info += " , filière : " + fi.getLibFiliere();
+								info += " <br/> Filière : " + fi.getLibFiliere();
 							}
 						}
 					}
@@ -772,16 +762,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			int[] tailles = { 15 };
 			String[] champs = { "libNiveauEtude" };
 			setLB_NIVEAU_ETUDE(new FormateListe(tailles, niveau, champs).getListeFormatee(true));
-		}
-
-		// Si liste diplomes vide alors affectation
-		if (getLB_DIPLOME() == LBVide) {
-			ArrayList<DiplomeGenerique> dipl = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
-			setListeDiplome(dipl);
-
-			int[] tailles = { 100 };
-			String[] champs = { "libDiplomeGenerique" };
-			setLB_DIPLOME(new FormateListe(tailles, dipl, champs).getListeFormatee(true));
 		}
 
 		// Si liste diplomes vide alors affectation
@@ -1190,7 +1170,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_LB_BUDGETE_SELECT(), "0");
 		addZone(getNOM_LB_REGLEMENTAIRE_SELECT(), "0");
 		addZone(getNOM_LB_NIVEAU_ETUDE_SELECT(), "0");
-		addZone(getNOM_LB_DIPLOME_SELECT(), "0");
 		addZone(getNOM_LB_LOC_SELECT(), "0");
 		addZone(getNOM_LB_TITRE_POSTE_SELECT(), "0");
 		addZone(getNOM_LB_GRADE_SELECT(), "0");
@@ -1201,7 +1180,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_LB_NATURE_CREDIT_SELECT(), "0");
 
 		setLB_NIVEAU_ETUDE(null);
-		setLB_DIPLOME_MULTI(null);
 	}
 
 	/**
@@ -1234,10 +1212,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		setListePrimePointageFP(null);
 
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
-		setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
 
 		setListeNiveauFP(new ArrayList<NiveauEtudeFP>());
-		setListeDiplomeFP(new ArrayList<DiplomeFP>());
 
 		setListeActiFP(new ArrayList<ActiviteFP>());
 		setListeActiFES(new ArrayList<Activite>());
@@ -1337,22 +1313,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// "ERR110", "La liste @ ne doit contenir qu'un seul élément."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR110", "Niveau d'étude"));
 			setFocus(getNOM_LB_NIVEAU_ETUDE());
-			return false;
-		}
-
-		// **********************
-		// Verification Diplome
-		// **********************
-		if (getListeTousDiplomes().isEmpty()) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "diplômes"));
-			setFocus(getNOM_LB_DIPLOME_MULTI());
-			return false;
-		}
-		if (getListeTousDiplomes().size() > 1) {
-			// "ERR110", "La liste @ ne doit contenir qu'un seul élément."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR110", "Diplômes"));
-			setFocus(getNOM_LB_DIPLOME_MULTI());
 			return false;
 		}
 
@@ -1631,14 +1591,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// et inversement
 			if (natureCredit.getLibNatureCredit().equals("PERMANENT")
 					&& reglementaire.getLibHor().trim().toLowerCase().equals("non")) {
-				//"ERR1115", "Le poste n'est pas règlementaire, le budget ne peut pas être permanent."
+				// "ERR1115",
+				// "Le poste n'est pas règlementaire, le budget ne peut pas être permanent."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR1115"));
 				return false;
 
 			}
 			if (!reglementaire.getLibHor().trim().toLowerCase().equals("non")) {
 				if (!natureCredit.getLibNatureCredit().equals("PERMANENT")) {
-					//"ERR1116", "Le poste est règlementaire, le budget doit être permanent."
+					// "ERR1116",
+					// "Le poste est règlementaire, le budget doit être permanent."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR1116"));
 					return false;
 				}
@@ -1835,20 +1797,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				ancienLien.supprimerFEFP(getTransaction());
 			}
 		}
-		// on supprime tous les diplome de la FDP
-		ArrayList<DiplomeFP> diplomeFPExistant = DiplomeFP.listerDiplomeFPAvecFP(getTransaction(),
-				getFichePosteCourante());
-		if (diplomeFPExistant != null && diplomeFPExistant.size() > 0) {
-			for (int i = 0; i < diplomeFPExistant.size(); i++) {
-				DiplomeFP diplomeFP = (DiplomeFP) diplomeFPExistant.get(i);
-				diplomeFP.supprimerDiplomeFP(getTransaction());
-			}
-		}
-		// on ajoute le diplome dela FDP
-		DiplomeGenerique diplomeAAjouter = (DiplomeGenerique) getListeTousDiplomes().get(0);
-		DiplomeFP diplomeFP = new DiplomeFP(getFichePosteCourante().getIdFichePoste(),
-				diplomeAAjouter.getIdDiplomeGenerique());
-		diplomeFP.creerDiplomeFP(getTransaction());
 
 		// on supprime tous les niveau etude de la FDP
 		ArrayList<NiveauEtudeFP> niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(),
@@ -2899,68 +2847,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize : LB_DIPLOME Date de création
-	 * : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	private String[] getLB_DIPLOME() {
-		if (LB_DIPLOME == null) {
-			LB_DIPLOME = initialiseLazyLB();
-		}
-		return LB_DIPLOME;
-	}
-
-	/**
-	 * Setter de la liste: LB_DIPLOME Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	private void setLB_DIPLOME(String[] newLB_DIPLOME) {
-		LB_DIPLOME = newLB_DIPLOME;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME Date de création
-	 * : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_DIPLOME() {
-		return "NOM_LB_DIPLOME";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DIPLOME_SELECT Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_DIPLOME_SELECT() {
-		return "NOM_LB_DIPLOME_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DIPLOME Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String[] getVAL_LB_DIPLOME() {
-		return getLB_DIPLOME();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DIPLOME Date de création : (08/07/11 09:13:07)
-	 * 
-	 * 
-	 */
-	public String getVAL_LB_DIPLOME_SELECT() {
-		return getZone(getNOM_LB_DIPLOME_SELECT());
-	}
-
-	/**
 	 * Getter de la liste avec un lazy initialize : LB_NIVEAU_ETUDE Date de
 	 * création : (08/07/11 09:13:07)
 	 * 
@@ -3061,64 +2947,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getTransaction().traiterErreur();
 			}
 			// on récupère la categorie et la filiere de ce grade
-			String info = "Cat : " + gg.getCodCadre();
+			String info = "Catégorie : " + gg.getCodCadre();
 			if (gg != null && gg.getCdfili() != null) {
 				FiliereGrade fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
-				info += " , filière : " + fi.getLibFiliere();
+				info += " <br/> Filière : " + fi.getLibFiliere();
 			}
 			addZone(getNOM_ST_INFO_GRADE(), info);
 
 		}
 		setAfficherListeGrade(false);
 
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER_DIPLOME Date de
-	 * création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_AJOUTER_DIPLOME() {
-		return "NOM_PB_AJOUTER_DIPLOME";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public boolean performPB_AJOUTER_DIPLOME(HttpServletRequest request) throws Exception {
-		// Récupération du diplome à ajouter
-		int indiceDipl = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer
-				.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
-		if (indiceDipl == -1 || getListeDiplome().size() == 0 || indiceDipl > getListeDiplome().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Diplomes"));
-			return false;
-		}
-
-		if (indiceDipl > 0) {
-			DiplomeGenerique d = (DiplomeGenerique) getListeDiplome().get(indiceDipl - 1);
-
-			if (d != null) {
-				if (getListeTousDiplomes() == null) {
-					setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
-				}
-
-				if (!getListeTousDiplomes().contains(d)) {
-					getListeTousDiplomes().add(d);
-
-					int[] tailles = { 100 };
-					String[] champsDG = { "libDiplomeGenerique" };
-					setLB_DIPLOME_MULTI(new FormateListe(tailles, getListeTousDiplomes(), champsDG).getListeFormatee());
-				}
-			}
-		}
-		setAfficherListeDiplome(false);
 		return true;
 	}
 
@@ -3173,40 +3011,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		}
 		setAfficherListeNivEt(false);
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_DIPLOME Date de
-	 * création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_DIPLOME() {
-		return "NOM_PB_SUPPRIMER_DIPLOME";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (08/07/11 09:21:06)
-	 * 
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_DIPLOME(HttpServletRequest request) throws Exception {
-
-		// Suppression du dernier diplome de la liste
-		if (getListeTousDiplomes() != null && getListeTousDiplomes().size() != 0) {
-			DiplomeGenerique dip = (DiplomeGenerique) getListeTousDiplomes().get(getListeTousDiplomes().size() - 1);
-			getListeTousDiplomes().remove(dip);
-
-			// Rafraichissement de la liste
-			int[] tailles = { 100 };
-			String[] champsDG = { "libDiplomeGenerique" };
-			setLB_DIPLOME_MULTI(new FormateListe(tailles, getListeTousDiplomes(), champsDG).getListeFormatee());
-
-		}
 		return true;
 	}
 
@@ -3477,69 +3281,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		this.listeTitre = listeTitre;
 	}
 
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_DIPLOME_MULTI Date de
-	 * création : (11/07/11 14:22:23)
-	 * 
-	 * 
-	 */
-	private String[] getLB_DIPLOME_MULTI() {
-		if (LB_DIPLOME_MULTI == null) {
-			LB_DIPLOME_MULTI = initialiseLazyLB();
-		}
-		return LB_DIPLOME_MULTI;
-	}
-
-	/**
-	 * Setter de la liste: LB_DIPLOME_MULTI Date de création : (11/07/11
-	 * 14:22:23)
-	 * 
-	 * 
-	 */
-	private void setLB_DIPLOME_MULTI(String[] newLB_DIPLOME_MULTI) {
-		LB_DIPLOME_MULTI = newLB_DIPLOME_MULTI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_DIPLOME_MULTI Date de
-	 * création : (11/07/11 14:22:23)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_DIPLOME_MULTI() {
-		return "NOM_LB_DIPLOME_MULTI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DIPLOME_MULTI_SELECT Date de création : (11/07/11 14:22:23)
-	 * 
-	 * 
-	 */
-	public String getNOM_LB_DIPLOME_MULTI_SELECT() {
-		return "NOM_LB_DIPLOME_MULTI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_DIPLOME_MULTI Date de création : (11/07/11 14:22:23)
-	 * 
-	 * 
-	 */
-	public String[] getVAL_LB_DIPLOME_MULTI() {
-		return getLB_DIPLOME_MULTI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_DIPLOME_MULTI Date de création : (11/07/11 14:22:23)
-	 * 
-	 * 
-	 */
-	public String getVAL_LB_DIPLOME_MULTI_SELECT() {
-		return getZone(getNOM_LB_DIPLOME_MULTI_SELECT());
-	}
-
 	private FichePoste getFichePosteCourante() {
 		return fichePosteCourante;
 	}
@@ -3767,8 +3508,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void initialiseInfoEmploi() throws Exception {
 		// on fait une liste de toutes les niveau etude
 		setListeTousNiveau(new ArrayList<NiveauEtude>());
-		// on fait une liste de toutes les diplomes
-		setListeTousDiplomes(new ArrayList<DiplomeGenerique>());
 
 		// niveau etude
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
@@ -3781,83 +3520,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		} else {
 			setListeNiveauFP(new ArrayList<NiveauEtudeFP>());
 		}
-		// si il n'y avait pas de niveau etude sur la FDP on affiche celle des
-		// FE
-		// ON ENELEVE CETTE PATIE --> JIRA SIRH-305
-		/*
-		 * if (!trouve) { if (getEmploiPrimaire() != null &&
-		 * getEmploiPrimaire().getIdFicheEmploi() != null) { // on recupere les
-		 * niveau etude de la FEP
-		 * setListeNiveauFEP(NiveauEtudeFE.listerNiveauEtudeFEAvecFE
-		 * (getTransaction(), getEmploiPrimaire())); for (int i = 0; i <
-		 * getListeNiveauFEP().size(); i++) { NiveauEtudeFE niveauFE =
-		 * (NiveauEtudeFE) getListeNiveauFEP().get(i); NiveauEtude niveau =
-		 * NiveauEtude.chercherNiveauEtude(getTransaction(),
-		 * niveauFE.getIdNiveauEtude()); if
-		 * (!getListeTousNiveau().contains(niveau)) {
-		 * getListeTousNiveau().add(niveau); } } } else { setListeNiveauFEP(new
-		 * ArrayList()); } if (getEmploiSecondaire() != null &&
-		 * getEmploiSecondaire().getIdFicheEmploi() != null) { // on recupere
-		 * les niveau etude de la FES
-		 * setListeNiveauFES(NiveauEtudeFE.listerNiveauEtudeFEAvecFE
-		 * (getTransaction(), getEmploiSecondaire())); for (int i = 0; i <
-		 * getListeNiveauFES().size(); i++) { NiveauEtudeFE niveauFE =
-		 * (NiveauEtudeFE) getListeNiveauFES().get(i); NiveauEtude niveau =
-		 * NiveauEtude.chercherNiveauEtude(getTransaction(),
-		 * niveauFE.getIdNiveauEtude()); if
-		 * (!getListeTousNiveau().contains(niveau)) {
-		 * getListeTousNiveau().add(niveau); } } } else { setListeNiveauFES(new
-		 * ArrayList()); } }
-		 */
+
 		String nivEtMulti = Const.CHAINE_VIDE;
 		for (NiveauEtude nivEt : getListeTousNiveau()) {
 			nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
 		}
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
 				nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
-
-		// diplome
-		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			// on recupere les diplomes de la FDP
-			setListeDiplomeFP(DiplomeFP.listerDiplomeFPAvecFP(getTransaction(), getFichePosteCourante()));
-			for (DiplomeFP diplomeFP : getListeDiplomeFP()) {
-				DiplomeGenerique diplome = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
-						diplomeFP.getIdDiplomeGenerique());
-				getListeTousDiplomes().add(diplome);
-			}
-		} else {
-			setListeDiplomeFP(new ArrayList<DiplomeFP>());
-		}
-		// si il n'y avait pas de diplomes sur la FDP on affiche celle des FE
-		// ON ENELEVE CETTE PATIE --> JIRA SIRH-305
-		/*
-		 * if (!trouve) { if (getEmploiPrimaire() != null &&
-		 * getEmploiPrimaire().getIdFicheEmploi() != null) { // on recupere les
-		 * diplomes de la FEP
-		 * setListeDiplomeFEP(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(),
-		 * getEmploiPrimaire())); for (int i = 0; i <
-		 * getListeDiplomeFEP().size(); i++) { DiplomeFE diplomeFE = (DiplomeFE)
-		 * getListeDiplomeFEP().get(i); DiplomeGenerique diplome =
-		 * DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
-		 * diplomeFE.getIdDiplomeGenerique()); if
-		 * (!getListeTousDiplomes().contains(diplome)) {
-		 * getListeTousDiplomes().add(diplome); } } } else {
-		 * setListeDiplomeFEP(new ArrayList()); } if (getEmploiSecondaire() !=
-		 * null && getEmploiSecondaire().getIdFicheEmploi() != null) { // on
-		 * recupere les diplomes de la FES
-		 * setListeDiplomeFES(DiplomeFE.listerDiplomeFEAvecFE(getTransaction(),
-		 * getEmploiSecondaire())); for (int i = 0; i <
-		 * getListeDiplomeFES().size(); i++) { DiplomeFE diplomeFE = (DiplomeFE)
-		 * getListeDiplomeFES().get(i); DiplomeGenerique diplome =
-		 * DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
-		 * diplomeFE.getIdDiplomeGenerique()); if
-		 * (!getListeTousDiplomes().contains(diplome)) {
-		 * getListeTousDiplomes().add(diplome); } } } else {
-		 * setListeDiplomeFES(new ArrayList()); } }
-		 */
-		int[] taillesDiplome = { 50 };
-		String[] champsDiplome = { "libDiplomeGenerique" };
-		setLB_DIPLOME_MULTI(new FormateListe(taillesDiplome, getListeTousDiplomes(), champsDiplome).getListeFormatee());
 	}
 
 	/**
@@ -4853,30 +4522,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_AFFICHER_LISTE_DIPLOME Date
-	 * de création : (29/08/11 10:08:17)
-	 * 
-	 * 
-	 */
-	public String getNOM_PB_AFFICHER_LISTE_DIPLOME() {
-		return "NOM_PB_AFFICHER_LISTE_DIPLOME";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/08/11 10:08:17)
-	 * 
-	 * 
-	 */
-	public boolean performPB_AFFICHER_LISTE_DIPLOME(HttpServletRequest request) throws Exception {
-		addZone(getNOM_LB_DIPLOME_SELECT(), "0");
-		setAfficherListeDiplome(true);
-		return true;
-	}
-
-	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AFFICHER_LISTE_NIVEAU Date
 	 * de création : (29/08/11 10:08:17)
 	 * 
@@ -4917,25 +4562,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	private void setAfficherListeGrade(boolean afficherListeGrade) {
 		this.afficherListeGrade = afficherListeGrade;
-	}
-
-	/**
-	 * Retourne vrai si la liste des diplomes doit être affichée.
-	 * 
-	 * @return afficherListeDiplome boolean
-	 */
-	public boolean isAfficherListeDiplome() {
-		return afficherListeDiplome;
-	}
-
-	/**
-	 * Met à jour l'indicateur d'afichage de la liste des diplomes.
-	 * 
-	 * @param afficherListeDiplome
-	 *            boolean
-	 */
-	private void setAfficherListeDiplome(boolean afficherListeDiplome) {
-		this.afficherListeDiplome = afficherListeDiplome;
 	}
 
 	/**
@@ -5417,11 +5043,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
 		String niveauEtude = nivEtu.getLibNiveauEtude();
 
-		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
-		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
-				dipFP.getIdDiplomeGenerique());
-		String diplome = dip.getLibDiplomeGenerique();
-
 		// partie concernant l'emploi
 		String emploiPrimaire = Const.CHAINE_VIDE;
 		if (getEmploiPrimaire() != null) {
@@ -5559,7 +5180,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
 			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
 			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
-			ligne = StringUtils.replace(ligne, "$_DIPLOME", diplome);
 			// emploi
 			ligne = StringUtils.replace(ligne, "$_FE_PRIMAIRE", emploiPrimaire);
 			ligne = StringUtils.replace(ligne, "$_FE_SECONDAIRE", emploiSecondaire);
@@ -5683,11 +5303,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
 		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
 		String niveauEtude = nivEtu.getLibNiveauEtude();
-
-		DiplomeFP dipFP = DiplomeFP.chercherDiplomeAvecFP(getTransaction(), fp.getIdFichePoste());
-		DiplomeGenerique dip = DiplomeGenerique.chercherDiplomeGenerique(getTransaction(),
-				dipFP.getIdDiplomeGenerique());
-		String diplome = dip.getLibDiplomeGenerique();
 
 		// partie concernant l'emploi
 		String emploiPrimaire = Const.CHAINE_VIDE;
@@ -5843,7 +5458,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
 			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
 			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
-			ligne = StringUtils.replace(ligne, "$_DIPLOME", diplome);
 			// emploi
 			ligne = StringUtils.replace(ligne, "$_FE_PRIMAIRE", emploiPrimaire);
 			ligne = StringUtils.replace(ligne, "$_FE_SECONDAIRE", emploiSecondaire);
@@ -6370,11 +5984,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return performPB_AFFICHER_LISTE_GRADE(request);
 			}
 
-			// Si clic sur le bouton PB_AFFICHER_LISTE_DIPLOME
-			if (testerParametre(request, getNOM_PB_AFFICHER_LISTE_DIPLOME())) {
-				return performPB_AFFICHER_LISTE_DIPLOME(request);
-			}
-
 			// Si clic sur le bouton PB_AFFICHER_LISTE_NIVEAU
 			if (testerParametre(request, getNOM_PB_AFFICHER_LISTE_NIVEAU())) {
 				return performPB_AFFICHER_LISTE_NIVEAU(request);
@@ -6420,19 +6029,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 				return performPB_AJOUTER_GRADE(request);
 			}
 
-			// Si clic sur le bouton PB_AJOUTER_DIPLOME
-			if (testerParametre(request, getNOM_PB_AJOUTER_DIPLOME())) {
-				return performPB_AJOUTER_DIPLOME(request);
-			}
-
 			// Si clic sur le bouton PB_AJOUTER_NIVEAU_ETUDE
 			if (testerParametre(request, getNOM_PB_AJOUTER_NIVEAU_ETUDE())) {
 				return performPB_AJOUTER_NIVEAU_ETUDE(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_DIPLOME
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_DIPLOME())) {
-				return performPB_SUPPRIMER_DIPLOME(request);
 			}
 
 			// Si clic sur le bouton PB_SUPPRIMER_NIVEAU_ETUDE
@@ -6832,30 +6431,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private void setListeTousNiveau(ArrayList<NiveauEtude> listeTousNiveau) {
 		this.listeTousNiveau = listeTousNiveau;
-	}
-
-	private ArrayList<DiplomeFP> getListeDiplomeFP() {
-		return listeDiplomeFP;
-	}
-
-	private void setListeDiplomeFP(ArrayList<DiplomeFP> listeDiplomeFP) {
-		this.listeDiplomeFP = listeDiplomeFP;
-	}
-
-	private ArrayList<DiplomeGenerique> getListeTousDiplomes() {
-		return listeTousDiplomes;
-	}
-
-	private void setListeTousDiplomes(ArrayList<DiplomeGenerique> listeTousDiplomes) {
-		this.listeTousDiplomes = listeTousDiplomes;
-	}
-
-	private ArrayList<DiplomeGenerique> getListeDiplome() {
-		return listeDiplome;
-	}
-
-	private void setListeDiplome(ArrayList<DiplomeGenerique> listeDiplome) {
-		this.listeDiplome = listeDiplome;
 	}
 
 	private ArrayList<NiveauEtude> getListeNiveauEtude() {

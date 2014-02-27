@@ -83,10 +83,6 @@ document.formu.elements[nom].focus();
 			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_LOCALISATION()%></span>
 			<br/>
 			<br/>
-			<span class="sigp2" style="width:150px"> Etude : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_ETUDE()%></span>
-			<br/>
-			<br/>
 			<span class="sigp2" style="width:150px"> Responsable hiér. : </span>
 			<span class="sigp2-statique" align="left" style="width:500px"><%=process.getVAL_ST_RESPONSABLE()%> - <%= process.getVAL_ST_INFO_RESP()%></span>
 			<br/>

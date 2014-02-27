@@ -221,30 +221,6 @@
 								</tr>
 								<tr>
 									<td>
-										<span class="sigp2Mandatory"> Diplômes : </span>
-									</td>
-									<td align="left">
-										<span class="<%=process.estFDPInactive ? MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, ""): MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
-											<INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AFFICHER_LISTE_DIPLOME()%>">
-								            <INPUT type="image" src="images/suppression.gif" height="16px" width="16px" name="<%=process.getNOM_PB_SUPPRIMER_DIPLOME()%>">
-											<% if (process.isAfficherListeDiplome()) {%>		
-												<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_DIPLOME() %>" style="width:355px;margin-bottom:5px;" onchange='executeBouton("<%=process.getNOM_PB_AJOUTER_DIPLOME() %>")'>
-													<%=process.forComboHTML(process.getVAL_LB_DIPLOME(), process.getVAL_LB_DIPLOME_SELECT())%>
-												</SELECT>
-											<%} %>
-										</span>
-									</td>
-								</tr>
-								<tr>
-									<td>&nbsp;</td>									
-									<td>
-										<SELECT size="3" style="width:393px;font-family : monospace;" disabled="disabled" class="sigp2-liste" name="<%=process.getNOM_LB_DIPLOME_MULTI()%>" >
-											<%=process.forComboHTML(process.getVAL_LB_DIPLOME_MULTI(), process.getVAL_LB_DIPLOME_MULTI_SELECT()) %>
-										</SELECT>
-									</td>
-								</tr>
-								<tr>
-									<td>
 										<span class="sigp2Mandatory"> Grade : </span>
 									</td>
 									<td align="left">
@@ -714,7 +690,6 @@
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
-			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_DIPLOME()%>">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_NIVEAU_ETUDE()%>">						
 			<%=process.getUrlFichier()%>
 		</FORM>
