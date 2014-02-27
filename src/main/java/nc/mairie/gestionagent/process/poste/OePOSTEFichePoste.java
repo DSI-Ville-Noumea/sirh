@@ -543,7 +543,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getListeNatureCredit() != null) {
 				for (int i = 0; i < getListeNatureCredit().size(); i++) {
 					NatureCredit b = (NatureCredit) getListeNatureCredit().get(i);
-					if (b.getIdNatureCredit().equals(getFichePosteCourante().getIdNatureCredit())) {
+					if (b.getIdNatureCredit().toString().equals(getFichePosteCourante().getIdNatureCredit())) {
 						addZone(getNOM_LB_NATURE_CREDIT_SELECT(), String.valueOf(i));
 						break;
 					}
