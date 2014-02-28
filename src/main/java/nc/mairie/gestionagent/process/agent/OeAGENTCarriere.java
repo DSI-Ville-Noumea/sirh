@@ -2677,8 +2677,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			// motif de l'avancement
 			MotifAvancement motif = null;
 			if (gradeActuel.getCodeTava() != null && !gradeActuel.getCodeTava().equals(Const.CHAINE_VIDE)) {
-				motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
-						gradeActuel.getCodeTava());
+				motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeActuel.getCodeTava());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -2688,6 +2687,9 @@ public class OeAGENTCarriere extends BasicProcess {
 			// on indique que les champs des fonctionnaires ne sont pas à
 			// afficher
 			showAccBM = true;
+		} else {
+			addZone(getNOM_ST_INFO_AVCT_PREV(),
+					"Le grade actuel de cet agent n'a pas de grade suivant, nous ne pouvons calculer son avancement.");
 		}
 		return true;
 	}
@@ -3155,5 +3157,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public String getVAL_ST_TYPE_AVCT() {
 		return getZone(getNOM_ST_TYPE_AVCT());
+	}
+
+	public String getNOM_ST_INFO_AVCT_PREV() {
+		return "NOM_ST_INFO_AVCT_PREV";
+	}
+
+	public String getVAL_ST_INFO_AVCT_PREV() {
+		return getZone(getNOM_ST_INFO_AVCT_PREV());
 	}
 }

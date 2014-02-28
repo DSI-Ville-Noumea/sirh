@@ -110,7 +110,13 @@ function reduireHierarchy() {
           		<BR/><BR/><BR/>
 				<INPUT type="submit" value="Lancer" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_LANCER()%>">
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_CHANGER_ANNEE()%>">
-				<BR>
+				<BR><BR>
+		    
+				<% if (!process.agentEnErreurHautGrille.equals("")){ %>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreur %></span>
+					<BR/><BR/> 
+					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
+				<%} %>
 			</FIELDSET>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">

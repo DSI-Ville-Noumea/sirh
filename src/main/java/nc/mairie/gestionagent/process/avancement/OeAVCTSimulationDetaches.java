@@ -50,6 +50,8 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 	public String focus = null;
 	public String ACTION_CALCUL = "Calcul";
 
+	public String agentEnErreur = Const.CHAINE_VIDE;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -515,6 +517,10 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
+				}else{
+					//on informe les agents en erreur
+					agentEnErreur += a.getNomAgent() + " " + a.getPrenomAgent() + " ("
+							+ a.getNoMatricule() + "); ";
 				}
 			}
 		}

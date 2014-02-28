@@ -68,6 +68,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	public String ACTION_CALCUL = "Calcul";
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
+	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -878,6 +879,10 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
+				} else {
+					// on informe les agents en erreur
+					agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " (" + a.getNoMatricule()
+							+ "); ";
 				}
 			}
 		}

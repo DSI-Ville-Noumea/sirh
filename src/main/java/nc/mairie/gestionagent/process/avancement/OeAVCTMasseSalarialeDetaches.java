@@ -62,6 +62,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 	private ArrayList<AvancementDetaches> listeAvct;
 	public String agentEnErreur = Const.CHAINE_VIDE;
+	public String agentEnErreurHautGrille = Const.CHAINE_VIDE;
 
 	public String ACTION_CALCUL = "Calcul";
 
@@ -1596,6 +1597,10 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
+				}else{
+					//on informe les agents en erreur
+					agentEnErreurHautGrille += a.getNomAgent() + " " + a.getPrenomAgent() + " ("
+							+ a.getNoMatricule() + "); ";
 				}
 			}
 		}
