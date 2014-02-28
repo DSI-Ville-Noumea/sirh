@@ -113,7 +113,7 @@ function reduireHierarchy() {
 				<BR><BR>
 		    
 				<% if (!process.agentEnErreurHautGrille.equals("")){ %>
-					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreur %></span>
+					<span style="color: red;" class="sigp2Mandatory">Agents en anomalies :<br/><br/> <%=process.agentEnErreurHautGrille %></span>
 					<BR/><BR/> 
 					<span style="color: red;" class="sigp2Mandatory">Pour ces agents, un avancement n'a pu être calculé car ils sont en haut de grille.</span>
 				<%} %>
