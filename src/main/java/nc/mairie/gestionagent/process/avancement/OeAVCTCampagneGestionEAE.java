@@ -394,68 +394,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		logger.info("Entree dans le calcul avec les paramètres : idCampagneEAE=" + idCampagneEAE.toString()
 				+ ", annee=" + anneeCampagne.toString());
 
-		// ON ENELEVE CETTE PARTIE CAR SI L'EAE a été saisi dans le KIOSQUE
-		// ALORS ON A DES GROS SOUCIS EN BASE :cf JIRA SIRH-232
-		// Suppression des eae à l'état 'Non Affecté' de la campagne donnée
-		// et des evaluateurs associés
-		/*
-		 * ArrayList<EAE> listeEaeNonAffASupprimer =
-		 * getEaeDao().listerEAETravailPourCampagne
-		 * (EnumEtatEAE.NON_AFFECTE.getCode(), idCampagneEAE); for (int i = 0; i
-		 * < listeEaeNonAffASupprimer.size(); i++) { EAE eaeASupp =
-		 * listeEaeNonAffASupprimer.get(i); ArrayList<EaeEvaluateur>
-		 * listeEvalEae =
-		 * getEaeEvaluateurDao().listerEvaluateurEAE(eaeASupp.getIdEAE()); for
-		 * (int j = 0; j < listeEvalEae.size(); j++) { EaeEvaluateur eval =
-		 * listeEvalEae.get(j);
-		 * getEaeEvaluateurDao().supprimerEaeEvaluateur(eval
-		 * .getIdEaeEvaluateur()); } ArrayList<EaeFichePoste> listeEaeFichePoste
-		 * =
-		 * getEaeFichePosteDao().chercherEaeFichePosteIdEae(eaeASupp.getIdEAE()
-		 * ); for (int j = 0; j < listeEaeFichePoste.size(); j++) {
-		 * EaeFichePoste eaeFDP = listeEaeFichePoste.get(j);
-		 * ArrayList<EaeFDPActivite> listeActiFDP =
-		 * getEaeFDPActiviteDao().listerEaeFDPActivite
-		 * (eaeFDP.getIdEaeFichePoste()); for (int k = 0; k <
-		 * listeActiFDP.size(); k++) { EaeFDPActivite acti =
-		 * listeActiFDP.get(k);
-		 * getEaeFDPActiviteDao().supprimerEaeFDPActivite(acti
-		 * .getIdEaeFDPActivite()); } ArrayList<EaeFDPCompetence> listeCompFDP =
-		 * getEaeFDPCompetenceDao
-		 * ().listerEaeFDPCompetence(eaeFDP.getIdEaeFichePoste()); for (int k =
-		 * 0; k < listeCompFDP.size(); k++) { EaeFDPCompetence comp =
-		 * listeCompFDP.get(k);
-		 * getEaeFDPCompetenceDao().supprimerEaeFDPCompetence
-		 * (comp.getIdEaeFDPCompetence()); }
-		 * getEaeFichePosteDao().supprimerEaeFichePoste
-		 * (eaeFDP.getIdEaeFichePoste()); } // on supprime l'evalue EaeEvalue
-		 * evalue = getEaeEvalueDao().chercherEaeEvalue(eaeASupp.getIdEAE());
-		 * getEaeEvalueDao().supprimerEaeEvalue(evalue.getIdEaeEvalue());
-		 * 
-		 * // on supprime les diplomes ArrayList<EaeDiplome> listeEaeDiplome =
-		 * getEaeDiplomeDao().listerEaeDiplome(eaeASupp.getIdEAE()); for (int j
-		 * = 0; j < listeEaeDiplome.size(); j++) { EaeDiplome dip =
-		 * listeEaeDiplome.get(j);
-		 * getEaeDiplomeDao().supprimerEaeDiplome(dip.getIdEaeDiplome()); }
-		 * 
-		 * // on supprime les parcours pro ArrayList<EaeParcoursPro>
-		 * listeEaeParcoursPro =
-		 * getEaeParcoursProDao().listerEaeParcoursPro(eaeASupp.getIdEAE()); for
-		 * (int j = 0; j < listeEaeParcoursPro.size(); j++) { EaeParcoursPro
-		 * parcours = listeEaeParcoursPro.get(j);
-		 * getEaeParcoursProDao().supprimerEaeParcoursPro
-		 * (parcours.getIdEaeParcoursPro()); }
-		 * 
-		 * // on supprime les formations ArrayList<EaeFormation>
-		 * listeEaeFormation =
-		 * getEaeFormationDao().listerEaeFormation(eaeASupp.getIdEAE()); for
-		 * (int j = 0; j < listeEaeFormation.size(); j++) { EaeFormation form =
-		 * listeEaeFormation.get(j);
-		 * getEaeFormationDao().supprimerEaeFormation(form.getIdEaeFormation());
-		 * } // on supprime l'EAE getEaeDao().supprimerEAE(eaeASupp.getIdEAE());
-		 * } logger.info("fin des suppressions");
-		 */
-
 		// Calcul des personnes soumises à l'EAE
 		// on cherche toutes les personnes en affectation sur une FDP sur
 		// l'année de la campagne
@@ -1676,22 +1614,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (13/07/11 09:49:02)
-	 * 
-	 * 
-	 */
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (25/03/03 15:33:11)
-	 * 
-	 */
 	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT(HttpServletRequest request, int idEae) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
 		// On enlève l'agent selectionnée
@@ -2154,7 +2076,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				}
 
-				if (modeCreation) {
+				if (modeCreation || fpModif.getIdEaeFichePoste() == null) {
 					// on créer la ligne
 					// on recupere l'id
 					Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
@@ -2741,7 +2663,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			evalAModif.setAgentAffecte(agentAffecte);
-			if (modeCreation) {
+			if (modeCreation || evalAModif.getIdEaeEvalue() == null) {
 				// enfin on créer la ligne
 				getEaeEvalueDao().creerEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
 						evalAModif.getDateEntreeService(), evalAModif.getDateEntreeCollectivite(),
