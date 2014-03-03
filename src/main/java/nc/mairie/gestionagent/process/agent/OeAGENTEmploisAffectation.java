@@ -1,8 +1,10 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -10,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -28,18 +29,12 @@ import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.carriere.Grade;
-import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.parametrage.MotifAffectation;
 import nc.mairie.metier.parametrage.NatureAvantage;
-import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
-import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
-import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.Budget;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoFichePoste;
@@ -68,17 +63,28 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTEmploisAffectation Date de création : (04/08/11 15:20:56)
  * 
  */
 public class OeAGENTEmploisAffectation extends BasicProcess {
+
+	private Logger logger = LoggerFactory.getLogger(OeAGENTEmploisAffectation.class);
 	/**
 	 * 
 	 */
@@ -257,133 +263,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
 		setURLFichier(getScriptOuverture(repertoireStockage + "NS" + destination));
-	}
-
-	private void creerModeleDocumentFP(String repertoire, String modele, String destination, String idFichePoste)
-			throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire(repertoire);
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.resolveFile(modele);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		AgentNW a = getAgentCourant();
-		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), idFichePoste);
-		// Carriere
-		String gradeTitulaire = Const.CHAINE_VIDE;
-		ArrayList<Carriere> carrieres = Carriere.listerCarriereAvecAgent(getTransaction(), a);
-		if (carrieres.size() > 0) {
-			Grade grade = Grade.chercherGrade(getTransaction(), carrieres.get(carrieres.size() - 1).getCodeGrade());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			gradeTitulaire += grade.getGrade().replace("°", "eme");
-
-		}
-		// on recupère les champs liés à la FP
-		FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
-		TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
-		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
-		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-		String titrePoste = tp.getLibTitrePoste();
-		String lieuPoste = eg.getLibEntiteGeo();
-		String libService = s.getLibService();
-		String missions = fp.getMissions();
-		String grade = g.getGrade();
-		String responsable = tpResponsable.getLibTitrePoste();
-		String tachesPrincipales = Const.CHAINE_VIDE;
-		// activites principales
-		ArrayList<Activite> lActi = Activite.listerActiviteAvecFP(getTransaction(), fp);
-		for (Activite acti : lActi) {
-			tachesPrincipales += acti.getNomActivite();
-		}
-		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(),
-				fp.getIdBudget()).getLibBudget();
-		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
-		String budgete = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorBud()).getLibHor();
-
-		// on recupère les champs liés à l'agent
-		String prenom = a.getPrenomAgent().toLowerCase();
-		String premLettre = prenom.substring(0, 1).toUpperCase();
-		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
-		prenom = premLettre + restePrenom;
-		String nom = a.getNomAgent().toUpperCase();
-		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame"
-				: "Mademoiselle";
-		String dateNaiss = a.getCivilite().equals("0") ? "ne le " + a.getDateNaissance() : "nee le "
-				+ a.getDateNaissance();
-		String embauche = a.getCivilite().equals("0") ? "embauche le " + a.getDateDerniereEmbauche() : "embauchee le "
-				+ a.getDateDerniereEmbauche() + ".";
-		String titulaire = civilite + " " + prenom + " " + nom + " (" + a.getNoMatricule() + ") " + dateNaiss + " "
-				+ embauche;
-
-		// on récupère les diplomes de l'agent
-		ArrayList<DiplomeAgent> diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
-		String listeDiplome = Const.CHAINE_VIDE;
-		for (Iterator<DiplomeAgent> iter = diplomesAgent.iterator(); iter.hasNext();) {
-			DiplomeAgent da = (DiplomeAgent) iter.next();
-			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
-			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(),
-					da.getIdSpecialiteDiplome());
-			listeDiplome += td.getLibTitreDiplome() + " " + sd.getLibSpeDiplome() + ",";
-		}
-		if (!listeDiplome.equals(Const.CHAINE_VIDE)) {
-			listeDiplome = listeDiplome.substring(0, listeDiplome.length() - 1);
-		}
-
-		// tant qu'il y a des lignes
-		while ((ligne = in.readLine()) != null) {
-			// je fais mon traitement
-			ligne = StringUtils.replace(ligne, "$_NUMERO_FP", fp.getNumFP());
-			ligne = StringUtils.replace(ligne, "$_BUDGET_POSTE", budget);
-			ligne = StringUtils.replace(ligne, "$_ANNEE", fp.getAnneeCreation());
-			ligne = StringUtils.replace(ligne, "$_NFA", fp.getNFA());
-			ligne = StringUtils.replace(ligne, "$_OPI", fp.getOPI() == null ? Const.CHAINE_VIDE : fp.getOPI());
-			ligne = StringUtils.replace(ligne, "$_REGLEMENTAIRE", reglementaire);
-			ligne = StringUtils.replace(ligne, "$_BUDGETE", budgete);
-			ligne = StringUtils.replace(ligne, "$_TITRE_POSTE", titrePoste);
-			ligne = StringUtils.replace(ligne, "$_LIEU_POSTE", lieuPoste);
-			ligne = StringUtils.replace(ligne, "$_SERVICE", libService.replace("&", "et"));
-			ligne = StringUtils.replace(ligne, "$_MISSION", missions);
-			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
-			ligne = StringUtils.replace(ligne, "$_RESPONSABLE", responsable);
-			ligne = StringUtils.replace(ligne, "$_TITULAIRE", titulaire);
-			ligne = StringUtils.replace(ligne, "$_DIPLOMES", listeDiplome);
-			ligne = StringUtils.replace(ligne, "$_TACHES_PRINCIPALES", tachesPrincipales);
-			ligne = StringUtils.replace(ligne, "$_GRADE_TITULAIRE", gradeTitulaire);
-			ligne = StringUtils.replace(ligne, "$_DATE_JOUR", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-
-			out.write(ligne);
-		}
-
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
 	}
 
 	/**
@@ -4645,35 +4524,50 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	}
 
 	private boolean sauvegardeFDP(String idFichePoste) throws Exception {
+		// on verifie que les repertoires existent
+		verifieRepertoire("SauvegardeFDP");
 
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
-		String destination = "SauvegardeFDP/SauvFP_" + idFichePoste + "_" + dateJour + ".xml";
+		String destinationFDP = "SauvegardeFDP/SauvFP_" + idFichePoste + "_" + dateJour + ".doc";
 
-		String modele = "ModeleFP.xml";
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_FICHEPOSTE");
+		try {
+			byte[] fileAsBytes = getFDPReportAsByteArray(idFichePoste);
 
-		creerModeleDocumentFP("SauvegardeFDP", repModeles + modele, repPartage + destination, idFichePoste);
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 
-		// Tout s'est bien passé
-		// on crée le document en base de données
-		Document d = new Document();
-		d.setIdTypeDocument("1");
-		d.setLienDocument(destination);
-		d.setNomDocument("SauvFP_" + idFichePoste + "_" + dateJour + ".xml");
-		d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
-		d.setCommentaire("Sauvegarde automatique lors création affectation.");
-		d.creerDocument(getTransaction());
+			// Tout s'est bien passé
+			// on crée le document en base de données
+			Document d = new Document();
+			d.setIdTypeDocument("1");
+			d.setLienDocument(destinationFDP);
+			d.setNomDocument("SauvFP_" + idFichePoste + "_" + dateJour + ".doc");
+			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setCommentaire("Sauvegarde automatique lors création affectation.");
+			d.creerDocument(getTransaction());
 
-		LienDocumentAgent lda = new LienDocumentAgent();
-		lda.setIdAgent(getAgentCourant().getIdAgent());
-		lda.setIdDocument(d.getIdDocument());
-		lda.creerLienDocumentAgent(getTransaction());
+			LienDocumentAgent lda = new LienDocumentAgent();
+			lda.setIdAgent(getAgentCourant().getIdAgent());
+			lda.setIdDocument(d.getIdDocument());
+			lda.creerLienDocumentAgent(getTransaction());
 
-		if (getTransaction().isErreur())
+			if (getTransaction().isErreur())
+				return false;
+
+			commitTransaction();
+
+		} catch (Exception e) {
+			// "ERR185",
+			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
+		}
 
-		commitTransaction();
 		return true;
 	}
 
@@ -5160,6 +5054,75 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setListeRegimeASupprimer(ArrayList<RegimeIndemnitaire> listeRegimeASupprimer) {
 		this.listeRegimeASupprimer = listeRegimeASupprimer;
+	}
+
+	private byte[] getFDPReportAsByteArray(String idFichePoste) throws Exception {
+
+		ClientResponse response = createAndFireRequest(idFichePoste);
+
+		return readResponseAsByteArray(response);
+	}
+
+	public ClientResponse createAndFireRequest(String idFichePoste) {
+		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
+				+ idFichePoste;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWSArretes);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject docFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (docFile != null) {
+				try {
+					docFile.close();
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			logger.error(String.format("An error occured while writing the report file to the following path  : "
+					+ chemin + filename + " : " + e));
+			return false;
+		}
+		return true;
 	}
 
 }

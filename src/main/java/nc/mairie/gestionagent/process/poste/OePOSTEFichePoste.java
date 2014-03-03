@@ -1,12 +1,8 @@
 package nc.mairie.gestionagent.process.poste;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -32,7 +28,6 @@ import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
-import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
@@ -81,13 +76,19 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OePOSTEFichePoste Date de création : (07/07/11 10:59:29)
@@ -2293,37 +2294,51 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private boolean sauvegardeFDP() throws Exception {
+		// on verifie que les repertoires existent
+		verifieRepertoire("SauvegardeFDP");
+
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
-		String destination = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour
-				+ ".xml";
+		String destinationFDP = "SauvegardeFDP/SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour
+				+ ".doc";
 
-		String modele = "ModeleFP.xml";
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_FICHEPOSTE");
+		try {
+			byte[] fileAsBytes = getFDPReportAsByteArray(getFichePosteCourante().getIdFichePoste());
 
-		creerModeleDocumentFP("SauvegardeFDP", repModeles + modele, repPartage + destination, getFichePosteCourante()
-				.getIdFichePoste());
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 
-		// Tout s'est bien passé
-		// on crée le document en base de données
-		Document d = new Document();
-		d.setIdTypeDocument("1");
-		d.setLienDocument(destination);
-		d.setNomDocument("SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".xml");
-		d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
-		d.setCommentaire("Sauvegarde automatique lors modification FDP.");
-		d.creerDocument(getTransaction());
+			// Tout s'est bien passé
+			// on crée le document en base de données
+			Document d = new Document();
+			d.setIdTypeDocument("1");
+			d.setLienDocument(destinationFDP);
+			d.setNomDocument("SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc");
+			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setCommentaire("Sauvegarde automatique lors modification FDP.");
+			d.creerDocument(getTransaction());
 
-		LienDocumentAgent lda = new LienDocumentAgent();
-		lda.setIdAgent(getAgentCourant().getIdAgent());
-		lda.setIdDocument(d.getIdDocument());
-		lda.creerLienDocumentAgent(getTransaction());
+			LienDocumentAgent lda = new LienDocumentAgent();
+			lda.setIdAgent(getAgentCourant().getIdAgent());
+			lda.setIdDocument(d.getIdDocument());
+			lda.creerLienDocumentAgent(getTransaction());
 
-		if (getTransaction().isErreur()) {
+			if (getTransaction().isErreur()) {
+				return false;
+			}
+
+			commitTransaction();
+
+		} catch (Exception e) {
+			// "ERR185",
+			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
 		}
-
-		commitTransaction();
 		return true;
 	}
 
@@ -4952,19 +4967,40 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
-		imprimeModele(request);
+		if (!imprimeModele(request)) {
+			return false;
+		}
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
+		// on verifie que les repertoires existent
+		verifieRepertoire("FichePosteVierge");
+
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String destination = repPartage + "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".xml";
+		String destinationFDP = "FichePosteVierge/FP_" + getFichePosteCourante().getIdFichePoste() + ".doc";
 
-		String modele = "ModeleFP_Vierge.xml";
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_FICHEPOSTE");
+		try {
+			byte[] fileAsBytes = getFDPReportAsByteArray(getFichePosteCourante().getIdFichePoste());
 
-		creerModeleDocument("FichePosteVierge", repModeles + modele, destination);
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destinationFDP)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
+
+			destinationFDP = destinationFDP.substring(destinationFDP.lastIndexOf("/"), destinationFDP.length());
+			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+			setURLFichier(getScriptOuverture(repertoireStockage + "FichePosteVierge" + destinationFDP));
+
+		} catch (Exception e) {
+			// "ERR185",
+			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+			return false;
+		}
 		return true;
 	}
 
@@ -4980,539 +5016,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (!ssDossier.exists()) {
 			ssDossier.mkdir();
 		}
-	}
-
-	private void creerModeleDocument(String repertoire, String modele, String destination) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire(repertoire);
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.resolveFile(modele);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		FichePoste fp = getFichePosteCourante();
-
-		// requete necessaire
-		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
-		FiliereGrade fi = null;
-		CadreEmploi cadreEmp = null;
-		if (gg != null && gg.getIdCadreEmploi() != null) {
-			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-		}
-		if (gg != null && gg.getCdfili() != null) {
-			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
-		}
-		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
-		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-
-		// partie concernant le statut
-		String statutFP = Const.CHAINE_VIDE;
-		StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP());
-		statutFP = statut.getLibStatutFP();
-
-		// partie concernant le service
-		String lieuPoste = eg.getLibEntiteGeo();
-		String libService = s.getLibService();
-
-		// partie concernant le grade,cadre emploi...
-		String grade = g.getGrade();
-		String categorie = gg.getCodCadre();
-		String filiere = Const.CHAINE_VIDE;
-		if (fi != null && fi.getLibFiliere() != null) {
-			filiere = fi.getLibFiliere();
-		}
-		String cadreEmploiAffiche = Const.CHAINE_VIDE;
-		if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
-			cadreEmploiAffiche = cadreEmp.getLibCadreEmploi();
-		}
-
-		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
-		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
-		String niveauEtude = nivEtu.getLibNiveauEtude();
-
-		// partie concernant l'emploi
-		String emploiPrimaire = Const.CHAINE_VIDE;
-		if (getEmploiPrimaire() != null) {
-			emploiPrimaire = getEmploiPrimaire().getRefMairie();
-		}
-		String emploiSecondaire = Const.CHAINE_VIDE;
-		if (getEmploiSecondaire() != null) {
-			emploiSecondaire = getEmploiSecondaire().getRefMairie();
-		}
-		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(),
-				fp.getIdBudget()).getLibBudget();
-
-		// partie concernant le temps de travail du poste
-		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
-		String budgete = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorBud()).getLibHor();
-
-		// partie concernant le poste
-		// titulaire
-		String titulaireMatr = Const.CHAINE_VIDE;
-		String titulaireNom = "Poste vacant.";
-		String dateAff = Const.CHAINE_VIDE;
-		if (getAgentCourant() != null) {
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
-					.getIdAgent());
-			if (aff != null && aff.getIdAffectation() != null) {
-				String prenomTitulaire = getAgentCourant().getPrenomAgent().toLowerCase();
-				String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
-				String restePrenomTitulaire = prenomTitulaire.substring(1, prenomTitulaire.length()).toLowerCase();
-				prenomTitulaire = premLettreTitulaire + restePrenomTitulaire;
-				String nomTitulaire = getAgentCourant().getNomAgent().toUpperCase();
-				titulaireNom = prenomTitulaire + " " + nomTitulaire;
-				titulaireMatr = getAgentCourant().getNoMatricule();
-				dateAff = aff.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le "
-						+ aff.getDateDebutAff();
-			}
-		}
-
-		// responsable hierarchique
-		String respFP = Const.CHAINE_VIDE;
-		String respTitreFP = Const.CHAINE_VIDE;
-		String respMatr = Const.CHAINE_VIDE;
-		String respNom = Const.CHAINE_VIDE;
-		if (fp.getIdResponsable() != null) {
-			FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
-			TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
-			if (getAgtResponsable() != null) {
-				respMatr = getAgtResponsable().getNoMatricule();
-				String prenomResponsable = getAgtResponsable().getPrenomAgent().toLowerCase();
-				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
-				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length())
-						.toLowerCase();
-				prenomResponsable = premLettreResponsable + restePrenomResponsable;
-				String nom = getAgtResponsable().getNomAgent().toUpperCase();
-				respNom = prenomResponsable + " " + nom;
-			}
-			respFP = fpResponsable.getNumFP();
-			respTitreFP = tpResponsable.getLibTitrePoste();
-		}
-		// FDP remplacée
-		String rempFP = Const.CHAINE_VIDE;
-		String rempTitreFP = Const.CHAINE_VIDE;
-		String rempMatr = Const.CHAINE_VIDE;
-		String rempNom = Const.CHAINE_VIDE;
-		if (fp.getIdRemplacement() != null) {
-			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
-			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(),
-					fpRemplacement.getIdTitrePoste());
-			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(),
-					fp.getIdRemplacement());
-			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
-				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
-				rempMatr = agentRemplacement.getNoMatricule();
-				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
-				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
-				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length())
-						.toLowerCase();
-				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
-				String nom = agentRemplacement.getNomAgent().toUpperCase();
-				rempNom = prenomRemplacement + " " + nom;
-			}
-			rempFP = fpRemplacement.getNumFP();
-			rempTitreFP = tpRemplacement.getLibTitrePoste();
-
-		}
-		String titrePoste = tp.getLibTitrePoste();
-
-		// partie concernant la mission
-		String missions = fp.getMissions();
-
-		// partie concernant les activites
-		String activites = Const.CHAINE_VIDE;
-		ArrayList<Activite> lActi = Activite.listerActiviteAvecFP(getTransaction(), fp);
-		for (Activite acti : lActi) {
-			activites += acti.getNomActivite() + "<w:br />";
-		}
-		if (activites.length() > 8) {
-			activites = activites.substring(0, activites.length() - 8);
-		}
-
-		// partie concernant les competences
-		String competences = Const.CHAINE_VIDE;
-		ArrayList<Competence> lComp = Competence.listerCompetenceAvecFP(getTransaction(), fp);
-		for (Competence comp : lComp) {
-			TypeCompetence tc = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
-			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence() + ")<w:br />";
-		}
-		if (competences.length() > 8) {
-			competences = competences.substring(0, competences.length() - 8);
-		}
-
-		// Partie concernant les avantages nature
-		String natureAvantage = Const.CHAINE_VIDE;
-		String libelleAvantage = Const.CHAINE_VIDE;
-		String montantAvantage = Const.CHAINE_VIDE;
-		// Partie concernant les delegations
-		String typeDelegation = Const.CHAINE_VIDE;
-		String libelleDelegation = Const.CHAINE_VIDE;
-		// Partie concernant les regimes indemnitaires
-		String typeRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String rubriqueRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String montantRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String nbPointsRegimeIndemnitaire = Const.CHAINE_VIDE;
-
-		// tant qu'il y a des lignes
-		while ((ligne = in.readLine()) != null) {
-			// je fais mon traitement
-			// statut
-			ligne = StringUtils.replace(ligne, "$_STATUT", statutFP);
-			// service
-			ligne = StringUtils.replace(ligne, "$_LIEU_POSTE", lieuPoste);
-			ligne = StringUtils.replace(ligne, "$_SERVICE", libService.replace("&", "et"));
-			// cadre emploi,grade..
-			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
-			ligne = StringUtils.replace(ligne, "$_CATEGORIE_POSTE", categorie);
-			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
-			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
-			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
-			// emploi
-			ligne = StringUtils.replace(ligne, "$_FE_PRIMAIRE", emploiPrimaire);
-			ligne = StringUtils.replace(ligne, "$_FE_SECONDAIRE", emploiSecondaire);
-			ligne = StringUtils.replace(ligne, "$_BUDGET_POSTE", budget);
-			ligne = StringUtils.replace(ligne, "$_ANNEE", fp.getAnneeCreation());
-			ligne = StringUtils.replace(ligne, "$_NFA", fp.getNFA());
-			ligne = StringUtils.replace(ligne, "$_OPI", fp.getOPI() == null ? Const.CHAINE_VIDE : fp.getOPI());
-			// temps travail
-			ligne = StringUtils.replace(ligne, "$_REGLEMENTAIRE", reglementaire);
-			ligne = StringUtils.replace(ligne, "$_BUDGETE", budgete);
-			// poste
-			ligne = StringUtils.replace(ligne, "$_TITRE_POSTE", titrePoste);
-			ligne = StringUtils.replace(ligne, "$_RESP_FP", respFP);
-			ligne = StringUtils.replace(ligne, "$_RESP_TITRE_FP", respTitreFP);
-			ligne = StringUtils.replace(ligne, "$_RESP_MATR", respMatr);
-			ligne = StringUtils.replace(ligne, "$_RESP_NOM", respNom);
-			ligne = StringUtils.replace(ligne, "$_REMP_FP", rempFP);
-			ligne = StringUtils.replace(ligne, "$_REMP_TITRE_FP", rempTitreFP);
-			ligne = StringUtils.replace(ligne, "$_REMP_MATR", rempMatr);
-			ligne = StringUtils.replace(ligne, "$_REMP_NOM", rempNom);
-			ligne = StringUtils.replace(ligne, "$_TITU_MATR", titulaireMatr);
-			ligne = StringUtils.replace(ligne, "$_TITU_NOM", titulaireNom);
-			ligne = StringUtils.replace(ligne, "$_DATE_AFF", dateAff);
-			// mission
-			ligne = StringUtils.replace(ligne, "$_MISSION", missions);
-			// activites
-			ligne = StringUtils.replace(ligne, "$_ACTIVITE", activites);
-			// competences
-			ligne = StringUtils.replace(ligne, "$_COMPETENCE", competences);
-			// specificites
-			ligne = StringUtils.replace(ligne, "$_NATURE_AV", natureAvantage);
-			ligne = StringUtils.replace(ligne, "$_LIB_AV", libelleAvantage);
-			ligne = StringUtils.replace(ligne, "$_MNT_AV", montantAvantage);
-			ligne = StringUtils.replace(ligne, "$_TYPE_DEL", typeDelegation);
-			ligne = StringUtils.replace(ligne, "$_LIB_DEL", libelleDelegation);
-			ligne = StringUtils.replace(ligne, "$_TYPE_REG", typeRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_RUBR_REG", rubriqueRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_MNT_REG", montantRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_PTS_REG", nbPointsRegimeIndemnitaire);
-
-			ligne = StringUtils.replace(ligne, "$_NUMERO_FP", fp.getNumFP());
-
-			out.write(ligne);
-		}
-
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + repertoire + destination));
-	}
-
-	private void creerModeleDocumentFP(String repertoire, String modele, String destination, String idFichePoste)
-			throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire(repertoire);
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.resolveFile(modele);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), idFichePoste);
-
-		// requete necessaire
-		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
-		CadreEmploi cadreEmp = null;
-		FiliereGrade fi = null;
-		if (gg != null && gg.getIdCadreEmploi() != null) {
-			cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
-		}
-		if (gg != null && gg.getCdfili() != null) {
-			fi = FiliereGrade.chercherFiliereGrade(getTransaction(), gg.getCdfili());
-		}
-		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
-		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-
-		// partie concernant le statut
-		String statutFP = Const.CHAINE_VIDE;
-		StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP());
-		statutFP = statut.getLibStatutFP();
-
-		// partie concernant le service
-		String lieuPoste = eg.getLibEntiteGeo();
-		String libService = s.getLibService();
-
-		// partie concernant le grade,cadre emploi...
-		String grade = g.getGrade();
-		String categorie = gg.getCodCadre();
-		String filiere = Const.CHAINE_VIDE;
-		if (fi != null && fi.getLibFiliere() != null) {
-			filiere = fi.getLibFiliere();
-		}
-
-		String cadreEmploiAffiche = Const.CHAINE_VIDE;
-		if (cadreEmp != null && cadreEmp.getIdCadreEmploi() != null) {
-			cadreEmploiAffiche = cadreEmp.getLibCadreEmploi();
-		}
-
-		NiveauEtudeFP nivEtuFP = NiveauEtudeFP.chercherNiveauEtudeAvecFP(getTransaction(), fp.getIdFichePoste());
-		NiveauEtude nivEtu = NiveauEtude.chercherNiveauEtude(getTransaction(), nivEtuFP.getIdNiveauEtude());
-		String niveauEtude = nivEtu.getLibNiveauEtude();
-
-		// partie concernant l'emploi
-		String emploiPrimaire = Const.CHAINE_VIDE;
-		if (getEmploiPrimaire() != null) {
-			emploiPrimaire = getEmploiPrimaire().getRefMairie();
-		}
-		String emploiSecondaire = Const.CHAINE_VIDE;
-		if (getEmploiSecondaire() != null) {
-			emploiSecondaire = getEmploiSecondaire().getRefMairie();
-		}
-		String budget = fp.getIdBudget() == null ? Const.CHAINE_VIDE : Budget.chercherBudget(getTransaction(),
-				fp.getIdBudget()).getLibBudget();
-
-		// partie concernant le temps de travail du poste
-		String reglementaire = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorReg()).getLibHor();
-		String budgete = Horaire.chercherHoraire(getTransaction(), fp.getIdCdthorBud()).getLibHor();
-
-		// partie concernant le poste
-		// titulaire
-		String titulaireMatr = Const.CHAINE_VIDE;
-		String titulaireNom = "Poste vacant.";
-		String dateAff = Const.CHAINE_VIDE;
-		if (getAgentCourant() != null) {
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
-					.getIdAgent());
-			AgentNW agent = null;
-			Affectation affAgent = null;
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
-				affAgent = aff;
-				agent = AgentNW.chercherAgent(getTransaction(), aff.getIdAgent());
-			}
-			if (agent != null) {
-				String prenomTitulaire = agent.getPrenomAgent().toLowerCase();
-				String premLettreTitulaire = prenomTitulaire.substring(0, 1).toUpperCase();
-				String restePrenomTitulaire = prenomTitulaire.substring(1, prenomTitulaire.length()).toLowerCase();
-				prenomTitulaire = premLettreTitulaire + restePrenomTitulaire;
-				String nomTitulaire = agent.getNomAgent().toUpperCase();
-				titulaireNom = prenomTitulaire + " " + nomTitulaire;
-				titulaireMatr = agent.getNoMatricule();
-			}
-			if (affAgent != null) {
-				dateAff = affAgent.getDateDebutAff() == null ? Const.CHAINE_VIDE : "Affecté depuis le "
-						+ affAgent.getDateDebutAff();
-			}
-		}
-		// responsable hierarchique
-		String respFP = Const.CHAINE_VIDE;
-		String respTitreFP = Const.CHAINE_VIDE;
-		String respMatr = Const.CHAINE_VIDE;
-		String respNom = Const.CHAINE_VIDE;
-		if (fp.getIdResponsable() != null) {
-			FichePoste fpResponsable = FichePoste.chercherFichePoste(getTransaction(), fp.getIdResponsable());
-			TitrePoste tpResponsable = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
-			Affectation affResponsable = Affectation.chercherAffectationAvecFP(getTransaction(), fp.getIdResponsable());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (affResponsable != null && affResponsable.getIdAgent() != null) {
-				AgentNW agentResponsable = AgentNW.chercherAgent(getTransaction(), affResponsable.getIdAgent());
-				respMatr = agentResponsable.getNoMatricule();
-				String prenomResponsable = agentResponsable.getPrenomAgent().toLowerCase();
-				String premLettreResponsable = prenomResponsable.substring(0, 1).toUpperCase();
-				String restePrenomResponsable = prenomResponsable.substring(1, prenomResponsable.length())
-						.toLowerCase();
-				prenomResponsable = premLettreResponsable + restePrenomResponsable;
-				String nom = agentResponsable.getNomAgent().toUpperCase();
-				respNom = prenomResponsable + " " + nom;
-			}
-			respFP = fpResponsable.getNumFP();
-			respTitreFP = tpResponsable.getLibTitrePoste();
-		}
-		// FDP remplacée
-		String rempFP = Const.CHAINE_VIDE;
-		String rempTitreFP = Const.CHAINE_VIDE;
-		String rempMatr = Const.CHAINE_VIDE;
-		String rempNom = Const.CHAINE_VIDE;
-		if (fp.getIdRemplacement() != null) {
-			FichePoste fpRemplacement = FichePoste.chercherFichePoste(getTransaction(), fp.getIdRemplacement());
-			TitrePoste tpRemplacement = TitrePoste.chercherTitrePoste(getTransaction(),
-					fpRemplacement.getIdTitrePoste());
-			Affectation affRemplacement = Affectation.chercherAffectationAvecFP(getTransaction(),
-					fp.getIdRemplacement());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (affRemplacement != null && affRemplacement.getIdAgent() != null) {
-				AgentNW agentRemplacement = AgentNW.chercherAgent(getTransaction(), affRemplacement.getIdAgent());
-				rempMatr = agentRemplacement.getNoMatricule();
-				String prenomRemplacement = agentRemplacement.getPrenomAgent().toLowerCase();
-				String premLettreRemplacement = prenomRemplacement.substring(0, 1).toUpperCase();
-				String restePrenomRemplacement = prenomRemplacement.substring(1, prenomRemplacement.length())
-						.toLowerCase();
-				prenomRemplacement = premLettreRemplacement + restePrenomRemplacement;
-				String nom = agentRemplacement.getNomAgent().toUpperCase();
-				rempNom = prenomRemplacement + " " + nom;
-
-			}
-			rempFP = fpRemplacement.getNumFP();
-			rempTitreFP = tpRemplacement.getLibTitrePoste();
-		}
-		String titrePoste = tp.getLibTitrePoste();
-
-		// partie concernant la mission
-		String missions = fp.getMissions();
-
-		// partie concernant les activites
-		String activites = Const.CHAINE_VIDE;
-		ArrayList<Activite> lActi = Activite.listerActiviteAvecFP(getTransaction(), fp);
-		for (Activite acti : lActi) {
-			activites += acti.getNomActivite() + "<w:br />";
-		}
-		if (activites.length() > 8) {
-			activites = activites.substring(0, activites.length() - 8);
-		}
-
-		// partie concernant les competences
-		String competences = Const.CHAINE_VIDE;
-		ArrayList<Competence> lComp = Competence.listerCompetenceAvecFP(getTransaction(), fp);
-		for (Competence comp : lComp) {
-			TypeCompetence tc = TypeCompetence.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
-			competences += comp.getNomCompetence() + " (" + tc.getLibTypeCompetence() + ")<w:br />";
-		}
-		if (competences.length() > 8) {
-			competences = competences.substring(0, competences.length() - 8);
-		}
-
-		// Partie concernant les avantages nature
-		String natureAvantage = Const.CHAINE_VIDE;
-		String libelleAvantage = Const.CHAINE_VIDE;
-		String montantAvantage = Const.CHAINE_VIDE;
-		// Partie concernant les delegations
-		String typeDelegation = Const.CHAINE_VIDE;
-		String libelleDelegation = Const.CHAINE_VIDE;
-		// Partie concernant les regimes indemnitaires
-		String typeRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String rubriqueRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String montantRegimeIndemnitaire = Const.CHAINE_VIDE;
-		String nbPointsRegimeIndemnitaire = Const.CHAINE_VIDE;
-
-		// tant qu'il y a des lignes
-		while ((ligne = in.readLine()) != null) {
-			// je fais mon traitement
-			// statut
-			ligne = StringUtils.replace(ligne, "$_STATUT", statutFP);
-			// service
-			ligne = StringUtils.replace(ligne, "$_LIEU_POSTE", lieuPoste);
-			ligne = StringUtils.replace(ligne, "$_SERVICE", libService.replace("&", "et"));
-			// cadre emploi,grade..
-			ligne = StringUtils.replace(ligne, "$_GRADE_POSTE", grade);
-			ligne = StringUtils.replace(ligne, "$_CATEGORIE_POSTE", categorie);
-			ligne = StringUtils.replace(ligne, "$_FILIERE_POSTE", filiere);
-			ligne = StringUtils.replace(ligne, "$_CADRE_EMPLOI", cadreEmploiAffiche);
-			ligne = StringUtils.replace(ligne, "$_NIVEAU_ETUDE", niveauEtude);
-			// emploi
-			ligne = StringUtils.replace(ligne, "$_FE_PRIMAIRE", emploiPrimaire);
-			ligne = StringUtils.replace(ligne, "$_FE_SECONDAIRE", emploiSecondaire);
-			ligne = StringUtils.replace(ligne, "$_BUDGET_POSTE", budget);
-			ligne = StringUtils.replace(ligne, "$_ANNEE", fp.getAnneeCreation());
-			ligne = StringUtils.replace(ligne, "$_NFA", fp.getNFA());
-			ligne = StringUtils.replace(ligne, "$_OPI", fp.getOPI() == null ? Const.CHAINE_VIDE : fp.getOPI());
-			// temps travail
-			ligne = StringUtils.replace(ligne, "$_REGLEMENTAIRE", reglementaire);
-			ligne = StringUtils.replace(ligne, "$_BUDGETE", budgete);
-			// poste
-			ligne = StringUtils.replace(ligne, "$_TITRE_POSTE", titrePoste);
-			ligne = StringUtils.replace(ligne, "$_RESP_FP", respFP);
-			ligne = StringUtils.replace(ligne, "$_RESP_TITRE_FP", respTitreFP);
-			ligne = StringUtils.replace(ligne, "$_RESP_MATR", respMatr);
-			ligne = StringUtils.replace(ligne, "$_RESP_NOM", respNom);
-			ligne = StringUtils.replace(ligne, "$_REMP_FP", rempFP);
-			ligne = StringUtils.replace(ligne, "$_REMP_TITRE_FP", rempTitreFP);
-			ligne = StringUtils.replace(ligne, "$_REMP_MATR", rempMatr);
-			ligne = StringUtils.replace(ligne, "$_REMP_NOM", rempNom);
-			ligne = StringUtils.replace(ligne, "$_TITU_MATR", titulaireMatr);
-			ligne = StringUtils.replace(ligne, "$_TITU_NOM", titulaireNom);
-			ligne = StringUtils.replace(ligne, "$_DATE_AFF", dateAff);
-			// mission
-			ligne = StringUtils.replace(ligne, "$_MISSION", missions);
-			// activites
-			ligne = StringUtils.replace(ligne, "$_ACTIVITE", activites);
-			// competences
-			ligne = StringUtils.replace(ligne, "$_COMPETENCE", competences);
-			// specificites
-			ligne = StringUtils.replace(ligne, "$_NATURE_AV", natureAvantage);
-			ligne = StringUtils.replace(ligne, "$_LIB_AV", libelleAvantage);
-			ligne = StringUtils.replace(ligne, "$_MNT_AV", montantAvantage);
-			ligne = StringUtils.replace(ligne, "$_TYPE_DEL", typeDelegation);
-			ligne = StringUtils.replace(ligne, "$_LIB_DEL", libelleDelegation);
-			ligne = StringUtils.replace(ligne, "$_TYPE_REG", typeRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_RUBR_REG", rubriqueRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_MNT_REG", montantRegimeIndemnitaire);
-			ligne = StringUtils.replace(ligne, "$_PTS_REG", nbPointsRegimeIndemnitaire);
-
-			ligne = StringUtils.replace(ligne, "$_NUMERO_FP", fp.getNumFP());
-
-			out.write(ligne);
-		}
-
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
 	}
 
 	private void setURLFichier(String scriptOuverture) {
@@ -6849,6 +6352,75 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		setFichePosteCourante(fiche);
 		setStatut(STATUT_RECHERCHE, true);
+		return true;
+	}
+
+	private byte[] getFDPReportAsByteArray(String idFichePoste) throws Exception {
+
+		ClientResponse response = createAndFireRequest(idFichePoste);
+
+		return readResponseAsByteArray(response);
+	}
+
+	public ClientResponse createAndFireRequest(String idFichePoste) {
+		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
+				+ idFichePoste;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWSArretes);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject docFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (docFile != null) {
+				try {
+					docFile.close();
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			logger.error(String.format("An error occured while writing the report file to the following path  : "
+					+ chemin + filename + " : " + e));
+			return false;
+		}
 		return true;
 	}
 }

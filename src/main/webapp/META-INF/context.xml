@@ -17,21 +17,21 @@
 	<!-- <Manager pathname="" /> -->
 	<!-- Uncomment this to enable Comet connection tacking (provides events 
 		on session expiration as well as webapp lifecycle) -->
-    <!--
-    <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
-    -->
+	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
+		/> -->
 	<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true" 
-		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1" 
-		validationInterval="30000" timeBetweenEvictionRunsMillis="30000" maxActive="300" 
-		maxIdle="30" maxWait="30000" initialSize="10" removeAbandonedTimeout="500" 
-		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" 
-		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
-		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="opensirh" 
-		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" /> 		
-		
-		<!--<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
+		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true"
+		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1"
+		validationInterval="30000" timeBetweenEvictionRunsMillis="30000"
+		maxActive="300" maxIdle="30" maxWait="30000" initialSize="10"
+		removeAbandonedTimeout="500" removeAbandoned="true" logAbandoned="true"
+		minEvictableIdleTimeMillis="30000" jmxEnabled="true"
+		jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
+		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
+		username="opensirh" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
+
+	<!--<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource" 
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true" 
 		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1" 
 		validationInterval="30000" timeBetweenEvictionRunsMillis="30000" maxActive="300" 
@@ -40,30 +40,29 @@
 		jmxEnabled="true" jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
 		org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" username="opensirh2" 
 		password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date format=iso;" 
-		/> -->
-		
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date 
+		format=iso;" /> -->
+
 	<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		validationQuery="select 1 from sysdummy1" validationInterval="30000"
-		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" 
+		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="opensirh" password="***REMOVED***" 
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
+		jmxEnabled="true" username="opensirh" password="***REMOVED***"
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;errors=full;date format=iso;" />
 
-	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource"
-		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
-		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-		validationQuery="select 1 from sysdummy1" validationInterval="30000"
-		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" 
-		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
-		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="opensirh2" password="***REMOVED***" 
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
-		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date format=iso;" />-->
+	<!--<Resource name="jdbc/SIRH_DS1" auth="Container" type="javax.sql.DataSource" 
+		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory" testWhileIdle="true" 
+		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1" 
+		validationInterval="30000" timeBetweenEvictionRunsMillis="30000" maxActive="300" 
+		maxIdle="30" maxWait="30000" initialSize="10" removeAbandonedTimeout="500" 
+		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" 
+		jmxEnabled="true" username="opensirh2" password="***REMOVED***" driverClassName="com.ibm.as400.access.AS400JDBCDriver" 
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date 
+		format=iso;" /> -->
 
 	<!-- Quand SIRH passera sous Oracle -->
 	<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver"
@@ -95,13 +94,13 @@
 		name="SIRH_WS_URL_ARRETES_AVCT" override="false"
 		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" />
 	<!-- WS DES POINTAGES -->
-	<Parameter description="SIRH PTG WS url"
-		name="SIRH_PTG_WS" override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
+	<Parameter description="SIRH PTG WS url" name="SIRH_PTG_WS"
+		override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
 	<!-- WS DES ABSENCES -->
-	<Parameter description="SIRH ABS WS url"
-		name="SIRH_ABS_WS" override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />
-		
-		
+	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
+		override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />
+
+
 	<!-- Parametres pour l'affichage des nouveaux modules -->
 	<Parameter
 		description="Paramètre pour savoir si on affiche l&apos;onglet avancement CAP"
@@ -137,16 +136,15 @@
 		name="AFFICHAGE_AVCT" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Campagne EAE"
 		name="AFFICHAGE_CAMPAGNE_EAE" override="false" value="TRUE" />
-		
+
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats"
 		name="REPERTOIRE_MODELES_CONTRATS" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/Contrats/" />
 	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/Contrats/</param-value> -->
-	<Parameter description="repertoire pour les modeles des fiches de poste"
-		name="REPERTOIRE_MODELES_FICHEPOSTE" override="false"
-		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/FichePoste/" />
-	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/FichePoste/</param-value> -->
+	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
+		override="false"
+		value="http://172.16.24.19:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
 	<Parameter description="repertoire pour les modeles des affectations"
 		name="REPERTOIRE_MODELES_AFFECTATIONS" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/Affectations/" />
@@ -174,68 +172,66 @@
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />
 	<!-- <param-value>/mnt/sirh-document/Document_Associe/</param-value> -->
-		
-	<Parameter description="parametre utile au framework" name="HOST_SGBD" override="false" value="SIRH_DS2" />
-	<Parameter description="parametre pour accès à la DTAARA_CALC" name="HOST_SGBD_PAYE" override="false" value="robinnw" />
-	<Parameter description="Login pour accès à la DTAARA_CALC" name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
-	<Parameter description="Pws pour accès à la DTAARA_CALC" name="HOST_SGBD_PWD" override="false" value="***REMOVED***" />
-	<Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" override="false" value="PERSONNEL" /> 
-	<!-- <Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" override="false" value="SPERSONNEL" />-->
-	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME" override="false" value="CALCUL" />
-	<!-- <Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME" override="false" value="SIMUL" /> -->
-	
+
+	<Parameter description="parametre utile au framework" name="HOST_SGBD"
+		override="false" value="SIRH_DS2" />
+	<Parameter description="parametre pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PAYE" override="false" value="robinnw" />
+	<Parameter description="Login pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_ADMIN" override="false" value="opensirh" />
+	<Parameter description="Pws pour accès à la DTAARA_CALC"
+		name="HOST_SGBD_PWD" override="false" value="***REMOVED***" />
+	<Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA"
+		override="false" value="PERSONNEL" />
+	<!-- <Parameter description="Bibliotheque de la DTAARA_CALC" name="DTAARA_SCHEMA" 
+		override="false" value="SPERSONNEL" /> -->
+	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
+		override="false" value="CALCUL" />
+	<!-- <Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME" override="false" 
+		value="SIMUL" /> -->
+
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
 	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
-		override="false" value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
+		override="false"
+		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
 	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
 		override="false"
 		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
-	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la GED Sharepoint -->
-	<Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="setupAdmin" />
-	<Parameter description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="Pass@word1" />
-	<Parameter description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="KELIOSDEV" />
-	<Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="172.16.24.42" />
-	<Parameter description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="80" />
-	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
-		override="false"
+	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la 
+		GED Sharepoint -->
+	<Parameter description="User pour connexion NTLM à Sharepoint"
+		name="USER_SHAREPOINT_DROIT_EAE" override="false" value="setupAdmin" />
+	<Parameter description="User Pws pour connexion NTLM à Sharepoint"
+		name="USER_PWD_SHAREPOINT_DROIT_EAE" override="false" value="Pass@word1" />
+	<Parameter description="Domain pour connexion NTLM à Sharepoint"
+		name="DOMAIN_SHAREPOINT_DROIT_EAE" override="false" value="KELIOSDEV" />
+	<Parameter description="URL pour connexion NTLM à Sharepoint"
+		name="URL_SHAREPOINT_DROIT_EAE" override="false" value="172.16.24.42" />
+	<Parameter description="PORT pour connexion NTLM à Sharepoint"
+		name="PORT_SHAREPOINT_DROIT_EAE" override="false" value="80" />
+	<Parameter description="URL mise à jour droit EAE Sharepoint"
+		name="URL_DROIT_EAE_SHAREPOINT" override="false"
 		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
-		
-		<!-- EN RECETTE -->
-	<!-- <Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="sirhDroitEAE" />
-	<Parameter description="User Pws pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="fum2ndo5" />
-	<Parameter description="Domain pour connexion NTLM à Sharepoint" name="DOMAIN_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="SITE-MAIRIE" />
-	<Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="qual.portail.ville-noumea.nc" />
-	<Parameter description="PORT pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE"
-		override="false"
-		value="80" />
-	<Parameter description="URL mise à jour droit EAE Sharepoint" name="URL_DROIT_EAE_SHAREPOINT"
-		override="false"
-		value="/kiosque-rh/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" /> -->
-	<!-- END-->
-	
+
+	<!-- EN RECETTE -->
+	<!-- <Parameter description="User pour connexion NTLM à Sharepoint" name="USER_SHAREPOINT_DROIT_EAE" 
+		override="false" value="sirhDroitEAE" /> <Parameter description="User Pws 
+		pour connexion NTLM à Sharepoint" name="USER_PWD_SHAREPOINT_DROIT_EAE" override="false" 
+		value="fum2ndo5" /> <Parameter description="Domain pour connexion NTLM à 
+		Sharepoint" name="DOMAIN_SHAREPOINT_DROIT_EAE" override="false" value="SITE-MAIRIE" 
+		/> <Parameter description="URL pour connexion NTLM à Sharepoint" name="URL_SHAREPOINT_DROIT_EAE" 
+		override="false" value="qual.portail.ville-noumea.nc" /> <Parameter description="PORT 
+		pour connexion NTLM à Sharepoint" name="PORT_SHAREPOINT_DROIT_EAE" override="false" 
+		value="80" /> <Parameter description="URL mise à jour droit EAE Sharepoint" 
+		name="URL_DROIT_EAE_SHAREPOINT" override="false" value="/kiosque-rh/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" 
+		/> -->
+	<!-- END -->
+
 	<!-- AUTRE PARAM -->
 	<Parameter
 		description="parametre pour afficher dans le titre de l&apos;appli si on est en prod ou en recette"
 		name="TYPE_SIRH" override="false" value="DEV" />
-		
+
 	<!-- Authentification LDAP -->
 	<Parameter description="" name="CRITERE_RECHERCHE_LDAP"
 		override="false" value="samaccountname" />
