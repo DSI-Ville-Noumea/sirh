@@ -1891,6 +1891,31 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					fichePosteEae.getDateEntreeFonctionResponsable(), fichePosteEae.getCodeService(),
 					fichePosteEae.getIdSirhFichePoste());
 
+		} else {
+			// on supprime les lignes existantes si elles existent
+			try {
+				EaeFichePoste aSupp = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), false);
+				// on recupere les activites/competences liées
+				try {
+					ArrayList<EaeFDPActivite> listActi = getEaeFDPActiviteDao().listerEaeFDPActivite(
+							aSupp.getIdEaeFichePoste());
+					for (int i = 0; i < listActi.size(); i++) {
+						EaeFDPActivite a = listActi.get(i);
+						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
+					}
+					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
+							aSupp.getIdEaeFichePoste());
+					for (int i = 0; i < listComp.size(); i++) {
+						EaeFDPCompetence c = listComp.get(i);
+						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
+					}
+				} catch (Exception e) {
+					// il n'y avait pas d'activites
+				}
+				getEaeFichePosteDao().supprimerEaeFichePoste(aSupp.getIdEaeFichePoste());
+			} catch (Exception e) {
+				// on ne fait rien
+			}
 		}
 	}
 
@@ -3361,9 +3386,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		performCreerEvalue(request, ag, false, evalue.isAgentAffecte(), false);
+		//performCreerEvalue(request, ag, false, evalue.isAgentAffecte(), false);
 		// on met les données dans EAE-FichePoste
-		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
+		//performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
 		// on met les données dans EAE-FDP-Activites
 		performCreerActivitesFichePostePrincipale(request, fpPrincipale);
