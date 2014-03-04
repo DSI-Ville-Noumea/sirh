@@ -1481,19 +1481,24 @@ public class OePOSTEFichePoste extends BasicProcess {
 					}
 
 					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFP())
-							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.TRANSITOIRE
+							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP())
+									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(
+											statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.GELEE
 									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
 						getTransaction().declarerErreur(
 								MessageUtils.getMessage("ERR124", "'" + EnumStatutFichePoste.INACTIVE.getLibLong()
 										+ "'", "'" + EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
-										+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
+										+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "' ou '"
+										+ EnumStatutFichePoste.GELEE.getLibLong() + "'"));
 						return false;
 					}
 
 					if (EnumStatutFichePoste.EN_MODIFICATION.getLibLong().equals(statutCourant.getLibStatutFP())
-							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.TRANSITOIRE
+							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP())
+									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(
+											statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.GELEE
 									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
@@ -1501,7 +1506,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 								MessageUtils.getMessage("ERR124",
 										"'" + EnumStatutFichePoste.EN_MODIFICATION.getLibLong() + "'", "'"
 												+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' ou '"
-												+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "'"));
+												+ EnumStatutFichePoste.TRANSITOIRE.getLibLong() + "' ou '"
+												+ EnumStatutFichePoste.GELEE.getLibLong() + "'"));
 						return false;
 					}
 
@@ -5280,7 +5286,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
 		setChangementFEAutorise(!estFpCouranteAffectee()
 				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())
-				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.VALIDEE.getLibLong()));
+				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.VALIDEE.getLibLong())
+				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.GELEE.getLibLong()));
 	}
 
 	/**

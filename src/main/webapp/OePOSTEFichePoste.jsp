@@ -118,7 +118,7 @@
 							<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_ST_NUMERO()%></span>
 							
 							<span class="sigp2Mandatory" style="margin-left: 100px;"> Statut : </span>
-							<SELECT onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:100px;margin-right:98px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+							<SELECT onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:100px;margin-right:98px;" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 								<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT())%>
 							</SELECT>
 						<%}%>
@@ -434,7 +434,7 @@
 									<span class="sigp2">Observation :</span>
 								</td>
 								<td>
-									<textarea style="width: 800px;" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %>  rows="4" cols="190" class="sigp2-saisie" name="<%= process.getNOM_EF_OBSERVATION()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>><%= process.getVAL_EF_OBSERVATION() %></textarea>
+									<textarea style="width: 800px;color: red;" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %>  rows="4" cols="190" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_OBSERVATION()%>" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>><%= process.getVAL_EF_OBSERVATION() %></textarea>
 								</td>
 							</tr>
 						</table>
