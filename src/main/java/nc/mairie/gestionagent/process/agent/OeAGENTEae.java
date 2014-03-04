@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.ListIterator;
 
@@ -15,6 +16,9 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Document;
+import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
@@ -49,6 +53,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
@@ -58,6 +64,8 @@ import com.oreilly.servlet.MultipartRequest;
  * 
  */
 public class OeAGENTEae extends BasicProcess {
+
+	private Logger logger = LoggerFactory.getLogger(OeAGENTEae.class);
 	/**
 	 * 
 	 */
@@ -78,6 +86,7 @@ public class OeAGENTEae extends BasicProcess {
 	public String ACTION_SUPPRESSION_DEV = "Suppression d'un développement.";
 	public String ACTION_DOCUMENT = "Documents.";
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document.";
+	public String ACTION_DOCUMENT_CREATION_ANCIEN_EAE = "Création d'un document.";
 
 	private String[] LB_BASE_HORAIRE;
 	private ArrayList<Horaire> listeHoraire;
@@ -120,6 +129,8 @@ public class OeAGENTEae extends BasicProcess {
 
 	public String focus = null;
 
+	private ArrayList<Document> listeAncienEAE;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -155,11 +166,34 @@ public class OeAGENTEae extends BasicProcess {
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeEae(request);
+				initialiseListeAncienEae(request);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
 		}
+	}
+
+	private void initialiseListeAncienEae(HttpServletRequest request) throws Exception {
+
+		// Recherche des documents de l'agent
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(),
+				getAgentCourant(), Const.CHAINE_VIDE, "EAE");
+		setListeAncienEAE(listeDocAgent);
+
+		if (getListeAncienEAE() != null) {
+			for (int i = 0; i < getListeAncienEAE().size(); i++) {
+				Document doc = (Document) getListeAncienEAE().get(i);
+				Integer id = Integer.valueOf(doc.getIdDocument());
+
+				addZone(getNOM_ST_COMMENTAIRE_ANCIEN_EAE(id), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
+				addZone(getNOM_ST_DOCUMENT_ANCIEN_EAE(id), doc.getNomDocument());
+
+			}
+		}
+
+		// addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 	}
 
 	/**
@@ -494,6 +528,25 @@ public class OeAGENTEae extends BasicProcess {
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
+			}
+
+			// Si clic sur le bouton PB_CONSULTER_ANCIEN_EAE
+			for (int i = 0; i < getListeAncienEAE().size(); i++) {
+				Document d = getListeAncienEAE().get(i);
+				Integer id = Integer.valueOf(d.getIdDocument());
+				if (testerParametre(request, getNOM_PB_CONSULTER_ANCIEN_EAE(id))) {
+					return performPB_CONSULTER_ANCIEN_EAE(request, id);
+				}
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_ANCIEN_EAE
+			if (testerParametre(request, getNOM_PB_AJOUTER_ANCIEN_EAE())) {
+				return performPB_AJOUTER_ANCIEN_EAE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE
+			if (testerParametre(request, getNOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE())) {
+				return performPB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE(request);
 			}
 
 		}
@@ -4306,5 +4359,278 @@ public class OeAGENTEae extends BasicProcess {
 			JSP = request.getParameter("JSP");
 		}
 		return true;
+	}
+
+	public String getNOM_ST_COMMENTAIRE_ANCIEN_EAE(int i) {
+		return "NOM_ST_COMMENTAIRE_ANCIEN_EAE" + i;
+	}
+
+	public String getVAL_ST_COMMENTAIRE_ANCIEN_EAE(int i) {
+		return getZone(getNOM_ST_COMMENTAIRE_ANCIEN_EAE(i));
+	}
+
+	public String getNOM_ST_DOCUMENT_ANCIEN_EAE(int i) {
+		return "NOM_ST_DOCUMENT_ANCIEN_EAE" + i;
+	}
+
+	public String getVAL_ST_DOCUMENT_ANCIEN_EAE(int i) {
+		return getZone(getNOM_ST_DOCUMENT_ANCIEN_EAE(i));
+	}
+
+	public String getNOM_PB_CONSULTER_ANCIEN_EAE(int i) {
+		return "NOM_PB_CONSULTER_ANCIEN_EAE" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_CONSULTER_ANCIEN_EAE(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+		logger.info("Rep stock : " + repertoireStockage);
+
+		// Récup du document courant
+		Document d = Document.chercherDocumentById(getTransaction(), String.valueOf(indiceEltAConsulter));
+		// on affiche le document
+		logger.info("Lien doc : " + d.getLienDocument());
+		logger.info("Script : " + getScriptOuverture(repertoireStockage + d.getLienDocument()));
+		setURLFichier(getScriptOuverture(repertoireStockage + d.getLienDocument()));
+
+		return true;
+	}
+
+	public String getNOM_PB_AJOUTER_ANCIEN_EAE() {
+		return "NOM_PB_AJOUTER_ANCIEN_EAE";
+	}
+
+	public boolean performPB_AJOUTER_ANCIEN_EAE(HttpServletRequest request) throws Exception {
+
+		// init des documents courant
+		addZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_ANNEE_ANCIEN_EAE(), Const.CHAINE_VIDE);
+
+		isImporting = true;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_DOCUMENT_CREATION_ANCIEN_EAE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public ArrayList<Document> getListeAncienEAE() {
+		return listeAncienEAE;
+	}
+
+	public void setListeAncienEAE(ArrayList<Document> listeAncienEAE) {
+		this.listeAncienEAE = listeAncienEAE;
+	}
+
+	public String getNOM_EF_COMMENTAIRE_ANCIEN_EAE() {
+		return "NOM_EF_COMMENTAIRE_ANCIEN_EAE";
+	}
+
+	public String getVAL_EF_COMMENTAIRE_ANCIEN_EAE() {
+		return getZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE());
+	}
+
+	public String getNOM_EF_ANNEE_ANCIEN_EAE() {
+		return "NOM_EF_ANNEE_ANCIEN_EAE";
+	}
+
+	public String getVAL_EF_ANNEE_ANCIEN_EAE() {
+		return getZone(getNOM_EF_ANNEE_ANCIEN_EAE());
+	}
+
+	public String getNOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE() {
+		return "NOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE";
+	}
+
+	public boolean performPB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE(HttpServletRequest request) throws Exception {
+		// on sauvegarde le nom du fichier parcourir
+		if (multi.getFile(getNOM_EF_LIENDOCUMENT_ANCIEN_EAE()) != null) {
+			fichierUpload = multi.getFile(getNOM_EF_LIENDOCUMENT_ANCIEN_EAE());
+		}
+		// Contrôle des champs
+		if (!performControlerSaisieDocumentAncienEAE(request))
+			return false;
+
+		if (!creeDocumentAncienEAE(request)) {
+			return false;
+		}
+
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// on met à jour le tableau des documents
+		initialiseListeAncienEae(request);
+		return true;
+	}
+
+	public String getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() {
+		return "NOM_EF_LIENDOCUMENT_ANCIEN_EAE";
+	}
+
+	public String getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() {
+		return getZone(getNOM_EF_LIENDOCUMENT_ANCIEN_EAE());
+	}
+
+	private boolean performControlerSaisieDocumentAncienEAE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_EF_LIENDOCUMENT_ANCIEN_EAE(), fichierUpload != null ? fichierUpload.getPath()
+				: Const.CHAINE_VIDE);
+		addZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE(), multi.getParameter(getNOM_EF_COMMENTAIRE_ANCIEN_EAE()));
+		addZone(getNOM_EF_ANNEE_ANCIEN_EAE(), multi.getParameter(getNOM_EF_ANNEE_ANCIEN_EAE()));
+
+		boolean result = true;
+		// annee
+		if (getVAL_EF_ANNEE_ANCIEN_EAE().equals(Const.CHAINE_VIDE)) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
+			result &= false;
+		} else {
+			if (!Services.estNumerique(getVAL_EF_ANNEE_ANCIEN_EAE())) {
+				// "ERR992", "La zone @ doit être numérique.");
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "année"));
+				result &= false;
+			} else {
+				// on verifie qu'on n'ajoute pas de document apres 2012
+				if (Integer.valueOf(getVAL_EF_ANNEE_ANCIEN_EAE()) >= 2013) {
+					// "ERR166",
+					// "Vous ne pouvez uploadé un document pour une année supérieure à 2012.");
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR166"));
+					result &= false;
+				}
+			}
+		}
+
+		// parcourir
+		if (fichierUpload == null || fichierUpload.getPath().equals(Const.CHAINE_VIDE)) {
+			// ERR002:La zone parcourir est obligatoire.
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "parcourir"));
+			result &= false;
+		}
+
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
+		if (!extension.equals(".pdf")) {
+			// "ERR165", "Le fichier doit être au format PDF."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR165"));
+			result &= false;
+		}
+		return result;
+	}
+
+	private boolean creeDocumentAncienEAE(HttpServletRequest request) throws Exception {
+		// on recupere le fichier mis dans le repertoire temporaire
+		if (fichierUpload == null) {
+			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
+			return false;
+		}
+
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
+		String nom = "EAE_" + getVAL_EF_ANNEE_ANCIEN_EAE() + "_" + getAgentCourant().getIdAgent() + extension;
+
+		// on verifie si il y a deja un document pour cet année
+		boolean existDeja = false;
+		for (int i = 0; i < getListeAncienEAE().size(); i++) {
+			Document d = getListeAncienEAE().get(i);
+			if (d.getNomDocument().equals(nom)) {
+				existDeja = true;
+				break;
+			}
+		}
+		if (existDeja) {
+			// "ERR167",
+			// "Un fichier existe déjà pour cette année. Veuillez choisir une autre année.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR167"));
+			return false;
+		}
+
+		// on upload le fichier
+		boolean upload = false;
+		if (extension.equals(".pdf")) {
+			upload = uploadFichierPDFCristal(fichierUpload, nom);
+		}
+		if (!upload) {
+			// "ERR164",
+			// "Une erreur est survenue dans la sauvegarde de l'EAE. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR164"));
+			return false;
+		}
+
+		// on crée le document en base de données
+		TypeDocument typeEAE = TypeDocument.chercherTypeDocumentByCod(getTransaction(), "EAE");
+		Document doc = new Document();
+		doc.setLienDocument("EAE/" + nom);
+		doc.setIdTypeDocument(typeEAE.getIdTypeDocument());
+		doc.setNomDocument(nom);
+		doc.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		doc.setCommentaire(getZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE()));
+		doc.creerDocument(getTransaction());
+
+		LienDocumentAgent lien = new LienDocumentAgent();
+		lien.setIdAgent(getAgentCourant().getIdAgent());
+		lien.setIdDocument(doc.getIdDocument());
+		lien.creerLienDocumentAgent(getTransaction());
+
+		if (getTransaction().isErreur())
+			return false;
+
+		// Tout s'est bien passé
+		commitTransaction();
+
+		// on supprime le fichier temporaire
+		fichierUpload.delete();
+		isImporting = false;
+		fichierUpload = null;
+
+		return true;
+	}
+
+	private boolean uploadFichierPDFCristal(File f, String nomFichier) throws Exception {
+		boolean resultat = false;
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+		// on verifie que les repertoires existent
+		verifieRepertoire("EAE");
+
+		File newFile = new File(repPartage + "EAE/" + nomFichier);
+
+		FileInputStream in = new FileInputStream(f);
+
+		try {
+			FileOutputStream out = new FileOutputStream(newFile);
+			try {
+				byte[] byteBuffer = new byte[in.available()];
+				int s = in.read(byteBuffer);
+				out.write(byteBuffer);
+				out.flush();
+				resultat = true;
+			} finally {
+				out.close();
+			}
+		} finally {
+			in.close();
+		}
+
+		return resultat;
+	}
+
+	private void verifieRepertoire(String codTypeDoc) {
+		// on verifie déjà que le repertoire source existe
+		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
+		File dossierParent = new File(repPartage);
+		if (!dossierParent.exists()) {
+			dossierParent.mkdir();
+		}
+		File ssDossier = new File(repPartage + codTypeDoc + "/");
+		if (!ssDossier.exists()) {
+			ssDossier.mkdir();
+		}
 	}
 }

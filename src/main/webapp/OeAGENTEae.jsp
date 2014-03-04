@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.agent.Document"%>
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.spring.domain.metier.EAE.CampagneEAE"%>
@@ -105,7 +106,7 @@
 						</table>	
 						</div>		
 				</FIELDSET>			
-				<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
+				<%if (! "".equals(process.getVAL_ST_ACTION()) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION_ANCIEN_EAE) ) {%>
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 						<legend class="sigp2Legend">Détail de l'entretien annuel d'évaluation</legend>
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
@@ -831,6 +832,70 @@
 					</FIELDSET>
 			
 		<%} %>		
+			
+		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend">Anciens EAEs de l'agent</legend>
+			<table class="sigp2NewTab" style="text-align:left;width:980px;">
+				<tr bgcolor="#EFEFEF">
+					<td width="30px;">
+						<INPUT name="<%=process.getNOM_PB_AJOUTER_ANCIEN_EAE()%>"  title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" >
+					</td>
+					<td width="100px;">
+						Document
+					</td>
+					<td align="left">
+						Commentaire
+					</td>
+				</tr>
+				<%
+				if (process.getListeAncienEAE()!=null){
+					for (int i = 0;i<process.getListeAncienEAE().size();i++){
+						Document doc = (Document) process.getListeAncienEAE().get(i);	
+						Integer id = Integer.valueOf(doc.getIdDocument());
+				%>
+				<tr>
+					<td>
+						<INPUT name="<%=process.getNOM_PB_CONSULTER_ANCIEN_EAE(id)%>" title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" >
+						<INPUT name="<%=process.getNOM_PB_CONSULTER_ANCIEN_EAE(id)%>" title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" >
+				    </td>
+					<td>
+						<%=process.getVAL_ST_DOCUMENT_ANCIEN_EAE(id)%>
+					</td>
+					<td>
+						<%=process.getVAL_ST_COMMENTAIRE_ANCIEN_EAE(id)%>
+					</td>
+				</tr>
+				<%
+					}
+				}%>
+			</table>	
+			
+			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
+			<BR/><br/>
+			<div>		
+				<span class="sigp2" style="width:130px;" >Commentaire :</span>
+				<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE_ANCIEN_EAE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE_ANCIEN_EAE() %>">
+				<BR/>
+				<BR/>	
+				<span class="sigp2Mandatory" style="width:130px;" >Année :</span>
+				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ANCIEN_EAE() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ANCIEN_EAE() %>">
+				<BR/>
+				<BR/>
+				<span class="sigp2Mandatory" style="width:130px;">Fichier : </span> 
+				<% if(process.fichierUpload == null){ %>
+					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
+				<%}else{ %>
+					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
+				<% }%>
+				<br />
+			</div>
+			<div style="text-align: center">
+				<BR/><BR/>
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE()%>">
+				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+			</div>
+			<%}%>	
+		</FIELDSET>	
 		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	
 		<%=process.getUrlFichier()%>
 		</FORM>
