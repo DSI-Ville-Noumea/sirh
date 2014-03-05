@@ -80,24 +80,23 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des charges de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;">
-				    <%if(process.getCalculPaye().equals("")){ %>
-					<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-					<%}%>
-					</span>
-				    <span style="position:relative;width:45px;text-align: center;">Code rubrique</span>
-					<span style="position:relative;width:250px;text-align: left;">Libellé rubrique</span>
-					<span style="position:relative;width:90px;text-align: center;">Matr. charge agent</span>
-					<span style="position:relative;width:200px;text-align: left;">Libellé charge</span>
-					<span style="position:relative;width:60px;text-align: center;">Taux</span>
-					<span style="position:relative;width:55px;text-align: center;">Montant</span>
-					<span style="position:relative;width:90px;text-align: center;">Date début</span>
-					<span style="position:relative;text-align: center;">Date fin</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td>
+								    <%if(process.getCalculPaye().equals("")){ %>
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+									<%}%>
+								</td>
+								<td width="45px;" align="center">Code rubrique</td>
+								<td width="250px;">Libellé rubrique</td>
+								<td width="90px;" align="center">Matr. charge agent</td>
+								<td width="200px;">Libellé charge</td>
+								<td width="60px;" align="center">Taux</td>
+								<td width="55px;" align="center">Montant</td>
+								<td width="90px;" align="center">Date début</td>
+								<td align="center">Date fin</td>
+							</tr>
 							<%
 							int indiceCharge = 0;
 							if (process.getListeCharges()!=null){
@@ -121,7 +120,7 @@
 										<td class="sigp2NewTab-liste" style="position:relative;width:55px;text-align: center;"><%=process.getVAL_ST_TAUX(indiceCharge)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:55px;text-align: right;"><%=process.getVAL_ST_MONTANT(indiceCharge)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:85px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceCharge)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_DATE_FIN(indiceCharge)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: center;">&nbsp;<%=process.getVAL_ST_DATE_FIN(indiceCharge)%></td>
 									</tr>
 									<%
 									indiceCharge++;
@@ -138,97 +137,149 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-			<div>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Rubrique :</span>
-			<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-				name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
-			
-			<BR/><BR/>
-			
-			<% if (process.showCreancier){ %>
-		
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Creancier :</span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CREANCIER() %>">
-				<%=process.forComboHTML(process.getVAL_LB_CREANCIER(), process.getVAL_LB_CREANCIER_SELECT()) %>
-			</SELECT>
-
-			<BR/><BR/>
-			
-			<% } %>
-			
-			<% if (process.showCodeCharge){ %>
-		
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:160px;">Charge :</span>
-			<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_CODE_CHARGE() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_CODE_CHARGE()%>")'>
-				<%=process.forComboHTML(process.getVAL_LB_CODE_CHARGE(), process.getVAL_LB_CODE_CHARGE_SELECT()) %>
-			</SELECT>
-			<span class="sigp2-saisie"><%= process.getVAL_ST_INFO_CODE_CHARGE()%></span>
-			<BR/><BR/>
-			<% } %>
-			
-			<% if (process.showMontant){ %>
-		
-			<span class="<%= process.montantObligatoire ? "sigp2Mandatory" : "sigp2" %> " style="margin-left:20px;position:relative;width:160px;">Montant forfait :</span>
-			<INPUT class="sigp2-saisie" maxlength="9" name="<%= process.getNOM_EF_MONTANT() %>" size="9" type="text" value="<%= process.getVAL_EF_MONTANT() %>">
-
-			<BR/><BR/>
-			
-			<% } %>
-			
-			<% if (process.showMatriculeCharge){ %>
-			
-			<span class="<%= process.matriculeChargeObligatoire ? "sigp2Mandatory" : "sigp2" %> " style="margin-left:20px;position:relative;width:160px;" >Matricule charge employé :</span>
-			<INPUT class="sigp2-saisie" maxlength="15" <%= process.matriculeChargeEditable ? "" : "readonly='readonly'" %>  name="<%= process.getNOM_EF_MAT_CHARGE() %>" size="15" type="text" value="<%= process.getVAL_EF_MAT_CHARGE() %>">
-			<BR/><BR/>
-			
-			<% } %>
-			
-			<span class="sigp2" style="margin-left:20px;position:relative;width:160px;">Taux :</span>
-			<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_TAUX() %>" size="5" type="text" value="<%= process.getVAL_EF_TAUX() %>">
-
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:160px;">Date de début :</span>
-			<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-			
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:160px;">Date de fin :</span>
-			<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">
-			
-			</div>
-			
+			<table>
+				<tr>
+					<td width="160px;">
+						<span class="sigp2Mandatory">Rubrique :</span>
+					</td>
+					<td>
+						<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
+					</td>
+				</tr>
+				<% if (process.showCreancier){ %>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Creancier :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_CREANCIER() %>">
+							<%=process.forComboHTML(process.getVAL_LB_CREANCIER(), process.getVAL_LB_CREANCIER_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<% } %>
+				<% if (process.showCodeCharge){ %>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Charge :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-liste" name="<%= process.getNOM_LB_CODE_CHARGE() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_CODE_CHARGE()%>")'>
+							<%=process.forComboHTML(process.getVAL_LB_CODE_CHARGE(), process.getVAL_LB_CODE_CHARGE_SELECT()) %>
+						</SELECT>
+						<span class="sigp2-saisie"><%= process.getVAL_ST_INFO_CODE_CHARGE()%></span>
+					</td>
+				</tr>
+				<% } %>
+				<% if (process.showMatriculeCharge){ %>
+				<tr>
+					<td>
+						<span class=<%= process.matriculeChargeObligatoire ? "sigp2Mandatory" : "sigp2" %>>Matricule charge employé :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="15" <%= process.matriculeChargeEditable ? "" : "readonly='readonly'" %>  name="<%= process.getNOM_EF_MAT_CHARGE() %>" size="15" type="text" value="<%= process.getVAL_EF_MAT_CHARGE() %>">
+					</td>
+				</tr>
+				<% } %>
+				<tr>
+					<td>
+						<span class="sigp2">Taux :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_TAUX() %>" size="5" type="text" value="<%= process.getVAL_EF_TAUX() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de début :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+			</table>			
 			<% } else{ %>
 			<div>
 			<%if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
 		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    	<BR/><BR/>
 		    <% } %>
-		    <span class="sigp2" style="width:160px">Rubrique : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_RUBRIQUE()%></span>
-			<BR/>
-		    <span class="sigp2" style="width:160px">Créancier : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_CREANCIER()%></span>
-			<BR/>
-		    <span class="sigp2" style="width:160px">Code charge : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_CODE_CHARGE()%></span>
-			<BR/>
-			<span class="sigp2" style="width:160px">Montant : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_MONTANT()%></span>
-			<BR/>
-			<span class="sigp2" style="width:160px">Matricule charge employé : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_MAT_CHARGE()%></span>
-			<BR/>
-			<span class="sigp2" style="width:160px">Taux : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_TAUX()%></span>
-			<BR/>
-			<span class="sigp2" style="width:160px">Date de début : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
-			<BR/>
-			<span class="sigp2" style="width:160px">Date de fin : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+		    <table>
+		    	<tr>
+		    		<td width="160px;">
+		   				<span class="sigp2">Rubrique : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_RUBRIQUE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+		    			<span class="sigp2">Créancier : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_CREANCIER()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+		    			<span class="sigp2">Code charge : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_CODE_CHARGE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Montant : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_MONTANT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Matricule charge employé : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_MAT_CHARGE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Taux : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_TAUX()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Date de début : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Date de fin : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+		    		</td>
+		    	</tr>
+		    </table>
 		</div>
 		<%} %>
 			<BR/>
@@ -236,15 +287,10 @@
 			<TBODY>
 				<TR>
 					<%if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-		   			<TD width="31"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Valider"
-						name="<%=process.getNOM_PB_VALIDER()%>"></TD>
+		   			<TD width="31"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>"></TD>
 					<TD height="18" width="15"></TD>
 					<% } %>
-					<TD class="sigp2" style="text-align : center;"
-						height="18" width="23"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Annuler"
-						name="<%=process.getNOM_PB_ANNULER()%>"></TD>
+					<TD class="sigp2" style="text-align : center;" height="18" width="23"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>"></TD>
 				</TR>
 			</TBODY>
 		</TABLE>

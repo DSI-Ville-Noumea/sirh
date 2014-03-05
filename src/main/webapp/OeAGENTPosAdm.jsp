@@ -77,23 +77,21 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des positions administratives de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;">
-				    <%if(process.getCalculPaye().equals("")){ %>											
-				    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-				    <%}%>
-				    </span>
-				    <span style="position:relative;width:45px;text-align: center;">Code PA</span>
-					<span style="position:relative;width:250px;text-align: left;">Libellé PA</span>
-					<span style="position:relative;width:75px;text-align: center;">Ref. arrêté</span>
-					<span style="position:relative;width:85px;text-align: center;">Date de l'arrêté</span>
-					<span style="position:relative;width:85px;text-align: center;">Date de début</span>
-				    <span style="position:relative;width:7px;"></span>
-					<span style="position:relative;text-align: center;">Date de fin</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td>
+								    <%if(process.getCalculPaye().equals("")){ %>											
+								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+								    <%}%>
+								</td>
+								<td width="45px;" align="center">Code PA</td>
+								<td width="250px;">Libellé PA</td>
+								<td width="75px;" align="center">Ref. arrêté</td>
+								<td width="85px;" align="center">Date de l'arrêté</td>
+								<td width="85px;" align="center">Date de début</td>
+								<td>Date de fin</td>
+							</tr>
 							<%
 							int indicePAAgent = 0;
 							if (process.getListePAAgent()!=null){
@@ -136,30 +134,38 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-			<div>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Position administrative :</span>
-			<INPUT id="listePA" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-				name="<%= process.getNOM_EF_POSA() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_POSA() %>">
-			
-			<BR/><BR/>
-			
-			<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Ref. arrêté :</span>
-			<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:100px;">Date d'arrêté :</span>
-			<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-			<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" <%= !process.DateDebutEditable ? "disabled='disabled'" : Const.CHAINE_VIDE %> maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
-			<%if(process.DateDebutEditable){ %>
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
-			<%} %>
-
-			<BR/><BR/>
-			</div>
-			
+			<table>
+				<tr>
+					<td width="150px;">
+						<span class="sigp2Mandatory">Position administrative :</span>
+					</td>
+					<td>
+						<INPUT size="100" id="listePA" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_POSA() %>" type="text" value="<%= process.getVAL_EF_POSA() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Ref. arrêté :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
+						<span class="sigp2"  style="margin-left:20px;"">Date d'arrêté :</span>
+						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de début :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" <%= !process.DateDebutEditable ? "disabled='disabled'" : Const.CHAINE_VIDE %> maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+						<%if(process.DateDebutEditable){ %>
+							<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+						<%} %>
+					</td>
+				</tr>
+			</table>			
 			<% } else{ %>
 			<div>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>

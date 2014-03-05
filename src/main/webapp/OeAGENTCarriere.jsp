@@ -89,27 +89,25 @@
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des carrières de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;">
-				    <%if(process.getCalculPaye().equals("")){ %>
-				    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-				    <%}%>
-				    </span>
-				    <span style="position:relative;width:45px;text-align: center;">Code grade</span>
-					<span style="position:relative;width:45px;text-align: center;">Type contrat</span>
-					<span style="position:relative;width:45px;text-align: center;">Base horaire</span>
-					<span style="position:relative;width:65px;text-align: center;">IBA</span>
-					<span style="position:relative;width:45px;text-align: center;">INA</span>
-					<span style="position:relative;width:45px;text-align: center;">INM</span>
-					<span style="position:relative;width:85px;text-align: center;">Début</span>
-					<span style="position:relative;width:85px;text-align: center;">Fin</span>
-					<span style="position:relative;width:75px;text-align: right;">Ref. arrêté</span>
-				    <span style="position:relative;width:10px;"></span>
-					<span style="position:relative;">Statut</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td>
+								    <%if(process.getCalculPaye().equals("")){ %>
+								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+								    <%}%>
+								</td>
+								<td align="center" width="45px;">Code grade</td>
+								<td align="center" width="45px;">Type contrat</td>
+								<td align="center" width="45px;">Base horaire</td>
+								<td align="center" width="65px;">IBA</td>
+								<td align="center" width="45px;">INA</td>
+								<td align="center" width="45px;">INM</td>
+								<td align="center" width="85px;">Début</td>
+								<td align="center" width="85px;">Fin</td>
+								<td align="center" width="75px;">Ref. arrêté</td>
+								<td>Statut</td>
+							</tr>
 							<%
 							int indiceCarr = 0;
 							if (process.getListeCarriere()!=null){
@@ -159,118 +157,177 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
-			<div>
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Statut :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUTS() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' >
-					<%=process.forComboHTML(process.getVAL_LB_STATUTS(), process.getVAL_LB_STATUTS_SELECT()) %>
-				</SELECT>
-
-				<BR/><BR/>
-			
-				<span class="<%= process.gradeObligatoire ? "sigp2Mandatory" : "sigp2" %>" style="margin-left:20px;position:relative;width:150px;">Grade :</span>
-				<INPUT id="listeGrades" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-				name="<%= process.getNOM_EF_GRADE() %>"  style="margin-right:10px;width:350px" type="text" value="<%= process.getVAL_EF_GRADE() %>">
-			
-				<BR/><BR/>
-
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Filière :</span>
-				<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_ST_FILIERE() %>" size="70" type="text"  readonly="readonly" value="<%= process.getVAL_ST_FILIERE() %>">
-				
-				<BR/><BR/>
-
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">IBA :</span>
-				<INPUT class="sigp2-saisie" maxlength="7" name="<%= process.getNOM_EF_IBA() %>" size="7" type="text" <%= !process.saisieIba() ? "readonly='readonly'" : "" %> value="<%= process.getVAL_EF_IBA() %>">
-				
-				<BR/><BR/>
-
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">INA :</span>
-				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_INA() %>" size="4" type="text"  readonly="readonly" value="<%= process.getVAL_ST_INA() %>">
-				
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">INM :</span>
-				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_INM() %>" size="4" type="text"  readonly="readonly" value="<%= process.getVAL_ST_INM() %>">
-				
-				<BR/><BR/>
-
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-				<%if(process.getCarriereCourante()!=null && !process.getCarriereCourante().isActive()&& !process.getCarriereCourante().getCodeCategorie().equals("8")){ %>
-					<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
-				<%}else{ %>
-					<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_TYPE_CONTRAT()%>")'>
-					<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
-				<%} %>
-				<BR/><BR/>
+			<table>
+				<tr>
+					<td width="150px;">
+						<span class="sigp2Mandatory">Statut :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_STATUTS() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' >
+							<%=process.forComboHTML(process.getVAL_LB_STATUTS(), process.getVAL_LB_STATUTS_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="<%= process.gradeObligatoire ? "sigp2Mandatory" : "sigp2" %>">Grade :</span>
+					</td>
+					<td>
+						<INPUT id="listeGrades" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_GRADE() %>"  style="margin-right:10px;width:350px" type="text" value="<%= process.getVAL_EF_GRADE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Filière :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_ST_FILIERE() %>" size="70" type="text"  readonly="readonly" value="<%= process.getVAL_ST_FILIERE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">IBA :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="7" name="<%= process.getNOM_EF_IBA() %>" size="7" type="text" <%= !process.saisieIba() ? "readonly='readonly'" : "" %> value="<%= process.getVAL_EF_IBA() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">INA :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_INA() %>" size="4" type="text"  readonly="readonly" value="<%= process.getVAL_ST_INA() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">INM :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_ST_INM() %>" size="4" type="text"  readonly="readonly" value="<%= process.getVAL_ST_INM() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de début :</span>
+					</td>
+					<td>
+						<%if(process.getCarriereCourante()!=null && !process.getCarriereCourante().isActive()&& !process.getCarriereCourante().getCodeCategorie().equals("8")){ %>
+							<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
+						<%}else{ %>
+							<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" onblur='executeBouton("<%=process.getNOM_PB_INIT_TYPE_CONTRAT()%>")'>
+							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+						<%} %>
+					</td>
+				</tr>
 				<%if(process.showDateFin){ %>
-					<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date de fin :</span>
-					<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
-					<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">					
-					<BR/><BR/>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">	
+					</td>
+				</tr>
 				<%} %>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Type de contrat :</span>
-				<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_CDICDD() %>" size="5" type="text"  readonly="readonly" value="<%= process.getVAL_ST_CDICDD() %>">
-				
-				<BR/><BR/>
-
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Régime :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REGIMES() %>">
-					<%=process.forComboHTML(process.getVAL_LB_REGIMES(), process.getVAL_LB_REGIMES_SELECT()) %>
-				</SELECT>
-
-				<BR/><BR/>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Base horaire :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE() %>">
-					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE(), process.getVAL_LB_BASE_HORAIRE_SELECT()) %>
-				</SELECT>
-				
-				<BR/><BR/>
-				
-				<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Base horaire pointage :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>">
-					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
-				</SELECT>
-				
-				<BR/><BR/>
-				
-				<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Base règlement :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_REGLEMENT() %>">
-					<%=process.forComboHTML(process.getVAL_LB_BASE_REGLEMENT(), process.getVAL_LB_BASE_REGLEMENT_SELECT()) %>
-				</SELECT>
-
-				<BR/><BR/>	
-			
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">ACC a-m-j :</span>
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_ANNEES() %>">
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_MOIS() %>">
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_JOURS() %>">
-	
-				<BR/><BR/>
-	
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">BM a-m-j:</span>
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_ANNEES() %>">
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_MOIS() %>">
-				<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_JOURS() %>">
-	
-				<BR/><BR/>
-				
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Ref. arrêté :</span>
-				<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
-	
-				<BR/><BR/>
-	
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date arrêté :</span>
-				<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
-				<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
-				
-				<BR/><BR/>
-							
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Motif :</span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIFS() %>">
-					<%=process.forComboHTML(process.getVAL_LB_MOTIFS(), process.getVAL_LB_MOTIFS_SELECT()) %>
-				</SELECT>		
-			
-			</div>
+				<tr>
+					<td>
+						<span class="sigp2">Type de contrat :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_ST_CDICDD() %>" size="5" type="text"  readonly="readonly" value="<%= process.getVAL_ST_CDICDD() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Régime :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_REGIMES() %>">
+							<%=process.forComboHTML(process.getVAL_LB_REGIMES(), process.getVAL_LB_REGIMES_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Base horaire :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE(), process.getVAL_LB_BASE_HORAIRE_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Base horaire pointage :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Base règlement :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_REGLEMENT() %>">
+							<%=process.forComboHTML(process.getVAL_LB_BASE_REGLEMENT(), process.getVAL_LB_BASE_REGLEMENT_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">ACC a-m-j :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_ANNEES() %>">
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_MOIS() %>">
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ACC_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_ACC_JOURS() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">BM a-m-j:</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_ANNEES() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_ANNEES() %>">
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_MOIS() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_MOIS() %>">
+						<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_BM_JOURS() %>" size="5" type="text" value="<%= process.getVAL_EF_BM_JOURS() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Ref. arrêté :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date arrêté :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Motif :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIFS() %>">
+							<%=process.forComboHTML(process.getVAL_LB_MOTIFS(), process.getVAL_LB_MOTIFS_SELECT()) %>
+						</SELECT>	
+					</td>
+				</tr>
+			</table>
 			
 			<% } else if(process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) || process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)) { %>
 			<div>
@@ -279,63 +336,156 @@
 					<BR/>
 				<% } %>
 		    	<BR/>
-		    	<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Statut : </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_STATUT()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Grade: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_GRADE()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Filière: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_FILIERE()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">IBA: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_IBA()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">INA: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_INA()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">INM: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_INM()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date de début: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date de fin: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Type de contrat: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_CDICDD()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Regime: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_REGIME()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Base horaire: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_HORAIRE()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Base horaire pointage: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_BASE_HORAIRE_POINTAGE()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Base règlement: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_REGLEMENT()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">ACC a-m-j: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_ANNEES()%></span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_MOIS()%></span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_JOURS()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">BM  a-m-j: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_BM_ANNEES()%></span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_BM_MOIS()%></span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_BM_JOURS()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Ref. arrêté: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Date arrêté: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
-				<BR/><BR/>
-				<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Motif: </span>
-				<span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
+		    	<table>
+		    		<tr>
+		    			<td width="150px;">
+		    				<span class="sigp2">Statut : </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_STATUT()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Grade: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_GRADE()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Filière: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_FILIERE()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">IBA: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_IBA()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">INA: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_INA()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">INM: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_INM()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Date de début: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Date de fin: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Type de contrat: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_CDICDD()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Regime: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_REGIME()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Base horaire: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_HORAIRE()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Base horaire pointage: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_BASE_HORAIRE_POINTAGE()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Base règlement: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_REGLEMENT()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">ACC a-m-j: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_ANNEES()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_MOIS()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_ACC_JOURS()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">BM  a-m-j: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_BM_ANNEES()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_BM_MOIS()%></span>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_BM_JOURS()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Ref. arrêté: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Date arrêté: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+							<span class="sigp2">Motif: </span>
+		    			</td>
+		    			<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
+		    			</td>
+		    		</tr>
+		    	</table>
 		</div>
 		<%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_REOUVERTURE)) { %>
 			<FONT color="red"> Réouverture de la carrière précédente ?</FONT>

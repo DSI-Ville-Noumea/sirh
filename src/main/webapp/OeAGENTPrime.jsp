@@ -76,23 +76,22 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des primes de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:65px;">
-				    <%if(process.getCalculPaye().equals("")){ %>
-				    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-				    <%}%>
-				    </span>
-				    <span style="position:relative;width:45px;text-align: center;">Code rubrique</span>
-					<span style="position:relative;width:300px;text-align: left;">Libellé rubrique</span>
-					<span style="position:relative;width:75px;text-align: left;">Ref. arrêté</span>
-					<span style="position:relative;width:90px;text-align: left;">Date de l'arrêté</span>
-					<span style="position:relative;width:55px;text-align: center;">Montant</span>
-					<span style="position:relative;width:90px;text-align: center;">Date début</span>
-					<span style="position:relative;text-align: center;">Date fin</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td>
+								    <%if(process.getCalculPaye().equals("")){ %>
+								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+								    <%}%>
+								</td>
+								<td width="45px;" align="center">Code rubrique</td>
+								<td width="300px;">Libellé rubrique</td>
+								<td width="75px;">Ref. arrêté</td>
+								<td width="90px;">Date de l'arrêté</td>
+								<td width="55px;" align="center">Montant</td>
+								<td width="90px;" align="center">Date début</td>
+								<td align="center">Date fin</td>
+							</tr>
 							<%
 							int indicePrime = 0;
 							if (process.getListePrimes()!=null){
@@ -132,64 +131,115 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-			<div>
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Rubrique :</span>
-			<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>
-				name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
-			
-			<BR/><BR/>
-			
-			<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Ref. arrêté :</span>
-			<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
-
-			<BR/><BR/>
-
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:150px;">Date d'arrêté :</span>
-			<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Montant :</span>
-			<INPUT class="sigp2-saisie" maxlength="7" name="<%= process.getNOM_EF_MONTANT() %>" size="7" type="text" value="<%= process.getVAL_EF_MONTANT() %>">
-
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de début :</span>
-			<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-			
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:150px;">Date de fin :</span>
-			<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">
-			
-			</div>
-			
+			<table>
+				<tr>
+					<td width="130px;">
+						<span class="sigp2Mandatory">Rubrique :</span>
+					</td>
+					<td>
+						<INPUT id="listeRubriques" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_EF_RUBRIQUE() %>"  style="margin-right:10px;width:450px" type="text" value="<%= process.getVAL_EF_RUBRIQUE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Ref. arrêté :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_EF_REF_ARR() %>" size="6" type="text" value="<%= process.getVAL_EF_REF_ARR() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date d'arrêté :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_ARR()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_ARR() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_ARR() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_ARR()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Montant :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="7" name="<%= process.getNOM_EF_MONTANT() %>" size="7" type="text" value="<%= process.getVAL_EF_MONTANT() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de début :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+			</table>
 			<% } else{ %>
 			<div>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)) { %>
 		    	<FONT color='red'>Veuillez valider votre choix.</FONT>
 		    	<BR/><BR/>
 		    <% } %>
-		    <span class="sigp2" style="width:150px">Rubrique : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_ST_RUBRIQUE()%></span>
-			<BR/>
-		    <span class="sigp2" style="width:150px">Ref. arrêté : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Date arrêté : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
-			<BR/>
-		    <span class="sigp2" style="width:150px">Montant : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_MONTANT()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Date de début : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
-			<BR/>
-			<span class="sigp2" style="width:150px">Date de fin : </span>
-			<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+		    <table>
+		    	<tr>
+		    		<td width="130px;">
+		    			<span class="sigp2">Rubrique : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_RUBRIQUE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+		    			<span class="sigp2">Ref. arrêté : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_REF_ARR()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Date arrêté : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_ARR()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+		    			<span class="sigp2">Montant : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_MONTANT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Date de début : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_DEBUT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">Date de fin : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_EF_DATE_FIN()%></span>
+		    		</td>
+		    	</tr>
+		    </table>
 		</div>
 		<%} %>
 			<BR/>
@@ -197,15 +247,10 @@
 			<TBODY>
 				<TR>
 					<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)) { %>
-		  			<TD width="31"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Valider"
-						name="<%=process.getNOM_PB_VALIDER()%>"></TD>
+		  			<TD width="31"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>"></TD>
 					<TD height="18" width="15"></TD>
 					<% } %>
-					<TD class="sigp2" style="text-align : center;"
-						height="18" width="23"><INPUT type="submit"
-						class="sigp2-Bouton-100" value="Annuler"
-						name="<%=process.getNOM_PB_ANNULER()%>"></TD>
+					<TD class="sigp2" style="text-align : center;" height="18" width="23"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>"></TD>
 				</TR>
 			</TBODY>
 		</TABLE>
