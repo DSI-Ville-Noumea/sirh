@@ -116,57 +116,86 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<% if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-			<div>		
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Motif :</span>
-			<SELECT class="sigp2-saisie" <%= process.champMotifModifiable ? "" : "disabled='disabled'" %> name="<%= process.getNOM_LB_MOTIF() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_MOTIF()%>")'>
-				<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
-			</SELECT>
-			
-			<BR/><BR/>
-			
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date de visite :</span>
-			<input id="<%=process.getNOM_EF_DATE_VISITE()%>" class="sigp2-saisie" <%= process.elementModifibale ? "" : "disabled='disabled'" %> maxlength="10"	name="<%= process.getNOM_EF_DATE_VISITE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_VISITE() %>">
-			<%if(process.elementModifibale){ %>
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_VISITE()%>', 'dd/mm/y');">
-			<%} %>
-
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Durée de validité (mois) :</span>
-			<INPUT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE() %>">
-
-			<BR/><BR/>
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Medecin :</span>
-			<SELECT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" name="<%= process.getNOM_LB_MEDECIN() %>">
-				<%=process.forComboHTML(process.getVAL_LB_MEDECIN(), process.getVAL_LB_MEDECIN_SELECT()) %>
-			</SELECT>
-			
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Avis :</span> 
-			<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_APTE()) %> > Apte 
-			<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_INAPTE()) %> > Inapte 
-			
-			<BR/><BR/>
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;"> Recommandation :</span>
-			<SELECT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" name="<%= process.getNOM_LB_RECOMMANDATION() %>" >
-				<%=process.forComboHTML(process.getVAL_LB_RECOMMANDATION(), process.getVAL_LB_RECOMMANDATION_SELECT()) %>
-			</SELECT>
-			</div>
-			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
-				<span style="position:relative;width:9px;"></span>
-				<span style="position:relative;width:55px;">	
-				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
-				</span>
-				<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-				<span style="position:relative;width:90px;text-align: center;">Type</span> 
-				<span style="position:relative;width:120px;text-align: center;">Date</span> 
-				<span style="position:relative;text-align: left">Commentaire</span> 
-			
+			<table>
+				<tr>
+					<td width="150px;">
+						<span class="sigp2Mandatory">Motif :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" <%= process.champMotifModifiable ? "" : "disabled='disabled'" %> name="<%= process.getNOM_LB_MOTIF() %>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_MOTIF()%>")'>
+							<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de visite :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_VISITE()%>" class="sigp2-saisie" <%= process.elementModifibale ? "" : "disabled='disabled'" %> maxlength="10"	name="<%= process.getNOM_EF_DATE_VISITE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_VISITE() %>">
+						<%if(process.elementModifibale){ %>
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_VISITE()%>', 'dd/mm/y');">
+						<%} %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Durée de validité (mois) :</span>
+					</td>
+					<td>
+						<INPUT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_DUREE() %>" size="5" type="text" value="<%= process.getVAL_EF_DUREE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Medecin :</span>
+					</td>
+					<td>
+						<SELECT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" name="<%= process.getNOM_LB_MEDECIN() %>">
+							<%=process.forComboHTML(process.getVAL_LB_MEDECIN(), process.getVAL_LB_MEDECIN_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Avis :</span> 
+					</td>
+					<td>
+						<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_APTE()) %> > <span class="sigp2Mandatory">Apte</span> 
+						<input <%= process.elementModifibale ? "" : "disabled='disabled'" %> type="radio" <%= process.forRadioHTML(process.getNOM_RG_AVIS(), process.getNOM_RB_INAPTE()) %> > <span class="sigp2Mandatory">Inapte</span> 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory"> Recommandation :</span>
+					</td>
+					<td>
+						<SELECT <%= process.elementModifibale ? "" : "disabled='disabled'" %> class="sigp2-saisie" name="<%= process.getNOM_LB_RECOMMANDATION() %>" >
+							<%=process.forComboHTML(process.getVAL_LB_RECOMMANDATION(), process.getVAL_LB_RECOMMANDATION_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+			</table>
+			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
+					<tr bgcolor="#EFEFEF">
+						<td>
+							<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+						</td>
+						<td width="230px;">
+							<span>Nom du document</span>
+						</td>
+						<td width="90px;" align="center">
+							<span>Type</span> 
+						</td>
+						<td width="120px;" align="center">
+							<span>Date</span> 
+						</td>
+						<td>
+							<span>Commentaire</span> 
+						</td>
+					</tr>
 					<%
 					int indiceActes = 0;
 					if (process.getListeDocuments()!=null){
@@ -192,19 +221,37 @@
 				</div>	
 				
 				<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
-				<div>
-				    <FONT color='red'>Veuillez valider votre choix.</FONT>
-				    <BR/><BR/>
-					<span class="sigp2" style="width:130px;">Nom du document : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
-					<BR/>
-					<span class="sigp2" style="width:130px;">Date : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>
-					<BR/>
-					<span class="sigp2" style="width:130px;">Commentaire : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
-					<BR/>		
-				</div>
+				<table>
+					<tr>
+						<td colspan="2" class="sigp2Mandatory">
+				   			<FONT color='red'>Veuillez valider votre choix.</FONT>
+						</td>
+					</tr>
+					<tr>
+						<td width="130px;">
+							<span class="sigp2">Nom du document : </span>
+						</td>
+						<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Date : </span>
+						</td>
+						<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="sigp2">Commentaire : </span>
+						</td>
+						<td>
+							<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_DOC()%></span>
+						</td>
+					</tr>
+				</table>
 				<BR/>
 				<TABLE align="center" border="0" cellpadding="0" cellspacing="0">
 					<TBODY>
@@ -247,29 +294,63 @@
 					</div>
 				<%} %>
 			<% } else{ %>
-				<div>
-					<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
+			<table>
+				<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
+				<tr>
+					<td colspan="2"  class="sigp2Mandatory">
 				    	<FONT color='red'>Veuillez valider votre choix.</FONT>
-				    	<BR/><BR/>
-				    <% } %>
-				    <span class="sigp2" style="width:150px">Date de visite : </span>
-					<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_VISITE()%></span>
-					<BR/>
-					<span class="sigp2" style="width:150px">Durée de validité : </span>
+					</td>
+				</tr>
+				<%} %>
+				<tr>
+					<td width="150px;">
+				    	<span class="sigp2">Date de visite : </span>
+					</td>
+					<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_VISITE()%></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="sigp2">Durée de validité : </span>
+					</td>
+					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DUREE_VALIDITE()%></span>
-					<BR/>
-					<span class="sigp2" style="width:150px">Nom du medecin : </span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="sigp2">Nom du medecin : </span>
+					</td>
+					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_MEDECIN()%></span>
-					<BR/>
-					<span class="sigp2" style="width:150px">Motif : </span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="sigp2">Motif : </span>
+					</td>
+					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
-					<BR/>
-					<span class="sigp2" style="width:150px">Avis : </span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="sigp2">Avis : </span>
+					</td>
+					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_AVIS()%></span>
-					<BR/>
-					<span class="sigp2" style="width:150px">Recommandation : </span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="sigp2">Recommandation : </span>
+					</td>
+					<td>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_RECOMMANDATION()%></span>
-				</div>
+					</td>
+				</tr>
+			</table>
 			<% } %>
 			<BR/>
 			<% if (!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>

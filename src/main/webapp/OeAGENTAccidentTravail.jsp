@@ -98,49 +98,66 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
-			<div>
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:150px;">Date d'AT :</span>
-			<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-			
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:150px;">Date de rechute :</span>
-			<input id="<%=process.getNOM_EF_DATE_INITIALE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_INITIALE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_INITIALE() %>">
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_INITIALE()%>', 'dd/mm/y');">
-
-			<BR/><BR/>
-
-			<span class="sigp2" style="margin-left:20px;position:relative;width:150px;">Durée ITT (jours) :</span>
-			<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NB_JOUR_IIT() %>" size="5" type="text" value="<%= process.getVAL_EF_NB_JOUR_IIT() %>">
-
-			<BR/><BR/>
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Type :</span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>">
-				<%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT()) %>
-			</SELECT>
-			
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Siège des lésions :</span> 
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>">
-				<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT()) %>
-			</SELECT>
-			
-			</div>
-			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
-				<span style="position:relative;width:9px;"></span>
-				<span style="position:relative;width:55px;">	
-				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
-				</span>
-				<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
-				<span style="position:relative;width:90px;text-align: center;">Type</span> 
-				<span style="position:relative;width:120px;text-align: center;">Date</span> 
-				<span style="position:relative;text-align: left">Commentaire</span> 
-			
+			<table>
+				<tr>
+					<td width="150px;">
+						<span class="sigp2Mandatory">Date d'AT :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de rechute :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_INITIALE()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_INITIALE() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_INITIALE() %>">
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_INITIALE()%>', 'dd/mm/y');">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Durée ITT (jours) :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NB_JOUR_IIT() %>" size="5" type="text" value="<%= process.getVAL_EF_NB_JOUR_IIT() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Type :</span>
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE() %>">
+							<%=process.forComboHTML(process.getVAL_LB_TYPE(), process.getVAL_LB_TYPE_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Siège des lésions :</span> 
+					</td>
+					<td>
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_SIEGE_LESION() %>">
+							<%=process.forComboHTML(process.getVAL_LB_SIEGE_LESION(), process.getVAL_LB_SIEGE_LESION_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
+			</table>
+			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
+						<tr bgcolor="#EFEFEF">
+							<td>
+								<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
+							</td>
+							<td width="230px;">Nom du document</td>
+							<td width="90px;" align="center">Type</td>
+							<td width="120px;" align="center">Date</td>
+							<td>Commentaire</td>
+						</tr>
 					<%
 					int indiceActes = 0;
 					if (process.getListeDocuments()!=null){
@@ -153,8 +170,8 @@
 								<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DOC(indiceActes)%>">
 							</td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
-							<td class="sigp2NewTab-liste" style="position:relative;width:120px;text-align: center;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
-							<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
+							<td align="center" class="sigp2NewTab-liste" style="position:relative;width:120px;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
+							<td align="center" class="sigp2NewTab-liste" style="position:relative;width:90px;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 							<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
 						</tr>
 					<%

@@ -107,76 +107,98 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(!process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) && !process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION) && !process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION)){ %>
-			<div>
-			
-			<span style="width:350px">
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:130px;">Type :</span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM() %>">
-				<%=process.forComboHTML(process.getVAL_LB_NOM(), process.getVAL_LB_NOM_SELECT()) %>
-			</SELECT>
-			
-			<BR/><BR/>
-
-			<span class="sigp2Mandatory"  style="margin-left:20px;position:relative;width:130px;">Date de début :</span>
-			<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" />
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');" />
-
-			<BR/><BR/>
-
-			<span class="sigp2"  style="margin-left:20px;position:relative;width:130px;">Date de fin :</span>
-			<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>" />
-			<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');" />
-
-			<BR/><BR/>
-
-			<span class="sigp2" style="margin-left:20px;position:relative;width:130px;">% Incapacité :</span>
-			<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_INCAPACITE() %>" size="5" type="text" value="<%= process.getVAL_EF_INCAPACITE() %>" />
-		
-			</span>
-			<span style="width:655px;">
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Maladie Professionnelle :</span> 
-			<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_OUI()) %> > Oui
-			<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_NON()) %> > Non
-			
-			<BR/>
-			<%if(process.showMaladiePro){ %>
-			<span class="sigp2" style="margin-left:20px;position:relative;width:180px;visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>;" >Nom maladie professionnelle :</span>
-			<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM_MP() %>" style="visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>; width:445px;">
-				<%=process.forComboHTML(process.getVAL_LB_NOM_MP(), null, null, process.getVAL_LB_NOM_MP(), process.getVAL_LB_NOM_MP_SELECT()) %>
-			</SELECT>
-			<%} %>
-			
-			<br />
-			<br />
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Handicap CRDHNC :</span> 
-			<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_OUI()) %> > Oui
-			<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_NON()) %> > Non
-			
-			<br />
-			
-			<span class="sigp2" style="margin-left:20px;position:relative;width:180px;visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">N° carte CRDHNC :</span>
-			<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NUM_CRDHNC() %>" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;"  size="5" type="text" value="<%= process.getVAL_EF_NUM_CRDHNC() %>" />		
-			<br />
-			<%if(process.showNumCarte){ %>
-			<span class="sigp2" style="margin-left:20px;position:relative;width:180px;visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">En cours de renouvellement :</span>
-			<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_OUI()) %> > Oui
-			<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_NON()) %> > Non	
-			<br />
-			<%} %>
-			<br />
-			
-			<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:180px;">Amenagement de poste :</span> 
-			<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_OUI()) %> > Oui
-			<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_NON()) %> > Non
-			
-			</span>
-			<br /><br />
-			<span class="sigp2" style="margin-left:20px;position:relative;width:130px;vertical-align:top;">Commentaire :</span>	
-			<textarea rows="3" maxlength="100" style="width:600px" name="<%= process.getNOM_EF_COMMENTAIRE() %>" ><%= process.getVAL_EF_COMMENTAIRE() %></textarea>
-			</div>
+			<table>
+				<tr>
+					<td width="130px;">
+						<span class="sigp2Mandatory">Type :</span>
+					</td>
+					<td width="250px;">
+						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM() %>">
+							<%=process.forComboHTML(process.getVAL_LB_NOM(), process.getVAL_LB_NOM_SELECT()) %>
+						</SELECT>
+					</td>
+					<td width="180px;">			
+						<span class="sigp2Mandatory">Maladie Professionnelle :</span> 
+						<%if(process.showMaladiePro){ %>
+							<br/>
+							<span class="sigp2" style="visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>;" >Nom maladie professionnelle :</span>
+						<%} %>
+					</td>
+					<td>
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_MALADIE_PRO()%>")' <%= process.forRadioHTML(process.getNOM_RG_RECO_MP(), process.getNOM_RB_RECO_MP_NON()) %> ><span class="sigp2Mandatory">Non</span> 
+						<%if(process.showMaladiePro){ %>
+							<br/>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_NOM_MP() %>" style="visibility:<%= process.showMaladiePro ? "visible" : "hidden" %>; width:445px;">
+								<%=process.forComboHTML(process.getVAL_LB_NOM_MP(), null, null, process.getVAL_LB_NOM_MP(), process.getVAL_LB_NOM_MP_SELECT()) %>
+							</SELECT>
+						<%} %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Date de début :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>" />
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');" />
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Date de fin :</span>
+					</td>
+					<td>
+						<input id="<%=process.getNOM_EF_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_FIN() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_FIN() %>" />
+						<IMG src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_FIN()%>', 'dd/mm/y');" />
+					</td>
+					<td>			
+						<span class="sigp2Mandatory">Handicap CRDHNC :</span> 
+						<%if(process.showNumCarte){ %>
+							<br/>
+							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">N° carte CRDHNC :</span>
+							<br/>
+							<span class="sigp2" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;">En cours de renouvellement :</span>
+						<%} %>
+					</td>
+					<td>
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
+						<input type="radio" onclick='executeBouton("<%=process.getNOM_PB_SELECT_CRDHNC()%>")' <%=process.forRadioHTML(process.getNOM_RG_RECO_CRDHNC(), process.getNOM_RB_RECO_CRDHNC_NON()) %> ><span class="sigp2Mandatory">Non</span> 
+						<%if(process.showNumCarte){ %>
+							<br />
+							<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_NUM_CRDHNC() %>" style="visibility:<%= process.showNumCarte ? "visible" : "hidden" %>;"  size="5" type="text" value="<%= process.getVAL_EF_NUM_CRDHNC() %>" />
+							<br />		
+							<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
+							<input type="radio" <%=process.forRadioHTML(process.getNOM_RG_RENOUV_CRDHNC(), process.getNOM_RB_RENOUV_CRDHNC_NON()) %> ><span class="sigp2Mandatory">Non</span> 	
+						<%} %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">% Incapacité :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="5" name="<%= process.getNOM_EF_INCAPACITE() %>" size="5" type="text" value="<%= process.getVAL_EF_INCAPACITE() %>" />
+					</td>
+					<td>
+						<span class="sigp2Mandatory">Amenagement de poste :</span> 
+					</td>
+					<td>
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_OUI()) %> ><span class="sigp2Mandatory">Oui</span> 
+						<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_AMENAGEMENT(), process.getNOM_RB_AMENAGEMENT_NON()) %> ><span class="sigp2Mandatory">Non</span> 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2">Commentaire :</span>	
+					</td>
+					<td colspan="3">
+						<textarea rows="3" maxlength="100" style="width:600px" name="<%= process.getNOM_EF_COMMENTAIRE() %>" ><%= process.getVAL_EF_COMMENTAIRE() %></textarea>
+					</td>
+				</tr>
+			</table>
 			<%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_SUPPRESSION)){ %>
 				<span style="position:relative;width:9px;"></span>
 				<span style="position:relative;width:55px;">	
