@@ -62,76 +62,47 @@
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<%=process.getUrlFichier()%>
 		<INPUT name="JSP" type="hidden" value="<%=process.getJSP()%>">
-		<FIELDSET class="sigp2Fieldset"
-			style="text-align: left; width: 1030px;">
-			<legend class="sigp2Legend">Gestion des affectations de
-				l'agent</legend>
-			<br /> <span style="position: relative; width: 9px;"></span> <span
-				style="position: relative; width: 85px;"><INPUT
-				title="ajouter" type="image"
-				class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-				src="images/ajout.gif" height="15px" width="16px"
-				name="<%=process.getNOM_PB_AJOUTER()%>"></span> <span
-				style="position: relative; width: 50px; text-align: left;">Direction</span>
-			<span style="position: relative; width: 300px; text-align: left;">Service/Section/...</span>
-			<span style="position: relative; width: 80px; text-align: center;">Date
-				début</span> <span
-				style="position: relative; width: 85px; text-align: center;">Date
-				fin</span> <span style="position: relative; width: 65px; text-align: left;">Fiche
-				poste</span> <span style="position: relative; text-align: left;">Titre
-				poste</span> <br />
-			<div
-				style="overflow: auto; height: 150px; width: 1000px; margin-right: 0px; margin-left: 0px;">
+		<FIELDSET class="sigp2Fieldset" style="text-align: left; width: 1030px;">
+			<legend class="sigp2Legend">Gestion des affectations de l'agent</legend>
+			<div style="overflow: auto; height: 150px; width: 1000px; margin-right: 0px; margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align: left; width: 980px;">
+					<tr bgcolor="#EFEFEF">
+						<td>
+							<INPUT title="ajouter" type="image" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+					 	</td>
+						<td width="50px;">Direction</td>
+						<td width="300px;">Service/Section/...</td>
+						<td width="80px;" align="center">Date début</td>
+						<td width="80px;" align="center">Date fin</td>
+						<td width="65px;">Fiche poste</td>
+						<td width="65px;">Titre poste</td>
+					</tr>
 					<%
 						int indiceAff = 0;
 							if (process.getListeAffectation() != null) {
 								for (int i = 0; i < process.getListeAffectation().size(); i++) {
 									Affectation aff = (Affectation) process.getListeAffectation().get(i);
 					%>
-					<tr id="<%=indiceAff%>"
-						onmouseover="SelectLigne(<%=indiceAff%>,<%=process.getListeAffectation().size()%>)">
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 90px;" align="center"><INPUT
-							title="consulter" type="image" src="images/oeil.gif"
-							height="15px" width="15px"
-							class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "")%>"
-							name="<%=process.getNOM_PB_CONSULTER(indiceAff)%>"> <INPUT
-							title="modifier" type="image" src="images/modifier.gif"
-							height="15px" width="15px"
-							class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-							name="<%=process.getNOM_PB_MODIFIER(indiceAff)%>"> <%
- 	if (aff.isActive()) {
- %> <INPUT title="imprimer" type="image" src="images/imprimer.gif"
-							height="15px" width="15px"
-							class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-							name="<%=process.getNOM_PB_IMPRIMER(indiceAff)%>"> <%
- 	} else {
- %> <span style="width: 22px;"></span> <%
- 	}
- %> <INPUT title="consulter" type="image" src="images/oeil.gif"
-							height="15px" width="15px"
-							class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-							name="<%=process.getNOM_PB_CONSULTER(indiceAff)%>"> <%
- 	if (aff.isActive()) {
- %> <INPUT title="supprimer" type="image" src="images/suppression.gif"
-							height="15px" width="15px"
-							class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
-							name="<%=process.getNOM_PB_SUPPRIMER(indiceAff)%>"> <%
- 	}
- %></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 50px; text-align: left;"><%=process.getVAL_ST_DIR(indiceAff)%></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 300px; text-align: left;"><%=process.getVAL_ST_SERV(indiceAff)%></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAff)%></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAff)%></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; width: 65px; text-align: left;"><%=process.getVAL_ST_NUM_FP(indiceAff)%></td>
-						<td class="sigp2NewTab-liste"
-							style="position: relative; text-align: left;"><%=process.getVAL_ST_TITRE(indiceAff)%></td>
+					<tr id="<%=indiceAff%>" onmouseover="SelectLigne(<%=indiceAff%>,<%=process.getListeAffectation().size()%>)">
+						<td class="sigp2NewTab-liste" style="position: relative; width: 90px;" align="center">
+							<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "")%>" name="<%=process.getNOM_PB_CONSULTER(indiceAff)%>"> 
+							<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" name="<%=process.getNOM_PB_MODIFIER(indiceAff)%>"> 
+							<% if (aff.isActive()) { %> 
+					 			<INPUT title="imprimer" type="image" src="images/imprimer.gif" height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" name="<%=process.getNOM_PB_IMPRIMER(indiceAff)%>">
+					 		<% } else { %> 
+					 			<span style="width: 22px;"></span> 
+					 		<%} %> 
+					 		<INPUT title="consulter" type="image" src="images/oeil.gif" eight="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" name="<%=process.getNOM_PB_CONSULTER(indiceAff)%>">
+					 	 	<% if (aff.isActive()) { %> 
+					 	 		<INPUT title="supprimer" type="image" src="images/suppression.gif" height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" name="<%=process.getNOM_PB_SUPPRIMER(indiceAff)%>"> 
+					 		<%} %>
+					 	</td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 50px; text-align: left;"><%=process.getVAL_ST_DIR(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 300px; text-align: left;"><%=process.getVAL_ST_SERV(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 80px; text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; width: 65px; text-align: left;"><%=process.getVAL_ST_NUM_FP(indiceAff)%></td>
+						<td class="sigp2NewTab-liste" style="position: relative; text-align: left;"><%=process.getVAL_ST_TITRE(indiceAff)%></td>
 					</tr>
 					<%
 						indiceAff++;
@@ -142,20 +113,15 @@
 			</div>
 			<BR />
 			<div style="text-align: center;">
-				<INPUT type="submit"
-					class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2-Bouton-100")%>"
-					value="Historique" name="<%=process.getNOM_PB_HISTORIQUE()%>">
-				<INPUT type="submit"
-					class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100")%>"
-					value="Historique" name="<%=process.getNOM_PB_HISTORIQUE()%>">
+				<INPUT type="submit" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2-Bouton-100")%>" value="Historique" name="<%=process.getNOM_PB_HISTORIQUE()%>">
+				<INPUT type="submit" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100")%>" value="Historique" name="<%=process.getNOM_PB_HISTORIQUE()%>">
 			</div>
 		</FIELDSET>
 		<%
 			if (!Const.CHAINE_VIDE.equals(process.getVAL_ST_ACTION())) {
 		%>
 		<INPUT name="JSP" type="hidden" value="<%=process.getJSP()%>">
-		<FIELDSET class="sigp2Fieldset"
-			style="text-align: left; margin: 10px; width: 1030px;">
+		<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px; width: 1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%
 				if (process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION)) {
@@ -166,12 +132,10 @@
 			%>
 			<BR />
 			<div>
-				<FIELDSET class="sigp2Fieldset"
-					style="text-align: left; margin: 10px;">
+				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 					<legend class="sigp2Legend">Fiche de poste</legend>
-					<span class="sigp2Mandatory"
-						style="position: relative; width: 150px;">Réf. fiche de
-						poste : </span> <span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE()%></span>
+					<span class="sigp2Mandatory" style="position: relative; width: 150px;">Réf. fiche de poste : </span> 
+					<span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE()%></span>
 					<%
 						if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)) {
 					%>
@@ -180,44 +144,47 @@
 					<%
 						}
 					%>
-					<span class="sigp2" style="width: 125px">Temps réglementaire
-						:</span> <span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 60px">Direction
-						:</span> <span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_DIRECTION()%></span>
-					<span class="sigp2" style="width: 60px">Service :</span> <span
-						class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SERVICE()%></span>
-					<span class="sigp2" style="width: 60px">Section :</span> <span
-						class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SUBDIVISION()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 100px">Titre
-						du poste :</span> <span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_TITRE_FP()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 100px">Lieu
-						du poste :</span> <span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_LIEU_FP()%></span>
+					<span class="sigp2" style="width: 125px">Temps réglementaire :</span> 
+					<span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 60px">Direction :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_DIRECTION()%></span>
+					<span class="sigp2" style="width: 60px">Service :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SERVICE()%></span>
+					<span class="sigp2" style="width: 60px">Section :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SUBDIVISION()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 100px">Titre du poste :</span> 
+					<span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_TITRE_FP()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 100px">Lieu du poste :</span> 
+					<span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_LIEU_FP()%></span>
 					<BR />
 				</FIELDSET>
 				<BR />
 				<%
 					if (process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)) {
 				%>
-				<FIELDSET class="sigp2Fieldset"
-					style="text-align: left; margin: 10px;">
+				<FIELDSET class="sigp2Fieldset" style="text-align: left; margin: 10px;">
 					<legend class="sigp2Legend">Fiche de poste secondaire</legend>
-					<span class="sigp2Mandatory"
-						style="position: relative; width: 150px;">Réf. fiche de
-						poste : </span> <span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE_SECONDAIRE()%></span>
-					<INPUT type="image" src="images/loupe.gif"
-						name="<%=process.getNOM_PB_RECHERCHER_FP_SECONDAIRE()%>">
-					<span class="sigp2" style="width: 125px">Temps réglementaire
-						:</span> <span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 60px">Direction
-						:</span> <span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_DIRECTION_SECONDAIRE()%></span>
-					<span class="sigp2" style="width: 60px">Service :</span> <span
-						class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SERVICE_SECONDAIRE()%></span>
-					<span class="sigp2" style="width: 60px">Section :</span> <span
-						class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SUBDIVISION_SECONDAIRE()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 100px">Titre
-						du poste :</span> <span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_TITRE_FP_SECONDAIRE()%></span>
-					<BR /> <BR /> <span class="sigp2" style="width: 100px">Lieu
-						du poste :</span> <span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_LIEU_FP_SECONDAIRE()%></span>
+					<span class="sigp2Mandatory" style="position: relative; width: 150px;">Réf. fiche de poste : </span> 
+					<span class="sigp2-statique" style="width: 100px"><%=process.getVAL_ST_NUM_FICHE_POSTE_SECONDAIRE()%></span>
+					<INPUT type="image" src="images/loupe.gif" name="<%=process.getNOM_PB_RECHERCHER_FP_SECONDAIRE()%>">
+					<span class="sigp2" style="width: 125px">Temps réglementaire :</span> 
+					<span class="sigp2-statique" style="width: 170px"><%=process.getVAL_ST_TPS_REG_SECONDAIRE()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 60px">Direction :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_DIRECTION_SECONDAIRE()%></span>
+					<span class="sigp2" style="width: 60px">Service :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SERVICE_SECONDAIRE()%></span>
+					<span class="sigp2" style="width: 60px">Section :</span> 
+					<span class="sigp2-statique" style="width: 250px"><%=process.getVAL_ST_SUBDIVISION_SECONDAIRE()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 100px">Titre du poste :</span> 
+					<span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_TITRE_FP_SECONDAIRE()%></span>
+					<BR /> <BR /> 
+					<span class="sigp2" style="width: 100px">Lieu du poste :</span> 
+					<span class="sigp2-statique" style="width: 600px"><%=process.getVAL_ST_LIEU_FP_SECONDAIRE()%></span>
 					<BR />
 				</FIELDSET>
 

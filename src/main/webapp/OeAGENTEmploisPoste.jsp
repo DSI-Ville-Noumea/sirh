@@ -44,93 +44,185 @@ document.formu.elements[nom].focus();
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		    <legend class="sigp2Legend">Fiche de poste</legend>
-		    <br/>
-			<span class="sigp2" style="width:60px">Budget :</span>
-			<span class="sigp2-statique" align="left" style="width:170px"><%=process.getVAL_ST_BUDGET()%></span>
-			<span class="sigp2" style="width:100px">Année :</span>
-			<span class="sigp2-statique" align="left" style="width:160px"><%=process.getVAL_ST_ANNEE()%></span>
-			<span class="sigp2" style="width:70px">Numéro :</span>
-			<span class="sigp2-statique" align="left" style="width:160px"><%=process.getVAL_ST_NUMERO()%></span>
-			<span class="sigp2" style="width:80px">NFA :</span>
-			<span class="sigp2-statique" align="left" style="width:120px"><%=process.getVAL_ST_NFA()%></span>
-			<br/>
-			<span class="sigp2" style="width:60px">OPI :</span>
-			<span class="sigp2-statique" align="left" style="width:170px"><%=process.getVAL_ST_OPI()%></span>
-			<span class="sigp2" style="width:100px">Réglementaire :</span>
-			<span class="sigp2-statique" align="left" style="width:160px"><%=process.getVAL_ST_REGLEMENTAIRE()%></span>
-			<span class="sigp2" style="width:70px">Budgété :</span>
-			<span class="sigp2-statique" align="left" style="width:160px"><%=process.getVAL_ST_POURCENT_BUDGETE()%></span>
-			<span class="sigp2" style="width:80px">Statut :</span>
-			<span class="sigp2-statique" align="left" style="width:120px"><%=process.getVAL_ST_ACT_INACT()%></span>
+		    <table>
+		    	<tr>
+		    		<td width="60px;">
+						<span class="sigp2">Budget :</span>
+		    		</td>
+		    		<td width="170px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_BUDGET()%></span>
+		    		</td>
+		    		<td width="100px;">
+						<span class="sigp2" >Année :</span>
+		    		</td>
+		    		<td width="160px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_ANNEE()%></span>
+		    		</td>
+		    		<td width="70px;">
+						<span class="sigp2">Numéro :</span>
+		    		</td>
+		    		<td width="160px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_NUMERO()%></span>
+		    		</td>
+		    		<td width="80px;">
+						<span class="sigp2" >NFA :</span>
+		    		</td>
+		    		<td width="120px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_NFA()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2">OPI :</span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_OPI()%></span>
+		    		</td>
+		    		<td>
+						<span class="sigp2">Réglementaire :</span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_REGLEMENTAIRE()%></span>
+		    		</td>
+		    		<td>
+						<span class="sigp2">Budgété :</span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_POURCENT_BUDGETE()%></span>
+		    		</td>
+		    		<td>
+						<span class="sigp2">Statut :</span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_ACT_INACT()%></span>
+		    		</td>
+		    	</tr>
+		    </table>
 		</FIELDSET>
-		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 		    <legend class="sigp2Legend">Descriptif du poste</legend>
-		    <br/>
-			<span class="sigp2" style="width:150px"> Titre du poste : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_TITRE()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Direction : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_DIRECTION()%></span>
-			<span class="sigp2" style="width:150px"> Service du poste : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_SERVICE()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Section : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_SECTION()%></span>
-			<span class="sigp2" style="width:150px"> Localisation : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_LOCALISATION()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Responsable hiér. : </span>
-			<span class="sigp2-statique" align="left" style="width:500px"><%=process.getVAL_ST_RESPONSABLE()%> - <%= process.getVAL_ST_INFO_RESP()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Fiche de poste remplacée : </span>
-			<span class="sigp2-statique" align="left" style="width:500px"><%=process.getVAL_ST_REMPLACEMENT()%> - <%=process.getVAL_ST_INFO_REMP()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Grade : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_GRADE()%></span>
-			<span class="sigp2" style="width:150px"> Corps / Cadre d'emploi : </span>
-			<span class="sigp2-statique" align="left" style="width:300px"><%=process.getVAL_ST_CADRE_EMPLOI()%></span>
-			<br/>
+		    <table>
+		    	<tr>
+		    		<td width="150px;">
+						<span class="sigp2"> Titre du poste : </span>
+		    		</td>
+		    		<td colspan="3">
+						<span class="sigp2-statique"><%=process.getVAL_ST_TITRE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Direction : </span>
+		    		</td>
+		    		<td width="300px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_DIRECTION()%></span>
+		    		</td>
+		    		<td width="150px;">
+						<span class="sigp2"> Service du poste : </span>
+		    		</td>
+		    		<td width="300px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_SERVICE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Section : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_SECTION()%></span>
+		    		</td>
+		    		<td>
+						<span class="sigp2"> Localisation : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_LOCALISATION()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Responsable hiér. : </span>
+		    		</td>
+		    		<td colspan="3">
+						<span class="sigp2-statique" align="left" style="width:500px"><%=process.getVAL_ST_RESPONSABLE()%> - <%= process.getVAL_ST_INFO_RESP()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Fiche de poste remplacée : </span>
+		    		</td>
+		    		<td colspan="3">
+						<span class="sigp2-statique"><%=process.getVAL_ST_REMPLACEMENT()%> - <%=process.getVAL_ST_INFO_REMP()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Grade : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_GRADE()%></span>
+		    		</td>
+		    		<td>
+						<span class="sigp2"> Corps / Cadre d'emploi : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_CADRE_EMPLOI()%></span>
+		    		</td>
+		    	</tr>
+		    </table>
 		</FIELDSET>
-		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Mission</legend>
 			<div align="left">
 				<br/>				
-				<span class="sigp2-statique" align="left" style="width:1000px"><%=process.getVAL_ST_MISSION()%></span>
+				<span class="sigp2-statique" style="width:1000px"><%=process.getVAL_ST_MISSION()%></span>
 			</div>
 			<br/>
 		</FIELDSET>
-		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 		    <legend class="sigp2Legend">Titulaire du poste</legend>
-		    <br/>
-			<span class="sigp2" style="width:150px"> Titulaire du poste : </span>
-			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_TITULAIRE()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Grade du titulaire : </span>
-			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_GRADE_AGT()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Etude : </span>
-			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_ETUDE_AGT()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Temps de travail : </span>
-			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_TPS_TRAVAIL_AGT()%></span>
-			<br/>
-			<br/>
-			<span class="sigp2" style="width:150px"> Supérieur hiérarchique : </span>
-			<span class="sigp2-statique" align="left" style="width:800px"><%=process.getVAL_ST_SUPERIEUR_HIERARCHIQUE()%></span>
-			<br/>
+		    <table>
+		    	<tr>
+		    		<td width="150px;">
+						<span class="sigp2"> Titulaire du poste : </span>
+		    		</td>
+		    		<td width="800px;">
+						<span class="sigp2-statique"><%=process.getVAL_ST_TITULAIRE()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Grade du titulaire : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_GRADE_AGT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Etude : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_ETUDE_AGT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Temps de travail : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_TPS_TRAVAIL_AGT()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td>
+						<span class="sigp2"> Supérieur hiérarchique : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-statique"><%=process.getVAL_ST_SUPERIEUR_HIERARCHIQUE()%></span>
+		    		</td>
+		    	</tr>
+		    </table>
 		</FIELDSET>
-		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Activités</legend>			
             <%if(process.getListeActivite()!= null && process.getListeActivite().size()>0){ %>
@@ -156,7 +248,6 @@ document.formu.elements[nom].focus();
 			<%} %>
 			<br/>
 		</FIELDSET>
-		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Compétences</legend>
             <%if((process.getListeSavoirFaire()!= null || process.getListeSavoir()!= null || process.getListeComportementPro()!= null) && (process.getListeSavoirFaire().size()>0 || process.getListeSavoir().size()>0 || process.getListeComportementPro().size()>0)){ %>
@@ -233,7 +324,6 @@ document.formu.elements[nom].focus();
 			<%} %>
 			<br/>
 		</FIELDSET>
-		<BR/>
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;margin:10px;width:1030px;">
 			<legend class="sigp2Legend">Spécificités</legend>
 			<BR/>
@@ -349,7 +439,6 @@ document.formu.elements[nom].focus();
 			</div>
 			<BR/>
 		</FIELDSET>
-		<BR/>
 		<%if (process.getFichePosteCourant()!=null && process.getFichePosteCourant().getIdFichePoste() != null) { %>
 		<FIELDSET style="text-align: center; margin: 10px; width:1030px;" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
 			<% if (process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION)){ %>
