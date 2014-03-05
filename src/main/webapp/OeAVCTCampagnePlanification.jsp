@@ -60,8 +60,7 @@ function SelectLigne(id,tailleTableau)
 				</SELECT>
 				<INPUT type="submit" value="Changer" class="sigp2-Bouton-100" name="<%=process.getNOM_PB_LANCER()%>">
 				<BR>
-			</FIELDSET>
-			<BR/>
+		</FIELDSET>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Planning et liste de diffusion des alertes</legend>
 			<br/>
@@ -111,7 +110,6 @@ function SelectLigne(id,tailleTableau)
 						}%>
 				</table>	
 			</div>	
-			<BR/><BR/>	
 		</FIELDSET>
 	<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">

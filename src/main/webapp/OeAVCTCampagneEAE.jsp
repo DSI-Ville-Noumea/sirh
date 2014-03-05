@@ -63,22 +63,22 @@ function SelectLigneTabDoc(id,tailleTableau)
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Liste des campagnes EAE</legend>
-			<br/>
-			<span style="margin-left: 5px;">
-				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-			</span>
-			<span style="margin-left: 20px;">Docs joint</span>
-			<span style="margin-left: 0px;">Année</span>
-			<span style="margin-left: 15px;">Date début</span>
-			<span style="margin-left: 40px;">Date fin</span>
-			<span style="margin-left: 15px;">Date début Kiosque</span>
-			<span style="margin-left: 0px;">Date fin Kiosque</span>
-			<span style="margin-left: 25px;">Kiosque</span>
-			<span style="margin-left: 75px;">Kiosque</span>
-			<span style="margin-left: 45px;">Cloturer</span>
-			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 					<table class="sigp2NewTab" style="text-align:left;width:980px;">
+						<tr bgcolor="#EFEFEF">
+							<td width="45px;">
+								<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+							</td>
+							<td width="45px;" align="center">Docs joint</td>
+							<td width="45px;" align="center">Année</td>
+							<td width="90px;" align="center">Date début</td>
+							<td width="90px;" align="center">Date fin</td>
+							<td width="90px;" align="center">Date début Kiosque</td>
+							<td width="90px;" align="center">Date fin Kiosque</td>
+							<td width="110px;" align="center">Kiosque</td>
+							<td width="110px;" align="center">Kiosque</td>
+							<td>Cloturer</td>
+						</tr>
 						<%
 						int indiceCamp = 0;
 						if (process.getListeCampagne()!=null){
@@ -93,19 +93,19 @@ function SelectLigneTabDoc(id,tailleTableau)
 										<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceCamp)%>">
 				    				<%} %>
 									</td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: center;"><%=process.getVAL_ST_ANNEE(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_KIOSQUE(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_FIN_KIOSQUE(indiceCamp)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:110px;text-align: center;">
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_DOC(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ANNEE(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_KIOSQUE(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN_KIOSQUE(indiceCamp)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;">
 									<INPUT <%= process.peutOuvrirKiosque(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Ouvrir" name="<%=process.getNOM_PB_OUVRIR_KIOSQUE(indiceCamp)%>">
 								</td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:110px;text-align: center;">
+								<td class="sigp2NewTab-liste" style="text-align: center;">
 									<INPUT <%= process.peutFermerKiosque(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_FERMER_KIOSQUE(indiceCamp)%>">
 								</td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">
+								<td class="sigp2NewTab-liste" style="text-align: left;">
 									<INPUT <%= process.peutCloturerCampagne(indiceCamp) ? "" : "disabled='disabled'" %> type="submit" class="sigp2-Bouton-100" value="Cloturer" name="<%=process.getNOM_PB_CLOTURER_CAMPAGNE(indiceCamp)%>">
 								</td>
 							</tr>

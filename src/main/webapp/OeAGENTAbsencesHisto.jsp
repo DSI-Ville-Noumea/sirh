@@ -89,28 +89,27 @@
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_NP()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend">Demandes non prises</legend>				    
-					<br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
-					<span style="position:relative;width:90px;text-align: center;">Date début</span>
-					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
-					<span style="position:relative;width:90px;text-align: center;">Durée</span>
-					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
-					<span style="position:relative;text-align: left;">Etat</span>
-					<br/>
+					<legend class="sigp2Legend">Demandes non prises</legend>	
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="100px;" align="center">Type Demande</td>
+								<td width="90px;" align="center">Date début</td>
+								<td width="90px;" align="center">Heure Début</td>
+								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">Date Demande</td>
+								<td>Etat</td>
+							</tr>
 							<%
 							for (int i = 0;i<process.getListeDemandeNonPrises().size();i++){
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeNonPrises().size()%>)">
-								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_NP(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_TYPE_DEMANDE_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEBUT_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_HEURE_DEBUT_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DUREE_NP(i)%></td>
+								<td style="text-align: center;" class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_DEMANDE_NP(i)%></td>
+								<td style="text-align: left;" class="sigp2NewTab-liste"><%=process.getVAL_ST_ETAT_DEMANDE_NP(i)%></td>
 							</tr>
 							<%
 							}%>
@@ -147,28 +146,27 @@
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_EC()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend">Demandes en cours</legend>					    
-					<br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
-					<span style="position:relative;width:90px;text-align: center;">Date début</span>
-					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
-					<span style="position:relative;width:90px;text-align: center;">Durée</span>
-					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
-					<span style="position:relative;text-align: left;">Etat</span>
-					<br/>
+					<legend class="sigp2Legend">Demandes en cours</legend>		
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="100px;" align="center">Type Demande</td>
+								<td width="90px;" align="center">Date début</td>
+								<td width="90px;" align="center">Heure Début</td>
+								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">Date Demande</td>
+								<td>Etat</td>
+							</tr>
 							<%
 							for (int i = 0;i<process.getListeDemandeEnCours().size();i++){
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeDemandeEnCours().size()%>)">
-								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_EC(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_EC(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_EC(i)%></td>
 							</tr>
 							<%
 							}%>
@@ -205,28 +203,27 @@
 	                <INPUT type="submit" class="sigp2-Bouton-100" value="Filtrer" name="<%=process.getNOM_PB_FILTRER_TT()%>">
 				</FIELDSET>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend">Toutes les demandes</legend>						    
-					<br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:100px;text-align: center;">Type Demande</span>
-					<span style="position:relative;width:90px;text-align: center;">Date début</span>
-					<span style="position:relative;width:90px;text-align: center;">Heure Début</span>
-					<span style="position:relative;width:90px;text-align: center;">Durée</span>
-					<span style="position:relative;width:90px;text-align: center;">Date Demande</span>
-					<span style="position:relative;text-align: left;">Etat</span>
-					<br/>
+					<legend class="sigp2Legend">Toutes les demandes</legend>			
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="100px;" align="center">Type Demande</td>
+								<td width="90px;" align="center">Date début</td>
+								<td width="90px;" align="center">Heure Début</td>
+								<td width="90px;" align="center">Durée</td>
+								<td width="90px;" align="center">Date Demande</td>
+								<td>Etat</td>
+							</tr>
 							<%
 							for (int i = 0;i<process.getListeToutesDemandes().size();i++){
 							%>
 							<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeToutesDemandes().size()%>)">
-								<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DUREE_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_TT(i)%></td>
-								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_TYPE_DEMANDE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_HEURE_DEBUT_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DUREE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEMANDE_TT(i)%></td>
+								<td class="sigp2NewTab-liste" style="text-align: left;"><%=process.getVAL_ST_ETAT_DEMANDE_TT(i)%></td>
 							</tr>
 							<%
 							}%>

@@ -56,18 +56,17 @@
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Gestion des entretiens annuels d'évaluation de l'agent</legend>
-				    <br/>
-				    <span style="position:relative;width:9px;"></span>
-				    <span style="position:relative;width:60px;"></span>
-				    <span style="position:relative;width:45px;text-align: center;">Année</span>
-					<span style="position:relative;width:250px;text-align: center;">Evaluateur</span>
-					<span style="position:relative;width:90px;text-align: center;">Date de l'entretien</span>
-					<span style="position:relative;width:300px;text-align: center;">Service</span>
-					<span style="position:relative;width:75px;text-align: center;">Documents</span>
-					<span style="position:relative;text-align: left;">Statut</span>
-					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+						<tr bgcolor="#EFEFEF">
+							<td width="70px;"></td>
+							<td width="45px;" align="center">Année</td>
+							<td width="250px;" align="center">Evaluateur</td>
+							<td width="90px;" align="center">Date de l'entretien</td>
+							<td width="300px;" align="center">Service</td>
+							<td width="75px;" align="center">Documents</td>
+							<td>Statut</td>
+						</tr>
 						<%
 						UserAppli aUser= (UserAppli)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_USER_APPLI);
 			
@@ -76,23 +75,23 @@
 									EAE eae = process.getListeEae().get(i);
 							%>
 									<tr id="<%=indiceEae%>" onmouseover="SelectLigne(<%=indiceEae%>,<%=process.getListeEae().size()%>)">
-										<td class="sigp2NewTab-liste" style="position:relative;width:60px;" align="center">&nbsp;
-										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-										<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
-				    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
-											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
-				    					<%}else{ %>
-											<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+										<td class="sigp2NewTab-liste" align="center">&nbsp;
+											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
+											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceEae)%>">
+					    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 												<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
-					    					<%} %>
-				    					<%} %>									
+					    					<%}else{ %>
+												<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+													<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
+						    					<%} %>
+					    					<%} %>									
 											<INPUT title="documents" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceEae)%>">
 										</td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:45px;text-align: center;"><%=process.getVAL_ST_ANNEE(indiceEae)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:250px;text-align: center;"><%=process.getVAL_ST_EVALUATEUR(indiceEae)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_ENTRETIEN(indiceEae)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: center;"><%=process.getVAL_ST_SERVICE(indiceEae)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:70px;text-align: center;">
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_ANNEE(indiceEae)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_EVALUATEUR(indiceEae)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_ENTRETIEN(indiceEae)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_SERVICE(indiceEae)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;">
 										<%if(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 											<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(indiceEae)%>">
 				    					<%}else{ %>
@@ -110,7 +109,7 @@
 					<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 						<legend class="sigp2Legend">Détail de l'entretien annuel d'évaluation</legend>
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
-						<div style="margin-left:10px;margin-top:20px;text-align:left;width:900px" align="left">
+						<div style="margin-left:10px;text-align:left;width:980px" align="left">
 							<% if (process.onglet.equals("ONGLET1")) {%>
 								<span id="titreOngletInformations" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
@@ -139,9 +138,9 @@
 						</div>
 						
 							<% if (process.onglet.equals("ONGLET1")) {%>
-								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date de l'entretien : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_ENTRETIEN()%></span>
@@ -174,9 +173,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET3")) {%>
-								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'évaluateur : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_COMMENTAIRE_EVALUATEUR()%></span>
@@ -205,9 +204,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET4")) {%>
-								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs professionnels : </span>
 								<br/><br/>
@@ -258,9 +257,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET5")) {%>
-								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité géographique : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_MOB_GEO()%></span>
@@ -325,9 +324,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
 								<br/><br/>
@@ -387,9 +386,9 @@
 						</div>
 						
 							<% if (process.onglet.equals("ONGLET1")) {%>
-								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletInformations" title="Informations" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Date de l'entretien : </span>
 								<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_ENTRETIEN()%></span>
@@ -422,9 +421,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET3")) {%>
-								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvaluation" title="Evaluation" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Commentaire de l'évaluateur : </span>
 								<textarea class="sigp2-saisie" rows="3" maxlength="3900" style="position:relative;width:600px" name="<%= process.getNOM_ST_COMMENTAIRE_EVALUATEUR() %>" ><%= process.getVAL_ST_COMMENTAIRE_EVALUATEUR() %></textarea>
@@ -464,9 +463,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET4")) {%>
-								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletPlanAction" title="PlanAction" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Objectifs professionnels : </span>
 								<br/><br/>
@@ -587,9 +586,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET5")) {%>
-								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletEvolution" title="Evolution" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 								<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:150px;">Mobilité géographique : </span>
 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOB_GEO(),process.getNOM_RB_MOB_GEO_OUI())%>>Oui
@@ -671,9 +670,9 @@
 							</div>
 						
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:block;margin-right:10px;width:1000px;">
+								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:block;margin-right:10px;width:960px;">
 							<% }else {%>
-								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:1000px;">
+								<div id="corpsOngletDeveloppement" title="Developpement" class="OngletCorps" style="display:none;margin-right:10px;width:960px;">
 							<% } %>
 							<span class="sigp2Mandatory" style="text-decoration: underline;margin-left:20px;position:relative;width:200px;">Développements : </span>
 								<br/><br/>
@@ -871,29 +870,42 @@
 			</table>	
 			
 			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
-			<BR/><br/>
-			<div>		
-				<span class="sigp2" style="width:130px;" >Commentaire :</span>
-				<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE_ANCIEN_EAE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE_ANCIEN_EAE() %>">
-				<BR/>
-				<BR/>	
-				<span class="sigp2Mandatory" style="width:130px;" >Année :</span>
-				<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ANCIEN_EAE() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ANCIEN_EAE() %>">
-				<BR/>
-				<BR/>
-				<span class="sigp2Mandatory" style="width:130px;">Fichier : </span> 
-				<% if(process.fichierUpload == null){ %>
-					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
-				<%}else{ %>
-					<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
-				<% }%>
-				<br />
-			</div>
-			<div style="text-align: center">
-				<BR/><BR/>
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE()%>">
-				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-			</div>
+			<table>
+				<tr>
+					<td width="100px;">
+						<span class="sigp2">Commentaire :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="100" name="<%= process.getNOM_EF_COMMENTAIRE_ANCIEN_EAE() %>" size="100" type="text" value="<%= process.getVAL_EF_COMMENTAIRE_ANCIEN_EAE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Année :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ANNEE_ANCIEN_EAE() %>" size="5" type="text" value="<%= process.getVAL_EF_ANNEE_ANCIEN_EAE() %>">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Fichier : </span> 
+					</td>
+					<td>
+						<% if(process.fichierUpload == null){ %>
+							<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" type="file" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
+						<%}else{ %>
+							<INPUT name="<%= process.getNOM_EF_LIENDOCUMENT_ANCIEN_EAE() %>" class="sigp2-saisie" disabled="disabled" type="text" value="<%= process.getVAL_EF_LIENDOCUMENT_ANCIEN_EAE() %>" >
+						<% }%>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_DOCUMENT_CREATION_ANCIEN_EAE()%>">
+						<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+					</td>
+				</tr>
+			</table>
 			<%}%>	
 		</FIELDSET>	
 		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	

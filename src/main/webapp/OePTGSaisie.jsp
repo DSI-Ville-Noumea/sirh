@@ -125,15 +125,15 @@
 													</tr>
 													<tr bgcolor="#BFEFFF">
 														<td>
-															<INPUT type="text" class="sigp2-saisie" size="50px" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
+															<INPUT type="text" class="sigp2-saisie" size="22px" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
 														</td>
 													</tr>
 													<tr bgcolor="#BFEFFF">
 														<td>
 															<textarea  cols="15" rows="3" name="NOM_comm_<%=id %>" title="Zone de saisie du commentaire"><%=commentaire %></textarea>
 															
-															<input type="hidden" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
-															<input type="hidden" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
+															<input type="hidden" size="1" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
+															<input type="hidden" size="1" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
 														</td>
 													</tr>
 												</table>
@@ -213,15 +213,15 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<INPUT type="text" class="sigp2-saisie" size="50px" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
+												<INPUT type="text" size="22px" class="sigp2-saisie" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
 												<textarea  cols="15" rows="3" name="NOM_comm_<%=id %>" title="Zone de saisie du commentaire"><%=commentaire %></textarea>
 												
-												<input type="hidden" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
-												<input type="hidden" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
+												<input type="hidden" size="1" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
+												<input type="hidden" size="1" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
 											</td>
 										</tr>
 									</table>
@@ -298,15 +298,15 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<INPUT type="text" class="sigp2-saisie" size="50px" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
+												<INPUT type="text" class="sigp2-saisie" size="22px" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
 												<textarea  cols="15" rows="3" name="NOM_comm_<%=id %>" title="Zone de saisie du commentaire"><%=commentaire %></textarea>
 												
-												<input type="hidden" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
-												<input type="hidden" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
+												<input type="hidden" size="1" name="NOM_idptg_<%=id %>" value="<%=idPtg %>" />
+												<input type="hidden" size="1" name="NOM_idrefetat_<%=id %>" value="<%=idRefEtat %>" />
 											</td>
 										</tr>
 									</table>
