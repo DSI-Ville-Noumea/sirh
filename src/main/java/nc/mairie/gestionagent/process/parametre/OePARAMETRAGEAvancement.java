@@ -255,12 +255,13 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	private void initialiseListeCap(HttpServletRequest request) throws Exception {
 		setListeCap(getCapDao().listerCap());
 		if (getListeCap().size() != 0) {
-			int tailles[] = { 10, 15, 10 };
-			String padding[] = { "G", "G", "G" };
+			int tailles[] = { 10, 15, 10, 10 };
+			String padding[] = { "G", "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<Cap> list = getListeCap().listIterator(); list.hasNext();) {
 				Cap cap = (Cap) list.next();
-				String ligne[] = { cap.getCodeCap(), cap.getTypeCap(), cap.getRefCap() };
+				String ligne[] = { cap.getCodeCap(), cap.getTypeCap(), cap.getRefCap(),
+						cap.getCapVDN() == 1 ? "oui" : "non" };
 
 				aFormat.ajouteLigne(ligne);
 			}

@@ -406,7 +406,7 @@
 							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
 							<span class="sigp2-saisie" style="margin-left: 55px;">Type</span>
 							<span class="sigp2-saisie" style="margin-left: 55px;">Reférence</span>
-							<span class="sigp2-saisie" style="margin-left: 55px;">VDN</span>
+							<span class="sigp2-saisie" style="margin-left: 35px;">VDN</span>
 							<SELECT name="<%= process.getNOM_LB_CAP() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_CAP(), process.getVAL_LB_CAP_SELECT()) %>
 							</SELECT>
