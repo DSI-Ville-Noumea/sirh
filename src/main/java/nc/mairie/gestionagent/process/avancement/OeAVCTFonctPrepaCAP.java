@@ -362,7 +362,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 							if (getTransaction().isErreur())
 								getTransaction().traiterErreur();
 							else {
-								listeCadreEmploi.add(cadreEmp);
+								if (!listeCadreEmploi.contains(cadreEmp)) {
+									listeCadreEmploi.add(cadreEmp);
+								}
 							}
 						}
 					}
