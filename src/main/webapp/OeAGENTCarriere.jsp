@@ -145,7 +145,7 @@
 						</div>	
 				<BR/><BR/>
 				<div style="text-align: center;">
-					<INPUT type="submit" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2-Bouton-100") %>" value="Avct Prev." name="<%=process.getNOM_PB_AVANCEMENT_PREV()%>">
+					<INPUT type="submit" class="sigp2-Bouton-100" value="Avct Prev." name="<%=process.getNOM_PB_AVANCEMENT_PREV()%>">
 				</div>		
 				</FIELDSET>
 				
