@@ -44,11 +44,12 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 
 	@Override
 	public String chercherDernierDocumentFinalise(Integer idEAE) throws Exception {
-		String sql = "select distinct " + CHAMP_ID_GED_DOCUMENT + " from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
+		String sql = "select " + CHAMP_ID_GED_DOCUMENT + " from " + NOM_TABLE + " where " + CHAMP_ID_EAE
+				+ " = ? order by " + CHAMP_DATE_FINALISATION + " desc";
 
 		String finalisation = null;
 		try {
-			finalisation = (String) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, String.class);
+			finalisation = (String) jdbcTemplate.queryForList(sql, new Object[] { idEAE }, String.class).get(0);
 
 		} catch (Exception e) {
 			logger.error("Erreur dans la recherche du document finalise : ", e);
@@ -58,7 +59,8 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 
 	@Override
 	public ArrayList<EaeFinalisation> listerDocumentFinalise(Integer idEAE) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? order by " + CHAMP_VERSION_GED_DOCUMENT + " desc ";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? order by "
+				+ CHAMP_VERSION_GED_DOCUMENT + " desc ";
 
 		ArrayList<EaeFinalisation> listeEaeFinalisation = new ArrayList<EaeFinalisation>();
 
