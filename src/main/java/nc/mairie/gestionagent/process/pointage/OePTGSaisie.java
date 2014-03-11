@@ -155,10 +155,28 @@ public class OePTGSaisie extends BasicProcess {
 			for (int j = 0; j < 2; j++) {
 				AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
 				if (dto != null) {
+					//si heurefin < heuredeb alors J+1
+					if (dto.getHeureDebut().getTime() > dto.getHeureFin().getTime()) {
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.YEAR, dto.getHeureFin().getYear());
+						cal.setTime(dto.getHeureFin());
+						cal.add(Calendar.DATE, 1);
+
+						dto.setHeureFin(cal.getTime());
+					}
 					temp.getAbsences().add(dto);
 				}
 				HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
 				if (hsdto != null) {
+					//si heurefin < heuredeb alors J+1
+					if (hsdto.getHeureDebut().getTime() > hsdto.getHeureFin().getTime()) {
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.YEAR, hsdto.getHeureFin().getYear());
+						cal.setTime(hsdto.getHeureFin());
+						cal.add(Calendar.DATE, 1);
+
+						hsdto.setHeureFin(cal.getTime());
+					}
 					temp.getHeuresSup().add(hsdto);
 				}
 			}
@@ -199,15 +217,6 @@ public class OePTGSaisie extends BasicProcess {
 
 			for (AbsenceDto absDto : jour.getAbsences()) {
 				if (absDto != null) {
-					// vérification date debut > date fin
-					if (absDto.getHeureDebut().getTime() >= absDto.getHeureFin().getTime()) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une absence de durée nulle ou négative");
-						getTransaction().declarerErreur(
-								"L'absence saisie le " + sdf.format(jour.getDate())
-										+ " est de durée nulle ou négative.");
-						return false;
-					}
 					// vérification motif obligatoire
 					if (absDto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
@@ -230,15 +239,6 @@ public class OePTGSaisie extends BasicProcess {
 
 			for (HeureSupDto hsdto : jour.getHeuresSup()) {
 				if (hsdto != null) {
-					// vérification date debut > date fin
-					if (hsdto.getHeureDebut().getTime() >= hsdto.getHeureFin().getTime()) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une heure supplémentaire de durée nulle ou négative");
-						getTransaction().declarerErreur(
-								"L'heure supplémentaire saisie le " + sdf.format(jour.getDate())
-										+ " est de durée nulle ou négative.");
-						return false;
-					}
 					// vérification motif obligatoire
 					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
 						getTransaction().traiterErreur();
@@ -517,7 +517,6 @@ public class OePTGSaisie extends BasicProcess {
 		if (null != heure) {
 			DateFormat df = new SimpleDateFormat("HH:mm");
 			selected = df.format(heure);
-			selected = selected.equals("00:00") ? "24:00" : selected;
 		}
 		String val = "";
 		StringBuilder ret = new StringBuilder();
@@ -528,7 +527,7 @@ public class OePTGSaisie extends BasicProcess {
 			int minMin = 0;
 			int maxMin = 60;
 			if (hours == 0) {
-				minMin = 15;
+				minMin = 0;
 				maxMin = 60;
 			}
 			if (hours == 24) {

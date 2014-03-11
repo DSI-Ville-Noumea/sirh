@@ -90,9 +90,9 @@ public class OePTGVisualisation extends BasicProcess {
 
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
 
-			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()).equals("00:00") ? "" : hrs.format(ptg.getDebut()));
+			addZone(getNOM_ST_DATE_DEB(i), hrs.format(ptg.getDebut()));
 			if (ptg.getFin() != null) {
-				addZone(getNOM_ST_DATE_FIN(i), hrs.format(ptg.getFin()).equals("00:00") ? "" : hrs.format(ptg.getFin()));
+				addZone(getNOM_ST_DATE_FIN(i), hrs.format(ptg.getFin()));
 			}
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
 			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
