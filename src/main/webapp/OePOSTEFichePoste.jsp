@@ -24,7 +24,6 @@
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
 		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>
 		<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
-		<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 		<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>

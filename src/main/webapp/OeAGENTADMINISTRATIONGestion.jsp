@@ -9,7 +9,6 @@
 <TITLE>Gestion des contacts d'un agent</TITLE>
 <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
-<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">

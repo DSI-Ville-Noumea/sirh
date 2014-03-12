@@ -52,8 +52,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OePTGVentilationFonct.class);
 
 	private ArrayList<AgentNW> listeAgentsVentil;
-	private String tabVisu;
+	private String tabVisuHS;
+	private String tabVisuP;
+	private String tabVisuAbs;
 	private String tabErreurVentil;
+
+	public OePTGVentilationFonct() {
+		super();
+	}
 
 	@Override
 	public String getJSP() {
@@ -137,7 +143,6 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	}
 
-	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		// Si on arrive de la JSP alors on traite le get
@@ -255,7 +260,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		addZone(getNOM_ST_ACTION_PRIMES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
-		setTabVisu("");
+		setTabVisuHS(null);
+		setTabVisuP(null);
+		setTabVisuAbs(null);
 		setTabErreurVentil("");
 		addZone(getNOM_ST_AGENT_MIN(), "");
 		addZone(getNOM_ST_AGENT_MAX(), "");
@@ -561,8 +568,16 @@ public class OePTGVentilationFonct extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
 			return false;
 		}
-		setTabVisu(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(), typePointage,
-				true, new JSONSerializer().serialize(agents)));
+		if (typePointage == 1) {
+			setTabVisuAbs(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
+					typePointage, true, new JSONSerializer().serialize(agents)));
+		} else if (typePointage == 2) {
+			setTabVisuHS(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
+					typePointage, true, new JSONSerializer().serialize(agents)));
+		} else if (typePointage == 3) {
+			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
+					typePointage, true, new JSONSerializer().serialize(agents)));
+		}
 		return true;
 	}
 
@@ -603,14 +618,6 @@ public class OePTGVentilationFonct extends BasicProcess {
 			}
 		}
 		return true;
-	}
-
-	public String getTabVisu() {
-		return tabVisu == null ? "" : tabVisu;
-	}
-
-	public void setTabVisu(String tabVisu) {
-		this.tabVisu = tabVisu;
 	}
 
 	public String getNOM_ST_AGENT_MAX() {
@@ -695,5 +702,29 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public void setTabErreurVentil(String tabErreurVentil) {
 		this.tabErreurVentil = tabErreurVentil;
+	}
+
+	public String getTabVisuHS() {
+		return tabVisuHS == null ? "" : tabVisuHS;
+	}
+
+	public void setTabVisuHS(String tabVisuHS) {
+		this.tabVisuHS = tabVisuHS;
+	}
+
+	public String getTabVisuP() {
+		return tabVisuP == null ? "" : tabVisuP;
+	}
+
+	public void setTabVisuP(String tabVisuP) {
+		this.tabVisuP = tabVisuP;
+	}
+
+	public String getTabVisuAbs() {
+		return tabVisuAbs == null ? "" : tabVisuAbs;
+	}
+
+	public void setTabVisuAbs(String tabVisuAbs) {
+		this.tabVisuAbs = tabVisuAbs;
 	}
 }

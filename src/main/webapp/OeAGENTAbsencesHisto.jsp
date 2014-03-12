@@ -232,6 +232,9 @@
 				</FIELDSET>	
 			</div>
 	<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	
+	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET1" id="ONGLET1" style="visibility: hidden;">
+	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET2" id="ONGLET2" style="visibility: hidden;">	
+	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET3" id="ONGLET3" style="visibility: hidden;">	
 	</FORM>
 <%} %>	
 	</BODY>

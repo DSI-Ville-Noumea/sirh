@@ -3,6 +3,7 @@
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
+    <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct" id="process" scope="session"></jsp:useBean>
 
     <HEAD>
         <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -20,7 +21,7 @@
 
         <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
         <SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT> 
-        <SCRIPT language="javascript">
+        <SCRIPT language="JavaScript">
 
 
         $(document).ready(function() {
@@ -50,10 +51,10 @@
         });
 
             //afin de sélectionner un élément dans une liste
-            function executeBouton(nom)
-            {
-                document.formu.elements[nom].click();
-            }
+			function executeBouton(nom)
+			{
+			document.formu.elements[nom].click();
+			}
 
             // afin de mettre le focus sur une zone précise
             function setfocus(nom)
@@ -64,47 +65,36 @@
         </SCRIPT>		
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     </HEAD>
-    <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationFonct" id="process" scope="session"></jsp:useBean>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
-
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+            
             <div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
                 <% if (process.onglet.equals("ONGLET1")) {%>
-                <span id="titreOngletVentilation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletVentilation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletVentilation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletVentilation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET2")) {%>
-                <span id="titreOngletHS" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletHS" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET3")) {%>
-                <span id="titreOngletPrimes" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletPrimes" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletPrimes" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletPrimes" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET4")) {%>
-                <span id="titreOngletAbs" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletAbs" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletAbs" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletAbs" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET5")) {%>
-                <span id="titreOngletValidation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletValidation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletValidation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');
-                afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletValidation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
             </div>
 
@@ -170,7 +160,7 @@
 
                 <% if (process.onglet.equals("ONGLET2")) {%>
                 <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des heures supplémentaires</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
 			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10" maxlength="4" type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
@@ -182,9 +172,9 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
                  	</FIELDSET>
-                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des fonctionnaires</legend>	
-                            <%=process.getTabVisu()%>		
+                            <%=process.getTabVisuHS()%>		
                     </FIELDSET>
                 <% } else {%>
                 <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
@@ -194,7 +184,7 @@
 
                  <% if (process.onglet.equals("ONGLET3")) {%>
                  <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des primes</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
 			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
@@ -206,9 +196,9 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(3)%>">
                  	</FIELDSET>
-                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                     	<legend class="sigp2Legend">Visualisation de la ventilation des primes des fonctionnaires</legend>	
-                        <%=process.getTabVisu()%>		
+                        <%=process.getTabVisuP()%>		
                     </FIELDSET>
                  <% } else {%>
                  <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
@@ -218,7 +208,7 @@
 
                 <% if (process.onglet.equals("ONGLET4")) {%>
                 <div id="corpsOngletAbs" title="Absences" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-               	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+               	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des absences</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
 			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
@@ -230,9 +220,9 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(1)%>">
                  	</FIELDSET>
-	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
 	                	<legend class="sigp2Legend">Visualisation de la ventilation des absences des fonctionnaires</legend>	
-	                    <%=process.getTabVisu()%>		
+	                    <%=process.getTabVisuAbs()%>		
 	                </FIELDSET>
                 <% } else {%>
                 <div id="corpsOngletAbs" title="Absences" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
@@ -245,7 +235,7 @@
                 <% } else {%>
                 <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
                 <% }%>
-	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">	
+	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
 		                <legend class="sigp2Legend">Validation de la ventilation des pointages des fonctionnaires</legend>	
 		              	<span style="color: red;">Attention , cette action est irreversible !</span>    
 		              	<br>  <br>                     
@@ -261,6 +251,11 @@
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>" value="RECHERCHERAGENTMAX">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>" value="SUPPRECHERCHERAGENTMAX">	
+			<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET1" id="ONGLET1" style="visibility: hidden;">
+			<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET2" id="ONGLET2" style="visibility: hidden;">	
+			<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET3" id="ONGLET3" style="visibility: hidden;">
+			<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET4" id="ONGLET4" style="visibility: hidden;">
+			<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET5" id="ONGLET5" style="visibility: hidden;">	
 	</FORM>
 </BODY>
 </HTML>

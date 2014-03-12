@@ -11,7 +11,6 @@
 <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
-<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionMenu.js"></SCRIPT>
 <SCRIPT language="JavaScript">

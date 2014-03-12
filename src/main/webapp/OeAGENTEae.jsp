@@ -908,7 +908,12 @@
 			</table>
 			<%}%>	
 		</FIELDSET>	
-		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	
+		<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">
+		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET1" id="ONGLET1" style="visibility: hidden;">	
+		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET3" id="ONGLET3" style="visibility: hidden;">
+		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET4" id="ONGLET4" style="visibility: hidden;">
+		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET5" id="ONGLET5" style="visibility: hidden;">
+		<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET6" id="ONGLET6" style="visibility: hidden;">		
 		<%=process.getUrlFichier()%>
 		</FORM>
 	<%} %>	

@@ -11,7 +11,6 @@
 <LINK rel="stylesheet" href="theme/sigp2.css" type="text/css">
 <LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT>
-<SCRIPT language="javascript" src="js/GestionOnglet.js"></SCRIPT>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT>
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
