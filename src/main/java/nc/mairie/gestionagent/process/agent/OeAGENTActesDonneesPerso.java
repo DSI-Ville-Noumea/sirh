@@ -119,7 +119,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 
 		// Si agentCourant vide ou si etat recherche
-		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
+		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
+				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
@@ -139,7 +140,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
-			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
+			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),
+					"DONNEES PERSONNELLES");
 			TypeDocument typeVide = new TypeDocument();
 			td.add(0, typeVide);
 			setListeTypeDocument(td);
@@ -172,7 +174,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (getLB_AFFECTATION() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<Affectation> aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<Affectation> aff = Affectation
+						.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
 				if (aff.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -196,7 +199,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (getLB_FICHE_POSTE() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<FichePoste> listeFp = FichePoste.listerFichePosteAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<FichePoste> listeFp = FichePoste.listerFichePosteAvecAgent(getTransaction(),
+						getAgentCourant());
 				if (listeFp.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -266,7 +270,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 		// si le type de document est contrat alors le contrat concerné est
 		// obligatoire
-		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
+		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
 		if (nomType.toUpperCase().equals("CONTRAT")) {
 			if (multi.getParameter(getNOM_LB_CONTRAT()).equals("0")) {
@@ -293,7 +298,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			}
 		} else if (nomType.toUpperCase().equals("PHOTO")) {
 			// on verifie que l'extension soit bien .jpg
-			String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+			String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+					fichierUpload.getName().length());
 			if (!extension.toUpperCase().equals(".JPG")) {
 				// alors on affiche un message qu'il faut que l'extension
 				// soit.jpg
@@ -323,7 +329,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (!performControlerSaisie(request, true))
 			return false;
 		// on recupere le contrat concerné par l'ajout
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String nomType = ((TypeDocument) getListeTypeDocument().get(indice)).getLibTypeDocument();
 		boolean ajoutContrat = false;
 		boolean ajoutAffectation = false;
@@ -335,16 +342,17 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		String nomDocumentNS = null;
 		if (nomType.toUpperCase().equals("CONTRAT")) {
 			if (!multi.getParameter(getNOM_LB_CONTRAT()).equals("0")) {
-				int indiceContrat = (Services.estNumerique(multi.getParameter(getNOM_LB_CONTRAT())) ? Integer.parseInt(multi
-						.getParameter(getNOM_LB_CONTRAT())) : -1);
+				int indiceContrat = (Services.estNumerique(multi.getParameter(getNOM_LB_CONTRAT())) ? Integer
+						.parseInt(multi.getParameter(getNOM_LB_CONTRAT())) : -1);
 				c = ((Contrat) getListeContrat().get(indiceContrat));
 				ajoutContrat = true;
 			}
 		}
 		if (nomType.toUpperCase().equals("NOTE DE SERVICE")) {
-			if (!multi.getParameter(getNOM_LB_AFFECTATION()).equals("0") && !multi.getParameter(getNOM_LB_TYPE_FICHIER_AFFECTATION()).equals("0")) {
-				int indiceAffectation = (Services.estNumerique(multi.getParameter(getNOM_LB_AFFECTATION())) ? Integer.parseInt(multi
-						.getParameter(getNOM_LB_AFFECTATION())) : -1);
+			if (!multi.getParameter(getNOM_LB_AFFECTATION()).equals("0")
+					&& !multi.getParameter(getNOM_LB_TYPE_FICHIER_AFFECTATION()).equals("0")) {
+				int indiceAffectation = (Services.estNumerique(multi.getParameter(getNOM_LB_AFFECTATION())) ? Integer
+						.parseInt(multi.getParameter(getNOM_LB_AFFECTATION())) : -1);
 				// recup du document à imprimer
 				nomDocumentNS = EnumImpressionAffectation.getCodeImpressionAffectation(Integer.parseInt(multi
 						.getParameter(getNOM_LB_TYPE_FICHIER_AFFECTATION())));
@@ -354,8 +362,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (nomType.toUpperCase().equals("FICHE DE POSTE")) {
 			if (!multi.getParameter(getNOM_LB_FICHE_POSTE()).equals("0")) {
-				int indiceFichePoste = (Services.estNumerique(multi.getParameter(getNOM_LB_FICHE_POSTE())) ? Integer.parseInt(multi
-						.getParameter(getNOM_LB_FICHE_POSTE())) : -1);
+				int indiceFichePoste = (Services.estNumerique(multi.getParameter(getNOM_LB_FICHE_POSTE())) ? Integer
+						.parseInt(multi.getParameter(getNOM_LB_FICHE_POSTE())) : -1);
 				fichePoste = ((FichePoste) getListeFichePoste().get(indiceFichePoste));
 				ajoutFichePoste = true;
 			}
@@ -375,7 +383,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				}
 			} else if (ajoutAffectation) {
 				nomDocumentNS = nomDocumentNS.substring(0, nomDocumentNS.indexOf("."));
-				String nomSansExtension = "NS_" + aff.getIdAffectation() + "_" + nomDocumentNS.substring(3, nomDocumentNS.length());
+				String nomSansExtension = "NS_" + aff.getIdAffectation() + "_"
+						+ nomDocumentNS.substring(3, nomDocumentNS.length());
 				if (!performControlerFichier(request, nomSansExtension)) {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
@@ -401,7 +410,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				}
 
 			}
-			if (!creeDocument(request, ajoutContrat, c, ajoutAffectation, aff, nomDocumentNS, ajoutFichePoste, fichePoste, ajoutPhoto)) {
+			if (!creeDocument(request, ajoutContrat, c, ajoutAffectation, aff, nomDocumentNS, ajoutFichePoste,
+					fichePoste, ajoutPhoto)) {
 				return false;
 			}
 
@@ -409,8 +419,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			if (ajoutContrat) {
 				// on supprime le document existant dans la base de données
 				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "C_" + c.getIdContrat());
-				LienDocumentAgent l = LienDocumentAgent
-						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+						.getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -421,10 +431,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			} else if (ajoutAffectation) {
 				// on supprime le document existant dans la base de données
 				String nomSansExtension = nomDocumentNS.substring(0, nomDocumentNS.indexOf("."));
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(),
-						"NS_" + aff.getIdAffectation() + "_" + nomSansExtension.substring(3, nomSansExtension.length()));
-				LienDocumentAgent l = LienDocumentAgent
-						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "NS_" + aff.getIdAffectation()
+						+ "_" + nomSansExtension.substring(3, nomSansExtension.length()));
+				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+						.getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -434,9 +444,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				d.supprimerDocument(getTransaction());
 			} else if (ajoutFichePoste) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "FP_" + fichePoste.getIdFichePoste());
-				LienDocumentAgent l = LienDocumentAgent
-						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+				Document d = Document.chercherDocumentByContainsNom(getTransaction(),
+						"FP_" + fichePoste.getIdFichePoste());
+				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+						.getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -446,9 +457,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				d.supprimerDocument(getTransaction());
 			} else if (ajoutPhoto) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "PHO_" + getAgentCourant().getIdAgent());
-				LienDocumentAgent l = LienDocumentAgent
-						.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "PHO_"
+						+ getAgentCourant().getIdAgent());
+				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+						.getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -458,7 +470,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				d.supprimerDocument(getTransaction());
 
 			}
-			if (!creeDocument(request, ajoutContrat, c, ajoutAffectation, aff, nomDocumentNS, ajoutFichePoste, fichePoste, ajoutPhoto)) {
+			if (!creeDocument(request, ajoutContrat, c, ajoutAffectation, aff, nomDocumentNS, ajoutFichePoste,
+					fichePoste, ajoutPhoto)) {
 				return false;
 			}
 		}
@@ -468,8 +481,9 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		return true;
 	}
 
-	private boolean creeDocument(HttpServletRequest request, boolean ajoutContrat, Contrat c, boolean ajoutAffectation, Affectation aff,
-			String nomDocumentNS, boolean ajoutFichePoste, FichePoste fp, boolean ajoutPhoto) throws Exception {
+	private boolean creeDocument(HttpServletRequest request, boolean ajoutContrat, Contrat c, boolean ajoutAffectation,
+			Affectation aff, String nomDocumentNS, boolean ajoutFichePoste, FichePoste fp, boolean ajoutPhoto)
+			throws Exception {
 		// on crée l'entrée dans la table
 		setDocumentCourant(new Document());
 		// on recupere le fichier mis dans le repertoire temporaire
@@ -479,15 +493,18 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 
 		// on recupère le type de document
-		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
+		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getCodTypeDocument();
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom;
 		if (ajoutContrat) {
 			nom = codTypeDoc.toUpperCase() + "_" + c.getIdContrat() + extension;
 		} else if (ajoutAffectation) {
-			nom = codTypeDoc.toUpperCase() + "_" + aff.getIdAffectation() + "_" + nomDocumentNS.substring(3, nomDocumentNS.length()) + extension;
+			nom = codTypeDoc.toUpperCase() + "_" + aff.getIdAffectation() + "_"
+					+ nomDocumentNS.substring(3, nomDocumentNS.length()) + extension;
 		} else if (ajoutFichePoste) {
 			nom = codTypeDoc.toUpperCase() + "_" + fp.getIdFichePoste() + extension;
 		} else if (ajoutPhoto) {
@@ -498,7 +515,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		if (extension.equals(".pdf")) {
+		if (extension.equals(".pdf") || extension.equals(".tiff")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		} else {
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
@@ -511,7 +528,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// String repPartage = (String)
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(
+				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
@@ -745,20 +763,24 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(), getAgentCourant(), getVueCourant(),
-				"DONNEES PERSONNELLES");
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(),
+				getAgentCourant(), getVueCourant(), "DONNEES PERSONNELLES");
 		setListeDocuments(listeDocAgent);
 
 		int indiceActe = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
+						doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActe), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActe),
+						doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActe++;
 			}
@@ -823,8 +845,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		Document d = getDocumentCourant();
 
 		TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), d.getIdTypeDocument());
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), getDocumentCourant()
-				.getIdDocument());
+		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -1095,8 +1117,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
-		int indiceTypeDoc = (Services.estNumerique(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) ? Integer.parseInt(multi
-				.getParameter(getNOM_LB_TYPE_DOCUMENT())) : -1);
+		int indiceTypeDoc = (Services.estNumerique(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) ? Integer
+				.parseInt(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) : -1);
 		if (indiceTypeDoc != -1 && indiceTypeDoc != 0) {
 			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
 			if (nomType.toUpperCase().equals("CONTRAT")) {
@@ -1283,7 +1305,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
@@ -1300,7 +1323,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

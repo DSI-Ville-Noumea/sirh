@@ -1809,7 +1809,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		// on upload le fichier
 		boolean upload = false;
-		if (extension.equals(".pdf"))
+		if (extension.equals(".pdf") || extension.equals(".tiff"))
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		else
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);

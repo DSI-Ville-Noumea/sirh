@@ -173,7 +173,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
-		ArrayList<AccidentTravail> listeAT = AccidentTravail.listerAccidentTravailAgent(getTransaction(), getAgentCourant());
+		ArrayList<AccidentTravail> listeAT = AccidentTravail.listerAccidentTravailAgent(getTransaction(),
+				getAgentCourant());
 		setListeAT(listeAT);
 
 		int indiceAcc = 0;
@@ -183,22 +184,22 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAT());
 				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
-						at.getIdAT());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "HSCT", "AT", at.getIdAT());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
 
-				addZone(getNOM_ST_DATE(indiceAcc),
-						at.getDateAT() == null || at.getDateAT().equals(Const.DATE_NULL) || at.getDateAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
-								.getDateAT());
-				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc),
-						at.getDateATInitial().equals(Const.DATE_NULL) || at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at
-								.getDateATInitial());
+				addZone(getNOM_ST_DATE(indiceAcc), at.getDateAT() == null || at.getDateAT().equals(Const.DATE_NULL)
+						|| at.getDateAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at.getDateAT());
+				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc), at.getDateATInitial().equals(Const.DATE_NULL)
+						|| at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at.getDateATInitial());
 				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursITT() == null ? "&nbsp;" : at.getNbJoursITT());
-				addZone(getNOM_ST_TYPE(indiceAcc), t.getDescTypeAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT());
-				addZone(getNOM_ST_SIEGE(indiceAcc), s.getDescSiege().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getDescSiege());
+				addZone(getNOM_ST_TYPE(indiceAcc),
+						t.getDescTypeAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT());
+				addZone(getNOM_ST_SIEGE(indiceAcc),
+						s.getDescSiege().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getDescSiege());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceAcc++;
@@ -289,10 +290,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege());
 
 		// Alim zones
-		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT().equals(Const.DATE_NULL) ? "&nbsp;" : getAccidentTravailCourant()
-				.getDateAT());
-		addZone(getNOM_EF_DATE_INITIALE(), getAccidentTravailCourant().getDateATInitial().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-				: getAccidentTravailCourant().getDateATInitial());
+		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT().equals(Const.DATE_NULL) ? "&nbsp;"
+				: getAccidentTravailCourant().getDateAT());
+		addZone(getNOM_EF_DATE_INITIALE(),
+				getAccidentTravailCourant().getDateATInitial().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+						: getAccidentTravailCourant().getDateATInitial());
 		addZone(getNOM_EF_NB_JOUR_IIT(), getAccidentTravailCourant().getNbJoursITT());
 
 		int ligneType = getListeTypeAT().indexOf(type);
@@ -369,7 +371,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			String dateInit = getZone(getNOM_EF_DATE_INITIALE());
 			String duree = getZone(getNOM_EF_NB_JOUR_IIT());
 
-			int numLigneType = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
+			int numLigneType = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
 
 			if (numLigneType == -1 || getListeTypeAT().size() == 0 || numLigneType > getListeTypeAT().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types"));
@@ -381,7 +384,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			int numLigneSiege = (Services.estNumerique(getZone(getNOM_LB_SIEGE_LESION_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_SIEGE_LESION_SELECT())) : -1);
 
-			if (numLigneSiege == -1 || getListeSiegeLesion().size() == 0 || numLigneSiege > getListeSiegeLesion().size()) {
+			if (numLigneSiege == -1 || getListeSiegeLesion().size() == 0
+					|| numLigneSiege > getListeSiegeLesion().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "sièges de lésion"));
 				return false;
 			}
@@ -391,11 +395,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// Vérification si la PA de l'agent donne le droit à accidents du
 			// travail.
 			// RG_AG_AT_A02
-			ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+			ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(),
+					getAgentCourant());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			for (PositionAdmAgent pa : listePA) {
-				if (Services.compareDates(pa.getDatdeb(), date) <= 0 && (pa.getDatfin() == null || Services.compareDates(pa.getDatfin(), date) >= 0)) {
+				if (Services.compareDates(pa.getDatdeb(), date) <= 0
+						&& (pa.getDatfin() == null || Services.compareDates(pa.getDatfin(), date) >= 0)) {
 					if (!pa.permetAT()) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR090", "accidents du travail"));
 						return false;
@@ -461,18 +467,19 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				AccidentTravail at = (AccidentTravail) listeAT.get(i);
 
 				if (Services.compareDates(getZone(getNOM_EF_DATE()), at.getDateAT()) == -1) {
-					int resultat = Services
-							.compareDates(
-									Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE())),
-											Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), at.getDateAT());
+					int resultat = Services.compareDates(
+							Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE())),
+									Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), at.getDateAT());
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
 						return false;
 					}
 				} else if (Services.compareDates(getZone(getNOM_EF_DATE()), at.getDateAT()) == 1) {
-					int resultat = Services.compareDates(Services.ajouteJours(Services.formateDate(at.getDateAT()), Integer.parseInt(at.nbJoursITT)),
-							getZone(getNOM_EF_DATE()));
+					int resultat = Services
+							.compareDates(
+									Services.ajouteJours(Services.formateDate(at.getDateAT()),
+											Integer.parseInt(at.nbJoursITT)), getZone(getNOM_EF_DATE()));
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
@@ -483,26 +490,30 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 
 		// dae d'AT initial
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_INITIALE())) && !Services.estUneDate(getZone(getNOM_EF_DATE_INITIALE()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_INITIALE()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_INITIALE()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "d'AT Initial"));
 			return false;
 		}
 
 		// duree ITT
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NB_JOUR_IIT())) && !Services.estNumerique(getZone(getNOM_EF_NB_JOUR_IIT()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NB_JOUR_IIT()))
+				&& !Services.estNumerique(getZone(getNOM_EF_NB_JOUR_IIT()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "durée ITT"));
 			return false;
 		}
 
 		// type AT obligatoire
-		int indiceMedecin = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
+		int indiceMedecin = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SELECT())
+				: -1);
 		if (indiceMedecin < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type"));
 			return false;
 		}
 
 		// siège des lésions obligatoire
-		int indiceRecommandation = (Services.estNumerique(getVAL_LB_SIEGE_LESION_SELECT()) ? Integer.parseInt(getVAL_LB_SIEGE_LESION_SELECT()) : -1);
+		int indiceRecommandation = (Services.estNumerique(getVAL_LB_SIEGE_LESION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_SIEGE_LESION_SELECT()) : -1);
 		if (indiceRecommandation < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "siège des lésions"));
 			return false;
@@ -1161,20 +1172,25 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "AT",
-				getAccidentTravailCourant().getIdAT());
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+				getAgentCourant(), "HSCT", "AT", getAccidentTravailCourant().getIdAT());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
+						doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument().equals(Const.DATE_NULL) ? "&nbsp;" : doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: td.getLibTypeDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument().equals(Const.DATE_NULL) ? "&nbsp;"
+						: doc.getDateDocument());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -1407,8 +1423,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), getDocumentCourant()
-				.getIdDocument());
+		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -1416,7 +1432,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(),
+				d.getDateDocument().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : d.getDateDocument());
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
@@ -1589,7 +1606,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAT());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+					.getIdAgent(), d.getIdDocument());
 
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
@@ -1627,13 +1645,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "AT";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + at.getIdAT() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
-		if (extension.equals(".pdf")) {
+		if (extension.equals(".pdf") || extension.equals(".tiff")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		} else {
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
@@ -1804,7 +1823,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**

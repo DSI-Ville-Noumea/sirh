@@ -175,21 +175,24 @@ public class OeAGENTHandicap extends BasicProcess {
 				Handicap h = (Handicap) getListeHandicap().get(i);
 				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap());
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT",
-						"HANDI", h.getIdHandicap());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "HSCT", "HANDI", h.getIdHandicap());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
 
-				addZone(getNOM_ST_TYPE(indiceHandi), n.getNomTypeHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : n.getNomTypeHandicap());
+				addZone(getNOM_ST_TYPE(indiceHandi),
+						n.getNomTypeHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : n.getNomTypeHandicap());
 				addZone(getNOM_ST_DEBUT(indiceHandi), h.getDateDebutHandicap());
 				addZone(getNOM_ST_FIN(indiceHandi), h.getDateFinHandicap().equals(Const.DATE_NULL)
 						|| h.getDateFinHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getDateFinHandicap());
-				addZone(getNOM_ST_INCAPACITE(indiceHandi), h.getPourcentIncapacite().equals(Const.ZERO) ? "&nbsp;" : h.getPourcentIncapacite() + " %");
+				addZone(getNOM_ST_INCAPACITE(indiceHandi),
+						h.getPourcentIncapacite().equals(Const.ZERO) ? "&nbsp;" : h.getPourcentIncapacite() + " %");
 				addZone(getNOM_ST_MALADIE_PROF(indiceHandi), h.isReconnaissanceMP() ? "OUI" : "NON");
 				addZone(getNOM_ST_CRDHNC(indiceHandi), h.isHandicapCRDHNC() ? "OUI" : "NON");
-				addZone(getNOM_ST_NUM_CARTE(indiceHandi), h.getNumCarteCRDHNC().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getNumCarteCRDHNC());
+				addZone(getNOM_ST_NUM_CARTE(indiceHandi), h.getNumCarteCRDHNC().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: h.getNumCarteCRDHNC());
 				addZone(getNOM_ST_RENOUVELLEMENT(indiceHandi), h.isRenouvellement() ? "OUI" : "NON");
 				addZone(getNOM_ST_AMENAGEMENT(indiceHandi), h.isAmenagementPoste() ? "OUI" : "NON");
 				addZone(getNOM_ST_NB_DOC(indiceHandi), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
@@ -310,10 +313,12 @@ public class OeAGENTHandicap extends BasicProcess {
 		addZone(getNOM_LB_NOM_SELECT(), String.valueOf(ligneNom + 1));
 
 		addZone(getNOM_EF_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
-		addZone(getNOM_EF_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : getHandicapCourant()
-				.getDateFinHandicap());
-		addZone(getNOM_EF_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getHandicapCourant()
-				.getPourcentIncapacite());
+		addZone(getNOM_EF_DATE_FIN(),
+				getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+						: getHandicapCourant().getDateFinHandicap());
+		addZone(getNOM_EF_INCAPACITE(),
+				getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE
+						: getHandicapCourant().getPourcentIncapacite());
 
 		showMaladiePro = getHandicapCourant().isReconnaissanceMP();
 		showNumCarte = getHandicapCourant().isHandicapCRDHNC();
@@ -367,10 +372,12 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_NOM(), nom.getNomTypeHandicap());
 		addZone(getNOM_ST_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
-		addZone(getNOM_ST_DATE_FIN(), getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : getHandicapCourant()
-				.getDateFinHandicap());
-		addZone(getNOM_ST_INCAPACITE(), getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getHandicapCourant()
-				.getPourcentIncapacite());
+		addZone(getNOM_ST_DATE_FIN(),
+				getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
+						: getHandicapCourant().getDateFinHandicap());
+		addZone(getNOM_ST_INCAPACITE(),
+				getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE
+						: getHandicapCourant().getPourcentIncapacite());
 
 		addZone(getNOM_ST_RECO_MP(), getHandicapCourant().isReconnaissanceMP() ? "Oui" : "Non");
 		if (getHandicapCourant().isReconnaissanceMP())
@@ -427,7 +434,8 @@ public class OeAGENTHandicap extends BasicProcess {
 			}
 
 			// récupération des informations remplies dans les zones de saisie
-			int numLigneNom = (Services.estNumerique(getZone(getNOM_LB_NOM_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NOM_SELECT())) : -1);
+			int numLigneNom = (Services.estNumerique(getZone(getNOM_LB_NOM_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_NOM_SELECT())) : -1);
 
 			if (numLigneNom == -1 || getListeNomHandicap().size() == 0 || numLigneNom > getListeNomHandicap().size()) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "noms de handicap"));
@@ -446,8 +454,8 @@ public class OeAGENTHandicap extends BasicProcess {
 			MaladiePro maladiePro = null;
 
 			if (recoMP) {
-				int numLigneMP = (Services.estNumerique(getZone(getNOM_LB_NOM_MP_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_NOM_MP_SELECT()))
-						: -1);
+				int numLigneMP = (Services.estNumerique(getZone(getNOM_LB_NOM_MP_SELECT())) ? Integer
+						.parseInt(getZone(getNOM_LB_NOM_MP_SELECT())) : -1);
 
 				if (numLigneMP == -1 || getListeMaladiePro().size() == 0 || numLigneMP > getListeMaladiePro().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "maladies professionnelles"));
@@ -554,7 +562,8 @@ public class OeAGENTHandicap extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "% incapacité"));
 				return false;
 			}
-			if (Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) <= 0.0 || Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) > 100.0) {
+			if (Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) <= 0.0
+					|| Float.parseFloat(getZone(getNOM_EF_INCAPACITE())) > 100.0) {
 				// erreur pourcentage entre 0 et 100
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR981", "% incapacité"));
 				return false;
@@ -562,7 +571,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		}
 
 		// commentaire longeur <= 100
-		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_COMMENTAIRE())) && getZone(getNOM_EF_COMMENTAIRE()).length() > 100) {
+		if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_COMMENTAIRE()))
+				&& getZone(getNOM_EF_COMMENTAIRE()).length() > 100) {
 			// ERR980 : La zone commentaire ne peut excéder 100 caractères.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR980", "commentaire", "100"));
 			return false;
@@ -571,7 +581,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		// si reconnu maladie pro, la maladie doit etre préciser
 		// RG_AG_HC_C06
 		if (getZone(getNOM_RG_RECO_MP()).equals(getNOM_RB_RECO_MP_OUI())) {
-			int indiceMP = (Services.estNumerique(getVAL_LB_NOM_MP_SELECT()) ? Integer.parseInt(getVAL_LB_NOM_MP_SELECT()) : -1);
+			int indiceMP = (Services.estNumerique(getVAL_LB_NOM_MP_SELECT()) ? Integer
+					.parseInt(getVAL_LB_NOM_MP_SELECT()) : -1);
 			if (indiceMP < 1) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "maladie professionnelle"));
 				return false;
@@ -580,7 +591,8 @@ public class OeAGENTHandicap extends BasicProcess {
 
 		// si maladie CRDHNC le numéro de carte doit etre renseigné
 		// RG_AG_HC_C07
-		if (getZone(getNOM_RG_RECO_CRDHNC()).equals(getNOM_RB_RECO_CRDHNC_OUI()) && Const.CHAINE_VIDE.equals(getZone(getNOM_EF_NUM_CRDHNC()))) {
+		if (getZone(getNOM_RG_RECO_CRDHNC()).equals(getNOM_RB_RECO_CRDHNC_OUI())
+				&& Const.CHAINE_VIDE.equals(getZone(getNOM_EF_NUM_CRDHNC()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "n°carte CRDHNC"));
 			return false;
 		}
@@ -1771,18 +1783,21 @@ public class OeAGENTHandicap extends BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "HANDI",
-				getHandicapCourant().getIdHandicap());
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+				getAgentCourant(), "HSCT", "HANDI", getHandicapCourant().getIdHandicap());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
+						doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
 				addZone(getNOM_ST_COMMENTAIRE_DOCUMENT(indiceActeVM),
 						doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
@@ -2000,8 +2015,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), getDocumentCourant()
-				.getIdDocument());
+		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -2182,7 +2197,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "HANDI_" + handi.getIdHandicap());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+					.getIdAgent(), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
@@ -2220,13 +2236,14 @@ public class OeAGENTHandicap extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "HANDI";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + handi.getIdHandicap() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
-		if (extension.equals(".pdf"))
+		if (extension.equals(".pdf") || extension.equals(".tiff"))
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		else
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
@@ -2396,7 +2413,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**

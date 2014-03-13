@@ -163,7 +163,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 			for (int i = 0; i < getListeCampagne().size(); i++) {
 				CampagneEAE campagne = (CampagneEAE) getListeCampagne().get(i);
 				// calcul du nb de docs
-				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(campagne.getIdCampagneEAE(), null, "CAMP");
+				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(
+						campagne.getIdCampagneEAE(), null, "CAMP");
 				int nbDoc = 0;
 				if (listeDocCamp != null) {
 					nbDoc = listeDocCamp.size();
@@ -171,12 +172,17 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 				addZone(getNOM_ST_ANNEE(indiceCamp), campagne.getAnnee().toString());
 				addZone(getNOM_ST_DATE_DEBUT(indiceCamp), sdf.format(campagne.getDateDebut()));
-				addZone(getNOM_ST_DATE_FIN(indiceCamp), campagne.getDateFin() == null || campagne.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;"
-						: sdf.format(campagne.getDateFin()));
-				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp), campagne.getDateOuvertureKiosque() == null
-						|| campagne.getDateOuvertureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf.format(campagne.getDateOuvertureKiosque()));
-				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp), campagne.getDateFermetureKiosque() == null
-						|| campagne.getDateFermetureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf.format(campagne.getDateFermetureKiosque()));
+				addZone(getNOM_ST_DATE_FIN(indiceCamp),
+						campagne.getDateFin() == null || campagne.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
+								.format(campagne.getDateFin()));
+				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp),
+						campagne.getDateOuvertureKiosque() == null
+								|| campagne.getDateOuvertureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
+								.format(campagne.getDateOuvertureKiosque()));
+				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp),
+						campagne.getDateFermetureKiosque() == null
+								|| campagne.getDateFermetureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
+								.format(campagne.getDateFermetureKiosque()));
 				addZone(getNOM_ST_NB_DOC(indiceCamp), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceCamp++;
@@ -446,7 +452,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		getCampagneCourante().setDateFin(sdf.parse(Services.dateDuJour()));
 		// RG-EAE-6
-		getCampagneEAEDao().modifierFinCampagneEAE(getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getDateFin());
+		getCampagneEAEDao().modifierFinCampagneEAE(getCampagneCourante().getIdCampagneEAE(),
+				getCampagneCourante().getDateFin());
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -461,11 +468,13 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
 				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& campagneCourante.getDateFermetureKiosque() != null && !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
+				&& campagneCourante.getDateFermetureKiosque() != null
+				&& !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-					&& campagneCourante.getDateFermetureKiosque() == null && campagneCourante.getDateOuvertureKiosque() == null) {
+					&& campagneCourante.getDateFermetureKiosque() == null
+					&& campagneCourante.getDateOuvertureKiosque() == null) {
 				return true;
 			}
 			return false;
@@ -480,8 +489,9 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
 				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& (campagneCourante.getDateFermetureKiosque() == null || campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL))
-				&& campagneCourante.getDateOuvertureKiosque() != null && !campagneCourante.getDateOuvertureKiosque().equals(Const.DATE_NULL)) {
+				&& (campagneCourante.getDateFermetureKiosque() == null || campagneCourante.getDateFermetureKiosque()
+						.equals(Const.DATE_NULL)) && campagneCourante.getDateOuvertureKiosque() != null
+				&& !campagneCourante.getDateOuvertureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			return false;
@@ -493,7 +503,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// RG-EAE-6
 		// si DATE FERMETURE_KIOSQUE est saisie
 		if ((campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& campagneCourante.getDateFermetureKiosque() != null && !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
+				&& campagneCourante.getDateFermetureKiosque() != null
+				&& !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
 			return true;
 		} else {
 			return false;
@@ -575,7 +586,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		addZone(getNOM_ST_ANNEE(), camp.getAnnee().toString());
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(camp.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(),
-				camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : sdf.format(camp.getDateFin()));
+				camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : sdf
+						.format(camp.getDateFin()));
 		addZone(getNOM_ST_COMMENTAIRE(), camp.getCommentaire());
 
 		return true;
@@ -715,7 +727,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// RG-EAE-2 : on regarde si toutes les campagnes sont cloturées
 		for (CampagneEAE camp : getListeCampagne()) {
-			if (camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) || camp.getDateFin().equals(Const.CHAINE_VIDE)) {
+			if (camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL)
+					|| camp.getDateFin().equals(Const.CHAINE_VIDE)) {
 				// "ERR210",
 				// "Toutes les campgnes ne sont pas cloturées. Vous ne pouvez pas en créer une nouvelle."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR210"));
@@ -752,7 +765,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 			return false;
 		}
 
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION) || getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
+				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
 			// vérification de la validité du formulaire
 			if (!performControlerChamps(request))
@@ -765,8 +779,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getCampagneEAEDao().modifierCampagneEAE(getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getDateDebut(),
-						getCampagneCourante().getCommentaire());
+				getCampagneEAEDao().modifierCampagneEAE(getCampagneCourante().getIdCampagneEAE(),
+						getCampagneCourante().getDateDebut(), getCampagneCourante().getCommentaire());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				Integer idCampagneCreer = getCampagneEAEDao().creerCampagneEAE(getCampagneCourante().getAnnee(),
@@ -779,8 +793,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 					if (campagnePrecedente != null) {
 						// on a trouvé une campagne précédente
 						// maintenant on cherche ses actions
-						ArrayList<CampagneAction> listeActionsCampagnePrecedente = getCampagneActionDao().listerCampagneActionPourCampagne(
-								campagnePrecedente.getIdCampagneEAE());
+						ArrayList<CampagneAction> listeActionsCampagnePrecedente = getCampagneActionDao()
+								.listerCampagneActionPourCampagne(campagnePrecedente.getIdCampagneEAE());
 						for (int i = 0; i < listeActionsCampagnePrecedente.size(); i++) {
 							CampagneAction action = listeActionsCampagnePrecedente.get(i);
 							// on duplique l'action
@@ -788,11 +802,13 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 							String transmettreLe = Services.ajouteAnnee(sdf.format(action.getDateTransmission()), 1);
 							String pourLe = Services.ajouteAnnee(sdf.format(action.getDateAFaireLe()), 1);
 
-							Integer idActionCreer = getCampagneActionDao().creerCampagneAction(action.getNomAction(), action.getMessage(),
-									sdf.parse(transmettreLe), sdf.parse(pourLe), null, null, action.getIdAgentRealisation(), idCampagneCreer);
+							Integer idActionCreer = getCampagneActionDao().creerCampagneAction(action.getNomAction(),
+									action.getMessage(), sdf.parse(transmettreLe), sdf.parse(pourLe), null, null,
+									action.getIdAgentRealisation(), idCampagneCreer);
 							// on cherche les acteurs de cette action pour les
 							// dupliquer egalement
-							ArrayList<CampagneActeur> listeActeursAction = getCampagneActeurDao().listerCampagneActeur(action.getIdCampagneAction());
+							ArrayList<CampagneActeur> listeActeursAction = getCampagneActeurDao().listerCampagneActeur(
+									action.getIdCampagneAction());
 							for (int j = 0; j < listeActeursAction.size(); j++) {
 								CampagneActeur acteur = listeActeursAction.get(j);
 								getCampagneActeurDao().creerCampagneActeur(idActionCreer, acteur.getIdAgent());
@@ -1259,7 +1275,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
+		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(
+				Integer.valueOf(getDocumentCourant().getIdDocument()));
 		setLienEaeDocument(ldoc);
 
 		// Alim zones
@@ -1408,13 +1425,14 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "CAMP";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + camp.getIdCampagneEAE() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
-		if (extension.equals(".pdf"))
+		if (extension.equals(".pdf") || extension.equals(".tiff"))
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		else
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
@@ -1434,8 +1452,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		getLienEaeDocument().setIdCampagneEae(camp.getIdCampagneEAE());
 		getLienEaeDocument().setIdDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
 		getLienEaeDocument().setTypeDocument(codTypeDoc);
-		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(), null, getLienEaeDocument().getIdDocument(),
-				getLienEaeDocument().getTypeDocument());
+		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(), null,
+				getLienEaeDocument().getIdDocument(), getLienEaeDocument().getTypeDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1556,7 +1574,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
@@ -1607,7 +1626,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// Recherche des documents de la campagne
 
-		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(getCampagneCourante().getIdCampagneEAE(), null, "CAMP");
+		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(
+				getCampagneCourante().getIdCampagneEAE(), null, "CAMP");
 		setListeDocuments(new ArrayList<Document>());
 		for (int i = 0; i < listeDoc.size(); i++) {
 			EaeDocument lien = listeDoc.get(i);
@@ -1619,9 +1639,11 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}

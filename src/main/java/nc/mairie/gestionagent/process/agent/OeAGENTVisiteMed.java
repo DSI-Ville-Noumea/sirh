@@ -285,12 +285,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	private void initialiseListeVisiteMed(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList<VisiteMedicale> listeVisiteMed = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(), getAgentCourant());
+		ArrayList<VisiteMedicale> listeVisiteMed = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(),
+				getAgentCourant());
 
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoqué
-		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
-				EnumEtatSuiviMed.CONVOQUE.getCode(), EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
+		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()), EnumEtatSuiviMed.CONVOQUE.getCode(),
+				EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
 			// medicale
@@ -300,8 +302,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			vm.setIdAgent(sm.getIdAgent().toString());
 			vm.setIdMedecin(sm.getIdMedecin() == null ? null : sm.getIdMedecin().toString());
 			vm.setIdRecommandation(null);
-			vm.setDateDerniereVisite(sm.getDateProchaineVisite() == null || sm.getDateProchaineVisite().equals(Const.DATE_NULL) ? null : Services
-					.convertitDate(sm.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+			vm.setDateDerniereVisite(sm.getDateProchaineVisite() == null
+					|| sm.getDateProchaineVisite().equals(Const.DATE_NULL) ? null : Services.convertitDate(sm
+					.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			vm.setDureeValidite(Const.ZERO);
 			vm.setApte(null);
 			vm.setIdMotif(sm.getIdMotifVM().toString());
@@ -311,11 +314,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// on trie par date la liste des VM
 		Collections.sort(listeVisiteMed, new Comparator<VisiteMedicale>() {
 			public int compare(VisiteMedicale o1, VisiteMedicale o2) {
-				if (o1.getDateDerniereVisite() == null || o1.getDateDerniereVisite().equals(Const.DATE_NULL) || o2.getDateDerniereVisite() == null
-						|| o2.getDateDerniereVisite().equals(Const.DATE_NULL)) {
+				if (o1.getDateDerniereVisite() == null || o1.getDateDerniereVisite().equals(Const.DATE_NULL)
+						|| o2.getDateDerniereVisite() == null || o2.getDateDerniereVisite().equals(Const.DATE_NULL)) {
 					return 0;
 				}
-				return Services.compareDates(Services.formateDate(o1.getDateDerniereVisite()), Services.formateDate(o2.getDateDerniereVisite()));
+				return Services.compareDates(Services.formateDate(o1.getDateDerniereVisite()),
+						Services.formateDate(o2.getDateDerniereVisite()));
 			}
 		});
 		Collections.reverse(listeVisiteMed);
@@ -338,24 +342,27 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					r = (Recommandation) getHashRecommandation().get(vm.getIdRecommandation());
 				}
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
-						vm.getIdVisite());
+				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+						getAgentCourant(), "HSCT", "VM", vm.getIdVisite());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
-				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null || vm.getDateDerniereVisite().equals(Const.DATE_NULL) ? "&nbsp;" : vm.getDateDerniereVisite());
-				addZone(getNOM_ST_DUREE(indiceVisite),
-						vm == null || vm.getDureeValidite().equals(Const.CHAINE_VIDE) || vm.getDureeValidite().equals(Const.ZERO) ? "&nbsp;" : vm
-								.getDureeValidite());
+				addZone(getNOM_ST_DATE_VISITE(indiceVisite), vm.getDateDerniereVisite() == null
+						|| vm.getDateDerniereVisite().equals(Const.DATE_NULL) ? "&nbsp;" : vm.getDateDerniereVisite());
+				addZone(getNOM_ST_DUREE(indiceVisite), vm == null || vm.getDureeValidite().equals(Const.CHAINE_VIDE)
+						|| vm.getDureeValidite().equals(Const.ZERO) ? "&nbsp;" : vm.getDureeValidite());
 				addZone(getNOM_ST_NOM_MEDECIN(indiceVisite),
-						m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " " + m.getPrenomMedecin() + " "
-								+ m.getNomMedecin());
+						m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " "
+								+ m.getPrenomMedecin() + " " + m.getNomMedecin());
 				addZone(getNOM_ST_MOTIF(indiceVisite),
-						motif == null || motif.getLibMotifVM().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif.getLibMotifVM());
-				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte" : "Inapte");
+						motif == null || motif.getLibMotifVM().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
+								.getLibMotifVM());
+				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;"
+						: vm.getApte().equals("1") ? "Apte" : "Inapte");
 				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
-						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getDescRecommandation());
+						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
+								.getDescRecommandation());
 				addZone(getNOM_ST_NB_DOC(indiceVisite), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceVisite++;
@@ -370,7 +377,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList<Inaptitude> listeInaptitudes = Inaptitude.listerInaptitudeVisite(getTransaction(), getVisiteCourante());
+		ArrayList<Inaptitude> listeInaptitudes = Inaptitude.listerInaptitudeVisite(getTransaction(),
+				getVisiteCourante());
 		setListeInaptitude(listeInaptitudes);
 		int indiceInaptitude = 0;
 		if (getListeInaptitude() != null) {
@@ -381,9 +389,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
 						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
 				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), inapt.getDateDebutInaptitude());
-				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee() : Const.ZERO);
-				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois() : Const.ZERO);
-				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour() : Const.ZERO);
+				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee()
+						: Const.ZERO);
+				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois()
+						: Const.ZERO);
+				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour()
+						: Const.ZERO);
 
 				indiceInaptitude++;
 			}
@@ -481,8 +492,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_EF_DATE_VISITE(), getVisiteCourante().getDateDerniereVisite());
-		addZone(getNOM_EF_DUREE(), getVisiteCourante().getDureeValidite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getVisiteCourante()
-				.getDureeValidite());
+		addZone(getNOM_EF_DUREE(), getVisiteCourante().getDureeValidite().equals(Const.ZERO) ? Const.CHAINE_VIDE
+				: getVisiteCourante().getDureeValidite());
 
 		int ligneMedecin = getListeMedecin().indexOf(medecin);
 		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
@@ -542,13 +553,16 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			return false;
 
 		addZone(getNOM_ST_DATE_VISITE(), getVisiteCourante().getDateDerniereVisite());
-		addZone(getNOM_ST_DUREE_VALIDITE(), getVisiteCourante().getDureeValidite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getVisiteCourante()
-				.getDureeValidite());
-		addZone(getNOM_ST_NOM_MEDECIN(), medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
+		addZone(getNOM_ST_DUREE_VALIDITE(),
+				getVisiteCourante().getDureeValidite().equals(Const.ZERO) ? Const.CHAINE_VIDE : getVisiteCourante()
+						.getDureeValidite());
+		addZone(getNOM_ST_NOM_MEDECIN(),
+				medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
 		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVM() : Const.CHAINE_VIDE);
-		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante().getApte().equals("1") ? "APTE"
-				: "INAPTE");
-		addZone(getNOM_ST_RECOMMANDATION(), recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
+		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante()
+				.getApte().equals("1") ? "APTE" : "INAPTE");
+		addZone(getNOM_ST_RECOMMANDATION(),
+				recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
 
 		return true;
 	}
@@ -909,7 +923,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					// aussi la convocation
 					// RG-SVM-19
 					if (getVisiteCourante().getIdSuiviMed() != null) {
-						getSuiviMedDao().supprimerSuiviMedicalById(Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
+						getSuiviMedDao()
+								.supprimerSuiviMedicalById(Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
 					}
 				} catch (Exception e) {
 					return false;
@@ -932,8 +947,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
 				// droit à visite médicale à la date donnée
-				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(), getAgentCourant()
-						.getNoMatricule(), Services.convertitDate(Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
+				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
+						getAgentCourant().getNoMatricule(), Services.convertitDate(
+								Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR132"));
@@ -961,15 +977,16 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				int numLigneMedecin = (Services.estNumerique(getZone(getNOM_LB_MEDECIN_SELECT())) ? Integer
 						.parseInt(getZone(getNOM_LB_MEDECIN_SELECT())) : -1);
 
-				if (numLigneMedecin == -1 || getListeMedecin().size() == 0 || numLigneMedecin > getListeMedecin().size()) {
+				if (numLigneMedecin == -1 || getListeMedecin().size() == 0
+						|| numLigneMedecin > getListeMedecin().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Médecins"));
 					return false;
 				}
 
 				Medecin medecin = (Medecin) getListeMedecin().get(numLigneMedecin);
 
-				int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIF_SELECT()))
-						: -1);
+				int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer
+						.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
 
 				if (numLigneMotif == -1 || getListeMotif().size() == 0 || numLigneMotif > getListeMotif().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motif"));
@@ -993,13 +1010,15 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
 				// droit à visite médicale.
-				ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<PositionAdmAgent> listePA = PositionAdmAgent.listerPositionAdmAgentAvecAgent(
+						getTransaction(), getAgentCourant());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
 				for (PositionAdmAgent pa : listePA) {
 					if (Services.compareDates(pa.getDatdeb(), dateVisite) <= 0
-							&& (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL) || Services.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
+							&& (pa.getDatfin() == null || pa.getDatfin().equals(Const.DATE_NULL) || Services
+									.compareDates(pa.getDatfin(), dateVisite) >= 0)) {
 						if (!pa.permetVM()) {
 							messageInf = MessageUtils.getMessage("INF009", "visites médicales");
 						}
@@ -1015,7 +1034,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setApte(apteVM);
 				getVisiteCourante().setIdMedecin(medecin.getIdMedecin());
 				getVisiteCourante().setIdMotif(motif.getIdMotifVM().toString());
-				getVisiteCourante().setIdRecommandation(recommandation != null ? recommandation.getIdRecommandation() : null);
+				getVisiteCourante().setIdRecommandation(
+						recommandation != null ? recommandation.getIdRecommandation() : null);
 
 				if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 					// si tranformation d'un suivi medical en VM
@@ -1023,9 +1043,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					if (getVisiteCourante().getIdVisite() == null) {
 						// fermeture des lignes de convocations
 						try {
-							SuiviMedical sm = getSuiviMedDao().chercherSuiviMedical(Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
-							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao().listerSuiviMedicalAgentAnterieurDate(
-									Integer.valueOf(getAgentCourant().getIdAgent()), sm.getMois(), sm.getAnnee());
+							SuiviMedical sm = getSuiviMedDao().chercherSuiviMedical(
+									Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
+							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao()
+									.listerSuiviMedicalAgentAnterieurDate(
+											Integer.valueOf(getAgentCourant().getIdAgent()), sm.getMois(),
+											sm.getAnnee());
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
 								smModif.setEtat(EnumEtatSuiviMed.EFFECTUE.getCode());
@@ -1038,11 +1061,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						// si le motif est : a la demande...
 						// alors il faut supprimer la visite medicale
 						// correspondante
-						Medecin med = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
+						Medecin med = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A",
+								"RENSEIGNER");
 						if (getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode())
-								|| getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) {
-							VisiteMedicale vmASupp = VisiteMedicale.chercherVisiteMedicaleCriteres(getTransaction(), getAgentCourant().getIdAgent(),
-									med.getIdMedecin(), getVisiteCourante().getIdMotif());
+								|| getVisiteCourante().getIdMotif().equals(
+										EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) {
+							VisiteMedicale vmASupp = VisiteMedicale.chercherVisiteMedicaleCriteres(getTransaction(),
+									getAgentCourant().getIdAgent(), med.getIdMedecin(), getVisiteCourante()
+											.getIdMotif());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							} else {
@@ -1106,12 +1132,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				int numLigneTypeInaptitude = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer
 						.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
 
-				if (numLigneTypeInaptitude == -1 || getListeTypeInaptitude().size() == 0 || numLigneTypeInaptitude >= getListeTypeInaptitude().size()) {
+				if (numLigneTypeInaptitude == -1 || getListeTypeInaptitude().size() == 0
+						|| numLigneTypeInaptitude >= getListeTypeInaptitude().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types d'inaptitude"));
 					return false;
 				}
 
-				TypeInaptitude typeInaptitude = (TypeInaptitude) getListeTypeInaptitude().get(numLigneTypeInaptitude - 1);
+				TypeInaptitude typeInaptitude = (TypeInaptitude) getListeTypeInaptitude().get(
+						numLigneTypeInaptitude - 1);
 
 				// verification des regles de gestions
 				// RG_AG_VM_A01
@@ -1121,9 +1149,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						Inaptitude inaptitude = (Inaptitude) listeInaptitudes.get(i);
 						if (!inaptitude.getIdInaptitude().equals(getInaptitudeCourante().getIdInaptitude())
 								&& inaptitude.getIdTypeInaptitude().equals(typeInaptitude.getIdTypeInaptitude())) {
-							if (!testDate(inaptitude.getDateDebutInaptitude(), debutInaptitude, dureeAnnees, dureeMois, dureeJours)
-									|| !testDate(debutInaptitude, inaptitude.getDateDebutInaptitude(), inaptitude.getDureeAnnee(),
-											inaptitude.getDureeMois(), inaptitude.getDureeJour())) {
+							if (!testDate(inaptitude.getDateDebutInaptitude(), debutInaptitude, dureeAnnees, dureeMois,
+									dureeJours)
+									|| !testDate(debutInaptitude, inaptitude.getDateDebutInaptitude(),
+											inaptitude.getDureeAnnee(), inaptitude.getDureeMois(),
+											inaptitude.getDureeJour())) {
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR041"));
 								return false;
 							}
@@ -1176,7 +1206,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		int nbMois = (mois != null && !mois.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(mois) : 0;
 		int nbAnnees = (annees != null && !annees.equals(Const.CHAINE_VIDE)) ? Integer.parseInt(annees) : 0;
 
-		String dateFin = Services.ajouteJours(Services.ajouteMois(Services.ajouteAnnee(Services.formateDate(dateDebut), nbAnnees), nbMois), nbJours);
+		String dateFin = Services.ajouteJours(
+				Services.ajouteMois(Services.ajouteAnnee(Services.formateDate(dateDebut), nbAnnees), nbMois), nbJours);
 
 		int compareTestDebut = Services.compareDates(dateTest, dateDebut);
 		int compareTestFin = Services.compareDates(dateTest, dateFin);
@@ -1221,7 +1252,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// médecin obligatoire
-		int indiceMedecin = (Services.estNumerique(getVAL_LB_MEDECIN_SELECT()) ? Integer.parseInt(getVAL_LB_MEDECIN_SELECT()) : -1);
+		int indiceMedecin = (Services.estNumerique(getVAL_LB_MEDECIN_SELECT()) ? Integer
+				.parseInt(getVAL_LB_MEDECIN_SELECT()) : -1);
 		if (indiceMedecin < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "médecin"));
 			setFocus(getNOM_LB_MEDECIN());
@@ -1229,7 +1261,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// motif obligatoire
-		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
+				: -1);
 		if (indiceMotif < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 			setFocus(getNOM_LB_MOTIF());
@@ -1237,8 +1270,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// recommandation obligatoire
-		int indiceRecommandation = (Services.estNumerique(getVAL_LB_RECOMMANDATION_SELECT()) ? Integer.parseInt(getVAL_LB_RECOMMANDATION_SELECT())
-				: -1);
+		int indiceRecommandation = (Services.estNumerique(getVAL_LB_RECOMMANDATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_RECOMMANDATION_SELECT()) : -1);
 		if (indiceRecommandation < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "recommandation"));
 			setFocus(getNOM_LB_MEDECIN());
@@ -1260,7 +1293,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public boolean performControlerChampsInaptitude(HttpServletRequest request) throws Exception {
 
 		// type inaptitude obligatoire
-		int indiceTypeInap = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
+		int indiceTypeInap = (Services.estNumerique(getVAL_LB_TYPE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_SELECT()) : -1);
 		if (indiceTypeInap < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "type"));
 			setFocus(getNOM_LB_TYPE());
@@ -1275,7 +1309,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 
 		// duree obligatoire
-		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES())) && (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
+		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_ANNEES()))
+				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_MOIS()))
 				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DUREE_JOURS()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée (année ou mois ou jours)"));
 			setFocus(getNOM_EF_DUREE_ANNEES());
@@ -2102,9 +2137,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getVisiteCourante().getIdVisite() != null) {
 			champMotifModifiable = false;
 			if (getVisiteCourante().getIdMotif() != null
-					&& (getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode()) || getVisiteCourante().getIdMotif()
-							.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) && getVisiteCourante().getIdRecommandation() == null
-					&& getVisiteCourante().getApte() == null) {
+					&& (getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode()) || getVisiteCourante()
+							.getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode()))
+					&& getVisiteCourante().getIdRecommandation() == null && getVisiteCourante().getApte() == null) {
 				elementModifibale = false;
 			} else {
 				if (getVisiteCourante().getIdMotif() == null) {
@@ -2574,20 +2609,24 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(), getAgentCourant(), "HSCT", "VM",
-				getVisiteCourante().getIdVisite());
+		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
+				getAgentCourant(), "HSCT", "VM", getVisiteCourante().getIdVisite());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
+						doc.getIdTypeDocument());
 
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : td.getLibTypeDocument());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
+				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -2802,8 +2841,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), getDocumentCourant()
-				.getIdDocument());
+		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -2984,7 +3023,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "VM_" + vm.getIdVisite());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+					.getIdAgent(), d.getIdDocument());
 			File f = new File(d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
@@ -3048,14 +3088,14 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "VM";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + vm.getIdVisite() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
-		// upload = uploadFichier(fichierUpload, nom, codTypeDoc);
-		if (extension.equals(".pdf")) {
+		if (extension.equals(".pdf") || extension.equals(".tiff")) {
 			upload = uploadFichierPDF(fichierUpload, nom, codTypeDoc);
 		} else {
 			upload = uploadFichier(fichierUpload, nom, codTypeDoc);
@@ -3195,7 +3235,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
@@ -3239,7 +3280,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public boolean performPB_SELECT_MOTIF(HttpServletRequest request) throws Exception {
 		if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 
-			int numMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
+			int numMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIF_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_MOTIF_SELECT())) : -1);
 			if (numMotif <= 0 || getListeMotif().size() == 0 || numMotif > getListeMotif().size())
 				return false;
 			MotifVisiteMed motif = (MotifVisiteMed) getListeMotif().get(numMotif - 1);
@@ -3260,7 +3302,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// si elle est de type 'non-effectuée' alors on en peut pas
 				// créer de VM
 				try {
-					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(
+							Integer.valueOf(getAgentCourant().getIdAgent()));
 					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 						// "ERR091",
 						// "Une convocation est en attente, vous ne pouvez pas créer de visite médicale avec ce motif.");
