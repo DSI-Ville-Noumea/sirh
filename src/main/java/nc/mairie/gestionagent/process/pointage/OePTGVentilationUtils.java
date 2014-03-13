@@ -125,7 +125,7 @@ public class OePTGVentilationUtils {
 						Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(aTransaction, agent);
 						BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(aTransaction, carr.getCodeBase());
 						Horaire tempsTravail = Horaire.chercherHoraire(aTransaction, carr.getCodeBaseHoraire2());
-						double weekBase = Double.valueOf(baseHoraire.getNbashh())
+						double weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."))
 								* Double.valueOf(tempsTravail.getCdTaux());
 						sb.append("<tr>");
 						sb.append("<td>" + agent.getNoMatricule() + "</td>");
