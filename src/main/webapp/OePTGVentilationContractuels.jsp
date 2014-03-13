@@ -114,7 +114,7 @@
             <% if (process.onglet.equals("ONGLET1")) {%>
             <div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-                        <legend class="sigp2Legend">Ventilation des pointages des contractuels</legend>
+                        <legend class="sigp2Legend">Ventilation des pointages des <span style="color: red;">CONTRACTUELS</span></legend>
 						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Date :</span>
 						<%if(process.ventilationExist()){ %>
 							<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
@@ -186,7 +186,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
                  	</FIELDSET>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des contractuels</legend>	
+	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">CONTRACTUELS</span></legend>	
 	                	<%=process.getTabVisuHS()%>		
 	                </FIELDSET>
                    <% } else {%>
@@ -209,7 +209,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(3)%>">
                  	</FIELDSET>
                  	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-                    	<legend class="sigp2Legend">Visualisation de la ventilation des primes des contractuels</legend>	
+                    	<legend class="sigp2Legend">Visualisation de la ventilation des primes des <span style="color: red;">CONTRACTUELS</span></legend>	
                         <%=process.getTabVisuP()%>		
                     </FIELDSET>
                   <% } else {%>
@@ -233,7 +233,7 @@
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(1)%>">
                  	</FIELDSET>
 	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-	                	<legend class="sigp2Legend">Visualisation de la ventilation des absences des contractuels</legend>	
+	                	<legend class="sigp2Legend">Visualisation de la ventilation des absences des <span style="color: red;">CONTRACTUELS</span></legend>	
 	                    <%=process.getTabVisuAbs()%>		
 	                </FIELDSET>
              <% } else {%>
@@ -248,7 +248,7 @@
               <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
               <% }%>
 	              <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-	              	<legend class="sigp2Legend">Validation de la ventilation des pointages des contractuels</legend>	
+	              	<legend class="sigp2Legend">Validation de la ventilation des pointages des <span style="color: red;">CONTRACTUELS</span></legend>	
 	              	<span style="color: red;">Attention , cette action est irreversible !</span>    
 	              	<br>  <br>       
 					<%if( OePTGVentilationUtils.canProcessDeversementPaie("C")){ %>
