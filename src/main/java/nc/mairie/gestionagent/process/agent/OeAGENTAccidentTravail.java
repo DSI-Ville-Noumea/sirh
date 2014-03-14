@@ -1185,6 +1185,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
+						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument().equals(Const.DATE_NULL) ? "&nbsp;"
@@ -1195,6 +1197,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				indiceActeVM++;
 			}
 		}
+	}
+
+	public String getNOM_ST_NOM_ORI_DOC(int i) {
+		return "NOM_ST_NOM_ORI_DOC" + i;
+	}
+
+	public String getVAL_ST_NOM_ORI_DOC(int i) {
+		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
 
 	/**
@@ -1432,6 +1442,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
+		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
 		addZone(getNOM_ST_DATE_DOC(),
 				d.getDateDocument().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : d.getDateDocument());
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
@@ -1666,6 +1677,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
@@ -1847,5 +1859,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			JSP = request.getParameter("JSP");
 		}
 		return true;
+	}
+
+	public String getVAL_ST_NOM_ORI_DOC() {
+		return getZone(getNOM_ST_NOM_ORI_DOC());
+	}
+
+	public String getNOM_ST_NOM_ORI_DOC() {
+		return "NOM_ST_NOM_ORI_DOC";
 	}
 }

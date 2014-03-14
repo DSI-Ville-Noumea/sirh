@@ -56,21 +56,23 @@
 	<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_VUE(),process.getNOM_RB_VUE_SAUVEGARDE())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_VUE() %>")'>Sauvegarde FP
 	</span>
 	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_VUE()%>" value="OK">
-	<br/><br/>
-	<span style="margin-left: 5px;">	
-		<%if (process.getVueCourant()!=null && !process.getVueCourant().equals("Sauvegarde")) {%>
-		<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
-		<%}else{ %>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<%} %>	
-	</span>
-	<span style="margin-left: 45px;">Nom du document</span>
-	<span style="margin-left: 170px;">Type</span> 
-	<span style="margin-left: 80px;">Date</span> 
-	<span style="margin-left: 40px;">Commentaire</span> 
-
+	<BR/>
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td>
+									<%if (process.getVueCourant()!=null && !process.getVueCourant().equals("Sauvegarde")) {%>
+									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
+									<%}else{ %>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<%} %>
+								</td>
+								<td>Nom du document</td>
+								<td>Nom original</td>
+								<td align="center">Type</td>
+								<td align="center">Date</td>
+								<td>Commentaire</td>
+							</tr>
 							<%
 							int indiceActes = 0;
 							if (process.getListeDocuments()!=null){
@@ -85,6 +87,7 @@
 										<%} %>
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:120px;text-align: center;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
@@ -113,6 +116,14 @@
 		    		</td>
 		    		<td>
 						<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td width="130px;">
+						<span class="sigp2">Nom original : </span>
+		    		</td>
+		    		<td>
+						<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ORI_DOC()%></span>
 		    		</td>
 		    	</tr>
 		    	<tr>

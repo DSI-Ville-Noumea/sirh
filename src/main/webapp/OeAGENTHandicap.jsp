@@ -205,6 +205,7 @@
 				<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
 				</span>
 				<span style="margin-left:5px;position:relative;width:230px;text-align: left;">Nom du document</span>
+				<span style="position:relative;width:230px;text-align: left: ;">Nom original</span> 
 				<span style="position:relative;width:90px;text-align: center;">Type</span> 
 				<span style="position:relative;width:120px;text-align: center;">Date</span> 
 				<span style="position:relative;text-align: left">Commentaire</span> 
@@ -223,6 +224,7 @@
 								<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DOC(indiceActes)%>">
 							</td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+							<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:120px;text-align: center;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
 							<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 							<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE_DOCUMENT(indiceActes)%></td>
@@ -241,6 +243,9 @@
 				    <BR/><BR/>
 					<span class="sigp2" style="width:130px;">Nom du document : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+					<BR/>
+					<span class="sigp2" style="width:130px;">Nom original : </span>
+					<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ORI_DOC()%></span>
 					<BR/>
 					<span class="sigp2" style="width:130px;">Date : </span>
 					<span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DOC()%></span>

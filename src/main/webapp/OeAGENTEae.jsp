@@ -839,8 +839,11 @@
 					<td width="30px;">
 						<INPUT name="<%=process.getNOM_PB_AJOUTER_ANCIEN_EAE()%>"  title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" >
 					</td>
-					<td width="100px;">
+					<td width="70px;">
 						Document
+					</td>
+					<td width="70px;">
+						Nom Original
 					</td>
 					<td align="left">
 						Commentaire
@@ -859,6 +862,9 @@
 				    </td>
 					<td>
 						<%=process.getVAL_ST_DOCUMENT_ANCIEN_EAE(id)%>
+					</td>
+					<td>
+						<%=process.getVAL_ST_NOM_ORI_DOC(id)%>
 					</td>
 					<td>
 						<%=process.getVAL_ST_COMMENTAIRE_ANCIEN_EAE(id)%>

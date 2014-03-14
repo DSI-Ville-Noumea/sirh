@@ -1198,6 +1198,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		addZone(getNOM_ST_ACTION_DOCUMENT(), Const.CHAINE_VIDE);
 		isImporting = false;
 		addZone(getNOM_ST_NOM_DOC(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_NOM_ORI_DOC(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DOC(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), Const.CHAINE_VIDE);
 
@@ -1281,6 +1282,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
+		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
 		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
@@ -1443,6 +1445,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
@@ -1641,6 +1644,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
@@ -1713,5 +1717,21 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 	public void setEaeEvalueDao(EaeEvalueDao eaeEvalueDao) {
 		this.eaeEvalueDao = eaeEvalueDao;
+	}
+
+	public String getVAL_ST_NOM_ORI_DOC() {
+		return getZone(getNOM_ST_NOM_ORI_DOC());
+	}
+
+	public String getNOM_ST_NOM_ORI_DOC() {
+		return "NOM_ST_NOM_ORI_DOC";
+	}
+
+	public String getNOM_ST_NOM_ORI_DOC(int i) {
+		return "NOM_ST_NOM_ORI_DOC" + i;
+	}
+
+	public String getVAL_ST_NOM_ORI_DOC(int i) {
+		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
 }

@@ -153,16 +153,16 @@ function SelectLigneTabDoc(id,tailleTableau)
 				</tr>
 			</table>
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
-				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
-					<span style="margin-left: 5px;">	
-						<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>">
-					</span>
-					<span style="margin-left: 40px;">Nom du document</span>
-					<span style="margin-left: 160px;">Date</span> 
-					<span style="margin-left: 35px;">Commentaire</span> 
-				
+				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
+							<tr bgcolor="#EFEFEF">
+								<td><INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER_DOC()%>"></td>
+								<td>Nom du document</td>
+								<td>Nom original</td>
+								<td align="center">Date</td>
+								<td>Commentaire</td>
+							</tr>
 						<%
 						int indiceActes = 0;
 						if (process.getListeDocuments()!=null){
@@ -175,6 +175,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 									<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_DOC(indiceActes)%>">
 								</td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
 							</tr>
@@ -195,6 +196,14 @@ function SelectLigneTabDoc(id,tailleTableau)
 								</td>
 								<td>
 									<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+								</td>
+							</tr>
+							<tr>
+								<td width="100px;">
+									<span class="sigp2">Nom original : </span>
+								</td>
+								<td>
+									<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ORI_DOC()%></span>
 								</td>
 							</tr>
 							<tr>
@@ -281,13 +290,16 @@ function SelectLigneTabDoc(id,tailleTableau)
 				</tr>
 			</table>			
 				<FIELDSET class="sigp2Fieldset" style="text-align: left; width:930px;">
-				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>
-					<span style="margin-left:65px;">Nom du document</span>
-					<span style="margin-left:160px;">Date</span> 
-					<span style="margin-left:35px;">Commentaire</span> 
-				
+				<legend class="sigp2Legend">Liste des documents de la campagne EAE</legend>				
 					<div style="overflow: auto;height: 150px;width:900px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:880px;">
+							<tr bgcolor="#EFEFEF">
+								<td>&nbsp;</td>
+								<td>Nom du document</td>
+								<td>Nom original</td>
+								<td align="center">Date</td>
+								<td>Commentaire</td>
+							</tr>
 						<%
 						int indiceActes = 0;
 						if (process.getListeDocuments()!=null){
@@ -299,6 +311,7 @@ function SelectLigneTabDoc(id,tailleTableau)
 									<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_CONSULTER_DOC(indiceActes)%>">	
 									</td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+								<td class="sigp2NewTab-liste" style="position:relative;width:230px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 								<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
 							</tr>

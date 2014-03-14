@@ -189,6 +189,7 @@ public class OeAGENTEae extends BasicProcess {
 				addZone(getNOM_ST_COMMENTAIRE_ANCIEN_EAE(id), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 				addZone(getNOM_ST_DOCUMENT_ANCIEN_EAE(id), doc.getNomDocument());
+				addZone(getNOM_ST_NOM_ORI_DOC(id), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 
 			}
 		}
@@ -4569,6 +4570,7 @@ public class OeAGENTEae extends BasicProcess {
 		Document doc = new Document();
 		doc.setLienDocument("EAE/" + nom);
 		doc.setIdTypeDocument(typeEAE.getIdTypeDocument());
+		doc.setNomOriginal(fichierUpload.getName());
 		doc.setNomDocument(nom);
 		doc.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
 		doc.setCommentaire(getZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE()));
@@ -4632,5 +4634,13 @@ public class OeAGENTEae extends BasicProcess {
 		if (!ssDossier.exists()) {
 			ssDossier.mkdir();
 		}
+	}
+
+	public String getNOM_ST_NOM_ORI_DOC(int i) {
+		return "NOM_ST_NOM_ORI_DOC" + i;
+	}
+
+	public String getVAL_ST_NOM_ORI_DOC(int i) {
+		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
 }

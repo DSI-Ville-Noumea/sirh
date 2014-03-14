@@ -57,6 +57,7 @@
 									<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_CREER()%>">
 								</td>
 								<td align="left">Nom du document</td>
+								<td align="left">Nom original</td>
 								<td align="center">Type</td>
 								<td align="center">Date</td>
 								<td align="left">Commentaire</td>
@@ -74,6 +75,7 @@
 											<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER(indiceActes)%>">
 										</td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_DOC(indiceActes)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:200px;text-align: left;"><%=process.getVAL_ST_NOM_ORI_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:120px;text-align: center;"><%=process.getVAL_ST_TYPE_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:90px;text-align: center;"><%=process.getVAL_ST_DATE_DOC(indiceActes)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;">&nbsp;<%=process.getVAL_ST_COMMENTAIRE(indiceActes)%></td>
@@ -98,6 +100,9 @@
 		    <BR/><BR/>
 			<span class="sigp2" style="width:130px;">Nom du document : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_DOC()%></span>
+			<BR/>
+			<span class="sigp2" style="width:130px;">Nom original : </span>
+			<span class="sigp2-saisie"><%=process.getVAL_ST_NOM_ORI_DOC()%></span>
 			<BR/>
 			<span class="sigp2" style="width:130px;">Type de document : </span>
 			<span class="sigp2-saisie"><%=process.getVAL_ST_TYPE_DOC()%></span>
