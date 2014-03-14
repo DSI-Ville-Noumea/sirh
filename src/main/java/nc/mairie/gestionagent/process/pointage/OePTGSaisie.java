@@ -254,15 +254,6 @@ public class OePTGSaisie extends BasicProcess {
 
 			for (PrimeDto primeDto : jour.getPrimes()) {
 				if (primeDto != null && null != primeDto.getMotif() && null != primeDto.getQuantite()) {
-					// vérification motif obligatoire
-					if (primeDto.getMotif().equals(Const.CHAINE_VIDE)) {
-						getTransaction().traiterErreur();
-						logger.debug("Tentative de sauvegarde d'une prime sans motif");
-						getTransaction().declarerErreur(
-								"La prime " + primeDto.getTitre() + " saisie le " + sdf.format(jour.getDate())
-										+ " n'a pas de motif.");
-						return false;
-					}
 					// verification si prime 7704 que le nombre ne soit pas
 					// supérieur à 2
 					if (primeDto.getNumRubrique() == 7704 && primeDto.getQuantite() > 2) {
