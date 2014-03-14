@@ -63,10 +63,27 @@
             }
 
         </SCRIPT>		
+        <script type="text/javascript">
+ 
+			function startCompteur(duree){
+				<%if(!OePTGVentilationUtils.canProcessVentilation("CC")){ %>
+				var o=document.getElementById("box" );
+				if(duree >= 0) {
+					//on format les minutes et les secondes
+					var minutes = Math.floor(duree/60) +"m";
+					var secondes = Math.floor(duree%60)+"s";
+					o.innerHTML = "Début de la ventilation dans "+ minutes +secondes;
+					setTimeout("startCompteur("+duree+"-1)", 1000);
+				} else {
+					o.innerHTML ="Ventilation en cours.";					
+				}	
+				<%}%>
+			}
+		</script>			
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     </HEAD>
     <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol" id="process" scope="session"></jsp:useBean>
-        <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();" >
+        <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteur('120');" >
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
 
@@ -160,6 +177,7 @@
 						<%}else{ %>		
 						<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 						<%} %>		
+             			<span style="color: red;" id="box"></span>	
                     </FIELDSET>
                     <br/><br/>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
