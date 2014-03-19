@@ -93,7 +93,7 @@
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_SERVICE(indiceEae)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;">
 										<%if(eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
-											<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISER_DOC(indiceEae)%>">
+											<INPUT title="voir le document" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_VISUALISER_DOC(indiceEae)%>">
 				    					<%}else{ %>
 				    					&nbsp;
 				    					<%} %>
