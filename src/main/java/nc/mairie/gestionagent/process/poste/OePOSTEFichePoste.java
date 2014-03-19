@@ -6430,4 +6430,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		return true;
 	}
+
+	public boolean estStatutGelee() {
+		// Statut de la fiche
+		int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
+		if (numLigneStatut == -1 || getListeStatut().isEmpty() || numLigneStatut > getListeStatut().size()) {
+			return false;
+		}
+
+		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
+
+		if (statut.getIdStatutFP().equals(EnumStatutFichePoste.GELEE.getId())) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.enums.EnumStatutFichePoste"%>
 <%@page import="java.util.ArrayList"%>
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -117,9 +118,15 @@
 							<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_ST_NUMERO()%></span>
 							
 							<span class="sigp2Mandatory" style="margin-left: 100px;"> Statut : </span>
+							<%if(process.estStatutGelee()){ %>
+							<SELECT onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:100px;margin-right:98px;color: red" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+								<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT())%>
+							</SELECT>
+							<%}else{ %>
 							<SELECT onchange='executeBouton("<%=process.getNOM_PB_SELECT_STATUT()%>")' class="sigp2-saisie" name="<%= process.getNOM_LB_STATUT() %>" style="width:100px;margin-right:98px;" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
 								<%=process.forComboHTML(process.getVAL_LB_STATUT(), process.getVAL_LB_STATUT_SELECT())%>
 							</SELECT>
+							<%} %>
 						<%}%>
 				</fieldset>
 				<% if (process.getEmploiPrimaire() != null){ %>
