@@ -111,8 +111,8 @@
 		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>">heures
-								<INPUT class="sigp2-saisie" maxlength="2" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_AJOUT() %>">minutes
+								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_AJOUT() %>"><span class="sigp2-saisie">heures</span>
+								<INPUT class="sigp2-saisie" maxlength="2" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_AJOUT() %>"><span class="sigp2-saisie">minutes</span>
 							</td>
 						</tr>
 						<tr>
@@ -120,8 +120,8 @@
 		           				<span class="sigp2Mandatory">Durée à retrancher :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_RETRAIT() %>">heures
-								<INPUT class="sigp2-saisie" maxlength="2" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_RETRAIT() %>">minutes
+								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_HEURE_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_HEURE_RETRAIT() %>"><span class="sigp2-saisie">heures</span>
+								<INPUT class="sigp2-saisie" maxlength="2" size="2"  name="<%= process.getNOM_ST_DUREE_MIN_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_MIN_RETRAIT() %>"><span class="sigp2-saisie">minutes</span>
 							</td>
 						</tr>
 						<tr>
@@ -129,8 +129,8 @@
 								<span class="sigp2Mandatory">Compteur :</span> 
 							</td>
 							<td>
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > Année 
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > Année précécdente 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">Année</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précécdente</span> 
 							</td>
 						</tr>
 						<tr>
