@@ -324,7 +324,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				addZone(getNOM_ST_SOLDE(), soldeRecupHeure + soldeRecupMinute);
 				setSoldeCourantMinute(soldeRecup);
 				break;
-			case ASA:
+			case ASA_A48:
 
 				break;
 			case AUTRE:
