@@ -108,6 +108,10 @@
 		listeDroits.add("PTGPayeurContractuels");
 		
 		
+		/*Module ELECTION*/
+		listeDroits.add("ELECSaisieCompteur");
+		
+		
 		/*Module SUIVI MEDICAL*/
 		listeDroits.add("SMConvocation");
 		listeDroits.add("SMHistorique");

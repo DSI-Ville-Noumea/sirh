@@ -136,6 +136,8 @@
 		name="AFFICHAGE_AVCT" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Campagne EAE"
 		name="AFFICHAGE_CAMPAGNE_EAE" override="false" value="TRUE" />
+	<Parameter description="Paramètre pour savoir si on affiche le module Election"
+		name="AFFICHAGE_ELECTION" override="false" value="TRUE" />
 
 	<!-- Parametres extrait du web.xml -->
 	<Parameter description="repertoire pour les modeles des contrats"

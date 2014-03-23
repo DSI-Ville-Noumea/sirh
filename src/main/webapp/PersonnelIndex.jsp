@@ -120,6 +120,17 @@ if (affPointage.equals("TRUE")){ %>
 	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
 <%}%>
+
+//***************************************************************
+//*               Le module Gestion des élections
+//***************************************************************
+	<% 
+	String affElection =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ELECTION");
+	if (affElection.equals("TRUE")){ %>
+		var Module_election = new Dossier("Module_election", "Gestion des élections","ELECTION");
+		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteur", "Saisie des compteurs ASA", "Saisie des compteurs ASA", true));
+	<%}%>
+	
 		
 //***************************************************************
 //*               Le module Paramètres
@@ -153,6 +164,10 @@ menu.ajouterFils(Module_suiviMed);
 <% 
 if (affPointage.equals("TRUE")){ %>
 menu.ajouterFils(Module_pointage);
+<%}%>
+<% 
+if (affElection.equals("TRUE")){ %>
+menu.ajouterFils(Module_election);
 <%}%>
 menu.ajouterFils(Module_parametres);
 menu.ajouterFils(Module_gestionDroits);
