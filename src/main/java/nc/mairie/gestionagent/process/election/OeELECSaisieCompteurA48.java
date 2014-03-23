@@ -13,17 +13,17 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class OeELECSaisieCompteur extends BasicProcess {
+public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	/**
      *
      */
 	private static final long serialVersionUID = 1L;
-	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteur.class);
+	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA48.class);
 
 	@Override
 	public String getJSP() {
-		return "OeELECSaisieCompteur.jsp";
+		return "OeELECSaisieCompteurA48.jsp";
 	}
 
 	/**

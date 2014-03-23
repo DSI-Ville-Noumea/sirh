@@ -56,7 +56,7 @@ import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationConvCol;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationDetaches;
 import nc.mairie.gestionagent.process.avancement.OeAVCTSimulationFonctionnaires;
 import nc.mairie.gestionagent.process.avancement.OeAVCTTest;
-import nc.mairie.gestionagent.process.election.OeELECSaisieCompteur;
+import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA48;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
@@ -258,8 +258,10 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("PTGPayeurContractuels")) {
 			return new OePTGPayeurContractuels();
 		} // Module ELECTION
-		else if (activite.equals("ELECSaisieCompteur")) {
-			return new OeELECSaisieCompteur();
+		else if (activite.equals("ELECSaisieCompteurA48")) {
+			return new OeELECSaisieCompteurA48();
+		}else if(activite.equals("ELECSaisieCompteurA54")){
+			return new OeELECSaisieCompteurA48();
 		} // Module PARAMETRAGE - Postes et emplois
 		else if (activite.equals("ParamFicheEmploi")) {
 			return new OePARAMETRAGEFicheEmploi();
@@ -655,7 +657,7 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 
 		// ELECTION
-		navigation.put(OeELECSaisieCompteur.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+		navigation.put(OeELECSaisieCompteurA48.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// PARAM

@@ -172,6 +172,15 @@ menuPTGPayeur.ajouterFils(new Lien("PTGPayeurConvCol", "PAYEUR", "Editions du pa
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurFonct", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_TITU"));
 menuPTGPayeur.ajouterFils(new Lien("PTGPayeurContractuels", "PAYEUR", "Editions du payeur", true, false,"POINTAGE/PAY_NON_TITU"));
 document.write(menuPTGPayeur.afficher());
+
+//***************************************************************
+//*               Le menu haut Election
+//***************************************************************
+var menuElecCompteur = new MenuHaut("Module_election_saisieCompteur");
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA48", "COMPTEUR", "Compteur A48", true, false,"ELEC/A48"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"ELEC/A54"));
+document.write(menuElecCompteur.afficher());
+
 //***************************************************************
 //*               Le menu haut Paramètres
 //***************************************************************
