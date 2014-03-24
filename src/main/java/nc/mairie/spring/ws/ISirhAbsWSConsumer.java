@@ -2,6 +2,7 @@ package nc.mairie.spring.ws;
 
 import java.util.List;
 
+import nc.mairie.abs.dto.CompteurAsaDto;
 import nc.mairie.abs.dto.DemandeDto;
 import nc.mairie.abs.dto.MotifCompteurDto;
 import nc.mairie.abs.dto.MotifRefusDto;
@@ -31,4 +32,8 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
 
 	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
+
+	List<CompteurAsaDto> getListeCompteurs();
+
+	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
 }

@@ -110,7 +110,7 @@
 		
 		/*Module ELECTION*/
 		listeDroits.add("ELECSaisieCompteurA48");
-		listeDroits.add("ELECSaisieCompteurA54");
+		//listeDroits.add("ELECSaisieCompteurA54");
 		
 		
 		/*Module SUIVI MEDICAL*/

@@ -260,8 +260,10 @@ public class RobotAgent extends Robot {
 		} // Module ELECTION
 		else if (activite.equals("ELECSaisieCompteurA48")) {
 			return new OeELECSaisieCompteurA48();
-		}else if(activite.equals("ELECSaisieCompteurA54")){
-			return new OeELECSaisieCompteurA48();
+			/*
+			 * }else if(activite.equals("ELECSaisieCompteurA54")){ return new
+			 * OeELECSaisieCompteurA48();
+			 */
 		} // Module PARAMETRAGE - Postes et emplois
 		else if (activite.equals("ParamFicheEmploi")) {
 			return new OePARAMETRAGEFicheEmploi();
@@ -517,6 +519,14 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePTGVentilationConvCol.class.getName() + OePTGVentilationConvCol.STATUT_SAISIE_PTG,
 				OePTGSaisie.class.getName());
+
+		// ///////////////////
+		// ELECTION //
+		// ///////////////////
+		// Classe OeELECSaisieCompteurA48
+		navigation.put(
+				OeELECSaisieCompteurA48.class.getName() + OeELECSaisieCompteurA48.STATUT_RECHERCHER_AGENT_CREATE,
+				OeAGENTRecherche.class.getName());
 
 		// ///////////////////
 		// DROITS //

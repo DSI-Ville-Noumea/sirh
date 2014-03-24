@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.mairie.abs.dto.CompteurAsaDto;
 import nc.mairie.abs.dto.DemandeDto;
 import nc.mairie.abs.dto.MotifCompteurDto;
 import nc.mairie.abs.dto.MotifRefusDto;
@@ -39,6 +40,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
 	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
+	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
+	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -268,6 +271,25 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	public ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurReposComp;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<CompteurAsaDto> getListeCompteurs() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsListeCompteurA48;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(CompteurAsaDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCompteurAsaA48;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte);
 		ClientResponse res = createAndPostRequest(params, url, json);

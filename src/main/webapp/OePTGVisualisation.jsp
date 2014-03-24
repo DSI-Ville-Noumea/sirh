@@ -275,7 +275,7 @@
              </FIELDSET>
 
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
-                <legend class="sigp2Legend">Visualisation et saise des pointages</legend>
+                <legend class="sigp2Legend">Visualisation et saisie des pointages</legend>
                 <BR/>
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationPointageList"> 
                     <thead>
