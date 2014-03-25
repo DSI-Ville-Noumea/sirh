@@ -6,6 +6,7 @@ import nc.mairie.gestionagent.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -97,6 +98,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? "" : soldeReposCompPrec / 60 + "h ";
 		String soldeReposCompPrecMinute = (soldeReposCompPrec % 60) == 0 ? "&nbsp;" : soldeReposCompPrec % 60 + "m";
 		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
+
+		// Solde ASA A48
+		Integer soldeAsaA48 = soldeGlobal.getSoldeAsaA48();
+		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeAsaA48 == null ? "&nbsp;" : soldeAsaA48 + "j");
 
 	}
 
@@ -193,5 +198,36 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_SOLDE_REPOS_COMP() {
 		return getZone(getNOM_ST_SOLDE_REPOS_COMP());
+	}
+
+	public String getNOM_ST_SOLDE_ASA_A48() {
+		return "NOM_ST_SOLDE_ASA_A48";
+	}
+
+	public String getVAL_ST_SOLDE_ASA_A48() {
+		return getZone(getNOM_ST_SOLDE_ASA_A48());
+	}
+
+	public String getNOM_PB_HISTORIQUE(int i) {
+		return "NOM_PB_HISTORIQUE" + i;
+	}
+
+	public boolean performPB_HISTORIQUE(HttpServletRequest request, Integer codeTypeAbsence) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		/*Carriere carriereCourante = (Carriere) getListeCarriere().get(indiceEltAConsulter);
+		setCarriereCourante(carriereCourante);
+
+		// init de la carriere courante
+		if (!initialiseCarriereCourante(request))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);*/
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
