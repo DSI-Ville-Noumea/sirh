@@ -4,6 +4,7 @@ import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
@@ -36,4 +37,6 @@ public interface ISirhAbsWSConsumer {
 	List<CompteurAsaDto> getListeCompteurs();
 
 	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
+
+	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence);
 }

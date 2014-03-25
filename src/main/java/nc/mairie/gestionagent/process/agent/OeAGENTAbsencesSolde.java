@@ -1,12 +1,16 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -24,7 +28,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
+	public String ACTION_VISUALISATION = "Consultation de l'historique d'un compteur";
+
 	private AgentNW agentCourant;
+	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -58,6 +66,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseListeDeroulante();
+
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
@@ -69,6 +79,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				return;
 			}
 		}
+	}
+
+	private void initialiseListeDeroulante() {
+		if (getListeTypeAbsence().size() == 0) {
+			setListeTypeAbsence(EnumTypeAbsence.getValues());
+		}
+
 	}
 
 	private void initialiseSoldesAgent(HttpServletRequest request) {
@@ -132,6 +149,18 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_ANNULER
+			if (testerParametre(request, getNOM_PB_ANNULER())) {
+				return performPB_ANNULER(request);
+			}
+			// Si clic sur le bouton PB_HISTORIQUE
+			for (int i = 0; i < getListeTypeAbsence().size(); i++) {
+				Integer code = getListeTypeAbsence().get(i).getCode();
+				if (testerParametre(request, getNOM_PB_HISTORIQUE(code))) {
+					return performPB_HISTORIQUE(request, code);
+				}
+			}
 
 		}
 		// Si TAG INPUT non géré par le process
@@ -217,17 +246,92 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		/*Carriere carriereCourante = (Carriere) getListeCarriere().get(indiceEltAConsulter);
-		setCarriereCourante(carriereCourante);
+		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 
-		// init de la carriere courante
-		if (!initialiseCarriereCourante(request))
-			return false;
+		// Liste depuis SIRH-ABS-WS
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ArrayList<HistoriqueSoldeDto> listeHistorique = (ArrayList<HistoriqueSoldeDto>) consuAbs
+				.getHistoriqueCompteurAgent(Integer.valueOf(getAgentCourant().getIdAgent()), codeTypeAbsence);
+		setListeHistorique(listeHistorique);
+
+		for (int i = 0; i < getListeHistorique().size(); i++) {
+
+			HistoriqueSoldeDto histo = (HistoriqueSoldeDto) getListeHistorique().get(i);
+			AgentNW ag = AgentNW.chercherAgent(getTransaction(), histo.getIdAgentModification().toString());
+
+			addZone(getNOM_ST_DATE(i),
+					sdfDate.format(histo.getDateModifcation()) + "<br/>" + sdfHeure.format(histo.getDateModifcation()));
+			addZone(getNOM_ST_PAR(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
+			addZone(getNOM_ST_MOTIF(i), histo.getMotif().getLibelle());
+			addZone(getNOM_ST_OPERATION(i), histo.getTextModification());
+
+		}
 
 		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);*/
+		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public String getNOM_PB_ANNULER() {
+		return "NOM_PB_ANNULER";
+	}
+
+	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		setListeHistorique(null);
+		setStatut(STATUT_MEME_PROCESS);
+
+		return true;
+	}
+
+	public String getNOM_ST_DATE(int i) {
+		return "NOM_ST_DATE" + i;
+	}
+
+	public String getVAL_ST_DATE(int i) {
+		return getZone(getNOM_ST_DATE(i));
+	}
+
+	public String getNOM_ST_PAR(int i) {
+		return "NOM_ST_PAR" + i;
+	}
+
+	public String getVAL_ST_PAR(int i) {
+		return getZone(getNOM_ST_PAR(i));
+	}
+
+	public String getNOM_ST_MOTIF(int i) {
+		return "NOM_ST_MOTIF" + i;
+	}
+
+	public String getVAL_ST_MOTIF(int i) {
+		return getZone(getNOM_ST_MOTIF(i));
+	}
+
+	public String getNOM_ST_OPERATION(int i) {
+		return "NOM_ST_OPERATION" + i;
+	}
+
+	public String getVAL_ST_OPERATION(int i) {
+		return getZone(getNOM_ST_OPERATION(i));
+	}
+
+	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
+		return listeTypeAbsence == null ? new ArrayList<EnumTypeAbsence>() : listeTypeAbsence;
+	}
+
+	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+		this.listeTypeAbsence = listeTypeAbsence;
+	}
+
+	public ArrayList<HistoriqueSoldeDto> getListeHistorique() {
+		return listeHistorique == null ? new ArrayList<HistoriqueSoldeDto>() : listeHistorique;
+	}
+
+	public void setListeHistorique(ArrayList<HistoriqueSoldeDto> listeHistorique) {
+		this.listeHistorique = listeHistorique;
 	}
 }

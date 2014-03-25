@@ -8,6 +8,7 @@ import java.util.Map;
 
 import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
@@ -42,6 +43,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
 	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
+	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -294,6 +296,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgentConnecte);
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsHistoCompteurAgent;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		params.put("codeRefTypeAbsence", codeTypeAbsence.toString());
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(HistoriqueSoldeDto.class, res, url);
 	}
 
 }

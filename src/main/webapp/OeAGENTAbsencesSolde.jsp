@@ -25,6 +25,14 @@
 			if (document.formu.elements[nom] != null)
 			document.formu.elements[nom].focus();
 		}
+		//function pour changement couleur arriere plan ligne du tableau
+		function SelectLigne(id,tailleTableau)
+		{
+			for (i=0; i<tailleTableau; i++){
+		 		document.getElementById(i).className="";
+			} 
+		 document.getElementById(id).className="selectLigne";
+		}
 		
 		</SCRIPT>	
 		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -103,6 +111,35 @@
 				    <BR/>				    
 				</FIELDSET>				
 				<BR/>
+				<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
+					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+						<table class="sigp2NewTab" style="text-align:left;width:980px;">
+							<tr bgcolor="#EFEFEF">
+								<td align="center" width="90px;">Le <br/> à</td>
+								<td width="180px;">Par</td>
+								<td width="180px;">Motif</td>
+								<td>Opération</td>
+							</tr>
+							<%
+							for (int i = 0;i<process.getListeHistorique().size();i++){
+							%>
+								<tr id="<%=i%>" onmouseover="SelectLigne(<%=i%>,<%=process.getListeHistorique().size()%>)">
+									<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_PAR(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_MOTIF(i)%></td>
+									<td class="sigp2NewTab-liste"><%=process.getVAL_ST_OPERATION(i)%></td>
+								</tr>
+							<%}%>
+						</table>	
+						</div>
+						<BR/><BR/>
+						<div style="text-align: center;">
+							<INPUT type="submit" class="sigp2-Bouton-100" value="Fermer" name="<%=process.getNOM_PB_ANNULER()%>">
+						</div>	
+				</FIELDSET>
+				<%} %>
 		</FORM>
 <%} %>	
 	</BODY>
