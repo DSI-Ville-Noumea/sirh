@@ -101,7 +101,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// Solde ASA A48
 		Integer soldeAsaA48 = soldeGlobal.getSoldeAsaA48();
-		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeAsaA48 == null ? "&nbsp;" : soldeAsaA48 + "j");
+		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeAsaA48 == null ? "&nbsp;" : soldeAsaA48 + " j");
 
 	}
 
