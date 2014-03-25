@@ -16,10 +16,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentDto;
-import nc.mairie.gestionagent.dto.ConsultPointageDto;
-import nc.mairie.gestionagent.dto.RefEtatDto;
-import nc.mairie.gestionagent.dto.RefTypePointageDto;
-import nc.mairie.gestionagent.dto.VentilDateDto;
+import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
+import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;

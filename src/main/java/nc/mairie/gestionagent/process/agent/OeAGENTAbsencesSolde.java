@@ -2,7 +2,7 @@ package nc.mairie.gestionagent.process.agent;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.SoldeDto;
+import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;

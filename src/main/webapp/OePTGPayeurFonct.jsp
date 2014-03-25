@@ -1,5 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.gestionagent.dto.EtatsPayeurDto"%>
+<%@page import="nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 

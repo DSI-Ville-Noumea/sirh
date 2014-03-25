@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;

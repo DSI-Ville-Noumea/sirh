@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTypeCompetence;
-import nc.mairie.gestionagent.dto.RefPrimeDto;
+import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;

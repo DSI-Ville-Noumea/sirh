@@ -10,11 +10,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import nc.mairie.gestionagent.dto.RefPrimeDto;
-import nc.mairie.gestionagent.dto.VentilAbsenceDto;
-import nc.mairie.gestionagent.dto.VentilErreurDto;
-import nc.mairie.gestionagent.dto.VentilHSupDto;
-import nc.mairie.gestionagent.dto.VentilPrimeDto;
+import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
+import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
+import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
+import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
+import nc.mairie.gestionagent.pointage.dto.VentilPrimeDto;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.BaseHoraire;
 import nc.mairie.metier.carriere.Carriere;

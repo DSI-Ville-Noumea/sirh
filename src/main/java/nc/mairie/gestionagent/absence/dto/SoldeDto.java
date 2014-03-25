@@ -1,4 +1,4 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.absence.dto;
 
 public class SoldeDto {
 

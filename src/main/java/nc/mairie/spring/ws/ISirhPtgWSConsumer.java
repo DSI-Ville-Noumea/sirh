@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.gestionagent.dto.ConsultPointageDto;
-import nc.mairie.gestionagent.dto.EtatsPayeurDto;
-import nc.mairie.gestionagent.dto.FichePointageDto;
-import nc.mairie.gestionagent.dto.RefEtatDto;
-import nc.mairie.gestionagent.dto.RefPrimeDto;
-import nc.mairie.gestionagent.dto.RefTypePointageDto;
-import nc.mairie.gestionagent.dto.TypeAbsenceDto;
-import nc.mairie.gestionagent.dto.VentilDateDto;
-import nc.mairie.gestionagent.dto.VentilErreurDto;
+import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
+import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
+import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
+import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
+import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
+import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
+import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
+import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 
 import com.sun.jersey.api.client.ClientResponse;
 

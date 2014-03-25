@@ -1,4 +1,4 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;

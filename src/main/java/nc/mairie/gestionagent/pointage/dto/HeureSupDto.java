@@ -1,4 +1,5 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.pointage.dto;
+
 
 public class HeureSupDto extends PointageDto {
 

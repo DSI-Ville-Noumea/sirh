@@ -7,8 +7,8 @@ import nc.mairie.abs.dto.DemandeDto;
 import nc.mairie.abs.dto.MotifCompteurDto;
 import nc.mairie.abs.dto.MotifRefusDto;
 import nc.mairie.abs.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
-import nc.mairie.gestionagent.dto.SoldeDto;
 
 public interface ISirhAbsWSConsumer {
 

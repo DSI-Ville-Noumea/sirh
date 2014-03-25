@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.enums.EnumTypeDroit" %>
 <%@page import="nc.mairie.utils.MairieUtils" %>
-<%@page import="nc.mairie.gestionagent.dto.HeureSupDto" %>
-<%@page import="nc.mairie.gestionagent.dto.AbsenceDto" %>
-<%@page import="nc.mairie.gestionagent.dto.PrimeDto" %>
+<%@page import="nc.mairie.gestionagent.pointage.dto.HeureSupDto" %>
+<%@page import="nc.mairie.gestionagent.absence.dto.AbsenceDto" %>
+<%@page import="nc.mairie.gestionagent.pointage.dto.PrimeDto" %>
 <%@page import="nc.mairie.gestionagent.process.pointage.EtatPointageEnum" %>
 <%@page import="nc.mairie.gestionagent.process.pointage.TypeSaisieEnum" %>
 <%@page import="java.util.Date" %>

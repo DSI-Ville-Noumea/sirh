@@ -13,12 +13,12 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.AbsenceDto;
-import nc.mairie.gestionagent.dto.FichePointageDto;
-import nc.mairie.gestionagent.dto.HeureSupDto;
-import nc.mairie.gestionagent.dto.JourPointageDto;
-import nc.mairie.gestionagent.dto.PrimeDto;
-import nc.mairie.gestionagent.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.AbsenceDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
+import nc.mairie.gestionagent.pointage.dto.HeureSupDto;
+import nc.mairie.gestionagent.pointage.dto.JourPointageDto;
+import nc.mairie.gestionagent.pointage.dto.PrimeDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
-import nc.mairie.gestionagent.dto.RefPrimeDto;
+import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;

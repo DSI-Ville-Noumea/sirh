@@ -1,4 +1,6 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.absence.dto;
+
+import nc.mairie.gestionagent.pointage.dto.PointageDto;
 
 public class AbsenceDto extends PointageDto {
 

@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.gestionagent.dto.VentilDateDto;
+import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;

@@ -1,8 +1,10 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 
 public class FichePointageDto {
 

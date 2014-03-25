@@ -1,6 +1,8 @@
-package nc.mairie.gestionagent.dto;
+package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
+
+import nc.mairie.gestionagent.dto.AgentDto;
 
 public class ConsultPointageDto {
 
