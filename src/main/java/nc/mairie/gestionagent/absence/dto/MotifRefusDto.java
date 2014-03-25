@@ -1,15 +1,15 @@
-package nc.mairie.abs.dto;
+package nc.mairie.gestionagent.absence.dto;
 
 import nc.mairie.gestionagent.dto.IJSONDeserialize;
 import flexjson.JSONDeserializer;
 
-public class MotifCompteurDto implements IJSONDeserialize<MotifCompteurDto> {
+public class MotifRefusDto implements IJSONDeserialize<MotifRefusDto> {
 
-	private Integer idMotifCompteur;
+	private Integer idMotifRefus;
 	private String libelle;
 	private Integer idRefTypeAbsence;
 
-	public MotifCompteurDto() {
+	public MotifRefusDto() {
 	}
 
 	public String getLibelle() {
@@ -18,6 +18,14 @@ public class MotifCompteurDto implements IJSONDeserialize<MotifCompteurDto> {
 
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
+	}
+
+	public Integer getIdMotifRefus() {
+		return idMotifRefus;
+	}
+
+	public void setIdMotifRefus(Integer idMotifRefus) {
+		this.idMotifRefus = idMotifRefus;
 	}
 
 	public Integer getIdRefTypeAbsence() {
@@ -29,15 +37,7 @@ public class MotifCompteurDto implements IJSONDeserialize<MotifCompteurDto> {
 	}
 
 	@Override
-	public MotifCompteurDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<MotifCompteurDto>().deserializeInto(json, this);
-	}
-
-	public Integer getIdMotifCompteur() {
-		return idMotifCompteur;
-	}
-
-	public void setIdMotifCompteur(Integer idMotifCompteur) {
-		this.idMotifCompteur = idMotifCompteur;
+	public MotifRefusDto deserializeFromJSON(String json) {
+		return new JSONDeserializer<MotifRefusDto>().deserializeInto(json, this);
 	}
 }

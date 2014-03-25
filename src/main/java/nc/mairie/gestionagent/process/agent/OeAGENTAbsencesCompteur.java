@@ -5,11 +5,11 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.abs.dto.CompteurDto;
-import nc.mairie.abs.dto.MotifCompteurDto;
-import nc.mairie.abs.dto.ReturnMessageDto;
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;

@@ -1,4 +1,4 @@
-package nc.mairie.abs.dto;
+package nc.mairie.gestionagent.absence.dto;
 
 import java.util.Date;
 

@@ -6,11 +6,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.abs.dto.CompteurAsaDto;
-import nc.mairie.abs.dto.CompteurDto;
-import nc.mairie.abs.dto.MotifCompteurDto;
-import nc.mairie.abs.dto.ReturnMessageDto;
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
+import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Siidma;

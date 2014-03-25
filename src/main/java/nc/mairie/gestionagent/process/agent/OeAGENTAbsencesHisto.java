@@ -6,9 +6,9 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.abs.dto.DemandeDto;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;

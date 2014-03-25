@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.mairie.abs.dto.CompteurAsaDto;
-import nc.mairie.abs.dto.DemandeDto;
-import nc.mairie.abs.dto.MotifCompteurDto;
-import nc.mairie.abs.dto.MotifRefusDto;
-import nc.mairie.abs.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
+import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
+import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 
 import org.slf4j.Logger;
