@@ -130,6 +130,7 @@
 		listeDroits.add("ParamCarriere");		
 		listeDroits.add("ParamJour");		
 		listeDroits.add("ParamAbs");	
+		listeDroits.add("ParamElec");	
 		
 		
 		/*Module GESTION DROITS*/

@@ -11,6 +11,7 @@ import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
+import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -44,6 +45,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
 	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
+	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
+	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -307,6 +310,23 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("codeRefTypeAbsence", codeTypeAbsence.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(HistoriqueSoldeDto.class, res, url);
+	}
+
+	@Override
+	public List<OrganisationSyndicaleDto> getListeOrganisationSyndicale() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsListOrganisationSyndicale;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(OrganisationSyndicaleDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveOrganisationSyndicale(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsOrganisationSyndicaleSauvegarde;
+		ClientResponse res = createAndPostRequest(url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 }

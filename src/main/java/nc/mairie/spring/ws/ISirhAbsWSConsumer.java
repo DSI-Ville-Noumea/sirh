@@ -7,6 +7,7 @@ import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
+import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -39,4 +40,8 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
 
 	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence);
+
+	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
+
+	ReturnMessageDto saveOrganisationSyndicale(String json);
 }

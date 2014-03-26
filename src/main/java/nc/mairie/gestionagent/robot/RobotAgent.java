@@ -61,6 +61,7 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEElection;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEFicheEmploi;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEFichePoste;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGrade;
@@ -291,8 +292,12 @@ public class RobotAgent extends Robot {
 			return new OePARAMETRAGECarriere();
 		} else if (activite.equals("ParamJour")) {
 			return new OePARAMETRAGEJour();
-		} else if (activite.equals("ParamAbs")) {
+		} // Module PARAMETRAGE - ABSENCE
+		else if (activite.equals("ParamAbs")) {
 			return new OePARAMETRAGEAbsence();
+		} // Module PARAMETRAGE - ELECTIONS
+		else if (activite.equals("ParamElec")) {
+			return new OePARAMETRAGEElection();
 		} // Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {
 			return new OeDROITSUtilisateurs();
@@ -692,6 +697,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEJour.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// DROITS
