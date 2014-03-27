@@ -3169,10 +3169,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), evalue
+					.getIdAgent().toString().substring(3, evalue.getIdAgent().toString().length()));
+			boolean isPAInactive = pa.estPAInactive(getTransaction());
 
 			// si l'agent est hors VDN alors on ne fait pas la mise à jour des
 			// droits
-			if (!evalue.isAgentAffecte()) {
+			if (!evalue.isAgentAffecte() || !isPAInactive) {
 				// RG-EAE-6 --> mis au moment où on controle un EAE.
 				// on cherche le document concerné
 				try {
@@ -3306,29 +3309,38 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 
-		// RG-EAE-6 --> mis au moment où on controle un EAE.
-		// on cherche le document concerné
-		try {
-			String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-			// on fait appel au WS de Sharepoint pour mettre à jour les droits
-			// de l'évalué sur le document.
-			SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
-			KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, true);
-			if (retour.getStatus().equals("ko")) {
+		PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), evalue
+				.getIdAgent().toString().substring(3, evalue.getIdAgent().toString().length()));
+		boolean isPAInactive = pa.estPAInactive(getTransaction());
+
+		// si l'agent est hors VDN alors on ne fait pas la mise à jour des
+		// droits
+		if (!evalue.isAgentAffecte() || !isPAInactive) {
+			// RG-EAE-6 --> mis au moment où on controle un EAE.
+			// on cherche le document concerné
+			try {
+				String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
+				// on fait appel au WS de Sharepoint pour mettre à jour les
+				// droits
+				// de l'évalué sur le document.
+				SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
+				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, true);
+				if (retour.getStatus().equals("ko")) {
+					// "ERR215",
+					// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
+					logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE()
+							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
+					return false;
+				}
+			} catch (SirhKiosqueWSConsumerException e) {
 				// "ERR215",
 				// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
 				logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
-						+ evalue.getIdAgent() + ", erreur :" + retour.getMessage());
+						+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
 				return false;
 			}
-		} catch (SirhKiosqueWSConsumerException e) {
-			// "ERR215",
-			// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs.Cet EAE ne peut être dé-contrôlé. Merci de contacter le responsable du projet.");
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR215"));
-			logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
-					+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
-			return false;
 		}
 
 		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(),
