@@ -50,31 +50,51 @@
                     hier = document.getElementById('treeHierarchy');
                     hier.style.display = 'none';
                 }
+                
+                $.fn.dataTableExt.oSort['date-francais-asc']  = function(a,b) {
+                    var ukDatea = a.split('/');
+                    var ukDateb = b.split('/');
+                     
+                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                     
+                    return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+                };
+                 
+                $.fn.dataTableExt.oSort['date-francais-desc'] = function(a,b) {
+                    var ukDatea = a.split('/');
+                    var ukDateb = b.split('/');
+                     
+                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                     
+                    return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+                };
 
                 $(document).ready(function() {
                     $('#VisualisationPointageList').dataTable({                        
                         "bAutoWidth":false,
                         "aoColumns": [
-                            {"bSortable": false,"sWidth": "0px"},
-                            {"bSortable": false,"sWidth": "0px"},
-                            {"bSortable": false,"sWidth": "0px"},
-                            {"bSortable": false,"sWidth": "0px"},
-                            {"bSortable": false,"sWidth": "1px"},
-                            {"bSortable": false,"sWidth": "30px","sClass" : "center"},
-                            {"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "0px"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "0px"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "0px"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "0px"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "1px"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                            {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "40px","sClass" : "center"},
-                            {"bSortable": true,"sWidth": "80px","sClass" : "center"},
+                            {"sType": "date-francais","bSortable": true,"sWidth": "80px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "70px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "100px","sClass" : "center"},
                             {"bSortable": true,"sWidth": "80px","sClass" : "center"},
-                            {"bSortable": false,"sClass" : "center"},
-                            {"bSortable": false,"sClass" : "center"},
-                            {"bSortable": false,"sClass" : "center"}
+                            {"bSearchable": false,"bSortable": false,"sClass" : "center"},
+                            {"bSearchable": false,"bSortable": false,"sClass" : "center"},
+                            {"bSearchable": false,"bSortable": false,"sClass" : "center"}
                         ],
 						"aaSorting": [[ 10, "asc" ]],
                         "sDom": '<"H"flip>t<"F"rip>',
