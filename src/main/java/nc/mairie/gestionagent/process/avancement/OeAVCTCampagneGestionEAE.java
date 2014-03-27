@@ -3390,11 +3390,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		// performCreerEvalue(request, ag, false, evalue.isAgentAffecte(),
-		// false);
+		performCreerEvalue(request, ag, false, evalue.isAgentAffecte(), false);
 		// on met les données dans EAE-FichePoste
-		// performCreerFichePostePrincipale(request, fpPrincipale,
-		// getEaeCourant(), false, false);
+		performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
 		// on met les données dans EAE-FDP-Activites
 		performCreerActivitesFichePostePrincipale(request, fpPrincipale);
