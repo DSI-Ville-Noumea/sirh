@@ -3170,29 +3170,33 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		String heureAction = sdf.format(new Date());
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
 
-			// RG-EAE-6 --> mis au moment où on controle un EAE.
-			// on cherche le document concerné
-			try {
-				String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
-				// on fait appel au WS de Sharepoint pour mettre à jour les
-				// droits de l'évalué sur le document.
-				SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
-				KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, false);
-				if (retour.getStatus().equals("ko")) {
+			// si l'agent est hors VDN alors on ne fait pas la mise à jour des
+			// droits
+			if (!evalue.isAgentAffecte()) {
+				// RG-EAE-6 --> mis au moment où on controle un EAE.
+				// on cherche le document concerné
+				try {
+					String docFinalise = getEaeFinalisationDao().chercherDernierDocumentFinalise(idEae);
+					// on fait appel au WS de Sharepoint pour mettre à jour les
+					// droits de l'évalué sur le document.
+					SirhKiosqueWSConsumer t = new SirhKiosqueWSConsumer();
+					KiosqueDto retour = t.setDroitEvalueEAE(docFinalise, false);
+					if (retour.getStatus().equals("ko")) {
+						// "ERR214",
+						// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
+						logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE()
+								+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
+						return false;
+					}
+				} catch (SirhKiosqueWSConsumerException e) {
 					// "ERR214",
 					// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
 					logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE()
-							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + retour.getMessage());
+							+ " et idEvalue = " + evalue.getIdAgent() + ", erreur :" + e.getMessage());
 					return false;
 				}
-			} catch (SirhKiosqueWSConsumerException e) {
-				// "ERR214",
-				// "Une erreur est survenue dans la mise à jour des droits des fichiers EAEs. Cet EAE ne peut être contrôlé. Merci de contacter le responsable du projet.");
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR214"));
-				logger.error("Pb mise à jour Droit EAE sur idEAe = " + getEaeCourant().getIdEAE() + " et idEvalue = "
-						+ evalue.getIdAgent() + ", erreur :" + e.getMessage());
-				return false;
 			}
 
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
@@ -3386,9 +3390,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 		// on met les données dans EAE-evalué
-		//performCreerEvalue(request, ag, false, evalue.isAgentAffecte(), false);
+		// performCreerEvalue(request, ag, false, evalue.isAgentAffecte(),
+		// false);
 		// on met les données dans EAE-FichePoste
-		//performCreerFichePostePrincipale(request, fpPrincipale, getEaeCourant(), false, false);
+		// performCreerFichePostePrincipale(request, fpPrincipale,
+		// getEaeCourant(), false, false);
 		performCreerFichePosteSecondaire(request, fpSecondaire, getEaeCourant());
 		// on met les données dans EAE-FDP-Activites
 		performCreerActivitesFichePostePrincipale(request, fpPrincipale);
