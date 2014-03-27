@@ -78,6 +78,7 @@
                         ],
 						"aaSorting": [[ 10, "asc" ]],
                         "sDom": '<"H"flip>t<"F"rip>',
+                        "bStateSave": true,
                         "oLanguage": {
                             "oPaginate": {
                                 "sFirst": "",
