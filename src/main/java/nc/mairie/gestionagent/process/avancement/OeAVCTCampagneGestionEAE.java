@@ -3175,7 +3175,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// si l'agent est hors VDN alors on ne fait pas la mise à jour des
 			// droits
-			if (!evalue.isAgentAffecte() || !isPAInactive) {
+			if (!evalue.isAgentAffecte() && !isPAInactive) {
+
 				// RG-EAE-6 --> mis au moment où on controle un EAE.
 				// on cherche le document concerné
 				try {
@@ -3315,7 +3316,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// si l'agent est hors VDN alors on ne fait pas la mise à jour des
 		// droits
-		if (!evalue.isAgentAffecte() || !isPAInactive) {
+		if (!evalue.isAgentAffecte() && !isPAInactive) {
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
 			// on cherche le document concerné
 			try {
