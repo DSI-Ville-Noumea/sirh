@@ -153,6 +153,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			etats.add(EnumEtatAbsence.VISEE_FAV);
 			etats.add(EnumEtatAbsence.VISEE_DEFAV);
 			etats.add(EnumEtatAbsence.APPROUVE);
+			etats.add(EnumEtatAbsence.VALIDEE);
 			setListeEtatAbsenceEC(etats);
 
 			int[] tailles = { 30 };
