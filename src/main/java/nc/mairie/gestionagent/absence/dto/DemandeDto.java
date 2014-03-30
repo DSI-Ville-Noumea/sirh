@@ -8,12 +8,19 @@ import flexjson.JSONDeserializer;
 public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private Integer idDemande;
+
 	private Integer idAgent;
+	private String nomAgent;
+	private String prenomAgent;
+	private String service;
+	private String codeService;
+
 	private Integer idTypeDemande;
 	private Date dateDebut;
 	private Integer duree;
 	private Integer idRefEtat;
 	private Date dateDemande;
+	private String motif;
 
 	// permet d'afficher ou non les icones correspondants
 	private boolean isAffichageBoutonModifier;
@@ -176,6 +183,62 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	@Override
 	public DemandeDto deserializeFromJSON(String json) {
 		return new JSONDeserializer<DemandeDto>().deserializeInto(json, this);
+	}
+
+	public String getMotif() {
+		return motif;
+	}
+
+	public void setMotif(String motif) {
+		this.motif = motif;
+	}
+
+	public Boolean getIsValeurVisa() {
+		return isValeurVisa;
+	}
+
+	public void setIsValeurVisa(Boolean isValeurVisa) {
+		this.isValeurVisa = isValeurVisa;
+	}
+
+	public Boolean getIsValeurApprobation() {
+		return isValeurApprobation;
+	}
+
+	public void setIsValeurApprobation(Boolean isValeurApprobation) {
+		this.isValeurApprobation = isValeurApprobation;
+	}
+
+	public String getNomAgent() {
+		return nomAgent;
+	}
+
+	public void setNomAgent(String nomAgent) {
+		this.nomAgent = nomAgent;
+	}
+
+	public String getPrenomAgent() {
+		return prenomAgent;
+	}
+
+	public void setPrenomAgent(String prenomAgent) {
+		this.prenomAgent = prenomAgent;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
+	}
+
+	public String getCodeService() {
+		return codeService;
+	}
+
+	public void setCodeService(String codeService) {
+		this.codeService = codeService;
 	}
 
 }

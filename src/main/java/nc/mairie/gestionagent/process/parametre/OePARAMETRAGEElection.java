@@ -116,7 +116,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 				return performPB_MODIFIER_ORGANISATION(request);
 			}
 
-			// Si clic sur le bouton PB_VALIDER_MOTIF_REFUS
+			// Si clic sur le bouton PB_VALIDER_ORGANISATION
 			if (testerParametre(request, getNOM_PB_VALIDER_ORGANISATION())) {
 				return performPB_VALIDER_ORGANISATION(request);
 			}
@@ -207,9 +207,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	private void viderZonesSaisie() {
-		// Motif refus
 		addZone(getNOM_ST_ACTION_ORGANISATION(), Const.CHAINE_VIDE);
-
 		addZone(getNOM_EF_LIB_ORGANISATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_ORGANISATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_ORGANISATION_INACTIF(), getNOM_RB_NON());
@@ -244,7 +242,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	public String getNOM_PB_VALIDER_ORGANISATION() {
-		return "NOM_PB_VALIDER_MOTIF_REFUS";
+		return "NOM_PB_VALIDER_ORGANISATION";
 	}
 
 	public boolean performPB_VALIDER_ORGANISATION(HttpServletRequest request) throws Exception {

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
-import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
+import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -31,10 +31,9 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 	public String focus = null;
 
-	private String[] LB_MOTIF_REFUS;
-	private ArrayList<MotifRefusDto> listeMotifRefus;
+	private String[] LB_MOTIF;
+	private ArrayList<MotifDto> listeMotif;
 
-	private String[] LB_TYPE_ABSENCE_REFUS;
 	private String[] LB_TYPE_ABSENCE_COMPTEUR;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
 
@@ -65,8 +64,8 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			throw new Exception();
 		}
 
-		if (getListeMotifRefus().size() == 0) {
-			initialiseListeMotifRefus(request);
+		if (getListeMotif().size() == 0) {
+			initialiseListeMotif(request);
 		}
 
 		if (getListeMotifCompteur().size() == 0) {
@@ -116,31 +115,29 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_TYPE_ABSENCE_REFUS(aFormat.getListeFormatee(false));
 			setLB_TYPE_ABSENCE_COMPTEUR(aFormat.getListeFormatee(false));
 		}
 
 	}
 
-	private void initialiseListeMotifRefus(HttpServletRequest request) throws Exception {
+	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		ArrayList<MotifRefusDto> listeMotifs = (ArrayList<MotifRefusDto>) consuAbs.getListeMotifRefus(null);
+		ArrayList<MotifDto> listeMotifs = (ArrayList<MotifDto>) consuAbs.getListeMotif();
 
-		setListeMotifRefus(listeMotifs);
-		if (getListeMotifRefus().size() != 0) {
-			int tailles[] = { 40, 40 };
-			String padding[] = { "G", "G" };
+		setListeMotif(listeMotifs);
+		if (getListeMotif().size() != 0) {
+			int tailles[] = { 40 };
+			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (MotifRefusDto motif : getListeMotifRefus()) {
-				String type = EnumTypeAbsence.getValueEnumTypeAbsence(motif.getIdRefTypeAbsence());
-				String ligne[] = { motif.getLibelle(), type };
+			for (MotifDto motif : getListeMotif()) {
+				String ligne[] = { motif.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_MOTIF_REFUS(aFormat.getListeFormatee());
+			setLB_MOTIF(aFormat.getListeFormatee());
 		} else {
-			setLB_MOTIF_REFUS(null);
+			setLB_MOTIF(null);
 		}
 	}
 
@@ -163,24 +160,24 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
-			// Si clic sur le bouton PB_ANNULER_MOTIF_REFUS
-			if (testerParametre(request, getNOM_PB_ANNULER_MOTIF_REFUS())) {
-				return performPB_ANNULER_MOTIF_REFUS(request);
+			// Si clic sur le bouton PB_ANNULER_MOTIF
+			if (testerParametre(request, getNOM_PB_ANNULER_MOTIF())) {
+				return performPB_ANNULER_MOTIF(request);
 			}
 
-			// Si clic sur le bouton PB_CREER_MOTIF_REFUS
-			if (testerParametre(request, getNOM_PB_CREER_MOTIF_REFUS())) {
-				return performPB_CREER_MOTIF_REFUS(request);
+			// Si clic sur le bouton PB_CREER_MOTIF
+			if (testerParametre(request, getNOM_PB_CREER_MOTIF())) {
+				return performPB_CREER_MOTIF(request);
 			}
 
-			// Si clic sur le bouton PB_MODIFIER_MOTIF_REFUS
-			if (testerParametre(request, getNOM_PB_MODIFIER_MOTIF_REFUS())) {
-				return performPB_MODIFIER_MOTIF_REFUS(request);
+			// Si clic sur le bouton PB_MODIFIER_MOTIF
+			if (testerParametre(request, getNOM_PB_MODIFIER_MOTIF())) {
+				return performPB_MODIFIER_MOTIF(request);
 			}
 
-			// Si clic sur le bouton PB_VALIDER_MOTIF_REFUS
-			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_REFUS())) {
-				return performPB_VALIDER_MOTIF_REFUS(request);
+			// Si clic sur le bouton PB_VALIDER_MOTIF
+			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF())) {
+				return performPB_VALIDER_MOTIF(request);
 			}
 
 			// Si clic sur le bouton PB_ANNULER_MOTIF_COMPTEUR
@@ -247,139 +244,129 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		this.focus = focus;
 	}
 
-	private String[] getLB_MOTIF_REFUS() {
-		if (LB_MOTIF_REFUS == null)
-			LB_MOTIF_REFUS = initialiseLazyLB();
-		return LB_MOTIF_REFUS;
+	private String[] getLB_MOTIF() {
+		if (LB_MOTIF == null)
+			LB_MOTIF = initialiseLazyLB();
+		return LB_MOTIF;
 	}
 
-	private void setLB_MOTIF_REFUS(String[] newLB_MOTIF_REFUS) {
-		LB_MOTIF_REFUS = newLB_MOTIF_REFUS;
+	private void setLB_MOTIF(String[] newLB_MOTIF) {
+		LB_MOTIF = newLB_MOTIF;
 	}
 
-	public String getNOM_LB_MOTIF_REFUS() {
-		return "NOM_LB_MOTIF_REFUS";
+	public String getNOM_LB_MOTIF() {
+		return "NOM_LB_MOTIF";
 	}
 
-	public String getNOM_LB_MOTIF_REFUS_SELECT() {
-		return "NOM_LB_MOTIF_REFUS_SELECT";
+	public String getNOM_LB_MOTIF_SELECT() {
+		return "NOM_LB_MOTIF_SELECT";
 	}
 
-	public String[] getVAL_LB_MOTIF_REFUS() {
-		return getLB_MOTIF_REFUS();
+	public String[] getVAL_LB_MOTIF() {
+		return getLB_MOTIF();
 	}
 
-	public String getVAL_LB_MOTIF_REFUS_SELECT() {
-		return getZone(getNOM_LB_MOTIF_REFUS_SELECT());
+	public String getVAL_LB_MOTIF_SELECT() {
+		return getZone(getNOM_LB_MOTIF_SELECT());
 	}
 
-	private ArrayList<MotifRefusDto> getListeMotifRefus() {
-		if (listeMotifRefus == null)
-			return new ArrayList<MotifRefusDto>();
-		return listeMotifRefus;
+	private ArrayList<MotifDto> getListeMotif() {
+		if (listeMotif == null)
+			return new ArrayList<MotifDto>();
+		return listeMotif;
 	}
 
-	private void setListeMotifRefus(ArrayList<MotifRefusDto> listeMotifRefus) {
-		this.listeMotifRefus = listeMotifRefus;
+	private void setListeMotif(ArrayList<MotifDto> listeMotif) {
+		this.listeMotif = listeMotif;
 	}
 
-	public String getNOM_PB_ANNULER_MOTIF_REFUS() {
-		return "NOM_PB_ANNULER_MOTIF_REFUS";
+	public String getNOM_PB_ANNULER_MOTIF() {
+		return "NOM_PB_ANNULER_MOTIF";
 	}
 
-	public boolean performPB_ANNULER_MOTIF_REFUS(HttpServletRequest request) throws Exception {
+	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
 		viderZonesSaisie();
 		setStatut(STATUT_MEME_PROCESS);
 
-		setFocus(getNOM_PB_ANNULER_MOTIF_REFUS());
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
-	public String getNOM_PB_CREER_MOTIF_REFUS() {
-		return "NOM_PB_CREER_MOTIF_REFUS";
+	public String getNOM_PB_CREER_MOTIF() {
+		return "NOM_PB_CREER_MOTIF";
 	}
 
-	public boolean performPB_CREER_MOTIF_REFUS(HttpServletRequest request) throws Exception {
+	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
 		viderZonesSaisie();
 
 		// On nomme l'action
-		addZone(getNOM_ST_ACTION_MOTIF_REFUS(), ACTION_CREATION);
+		addZone(getNOM_ST_ACTION_MOTIF(), ACTION_CREATION);
 
 		setStatut(STATUT_MEME_PROCESS);
-		setFocus(getNOM_PB_ANNULER_MOTIF_REFUS());
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
 	private void viderZonesSaisie() {
-		// Motif refus
-		addZone(getNOM_ST_ACTION_MOTIF_REFUS(), Const.CHAINE_VIDE);
+		// Motif
+		addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_LIB_MOTIF_REFUS(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_TYPE_ABSENCE_REFUS_SELECT(), Const.ZERO);
+		addZone(getNOM_EF_LIB_MOTIF(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), Const.ZERO);
 		addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), Const.CHAINE_VIDE);
 	}
 
-	public String getNOM_PB_MODIFIER_MOTIF_REFUS() {
-		return "NOM_PB_MODIFIER_MOTIF_REFUS";
+	public String getNOM_PB_MODIFIER_MOTIF() {
+		return "NOM_PB_MODIFIER_MOTIF";
 	}
 
-	public boolean performPB_MODIFIER_MOTIF_REFUS(HttpServletRequest request) throws Exception {
+	public boolean performPB_MODIFIER_MOTIF(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_MOTIF_REFUS_SELECT()) ? Integer
-				.parseInt(getVAL_LB_MOTIF_REFUS_SELECT()) : -1);
-		if (indice != -1 && indice < getListeMotifRefus().size()) {
-			MotifRefusDto motifRefus = getListeMotifRefus().get(indice);
-			addZone(getNOM_EF_LIB_MOTIF_REFUS(), motifRefus.getLibelle());
-			EnumTypeAbsence enumType = EnumTypeAbsence.getEnumTypeAbsence(motifRefus.getIdRefTypeAbsence());
-			int ligneTypeAbsence = getListeTypeAbsence().indexOf(enumType);
-			addZone(getNOM_LB_TYPE_ABSENCE_REFUS_SELECT(), String.valueOf(ligneTypeAbsence));
+		int indice = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+		if (indice != -1 && indice < getListeMotif().size()) {
+			MotifDto motif = getListeMotif().get(indice);
+			addZone(getNOM_EF_LIB_MOTIF(), motif.getLibelle());
 
-			addZone(getNOM_ST_ACTION_MOTIF_REFUS(), ACTION_MODIFICATION);
+			addZone(getNOM_ST_ACTION_MOTIF(), ACTION_MODIFICATION);
 		} else {
 			viderZonesSaisie();
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs de refus"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs"));
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
-		setFocus(getNOM_PB_ANNULER_MOTIF_REFUS());
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
-	public String getNOM_PB_VALIDER_MOTIF_REFUS() {
-		return "NOM_PB_VALIDER_MOTIF_REFUS";
+	public String getNOM_PB_VALIDER_MOTIF() {
+		return "NOM_PB_VALIDER_MOTIF";
 	}
 
-	public boolean performPB_VALIDER_MOTIF_REFUS(HttpServletRequest request) throws Exception {
+	public boolean performPB_VALIDER_MOTIF(HttpServletRequest request) throws Exception {
 
-		if (getVAL_ST_ACTION_MOTIF_REFUS() != null && getVAL_ST_ACTION_MOTIF_REFUS() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_MOTIF_REFUS().equals(ACTION_CREATION)
-					|| getVAL_ST_ACTION_MOTIF_REFUS().equals(ACTION_MODIFICATION)) {
+		if (getVAL_ST_ACTION_MOTIF() != null && getVAL_ST_ACTION_MOTIF() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)
+					|| getVAL_ST_ACTION_MOTIF().equals(ACTION_MODIFICATION)) {
 
-				if (!performControlerSaisieMotifRefus(request))
+				if (!performControlerSaisieMotif(request))
 					return false;
 
-				MotifRefusDto motifRefus = null;
-				if (getVAL_ST_ACTION_MOTIF_REFUS().equals(ACTION_CREATION)) {
-					motifRefus = new MotifRefusDto();
+				MotifDto motif = null;
+				if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
+					motif = new MotifDto();
 
 				} else {
 					// modification
-					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_REFUS_SELECT()) ? Integer
-							.parseInt(getVAL_LB_MOTIF_REFUS_SELECT()) : -1);
-					motifRefus = getListeMotifRefus().get(indiceMotif);
+					int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
+							.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+					motif = getListeMotif().get(indiceMotif);
 				}
 
-				int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_REFUS_SELECT()) ? Integer
-						.parseInt(getVAL_LB_TYPE_ABSENCE_REFUS_SELECT()) : -1);
-				EnumTypeAbsence typeAbsence = getListeTypeAbsence().get(indiceType);
-
-				motifRefus.setLibelle(getVAL_EF_LIB_MOTIF_REFUS());
-				motifRefus.setIdRefTypeAbsence(typeAbsence.getCode());
+				motif.setLibelle(getVAL_EF_LIB_MOTIF());
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotifRefus(new JSONSerializer().serialize(motifRefus));
+				ReturnMessageDto message = consuAbs.saveMotif(new JSONSerializer().serialize(motif));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
@@ -393,17 +380,17 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		}
 
 		viderZonesSaisie();
-		setListeMotifRefus(null);
+		setListeMotif(null);
 
 		setStatut(STATUT_MEME_PROCESS);
 
-		setFocus(getNOM_PB_ANNULER_MOTIF_REFUS());
+		setFocus(getNOM_PB_ANNULER_MOTIF());
 		return true;
 	}
 
-	private boolean performControlerSaisieMotifRefus(HttpServletRequest request) {
+	private boolean performControlerSaisieMotif(HttpServletRequest request) {
 		// Verification libelle not null
-		if (getZone(getNOM_EF_LIB_MOTIF_REFUS()).length() == 0) {
+		if (getZone(getNOM_EF_LIB_MOTIF()).length() == 0) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
 			setFocus(getDefaultFocus());
@@ -412,46 +399,20 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		return true;
 	}
 
-	public String getNOM_EF_LIB_MOTIF_REFUS() {
-		return "NOM_EF_LIB_MOTIF_REFUS";
+	public String getNOM_EF_LIB_MOTIF() {
+		return "NOM_EF_LIB_MOTIF";
 	}
 
-	public String getVAL_EF_LIB_MOTIF_REFUS() {
-		return getZone(getNOM_EF_LIB_MOTIF_REFUS());
+	public String getVAL_EF_LIB_MOTIF() {
+		return getZone(getNOM_EF_LIB_MOTIF());
 	}
 
-	public String getNOM_ST_ACTION_MOTIF_REFUS() {
-		return "NOM_ST_ACTION_MOTIF_REFUS";
+	public String getNOM_ST_ACTION_MOTIF() {
+		return "NOM_ST_ACTION_MOTIF";
 	}
 
-	public String getVAL_ST_ACTION_MOTIF_REFUS() {
-		return getZone(getNOM_ST_ACTION_MOTIF_REFUS());
-	}
-
-	private String[] getLB_TYPE_ABSENCE_REFUS() {
-		if (LB_TYPE_ABSENCE_REFUS == null)
-			LB_TYPE_ABSENCE_REFUS = initialiseLazyLB();
-		return LB_TYPE_ABSENCE_REFUS;
-	}
-
-	private void setLB_TYPE_ABSENCE_REFUS(String[] newLB_TYPE_ABSENCE_REFUS) {
-		LB_TYPE_ABSENCE_REFUS = newLB_TYPE_ABSENCE_REFUS;
-	}
-
-	public String getNOM_LB_TYPE_ABSENCE_REFUS() {
-		return "NOM_LB_TYPE_ABSENCE_REFUS";
-	}
-
-	public String getNOM_LB_TYPE_ABSENCE_REFUS_SELECT() {
-		return "NOM_LB_TYPE_ABSENCE_REFUS_SELECT";
-	}
-
-	public String[] getVAL_LB_TYPE_ABSENCE_REFUS() {
-		return getLB_TYPE_ABSENCE_REFUS();
-	}
-
-	public String getVAL_LB_TYPE_ABSENCE_REFUS_SELECT() {
-		return getZone(getNOM_LB_TYPE_ABSENCE_REFUS_SELECT());
+	public String getVAL_ST_ACTION_MOTIF() {
+		return getZone(getNOM_ST_ACTION_MOTIF());
 	}
 
 	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {

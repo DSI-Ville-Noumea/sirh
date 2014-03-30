@@ -10,7 +10,7 @@ import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
-import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
+import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
@@ -36,8 +36,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
-	private static final String sirhAbsMotifRefus = "motifRefus/getListeMotifRefus";
-	private static final String sirhAbsMotifRefusSauvegarde = "motifRefus/setMotifRefus";
+	private static final String sirhAbsMotif = "motif/getListeMotif";
+	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
 	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
 	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
@@ -223,15 +223,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<MotifRefusDto> getListeMotifRefus(Integer idRefType) {
+	public List<MotifDto> getListeMotif() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
-		String url = urlWS + sirhAbsMotifRefus;
+		String url = urlWS + sirhAbsMotif;
 		HashMap<String, String> params = new HashMap<>();
-		if (idRefType != null) {
-			params.put("idRefType", idRefType.toString());
-		}
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(MotifRefusDto.class, res, url);
+		return readResponseAsList(MotifDto.class, res, url);
 	}
 
 	@Override
@@ -247,9 +244,9 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveMotifRefus(String json) {
+	public ReturnMessageDto saveMotif(String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
-		String url = urlWS + sirhAbsMotifRefusSauvegarde;
+		String url = urlWS + sirhAbsMotifSauvegarde;
 		ClientResponse res = createAndPostRequest(url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}

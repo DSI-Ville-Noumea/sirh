@@ -6,7 +6,7 @@ import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
-import nc.mairie.gestionagent.absence.dto.MotifRefusDto;
+import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
@@ -23,11 +23,11 @@ public interface ISirhAbsWSConsumer {
 	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
 			String dateDemande, Integer idRefEtat, Integer idRefType);
 
-	List<MotifRefusDto> getListeMotifRefus(Integer idRefType);
+	List<MotifDto> getListeMotif();
 
 	List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType);
 
-	ReturnMessageDto saveMotifRefus(String json);
+	ReturnMessageDto saveMotif(String json);
 
 	ReturnMessageDto saveMotifCompteur(String json);
 

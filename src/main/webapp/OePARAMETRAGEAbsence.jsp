@@ -36,31 +36,26 @@
 				<tr>
 					<td width="500px;">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Motifs de refus de l'approbateur</legend>
+					    	<legend class="sigp2Legend">Motifs</legend>
 							<span class="sigp2-saisie">Libellé</span>
 							<span class="sigp2-saisie" style="margin-left: 250px;">Type Absence</span>
-							<SELECT name="<%= process.getNOM_LB_MOTIF_REFUS() %>" size="10" style="width:100%;" class="sigp2-liste">
-								<%=process.forComboHTML(process.getVAL_LB_MOTIF_REFUS(), process.getVAL_LB_MOTIF_REFUS_SELECT()) %>
+							<SELECT name="<%= process.getNOM_LB_MOTIF() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
 							</SELECT>
 			
 							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
-								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_MOTIF_REFUS()%>">
-			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_MOTIF_REFUS()%>">
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_MOTIF()%>">
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_MOTIF()%>">
 			    	        </div>
 			            	
-			            	<% if (process.getVAL_ST_ACTION_MOTIF_REFUS()!= null && !process.getVAL_ST_ACTION_MOTIF_REFUS().equals("")) {%>
+			            	<% if (process.getVAL_ST_ACTION_MOTIF()!= null && !process.getVAL_ST_ACTION_MOTIF().equals("")) {%>
 			            		<br>
 								<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF_REFUS() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF_REFUS() %>" style="margin-right:10px;margin-bottom:10px">
-								<br />
-								<span class="sigp2Mandatory" style="width:110px">Famille d'absence : </span>
-								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_REFUS() %>" style="width=150px;margin-right:20px;">
-									<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_REFUS(), process.getVAL_LB_TYPE_ABSENCE_REFUS_SELECT()) %>
-								</SELECT>					
+								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
 								<br /><br />
 							    <div Style="width:100%" align="center">
-									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF_REFUS()%>"></span>
-									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_MOTIF_REFUS()%>"></span>
+									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF()%>"></span>
+									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_MOTIF()%>"></span>
 								</div>
 							<% } %>
 						</FIELDSET>	
