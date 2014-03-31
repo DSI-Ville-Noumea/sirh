@@ -61,7 +61,8 @@ public class CapDao implements CapDaoInterface {
 			throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CODE_CAP + "," + CHAMP_REF_CAP + "," + CHAMP_DESCRIPTION
 				+ "," + CHAMP_TYPE_CAP + "," + CHAMP_CAP_VDN + ") " + "VALUES (?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap });
+		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap,
+				capVDN });
 	}
 
 	@Override
