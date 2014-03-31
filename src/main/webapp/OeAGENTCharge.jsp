@@ -171,6 +171,16 @@
 					</td>
 				</tr>
 				<% } %>
+				<% if (process.showMontant){ %>				
+				<tr>
+					<td>
+						<span class="<%= process.montantObligatoire ? "sigp2Mandatory" : "sigp2" %> ">Montant forfait :</span>
+					</td>
+					<td>
+						<INPUT class="sigp2-saisie" maxlength="9" name="<%= process.getNOM_EF_MONTANT() %>" size="9" type="text" value="<%= process.getVAL_EF_MONTANT() %>">
+					</td>
+				</tr>
+				<% } %>				
 				<% if (process.showMatriculeCharge){ %>
 				<tr>
 					<td>
