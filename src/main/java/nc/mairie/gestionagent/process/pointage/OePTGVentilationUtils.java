@@ -158,26 +158,36 @@ public class OePTGVentilationUtils {
 				sb.append("<th>Matricule Agent</th>");
 				sb.append("<th>Nom prénom</th>");
 				sb.append("<th>Mois-année</th>");
+				sb.append("<th>Semaine</th>");
 				sb.append("<th>Abs concertées</th>");
 				sb.append("<th>Abs non concertées</th>");
 				sb.append("<th>Abs immédiates</th>");
 				sb.append("<th>Total</th>");
+				sb.append("<th>&nbsp;</th>");
 				sb.append("</tr></thead>");
 				List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, date, typePointage,
 						agentsJson);
 				sb.append("<tbody>");
 				for (VentilAbsenceDto abs : rep) {
+					greg.setTime(abs.getDateLundi());
 					agent = AgentNW.chercherAgent(aTransaction, String.valueOf(abs.getId_agent()));
 					sb.append("<tr>");
 					sb.append("<td>" + agent.getNoMatricule() + "</td>");
 					sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 					sb.append("<td>" + moisAnnee.format(abs.getDateLundi()) + "</td>");
+					sb.append("<td>" + greg.get(Calendar.WEEK_OF_YEAR) + "</td>");
 					sb.append("<td>" + getHeureMinute(abs.getMinutesConcertees()) + "</td>");
 					sb.append("<td>" + getHeureMinute(abs.getMinutesNonConcertees()) + "</td>");
 					sb.append("<td>" + getHeureMinute(abs.getMinutesImmediates()) + "</td>");
 					sb.append("<td>"
 							+ getHeureMinute(abs.getMinutesConcertees() + abs.getMinutesNonConcertees()
 									+ abs.getMinutesImmediates()) + "</td>");
+					sb.append("<td><INPUT title='Editer le pointage correspondant' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='JMP_SAISIE:"
+							+ greg.get(Calendar.WEEK_OF_YEAR)
+							+ ":"
+							+ annee.format(abs.getDateLundi())
+							+ ":"
+							+ agent.getNoMatricule() + "'></td>");
 					sb.append("</tr>");
 				}
 				sb.append("</tbody>");
