@@ -185,13 +185,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public SoldeDto getSoldeAgent(String idAgent) {
+	public SoldeDto getSoldeAgent(String idAgent, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsSoldeRecupAgent;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent);
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
-		ClientResponse res = createAndFireRequest(params, url);
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(SoldeDto.class, res, url);
 	}
 

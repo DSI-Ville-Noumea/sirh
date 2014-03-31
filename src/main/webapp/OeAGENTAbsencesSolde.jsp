@@ -42,6 +42,13 @@
 <%if(process.getAgentCourant() !=null){ %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
+			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+			<legend class="sigp2Legend">Filtres pour *</legend>
+				<BR/>
+				<SELECT onchange='executeBouton("<%=process.getNOM_PB_ANNEE() %>")'  class="sigp2-saisie" name="<%= process.getNOM_LB_ANNEE() %>">
+					<%=process.forComboHTML(process.getVAL_LB_ANNEE(), process.getVAL_LB_ANNEE_SELECT()) %>
+				</SELECT>
+			</FIELDSET>
 				
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des soldes de l'agent</legend>
@@ -96,7 +103,7 @@
 				    <BR/>
 				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">ASA - Réunion des membres du bureau directeur (A48)</legend>
+				    	<legend class="sigp2Legend">* ASA - Réunion des membres du bureau directeur (A48)</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:200px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="200px;" align="center">En cours</td>
@@ -140,6 +147,7 @@
 						</div>	
 				</FIELDSET>
 				<%} %>
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_ANNEE()%>" value="x">
 		</FORM>
 <%} %>	
 	</BODY>

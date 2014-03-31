@@ -1,12 +1,15 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
+import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -15,6 +18,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.droits.Siidma;
+import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -23,6 +27,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.joda.time.DateTime;
+
 import flexjson.JSONSerializer;
 
 /**
@@ -39,6 +46,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private AgentNW agentCourant;
 	private Integer soldeCourantMinute;
 	private Integer soldeCourantPrecMinute;
+
+	private String messageInfo = Const.CHAINE_VIDE;
 
 	private String[] LB_TYPE_ABSENCE;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
@@ -223,6 +232,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	public boolean performPB_AFFICHER(HttpServletRequest request) throws Exception {
+		setMessageInfo("");
 		setTypeAbsenceCourant(null);
 
 		// Recuperation type absence
@@ -254,7 +264,18 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 		setLB_MOTIF(aFormat.getListeFormatee(false));
 
-		afficheSolde(getTypeAbsenceCourant());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		Integer annee = cal.get(Calendar.YEAR);
+		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
+		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 0).toDate();
+		FiltreSoldeDto dto = new FiltreSoldeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDateFin(dateFin);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		afficheSolde(getTypeAbsenceCourant(), json);
 
 		// On nomme l'action
 		if (getTypeAbsenceCourant().equals(EnumTypeAbsence.RECUP)) {
@@ -262,6 +283,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
+		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A48)) {
+			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA");
+
 		} else {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
@@ -291,12 +316,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return true;
 	}
 
-	private void afficheSolde(EnumTypeAbsence typeAbsenceCourant) {
+	private void afficheSolde(EnumTypeAbsence typeAbsenceCourant, String json) {
 		viderZoneSaisie();
 
 		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent());
+		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		switch (typeAbsenceCourant) {
 			case CONGE:
@@ -718,5 +743,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public String getNOM_RB_COMPTEUR_ANNEE_PREC() {
 		return "NOM_RB_COMPTEUR_ANNEE_PREC";
+	}
+
+	public String getMessageInfo() {
+		return messageInfo;
+	}
+
+	public void setMessageInfo(String messageInfo) {
+		this.messageInfo = messageInfo;
 	}
 }

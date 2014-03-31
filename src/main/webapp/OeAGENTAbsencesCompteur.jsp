@@ -34,13 +34,16 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				<legend class="sigp2Legend">Compteurs de l'agent</legend>
 				<span class="sigp2" style="width:100px">Famille d'absence : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE() %>" style="width=150px;margin-right:20px;">
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE() %>" style="width:250px;">
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE(), process.getVAL_LB_TYPE_ABSENCE_SELECT()) %>
 				</SELECT>
 	           <BR/><BR/>
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER()%>">
 			</FIELDSET>
 		
+			<% if (!process.getMessageInfo().equals("")){ %>
+				<span style="color: red;" class="sigp2Mandatory"><%=process.getMessageInfo() %></span>
+			<%} %>
 			<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>	
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_RECUP)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">

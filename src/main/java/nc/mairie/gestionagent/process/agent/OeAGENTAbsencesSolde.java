@@ -2,20 +2,29 @@ package nc.mairie.gestionagent.process.agent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.joda.time.DateTime;
+
+import flexjson.JSONSerializer;
 
 /**
  * Process OeAGENTAbsences Date de création : (05/09/11 11:31:37)
@@ -33,6 +42,9 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private AgentNW agentCourant;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
+
+	private ArrayList<String> listeAnnee;
+	private String[] LB_ANNEE;
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -73,7 +85,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				initialiseSoldesAgent(request);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				Integer annee = cal.get(Calendar.YEAR);
+				initialiseSoldesAgent(request, annee);
 			} else {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
@@ -85,13 +100,36 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		if (getListeTypeAbsence().size() == 0) {
 			setListeTypeAbsence(EnumTypeAbsence.getValues());
 		}
+		// Si liste annee vide alors affectation
+		if (getLB_ANNEE() == LBVide) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			Integer annee = cal.get(Calendar.YEAR);
 
+			String[] list = { String.valueOf(annee), String.valueOf(annee + 1), String.valueOf(annee + 2) };
+			ArrayList<String> arrayList = new ArrayList<String>();
+			for (String an : list)
+				arrayList.add(an);
+
+			setListeAnnee(arrayList);
+
+			setLB_ANNEE(list);
+			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
+		}
 	}
 
-	private void initialiseSoldesAgent(HttpServletRequest request) {
+	private void initialiseSoldesAgent(HttpServletRequest request, Integer annee) {
+		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
+		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 0).toDate();
+		FiltreSoldeDto dto = new FiltreSoldeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDateFin(dateFin);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
 		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent());
+		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		// solde congés
 		addZone(getNOM_ST_SOLDE_CONGE(), soldeGlobal.getSoldeCongeAnnee() == 0 ? "&nbsp;" : soldeGlobal
@@ -160,6 +198,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_HISTORIQUE(code))) {
 					return performPB_HISTORIQUE(request, code);
 				}
+			}
+
+			// Si clic sur le bouton PB_ANNEE
+			if (testerParametre(request, getNOM_PB_ANNEE())) {
+				return performPB_ANNEE(request);
 			}
 
 		}
@@ -333,5 +376,55 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setListeHistorique(ArrayList<HistoriqueSoldeDto> listeHistorique) {
 		this.listeHistorique = listeHistorique;
+	}
+
+	private String[] getLB_ANNEE() {
+		if (LB_ANNEE == null)
+			LB_ANNEE = initialiseLazyLB();
+		return LB_ANNEE;
+	}
+
+	private void setLB_ANNEE(String[] newLB_ANNEE) {
+		LB_ANNEE = newLB_ANNEE;
+	}
+
+	public String getNOM_LB_ANNEE() {
+		return "NOM_LB_ANNEE";
+	}
+
+	public String getNOM_LB_ANNEE_SELECT() {
+		return "NOM_LB_ANNEE_SELECT";
+	}
+
+	public String[] getVAL_LB_ANNEE() {
+		return getLB_ANNEE();
+	}
+
+	public String getVAL_LB_ANNEE_SELECT() {
+		return getZone(getNOM_LB_ANNEE_SELECT());
+	}
+
+	public ArrayList<String> getListeAnnee() {
+		return listeAnnee;
+	}
+
+	public void setListeAnnee(ArrayList<String> listeAnnee) {
+		this.listeAnnee = listeAnnee;
+	}
+
+	public String getNOM_PB_ANNEE() {
+		return "NOM_PB_ANNEE";
+	}
+
+	public boolean performPB_ANNEE(HttpServletRequest request) throws Exception {
+		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
+
+		if (numAnnee < 0 || getListeAnnee().size() == 0 || numAnnee > getListeAnnee().size())
+			return false;
+
+		String annee = getListeAnnee().get(numAnnee);
+		initialiseSoldesAgent(request, Integer.valueOf(annee));
+		return true;
 	}
 }
