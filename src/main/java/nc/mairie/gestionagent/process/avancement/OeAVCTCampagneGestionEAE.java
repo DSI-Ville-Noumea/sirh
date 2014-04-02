@@ -72,6 +72,7 @@ import nc.mairie.spring.domain.metier.diplome.FormationAgent;
 import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumerException;
 import nc.mairie.technique.BasicProcess;
@@ -3169,13 +3170,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 		if (getVAL_CK_VALID_EAE(idEae).equals(getCHECKED_ON())) {
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), evalue
-					.getIdAgent().toString().substring(3, evalue.getIdAgent().toString().length()));
-			boolean isPAInactive = pa.estPAInactive(getTransaction());
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			boolean agentAsCompteAD = radiConsu.asAgentCompteAD(Integer.valueOf(evalue.getIdAgent().toString()
+					.substring(3, evalue.getIdAgent().toString().length())));
 
-			// si l'agent est hors VDN alors on ne fait pas la mise à jour des
-			// droits
-			if (!evalue.isAgentAffecte() && !isPAInactive) {
+			// si l'agent n'a pas de compte AD alors on ne fait pas la mise à
+			// jour des droits
+			if (agentAsCompteAD) {
 
 				// RG-EAE-6 --> mis au moment où on controle un EAE.
 				// on cherche le document concerné
@@ -3310,13 +3311,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
 
-		PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentEnCoursAvecAgent(getTransaction(), evalue
-				.getIdAgent().toString().substring(3, evalue.getIdAgent().toString().length()));
-		boolean isPAInactive = pa.estPAInactive(getTransaction());
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		boolean agentAsCompteAD = radiConsu.asAgentCompteAD(Integer.valueOf(evalue.getIdAgent().toString()
+				.substring(3, evalue.getIdAgent().toString().length())));
 
 		// si l'agent est hors VDN alors on ne fait pas la mise à jour des
 		// droits
-		if (!evalue.isAgentAffecte() && !isPAInactive) {
+		if (agentAsCompteAD) {
 			// RG-EAE-6 --> mis au moment où on controle un EAE.
 			// on cherche le document concerné
 			try {

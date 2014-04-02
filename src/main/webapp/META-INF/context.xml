@@ -98,7 +98,10 @@
 		override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
 	<!-- WS DES ABSENCES -->
 	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
-		override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />
+		override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />		
+	<!-- WS RADI pour interroger AD -->
+	<Parameter description="RADI WS url" name="RADI_WS"
+		override="false" value="http://localhost:8090/radi/" />
 
 
 	<!-- Parametres pour l'affichage des nouveaux modules -->
