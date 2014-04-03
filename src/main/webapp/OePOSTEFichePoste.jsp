@@ -150,7 +150,7 @@
 										<input id="infoService" style="width:350px;" <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" readonly="readonly" name="<%= process.getNOM_ST_INFO_SERVICE() %>" value="<%= process.getVAL_ST_INFO_SERVICE() %>">			
 										<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_EF_CODESERVICE() %>" 
 											value="<%=process.getVAL_EF_CODESERVICE() %>" class="sigp2-saisie">
-										<div id="treeHierarchy" style="display: none; height: 260; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+										<div class="sigp2" id="treeHierarchy" style="display: none; height: 260; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
 											<script type="text/javascript">
 												d = new dTree('d');
 												d.add(0,-1,"Services");

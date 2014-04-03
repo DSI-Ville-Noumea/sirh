@@ -107,7 +107,7 @@
 							<img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
 							<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 			          		<INPUT type="hidden" id="codeservice" size="4" name="<%=process.getNOM_ST_CODE_SERVICE() %>" value="<%=process.getVAL_ST_CODE_SERVICE() %>" class="sigp2-saisie">							
-								<div id="treeHierarchy" style="display: none; height: 360; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
+								<div class="sigp2" id="treeHierarchy" style="display: none; height: 360; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
 									<script type="text/javascript">
 										d = new dTree('d');
 										d.add(0,-1,"Services");
