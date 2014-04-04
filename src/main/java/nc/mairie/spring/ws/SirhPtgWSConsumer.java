@@ -39,31 +39,40 @@ import flexjson.JSONSerializer;
 @Service
 public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
+	// droits
 	private static final String sirhPtgAgentsApprobateurs = "droits/approbateurs";
+	// Visualisation
 	private static final String sirhPtgVisualisationPointage = "visualisation/pointagesSIRH";
 	private static final String sirhPtgVisualisationHistory = "visualisation/historiqueSIRH";
 	private static final String sirhPtgVisualisationSetState = "visualisation/changerEtatsSIRH";
+	private static final String sirhPtgVisualisationIdAgentPointage = "visualisation/listeAgentsPointagesForSIRH";
+	// saisie
 	private static final String sirhPtgSaisie = "saisie/ficheSIRH";
+	// ventilation
+	private static final String sirhPtgStartVentilation = "ventilation/start";
+	private static final String sirhPtgVentilationsShow = "ventilation/show";
+	private static final String sirhPtgVentilationsHistory = "ventilation/showHistory";
 	private static final String sirhPtgCheckVentil = "ventilation/canStartVentilation";
+	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
+	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
+	// export paie
 	private static final String sirhPtgCheckValid = "/exportPaie/canStartExportPaie";
+	private static final String sirhPtgStartDeversement = "exportPaie/start";
+	// etats du payeur
+	private static final String sirhPtgCanStartExportEtatsPayeur = "etatsPayeur/canStartExportEtatsPayeur";
+	private static final String sirhPtgListEtatsPayeur = "etatsPayeur/listEtatsPayeur";
+	private static final String sirhPtgDownloadFicheEtatsPayeur = "etatsPayeur/downloadFicheEtatsPayeur";
+	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
+	// filtres
 	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
 	private static final String sirhPtgTypesPointage = "filtres/getTypes";
+	private static final String sirhPtgTypeAbsence = "filtres/getTypesAbsence";
+	// primes
 	private static final String sirhPtgPrimesStatut = "primes/getListePrimeWithStatus";
 	private static final String sirhPtgPrimes = "primes/getListePrime";
 	private static final String sirhPtgPrimeDetail = "primes/getPrime";
 	private static final String sirhPtgPrimeDetailFromIdRefPrime = "primes/getPrimeFromIdRefPrime";
 	private static final String sirhPtgPrimePointee = "primes/isPrimeUtilisee";
-	private static final String sirhPtgVentilations = "ventilation/show";
-	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
-	private static final String sirhPtgStartVentilation = "ventilation/start";
-	private static final String sirhPtgStartDeversement = "exportPaie/start";
-	private static final String sirhPtgCanStartExportEtatsPayeur = "etatsPayeur/canStartExportEtatsPayeur";
-	private static final String sirhPtgListEtatsPayeur = "etatsPayeur/listEtatsPayeur";
-	private static final String sirhPtgDownloadFicheEtatsPayeur = "etatsPayeur/downloadFicheEtatsPayeur";
-	private static final String sirhPtgStartExportEtatsPayeur = "etatsPayeur/start";
-	private static final String sirhPtgVisualisationIdAgentPointage = "visualisation/listeAgentsPointagesForSIRH";
-	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
-	private static final String sirhPtgTypeAbsence = "filtres/getTypesAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhPtgWSConsumer.class);
 
@@ -376,16 +385,31 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 	}
 
+	@Override
 	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
 			String agentsJson) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
-		String url = urlWS + sirhPtgVentilations;
+		String url = urlWS + sirhPtgVentilationsShow;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
 		params.put("typePointage", idRefTypePointage.toString());
 		if (agentsJson.equals("[]"))
 			return new ArrayList<T>();
 		ClientResponse res = createAndPostRequest(params, url, agentsJson);
+		return readResponseAsList(targetClass, res, url);
+	}
+
+	@Override
+	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee,
+			Integer idRefTypePointage, Integer idAgent) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgVentilationsHistory;
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("mois", "" + mois);
+		parameters.put("annee", "" + annee);
+		parameters.put("typePointage", "" + idRefTypePointage);
+		parameters.put("idAgent", "" + idAgent);
+		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(targetClass, res, url);
 	}
 

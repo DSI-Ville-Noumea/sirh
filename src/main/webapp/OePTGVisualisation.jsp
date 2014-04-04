@@ -182,7 +182,7 @@
                     // Finally return the table
                     return detailContainer;
                 }
-                function test(){
+                function testClickFiltrer(){
                 	if(event.keyCode == 13){
                 		executeBouton('NOM_PB_FILTRER');
                 	}
@@ -193,7 +193,7 @@
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
-        <FORM onkeypress="test();" name="formu" method="POST" class="sigp2-titre">		
+        <FORM onkeypress="testClickFiltrer();" name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>

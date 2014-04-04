@@ -19,34 +19,18 @@ import com.sun.jersey.api.client.ClientResponse;
 
 public interface ISirhPtgWSConsumer {
 
+	public ArrayList<Integer> getListeIdAgentPointage();
+
+	// Droits
 	List<AgentWithServiceDto> getApprobateurs();
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
 
-	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType);
+	// Ventilation
+	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson);
 
-	FichePointageDto getSaisiePointage(String idAgent, String monday);
-
-	ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
-
-	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
-
-	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
-
-	List<RefPrimeDto> getPrimes(String agentStatus);
-
-	List<RefPrimeDto> getPrimes();
-
-	List<RefEtatDto> getEtatsPointage();
-
-	List<RefTypePointageDto> getTypesPointage();
-
-	RefPrimeDto getPrimeDetail(Integer numRubrique);
-
-	RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
-
-	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
+	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage,
+			Integer idAgent);
 
 	boolean isVentilAvailable(String agentStatus);
 
@@ -67,9 +51,37 @@ public interface ISirhPtgWSConsumer {
 
 	boolean startExportEtatsPayeur(String idAgentExporting, String statutString);
 
-	public ArrayList<Integer> getListeIdAgentPointage();
-
 	List<VentilErreurDto> getErreursVentilation(String type);
 
+	// Visualisation
+	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
+			Integer idRefEtat, Integer idRefType);
+
+	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
+
+	// Saisie
+	FichePointageDto getSaisiePointage(String idAgent, String monday);
+
+	ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
+
+	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
+
+	// Filtres
+	List<RefEtatDto> getEtatsPointage();
+
+	List<RefTypePointageDto> getTypesPointage();
+
 	List<TypeAbsenceDto> getListeRefTypeAbsence();
+
+	// Primes
+	List<RefPrimeDto> getPrimes(String agentStatus);
+
+	List<RefPrimeDto> getPrimes();
+
+	RefPrimeDto getPrimeDetail(Integer numRubrique);
+
+	RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
+
+	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
+
 }
