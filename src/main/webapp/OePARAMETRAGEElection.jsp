@@ -34,12 +34,12 @@
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 			<table width="1030px;">
 				<tr>
-					<td width="500px;">
+					<td width="1000px;">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
 					    	<legend class="sigp2Legend">Gestion des organisations syndicales</legend>
 							<span class="sigp2-saisie">Libellé</span>
-							<span class="sigp2-saisie" style="margin-left: 240px;">Sigle</span>
-							<span class="sigp2-saisie" style="margin-left: 55px;">Actif</span>
+							<span class="sigp2-saisie" style="margin-left: 390px;">Sigle</span>
+							<span class="sigp2-saisie" style="margin-left: 120px;">Actif</span>
 							<SELECT name="<%= process.getNOM_LB_ORGANISATION() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_ORGANISATION(), process.getVAL_LB_ORGANISATION_SELECT()) %>
 							</SELECT>
@@ -51,13 +51,13 @@
 			            	
 			            	<% if (process.getVAL_ST_ACTION_ORGANISATION()!= null && process.getVAL_ST_ACTION_ORGANISATION().equals(process.ACTION_CREATION)) {%>
 			            		<br>
-								<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>" style="margin-right:10px;margin-bottom:10px">
-								<br />
-								<span class="sigp2Mandatory" style="width:110px">Sigle : </span>
-								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>" style="margin-right:10px;margin-bottom:10px">
-								<br />
-								<span class="sigp2Mandatory" style="width:110px">Actif : </span>
+								<label class="sigp2Mandatory" style="width:50px">Libellé :</label>
+								<INPUT class="sigp2-saisie" maxlength="250" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>">
+								<br /><BR/>
+								<span class="sigp2Mandatory" style="width:50px">Sigle : </span>
+								<INPUT class="sigp2-saisie" maxlength="15" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>">
+								<br /><BR/>
+								<span class="sigp2Mandatory" style="width:50px">Actif : </span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ORGANISATION_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ORGANISATION_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
 								<br /><br />
@@ -67,13 +67,13 @@
 								</div>
 							<% }else if(process.getVAL_ST_ACTION_ORGANISATION()!= null && process.getVAL_ST_ACTION_ORGANISATION().equals(process.ACTION_MODIFICATION)){ %>	
 			            		<br>
-								<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>" style="margin-right:10px;margin-bottom:10px">
-								<br />
-								<span class="sigp2Mandatory" style="width:110px">Sigle : </span>
-								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>" style="margin-right:10px;margin-bottom:10px">
-								<br />
-								<span class="sigp2Mandatory" style="width:110px">Actif : </span>
+								<label class="sigp2Mandatory" style="width:50px">Libellé:</label>
+								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="250" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>">
+								<br /><BR/>
+								<span class="sigp2Mandatory" style="width:50px">Sigle : </span>
+								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="15" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>">
+								<br /><BR/>
+								<span class="sigp2Mandatory" style="width:50px">Actif : </span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ORGANISATION_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ORGANISATION_INACTIF(), process.getNOM_RB_NON()) %> ><span class="sigp2Mandatory">non</span>					
 								<br /><br />
@@ -83,9 +83,6 @@
 								</div>
 							<%} %>						
 						</FIELDSET>	
-					</td>
-					<td>
-						&nbsp;	
 					</td>
 				</tr>
 			</table>

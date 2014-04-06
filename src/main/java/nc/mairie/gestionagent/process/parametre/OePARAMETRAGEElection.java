@@ -68,7 +68,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 		setListeOrganisation(listeOrga);
 
 		if (getListeOrganisation().size() != 0) {
-			int tailles[] = { 40, 10, 10 };
+			int tailles[] = { 60, 20, 20 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (OrganisationSyndicaleDto orga : getListeOrganisation()) {
@@ -209,7 +209,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	private void viderZonesSaisie() {
 		addZone(getNOM_ST_ACTION_ORGANISATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_ORGANISATION(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_LIB_ORGANISATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_SIGLE_ORGANISATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_ORGANISATION_INACTIF(), getNOM_RB_NON());
 	}
 
