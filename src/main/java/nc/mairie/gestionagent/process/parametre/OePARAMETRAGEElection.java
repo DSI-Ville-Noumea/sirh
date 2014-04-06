@@ -68,7 +68,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 		setListeOrganisation(listeOrga);
 
 		if (getListeOrganisation().size() != 0) {
-			int tailles[] = { 60, 20, 20 };
+			int tailles[] = { 100, 20, 10 };
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (OrganisationSyndicaleDto orga : getListeOrganisation()) {

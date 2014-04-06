@@ -38,7 +38,7 @@
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
 					    	<legend class="sigp2Legend">Gestion des organisations syndicales</legend>
 							<span class="sigp2-saisie">Libellé</span>
-							<span class="sigp2-saisie" style="margin-left: 390px;">Sigle</span>
+							<span class="sigp2-saisie" style="margin-left: 670px;">Sigle</span>
 							<span class="sigp2-saisie" style="margin-left: 120px;">Actif</span>
 							<SELECT name="<%= process.getNOM_LB_ORGANISATION() %>" size="10" style="width:100%;" class="sigp2-liste">
 								<%=process.forComboHTML(process.getVAL_LB_ORGANISATION(), process.getVAL_LB_ORGANISATION_SELECT()) %>
