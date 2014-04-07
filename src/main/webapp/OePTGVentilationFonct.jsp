@@ -79,7 +79,7 @@
 
 
 
-        function loadVentilationHistory(id, list) {
+        function loadVentilationAbsHistory(id, list) {
             var oTable = $('#VentilationTableAbs').dataTable();
             var tr = document.getElementById(id);
 

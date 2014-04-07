@@ -245,7 +245,7 @@ public class OePTGVentilationUtils {
 
 	}
 
-	private static double roundDecimal(double nombre, int precision) {
+	public static double roundDecimal(double nombre, int precision) {
 		double tmp = Math.pow(10, precision);
 		return Math.round(nombre * tmp) / tmp;
 	}

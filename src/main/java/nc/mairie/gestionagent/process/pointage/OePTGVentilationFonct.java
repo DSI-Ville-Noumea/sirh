@@ -574,7 +574,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			return false;
 		}
 		if (typePointage == 1) {
-			initialiseHashTableAbs();
+			initialiseHashTableAbs(typePointage);
 		} else if (typePointage == 2) {
 			setTabVisuHS(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
 					typePointage, true, new JSONSerializer().serialize(agents)));
@@ -724,11 +724,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 		this.tabVisuP = tabVisuP;
 	}
 
-	public String getValHistory(String moisAnnee, Integer idAgent) {
-		return moisAnnee + "_" + idAgent;
+	public String getValHistoryAbs(String moisAnnee, Integer idAgent) {
+		return "abs_" + moisAnnee + "_" + idAgent;
 	}
 
-	public String getHistory(String moisAnnee, Integer idAgent) throws Exception {
+	public String getHistoryAbs(String moisAnnee, Integer idAgent) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "CC");
 		for (Carriere carr : listeCarr) {
@@ -796,7 +796,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	}
 
-	private void initialiseHashTableAbs() throws Exception {
+	private void initialiseHashTableAbs(int typePointage) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
@@ -815,8 +815,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 		}
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
-		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(), 1,
-				new JSONSerializer().serialize(agents));
+		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
+				typePointage, new JSONSerializer().serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();

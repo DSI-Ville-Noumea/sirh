@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
+import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
@@ -56,11 +57,11 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public static final int STATUT_SAISIE_PTG = 5;
 
 	private ArrayList<AgentNW> listeAgentsVentil;
-	private String tabVisuHS;
 	private String tabVisuP;
 	private String tabErreurVentil;
 
 	private Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs;
+	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
 
 	@Override
 	public String getJSP() {
@@ -202,7 +203,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT_MAX(request);
 			}
-
 			for (String s : (Set<String>) request.getParameterMap().keySet()) {
 				// Si clic sur le bouton edit
 				if (s.startsWith("JMP_SAISIE:")) {
@@ -212,6 +212,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 							.getMondayFromWeekNumberAndYear(Integer.parseInt(tok.nextToken()),
 									Integer.parseInt(tok.nextToken())));
 					String rawAgent = tok.nextToken();
+					logger.info("\n rawAgent=" + rawAgent);
 					int index1 = 0;
 					if (rawAgent.startsWith("900"))
 						index1 = 3;
@@ -250,9 +251,10 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		addZone(getNOM_ST_ACTION_PRIMES(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_ABS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ACTION_VALIDATION(), Const.CHAINE_VIDE);
-		setTabVisuHS(null);
 		setTabVisuP(null);
 		setHashVentilAbs(null);
+		setHashVentilHsup(null);
+		setTabErreurVentil("");
 		addZone(getNOM_ST_AGENT_MIN(), "");
 		addZone(getNOM_ST_AGENT_MAX(), "");
 
@@ -558,10 +560,9 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			return false;
 		}
 		if (typePointage == 1) {
-			initialiseHashTableAbs();
+			initialiseHashTableAbs(typePointage);
 		} else if (typePointage == 2) {
-			setTabVisuHS(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, false, new JSONSerializer().serialize(agents)));
+			initialiseHashTableHsup(typePointage);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
 					typePointage, false, new JSONSerializer().serialize(agents)));
@@ -692,14 +693,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		this.tabErreurVentil = tabErreurVentil;
 	}
 
-	public String getTabVisuHS() {
-		return tabVisuHS == null ? "" : tabVisuHS;
-	}
-
-	public void setTabVisuHS(String tabVisuHS) {
-		this.tabVisuHS = tabVisuHS;
-	}
-
 	public String getTabVisuP() {
 		return tabVisuP == null ? "" : tabVisuP;
 	}
@@ -708,11 +701,11 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		this.tabVisuP = tabVisuP;
 	}
 
-	public String getValHistory(String moisAnnee, Integer idAgent) {
-		return moisAnnee + "_" + idAgent;
+	public String getValHistoryAbs(String moisAnnee, Integer idAgent) {
+		return "abs_" + moisAnnee + "_" + idAgent;
 	}
 
-	public String getHistory(String moisAnnee, Integer idAgent) throws Exception {
+	public String getHistoryAbs(String moisAnnee, Integer idAgent) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "CC");
 		for (Carriere carr : listeCarr) {
@@ -775,12 +768,13 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			strret.deleteCharAt(strret.lastIndexOf(","));
 			strret.append("|");
 		}
-		strret.deleteCharAt(strret.lastIndexOf("|"));
+		if (strret.lastIndexOf("|") != -1)
+			strret.deleteCharAt(strret.lastIndexOf("|"));
 		return strret.toString();
 
 	}
 
-	private void initialiseHashTableAbs() throws Exception {
+	private void initialiseHashTableAbs(int typePointage) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
@@ -799,15 +793,15 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		}
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
-		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(), 1,
-				new JSONSerializer().serialize(agents));
+		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
+				typePointage, new JSONSerializer().serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
 			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
-					Integer.valueOf(annee.format(abs.getDateLundi())), 1, abs.getId_agent());
+					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent());
 			hashVentilAbs.put(cle, listVentilAbs);
 		}
 		setHashVentilAbs(hashVentilAbs);
@@ -820,5 +814,129 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> getHashVentilAbs() throws Exception {
 		return hashVentilAbs == null ? new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>()
 				: hashVentilAbs;
+	}
+
+	public String getValHistoryHsup(String moisAnnee, Integer idAgent) {
+		return "hsup_" + moisAnnee + "_" + idAgent;
+	}
+
+	public String getHistoryHsup(String moisAnnee, Integer idAgent) throws Exception {
+		List<Integer> agents = new ArrayList<Integer>();
+		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "CC");
+		for (Carriere carr : listeCarr) {
+			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				continue;
+			}
+			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
+				agents.add(Integer.valueOf(ag.getIdAgent()));
+			}
+
+		}
+		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
+		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
+		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		VentilDateDto ventilEnCours = getInfoVentilation("CC");
+		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(), 2,
+				new JSONSerializer().serialize(agents));
+		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
+		for (VentilHSupDto hsup : rep) {
+			Hashtable<Integer, String> cle = new Hashtable<>();
+			cle.put(hsup.getId_agent(), moisAnneeFormat.format(hsup.getDateLundi()));
+			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
+					Integer.valueOf(moisFormat.format(hsup.getDateLundi())),
+					Integer.valueOf(anneeFormat.format(hsup.getDateLundi())), 2, hsup.getId_agent());
+			list.put(cle, listVentilHsup);
+		}
+		// on construit la clé
+		Hashtable<Integer, String> cle = new Hashtable<>();
+		cle.put(idAgent, moisAnnee);
+		// on recupere les valeurs
+		List<VentilHSupDto> data = list.get(cle);
+
+		int numParams = 10;
+		String[][] ret = new String[data.size()][numParams];
+		int index = 0;
+		GregorianCalendar greg = new GregorianCalendar();
+		for (VentilHSupDto hsup : data) {
+			greg.setTime(hsup.getDateLundi());
+			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs());
+			ret[index][2] = "&nbsp;";
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat());
+			ret[index][4] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires());
+			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup25());
+			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup50());
+			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit());
+			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf());
+			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals("") ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai());
+			index++;
+		}
+
+		StringBuilder strret = new StringBuilder();
+		for (int i = 0; i < data.size(); i++) {
+			// strret.append("[");
+			for (int j = 0; j < numParams; j++) {
+				strret.append(ret[i][j]).append(",");
+			}
+			strret.deleteCharAt(strret.lastIndexOf(","));
+			strret.append("|");
+		}
+		if (strret.lastIndexOf("|") != -1)
+			strret.deleteCharAt(strret.lastIndexOf("|"));
+		return strret.toString();
+
+	}
+
+	private void initialiseHashTableHsup(int typePointage) throws Exception {
+		List<Integer> agents = new ArrayList<Integer>();
+		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
+		SimpleDateFormat mois = new SimpleDateFormat("MM");
+		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
+		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "CC");
+		for (Carriere carr : listeCarr) {
+			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				continue;
+			}
+			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
+				agents.add(Integer.valueOf(ag.getIdAgent()));
+			}
+
+		}
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		VentilDateDto ventilEnCours = getInfoVentilation("CC");
+		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
+				typePointage, new JSONSerializer().serialize(agents));
+		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
+		for (VentilHSupDto abs : rep) {
+			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
+			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
+			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
+					Integer.valueOf(mois.format(abs.getDateLundi())),
+					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent());
+			hashVentilHsup.put(cle, listVentilHsup);
+		}
+		setHashVentilHsup(hashVentilHsup);
+	}
+
+	private void setHashVentilHsup(Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup2) {
+		this.hashVentilHsup = hashVentilHsup2;
+	}
+
+	public Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> getHashVentilHsup() throws Exception {
+		return hashVentilHsup == null ? new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>()
+				: hashVentilHsup;
 	}
 }
