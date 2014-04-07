@@ -565,7 +565,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			initialiseHashTableHsup(typePointage);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, false, new JSONSerializer().serialize(agents)));
+					typePointage, new JSONSerializer().serialize(agents)));
 		}
 		return true;
 	}

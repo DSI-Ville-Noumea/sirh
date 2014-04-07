@@ -1,5 +1,4 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -69,7 +68,7 @@
                     "sSearch": "Recherche instantanée"
                 },
                 "oTableTools": {
-                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilConventionsCol", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilFonct", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
                     "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
                 }
 
@@ -128,6 +127,106 @@
             return detailContainer;
         }
 
+
+        $(document).ready(function() {
+           $('#VentilationTableHsupTitulaire').dataTable({
+                "sDom": '<"H"fl>t<"F"Trip>',
+                "bAutoWidth": false,   
+                "aoColumns": [
+                              {"sWidth": "65px"},
+                              {"sWidth": "200px"},
+                              {"sWidth": "50px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "40px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "70px"},
+                              {"sWidth": "20px"}
+                ],                 
+                "oLanguage": {
+                    "oPaginate": {
+                        "sFirst": "",
+                        "sLast": "",
+                        "sNext": "",
+                        "sPrevious": ""
+                    },
+                    "sZeroRecords": "Aucune information de ventilation à afficher",
+                    "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ ventilation(s) au total",
+                    "sInfoEmpty": "Aucune information de ventilation à afficher",
+                    "sEmptyTable": "Veuillez sélectionner au moins un agent pour afficher les informations de ventilation",
+                    "sInfoFiltered": "(filtrage sur _MAX_ ventilation au total)",
+                    "sLengthMenu": "Affichage de _MENU_ ventilation par page",
+                    "sSearch": "Recherche instantanée"
+                },
+                "oTableTools": {
+                    "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "ventilFonct", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                    "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                }
+
+            });    
+        });
+
+
+
+
+        function loadVentilationHsupHistory(id, list) {
+            var oTable = $('#VentilationTableHsupTitulaire').dataTable();
+            var tr = document.getElementById(id);
+
+            if (oTable.fnIsOpen(tr)) {
+                oTable.fnClose(tr);
+            } else {
+                oTable.fnOpen(tr, buildDetailTableHsup(list));
+            }
+        }
+
+        /**
+         * Build the table containing the detail of the pointage
+         */
+        function buildDetailTableHsup(data) {
+
+            // Build the new table that will handle the detail (append the thead and all tr, th)
+            var detailTable = $(document.createElement("table"))
+                    .addClass("detailContent")
+                    .addClass("subDataTable")
+                    .attr("cellpadding", "0")
+                    .attr("cellspacing", "0")
+                    .attr("style", "margin-left: 302px;")
+                    .append($(document.createElement("thead"))
+                    );
+
+            // Append the tbody element
+            var tbody = $(document.createElement("tbody")).appendTo(detailTable);
+
+            var pointages = data.split("|");
+
+            //  alert(" pointages.length " +pointages.length);
+            for (var i = 0; i < pointages.length; i++) {
+                var donnees = pointages[i].split(",");
+                tbody.append($(document.createElement("tr"))
+                        .addClass(i % 2 == 0 ? "even" : "odd")
+                        .append($(document.createElement("td")).html(donnees[0]).attr("style", "width: 55px;"))
+                        .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 75px;"))
+                        .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 45px;"))
+                        .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 74px;"))
+                        .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 75px"))
+                        .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 75px"))
+                        .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 73px"))
+                        .append($(document.createElement("td")).html(donnees[7]).attr("style", "width: 75px"))
+                        .append($(document.createElement("td")).html(donnees[8]).attr("style", "width: 73px"))
+                        .append($(document.createElement("td")).html(donnees[9]).attr("style", "width: 75px"))
+                        );
+            }
+            // Append the detail table into the detail container
+            var detailContainer = detailTable;
+            // Finally return the table
+            return detailContainer;
+        }
+
             //afin de sélectionner un élément dans une liste
 			function executeBouton(nom)
 			{
@@ -164,7 +263,7 @@
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
-            <div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
+            <div style="margin-left:10px;margin-top:20px;text-align:left;" align="left">
                 <% if (process.onglet.equals("ONGLET1")) {%>
                 <span id="titreOngletVentilation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
@@ -267,12 +366,12 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
                  	</FIELDSET>
-                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-                            <legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
-                            <%=process.getTabVisuHS()%>		
-                    </FIELDSET>
+                    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1300px;">	
+	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
+	                	<%@ include file="TabVentilationHsupTitulaire.jsp" %>
+	                </FIELDSET>
                 <% } else {%>
-                <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
+                <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;">
                 <% }%>
                     </div>
 
