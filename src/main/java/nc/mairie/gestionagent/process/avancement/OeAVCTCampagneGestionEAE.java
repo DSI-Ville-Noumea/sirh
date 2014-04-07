@@ -29,6 +29,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.StatutCarriere;
 import nc.mairie.metier.diplome.DiplomeAgent;
+import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
 import nc.mairie.metier.parametrage.TitreDiplome;
@@ -44,6 +45,7 @@ import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
+import nc.mairie.spring.dao.metier.EAE.EaeCampagneTaskDao;
 import nc.mairie.spring.dao.metier.EAE.EaeDiplomeDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
@@ -59,6 +61,7 @@ import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 import nc.mairie.spring.domain.metier.EAE.EAE;
+import nc.mairie.spring.domain.metier.EAE.EaeCampagneTask;
 import nc.mairie.spring.domain.metier.EAE.EaeDiplome;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluateur;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
@@ -144,6 +147,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private CampagneEAEDao campagneEAEDao;
 	private EaeFDPCompetenceDao eaeFDPCompetenceDao;
 	private EaeFinalisationDao eaeFinalisationDao;
+	private EaeCampagneTaskDao eaeCampagneTaskDao;
 
 	private String message;
 	private String urlFichier;
@@ -834,6 +838,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getCentreFormationDao() == null) {
 			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
 		}
+		
+		if (getEaeCampagneTaskDao() == null) {
+			setEaeCampagneTaskDao((EaeCampagneTaskDao) context.getBean("eaeCampagneTaskDao"));
+		}
 	}
 
 	/**
@@ -938,6 +946,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// Si clic sur le bouton PB_CALCULER
 			if (testerParametre(request, getNOM_PB_CALCULER())) {
 				return performPB_CALCULER(request);
+			}
+			
+			// Si clic sur le bouton PB_CALCULER
+			if (testerParametre(request, getNOM_PB_INITIALISE_CALCUL_EAE_JOB())) {
+				return performPB_INITIALISE_CALCUL_EAE_JOB(request);
 			}
 
 			// Si clic sur le bouton PB_GERER_EVALUATEUR
@@ -1199,6 +1212,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	public String getNOM_PB_CALCULER() {
 		return "NOM_PB_CALCULER";
 	}
+	
+	/**
+	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de création :
+	 * (24/03/14)
+	 * 
+	 */
+	public String getNOM_PB_INITIALISE_CALCUL_EAE_JOB() {
+		return "NOM_PB_INITIALISE_CALCUL_EAE_JOB";
+	}
 
 	/**
 	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
@@ -1224,6 +1246,73 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Cree une ligne dans la table EAE_CAMPAGNE_TASK
+	 * pour lancer le job de calcul des EAEs
+	 */
+	public boolean performPB_INITIALISE_CALCUL_EAE_JOB(HttpServletRequest request) throws Exception {
+		setMessage(Const.CHAINE_VIDE);
+		if (getListeCampagneEAE() != null && getListeCampagneEAE().size() > 0) {
+			int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
+
+			if (!initialiseListeEAEWithJob(request)) {
+				return false;
+			}
+
+			// "INF202","Calcul effectué."
+			setMessage(MessageUtils.getMessage("INF502"));
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	private boolean initialiseListeEAEWithJob(HttpServletRequest request) throws Exception {
+		if (etatStatut() != STATUT_EVALUATEUR) {
+			if (getListeCampagneEAE().size() > 0) {
+				// si il s'agit d'une campagne ouverte on fait le calcul
+				if (getCampagneCourante().estOuverte()) {
+					// on enregistre une ligne dans la table EAE_CAMPAGNE_TASK
+					// un JOB effectuera le calcul des EAEs
+					EaeCampagneTask eaeCampagneTask = getEaeCampagneTaskDao().chercherEaeCampagneTaskByIdCampagneEae(getCampagneCourante().getIdCampagneEAE());
+					
+					if(null != eaeCampagneTask) {
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR216"));
+						return false;
+					}else{
+						getEaeCampagneTaskDao().creerEaeCampagneTask(getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getAnnee(), getAgentConnecte(request).getIdAgent(), null, null);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
+		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via la
+		// table SIIDMA
+		AgentNW agentConnecte = null;
+		if (!(u.getUserName().equals("nicno85"))) {
+			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				return null;
+			}
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				return null;
+			}
+		} else {
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+		}
+		return agentConnecte;
 	}
 
 	/**
@@ -3827,6 +3916,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setEaeFinalisationDao(EaeFinalisationDao eaeFinalisationDao) {
 		this.eaeFinalisationDao = eaeFinalisationDao;
+	}
+
+	public EaeCampagneTaskDao getEaeCampagneTaskDao() {
+		return eaeCampagneTaskDao;
+	}
+
+	public void setEaeCampagneTaskDao(EaeCampagneTaskDao eaeCampagneTaskDao) {
+		this.eaeCampagneTaskDao = eaeCampagneTaskDao;
 	}
 
 	private void setURLFichier(String scriptOuverture) {
