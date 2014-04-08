@@ -875,7 +875,7 @@
 				}%>
 			</table>	
 			
-			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION)){ %>
+			<% if(process.getVAL_ST_ACTION().equals(process.ACTION_DOCUMENT_CREATION_ANCIEN_EAE)){ %>
 			<table>
 				<tr>
 					<td width="100px;">

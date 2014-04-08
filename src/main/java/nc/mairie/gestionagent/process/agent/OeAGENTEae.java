@@ -86,7 +86,7 @@ public class OeAGENTEae extends BasicProcess {
 	public String ACTION_SUPPRESSION_DEV = "Suppression d'un développement.";
 	public String ACTION_DOCUMENT = "Documents.";
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document.";
-	public String ACTION_DOCUMENT_CREATION_ANCIEN_EAE = "Création d'un document.";
+	public String ACTION_DOCUMENT_CREATION_ANCIEN_EAE = "Création d'un ancien EAE.";
 
 	private String[] LB_BASE_HORAIRE;
 	private ArrayList<Horaire> listeHoraire;
