@@ -33,6 +33,8 @@ public interface ISirhPtgWSConsumer {
 			Integer idAgent);
 
 	boolean isVentilAvailable(String agentStatus);
+	
+	boolean isVentilEnCours(String agentStatus);
 
 	VentilDateDto getVentilationEnCours(String statut);
 
@@ -40,6 +42,8 @@ public interface ISirhPtgWSConsumer {
 			String idRefTypePointage);
 
 	boolean isValidAvailable(String agentStatus);
+	
+	boolean isValidEnCours(String agentStatus);
 
 	boolean startDeversementPaie(String idAgent, String statut);
 

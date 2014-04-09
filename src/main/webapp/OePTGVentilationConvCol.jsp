@@ -237,29 +237,43 @@
                 if (document.formu.elements[nom] != null)
                     document.formu.elements[nom].focus();
             }
-
         </SCRIPT>		
         <script type="text/javascript">
- 
-			function startCompteur(duree){
-				<%if(!OePTGVentilationUtils.canProcessVentilation("CC")){ %>
-				var o=document.getElementById("box" );
-				if(duree >= 0) {
-					//on format les minutes et les secondes
-					var minutes = Math.floor(duree/60) +"m";
-					var secondes = Math.floor(duree%60)+"s";
-					o.innerHTML = "Début de la ventilation dans "+ minutes +secondes;
-					setTimeout("startCompteur("+duree+"-1)", 1000);
-				} else {
-					o.innerHTML ="Ventilation en cours.";					
-				}	
-				<%}%>
-			}
-		</script>			
+        
+		function startCompteur(duree){
+			<%if(OePTGVentilationUtils.isVentilationEnCours("CC")){ %>
+			var o=document.getElementById("box" );
+			if(duree >= 0) {
+				//on format les minutes et les secondes
+				var minutes = Math.floor(duree/60) +"m";
+				var secondes = Math.floor(duree%60)+"s";
+				o.innerHTML = "Début de la ventilation dans "+ minutes +secondes;
+				setTimeout("startCompteur("+duree+"-1)", 1000);
+			} else {
+				o.innerHTML ="Ventilation en cours.";					
+			}	
+			<%}%>
+		}
+		 
+		function startCompteurDeversement(duree){
+			<%if(OePTGVentilationUtils.isDeversementEnCours("CC")){ %>
+			var o=document.getElementById("boxDeversement");
+			if(duree >= 0) {
+				//on format les minutes et les secondes
+				var minutes = Math.floor(duree/60) +"m";
+				var secondes = Math.floor(duree%60)+"s";
+				o.innerHTML = "Début de la validation dans "+ minutes +secondes;
+				setTimeout("startCompteurDeversement("+duree+"-1)", 1000);
+			} else {
+				o.innerHTML ="Validation en cours.";					
+			}	
+			<%}%>
+		}
+		</script>
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     </HEAD>
     <jsp:useBean class="nc.mairie.gestionagent.process.pointage.OePTGVentilationConvCol" id="process" scope="session"></jsp:useBean>
-        <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteur('120');" >
+        <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteur('120');startCompteurDeversement('300');" >
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
@@ -350,9 +364,13 @@
 						<%if( OePTGVentilationUtils.canProcessVentilation("CC")){ %>
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Ventiler" name="<%=process.getNOM_PB_VENTILER()%>">
 						<%}else{ %>		
-						<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
-						<%} %>		
-             			<span style="color: red;" id="box"></span>	
+							<%if(OePTGVentilationUtils.isDeversementEnCours("CC")){ %>
+		             			<span style="color: red;">Une validation est en cours. Vous ne pouvez effectuer de ventilation.</span>
+							<% }else if(OePTGVentilationUtils.isVentilationEnCours("CC")){ %>
+								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
+		             			<span style="color: red;" id="box"></span>
+	             			<%} %>
+						<%} %>	
                     </FIELDSET>
                     <br/><br/>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
@@ -443,10 +461,15 @@
 	               	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
 	                	<legend class="sigp2Legend">Validation de la ventilation des pointages des <span style="color: red;">CONVENTIONS COLLECTIVES</span></legend>	
 		              	<span style="color: red;">Attention , cette action est irreversible !</span>    
-		              	<br>  <br>       	                    
-						<%if( OePTGVentilationUtils.canProcessDeversementPaie("CC")){ %>
-						<INPUT type="submit" class="sigp2-Bouton-200" value="Deverser dans la paie" name="<%=process.getNOM_PB_DEVERSER()%>">
-						<%} %>	
+		              	<br>  <br>         
+		              	<%if(OePTGVentilationUtils.isVentilationEnCours("CC")){ %>
+		             		<span style="color: red;">Une ventilation est en cours. Vous ne pouvez effectuer de validation.</span>		              	
+		              	<%}else if(OePTGVentilationUtils.canProcessDeversementPaie("CC")){ %>
+		              		<INPUT type="submit" class="sigp2-Bouton-200" value="Deverser dans la paie" name="<%=process.getNOM_PB_DEVERSER()%>">
+		              	<% }else if(OePTGVentilationUtils.isDeversementEnCours("CC")){%>
+								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
+		             			<span style="color: red;" id="boxDeversement"></span>
+		              	<% } %>
 	                </FIELDSET>
                 </div>
 

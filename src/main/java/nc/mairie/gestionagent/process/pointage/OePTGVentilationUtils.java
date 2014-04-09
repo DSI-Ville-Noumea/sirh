@@ -91,6 +91,16 @@ public class OePTGVentilationUtils {
 		return consum.isVentilAvailable(statut);
 	}
 
+	public static boolean isDeversementEnCours(String statut) {
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		return consum.isValidEnCours(statut);
+	}
+
+	public static boolean isVentilationEnCours(String statut) {
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		return consum.isVentilEnCours(statut);
+	}
+
 	public static String getMondayFromWeekNumberAndYear(int week, int year) {
 		GregorianCalendar cal = new GregorianCalendar();
 		// cal.setTime(listePointage.get(idPtg).getDate());

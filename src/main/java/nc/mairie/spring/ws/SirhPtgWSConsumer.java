@@ -53,10 +53,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVentilationsShow = "ventilation/show";
 	private static final String sirhPtgVentilationsHistory = "ventilation/showHistory";
 	private static final String sirhPtgCheckVentil = "ventilation/canStartVentilation";
+	private static final String sirhPtgCheckIsVentilRuning = "ventilation/isVentilation";
 	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
 	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
 	// export paie
-	private static final String sirhPtgCheckValid = "/exportPaie/canStartExportPaie";
+	private static final String sirhPtgCheckValid = "exportPaie/canStartExportPaie";
+	private static final String sirhPtgCheckIsValidRuning = "exportPaie/isExportPaie";
 	private static final String sirhPtgStartDeversement = "exportPaie/start";
 	// etats du payeur
 	private static final String sirhPtgCanStartExportEtatsPayeur = "etatsPayeur/canStartExportEtatsPayeur";
@@ -585,5 +587,37 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String url = urlWS + sirhPtgTypeAbsence;
 		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
+	}
+
+	@Override
+	public boolean isValidEnCours(String agentStatus) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgCheckIsValidRuning;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("statut", agentStatus);
+		ClientResponse res = createAndFireRequest(params, url);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			CanStartWorkflowPaieActionDto result = readResponse(CanStartWorkflowPaieActionDto.class, res, url);
+			logger.trace(result.toString());
+			return result.isCanStartAction();
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isVentilEnCours(String agentStatus) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgCheckIsVentilRuning;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("statut", agentStatus);
+		ClientResponse res = createAndFireRequest(params, url);
+		if (res.getStatus() == HttpStatus.OK.value()) {
+			CanStartVentilationDto result = readResponse(CanStartVentilationDto.class, res, url);
+			logger.trace(result.toString());
+			return result.isCanStartVentilation();
+		} else {
+			return false;
+		}
 	}
 }
