@@ -12,6 +12,7 @@ import nc.mairie.metier.carriere.Classe;
 import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -35,17 +36,20 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 	private String[] LB_CLASSE;
 	private String[] LB_ECHELON;
 	private String[] LB_GRADE_GENERIQUE;
+	private String[] LB_MOTIF_AVCT;
 
 	private ArrayList<Grade> listeGrade;
 	private ArrayList<Grade> listeGrille;
 	private ArrayList<GradeGenerique> listeGradeGenerique;
 	private ArrayList<Echelon> listeEchelon;
+	private ArrayList<MotifAvancement> listeMotifAvct;
 	private ArrayList<Classe> listeClasse;
 	private ArrayList<Bareme> listeBareme;
 
 	private Hashtable<String, GradeGenerique> hashGradeGenerique;
 	private Hashtable<String, Classe> hashClasse;
 	private Hashtable<String, Echelon> hashEchelon;
+	private Hashtable<String, MotifAvancement> hashMotifAvct;
 	private Hashtable<String, Bareme> hashBareme;
 
 	private Grade gradeCourant;
@@ -350,6 +354,21 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 		}
 
+		// initialisation de la liste des motifs d'avancement
+		if (getHashMotifAvct().size() == 0) {
+			ArrayList<MotifAvancement> listeMotifAvct = MotifAvancement.listerMotifAvancement(getTransaction());
+			setListeMotifAvct(listeMotifAvct);
+
+			int[] tailles = { 60 };
+			String[] champs = { "libMotifAvct" };
+			setLB_MOTIF_AVCT(new FormateListe(tailles, listeMotifAvct, champs).getListeFormatee(true));
+
+			// remplissage de la hashTable
+			for (MotifAvancement m : listeMotifAvct) {
+				getHashMotifAvct().put(m.getIdMotifAvct(), m);
+			}
+		}
+
 	}
 
 	/**
@@ -449,6 +468,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		addZone(getNOM_LB_CLASSE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_ECHELON_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_BAREME_SELECT(), Const.ZERO);
+		addZone(getNOM_LB_MOTIF_AVCT_SELECT(), Const.ZERO);
 
 		addZone(getNOM_EF_CODE_GRADE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_CODE_GRADE_SUIVANT(), Const.CHAINE_VIDE);
@@ -489,6 +509,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		Classe classe = (Classe) getHashClasse().get(getGradeCourant().getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(getGradeCourant().getCodeEchelon());
 		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(getGradeCourant().getIban(), 7, "0"));
+		MotifAvancement motifAvct = (MotifAvancement) getHashMotifAvct().get(getGradeCourant().getCodeTava());
 
 		if (getTransaction().isErreur())
 			getTransaction().traiterErreur();
@@ -505,6 +526,9 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		if (echelon != null)
 			addZone(getNOM_LB_ECHELON_SELECT(), String.valueOf(getListeEchelon().indexOf(echelon) + 1));
+
+		if (motifAvct != null)
+			addZone(getNOM_LB_MOTIF_AVCT_SELECT(), String.valueOf(getListeMotifAvct().indexOf(motifAvct) + 1));
 
 		addZone(getNOM_EF_CODE_GRADE(), getGradeCourant().getCodeGrade());
 		addZone(getNOM_EF_CODE_GRADE_SUIVANT(), getGradeCourant().getCodeGradeSuivant());
@@ -579,6 +603,14 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	private void setListeEchelon(ArrayList<Echelon> listeEchelon) {
 		this.listeEchelon = listeEchelon;
+	}
+
+	private ArrayList<MotifAvancement> getListeMotifAvct() {
+		return listeMotifAvct;
+	}
+
+	private void setListeMotifAvct(ArrayList<MotifAvancement> listeMotifAvct) {
+		this.listeMotifAvct = listeMotifAvct;
 	}
 
 	private ArrayList<GradeGenerique> getListeGradeGenerique() {
@@ -927,15 +959,50 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 		}
 
-		// durée : min <= moy <= max
-		if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > Integer.parseInt(getVAL_EF_DUREE_MOY())) {
-			// "ERR968", "La zone @ ne peut être supérieure à la zone @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée min", "durée moyenne"));
-			return false;
+		// TODO modifier RG
+
+		// MOTIF AVCT et DUREE MIN/MOY/MAX
+		String motifAvctString = getZone(getNOM_LB_MOTIF_AVCT_SELECT()).equals(Const.CHAINE_VIDE) ? "0"
+				: getZone(getNOM_LB_MOTIF_AVCT_SELECT());
+		MotifAvancement motifAvct = null;
+		if (!motifAvctString.equals("0")) {
+			motifAvct = (MotifAvancement) getListeMotifAvct().get(Integer.parseInt(motifAvctString) - 1);
 		}
-		if (Integer.parseInt(getVAL_EF_DUREE_MOY()) > Integer.parseInt(getVAL_EF_DUREE_MAX())) {
-			// "ERR968", "La zone @ ne peut être supérieure à la zone @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée moyenne", "durée max"));
+
+		if (motifAvct != null && motifAvct.getCodeMotifAvct().equals("AD")) {
+			// durée : min <= moy <= max
+			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > Integer.parseInt(getVAL_EF_DUREE_MOY())) {
+				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée min", "durée moyenne"));
+				return false;
+			}
+			if (Integer.parseInt(getVAL_EF_DUREE_MOY()) > Integer.parseInt(getVAL_EF_DUREE_MAX())) {
+				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR968", "durée moyenne", "durée max"));
+				return false;
+			}
+
+		} else if (motifAvct != null
+				&& (motifAvct.getCodeMotifAvct().equals("AUTO") || motifAvct.getCodeMotifAvct().equals("PROMO")
+						|| motifAvct.getCodeMotifAvct().equals("REVA") || motifAvct.getCodeMotifAvct().equals("TITU"))) {
+			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > 0) {
+				// "ERR187",
+				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR187", motifAvct.getCodeMotifAvct(), "durée minimum"));
+				return false;
+			}
+			if (Integer.parseInt(getVAL_EF_DUREE_MAX()) > 0) {
+				// "ERR187",
+				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR187", motifAvct.getCodeMotifAvct(), "durée maximum"));
+				return false;
+			}
+		} else if (motifAvct != null) {
+			// "ERR188",
+			// "Ce motif d'avancement n'a pas de règle de gestion. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR188"));
 			return false;
 		}
 
@@ -1015,6 +1082,14 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			echelon = (Echelon) getListeEchelon().get(numEchelon - 1);
 		}
 
+		// motif avct
+		MotifAvancement motifAvct = null;
+		int numMotifAvct = (Services.estNumerique(getZone(getNOM_LB_MOTIF_AVCT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_MOTIF_AVCT_SELECT())) : -1);
+		if (numMotifAvct > 0 && getListeMotifAvct().size() > 0 && numMotifAvct - 1 < getListeMotifAvct().size()) {
+			motifAvct = (MotifAvancement) getListeMotifAvct().get(numMotifAvct - 1);
+		}
+
 		// grade générique
 		int numGradeGenerique = (Services.estNumerique(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GRADE_GENERIQUE_SELECT())) : -1);
@@ -1036,6 +1111,11 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			getGradeCourant().setCodeEchelon(echelon.getCodEchelon());
 		else
 			getGradeCourant().setCodeEchelon(Const.CHAINE_VIDE);
+
+		if (motifAvct != null)
+			getGradeCourant().setCodeTava(motifAvct.getIdMotifAvct());
+		else
+			getGradeCourant().setCodeTava(Const.CHAINE_VIDE);
 
 		getGradeCourant().setAcc(getVAL_RG_ACC().equals(getNOM_RB_OUI()) ? "O" : "N");
 		getGradeCourant().setBm(getVAL_RG_BM().equals(getNOM_RB_OUI()) ? "O" : "N");
@@ -1077,6 +1157,12 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		if (hashEchelon == null)
 			hashEchelon = new Hashtable<String, Echelon>();
 		return hashEchelon;
+	}
+
+	private Hashtable<String, MotifAvancement> getHashMotifAvct() {
+		if (hashMotifAvct == null)
+			hashMotifAvct = new Hashtable<String, MotifAvancement>();
+		return hashMotifAvct;
 	}
 
 	private Hashtable<String, GradeGenerique> getHashGradeGenerique() {
@@ -1122,6 +1208,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 				dernierGrade.getCodeGradeGenerique());
 		Classe classe = (Classe) getHashClasse().get(dernierGrade.getCodeClasse());
 		Echelon echelon = (Echelon) getHashEchelon().get(dernierGrade.getCodeEchelon());
+		MotifAvancement motifAvct = (MotifAvancement) getHashMotifAvct().get(dernierGrade.getCodeTava());
 		Bareme bareme = (Bareme) getHashBareme().get(Services.lpad(dernierGrade.getIban(), 7, "0"));
 
 		if (getTransaction().isErreur())
@@ -1139,6 +1226,9 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		if (echelon != null)
 			addZone(getNOM_LB_ECHELON_SELECT(), String.valueOf(getListeEchelon().indexOf(echelon) + 1));
+
+		if (motifAvct != null)
+			addZone(getNOM_LB_MOTIF_AVCT_SELECT(), String.valueOf(getListeMotifAvct().indexOf(motifAvct) + 1));
 
 		addZone(getNOM_EF_CODE_GRADE(), dernierGrade.getCodeGrade());
 		addZone(getNOM_EF_MONTANT_FORFAIT(),
@@ -1387,6 +1477,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		Grade gradeCourant = getListeGrade().get(indiceEltAConsulter);
 		setGradeCourant(gradeCourant);
 
+		videZonesDeSaisie(request);
+
 		// init de l'échelon courant
 		if (!initialiseClasseEchelonCourant(request))
 			return false;
@@ -1467,6 +1559,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// Récup du grade courant
 		Grade gradeCourant = getListeGrade().get(indiceEltAConsulter);
 		setGradeCourant(gradeCourant);
+
+		videZonesDeSaisie(request);
 
 		// init de l'échelon courant
 		if (!initialiseClasseEchelonCourant(request))
@@ -1791,5 +1885,31 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	public String getVAL_EF_CODE_GRADE_SUIVANT() {
 		return getZone(getNOM_EF_CODE_GRADE_SUIVANT());
+	}
+
+	private String[] getLB_MOTIF_AVCT() {
+		if (LB_MOTIF_AVCT == null)
+			LB_MOTIF_AVCT = initialiseLazyLB();
+		return LB_MOTIF_AVCT;
+	}
+
+	private void setLB_MOTIF_AVCT(String[] newLB_MOTIF_AVCT) {
+		LB_MOTIF_AVCT = newLB_MOTIF_AVCT;
+	}
+
+	public String getNOM_LB_MOTIF_AVCT() {
+		return "NOM_LB_MOTIF_AVCT";
+	}
+
+	public String getNOM_LB_MOTIF_AVCT_SELECT() {
+		return "NOM_LB_MOTIF_AVCT_SELECT";
+	}
+
+	public String[] getVAL_LB_MOTIF_AVCT() {
+		return getLB_MOTIF_AVCT();
+	}
+
+	public String getVAL_LB_MOTIF_AVCT_SELECT() {
+		return getZone(getNOM_LB_MOTIF_AVCT_SELECT());
 	}
 }

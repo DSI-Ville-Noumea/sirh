@@ -289,6 +289,16 @@
 							</tr>
 							<tr>
 								<td>
+								<span class="sigp2">Motif avct :</span>
+								</td>
+								<td>
+									<SELECT class="sigp2-saisie" <%=process.ACTION_CONSULTATION_GRADE.equals(process.getVAL_ST_ACTION_GRADE()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_MOTIF_AVCT() %>">
+										<%=process.forComboHTML(process.getVAL_LB_MOTIF_AVCT(), process.getVAL_LB_MOTIF_AVCT_SELECT()) %>
+									</SELECT>
+								</td>
+							</tr>
+							<tr>
+								<td>
 									<span class="sigp2Mandatory">Durée min.:</span>
 								</td>
 								<td>
