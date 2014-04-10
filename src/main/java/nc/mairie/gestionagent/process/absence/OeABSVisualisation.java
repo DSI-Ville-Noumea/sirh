@@ -88,6 +88,21 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_DEMANDE) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_DEMANDE(), agt.getNoMatricule());
+			}
+		}
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_ACTION) {
+			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_ACTION(), agt.getNoMatricule());
+			}
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -361,6 +376,73 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_FILTRER() throws Exception {
+
+		if (!performControlerFiltres()) {
+			return false;
+		}
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+
+		String dateDeb = getVAL_ST_DATE_MIN();
+		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		String dateFin = getVAL_ST_DATE_MAX();
+		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		// etat
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		RefEtatDto etat = null;
+		if (numEtat != -1 && numEtat != 0) {
+			etat = (RefEtatDto) getListeEtats().get(numEtat - 1);
+		}
+		// famille
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
+		EnumTypeAbsence type = null;
+		if (numType != -1 && numType != 0) {
+			type = (EnumTypeAbsence) getListeFamilleAbsence().get(numType - 1);
+		}
+
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
+				+ getVAL_ST_AGENT_DEMANDE();
+		String idAgentAction = getVAL_ST_AGENT_ACTION().equals(Const.CHAINE_VIDE) ? null : "900"
+				+ getVAL_ST_AGENT_ACTION();
+
+		// SERVICE
+		String sigleService = getVAL_EF_SERVICE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_SERVICE().toUpperCase();
+
+		/*
+		 * List<ConsultPointageDto> _listePointage =
+		 * t.getVisualisationPointage(dateMin, dateMax, (List<String>)
+		 * intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
+		 * type != null ? type.getIdRefTypePointage() : null);
+		 * setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
+		 * loadHistory();
+		 * 
+		 * afficheListePointages();
+		 */
+
+		return true;
+	}
+
+	private boolean performControlerFiltres() throws Exception {
+
+		// on controle que le service saisie est bien un service
+		String sigleService = getVAL_EF_SERVICE().toUpperCase();
+		if (!sigleService.equals(Const.CHAINE_VIDE)) {
+			// on cherche le code service associé
+			Service siserv = Service.chercherServiceBySigle(getTransaction(), sigleService);
+			if (getTransaction().isErreur() || siserv == null || siserv.getCodService() == null) {
+				getTransaction().traiterErreur();
+				// ERR502", "Le sigle service saisie ne permet pas de trouver le
+				// service associé."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR502"));
+				return false;
+
+			}
+		}
 
 		return true;
 	}

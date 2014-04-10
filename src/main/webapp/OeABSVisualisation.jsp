@@ -112,7 +112,8 @@
 			                </SELECT>
                 		</td>
                 	</tr>
-                </table>           	
+                </table>  
+                <BR/>         	
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
              	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
                 <script type="text/javascript">
