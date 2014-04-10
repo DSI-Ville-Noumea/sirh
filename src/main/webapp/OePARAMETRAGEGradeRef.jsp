@@ -317,7 +317,7 @@
 					            	</tr>	
 									<tr>
 					            		<td colspan="2" align="center">
-											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_ECHELON())) { %>
+											<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_GRADE_GENERIQUE())) { %>
 					            				<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_GRADE_GENERIQUE()%>">	
 											<% }else{%>
 												<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_GRADE_GENERIQUE()%>">

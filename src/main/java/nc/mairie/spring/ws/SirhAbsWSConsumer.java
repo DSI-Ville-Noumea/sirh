@@ -47,6 +47,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
+	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -175,6 +176,10 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		}
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
 			return null;
 		}
 
@@ -323,6 +328,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsOrganisationSyndicaleSauvegarde;
 		ClientResponse res = createAndPostRequest(url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveDemande(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsDemandeSauvegarde;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 

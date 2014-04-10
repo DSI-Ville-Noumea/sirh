@@ -161,7 +161,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNoMatricule());
 			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
-			addZone(getNOM_ST_NB_JOURS(indiceLigne), dto.getNb().toString());
+			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(dto.getNb().intValue()));
 
 			indiceLigne++;
 
@@ -302,7 +302,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 		int ligneAnnee = getListeAnnee().indexOf(annee.toString());
 		addZone(getNOM_LB_ANNEE_SELECT(), String.valueOf(ligneAnnee));
-		addZone(getNOM_ST_NB_JOURS(), dto.getNb().toString());
+		addZone(getNOM_ST_NB_JOURS(), String.valueOf(dto.getNb().intValue()));
 		addZone(getNOM_ST_ANNEE(), annee.toString());
 		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
 				.substring(3, dto.getIdAgent().toString().length()));
