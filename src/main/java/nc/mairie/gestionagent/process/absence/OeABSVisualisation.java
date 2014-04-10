@@ -51,6 +51,8 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<RefEtatDto> listeEtats;
 	private ArrayList<EnumTypeAbsence> listeFamilleAbsence;
 
+	public String ACTION_CREATION = "Création d'une absence.";
+
 	@Override
 	public String getJSP() {
 		return "OeABSVisualisation.jsp";
@@ -206,7 +208,11 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
-				return performPB_FILTRER();
+				return performPB_FILTRER(request);
+			}
+			// Si clic sur le bouton PB_AJOUTER_ABSENCE
+			if (testerParametre(request, getNOM_PB_AJOUTER_ABSENCE())) {
+				return performPB_AJOUTER_ABSENCE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -375,7 +381,7 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_FILTRER";
 	}
 
-	public boolean performPB_FILTRER() throws Exception {
+	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
 
 		if (!performControlerFiltres()) {
 			return false;
@@ -473,5 +479,25 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeFamilleAbsence(ArrayList<EnumTypeAbsence> listeFamilleAbsence) {
 		this.listeFamilleAbsence = listeFamilleAbsence;
+	}
+
+	public String getNOM_PB_AJOUTER_ABSENCE() {
+		return "NOM_PB_CREATE_BOX";
+	}
+
+	public boolean performPB_AJOUTER_ABSENCE(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_ACTION() {
+		return "NOM_ST_ACTION";
+	}
+
+	public String getVAL_ST_ACTION() {
+		return getZone(getNOM_ST_ACTION());
 	}
 }
