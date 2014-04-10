@@ -530,6 +530,16 @@ public class RobotAgent extends Robot {
 				OePTGSaisie.class.getName());
 
 		// ///////////////////
+		// ABSENCE //
+		// ///////////////////
+
+		// Classe OeABSVisualisation
+		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_DEMANDE,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OeABSVisualisation.class.getName() + OeABSVisualisation.STATUT_RECHERCHER_AGENT_ACTION,
+				OeAGENTRecherche.class.getName());
+
+		// ///////////////////
 		// ELECTION //
 		// ///////////////////
 		// Classe OeELECSaisieCompteurA48
