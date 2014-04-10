@@ -22,6 +22,12 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Date dateDemande;
 	private String motif;
 
+	private Date dateFin;
+	private boolean isDateDebutAM;
+	private boolean isDateDebutPM;
+	private boolean isDateFinAM;
+	private boolean isDateFinPM;
+
 	// permet d'afficher ou non les icones correspondants
 	private boolean isAffichageBoutonModifier;
 	private boolean isAffichageBoutonSupprimer;
@@ -239,6 +245,46 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setCodeService(String codeService) {
 		this.codeService = codeService;
+	}
+
+	public Date getDateFin() {
+		return dateFin;
+	}
+
+	public void setDateFin(Date dateFin) {
+		this.dateFin = dateFin;
+	}
+
+	public boolean isDateDebutAM() {
+		return isDateDebutAM;
+	}
+
+	public void setDateDebutAM(boolean isDateDebutAM) {
+		this.isDateDebutAM = isDateDebutAM;
+	}
+
+	public boolean isDateDebutPM() {
+		return isDateDebutPM;
+	}
+
+	public void setDateDebutPM(boolean isDateDebutPM) {
+		this.isDateDebutPM = isDateDebutPM;
+	}
+
+	public boolean isDateFinAM() {
+		return isDateFinAM;
+	}
+
+	public void setDateFinAM(boolean isDateFinAM) {
+		this.isDateFinAM = isDateFinAM;
+	}
+
+	public boolean isDateFinPM() {
+		return isDateFinPM;
+	}
+
+	public void setDateFinPM(boolean isDateFinPM) {
+		this.isDateFinPM = isDateFinPM;
 	}
 
 }

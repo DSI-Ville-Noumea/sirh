@@ -107,7 +107,7 @@ if (affSuiviMed.equals("TRUE")){ %>
 var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI_MED");
 	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
 <%}%>
-	
+
 
 //***************************************************************
 //*               Le module Pointage
@@ -119,6 +119,17 @@ if (affPointage.equals("TRUE")){ %>
 	Module_pointage.ajouterFils(new Lien("saisiePointage", "PTGSaisie", "Visualisation et saisie", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
+<%}%>
+
+
+//***************************************************************
+//*               Le module Absence
+//***************************************************************
+<% 
+String affAbsence =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ABSENCE");
+if (affAbsence.equals("TRUE")){ %>
+	var Module_absence = new Dossier("Module_absence", "Gestion des absences","ABSENCE");
+	Module_absence.ajouterFils(new Lien("visualisationAbsence", "ABSVisualisation", "Visualisation et validation", "Gestion des absences", true));
 <%}%>
 
 //***************************************************************
@@ -165,6 +176,10 @@ menu.ajouterFils(Module_suiviMed);
 <% 
 if (affPointage.equals("TRUE")){ %>
 menu.ajouterFils(Module_pointage);
+<%}%>
+<% 
+if (affAbsence.equals("TRUE")){ %>
+menu.ajouterFils(Module_absence);
 <%}%>
 <% 
 if (affElection.equals("TRUE")){ %>

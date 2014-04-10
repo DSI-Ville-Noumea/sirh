@@ -11,7 +11,7 @@ public class SoldeDto {
 	private Double soldeReposCompAnnee;
 	private Double soldeReposCompAnneePrec;
 	private boolean afficheSoldeAsaA48;
-	private Integer soldeAsaA48;
+	private Double soldeAsaA48;
 
 	public Double getSoldeCongeAnnee() {
 		return soldeCongeAnnee;
@@ -53,11 +53,11 @@ public class SoldeDto {
 		this.soldeReposCompAnneePrec = soldeReposCompAnneePrec;
 	}
 
-	public Integer getSoldeAsaA48() {
+	public Double getSoldeAsaA48() {
 		return soldeAsaA48;
 	}
 
-	public void setSoldeAsaA48(Integer soldeAsaA48) {
+	public void setSoldeAsaA48(Double soldeAsaA48) {
 		this.soldeAsaA48 = soldeAsaA48;
 	}
 

@@ -155,8 +155,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
 
 		// Solde ASA A48
-		Integer soldeAsaA48 = soldeGlobal.getSoldeAsaA48();
-		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeAsaA48 == null ? "&nbsp;" : soldeAsaA48 + " j");
+		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeGlobal.getSoldeAsaA48() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA48()
+				.toString() + " j");
 
 	}
 

@@ -108,6 +108,10 @@
 		listeDroits.add("PTGPayeurContractuels");
 		
 		
+		/*Module ABSENCE*/
+		listeDroits.add("ABSVisualisation");
+		
+		
 		/*Module ELECTION*/
 		listeDroits.add("ELECSaisieCompteurA48");
 		//listeDroits.add("ELECSaisieCompteurA54");
