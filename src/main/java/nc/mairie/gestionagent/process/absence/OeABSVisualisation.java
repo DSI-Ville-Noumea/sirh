@@ -425,7 +425,6 @@ public class OeABSVisualisation extends BasicProcess {
 		if (!performControlerFiltres()) {
 			return false;
 		}
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 
 		String dateDeb = getVAL_ST_DATE_MIN();
 		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
@@ -458,13 +457,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// SERVICE
 		String sigleService = getVAL_EF_SERVICE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_SERVICE().toUpperCase();
 
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
+				type == null ? null : type.getCode(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande));
 		/*
-		 * List<ConsultPointageDto> _listePointage =
-		 * t.getVisualisationPointage(dateMin, dateMax, (List<String>)
-		 * intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
-		 * type != null ? type.getIdRefTypePointage() : null);
-		 * setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
-		 * loadHistory();
+		 * setListeAbsence((ArrayList<DemandeDto>) listeDemande); loadHistory();
 		 * 
 		 * afficheListePointages();
 		 */

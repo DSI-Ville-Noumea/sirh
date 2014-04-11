@@ -36,6 +36,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
+	private static final String sirhAbsDemandes = "demandes/listeDemandesSIRH";
 	private static final String sirhAbsMotif = "motif/getListeMotif";
 	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
@@ -339,6 +340,29 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgent", idAgentConnecte);
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
+			Integer idAgentRecherche) {
+
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsDemandes;
+		HashMap<String, String> params = new HashMap<>();
+		if (dateDebut != null)
+			params.put("from", dateDebut);
+		if (dateFin != null)
+			params.put("to", dateFin);
+		if (idRefEtat != null)
+			params.put("etat", idRefEtat.toString());
+		if (idRefType != null)
+			params.put("type", idRefType.toString());
+		if (idAgentRecherche != null)
+			params.put("idAgentRecherche", idAgentRecherche.toString());
+		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
+				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(DemandeDto.class, res, url);
 	}
 
 }

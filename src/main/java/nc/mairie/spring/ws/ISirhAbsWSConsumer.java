@@ -45,5 +45,8 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
-	ReturnMessageDto saveDemande(String idAgentConnecte,String json);
+	ReturnMessageDto saveDemande(String idAgentConnecte, String json);
+
+	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
+			Integer idAgentRecherche);
 }
