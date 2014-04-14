@@ -263,12 +263,37 @@ public class OeABSVisualisation extends BasicProcess {
 				return performPB_VALIDER(request);
 			}
 
-			// Si clic sur le bouton PB_DUPLIQUER
+			// Si clic sur les boutons du tableau
 			for (DemandeDto abs : getListeAbsence().values()) {
 				int indiceAbs = abs.getIdDemande();
+				// Si clic sur le bouton PB_DUPLIQUER
 				if (testerParametre(request, getNOM_PB_DUPLIQUER(indiceAbs))) {
 					return performPB_DUPLIQUER(request, indiceAbs);
 				}
+				// Si clic sur le bouton PB_VALIDER
+				if (testerParametre(request, getNOM_PB_VALIDER(indiceAbs))) {
+					return performPB_VALIDER(request, indiceAbs);
+				}
+				// Si clic sur le bouton PB_REJETER
+				if (testerParametre(request, getNOM_PB_REJETER(indiceAbs))) {
+					return performPB_REJETER(request, indiceAbs);
+				}
+				// Si clic sur le bouton PB_EN_ATTENTE
+				if (testerParametre(request, getNOM_PB_EN_ATTENTE(indiceAbs))) {
+					return performPB_EN_ATTENTE(request, indiceAbs);
+				}
+			}
+			// Si clic sur le bouton PB_VALIDER_ALL
+			if (testerParametre(request, getNOM_PB_VALIDER_ALL())) {
+				return performPB_VALIDER_ALL(request);
+			}
+			// Si clic sur le bouton PB_REJETER_ALL
+			if (testerParametre(request, getNOM_PB_REJETER_ALL())) {
+				return performPB_REJETER_ALL(request);
+			}
+			// Si clic sur le bouton PB_EN_ATTENTE_ALL
+			if (testerParametre(request, getNOM_PB_EN_ATTENTE_ALL())) {
+				return performPB_EN_ATTENTE_ALL(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -1013,6 +1038,90 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER(int i) {
+		return "NOM_PB_VALIDER" + i;
+	}
+
+	public boolean performPB_VALIDER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_REJETER(int i) {
+		return "NOM_PB_REJETER" + i;
+	}
+
+	public boolean performPB_REJETER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_EN_ATTENTE(int i) {
+		return "NOM_PB_EN_ATTENTE" + i;
+	}
+
+	public boolean performPB_EN_ATTENTE(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_ALL() {
+		return "NOM_PB_VALIDER_ALL";
+	}
+
+	public boolean performPB_VALIDER_ALL(HttpServletRequest request) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_REJETER_ALL() {
+		return "NOM_PB_REJETER_ALL";
+	}
+
+	public boolean performPB_REJETER_ALL(HttpServletRequest request) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_EN_ATTENTE_ALL() {
+		return "NOM_PB_EN_ATTENTE_ALL";
+	}
+
+	public boolean performPB_EN_ATTENTE_ALL(HttpServletRequest request) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
