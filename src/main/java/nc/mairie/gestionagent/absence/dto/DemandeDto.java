@@ -2,32 +2,28 @@ package nc.mairie.gestionagent.absence.dto;
 
 import java.util.Date;
 
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.IJSONDeserialize;
 import flexjson.JSONDeserializer;
 
 public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
+	private AgentWithServiceDto agentWithServiceDto;
+
 	private Integer idDemande;
-
-	private Integer idAgent;
-	private String nomAgent;
-	private String prenomAgent;
-	private String service;
-	private String codeService;
-
 	private Integer idTypeDemande;
-	private Date dateDebut;
-	private Integer duree;
-	private Integer idRefEtat;
-	private Date dateSaisie;
 	private Date dateDemande;
-	private String motif;
-
-	private Date dateFin;
+	private Date dateDebut;
 	private boolean isDateDebutAM;
 	private boolean isDateDebutPM;
+	private Date dateFin;
 	private boolean isDateFinAM;
 	private boolean isDateFinPM;
+	private Integer duree;
+
+	private Integer idRefEtat;
+	private Date dateSaisie;
+	private String motif;
 
 	// permet d'afficher ou non les icones correspondants
 	private boolean isAffichageBoutonModifier;
@@ -46,20 +42,20 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	public DemandeDto() {
 	}
 
+	public AgentWithServiceDto getAgentWithServiceDto() {
+		return agentWithServiceDto;
+	}
+
+	public void setAgentWithServiceDto(AgentWithServiceDto agentWithServiceDto) {
+		this.agentWithServiceDto = agentWithServiceDto;
+	}
+
 	public Integer getIdDemande() {
 		return idDemande;
 	}
 
 	public void setIdDemande(Integer idDemande) {
 		this.idDemande = idDemande;
-	}
-
-	public Integer getIdAgent() {
-		return idAgent;
-	}
-
-	public void setIdAgent(Integer idAgent) {
-		this.idAgent = idAgent;
 	}
 
 	public Integer getIdTypeDemande() {
@@ -70,12 +66,60 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.idTypeDemande = idTypeDemande;
 	}
 
+	public Date getDateDemande() {
+		return dateDemande;
+	}
+
+	public void setDateDemande(Date dateDemande) {
+		this.dateDemande = dateDemande;
+	}
+
 	public Date getDateDebut() {
 		return dateDebut;
 	}
 
 	public void setDateDebut(Date dateDebut) {
 		this.dateDebut = dateDebut;
+	}
+
+	public boolean isDateDebutAM() {
+		return isDateDebutAM;
+	}
+
+	public void setDateDebutAM(boolean isDateDebutAM) {
+		this.isDateDebutAM = isDateDebutAM;
+	}
+
+	public boolean isDateDebutPM() {
+		return isDateDebutPM;
+	}
+
+	public void setDateDebutPM(boolean isDateDebutPM) {
+		this.isDateDebutPM = isDateDebutPM;
+	}
+
+	public Date getDateFin() {
+		return dateFin;
+	}
+
+	public void setDateFin(Date dateFin) {
+		this.dateFin = dateFin;
+	}
+
+	public boolean isDateFinAM() {
+		return isDateFinAM;
+	}
+
+	public void setDateFinAM(boolean isDateFinAM) {
+		this.isDateFinAM = isDateFinAM;
+	}
+
+	public boolean isDateFinPM() {
+		return isDateFinPM;
+	}
+
+	public void setDateFinPM(boolean isDateFinPM) {
+		this.isDateFinPM = isDateFinPM;
 	}
 
 	public Integer getDuree() {
@@ -94,17 +138,20 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.idRefEtat = idRefEtat;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return idDemande.equals(((DemandeDto) obj).getIdDemande());
+	public Date getDateSaisie() {
+		return dateSaisie;
 	}
 
-	public Date getDateDemande() {
-		return dateDemande;
+	public void setDateSaisie(Date dateSaisie) {
+		this.dateSaisie = dateSaisie;
 	}
 
-	public void setDateDemande(Date dateDemande) {
-		this.dateDemande = dateDemande;
+	public String getMotif() {
+		return motif;
+	}
+
+	public void setMotif(String motif) {
+		this.motif = motif;
 	}
 
 	public boolean isAffichageBoutonModifier() {
@@ -131,6 +178,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isAffichageBoutonImprimer = isAffichageBoutonImprimer;
 	}
 
+	public boolean isAffichageBoutonAnnuler() {
+		return isAffichageBoutonAnnuler;
+	}
+
+	public void setAffichageBoutonAnnuler(boolean isAffichageBoutonAnnuler) {
+		this.isAffichageBoutonAnnuler = isAffichageBoutonAnnuler;
+	}
+
 	public boolean isAffichageVisa() {
 		return isAffichageVisa;
 	}
@@ -145,30 +200,6 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setAffichageApprobation(boolean isAffichageApprobation) {
 		this.isAffichageApprobation = isAffichageApprobation;
-	}
-
-	public boolean isAffichageBoutonAnnuler() {
-		return isAffichageBoutonAnnuler;
-	}
-
-	public void setAffichageBoutonAnnuler(boolean isAffichageBoutonAnnuler) {
-		this.isAffichageBoutonAnnuler = isAffichageBoutonAnnuler;
-	}
-
-	public Boolean getValeurVisa() {
-		return isValeurVisa;
-	}
-
-	public void setValeurVisa(Boolean isValeurVisa) {
-		this.isValeurVisa = isValeurVisa;
-	}
-
-	public Boolean getValeurApprobation() {
-		return isValeurApprobation;
-	}
-
-	public void setValeurApprobation(Boolean isValeurApprobation) {
-		this.isValeurApprobation = isValeurApprobation;
 	}
 
 	public boolean isModifierVisa() {
@@ -187,19 +218,6 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isModifierApprobation = isModifierApprobation;
 	}
 
-	@Override
-	public DemandeDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<DemandeDto>().deserializeInto(json, this);
-	}
-
-	public String getMotif() {
-		return motif;
-	}
-
-	public void setMotif(String motif) {
-		this.motif = motif;
-	}
-
 	public Boolean getIsValeurVisa() {
 		return isValeurVisa;
 	}
@@ -216,84 +234,9 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isValeurApprobation = isValeurApprobation;
 	}
 
-	public String getNomAgent() {
-		return nomAgent;
-	}
-
-	public void setNomAgent(String nomAgent) {
-		this.nomAgent = nomAgent;
-	}
-
-	public String getPrenomAgent() {
-		return prenomAgent;
-	}
-
-	public void setPrenomAgent(String prenomAgent) {
-		this.prenomAgent = prenomAgent;
-	}
-
-	public String getService() {
-		return service;
-	}
-
-	public void setService(String service) {
-		this.service = service;
-	}
-
-	public String getCodeService() {
-		return codeService;
-	}
-
-	public void setCodeService(String codeService) {
-		this.codeService = codeService;
-	}
-
-	public Date getDateFin() {
-		return dateFin;
-	}
-
-	public void setDateFin(Date dateFin) {
-		this.dateFin = dateFin;
-	}
-
-	public boolean isDateDebutAM() {
-		return isDateDebutAM;
-	}
-
-	public void setDateDebutAM(boolean isDateDebutAM) {
-		this.isDateDebutAM = isDateDebutAM;
-	}
-
-	public boolean isDateDebutPM() {
-		return isDateDebutPM;
-	}
-
-	public void setDateDebutPM(boolean isDateDebutPM) {
-		this.isDateDebutPM = isDateDebutPM;
-	}
-
-	public boolean isDateFinAM() {
-		return isDateFinAM;
-	}
-
-	public void setDateFinAM(boolean isDateFinAM) {
-		this.isDateFinAM = isDateFinAM;
-	}
-
-	public boolean isDateFinPM() {
-		return isDateFinPM;
-	}
-
-	public void setDateFinPM(boolean isDateFinPM) {
-		this.isDateFinPM = isDateFinPM;
-	}
-
-	public Date getDateSaisie() {
-		return dateSaisie;
-	}
-
-	public void setDateSaisie(Date dateSaisie) {
-		this.dateSaisie = dateSaisie;
+	@Override
+	public DemandeDto deserializeFromJSON(String json) {
+		return new JSONDeserializer<DemandeDto>().deserializeInto(json, this);
 	}
 
 }

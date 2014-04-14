@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -483,7 +484,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		for (DemandeDto abs : getListeAbsence().values()) {
 			Integer i = abs.getIdDemande();
-			AgentNW ag = AgentNW.chercherAgent(getTransaction(), abs.getIdAgent().toString());
+			AgentNW ag = AgentNW.chercherAgent(getTransaction(), abs.getAgentWithServiceDto().getIdAgent().toString());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -775,7 +776,9 @@ public class OeABSVisualisation extends BasicProcess {
 		dto.setDateFin(dateFin);
 		dto.setDateFinAM(matinFin);
 		dto.setDateFinPM(apresMidiFin);
-		dto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+		AgentWithServiceDto agDto = new AgentWithServiceDto();
+		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+		dto.setAgentWithServiceDto(agDto);
 		dto.setIdTypeDemande(type.getCode());
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
