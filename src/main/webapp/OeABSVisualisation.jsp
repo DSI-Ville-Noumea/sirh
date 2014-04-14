@@ -82,6 +82,7 @@
                                       null,
                                       null,
                                       null,
+                                      null,
                                       null
                         ],
                         "sDom": '<"H"flip>t<"F"rip>',
@@ -134,7 +135,7 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 330px;")
+                            .attr("style", "margin-left: 380px;")
                             .attr("width", "500px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
                             		.append($(document.createElement("td")).html("Date demande"))
@@ -280,7 +281,8 @@
                             	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
-                            <th>Agent </th>
+                            <th>Matr</th>
+                            <th>Agent</th>
                             <th>Cat<br>Statut</th>
                             <th>Type absence<br>Date demande</th>
                             <th>Début</th>
@@ -297,6 +299,7 @@
                             <td align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
                             </td>
+                            <td><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
                             <td><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
                             <td><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indiceAbs)%></td>						

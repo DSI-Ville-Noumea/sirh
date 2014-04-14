@@ -497,8 +497,8 @@ public class OeABSVisualisation extends BasicProcess {
 
 			String type = EnumTypeAbsence.getValueEnumTypeAbsence(abs.getIdTypeDemande());
 
-			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule()
-					+ ")   ");
+			addZone(getNOM_ST_MATRICULE(i), ag.getNoMatricule());
+			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 			addZone(getNOM_ST_TYPE(i), type + "<br/>" + sdf.format(abs.getDateDemande()));
 
@@ -853,6 +853,14 @@ public class OeABSVisualisation extends BasicProcess {
 		for (DemandeDto dem : listeAbsenceAjout) {
 			listeAbsence.put(dem.getIdDemande(), dem);
 		}
+	}
+
+	public String getNOM_ST_MATRICULE(int i) {
+		return "NOM_ST_MATRICULE_" + i;
+	}
+
+	public String getVAL_ST_MATRICULE(int i) {
+		return getZone(getNOM_ST_MATRICULE(i));
 	}
 
 	public String getNOM_ST_AGENT(int i) {
