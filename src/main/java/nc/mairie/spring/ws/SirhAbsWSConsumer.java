@@ -37,6 +37,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
 	private static final String sirhAbsDemandes = "demandes/listeDemandesSIRH";
+	private static final String sirhAbsDemandesHistorique = "demandes/historiqueSIRH";
 	private static final String sirhAbsMotif = "motif/getListeMotif";
 	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
@@ -362,6 +363,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
 				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche);
 		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public List<DemandeDto> getVisualisationHistory(int absId) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsDemandesHistorique;
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idDemande", "" + absId);
+		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}
 

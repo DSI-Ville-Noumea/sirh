@@ -19,6 +19,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Date dateDebut;
 	private Integer duree;
 	private Integer idRefEtat;
+	private Date dateSaisie;
 	private Date dateDemande;
 	private String motif;
 
@@ -285,6 +286,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setDateFinPM(boolean isDateFinPM) {
 		this.isDateFinPM = isDateFinPM;
+	}
+
+	public Date getDateSaisie() {
+		return dateSaisie;
+	}
+
+	public void setDateSaisie(Date dateSaisie) {
+		this.dateSaisie = dateSaisie;
 	}
 
 }

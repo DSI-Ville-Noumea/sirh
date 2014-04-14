@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ListIterator;
@@ -17,6 +18,7 @@ import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.MSDateTransformer;
@@ -46,6 +48,9 @@ public class OeABSVisualisation extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
+
 	public String focus = null;
 	private Logger logger = LoggerFactory.getLogger(OeABSVisualisation.class);
 
@@ -61,6 +66,9 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<Service> listeServices;
 	private ArrayList<EnumEtatAbsence> listeEtats;
 	private ArrayList<EnumTypeAbsence> listeFamilleAbsence;
+
+	private HashMap<Integer, DemandeDto> listeAbsence;
+	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
 	public String ACTION_CREATION_A48 = "Création d'une réunion des membres du bureau directeur(ASA).";
@@ -460,13 +468,50 @@ public class OeABSVisualisation extends BasicProcess {
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
 				type == null ? null : type.getCode(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande));
-		/*
-		 * setListeAbsence((ArrayList<DemandeDto>) listeDemande); loadHistory();
-		 * 
-		 * afficheListePointages();
-		 */
+		logger.debug("Taille liste absences : " + listeDemande.size());
+
+		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
+
+		loadHistory();
+
+		afficheListeAbsence();
 
 		return true;
+	}
+
+	private void afficheListeAbsence() throws Exception {
+
+		for (DemandeDto abs : getListeAbsence().values()) {
+			Integer i = abs.getIdDemande();
+			AgentNW ag = AgentNW.chercherAgent(getTransaction(), abs.getIdAgent().toString());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				continue;
+			}
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+			}
+			String statut = carr == null ? "&nbsp;" : Carriere.getStatutCarriere(carr.getCodeCategorie());
+
+			String type = EnumTypeAbsence.getValueEnumTypeAbsence(abs.getIdTypeDemande());
+
+			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule()
+					+ ")   ");
+			addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
+			addZone(getNOM_ST_TYPE(i), type + "<br/>" + sdf.format(abs.getDateDemande()));
+
+			String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "AM" : "&nbsp;";
+			addZone(getNOM_ST_DATE_DEB(i), sdf.format(abs.getDateDebut()) + "<br/>" + hrs.format(abs.getDateDebut())
+					+ "<br/>" + debutMAM);
+			if (abs.getDateFin() != null) {
+				String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "AM" : "&nbsp;";
+				addZone(getNOM_ST_DATE_FIN(i), sdf.format(abs.getDateFin()) + "<br/>" + hrs.format(abs.getDateFin())
+						+ "<br/>" + finMAM);
+			}
+			addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString());
+			addZone(getNOM_ST_MOTIF(i), abs.getMotif());
+		}
 	}
 
 	private boolean performControlerFiltres() throws Exception {
@@ -794,5 +839,138 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setAgentCreation(AgentNW agentCreation) {
 		this.agentCreation = agentCreation;
+	}
+
+	public HashMap<Integer, DemandeDto> getListeAbsence() {
+		return listeAbsence == null ? new HashMap<Integer, DemandeDto>() : listeAbsence;
+	}
+
+	public void setListeAbsence(ArrayList<DemandeDto> listeAbsenceAjout) {
+		listeAbsence = new HashMap<>();
+		for (DemandeDto dem : listeAbsenceAjout) {
+			listeAbsence.put(dem.getIdDemande(), dem);
+		}
+	}
+
+	public String getNOM_ST_AGENT(int i) {
+		return "NOM_ST_AGENT_" + i;
+	}
+
+	public String getVAL_ST_AGENT(int i) {
+		return getZone(getNOM_ST_AGENT(i));
+	}
+
+	public String getNOM_ST_INFO_AGENT(int i) {
+		return "NOM_ST_INFO_AGENT_" + i;
+	}
+
+	public String getVAL_ST_INFO_AGENT(int i) {
+		return getZone(getNOM_ST_INFO_AGENT(i));
+	}
+
+	public String getNOM_ST_TYPE(int i) {
+		return "NOM_ST_TYPE_" + i;
+	}
+
+	public String getVAL_ST_TYPE(int i) {
+		return getZone(getNOM_ST_TYPE(i));
+	}
+
+	public String getNOM_ST_DATE_DEB(int i) {
+		return "NOM_ST_DATE_DEB_" + i;
+	}
+
+	public String getVAL_ST_DATE_DEB(int i) {
+		return getZone(getNOM_ST_DATE_DEB(i));
+	}
+
+	public String getNOM_ST_DATE_FIN(int i) {
+		return "NOM_ST_DATE_FIN_" + i;
+	}
+
+	public String getVAL_ST_DATE_FIN(int i) {
+		return getZone(getNOM_ST_DATE_FIN(i));
+	}
+
+	public String getNOM_ST_MOTIF(int i) {
+		return "NOM_ST_MOTIF_" + i;
+	}
+
+	public String getVAL_ST_MOTIF(int i) {
+		return getZone(getNOM_ST_MOTIF(i));
+	}
+
+	public String getNOM_ST_DUREE(int i) {
+		return "NOM_ST_DUREE_" + i;
+	}
+
+	public String getVAL_ST_DUREE(int i) {
+		return getZone(getNOM_ST_DUREE(i));
+	}
+
+	public String getValHistory(int id) {
+		return "History_" + id;
+	}
+
+	public String getHistory(int absId) {
+		if (!history.containsKey(absId)) {
+			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+			history.put(absId, t.getVisualisationHistory(absId));
+		}
+		List<DemandeDto> data = history.get(absId);
+		int numParams = 6;
+		String[][] ret = new String[data.size()][numParams];
+		int index = 0;
+		for (DemandeDto p : data) {
+			ret[index][0] = formatDate(p.getDateDemande());
+			ret[index][1] = formatDate(p.getDateDebut()) + "<br/>" + formatHeure(p.getDateDebut());
+			ret[index][2] = formatDate(p.getDateFin()) + "<br/>" + formatHeure(p.getDateFin());
+			ret[index][3] = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString();
+			ret[index][4] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
+			ret[index][5] = formatDate(p.getDateSaisie()) + "<br/>" + formatHeure(p.getDateSaisie());
+			index++;
+		}
+
+		StringBuilder strret = new StringBuilder();
+		for (int i = 0; i < data.size(); i++) {
+			// strret.append("[");
+			for (int j = 0; j < numParams; j++) {
+				strret.append(ret[i][j]).append(",");
+			}
+			strret.deleteCharAt(strret.lastIndexOf(","));
+			strret.append("|");
+		}
+		strret.deleteCharAt(strret.lastIndexOf("|"));
+		return strret.toString();
+	}
+
+	private String formatDate(Date d) {
+		if (d != null) {
+			return sdf.format(d);
+		} else {
+			return "";
+		}
+	}
+
+	private String formatHeure(Date d) {
+		if (d != null) {
+			return hrs.format(d);
+		} else {
+			return "00:00";
+		}
+	}
+
+	private void loadHistory() {
+		for (Integer i : listeAbsence.keySet()) {
+			loadHistory(i);
+		}
+	}
+
+	private void loadHistory(int absId) {
+		if (!history.containsKey(absId)) {
+			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+			history.put(absId, t.getVisualisationHistory(absId));
+		}
+
 	}
 }

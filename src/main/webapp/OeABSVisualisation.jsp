@@ -10,6 +10,8 @@
         <META http-equiv="Content-Style-Type" content="text/css">
         <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
         <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
+		<LINK href="theme/dataTables.css" rel="stylesheet" type="text/css">
+        <LINK href="TableTools-2.0.1/media/css/TableTools.css" rel="stylesheet" type="text/css">
         <jsp:useBean class="nc.mairie.gestionagent.process.absence.OeABSVisualisation" id="process" scope="session"></jsp:useBean>
             <TITLE>Visualisation des absences</TITLE>		
 
@@ -17,6 +19,9 @@
             <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
             <SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 			<SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
+            <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+            <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
 
             <SCRIPT type="text/javascript">
                 function executeBouton(nom)
@@ -43,6 +48,125 @@
                 function reduireHierarchy() {
                     hier = document.getElementById('treeHierarchy');
                     hier.style.display = 'none';
+                }
+                
+                $.fn.dataTableExt.oSort['date-francais-asc']  = function(a,b) {
+                    var ukDatea = a.split('/');
+                    var ukDateb = b.split('/');
+                     
+                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                     
+                    return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+                };
+                 
+                $.fn.dataTableExt.oSort['date-francais-desc'] = function(a,b) {
+                    var ukDatea = a.split('/');
+                    var ukDateb = b.split('/');
+                     
+                    var x = parseInt(ukDatea[2] + ukDatea[1] + ukDatea[0]);
+                    var y = parseInt(ukDateb[2] + ukDateb[1] + ukDateb[0]);
+                     
+                    return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+                };
+
+                $(document).ready(function() {
+                    $('#VisualisationAbsenceList').dataTable({                        
+                        "bAutoWidth":false,
+                        "aoColumns": [
+                                      {"bSearchable": false,"bSortable": false},
+                                      {"bSearchable": false,"bSortable": false},
+                                      null,
+                                      null,
+                                      null,
+                                      null,
+                                      null,
+                                      null,
+                                      null
+                        ],
+                        "sDom": '<"H"flip>t<"F"rip>',
+                        "bStateSave": true,
+                        "oLanguage": {
+                            "oPaginate": {
+                                "sFirst": "",
+                                "sLast": "",
+                                "sNext": "",
+                                "sPrevious": ""
+                            },
+                            "sZeroRecords": "Aucune information d'absence à afficher",
+                            "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ absences au total",
+                            "sInfoEmpty": "Aucune information de pointage à afficher",
+                            "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations d'absence",
+                            "sInfoFiltered": "(filtrage sur _MAX_ absences au total)",
+                            "sLengthMenu": "Affichage de _MENU_ absences par page",
+                            "sSearch": "Recherche instantanée"
+                        },
+                        "oTableTools": {
+                            "aButtons": [{"sExtends": "xls", "sButtonText": "Export Excel", "mColumns": "visible", "sTitle": "absenceVisu", "sFileName": "*.xls"}], //OU : "mColumns":[0,1,2,3,4]
+                            "sSwfPath": "TableTools-2.0.1/media/swf/copy_cvs_xls_pdf.swf"
+                        }
+
+                    });
+                });
+
+
+
+
+                function loadAbsenceHistory(absId, list) {
+                    var oTable = $('#VisualisationAbsenceList').dataTable();
+                    var tr = document.getElementById('tr' + absId);
+
+                    if (oTable.fnIsOpen(tr)) {
+                        oTable.fnClose(tr);
+                    } else {
+                        oTable.fnOpen(tr, buildDetailTable(list));
+                    }
+                }
+
+                /**
+                 * Build the table containing the detail of the absence
+                 */
+                function buildDetailTable(data) {
+
+                    // Build the new table that will handle the detail (append the thead and all tr, th)
+                    var detailTable = $(document.createElement("table"))
+                            .addClass("detailContent")
+                            .addClass("subDataTable")
+                            .attr("cellpadding", "0")
+                            .attr("cellspacing", "0")
+                            .attr("style", "margin-left: 330px;")
+                            .attr("width", "500px")
+                            .append($(document.createElement("thead")).append($(document.createElement("tr"))
+                            		.append($(document.createElement("td")).html("Date demande"))
+                            		.append($(document.createElement("td")).html("Date debut"))
+                            		.append($(document.createElement("td")).html("Date fin"))
+                            		.append($(document.createElement("td")).html("Durée"))
+                            		.append($(document.createElement("td")).html("Etat"))
+                            		.append($(document.createElement("td")).html("Date etat")))
+                            );
+
+                    // Append the tbody element
+                    var tbody = $(document.createElement("tbody")).appendTo(detailTable);
+
+                    var pointages = data.split("|");
+
+                    //  alert(" pointages.length " +pointages.length);
+                    for (var i = 0; i < pointages.length; i++) {
+                        var donnees = pointages[i].split(",");
+                        tbody.append($(document.createElement("tr"))
+                                .addClass(i % 2 == 0 ? "even" : "odd")
+                                .append($(document.createElement("td")).html(donnees[0]).attr("style", "width: 80px;"))
+                                .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 80px;"))
+                                .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 80px;"))
+                                .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 50px;"))
+                                .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 50px"))
+                                .append($(document.createElement("td")).html(donnees[5]))
+                                );
+                    }
+                    // Append the detail table into the detail container
+                    var detailContainer = detailTable;
+                    // Finally return the table
+                    return detailContainer;
                 }
 
             </SCRIPT>		
@@ -102,7 +226,7 @@
                				<span class="sigp2">Date fin : </span>
                 		</td>
                 		<td width="130px">
-			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
+			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
 			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
                 		</td>
                 		<td width="35px">
@@ -144,11 +268,48 @@
                     </script>
                 </div>
                 
-             </FIELDSET>  
-			<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-            <legend class="sigp2Legend">Visualisation des demandes</legend>
-            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
-            </FIELDSET>
+             </FIELDSET>             
+            
+            <FIELDSET class="sigp2Fieldset" style="text-align:left;">
+                <legend class="sigp2Legend">Visualisation des demandes</legend>
+                <BR/>
+                <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
+                    <thead>
+                        <tr>
+                            <th>
+                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
+            				</th>  
+                            <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
+                            <th>Agent </th>
+                            <th>Cat<br>Statut</th>
+                            <th>Type absence<br>Date demande</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Durée</th>
+                            <th>Motif</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%    for (int indiceAbs : process.getListeAbsence().keySet()) {
+                        %>
+                        <tr id="tr<%=process.getValHistory(indiceAbs)%>">
+                            <td align="center">&nbsp;</td>  
+                            <td align="center">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
+                            </td>
+                            <td><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
+                            <td><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
+                            <td><%=process.getVAL_ST_TYPE(indiceAbs)%></td>						
+                            <td><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>							
+                            <td><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>							
+                            <td><%=process.getVAL_ST_DUREE(indiceAbs)%></td>							
+                            <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>			
+                        </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+                <BR/>	
+            </FIELDSET>	
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend">Création d'une absence</legend>
