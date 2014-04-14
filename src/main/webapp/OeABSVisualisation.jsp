@@ -1,4 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.enums.EnumTypeAbsence"%>
+<%@page import="nc.mairie.enums.EnumEtatAbsence"%>
+<%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
@@ -292,10 +295,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%    for (int indiceAbs : process.getListeAbsence().keySet()) {
+                        <%    for (DemandeDto abs : process.getListeAbsence().values()) {
+                        	int indiceAbs = abs.getIdDemande();
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
-                            <td align="center">&nbsp;</td>  
+                            <td align="center">
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>
+                            	<INPUT title="dupliquer" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
+                            <%} %>
+							</td>  
                             <td align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
                             </td>

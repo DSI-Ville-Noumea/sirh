@@ -262,6 +262,14 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
 			}
+
+			// Si clic sur le bouton PB_DUPLIQUER
+			for (DemandeDto abs : getListeAbsence().values()) {
+				int indiceAbs = abs.getIdDemande();
+				if (testerParametre(request, getNOM_PB_DUPLIQUER(indiceAbs))) {
+					return performPB_DUPLIQUER(request, indiceAbs);
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -983,5 +991,31 @@ public class OeABSVisualisation extends BasicProcess {
 			history.put(absId, t.getVisualisationHistory(absId));
 		}
 
+	}
+
+	public String getNOM_PB_DUPLIQUER(int i) {
+		return "NOM_PB_DUPLIQUER" + i;
+	}
+
+	public boolean performPB_DUPLIQUER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+		// on recupere la demande
+		DemandeDto dem = getListeAbsence().get(indiceEltDupliquer);
+		EnumTypeAbsence type = EnumTypeAbsence.getEnumTypeAbsence(dem.getIdTypeDemande());
+		AgentNW agt = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
+
+		addZone(getNOM_ST_AGENT_CREATION(), agt.getNoMatricule());
+		addZone(getNOM_ST_DATE_DEBUT(), new SimpleDateFormat("dd/MM/yyyy").format(dem.getDateDebut()));
+		addZone(getNOM_ST_DATE_FIN(), new SimpleDateFormat("dd/MM/yyyy").format(dem.getDateFin()));
+		addZone(getNOM_RG_DEBUT_MAM(), dem.isDateDebutAM() ? getNOM_RB_M() : getNOM_RB_AM());
+		addZone(getNOM_RG_FIN_MAM(), dem.isDateFinAM() ? getNOM_RB_M() : getNOM_RB_AM());
+		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsence().indexOf(type)));
+		setTypeCreation(type);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
