@@ -190,7 +190,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_TT(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
-			addZone(getNOM_ST_DUREE_TT(i), getHeureMinute(dto.getDuree()));
+			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+				addZone(getNOM_ST_DUREE_TT(i), getHeureMinute(dto.getDuree().intValue()));
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
+			} else {
+				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
+			}
 			addZone(getNOM_ST_DATE_DEMANDE_TT(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_TT(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));
@@ -219,7 +226,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_EC(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
-			addZone(getNOM_ST_DUREE_EC(i), getHeureMinute(dto.getDuree()));
+			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+				addZone(getNOM_ST_DUREE_EC(i), getHeureMinute(dto.getDuree().intValue()));
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+				addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
+			} else {
+				addZone(getNOM_ST_DUREE_EC(i), "&nbsp;");
+			}
 			addZone(getNOM_ST_DATE_DEMANDE_EC(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_EC(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));
@@ -248,7 +262,14 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_NP(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
-			addZone(getNOM_ST_DUREE_NP(i), getHeureMinute(dto.getDuree()));
+			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+				addZone(getNOM_ST_DUREE_NP(i), getHeureMinute(dto.getDuree().intValue()));
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+				addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
+			} else {
+				addZone(getNOM_ST_DUREE_NP(i), "&nbsp;");
+			}
 			addZone(getNOM_ST_DATE_DEMANDE_NP(i),
 					dto.getDateDemande() == null ? "&nbsp;" : sdfDate.format(dto.getDateDemande()));
 			addZone(getNOM_ST_ETAT_DEMANDE_NP(i), EnumEtatAbsence.getValueEnumEtatAbsence(dto.getIdRefEtat()));

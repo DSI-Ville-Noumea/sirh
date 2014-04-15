@@ -19,7 +19,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Date dateFin;
 	private boolean isDateFinAM;
 	private boolean isDateFinPM;
-	private Integer duree;
+	private Double duree;
 
 	private Integer idRefEtat;
 	private Date dateSaisie;
@@ -122,11 +122,11 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 		this.isDateFinPM = isDateFinPM;
 	}
 
-	public Integer getDuree() {
+	public Double getDuree() {
 		return duree;
 	}
 
-	public void setDuree(Integer duree) {
+	public void setDuree(Double duree) {
 		this.duree = duree;
 	}
 
