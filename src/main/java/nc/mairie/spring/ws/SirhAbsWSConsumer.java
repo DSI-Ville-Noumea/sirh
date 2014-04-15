@@ -50,6 +50,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
+	private static final String sirhAbsStateSave = "demandes/changerEtatsSIRH";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -374,6 +375,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		parameters.put("idDemande", "" + absId);
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto setAbsState(Integer idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsStateSave;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+
 	}
 
 }

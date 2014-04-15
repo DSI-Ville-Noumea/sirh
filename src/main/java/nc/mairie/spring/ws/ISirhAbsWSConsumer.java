@@ -51,4 +51,6 @@ public interface ISirhAbsWSConsumer {
 			Integer idAgentRecherche);
 
 	List<DemandeDto> getVisualisationHistory(int absId);
+
+	ReturnMessageDto setAbsState(Integer idAgent, String json);
 }

@@ -1,7 +1,9 @@
 package nc.mairie.gestionagent.process.absence;
 
+import java.sql.Ref;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.DemandeEtatChangeDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
@@ -282,6 +285,10 @@ public class OeABSVisualisation extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_EN_ATTENTE(indiceAbs))) {
 					return performPB_EN_ATTENTE(request, indiceAbs);
 				}
+				// Si clic sur le bouton PB_DOCUMENT
+				if (testerParametre(request, getNOM_PB_DOCUMENT(indiceAbs))) {
+					return performPB_DOCUMENT(request, indiceAbs);
+				}
 			}
 			// Si clic sur le bouton PB_VALIDER_ALL
 			if (testerParametre(request, getNOM_PB_VALIDER_ALL())) {
@@ -535,17 +542,40 @@ public class OeABSVisualisation extends BasicProcess {
 			addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
 			addZone(getNOM_ST_TYPE(i), type + "<br/>" + sdf.format(abs.getDateDemande()));
 
-			String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "AM" : "&nbsp;";
-			addZone(getNOM_ST_DATE_DEB(i), sdf.format(abs.getDateDebut()) + "<br/>" + hrs.format(abs.getDateDebut())
-					+ "<br/>" + debutMAM);
+			String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "AM" : Const.CHAINE_VIDE;
+			addZone(getNOM_ST_DATE_DEB(i),
+					sdf.format(abs.getDateDebut()) + "<br/>"
+							+ (debutMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateDebut()) : debutMAM));
 			if (abs.getDateFin() != null) {
-				String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "AM" : "&nbsp;";
-				addZone(getNOM_ST_DATE_FIN(i), sdf.format(abs.getDateFin()) + "<br/>" + hrs.format(abs.getDateFin())
-						+ "<br/>" + finMAM);
+				String finMAM = abs.isDateFinAM() ? "M" : abs.isDateFinPM() ? "AM" : Const.CHAINE_VIDE;
+				addZone(getNOM_ST_DATE_FIN(i),
+						sdf.format(abs.getDateFin()) + "<br/>"
+								+ (finMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateFin()) : finMAM));
 			}
-			addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString());
+			if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
+						.intValue()));
+			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+			} else {
+				addZone(getNOM_ST_DUREE(i), "&nbsp;");
+			}
 			addZone(getNOM_ST_MOTIF(i), abs.getMotif());
+			addZone(getNOM_ST_ETAT(i), EnumEtatAbsence.getValueEnumEtatAbsence(abs.getIdRefEtat()));
 		}
+	}
+
+	private static String getHeureMinute(int nombreMinute) {
+		int heure = nombreMinute / 60;
+		int minute = nombreMinute % 60;
+		String res = "";
+		if (heure > 0)
+			res += heure + "h";
+		if (minute > 0)
+			res += minute + "m";
+
+		return res;
 	}
 
 	private boolean performControlerFiltres() throws Exception {
@@ -944,6 +974,14 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_ST_MOTIF(i));
 	}
 
+	public String getNOM_ST_ETAT(int i) {
+		return "NOM_ST_ETAT_" + i;
+	}
+
+	public String getVAL_ST_ETAT(int i) {
+		return getZone(getNOM_ST_ETAT(i));
+	}
+
 	public String getNOM_ST_DUREE(int i) {
 		return "NOM_ST_DUREE_" + i;
 	}
@@ -1022,9 +1060,9 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_DUPLIQUER" + i;
 	}
 
-	public boolean performPB_DUPLIQUER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+	public boolean performPB_DUPLIQUER(HttpServletRequest request, int idDemande) throws Exception {
 		// on recupere la demande
-		DemandeDto dem = getListeAbsence().get(indiceEltDupliquer);
+		DemandeDto dem = getListeAbsence().get(idDemande);
 		EnumTypeAbsence type = EnumTypeAbsence.getEnumTypeAbsence(dem.getIdTypeDemande());
 		AgentNW agt = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
 
@@ -1048,10 +1086,16 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_VALIDER" + i;
 	}
 
-	public boolean performPB_VALIDER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+	public boolean performPB_VALIDER(HttpServletRequest request, int idDemande) throws Exception {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+		// on recupere la demande
+		DemandeDto dem = getListeAbsence().get(idDemande);
+		changeState(request, dem, EnumEtatAbsence.VALIDEE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1062,10 +1106,16 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_REJETER" + i;
 	}
 
-	public boolean performPB_REJETER(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+	public boolean performPB_REJETER(HttpServletRequest request, int idDemande) throws Exception {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+		// on recupere la demande
+		DemandeDto dem = getListeAbsence().get(idDemande);
+		changeState(request, dem, EnumEtatAbsence.REJETE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1076,10 +1126,16 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_PB_EN_ATTENTE" + i;
 	}
 
-	public boolean performPB_EN_ATTENTE(HttpServletRequest request, int indiceEltDupliquer) throws Exception {
+	public boolean performPB_EN_ATTENTE(HttpServletRequest request, int idDemande) throws Exception {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+		// on recupere la demande
+		DemandeDto dem = getListeAbsence().get(idDemande);
+		changeState(request, dem, EnumEtatAbsence.EN_ATTENTE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1094,6 +1150,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.VALIDEE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1108,6 +1169,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.REJETE);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1123,8 +1189,72 @@ public class OeABSVisualisation extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.EN_ATTENTE);
+
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public String getNOM_PB_DOCUMENT(int i) {
+		return "NOM_PB_DOCUMENT" + i;
+	}
+
+	public boolean performPB_DOCUMENT(HttpServletRequest request, int idDemande) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private void changeState(HttpServletRequest request, DemandeDto dem, EnumEtatAbsence state) throws Exception {
+		ArrayList<DemandeDto> param = new ArrayList<DemandeDto>();
+		param.add(dem);
+		changeState(request, param, state);
+	}
+
+	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state)
+			throws Exception {
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		AgentNW agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			logger.debug("Agent nul dans jsp visualisation");
+		} else {
+			List<DemandeEtatChangeDto> listDto = new ArrayList<DemandeEtatChangeDto>();
+			for (DemandeDto d : dem) {
+
+				DemandeEtatChangeDto dto = new DemandeEtatChangeDto();
+				dto.setIdDemande(d.getIdDemande());
+				dto.setIdRefEtat(state.getCode());
+				listDto.add(dto);
+				refreshHistory(d.getIdDemande());
+			}
+
+			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+					.deepSerialize(listDto);
+			ReturnMessageDto message = t.setAbsState(Integer.valueOf(agentConnecte.getIdAgent()), json);
+
+			if (message.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur(err);
+			}
+			performPB_FILTRER(request);
+		}
+	}
+
+	private void refreshHistory(int absId) {
+		history.remove(absId);
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		history.put(absId, t.getVisualisationHistory(absId));
 	}
 }

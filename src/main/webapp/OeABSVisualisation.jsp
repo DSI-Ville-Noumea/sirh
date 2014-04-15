@@ -87,6 +87,8 @@
                            null,
                            null,
                            null,
+                           null,
+                           {"bSearchable": false,"bSortable": false},
                            {"bSearchable": false,"bSortable": false},
                            {"bSearchable": false,"bSortable": false},
                            {"bSearchable": false,"bSortable": false}
@@ -295,9 +297,11 @@
                             <th>Fin</th>
                             <th>Durée</th>
                             <th>Motif</th>
+                            <th>Etat</th>
                             <th><INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER_ALL()%>"></th>
                             <th><INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER_ALL()%>"></th>
                             <th><INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE_ALL()%>"></th>
+                            <th>PJ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -306,8 +310,8 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>
-                            	<INPUT title="dupliquer" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>                            	
+                            	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
 							</td>  
                             <td align="center">
@@ -320,7 +324,8 @@
                             <td><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>							
                             <td><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>							
                             <td><%=process.getVAL_ST_DUREE(indiceAbs)%></td>							
-                            <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>	
+                            <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
+                            <td><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
                             <td align="center">
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
@@ -335,7 +340,10 @@
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
-							</td>  		
+							</td>  							
+                            <td>
+								<INPUT title="dupliquer" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>">
+							</td>		
                         </tr>
                         <%}%>
                     </tbody>
