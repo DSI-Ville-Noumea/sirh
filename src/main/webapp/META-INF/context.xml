@@ -121,6 +121,8 @@
 		name="AFFICHAGE_PARAM_ELEM_SALAIRE" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module pointage"
 		name="AFFICHAGE_POINTAGE" override="false" value="TRUE" />
+	<Parameter description="Paramètre pour savoir si on affiche le module absence"
+		name="AFFICHAGE_ABSENCE" override="false" value="TRUE" />
 	<Parameter
 		description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		name="AFFICHAGE_SIMU" override="false" value="TRUE" />
