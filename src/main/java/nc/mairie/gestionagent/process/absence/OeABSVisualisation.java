@@ -76,6 +76,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public String ACTION_CREATION = "Création d'une absence.";
 	public String ACTION_CREATION_A48 = "Création d'une réunion des membres du bureau directeur(ASA).";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
+	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
 
 	private EnumTypeAbsence typeCreation;
 	private AgentNW agentCreation;
@@ -302,13 +303,13 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_REJETER_ALL())) {
 				return performPB_REJETER_ALL(request);
 			}
-			// Si clic sur le bouton PB_EN_ATTENTE_ALL
-			if (testerParametre(request, getNOM_PB_EN_ATTENTE_ALL())) {
-				return performPB_EN_ATTENTE_ALL(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATIONL
+			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATION
 			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_ANNULATION())) {
 				return performPB_VALIDER_MOTIF_ANNULATION(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_MOTIF_EN_ATTENTE
+			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_EN_ATTENTE())) {
+				return performPB_VALIDER_MOTIF_EN_ATTENTE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -764,6 +765,9 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), Const.CHAINE_VIDE);
 		setAgentCreation(null);
 		setTypeCreation(null);
 	}
@@ -837,9 +841,6 @@ public class OeABSVisualisation extends BasicProcess {
 
 		AgentNW agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
-			// "ERR183",
-			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
 
@@ -1138,7 +1139,6 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_EN_ATTENTE(HttpServletRequest request, int idDemande) throws Exception {
-
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		if (getAgentConnecte(request) == null) {
@@ -1146,11 +1146,25 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		changeState(request, dem, EnumEtatAbsence.EN_ATTENTE, null);
+		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
+		// Si ASA_A48 et etat=validé ou prise, alors un motif est obligatoire
+		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+				&& dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
+			// "ERR803",
+			// "Pour @ cette demande, merci de renseigner un motif."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
 
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
+			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
+					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
+			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), dem.getIdDemande().toString());
+			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_EN_ATTENTE);
+			return false;
+		} else {
+			getTransaction().declarerErreur("Cette demande ne peut être mise en attente.");
+			return false;
+		}
 	}
 
 	public String getNOM_PB_VALIDER_ALL() {
@@ -1185,26 +1199,6 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		changeState(request, getListeAbsence().values(), EnumEtatAbsence.REJETE, null);
-
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
-	}
-
-	public String getNOM_PB_EN_ATTENTE_ALL() {
-		return "NOM_PB_EN_ATTENTE_ALL";
-	}
-
-	public boolean performPB_EN_ATTENTE_ALL(HttpServletRequest request) throws Exception {
-
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-
-		if (getAgentConnecte(request) == null) {
-			return false;
-		}
-
-		changeState(request, getListeAbsence().values(), EnumEtatAbsence.EN_ATTENTE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1289,8 +1283,8 @@ public class OeABSVisualisation extends BasicProcess {
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
 			// "ERR803",
-			// "Pour annuler cette demande, merci de renseigner un motif."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803"));
+			// "Pour @ cette demande, merci de renseigner un motif."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
 					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
@@ -1301,8 +1295,8 @@ public class OeABSVisualisation extends BasicProcess {
 		} else if ((dem.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP
 				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
-			// "Pour annuler cette demande, merci de renseigner un motif."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803"));
+			// "Pour @ cette demande, merci de renseigner un motif."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
 					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
@@ -1358,6 +1352,54 @@ public class OeABSVisualisation extends BasicProcess {
 		DemandeDto dem = getListeAbsence().get(Integer.valueOf(idDemande));
 
 		changeState(request, dem, EnumEtatAbsence.ANNULEE, motif);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_INFO_MOTIF_EN_ATTENTE() {
+		return "NOM_ST_INFO_MOTIF_EN_ATTENTE";
+	}
+
+	public String getVAL_ST_INFO_MOTIF_EN_ATTENTE() {
+		return getZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE());
+	}
+
+	public String getNOM_ST_MOTIF_EN_ATTENTE() {
+		return "NOM_ST_MOTIF_EN_ATTENTE";
+	}
+
+	public String getVAL_ST_MOTIF_EN_ATTENTE() {
+		return getZone(getNOM_ST_MOTIF_EN_ATTENTE());
+	}
+
+	public String getNOM_ST_ID_DEMANDE_EN_ATTENTE() {
+		return "NOM_ST_ID_DEMANDE_EN_ATTENTE";
+	}
+
+	public String getVAL_ST_ID_DEMANDE_EN_ATTENTE() {
+		return getZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE());
+	}
+
+	public String getNOM_PB_VALIDER_MOTIF_EN_ATTENTE() {
+		return "NOM_PB_VALIDER_MOTIF_EN_ATTENTE";
+	}
+
+	public boolean performPB_VALIDER_MOTIF_EN_ATTENTE(HttpServletRequest request) throws Exception {
+		// on recupere les infos
+		String idDemande = getVAL_ST_ID_DEMANDE_EN_ATTENTE();
+		String motif = getVAL_ST_MOTIF_EN_ATTENTE();
+		if (motif.equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
+			return false;
+		}
+		DemandeDto dem = getListeAbsence().get(Integer.valueOf(idDemande));
+
+		changeState(request, dem, EnumEtatAbsence.EN_ATTENTE, motif);
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
