@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.absence;
 
-import java.sql.Ref;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,6 +75,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String ACTION_CREATION = "Création d'une absence.";
 	public String ACTION_CREATION_A48 = "Création d'une réunion des membres du bureau directeur(ASA).";
+	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 
 	private EnumTypeAbsence typeCreation;
 	private AgentNW agentCreation;
@@ -273,6 +273,10 @@ public class OeABSVisualisation extends BasicProcess {
 				if (testerParametre(request, getNOM_PB_DUPLIQUER(indiceAbs))) {
 					return performPB_DUPLIQUER(request, indiceAbs);
 				}
+				// Si clic sur le bouton PB_ANNULER_DEMANDE
+				if (testerParametre(request, getNOM_PB_ANNULER_DEMANDE(indiceAbs))) {
+					return performPB_ANNULER_DEMANDE(request, indiceAbs);
+				}
 				// Si clic sur le bouton PB_VALIDER
 				if (testerParametre(request, getNOM_PB_VALIDER(indiceAbs))) {
 					return performPB_VALIDER(request, indiceAbs);
@@ -301,6 +305,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_EN_ATTENTE_ALL
 			if (testerParametre(request, getNOM_PB_EN_ATTENTE_ALL())) {
 				return performPB_EN_ATTENTE_ALL(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_MOTIF_ANNULATIONL
+			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF_ANNULATION())) {
+				return performPB_VALIDER_MOTIF_ANNULATION(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -525,12 +533,12 @@ public class OeABSVisualisation extends BasicProcess {
 		for (DemandeDto abs : getListeAbsence().values()) {
 			Integer i = abs.getIdDemande();
 			AgentNW ag = AgentNW.chercherAgent(getTransaction(), abs.getAgentWithServiceDto().getIdAgent().toString());
-			if (getTransaction().isErreur()) {
+			if (ag == null || ag.getIdAgent() == null) {
 				getTransaction().traiterErreur();
 				continue;
 			}
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
-			if (getTransaction().isErreur()) {
+			if (carr == null || carr.getNoMatricule() == null) {
 				getTransaction().traiterErreur();
 			}
 			String statut = carr == null ? "&nbsp;" : Carriere.getStatutCarriere(carr.getCodeCategorie());
@@ -753,6 +761,9 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_RG_DEBUT_MAM(), getNOM_RB_M());
 		addZone(getNOM_RG_FIN_MAM(), getNOM_RB_M());
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
+		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), Const.CHAINE_VIDE);
 		setAgentCreation(null);
 		setTypeCreation(null);
 	}
@@ -1095,7 +1106,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		changeState(request, dem, EnumEtatAbsence.VALIDEE);
+		changeState(request, dem, EnumEtatAbsence.VALIDEE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1115,7 +1126,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		changeState(request, dem, EnumEtatAbsence.REJETE);
+		changeState(request, dem, EnumEtatAbsence.REJETE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1135,7 +1146,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		changeState(request, dem, EnumEtatAbsence.EN_ATTENTE);
+		changeState(request, dem, EnumEtatAbsence.EN_ATTENTE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1154,7 +1165,7 @@ public class OeABSVisualisation extends BasicProcess {
 			return false;
 		}
 
-		changeState(request, getListeAbsence().values(), EnumEtatAbsence.VALIDEE);
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.VALIDEE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1173,7 +1184,7 @@ public class OeABSVisualisation extends BasicProcess {
 			return false;
 		}
 
-		changeState(request, getListeAbsence().values(), EnumEtatAbsence.REJETE);
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.REJETE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1193,7 +1204,7 @@ public class OeABSVisualisation extends BasicProcess {
 			return false;
 		}
 
-		changeState(request, getListeAbsence().values(), EnumEtatAbsence.EN_ATTENTE);
+		changeState(request, getListeAbsence().values(), EnumEtatAbsence.EN_ATTENTE, null);
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
@@ -1214,13 +1225,14 @@ public class OeABSVisualisation extends BasicProcess {
 		return true;
 	}
 
-	private void changeState(HttpServletRequest request, DemandeDto dem, EnumEtatAbsence state) throws Exception {
+	private void changeState(HttpServletRequest request, DemandeDto dem, EnumEtatAbsence state, String motif)
+			throws Exception {
 		ArrayList<DemandeDto> param = new ArrayList<DemandeDto>();
 		param.add(dem);
-		changeState(request, param, state);
+		changeState(request, param, state, motif);
 	}
 
-	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state)
+	private void changeState(HttpServletRequest request, Collection<DemandeDto> dem, EnumEtatAbsence state, String motif)
 			throws Exception {
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		AgentNW agentConnecte = getAgentConnecte(request);
@@ -1229,10 +1241,10 @@ public class OeABSVisualisation extends BasicProcess {
 		} else {
 			List<DemandeEtatChangeDto> listDto = new ArrayList<DemandeEtatChangeDto>();
 			for (DemandeDto d : dem) {
-
 				DemandeEtatChangeDto dto = new DemandeEtatChangeDto();
 				dto.setIdDemande(d.getIdDemande());
 				dto.setIdRefEtat(state.getCode());
+				dto.setMotif(motif);
 				listDto.add(dto);
 				refreshHistory(d.getIdDemande());
 			}
@@ -1256,5 +1268,101 @@ public class OeABSVisualisation extends BasicProcess {
 		history.remove(absId);
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		history.put(absId, t.getVisualisationHistory(absId));
+	}
+
+	public String getNOM_PB_ANNULER_DEMANDE(int i) {
+		return "NOM_PB_ANNULER_DEMANDE" + i;
+	}
+
+	public boolean performPB_ANNULER_DEMANDE(HttpServletRequest request, int idDemande) throws Exception {
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		if (getAgentConnecte(request) == null) {
+			return false;
+		}
+		// on recupere la demande
+		DemandeDto dem = getListeAbsence().get(idDemande);
+		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
+		// Si ASA_A48 et etat=validé ou prise, alors un motif est obligatoire
+		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
+						.getCode())) {
+			// "ERR803",
+			// "Pour annuler cette demande, merci de renseigner un motif."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803"));
+			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
+					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
+			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
+			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
+			return false;
+		} else if ((dem.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP
+				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
+			// "ERR803",
+			// "Pour annuler cette demande, merci de renseigner un motif."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803"));
+			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
+					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
+			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
+			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
+			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
+			return false;
+		}
+		changeState(request, dem, EnumEtatAbsence.ANNULEE, null);
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_INFO_MOTIF_ANNULATION() {
+		return "NOM_ST_INFO_MOTIF_ANNULATION";
+	}
+
+	public String getVAL_ST_INFO_MOTIF_ANNULATION() {
+		return getZone(getNOM_ST_INFO_MOTIF_ANNULATION());
+	}
+
+	public String getNOM_ST_MOTIF_ANNULATION() {
+		return "NOM_ST_MOTIF_ANNULATION";
+	}
+
+	public String getVAL_ST_MOTIF_ANNULATION() {
+		return getZone(getNOM_ST_MOTIF_ANNULATION());
+	}
+
+	public String getNOM_ST_ID_DEMANDE_ANNULATION() {
+		return "NOM_ST_ID_DEMANDE_ANNULATION";
+	}
+
+	public String getVAL_ST_ID_DEMANDE_ANNULATION() {
+		return getZone(getNOM_ST_ID_DEMANDE_ANNULATION());
+	}
+
+	public String getNOM_PB_VALIDER_MOTIF_ANNULATION() {
+		return "NOM_PB_VALIDER_MOTIF_ANNULATION";
+	}
+
+	public boolean performPB_VALIDER_MOTIF_ANNULATION(HttpServletRequest request) throws Exception {
+		// on recupere les infos
+		String idDemande = getVAL_ST_ID_DEMANDE_ANNULATION();
+		String motif = getVAL_ST_MOTIF_ANNULATION();
+		if (motif.equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
+			return false;
+		}
+		DemandeDto dem = getListeAbsence().get(Integer.valueOf(idDemande));
+
+		changeState(request, dem, EnumEtatAbsence.ANNULEE, motif);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }

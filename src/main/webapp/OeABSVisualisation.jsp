@@ -313,6 +313,12 @@
                             <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.RECUP.getCode() ||abs.getIdTypeDemande()==EnumTypeAbsence.REPOS_COMP.getCode())){ %>                            	
+                            	<INPUT title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>">
+                            <%} %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VALIDEE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.PRISE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode())){ %>                            	
+                            	<INPUT title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>">
+                            <%} %>
 							</td>  
                             <td align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
@@ -362,6 +368,19 @@
                     <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
                     <span class="sigp2Mandatory" style="width:80px"></span>
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	            </FIELDSET>
+            <%} %>
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_ANNULATION)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><span style="color: red;">Motif pour l'annulation de l'absence</span></legend>
+					<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_ANNULATION() %></span>
+					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ID_DEMANDE_ANNULATION() %>" disabled="disabled" style="visibility: hidden;" type="text" value="<%= process.getVAL_ST_ID_DEMANDE_ANNULATION() %>">
+	            	<BR/><BR/>
+					<span class="sigp2Mandatory">Motif :</span>
+					<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_MOTIF_ANNULATION() %>" size="150" type="text" value="<%= process.getVAL_ST_MOTIF_ANNULATION() %>">
+                    <BR/><BR/>
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF_ANNULATION()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%} %>
