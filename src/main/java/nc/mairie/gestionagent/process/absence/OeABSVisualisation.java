@@ -1012,7 +1012,7 @@ public class OeABSVisualisation extends BasicProcess {
 			history.put(absId, t.getVisualisationHistory(absId));
 		}
 		List<DemandeDto> data = history.get(absId);
-		int numParams = 6;
+		int numParams = 7;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		for (DemandeDto p : data) {
@@ -1021,7 +1021,8 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][2] = formatDate(p.getDateFin()) + "<br/>" + formatHeure(p.getDateFin());
 			ret[index][3] = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString();
 			ret[index][4] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
-			ret[index][5] = formatDate(p.getDateSaisie()) + "<br/>" + formatHeure(p.getDateSaisie());
+			ret[index][5] = p.getMotif() == null ? "&nbsp;" : p.getMotif();
+			ret[index][6] = formatDate(p.getDateSaisie()) + "<br/>" + formatHeure(p.getDateSaisie());
 			index++;
 		}
 

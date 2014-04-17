@@ -145,13 +145,14 @@
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
                             .attr("style", "margin-left: 380px;")
-                            .attr("width", "500px")
+                            .attr("width", "580px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
                             		.append($(document.createElement("td")).html("Date demande"))
                             		.append($(document.createElement("td")).html("Date debut"))
                             		.append($(document.createElement("td")).html("Date fin"))
                             		.append($(document.createElement("td")).html("Durée"))
                             		.append($(document.createElement("td")).html("Etat"))
+                            		.append($(document.createElement("td")).html("Motif"))
                             		.append($(document.createElement("td")).html("Date etat")))
                             );
 
@@ -170,7 +171,8 @@
                                 .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 80px;"))
                                 .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 50px;"))
                                 .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 50px"))
-                                .append($(document.createElement("td")).html(donnees[5]))
+                                .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 80px"))
+                                .append($(document.createElement("td")).html(donnees[6]))
                                 );
                     }
                     // Append the detail table into the detail container
