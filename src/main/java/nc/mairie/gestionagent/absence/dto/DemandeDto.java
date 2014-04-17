@@ -38,6 +38,8 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	// valeur du visa et approbation de la demande
 	private Boolean isValeurVisa = null;
 	private Boolean isValeurApprobation = null;
+	// depasement de droits
+	private boolean isDepassementCompteur;
 
 	public DemandeDto() {
 	}
@@ -237,6 +239,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	@Override
 	public DemandeDto deserializeFromJSON(String json) {
 		return new JSONDeserializer<DemandeDto>().deserializeInto(json, this);
+	}
+
+	public boolean isDepassementCompteur() {
+		return isDepassementCompteur;
+	}
+
+	public void setDepassementCompteur(boolean isDepassementCompteur) {
+		this.isDepassementCompteur = isDepassementCompteur;
 	}
 
 }

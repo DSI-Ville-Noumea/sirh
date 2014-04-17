@@ -79,6 +79,7 @@
                         "aoColumns": [
                            {"bSearchable": false,"bSortable": false},
                            {"bSearchable": false,"bSortable": false},
+                           {"bSearchable": false,"bSortable": false},
                            null,
                            null,
                            null,
@@ -289,6 +290,7 @@
                             	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
+                            <th> <img	src="images/info.jpg" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande."></th>
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Cat<br>Statut</th>
@@ -323,6 +325,11 @@
                             <td align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
                             </td>
+                            <td align="center">
+                            <%if(abs.isDepassementCompteur()){ %>
+                            	<img src="images/info.jpg" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
+                            	<%} %>
+                            </td>                            
                             <td><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
                             <td><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
                             <td><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
