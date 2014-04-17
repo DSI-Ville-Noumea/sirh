@@ -315,10 +315,7 @@
                             <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.RECUP.getCode() ||abs.getIdTypeDemande()==EnumTypeAbsence.REPOS_COMP.getCode())){ %>                            	
-                            	<INPUT title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>">
-                            <%} %>
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.VISEE_FAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VISEE_DEFAV.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.VALIDEE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()||abs.getIdRefEtat()==EnumEtatAbsence.PRISE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode())){ %>                            	
+                            <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
                             	<INPUT title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>">
                             <%} %>
 							</td>  
