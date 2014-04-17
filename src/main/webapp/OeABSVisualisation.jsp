@@ -144,7 +144,7 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 380px;")
+                            .attr("style", "margin-left: 320px;")
                             .attr("width", "580px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
                             		.append($(document.createElement("td")).html("Date demande"))
