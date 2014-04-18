@@ -34,13 +34,13 @@ import flexjson.JSONSerializer;
 /**
  *
  */
-public class OeELECSaisieCompteurA48 extends BasicProcess {
+public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	/**
      *
      */
 	private static final long serialVersionUID = 1L;
-	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA48.class);
+	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA54.class);
 
 	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
 
@@ -56,7 +56,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	@Override
 	public String getJSP() {
-		return "OeELECSaisieCompteurA48.jsp";
+		return "OeELECSaisieCompteurA54.jsp";
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		if (getLB_MOTIF() == LBVide) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 			ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
-					.getListeMotifCompteur(EnumTypeAbsence.ASA_A48.getCode());
+					.getListeMotifCompteur(EnumTypeAbsence.ASA_A54.getCode());
 			setListeMotifCompteur(listeMotifs);
 
 			int[] tailles = { 50 };
@@ -145,8 +145,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<CompteurAsaDto> listeCompteur = (ArrayList<CompteurAsaDto>) consum.getListeCompteursA48();
-		logger.debug("Taille liste des compteurs ASA A48 : " + listeCompteur.size());
+		ArrayList<CompteurAsaDto> listeCompteur = (ArrayList<CompteurAsaDto>) consum.getListeCompteursA54();
+		logger.debug("Taille liste des compteurs ASA A54 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 
 		int indiceLigne = 0;
@@ -480,7 +480,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
 
 		// on sauvegarde
-		message = consuAbs.addCompteurAsaA48(agentConnecte.getIdAgent(),
+		message = consuAbs.addCompteurAsaA54(agentConnecte.getIdAgent(),
 				new JSONSerializer().transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
@@ -491,7 +491,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			getTransaction().declarerErreur(err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis à jour."
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", EnumTypeAbsence.ASA_A48.getValue()));
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", EnumTypeAbsence.ASA_A54.getValue()));
 		}
 
 		// On nomme l'action

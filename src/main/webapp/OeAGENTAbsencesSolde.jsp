@@ -115,6 +115,21 @@
 							</tr>
 						</table>				    
 				    </FIELDSET>
+				    <BR/>
+				    
+				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+				    	<legend class="sigp2Legend">* ASA - Congrès et conseil syndical (A54)</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:200px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="200px;" align="center">En cours</td>
+								<td>Historique</td>
+							</tr>
+							<tr>
+								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A54()%></td>
+								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A54.getCode())%>"></td>
+							</tr>
+						</table>				    
+				    </FIELDSET>
 				    <BR/>				    
 				</FIELDSET>				
 				<BR/>

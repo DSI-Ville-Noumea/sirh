@@ -158,6 +158,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		addZone(getNOM_ST_SOLDE_ASA_A48(), soldeGlobal.getSoldeAsaA48() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA48()
 				.toString() + " j");
 
+		// Solde ASA A54
+		addZone(getNOM_ST_SOLDE_ASA_A54(), soldeGlobal.getSoldeAsaA54() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA54()
+				.toString() + " j");
+
 	}
 
 	/**
@@ -278,6 +282,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_SOLDE_ASA_A48() {
 		return getZone(getNOM_ST_SOLDE_ASA_A48());
+	}
+
+	public String getNOM_ST_SOLDE_ASA_A54() {
+		return "NOM_ST_SOLDE_ASA_A54";
+	}
+
+	public String getVAL_ST_SOLDE_ASA_A54() {
+		return getZone(getNOM_ST_SOLDE_ASA_A54());
 	}
 
 	public String getNOM_PB_HISTORIQUE(int i) {

@@ -193,7 +193,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				addZone(getNOM_ST_DUREE_TT(i), getHeureMinute(dto.getDuree().intValue()));
-			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE_TT(i), "&nbsp;");
@@ -229,7 +230,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				addZone(getNOM_ST_DUREE_EC(i), getHeureMinute(dto.getDuree().intValue()));
-			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE_EC(i), "&nbsp;");
@@ -265,7 +267,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			if (dto.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| dto.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				addZone(getNOM_ST_DUREE_NP(i), getHeureMinute(dto.getDuree().intValue()));
-			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+			} else if (dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+					|| dto.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE_NP(i), "&nbsp;");

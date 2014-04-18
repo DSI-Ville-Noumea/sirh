@@ -51,6 +51,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
 	private static final String sirhAbsStateSave = "demandes/changerEtatsSIRH";
+	private static final String sirhAbsListeCompteurA54 = "asaA54/listeCompteurA54";
+	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -288,7 +290,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteurs() {
+	public List<CompteurAsaDto> getListeCompteursA48() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA48;
 		HashMap<String, String> params = new HashMap<>();
@@ -386,6 +388,25 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCompteurAsaA54;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<CompteurAsaDto> getListeCompteursA54() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsListeCompteurA54;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(CompteurAsaDto.class, res, url);
 	}
 
 }

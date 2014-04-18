@@ -12,6 +12,8 @@ public class SoldeDto {
 	private Double soldeReposCompAnneePrec;
 	private boolean afficheSoldeAsaA48;
 	private Double soldeAsaA48;
+	private boolean afficheSoldeAsaA54;
+	private Double soldeAsaA54;
 
 	public Double getSoldeCongeAnnee() {
 		return soldeCongeAnnee;
@@ -91,6 +93,22 @@ public class SoldeDto {
 
 	public void setAfficheSoldeAsaA48(boolean afficheSoldeAsaA48) {
 		this.afficheSoldeAsaA48 = afficheSoldeAsaA48;
+	}
+
+	public boolean isAfficheSoldeAsaA54() {
+		return afficheSoldeAsaA54;
+	}
+
+	public void setAfficheSoldeAsaA54(boolean afficheSoldeAsaA54) {
+		this.afficheSoldeAsaA54 = afficheSoldeAsaA54;
+	}
+
+	public Double getSoldeAsaA54() {
+		return soldeAsaA54;
+	}
+
+	public void setSoldeAsaA54(Double soldeAsaA54) {
+		this.soldeAsaA54 = soldeAsaA54;
 	}
 
 }

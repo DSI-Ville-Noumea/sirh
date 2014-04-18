@@ -112,7 +112,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			setListeTypeAbsence(EnumTypeAbsence.getValues());
 
-			int[] tailles = { 30 };
+			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
@@ -283,7 +283,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
-		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A48)) {
+		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A48)
+				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A54)) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA");
 
@@ -350,7 +351,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				setSoldeCourantMinute(soldeRecup);
 				break;
 			case ASA_A48:
-
+			case ASA_A54:
 				break;
 			case AUTRE:
 

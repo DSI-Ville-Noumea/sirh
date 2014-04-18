@@ -35,7 +35,7 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
 
-	List<CompteurAsaDto> getListeCompteurs();
+	List<CompteurAsaDto> getListeCompteursA48();
 
 	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
 
@@ -53,4 +53,8 @@ public interface ISirhAbsWSConsumer {
 	List<DemandeDto> getVisualisationHistory(int absId);
 
 	ReturnMessageDto setAbsState(Integer idAgent, String json);
+
+	List<CompteurAsaDto> getListeCompteursA54();
+
+	ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json);
 }

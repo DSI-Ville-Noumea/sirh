@@ -34,7 +34,7 @@
 			<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				<legend class="sigp2Legend">Compteurs de l'agent</legend>
 				<span class="sigp2" style="width:100px">Famille d'absence : </span>
-				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE() %>" style="width:250px;">
+				<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE() %>" style="width:350px;">
 					<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE(), process.getVAL_LB_TYPE_ABSENCE_SELECT()) %>
 				</SELECT>
 	           <BR/><BR/>
