@@ -365,8 +365,8 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend">Création d'une absence</legend>
-                	<span class="sigp2">Famille : </span>
-			        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>" style="width:240px;">
+                	<span class="sigp2Mandatory">Famille : </span>
+			        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>" style="width:340px;">
 			        	<%=process.forComboHTML(process.getVAL_LB_FAMILLE_CREATION(), process.getVAL_LB_FAMILLE_CREATION_SELECT())%>
 			        </SELECT>
                     <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
@@ -403,9 +403,9 @@
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%} %>
-            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48)){ %>
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48_A54)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48 %></legend>
+	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48_A54 %></legend>
 	            	<table>
 	            		<tr>
 	            			<td width="80px">
@@ -435,7 +435,7 @@
 	            		</tr>
 	            	</table>
 	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%} %>

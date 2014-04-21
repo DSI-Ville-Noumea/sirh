@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.absence;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +75,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
-	public String ACTION_CREATION_A48 = "Création d'une réunion des membres du bureau directeur(ASA).";
+	public String ACTION_CREATION_A48_A54 = "Création d'une demande ASA.";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
 
@@ -162,7 +163,7 @@ public class OeABSVisualisation extends BasicProcess {
 		if (getLB_FAMILLE() == LBVide || getLB_FAMILLE_CREATION() == LBVide) {
 			setListeFamilleAbsence(EnumTypeAbsence.getValues());
 
-			int[] tailles = { 30 };
+			int[] tailles = { 100 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator<EnumTypeAbsence> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
 				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
@@ -262,9 +263,9 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
-			// Si clic sur le bouton PB_VALIDER
-			if (testerParametre(request, getNOM_PB_VALIDER())) {
-				return performPB_VALIDER(request);
+			// Si clic sur le bouton PB_VALIDER_CREATION
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION())) {
+				return performPB_VALIDER_CREATION(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -734,10 +735,11 @@ public class OeABSVisualisation extends BasicProcess {
 			setAgentCreation(agent);
 		}
 
-		if (type != null && type.equals(EnumTypeAbsence.ASA_A48)) {
+		if (type != null && (type.equals(EnumTypeAbsence.ASA_A48) || type.equals(EnumTypeAbsence.ASA_A54))) {
 			// On nomme l'action
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48);
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54);
 		} else {
+
 			getTransaction().declarerErreur("Cette famille ne peut être saisi dans SIRH");
 		}
 
@@ -812,11 +814,11 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_RG_FIN_MAM());
 	}
 
-	public String getNOM_PB_VALIDER() {
-		return "NOM_PB_VALIDER";
+	public String getNOM_PB_VALIDER_CREATION() {
+		return "NOM_PB_VALIDER_CREATION";
 	}
 
-	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
+	public boolean performPB_VALIDER_CREATION(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
 		EnumTypeAbsence type = getTypeCreation();
 
@@ -851,6 +853,12 @@ public class OeABSVisualisation extends BasicProcess {
 		dto.setDateFin(dateFin);
 		dto.setDateFinAM(matinFin);
 		dto.setDateFinPM(apresMidiFin);
+		if (type.getCode() == EnumTypeAbsence.ASA_A48.getCode() || type.getCode() == EnumTypeAbsence.ASA_A54.getCode()) {
+			dto.setDuree(getNbDemiJourneeDureeDemande(dateDeb, matinDebut, apresMidiDebut, dateFin, matinFin,
+					apresMidiFin) * 0.5);
+		} else {
+			dto.setDuree(0.0);
+		}
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
@@ -874,6 +882,19 @@ public class OeABSVisualisation extends BasicProcess {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	private int getNbDemiJourneeDureeDemande(Date dateDeb, boolean matinDebut, boolean apresMidiDebut, Date datFin,
+			boolean matinFin, boolean apresMidiFin) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String dateDebut = sdf.format(dateDeb) + (matinDebut ? " 00:00:00" : " 12:00:00");
+		String dateFin = sdf.format(datFin) + (matinFin ? " 11:59:59" : " 23:59:59");
+
+		SimpleDateFormat sdfFinal = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		long diff = sdfFinal.parse(dateFin).getTime() - sdfFinal.parse(dateDebut).getTime();
+		int milliSecondeDemiJournee = 43200000 - 1000;
+		int res = (int) (diff / milliSecondeDemiJournee);
+		return res;
 	}
 
 	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
