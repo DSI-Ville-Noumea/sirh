@@ -106,7 +106,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			setListeTypeAbsence(EnumTypeAbsence.getValues());
 
-			int[] tailles = { 30 };
+			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {

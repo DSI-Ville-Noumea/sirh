@@ -51,7 +51,7 @@
 			            	<% if (process.getVAL_ST_ACTION_MOTIF()!= null && !process.getVAL_ST_ACTION_MOTIF().equals("")) {%>
 			            		<br>
 								<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>" style="margin-right:10px;margin-bottom:10px">
+								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF() %>">
 								<br /><br />
 							    <div Style="width:100%" align="center">
 									<span class="sigp2"><INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF()%>"></span>
@@ -77,10 +77,10 @@
 			            	<% if (process.getVAL_ST_ACTION_MOTIF_COMPTEUR()!= null && !process.getVAL_ST_ACTION_MOTIF_COMPTEUR().equals("")) {%>
 			            		<br>
 								<label class="sigp2Mandatory" Style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF_COMPTEUR() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF_COMPTEUR() %>" style="margin-right:10px;margin-bottom:10px">
+								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_LIB_MOTIF_COMPTEUR() %>" size="35" type="text" value="<%= process.getVAL_EF_LIB_MOTIF_COMPTEUR() %>">
 								<br />
 								<span class="sigp2Mandatory" style="width:110px">Famille d'absence : </span>
-								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_COMPTEUR() %>" style="width=150px;margin-right:20px;">
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_ABSENCE_COMPTEUR() %>" style="width:300px;">
 									<%=process.forComboHTML(process.getVAL_LB_TYPE_ABSENCE_COMPTEUR(), process.getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) %>
 								</SELECT>					
 								<br /><br />
