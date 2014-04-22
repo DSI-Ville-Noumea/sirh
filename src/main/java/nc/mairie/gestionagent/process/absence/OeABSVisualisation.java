@@ -566,7 +566,8 @@ public class OeABSVisualisation extends BasicProcess {
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
 						.intValue()));
-			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()) {
+			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
@@ -1169,9 +1170,10 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 et etat=validé ou prise, alors un motif est obligatoire
-		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-				&& dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
+		// Si ASA_A48 ou ASA_A54 et etat=validé ou prise, alors un motif est
+		// obligatoire
+		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54
+				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
@@ -1300,8 +1302,10 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 et etat=validé ou prise, alors un motif est obligatoire
-		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+		// Si ASA_A48 ou ASA_A54 et etat=validé ou prise, alors un motif est
+		// obligatoire
+		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54
+				.getCode())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
 			// "ERR803",
