@@ -408,10 +408,10 @@ public class OeDROITSKiosque extends BasicProcess {
 			}
 		}
 
-		List<AgentWithServiceDto> listeAgentErreurPTG = ptgConsumer.setApprobateurs(new JSONSerializer()
-				.serialize(listeApprobateurPTG));
-		List<AgentWithServiceDto> listeAgentErreurABS = absConsumer.setApprobateurs(new JSONSerializer()
-				.serialize(listeApprobateurABS));
+		List<AgentWithServiceDto> listeAgentErreurPTG = ptgConsumer.setApprobateurs(new JSONSerializer().exclude(
+				"*.class").serialize(listeApprobateurPTG));
+		List<AgentWithServiceDto> listeAgentErreurABS = absConsumer.setApprobateurs(new JSONSerializer().exclude(
+				"*.class").serialize(listeApprobateurABS));
 		List<AgentWithServiceDto> listeAgentErreur = new ArrayList<AgentWithServiceDto>();
 		listeAgentErreur.addAll(listeAgentErreurPTG);
 		listeAgentErreur.addAll(listeAgentErreurABS);

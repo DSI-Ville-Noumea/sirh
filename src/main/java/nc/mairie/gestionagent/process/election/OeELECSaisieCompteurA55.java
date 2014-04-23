@@ -453,8 +453,8 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		compteurDto.setDateFin(sdf.parse(dateFin));
 
 		// on sauvegarde
-		message = consuAbs.addCompteurAsaA55(agentConnecte.getIdAgent(),
-				new JSONSerializer().transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
+		message = consuAbs.addCompteurAsaA55(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;

@@ -271,7 +271,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveOrganisationSyndicale(new JSONSerializer().serialize(orga));
+				ReturnMessageDto message = consuAbs.saveOrganisationSyndicale(new JSONSerializer().exclude("*.class").serialize(orga));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;

@@ -366,7 +366,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotif(new JSONSerializer().serialize(motif));
+				ReturnMessageDto message = consuAbs.saveMotif(new JSONSerializer().exclude("*.class").serialize(motif));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
@@ -544,7 +544,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().serialize(motifCompteur));
+				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().exclude("*.class").serialize(motifCompteur));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;

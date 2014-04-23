@@ -480,8 +480,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
 
 		// on sauvegarde
-		message = consuAbs.addCompteurAsaA48(agentConnecte.getIdAgent(),
-				new JSONSerializer().transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
+		message = consuAbs.addCompteurAsaA48(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+				.transform(new MSDateTransformer(), Date.class).serialize(compteurDto));
 
 		if (message.getErrors().size() > 0) {
 			String err = Const.CHAINE_VIDE;

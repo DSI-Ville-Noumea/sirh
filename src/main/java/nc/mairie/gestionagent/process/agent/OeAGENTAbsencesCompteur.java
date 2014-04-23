@@ -465,8 +465,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(false);
 
 			// on sauvegarde
-			message = consuAbs
-					.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().serialize(compteurDto));
+			message = consuAbs.addCompteurRecup(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+					.serialize(compteurDto));
 
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP)
 				&& getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
@@ -534,8 +534,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
-			message = consuAbs.addCompteurReposComp(agentConnecte.getIdAgent(),
-					new JSONSerializer().serialize(compteurDto));
+			message = consuAbs.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
+					.serialize(compteurDto));
 
 		}
 

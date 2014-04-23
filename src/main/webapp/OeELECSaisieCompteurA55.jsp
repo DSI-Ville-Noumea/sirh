@@ -72,7 +72,7 @@ function SelectLigne(id,tailleTableau)
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MATRICULE(i)%></td>
 										<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(i)%></td>
-										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_HEURES(i)%></td>
 									</tr>
 									<%

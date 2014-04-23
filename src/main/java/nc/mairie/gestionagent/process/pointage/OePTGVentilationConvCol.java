@@ -439,8 +439,8 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 		// on lance la ventilation
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation,
-				new JSONSerializer().serialize(listeIdAgents), "CC", idRefTypePointage)) {
+		if (!t.startVentilation(agentConnecte.getIdAgent(), dateVentilation, new JSONSerializer().exclude("*.class")
+				.serialize(listeIdAgents), "CC", idRefTypePointage)) {
 			// "ERR602",
 			// "La ventilation des @ n'a pu être lancée. Merci de contacter le responsable du projet.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR602", "conventions collectives"));
@@ -565,7 +565,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			initialiseHashTableHsup(typePointage);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, new JSONSerializer().serialize(agents)));
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents)));
 		}
 		return true;
 	}
@@ -725,7 +725,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(), 1,
-				new JSONSerializer().serialize(agents));
+				new JSONSerializer().exclude("*.class").serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
@@ -794,7 +794,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
-				typePointage, new JSONSerializer().serialize(agents));
+				typePointage, new JSONSerializer().exclude("*.class").serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
@@ -840,7 +840,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(), 2,
-				new JSONSerializer().serialize(agents));
+				new JSONSerializer().exclude("*.class").serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto hsup : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
@@ -918,7 +918,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
-				typePointage, new JSONSerializer().serialize(agents));
+				typePointage, new JSONSerializer().exclude("*.class").serialize(agents));
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
