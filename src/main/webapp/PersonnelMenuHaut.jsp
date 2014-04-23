@@ -179,6 +179,7 @@ document.write(menuPTGPayeur.afficher());
 var menuElecCompteur = new MenuHaut("Module_election_saisieCompteur");
 menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA48", "COMPTEUR", "Compteur A48", true, false,"ELEC/A48"));
 menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"ELEC/A54"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA55", "COMPTEUR", "Compteur A55", true, false,"ELEC/A55"));
 document.write(menuElecCompteur.afficher());
 
 //***************************************************************

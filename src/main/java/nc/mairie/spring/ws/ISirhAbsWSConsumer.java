@@ -57,4 +57,8 @@ public interface ISirhAbsWSConsumer {
 	List<CompteurAsaDto> getListeCompteursA54();
 
 	ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json);
+
+	List<CompteurAsaDto> getListeCompteursA55();
+
+	ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json);
 }

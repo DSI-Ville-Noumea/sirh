@@ -284,7 +284,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
 		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A48)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A54)) {
+				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A54)
+				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A55)) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA");
 
@@ -352,6 +353,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				break;
 			case ASA_A48:
 			case ASA_A54:
+			case ASA_A55:
 				break;
 			case AUTRE:
 
