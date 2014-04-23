@@ -268,10 +268,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		cal.setTime(new Date());
 		Integer annee = cal.get(Calendar.YEAR);
 		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
-		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 0).toDate();
 		FiltreSoldeDto dto = new FiltreSoldeDto();
 		dto.setDateDebut(dateDeb);
-		dto.setDateFin(dateFin);
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
 

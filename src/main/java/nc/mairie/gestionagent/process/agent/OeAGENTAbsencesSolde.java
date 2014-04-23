@@ -120,10 +120,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private void initialiseSoldesAgent(HttpServletRequest request, Integer annee) {
 		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
-		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 0).toDate();
 		FiltreSoldeDto dto = new FiltreSoldeDto();
 		dto.setDateDebut(dateDeb);
-		dto.setDateFin(dateFin);
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
 
@@ -161,6 +159,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		// Solde ASA A54
 		addZone(getNOM_ST_SOLDE_ASA_A54(), soldeGlobal.getSoldeAsaA54() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA54()
 				.toString() + " j");
+
+		// Solde ASA A55
+		addZone(getNOM_ST_SOLDE_ASA_A55(), soldeGlobal.getSoldeAsaA55() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA55()
+				.toString() + " h");
 
 	}
 
@@ -290,6 +292,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getVAL_ST_SOLDE_ASA_A54() {
 		return getZone(getNOM_ST_SOLDE_ASA_A54());
+	}
+
+	public String getNOM_ST_SOLDE_ASA_A55() {
+		return "NOM_ST_SOLDE_ASA_A55";
+	}
+
+	public String getVAL_ST_SOLDE_ASA_A55() {
+		return getZone(getNOM_ST_SOLDE_ASA_A55());
 	}
 
 	public String getNOM_PB_HISTORIQUE(int i) {
