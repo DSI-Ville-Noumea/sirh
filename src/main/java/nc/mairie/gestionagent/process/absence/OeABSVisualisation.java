@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -65,17 +66,20 @@ public class OeABSVisualisation extends BasicProcess {
 	private String[] LB_ETAT;
 	private String[] LB_FAMILLE;
 	private String[] LB_FAMILLE_CREATION;
+	private String[] LB_HEURE;
 
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<Service> listeServices;
 	private ArrayList<EnumEtatAbsence> listeEtats;
 	private ArrayList<EnumTypeAbsence> listeFamilleAbsence;
+	private ArrayList<String> listeHeure;
 
 	private HashMap<Integer, DemandeDto> listeAbsence;
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
 	public String ACTION_CREATION_A48_A54 = "Création d'une demande ASA.";
+	public String ACTION_CREATION_A55 = "Création d'une délégation (DP).";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
 
@@ -215,6 +219,46 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 		}
 
+		// si liste des heures vide alors affectation
+		if (getListeHeure() == null || getListeHeure().size() == 0) {
+			setListeHeure(new ArrayList<String>());
+			int heureDeb = 6; // heures depart
+			int minuteDeb = 0; // minutes debut
+			int diffFinDeb = 14 * 60; // différence en minute entre le début et
+										// la
+										// fin
+			int interval = 30; // interval en minute
+
+			SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm"); // format
+																			// de
+																			// la
+																			// date
+
+			GregorianCalendar deb = new GregorianCalendar();
+			if (heureDeb > 11) // gestion AM PM
+				deb.set(GregorianCalendar.AM_PM, GregorianCalendar.PM);
+			else
+				deb.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
+			deb.set(GregorianCalendar.HOUR, heureDeb % 12);
+			deb.set(GregorianCalendar.MINUTE, minuteDeb);
+
+			GregorianCalendar fin = (GregorianCalendar) deb.clone();
+			fin.set(GregorianCalendar.MINUTE, diffFinDeb);
+
+			getListeHeure().add(formatDate.format(deb.getTime()));
+			Integer i = 1;
+			while (deb.compareTo(fin) < 0) {
+				deb.add(GregorianCalendar.MINUTE, interval);
+				getListeHeure().add(formatDate.format(deb.getTime()));
+				i++;
+			}
+			String[] a = new String[29];
+			for (int j = 0; j < getListeHeure().size(); j++) {
+				a[j] = getListeHeure().get(j);
+			}
+			setLB_HEURE(a);
+		}
+
 	}
 
 	@Override
@@ -263,9 +307,13 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
-			// Si clic sur le bouton PB_VALIDER_CREATION
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION())) {
-				return performPB_VALIDER_CREATION(request);
+			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A48_A54())) {
+				return performPB_VALIDER_CREATION_A48_A54(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_CREATION_A55
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A55())) {
+				return performPB_VALIDER_CREATION_A55(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -739,6 +787,9 @@ public class OeABSVisualisation extends BasicProcess {
 		if (type != null && (type.equals(EnumTypeAbsence.ASA_A48) || type.equals(EnumTypeAbsence.ASA_A54))) {
 			// On nomme l'action
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54);
+		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A55)) {
+			// On nomme l'action
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A55);
 		} else {
 
 			getTransaction().declarerErreur("Cette famille ne peut être saisi dans SIRH");
@@ -761,6 +812,8 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AGENT_CREATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DUREE(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_HEURE(), Const.ZERO);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_DEBUT_MAM(), getNOM_RB_M());
 		addZone(getNOM_RG_FIN_MAM(), getNOM_RB_M());
@@ -791,6 +844,14 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_RB_AM";
 	}
 
+	public String getNOM_ST_DUREE() {
+		return "NOM_ST_DUREE";
+	}
+
+	public String getVAL_ST_DUREE() {
+		return getZone(getNOM_ST_DUREE());
+	}
+
 	public String getNOM_ST_DATE_DEBUT() {
 		return "NOM_ST_DATE_DEBUT";
 	}
@@ -815,11 +876,11 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_RG_FIN_MAM());
 	}
 
-	public String getNOM_PB_VALIDER_CREATION() {
-		return "NOM_PB_VALIDER_CREATION";
+	public String getNOM_PB_VALIDER_CREATION_A48_A54() {
+		return "NOM_PB_VALIDER_CREATION_A48_A54";
 	}
 
-	public boolean performPB_VALIDER_CREATION(HttpServletRequest request) throws Exception {
+	public boolean performPB_VALIDER_CREATION_A48_A54(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
 		EnumTypeAbsence type = getTypeCreation();
 
@@ -854,12 +915,7 @@ public class OeABSVisualisation extends BasicProcess {
 		dto.setDateFin(dateFin);
 		dto.setDateFinAM(matinFin);
 		dto.setDateFinPM(apresMidiFin);
-		if (type.getCode() == EnumTypeAbsence.ASA_A48.getCode() || type.getCode() == EnumTypeAbsence.ASA_A54.getCode()) {
-			dto.setDuree(getNbDemiJourneeDureeDemande(dateDeb, matinDebut, apresMidiDebut, dateFin, matinFin,
-					apresMidiFin) * 0.5);
-		} else {
-			dto.setDuree(0.0);
-		}
+		dto.setDuree(getNbDemiJourneeDureeDemande(dateDeb, matinDebut, apresMidiDebut, dateFin, matinFin, apresMidiFin) * 0.5);
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
@@ -1432,5 +1488,104 @@ public class OeABSVisualisation extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	private String[] getLB_HEURE() {
+		if (LB_HEURE == null)
+			LB_HEURE = initialiseLazyLB();
+		return LB_HEURE;
+	}
+
+	private void setLB_HEURE(String[] newLB_HEURE) {
+		LB_HEURE = newLB_HEURE;
+	}
+
+	public String getNOM_LB_HEURE() {
+		return "NOM_LB_HEURE";
+	}
+
+	public String getNOM_LB_HEURE_SELECT() {
+		return "NOM_LB_HEURE_SELECT";
+	}
+
+	public String[] getVAL_LB_HEURE() {
+		return getLB_HEURE();
+	}
+
+	public String getVAL_LB_HEURE_SELECT() {
+		return getZone(getNOM_LB_HEURE_SELECT());
+	}
+
+	public String getNOM_PB_VALIDER_CREATION_A55() {
+		return "NOM_PB_VALIDER_CREATION_A55";
+	}
+
+	public boolean performPB_VALIDER_CREATION_A55(HttpServletRequest request) throws Exception {
+		AgentNW ag = getAgentCreation();
+		EnumTypeAbsence type = getTypeCreation();
+
+		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+			return false;
+		}
+		if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+			return false;
+		}
+		// heure obligatoire
+		int indiceHeure = (Services.estNumerique(getVAL_LB_HEURE_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT())
+				: -1);
+		if (indiceHeure <= 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure"));
+			return false;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String heure = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT()));
+		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heure);
+
+		AgentNW agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			return false;
+		}
+
+		DemandeDto dto = new DemandeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
+
+		AgentWithServiceDto agDto = new AgentWithServiceDto();
+		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+		dto.setAgentWithServiceDto(agDto);
+		dto.setIdTypeDemande(type.getCode());
+		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
+
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur(err);
+			return false;
+		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public ArrayList<String> getListeHeure() {
+		return listeHeure;
+	}
+
+	private void setListeHeure(ArrayList<String> listeHeure) {
+		this.listeHeure = listeHeure;
 	}
 }

@@ -1,5 +1,7 @@
 package nc.mairie.gestionagent.absence.dto;
 
+import java.util.List;
+
 public class SoldeDto {
 
 	private boolean afficheSoldeConge;
@@ -16,6 +18,7 @@ public class SoldeDto {
 	private Double soldeAsaA54;
 	private boolean afficheSoldeAsaA55;
 	private Double soldeAsaA55;
+	private List<SoldeMonthDto> listeSoldeAsaA55;
 
 	public Double getSoldeCongeAnnee() {
 		return soldeCongeAnnee;
@@ -127,6 +130,14 @@ public class SoldeDto {
 
 	public void setSoldeAsaA55(Double soldeAsaA55) {
 		this.soldeAsaA55 = soldeAsaA55;
+	}
+
+	public List<SoldeMonthDto> getListeSoldeAsaA55() {
+		return listeSoldeAsaA55;
+	}
+
+	public void setListeSoldeAsaA55(List<SoldeMonthDto> listeSoldeAsaA55) {
+		this.listeSoldeAsaA55 = listeSoldeAsaA55;
 	}
 
 }

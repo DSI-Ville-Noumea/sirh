@@ -11,6 +11,7 @@ import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
+import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -42,6 +43,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private AgentNW agentCourant;
 	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
+	private ArrayList<SoldeMonthDto> listeSoldeA55;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
@@ -120,8 +122,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private void initialiseSoldesAgent(HttpServletRequest request, Integer annee) {
 		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
+		Date dateFin = new DateTime(annee, 12, 31, 23, 59, 59).toDate();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		FiltreSoldeDto dto = new FiltreSoldeDto();
 		dto.setDateDebut(dateDeb);
+		dto.setDateFin(dateFin);
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
 
@@ -161,8 +166,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 				.toString() + " j");
 
 		// Solde ASA A55
-		addZone(getNOM_ST_SOLDE_ASA_A55(), soldeGlobal.getSoldeAsaA55() == 0 ? "&nbsp;" : soldeGlobal.getSoldeAsaA55()
-				.toString() + " h");
+		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
+		for (int i = 0; i < getListeSoldeA55().size(); i++) {
+			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
+			addZone(getNOM_ST_SOLDE_ASA_A55(i), monthDto.getSoldeAsaA55() == 0 ? "&nbsp;" : monthDto.getSoldeAsaA55()
+					.toString() + " h");
+			addZone(getNOM_ST_DEBUT_ASA_A55(i), sdf.format(monthDto.getDateDebut()));
+			addZone(getNOM_ST_FIN_ASA_A55(i), sdf.format(monthDto.getDateFin()));
+		}
 
 	}
 
@@ -294,12 +305,28 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return getZone(getNOM_ST_SOLDE_ASA_A54());
 	}
 
-	public String getNOM_ST_SOLDE_ASA_A55() {
-		return "NOM_ST_SOLDE_ASA_A55";
+	public String getNOM_ST_SOLDE_ASA_A55(int i) {
+		return "NOM_ST_SOLDE_ASA_A55_" + i;
 	}
 
-	public String getVAL_ST_SOLDE_ASA_A55() {
-		return getZone(getNOM_ST_SOLDE_ASA_A55());
+	public String getVAL_ST_SOLDE_ASA_A55(int i) {
+		return getZone(getNOM_ST_SOLDE_ASA_A55(i));
+	}
+
+	public String getNOM_ST_DEBUT_ASA_A55(int i) {
+		return "NOM_ST_DEBUT_ASA_A55_" + i;
+	}
+
+	public String getVAL_ST_DEBUT_ASA_A55(int i) {
+		return getZone(getNOM_ST_DEBUT_ASA_A55(i));
+	}
+
+	public String getNOM_ST_FIN_ASA_A55(int i) {
+		return "NOM_ST_FIN_ASA_A55_" + i;
+	}
+
+	public String getVAL_ST_FIN_ASA_A55(int i) {
+		return getZone(getNOM_ST_FIN_ASA_A55(i));
 	}
 
 	public String getNOM_PB_HISTORIQUE(int i) {
@@ -314,10 +341,26 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 
+		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
+
+		if (numAnnee < 0 || getListeAnnee().size() == 0 || numAnnee > getListeAnnee().size())
+			return false;
+
+		String annee = getListeAnnee().get(numAnnee);
+
+		Date dateDeb = new DateTime(Integer.valueOf(annee), 1, 1, 0, 0, 0).toDate();
+		Date dateFin = new DateTime(Integer.valueOf(annee), 12, 31, 23, 59, 59).toDate();
+		FiltreSoldeDto dto = new FiltreSoldeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDateFin(dateFin);
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ArrayList<HistoriqueSoldeDto> listeHistorique = (ArrayList<HistoriqueSoldeDto>) consuAbs
-				.getHistoriqueCompteurAgent(Integer.valueOf(getAgentCourant().getIdAgent()), codeTypeAbsence);
+				.getHistoriqueCompteurAgent(Integer.valueOf(getAgentCourant().getIdAgent()), codeTypeAbsence, json);
 		setListeHistorique(listeHistorique);
 
 		for (int i = 0; i < getListeHistorique().size(); i++) {
@@ -448,5 +491,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		String annee = getListeAnnee().get(numAnnee);
 		initialiseSoldesAgent(request, Integer.valueOf(annee));
 		return true;
+	}
+
+	public ArrayList<SoldeMonthDto> getListeSoldeA55() {
+		return listeSoldeA55 == null ? new ArrayList<SoldeMonthDto>() : listeSoldeA55;
+	}
+
+	public void setListeSoldeA55(ArrayList<SoldeMonthDto> listeSoldeA55) {
+		this.listeSoldeA55 = listeSoldeA55;
 	}
 }

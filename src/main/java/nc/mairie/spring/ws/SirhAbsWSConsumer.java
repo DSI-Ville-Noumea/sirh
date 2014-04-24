@@ -311,13 +311,13 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence) {
+	public List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsHistoCompteurAgent;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
 		params.put("codeRefTypeAbsence", codeTypeAbsence.toString());
-		ClientResponse res = createAndFireRequest(params, url);
+		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseAsList(HistoriqueSoldeDto.class, res, url);
 	}
 

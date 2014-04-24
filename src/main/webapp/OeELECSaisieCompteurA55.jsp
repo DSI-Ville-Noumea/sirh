@@ -45,7 +45,7 @@ function SelectLigne(id,tailleTableau)
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 			<legend class="sigp2Legend">Délégation (A55)</legend>			
-				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
+				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="50px;">
@@ -53,8 +53,8 @@ function SelectLigne(id,tailleTableau)
 								</td>
 								<td align="center" width="60px;">Matricule</td>
 								<td width="300px;">Agent</td>
-								<td align="center" width="50px;">Début</td>
-								<td align="center" width="50px;">Fin</td>
+								<td align="center" width="90px;">Début</td>
+								<td align="center" width="90px;">Fin</td>
 								<td align="center">Nb heures</td>
 							</tr>
 							<%

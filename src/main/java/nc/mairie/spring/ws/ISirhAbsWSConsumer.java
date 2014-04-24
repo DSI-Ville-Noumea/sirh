@@ -14,51 +14,59 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
 public interface ISirhAbsWSConsumer {
 
+	// Approbateurs
 	List<AgentWithServiceDto> getApprobateurs();
 
 	List<AgentWithServiceDto> setApprobateurs(String json);
 
-	SoldeDto getSoldeAgent(String idAgent, String json);
-
-	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
-			String dateDemande, Integer idRefEtat, Integer idRefType);
-
-	List<MotifDto> getListeMotif();
-
-	List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType);
-
-	ReturnMessageDto saveMotif(String json);
-
-	ReturnMessageDto saveMotifCompteur(String json);
-
-	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
-
-	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
-
-	List<CompteurAsaDto> getListeCompteursA48();
-
-	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
-
-	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence);
-
+	// OS
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
 
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
-	ReturnMessageDto saveDemande(String idAgentConnecte, String json);
+	// Motifs
+	List<MotifDto> getListeMotif();
+
+	ReturnMessageDto saveMotif(String json);
+
+	// Motif alim compteur
+	List<MotifCompteurDto> getListeMotifCompteur(Integer idRefType);
+
+	ReturnMessageDto saveMotifCompteur(String json);
+
+	// solde
+	SoldeDto getSoldeAgent(String idAgent, String json);
+
+	// compteurs
+	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json);
+
+	List<CompteurAsaDto> getListeCompteursA48();
+
+	List<CompteurAsaDto> getListeCompteursA54();
+
+	List<CompteurAsaDto> getListeCompteursA55();
+
+	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json);
+
+	// demandes
+	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
+			String dateDemande, Integer idRefEtat, Integer idRefType);
 
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
 			Integer idAgentRecherche);
 
 	List<DemandeDto> getVisualisationHistory(int absId);
 
+	ReturnMessageDto saveDemande(String idAgentConnecte, String json);
+
 	ReturnMessageDto setAbsState(Integer idAgent, String json);
 
-	List<CompteurAsaDto> getListeCompteursA54();
-
-	ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json);
-
-	List<CompteurAsaDto> getListeCompteursA55();
-
-	ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json);
 }

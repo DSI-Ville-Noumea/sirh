@@ -435,9 +435,45 @@
 	            		</tr>
 	            	</table>
 	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A48_A54()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A55)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A55 %></legend>
+	            	<table>
+	            		<tr>
+	            			<td width="80px">
+                        		<span class="sigp2Mandatory">Date début : </span>
+	            			</td>
+	            			<td>
+		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
+		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+                        		<span class="sigp2Mandatory">Heure de début : </span>
+	            			</td>
+	            			<td>
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT()) %>
+								</SELECT>	
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+                        		<span class="sigp2Mandatory">Durée : </span>
+	            			</td>
+	            			<td>
+								<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>"><span class="sigp2Mandatory"> heure(s)</span>
+	            			</td>
+	            		</tr>
+	            	</table>
+	            	<BR/>
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A55()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	            </FIELDSET>            
             <%} %>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
