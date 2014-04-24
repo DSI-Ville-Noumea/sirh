@@ -611,15 +611,13 @@ public class OeABSVisualisation extends BasicProcess {
 								+ (finMAM.equals(Const.CHAINE_VIDE) ? hrs.format(abs.getDateFin()) : finMAM));
 			}
 			if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
-					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
 						.intValue()));
 			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
-			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
-				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
-						.intValue()));
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
 			}
@@ -1241,9 +1239,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 ou ASA_A54 et etat=validé ou prise, alors un motif est
+		// Si ASA_A48 ou ASA_A54 ou ASA_A55 et etat=validé ou prise, alors un
+		// motif est
 		// obligatoire
-		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54
+		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55
 				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
@@ -1374,9 +1374,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 ou ASA_A54 et etat=validé ou prise, alors un motif est
+		// Si ASA_A48 ou ASA_A54 ou ASA_A55 et etat=validé ou prise, alors un
+		// motif est
 		// obligatoire
-		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54
+		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55
 				.getCode())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
