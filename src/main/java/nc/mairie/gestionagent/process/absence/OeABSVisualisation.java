@@ -617,6 +617,9 @@ public class OeABSVisualisation extends BasicProcess {
 			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
+				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
+						.intValue()));
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
 			}
@@ -938,6 +941,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1097,7 +1101,17 @@ public class OeABSVisualisation extends BasicProcess {
 			ret[index][0] = formatDate(p.getDateDemande());
 			ret[index][1] = formatDate(p.getDateDebut()) + "<br/>" + formatHeure(p.getDateDebut());
 			ret[index][2] = formatDate(p.getDateFin()) + "<br/>" + formatHeure(p.getDateFin());
-			ret[index][3] = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString();
+			String duree = "&nbsp;";
+			if (p.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
+				duree = getHeureMinute(p.getDuree().intValue());
+			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
+				duree = p.getDuree().toString() + "j";
+			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
+				duree = getHeureMinute(p.getDuree().intValue());
+			}
+			ret[index][3] = duree;
 			ret[index][4] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
 			ret[index][5] = p.getMotif() == null ? "&nbsp;" : p.getMotif();
 			ret[index][6] = formatDate(p.getDateSaisie()) + "<br/>" + formatHeure(p.getDateSaisie());
@@ -1190,6 +1204,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1263,6 +1278,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1439,6 +1455,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1487,6 +1504,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
+		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1578,6 +1596,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		performPB_FILTRER(request);
 		return true;
 	}
 

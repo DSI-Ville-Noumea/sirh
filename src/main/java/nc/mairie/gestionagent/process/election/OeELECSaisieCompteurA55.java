@@ -136,7 +136,10 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(dto.getDateDebut()));
 			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(dto.getDateFin()));
-			addZone(getNOM_ST_NB_HEURES(indiceLigne), String.valueOf(dto.getNb().intValue()));
+			String soldeAsaA55Heure = (dto.getNb().intValue() / 60) == 0 ? "" : dto.getNb().intValue() / 60 + "h ";
+			String soldeAsaA55Minute = (dto.getNb().intValue() % 60) == 0 ? "&nbsp;" : dto.getNb().intValue() % 60
+					+ "m";
+			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA55Heure + soldeAsaA55Minute);
 
 			indiceLigne++;
 
@@ -282,7 +285,9 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		addZone(getNOM_ST_NB_HEURES(), String.valueOf(dto.getNb().intValue()));
+		String soldeAsaA55Heure = (dto.getNb().intValue() / 60) == 0 ? "" : dto.getNb().intValue() / 60 + "";
+		String soldeAsaA55Minute = (dto.getNb().intValue() % 60) == 0 ? "" : "." + dto.getNb().intValue() % 60;
+		addZone(getNOM_ST_NB_HEURES(), soldeAsaA55Heure + soldeAsaA55Minute);
 		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
 				.substring(3, dto.getIdAgent().toString().length()));
 		return true;
@@ -448,7 +453,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(Integer.valueOf(agCompteur.getIdAgent()));
 		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-		compteurDto.setDureeAAjouter(Integer.valueOf(getVAL_ST_NB_HEURES()));
+		compteurDto.setDureeAAjouter(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60);
 		compteurDto.setDateDebut(sdf.parse(dateDeb));
 		compteurDto.setDateFin(sdf.parse(dateFin));
 

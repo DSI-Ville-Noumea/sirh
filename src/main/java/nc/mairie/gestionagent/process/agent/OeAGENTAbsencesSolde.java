@@ -169,8 +169,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
 		for (int i = 0; i < getListeSoldeA55().size(); i++) {
 			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
-			addZone(getNOM_ST_SOLDE_ASA_A55(i), monthDto.getSoldeAsaA55() == 0 ? "&nbsp;" : monthDto.getSoldeAsaA55()
-					.toString() + " h");
+			String soldeAsaA55Heure = (monthDto.getSoldeAsaA55() / 60) == 0 ? "" : monthDto.getSoldeAsaA55() / 60
+					+ "h ";
+			String soldeAsaA55Minute = (monthDto.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : monthDto.getSoldeAsaA55()
+					% 60 + "m";
+			addZone(getNOM_ST_SOLDE_ASA_A55(i), soldeAsaA55Heure + soldeAsaA55Minute);
 			addZone(getNOM_ST_DEBUT_ASA_A55(i), sdf.format(monthDto.getDateDebut()));
 			addZone(getNOM_ST_FIN_ASA_A55(i), sdf.format(monthDto.getDateFin()));
 		}
@@ -482,6 +485,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	}
 
 	public boolean performPB_ANNEE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		int numAnnee = (Services.estNumerique(getZone(getNOM_LB_ANNEE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_ANNEE_SELECT())) : -1);
 
