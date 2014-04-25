@@ -414,8 +414,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 		// on recupere l'agent connecté
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via la
-		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
 			// on fait la correspondance entre le login et l'agent via RADI
@@ -648,8 +646,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	public boolean performPB_DEVERSER(HttpServletRequest request) throws Exception {
 		// on recupere l'agent connecté
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via la
-		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!u.getUserName().equals("nicno85")) {
 			// on fait la correspondance entre le login et l'agent via RADI

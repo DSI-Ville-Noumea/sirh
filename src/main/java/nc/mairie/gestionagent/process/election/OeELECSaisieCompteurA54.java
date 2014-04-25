@@ -502,8 +502,6 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		// on fait la correspondance entre le login et l'agent via la
-		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
 			// on fait la correspondance entre le login et l'agent via RADI
