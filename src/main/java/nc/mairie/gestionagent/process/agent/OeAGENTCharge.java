@@ -77,10 +77,11 @@ public class OeAGENTCharge extends BasicProcess {
 	public boolean showDonneesMutu = false;
 	public boolean montantObligatoire = false;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),  (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
-			CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
 	/**
@@ -275,11 +276,14 @@ public class OeAGENTCharge extends BasicProcess {
 				Rubrique r = (Rubrique) getHashRubriques().get(c.getNoRubr());
 				String codeChge = c.getCdChar();
 
-				addZone(getNOM_ST_CODE_RUBR(indiceCharge), r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
-				addZone(getNOM_ST_RUBRIQUE(indiceCharge), r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
-				addZone(getNOM_ST_MAT_CHARGE(indiceCharge), c.getNoMate().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNoMate());
-				addZone(getNOM_ST_LIB_CHARGE(indiceCharge), getLibCharge(c, codeChge).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: getLibCharge(c, codeChge));
+				addZone(getNOM_ST_CODE_RUBR(indiceCharge),
+						r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_RUBRIQUE(indiceCharge),
+						r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+				addZone(getNOM_ST_MAT_CHARGE(indiceCharge),
+						c.getNoMate().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNoMate());
+				addZone(getNOM_ST_LIB_CHARGE(indiceCharge),
+						getLibCharge(c, codeChge).equals(Const.CHAINE_VIDE) ? "&nbsp;" : getLibCharge(c, codeChge));
 				addZone(getNOM_ST_TAUX(indiceCharge), Float.valueOf(c.getTxSal()) == 0 ? "&nbsp;" : c.getTxSal());
 				addZone(getNOM_ST_MONTANT(indiceCharge), Integer.valueOf(c.getMttreg()) == 0 ? "&nbsp;" : c.getMttreg());
 				addZone(getNOM_ST_DATE_DEBUT(indiceCharge), c.getDatDeb());
@@ -460,7 +464,8 @@ public class OeAGENTCharge extends BasicProcess {
 		}
 
 		// date de fin format date
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN())) && !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin"));
 			return false;
 		}
@@ -486,7 +491,8 @@ public class OeAGENTCharge extends BasicProcess {
 		}
 
 		// créancier obligatoire
-		int indiceCreancier = (Services.estNumerique(getVAL_LB_CREANCIER_SELECT()) ? Integer.parseInt(getVAL_LB_CREANCIER_SELECT()) : -1);
+		int indiceCreancier = (Services.estNumerique(getVAL_LB_CREANCIER_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CREANCIER_SELECT()) : -1);
 		if (showCreancier && indiceCreancier < 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "créancier"));
 			return false;
@@ -530,7 +536,8 @@ public class OeAGENTCharge extends BasicProcess {
 	 * @return Creancier
 	 */
 	private Creancier getSelectedCreancier() {
-		int numLigne = (Services.estNumerique(getZone(getNOM_LB_CREANCIER_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_CREANCIER_SELECT())) : -1);
+		int numLigne = (Services.estNumerique(getZone(getNOM_LB_CREANCIER_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_CREANCIER_SELECT())) : -1);
 
 		if (numLigne <= 0 || getListeCreancier().size() == 0 || numLigne > getListeCreancier().size()) {
 			return null;
@@ -560,7 +567,8 @@ public class OeAGENTCharge extends BasicProcess {
 
 			if (Services.compareDates(c.getDatDeb(), getChargeCourante().getDatDeb()) >= 0) {
 				// dateDeb >= dateDebCur
-				if (getChargeCourante().getDatFin() == null || getChargeCourante().getDatFin().equals(Const.CHAINE_VIDE)) {
+				if (getChargeCourante().getDatFin() == null
+						|| getChargeCourante().getDatFin().equals(Const.CHAINE_VIDE)) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR100"));
 					return false;
 				} else if (Services.compareDates(getChargeCourante().getDatFin(), c.getDatDeb()) > 0) {
@@ -601,7 +609,8 @@ public class OeAGENTCharge extends BasicProcess {
 		showCodeCharge = false;
 		showMontant = false;
 
-		int numLigne = (Services.estNumerique(getVAL_LB_CODE_CHARGE_SELECT()) ? Integer.parseInt(getVAL_LB_CODE_CHARGE_SELECT()) : -1);
+		int numLigne = (Services.estNumerique(getVAL_LB_CODE_CHARGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CODE_CHARGE_SELECT()) : -1);
 
 		if (r != null) {
 
@@ -638,7 +647,8 @@ public class OeAGENTCharge extends BasicProcess {
 			if (r.getNumRubrique().equals("4001")) {
 				// SPCCHG code charges logement
 
-				if (numLigne < 0 || getListeCodesChargeLogt().size() == 0 || numLigne > getListeCodesChargeLogt().size()) {
+				if (numLigne < 0 || getListeCodesChargeLogt().size() == 0
+						|| numLigne > getListeCodesChargeLogt().size()) {
 					return Const.ZERO;
 				}
 
@@ -675,7 +685,8 @@ public class OeAGENTCharge extends BasicProcess {
 
 			// Suppression du lien
 			ChargeAgent chargeAgent = ChargeAgent.chercherChargeAgent(getTransaction(), getAgentCourant().idAgent,
-					getAgentCourant().getNoMatricule(), getChargeCourante().getNoRubr(), getChargeCourante().getDatDeb());
+					getAgentCourant().getNoMatricule(), getChargeCourante().getNoRubr(), getChargeCourante()
+							.getDatDeb());
 			chargeAgent.supprimerChargeAgent(getTransaction());
 
 			// suppression
@@ -732,8 +743,8 @@ public class OeAGENTCharge extends BasicProcess {
 				// Création
 				getChargeCourante().creerCharge(getTransaction(), user);
 
-				ChargeAgent chargeAgent = new ChargeAgent(getAgentCourant().getIdAgent(), getAgentCourant().getNoMatricule(), getChargeCourante()
-						.getNoRubr(), getChargeCourante().getDatDeb());
+				ChargeAgent chargeAgent = new ChargeAgent(getAgentCourant().getIdAgent(), getAgentCourant()
+						.getNoMatricule(), getChargeCourante().getNoRubr(), getChargeCourante().getDatDeb());
 				chargeAgent.creerChargeAgent(getTransaction());
 			}
 			// RG_AG_CG_A04
@@ -1087,76 +1098,78 @@ public class OeAGENTCharge extends BasicProcess {
 		showCodeCharge = true;
 
 		switch (Integer.parseInt(codeRubr)) {
-		case 2850:
-		case 2900:
-			String[] champsAcci = { "cdacci", "libacc" };
-			setLB_CODE_CHARGE(new FormateListe(tailles, getListeCodesAcci(), champsAcci).getListeFormatee(false));
+			case 2850:
+			case 2900:
+				String[] champsAcci = { "cdacci", "libacc" };
+				setLB_CODE_CHARGE(new FormateListe(tailles, getListeCodesAcci(), champsAcci).getListeFormatee(false));
 
-			if (codeCharge != null) {
-				CodeAcci c = (CodeAcci) getHashCodesAcci().get(codeCharge);
-				int ligneCode = getListeCodesAcci().indexOf(c);
-				addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
-				addZone(getNOM_ST_CODE_CHARGE(), c.getLibacc());
-			}
-
-			break;
-		case 3000:
-			int[] taillesMutu = { 3, 25 };
-			String padding[] = { "G", "G" };
-			String[] champsMutu = { "cdmutu", "limutu" };
-			setLB_CODE_CHARGE(new FormateListe(taillesMutu, getListeCodesMutu(), champsMutu, padding, false).getListeFormatee(false));
-
-			if (codeCharge != null) {
-				CodeMutu c = (CodeMutu) getHashCodesMutu().get(codeCharge);
-				int ligneCode = getListeCodesMutu().indexOf(c);
-				addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
-				addZone(getNOM_ST_CODE_CHARGE(), c.getLimutu());
-			}
-
-			break;
-
-		case 4000:
-			int[] taillesCodeLogt = { 3, 30, 10 };
-			FormateListe aFormat = new FormateListe(taillesCodeLogt);
-			for (int i = 0; i < getListeCodesLogt().size(); i++) {
-				CodeLogt c = getListeCodesLogt().get(i);
-				String tauxAff = Const.CHAINE_VIDE;
-				if (Float.parseFloat(c.getTxsal()) != 0) {
-					Float taux = Float.parseFloat(c.getTxsal()) * 10;
-					tauxAff = taux.toString();
-					if (tauxAff.length() > 5) {
-						tauxAff = tauxAff.substring(0, 5);
-					}
+				if (codeCharge != null) {
+					CodeAcci c = (CodeAcci) getHashCodesAcci().get(codeCharge);
+					int ligneCode = getListeCodesAcci().indexOf(c);
+					addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
+					addZone(getNOM_ST_CODE_CHARGE(), c.getLibacc());
 				}
-				String ligne[] = { c.getCdlogt(), c.getLiblog(), tauxAff.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : tauxAff + "%" };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_CODE_CHARGE(aFormat.getListeFormatee(false));
 
-			if (codeCharge != null) {
-				CodeLogt c = (CodeLogt) getHashCodesLogt().get(codeCharge);
-				int ligneCode = getListeCodesLogt().indexOf(c);
-				addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
-				addZone(getNOM_ST_CODE_CHARGE(), c.getLiblog());
-			}
-			break;
+				break;
+			case 3000:
+				int[] taillesMutu = { 3, 25 };
+				String padding[] = { "G", "G" };
+				String[] champsMutu = { "cdmutu", "limutu" };
+				setLB_CODE_CHARGE(new FormateListe(taillesMutu, getListeCodesMutu(), champsMutu, padding, false)
+						.getListeFormatee(false));
 
-		case 4001:
-			String[] champs = { "cdlogt", "liblog" };
+				if (codeCharge != null) {
+					CodeMutu c = (CodeMutu) getHashCodesMutu().get(codeCharge);
+					int ligneCode = getListeCodesMutu().indexOf(c);
+					addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
+					addZone(getNOM_ST_CODE_CHARGE(), c.getLimutu());
+				}
 
-			setLB_CODE_CHARGE(new FormateListe(tailles, getListeCodesChargeLogt(), champs).getListeFormatee(false));
+				break;
 
-			if (codeCharge != null) {
-				CodeChargeLogt c = (CodeChargeLogt) getHashCodesChargeLogt().get(codeCharge);
-				int ligneCode = getListeCodesChargeLogt().indexOf(c);
-				addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
-				addZone(getNOM_ST_CODE_CHARGE(), c.getLiblog());
-			}
+			case 4000:
+				int[] taillesCodeLogt = { 3, 30, 10 };
+				FormateListe aFormat = new FormateListe(taillesCodeLogt);
+				for (int i = 0; i < getListeCodesLogt().size(); i++) {
+					CodeLogt c = getListeCodesLogt().get(i);
+					String tauxAff = Const.CHAINE_VIDE;
+					if (Float.parseFloat(c.getTxsal()) != 0) {
+						Float taux = Float.parseFloat(c.getTxsal()) * 10;
+						tauxAff = taux.toString();
+						if (tauxAff.length() > 5) {
+							tauxAff = tauxAff.substring(0, 5);
+						}
+					}
+					String ligne[] = { c.getCdlogt(), c.getLiblog(),
+							tauxAff.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : tauxAff + "%" };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_CODE_CHARGE(aFormat.getListeFormatee(false));
 
-			break;
-		default:
-			showCodeCharge = false;
-			break;
+				if (codeCharge != null) {
+					CodeLogt c = (CodeLogt) getHashCodesLogt().get(codeCharge);
+					int ligneCode = getListeCodesLogt().indexOf(c);
+					addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
+					addZone(getNOM_ST_CODE_CHARGE(), c.getLiblog());
+				}
+				break;
+
+			case 4001:
+				String[] champs = { "cdlogt", "liblog" };
+
+				setLB_CODE_CHARGE(new FormateListe(tailles, getListeCodesChargeLogt(), champs).getListeFormatee(false));
+
+				if (codeCharge != null) {
+					CodeChargeLogt c = (CodeChargeLogt) getHashCodesChargeLogt().get(codeCharge);
+					int ligneCode = getListeCodesChargeLogt().indexOf(c);
+					addZone(getNOM_LB_CODE_CHARGE_SELECT(), String.valueOf(ligneCode));
+					addZone(getNOM_ST_CODE_CHARGE(), c.getLiblog());
+				}
+
+				break;
+			default:
+				showCodeCharge = false;
+				break;
 		}
 	}
 
@@ -1269,9 +1282,11 @@ public class OeAGENTCharge extends BasicProcess {
 				return;
 			}
 
-			if (r.getNumRubrique().equals("6000") || r.getNumRubrique().equals("8797") || r.getNumRubrique().equals("8798")
-					|| r.getNumRubrique().equals("8799") || r.getNumRubrique().equals("1030") || r.getNumRubrique().equals("1031")
-					|| r.getNumRubrique().equals("1035") || r.getNumRubrique().equals("1036")) {
+			if (r.getNumRubrique().equals("2200") || r.getNumRubrique().equals("6000")
+					|| r.getNumRubrique().equals("8797") || r.getNumRubrique().equals("8798")
+					|| r.getNumRubrique().equals("8799") || r.getNumRubrique().equals("1030")
+					|| r.getNumRubrique().equals("1031") || r.getNumRubrique().equals("1035")
+					|| r.getNumRubrique().equals("1036")) {
 				showMontant = true;
 				montantObligatoire = true;
 			}
@@ -1472,7 +1487,8 @@ public class OeAGENTCharge extends BasicProcess {
 	public boolean performPB_SELECT_CODE_CHARGE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_INFO_CODE_CHARGE(), Const.CHAINE_VIDE);
 		// Récupération du code charge sélectionné
-		int indiceCodeCharge = (Services.estNumerique(getVAL_LB_CODE_CHARGE_SELECT()) ? Integer.parseInt(getVAL_LB_CODE_CHARGE_SELECT()) : -1);
+		int indiceCodeCharge = (Services.estNumerique(getVAL_LB_CODE_CHARGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CODE_CHARGE_SELECT()) : -1);
 		if (indiceCodeCharge == -1 || getListeCodesMutu().size() == 0 || indiceCodeCharge > getListeCodesMutu().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "charge"));
 			return false;
@@ -1485,9 +1501,11 @@ public class OeAGENTCharge extends BasicProcess {
 			if (r.getNumRubrique().equals("3000")) {
 				CodeMutu g = (CodeMutu) getListeCodesMutu().get(indiceCodeCharge);
 				String txSal = String.valueOf(Double.parseDouble(g.getTxsal()) * 100).length() > 4 ? String.valueOf(
-						Double.parseDouble(g.getTxsal()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g.getTxsal()) * 100);
+						Double.parseDouble(g.getTxsal()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g
+						.getTxsal()) * 100);
 				String txPat = String.valueOf(Double.parseDouble(g.getTxpat()) * 100).length() > 4 ? String.valueOf(
-						Double.parseDouble(g.getTxpat()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g.getTxpat()) * 100);
+						Double.parseDouble(g.getTxpat()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g
+						.getTxpat()) * 100);
 				addZone(getNOM_ST_INFO_CODE_CHARGE(), "TxSal : " + txSal + "% , TxPat : " + txPat + "%");
 				showDonneesMutu = true;
 			}
