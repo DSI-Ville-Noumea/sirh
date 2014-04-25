@@ -15,6 +15,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.gestionagent.dto.KiosqueDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -29,7 +30,6 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.StatutCarriere;
 import nc.mairie.metier.diplome.DiplomeAgent;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
 import nc.mairie.metier.parametrage.TitreDiplome;
@@ -838,7 +838,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getCentreFormationDao() == null) {
 			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
 		}
-		
+
 		if (getEaeCampagneTaskDao() == null) {
 			setEaeCampagneTaskDao((EaeCampagneTaskDao) context.getBean("eaeCampagneTaskDao"));
 		}
@@ -947,7 +947,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_CALCULER())) {
 				return performPB_CALCULER(request);
 			}
-			
+
 			// Si clic sur le bouton PB_CALCULER
 			if (testerParametre(request, getNOM_PB_INITIALISE_CALCUL_EAE_JOB())) {
 				return performPB_INITIALISE_CALCUL_EAE_JOB(request);
@@ -1212,7 +1212,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	public String getNOM_PB_CALCULER() {
 		return "NOM_PB_CALCULER";
 	}
-	
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_CALCULER Date de création :
 	 * (24/03/14)
@@ -1247,10 +1247,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Cree une ligne dans la table EAE_CAMPAGNE_TASK
-	 * pour lancer le job de calcul des EAEs
+	 * Cree une ligne dans la table EAE_CAMPAGNE_TASK pour lancer le job de
+	 * calcul des EAEs
 	 */
 	public boolean performPB_INITIALISE_CALCUL_EAE_JOB(HttpServletRequest request) throws Exception {
 		setMessage(Const.CHAINE_VIDE);
@@ -1270,8 +1270,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			return false;
 		}
 	}
-	
-	
+
 	private boolean initialiseListeEAEWithJob(HttpServletRequest request) throws Exception {
 		if (etatStatut() != STATUT_EVALUATEUR) {
 			if (getListeCampagneEAE().size() > 0) {
@@ -1279,13 +1278,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (getCampagneCourante().estOuverte()) {
 					// on enregistre une ligne dans la table EAE_CAMPAGNE_TASK
 					// un JOB effectuera le calcul des EAEs
-					EaeCampagneTask eaeCampagneTask = getEaeCampagneTaskDao().chercherEaeCampagneTaskByIdCampagneEae(getCampagneCourante().getIdCampagneEAE());
-					
-					if(null != eaeCampagneTask) {
+					EaeCampagneTask eaeCampagneTask = getEaeCampagneTaskDao().chercherEaeCampagneTaskByIdCampagneEae(
+							getCampagneCourante().getIdCampagneEAE());
+
+					if (null != eaeCampagneTask) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR216"));
 						return false;
-					}else{
-						getEaeCampagneTaskDao().creerEaeCampagneTask(getCampagneCourante().getIdCampagneEAE(), getCampagneCourante().getAnnee(), getAgentConnecte(request).getIdAgent(), null, null);
+					} else {
+						getEaeCampagneTaskDao().creerEaeCampagneTask(getCampagneCourante().getIdCampagneEAE(),
+								getCampagneCourante().getAnnee(), getAgentConnecte(request).getIdAgent(), null, null);
 					}
 				}
 			}
@@ -1299,12 +1300,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			if (user == null) {
 				return null;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				return null;

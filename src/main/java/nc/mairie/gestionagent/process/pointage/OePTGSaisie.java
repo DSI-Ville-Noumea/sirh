@@ -19,12 +19,13 @@ import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.HeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.JourPointageDto;
 import nc.mairie.gestionagent.pointage.dto.PrimeDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.UserAppli;
@@ -104,15 +105,17 @@ public class OePTGSaisie extends BasicProcess {
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), uUser.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+			if (user == null) {
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			if (user != null && user.getNomatr() != null) {
-				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(),
+						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -155,7 +158,7 @@ public class OePTGSaisie extends BasicProcess {
 			for (int j = 0; j < 2; j++) {
 				AbsenceDto dto = getAbsence(temp.getDate(), "ABS:" + i + ":" + j);
 				if (dto != null) {
-					//si heurefin < heuredeb alors J+1
+					// si heurefin < heuredeb alors J+1
 					if (dto.getHeureDebut().getTime() > dto.getHeureFin().getTime()) {
 						Calendar cal = Calendar.getInstance();
 						cal.set(Calendar.YEAR, dto.getHeureFin().getYear());
@@ -168,7 +171,7 @@ public class OePTGSaisie extends BasicProcess {
 				}
 				HeureSupDto hsdto = getHS(temp.getDate(), "HS:" + i + ":" + j);
 				if (hsdto != null) {
-					//si heurefin < heuredeb alors J+1
+					// si heurefin < heuredeb alors J+1
 					if (hsdto.getHeureDebut().getTime() > hsdto.getHeureFin().getTime()) {
 						Calendar cal = Calendar.getInstance();
 						cal.set(Calendar.YEAR, hsdto.getHeureFin().getYear());

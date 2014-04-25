@@ -17,11 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.pointage.dto.VentilAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -417,14 +418,16 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			if (user == null) {
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -649,14 +652,17 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!u.getUserName().equals("nicno85")) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			if (user == null) {
 				getTransaction().traiterErreur();
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."

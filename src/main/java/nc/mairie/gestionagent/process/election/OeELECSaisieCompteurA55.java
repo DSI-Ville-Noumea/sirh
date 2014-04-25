@@ -12,10 +12,11 @@ import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.spring.ws.MSDateTransformer;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -483,12 +484,14 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		// table SIIDMA
 		AgentNW agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
-			Siidma user = Siidma.chercherSiidma(getTransaction(), u.getUserName().toUpperCase());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			if (user == null) {
 				return null;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				return null;

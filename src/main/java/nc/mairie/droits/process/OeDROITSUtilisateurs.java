@@ -7,14 +7,15 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.metier.droits.GroupeUtilisateur;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.droits.Utilisateur;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -46,7 +47,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	private String ACTION_CREATION = "Création d'un utilisateur.";
 
 	public String ACTION_SUPPRESSION_CONSULT = "Suppression d'un utilisateur de SIRH Consultation.";
-	
+
 	public String focus = null;
 	private Utilisateur utilisateurCourant;
 	public Hashtable<String, TreeHierarchy> hTree = null;
@@ -82,7 +83,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		int[] taillesGroupe = { 50 };
 		String[] champs = { "libGroupe" };
 
-		setLB_GROUPES_UTILISATEUR(new FormateListe(taillesGroupe, getListeGroupesUtilisateur(), champs).getListeFormatee());
+		setLB_GROUPES_UTILISATEUR(new FormateListe(taillesGroupe, getListeGroupesUtilisateur(), champs)
+				.getListeFormatee());
 
 		if (getListeGroupesAutres() == null) {
 			setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
@@ -103,20 +105,20 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			for (int i = 0; i < getListeUtilisateur().size(); i++) {
 				Utilisateur u = (Utilisateur) getListeUtilisateur().get(i);
 				String listeGroupes = Const.CHAINE_VIDE;
-				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(), u.getIdUtilisateur());
+				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(),
+						u.getIdUtilisateur());
 				for (int j = 0; j < groupesUtilisateur.size(); j++) {
 					listeGroupes += j == 0 ? ((Groupe) groupesUtilisateur.get(j)).getLibGroupe() : ", "
 							+ ((Groupe) groupesUtilisateur.get(j)).getLibGroupe();
 				}
-				// on fait la correspondance entre le login et l'agent via la
-				// table SIIDMA
-				Siidma user = Siidma.chercherSiidma(getTransaction(), u.getLoginUtilisateur().toUpperCase());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				}
+				// on fait la correspondance entre le login et l'agent via RADI
+				RadiWSConsumer radiConsu = new RadiWSConsumer();
+				LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getLoginUtilisateur());
+
 				String infoAgent = "&nbsp;";
-				if (user != null && user.getNomatr() != null) {
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), user.getNomatr());
+				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(),
+							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 					String prenomAgent = agent.getPrenomAgent().toLowerCase();
 					String premLettre = prenomAgent.substring(0, 1).toUpperCase();
 					String restePrenom = prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
@@ -125,7 +127,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 					infoAgent = prenomAgent + " " + nom;
 				}
 
-				addZone(getNOM_ST_NOM(indiceUtil), u.getLoginUtilisateur().equals(Const.CHAINE_VIDE) ? "&nbsp;" : u.getLoginUtilisateur());
+				addZone(getNOM_ST_NOM(indiceUtil),
+						u.getLoginUtilisateur().equals(Const.CHAINE_VIDE) ? "&nbsp;" : u.getLoginUtilisateur());
 				addZone(getNOM_ST_GROUPES(indiceUtil), listeGroupes.equals(Const.CHAINE_VIDE) ? "&nbsp;" : listeGroupes);
 				addZone(getNOM_ST_AGENT(indiceUtil), infoAgent);
 
@@ -340,7 +343,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		// Recup du groupe sélectionné
 		int numLigne = (Services.estNumerique(getZone(getNOM_LB_GROUPES_UTILISATEUR_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_GROUPES_UTILISATEUR_SELECT())) : -1);
-		if (numLigne == -1 || getListeGroupesUtilisateur().size() == 0 || numLigne > getListeGroupesUtilisateur().size()) {
+		if (numLigne == -1 || getListeGroupesUtilisateur().size() == 0
+				|| numLigne > getListeGroupesUtilisateur().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Groupes de l'utilisateur"));
 			return false;
 		}
@@ -439,7 +443,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		addZone(getNOM_EF_NOM_UTILISATEUR(), getUtilisateurCourant().getLoginUtilisateur());
 
 		setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
-		setListeGroupesUtilisateur(Groupe.listerGroupeAvecUtilisateur(getTransaction(), getUtilisateurCourant().getIdUtilisateur()));
+		setListeGroupesUtilisateur(Groupe.listerGroupeAvecUtilisateur(getTransaction(), getUtilisateurCourant()
+				.getIdUtilisateur()));
 
 		return true;
 	}
@@ -464,8 +469,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
 			for (int i = 0; i < getListeGroupesUtilisateur().size(); i++) {
 				Groupe g = (Groupe) getListeGroupesUtilisateur().get(i);
-				GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(), getUtilisateurCourant().getIdUtilisateur(),
-						g.getIdGroupe());
+				GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
+						getUtilisateurCourant().getIdUtilisateur(), g.getIdGroupe());
 				gu.supprimerGroupeUtilisateur(getTransaction());
 			}
 			getUtilisateurCourant().supprimerUtilisateur(getTransaction());
@@ -481,14 +486,15 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 				getUtilisateurCourant().modifierUtilisateur(getTransaction());
 				for (int i = 0; i < getListeGroupesARetirer().size(); i++) {
 					Groupe grp = (Groupe) getListeGroupesARetirer().get(i);
-					GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(), getUtilisateurCourant().getIdUtilisateur(),
-							grp.getIdGroupe());
+					GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
+							getUtilisateurCourant().getIdUtilisateur(), grp.getIdGroupe());
 					gu.supprimerGroupeUtilisateur(getTransaction());
 				}
 			}
 			for (int i = 0; i < getListeGroupesAAjouter().size(); i++) {
 				Groupe grp = (Groupe) getListeGroupesAAjouter().get(i);
-				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(), grp.getIdGroupe());
+				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
+						grp.getIdGroupe());
 				gu.creerGroupeUtilisateur(getTransaction());
 			}
 		}

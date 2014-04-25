@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -23,7 +24,6 @@ import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
-import nc.mairie.metier.droits.Siidma;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
@@ -42,6 +42,7 @@ import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 import nc.mairie.spring.domain.metier.parametrage.CorpsCap;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -697,16 +698,17 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		AgentNW agent = null;
 		if (!user.getUserName().equals("nicno85")) {
-			// on recupere l'id de l'agent
-			Siidma ag = Siidma.chercherSiidma(getTransaction(), user.getUserName());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto ag = radiConsu.getAgentCompteADByLogin(user.getUserName());
+			if (ag == null) {
 				// "ERR183",
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), ag.getNomatr());
+			agent = AgentNW.chercherAgentParMatricule(getTransaction(),
+					radiConsu.getNomatrWithEmployeeNumber(ag.getEmployeeNumber()));
 		} else {
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
 		}
