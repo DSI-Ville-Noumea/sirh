@@ -314,7 +314,7 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode())){ %>                            	
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode())){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
                             <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
@@ -354,7 +354,7 @@
                             <%} %>
 							</td>  							
                             <td>
-								<INPUT title="dupliquer" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>">
+								<INPUT title="pieces jointes" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>">
 							</td>		
                         </tr>
                         <%}%>

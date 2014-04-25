@@ -813,8 +813,6 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AGENT_CREATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
-		addZone(getNOM_ST_DUREE(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_HEURE(), Const.ZERO);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_DEBUT_MAM(), getNOM_RB_M());
 		addZone(getNOM_RG_FIN_MAM(), getNOM_RB_M());
@@ -825,6 +823,8 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DUREE(), Const.CHAINE_VIDE);
+		addZone(getNOM_LB_HEURE(), Const.ZERO);
 		setAgentCreation(null);
 		setTypeCreation(null);
 	}
@@ -1175,6 +1175,15 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_RG_DEBUT_MAM(), dem.isDateDebutAM() ? getNOM_RB_M() : getNOM_RB_AM());
 		addZone(getNOM_RG_FIN_MAM(), dem.isDateFinAM() ? getNOM_RB_M() : getNOM_RB_AM());
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsence().indexOf(type)));
+		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
+			String soldeAsaA55Heure = (dem.getDuree().intValue() / 60) == 0 ? "" : dem.getDuree().intValue() / 60 + "";
+			String soldeAsaA55Minute = (dem.getDuree().intValue() % 60) == 0 ? "" : "." + dem.getDuree().intValue()
+					% 60;
+			addZone(getNOM_ST_DUREE(), soldeAsaA55Heure + soldeAsaA55Minute);
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+			Integer resHeure = getListeHeure().indexOf(sdf.format(dem.getDateDebut()));
+			addZone(getNOM_LB_HEURE_SELECT(), resHeure.toString());
+		}
 		setTypeCreation(type);
 
 		// On nomme l'action
