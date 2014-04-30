@@ -85,23 +85,23 @@
 	<!-- Pour l'arbre des FDP -->
 	<Parameter description="SIRH WS endpoint url for FichePoste tree"
 		name="SIRH_WS_URL_ARBRE_FDP" override="false"
-		value="http://172.16.24.19:8085/sirhws/fichePostes/rebuildFichePosteTree" />
+		value="http://svi-tomcat0:8085/sirhws/fichePostes/rebuildFichePosteTree" />
 	<!-- Pour l'edition BIRT des avancements -->
 	<Parameter description="SIRH WS url pour le tableau des avancements CAP"
 		name="SIRH_WS_URL_TABLEAU_AVCT_CAP" override="false"
-		value="http://172.16.24.19:8085/sirhws/avancements/downloadTableauAvancements" />
+		value="http://svi-tomcat0:8085/sirhws/avancements/downloadTableauAvancements" />
 	<Parameter description="SIRH WS url pour les arretes des avancements"
 		name="SIRH_WS_URL_ARRETES_AVCT" override="false"
-		value="http://172.16.24.19:8085/sirhws/avancements/downloadArretes" />
+		value="http://svi-tomcat0:8085/sirhws/avancements/downloadArretes" />
 	<!-- WS DES POINTAGES -->
 	<Parameter description="SIRH PTG WS url" name="SIRH_PTG_WS"
-		override="false" value="http://172.16.24.19:8085/sirh-ptg-ws/" />
+		override="false" value="http://svi-tomcat0:8085/sirh-ptg-ws/" />
 	<!-- WS DES ABSENCES -->
 	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
-		override="false" value="http://172.16.24.19:8085/sirh-abs-ws/" />		
+		override="false" value="http://svi-tomcat0:8085/sirh-abs-ws/" />		
 	<!-- WS RADI pour interroger AD -->
 	<Parameter description="RADI WS url" name="RADI_WS"
-		override="false" value="http://localhost:8090/radi/" />
+		override="false" value="http://svi-tomcat0:8085/radi/" />
 
 
 	<!-- Parametres pour l'affichage des nouveaux modules -->
@@ -151,7 +151,7 @@
 	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/Contrats/</param-value> -->
 	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
 		override="false"
-		value="http://172.16.24.19:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
+		value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
 	<Parameter description="repertoire pour les modeles des affectations"
 		name="REPERTOIRE_MODELES_AFFECTATIONS" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/Affectations/" />
