@@ -1,6 +1,8 @@
 package nc.mairie.droits.process;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -221,6 +223,11 @@ public class OeDROITSKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER
 			if (testerParametre(request, getNOM_PB_VALIDER())) {
 				return performPB_VALIDER(request);
+			}
+
+			// Si clic sur le bouton PB_TRI
+			if (testerParametre(request, getNOM_PB_TRI())) {
+				return performPB_TRI(request);
 			}
 
 		}
@@ -487,5 +494,48 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setFirst(boolean first) {
 		this.first = first;
+	}
+
+	public String getNOM_PB_TRI() {
+		return "NOM_PB_TRI";
+	}
+
+	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
+		if (getVAL_RG_TRI().equals(getNOM_RB_TRI_AGENT())) {
+			// on tri la liste
+			Collections.sort(getListeApprobateurs(), new Comparator<AgentWithServiceDto>() {
+				@Override
+				public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
+					return o1.getNom().compareTo(o2.getNom());
+				}
+
+			});
+		} else if (getVAL_RG_TRI().equals(getNOM_RB_TRI_SERVICE())) {
+			// on tri la liste
+			Collections.sort(getListeApprobateurs(), new Comparator<AgentWithServiceDto>() {
+				@Override
+				public int compare(AgentWithServiceDto o1, AgentWithServiceDto o2) {
+					return o1.getService().compareTo(o2.getService());
+				}
+
+			});
+		}
+		return true;
+	}
+
+	public String getNOM_RG_TRI() {
+		return "NOM_RG_TRI";
+	}
+
+	public String getVAL_RG_TRI() {
+		return getZone(getNOM_RG_TRI());
+	}
+
+	public String getNOM_RB_TRI_AGENT() {
+		return "NOM_RB_TRI_AGENT";
+	}
+
+	public String getNOM_RB_TRI_SERVICE() {
+		return "NOM_RB_TRI_SERVICE";
 	}
 }

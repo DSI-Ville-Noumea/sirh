@@ -37,10 +37,10 @@ document.formu.elements[nom].focus();
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 		<legend class="sigp2Legend">Liste des approbateurs des pointages</legend>
 			<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
-			<span style="margin-left: 20px;">Agent</span>
-			<span style="margin-left: 165px;">Service</span>
-			<span style="margin-left: 605px;">PTG</span>
-			<span style="margin-left: 30px;">ABS</span>
+			<span style="margin-left: 18px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span>
+			<span style="margin-left: 150px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_SERVICE())%>> Service</span>
+			<span style="margin-left: 580px;">PTG</span>
+			<span style="margin-left: 25px;">ABS</span>
 			<br/>
 			<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 				<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -70,6 +70,7 @@ document.formu.elements[nom].focus();
 				<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 			</div>
         </FIELDSET>
+		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_TRI()%>" value="TRI">
 	</FORM>
 </BODY>
 </HTML>
