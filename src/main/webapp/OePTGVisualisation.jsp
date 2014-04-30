@@ -90,6 +90,7 @@
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "70px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "120px"},
+                            {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "100px","sClass" : "center"},
                             {"bSortable": true,"sWidth": "80px","sClass" : "center"},
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"},
@@ -154,7 +155,7 @@
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
                             .attr("style", "margin-left: 329px;")
-                            .attr("width", "570px")
+                            .attr("width", "690px")
                             .append($(document.createElement("thead"))
                             );
 
@@ -173,8 +174,9 @@
                                 .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 43px;text-align: center;"))
                                 .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 52px;text-align: center;"))
                                 .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 100px"))
-                                .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 80px;text-align: center;"))
-                                .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 58px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 120px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 80px;text-align: center;"))
+                                .append($(document.createElement("td")).html(donnees[7]).attr("style", "width: 58px;text-align: center;"))
                                 );
                     }
                     // Append the detail table into the detail container
@@ -318,6 +320,7 @@
                             <th>Fin</th>
                             <th>Quantité</th>
                             <th>Motif<br>Commentaires</th>
+                            <th>Opérateur</th>
                             <th>Etat</th>
                             <th>Date de saisie</th>
                             <th align="center">
@@ -364,6 +367,7 @@
                             <td><%=process.getVAL_ST_DATE_FIN(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_DUREE(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_MOTIF(indicePtg)%></td>							
+                            <td><%=process.getVAL_ST_OPERATEUR(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indicePtg)%></td>			
                             <td><%=process.getVAL_ST_DATE_SAISIE(indicePtg)%></td>			
                             <td align="center">

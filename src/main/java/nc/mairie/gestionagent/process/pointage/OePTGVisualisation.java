@@ -83,7 +83,7 @@ public class OePTGVisualisation extends BasicProcess {
 			AgentDto agtPtg = ptg.getAgent();
 
 			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " ("
-					+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")   ");
+					+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")");
 			addZone(getMATRICULE_ST_AGENT(i),
 					agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
@@ -97,6 +97,11 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 			addZone(getNOM_ST_DUREE(i), ptg.getQuantite());
 			addZone(getNOM_ST_MOTIF(i), ptg.getMotif() + " - " + ptg.getCommentaire());
+
+			AgentDto opPtg = ptg.getOperateur();
+			addZone(getNOM_ST_OPERATEUR(i), opPtg.getNom() + " " + opPtg.getPrenom() + " ("
+					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")");
+
 			addZone(getNOM_ST_ETAT(i), EtatPointageEnum.getEtatPointageEnum(ptg.getIdRefEtat()).name());
 			addZone(getNOM_ST_DATE_SAISIE(i), sdf.format(ptg.getDateSaisie()) + " à " + hrs.format(ptg.getDateSaisie()));
 		}
@@ -1403,7 +1408,7 @@ public class OePTGVisualisation extends BasicProcess {
 			history.put(ptgId, t.getVisualisationHistory(ptgId));
 		}
 		List<ConsultPointageDto> data = history.get(ptgId);
-		int numParams = 7;
+		int numParams = 8;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		for (ConsultPointageDto p : data) {
@@ -1412,8 +1417,11 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][2] = formatHeure(p.getFin()).equals("00:00") ? "&nbsp;" : formatHeure(p.getFin());
 			ret[index][3] = "" + p.getQuantite();
 			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
-			ret[index][5] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
-			ret[index][6] = formatDate(p.getDateSaisie()) + " à " + formatHeure(p.getDateSaisie());
+			AgentDto opPtg = p.getOperateur();
+			ret[index][5] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
+					+ opPtg.getIdAgent().toString().substring(3, opPtg.getIdAgent().toString().length()) + ")";
+			ret[index][6] = EtatPointageEnum.getEtatPointageEnum(p.getIdRefEtat()).name();
+			ret[index][7] = formatDate(p.getDateSaisie()) + " à " + formatHeure(p.getDateSaisie());
 			index++;
 		}
 
@@ -1531,6 +1539,14 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getNOM_ST_SEMAINE(int i) {
 		return "NOM_ST_SEMAINE_" + i;
+	}
+
+	public String getNOM_ST_OPERATEUR(int i) {
+		return "getNOM_ST_OPERATEUR" + i;
+	}
+
+	public String getVAL_ST_OPERATEUR(int i) {
+		return getZone(getNOM_ST_OPERATEUR(i));
 	}
 
 }

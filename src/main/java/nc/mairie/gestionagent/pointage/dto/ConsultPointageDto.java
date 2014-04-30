@@ -17,6 +17,7 @@ public class ConsultPointageDto {
 	private String commentaire;
 	private Integer idRefEtat;
 	private Date dateSaisie;
+	private AgentDto operateur;
 
 	public ConsultPointageDto() {
 
@@ -108,5 +109,13 @@ public class ConsultPointageDto {
 
 	public void setDateSaisie(Date dateSaisie) {
 		this.dateSaisie = dateSaisie;
+	}
+
+	public AgentDto getOperateur() {
+		return operateur;
+	}
+
+	public void setOperateur(AgentDto operateur) {
+		this.operateur = operateur;
 	}
 }
