@@ -18,6 +18,8 @@ public class CompteurDto {
 
 	private Date dateFin;
 
+	private Integer idOrganisationSyndicale;
+
 	public Integer getIdAgent() {
 		return idAgent;
 	}
@@ -72,6 +74,14 @@ public class CompteurDto {
 
 	public void setDateFin(Date dateFin) {
 		this.dateFin = dateFin;
+	}
+
+	public Integer getIdOrganisationSyndicale() {
+		return idOrganisationSyndicale;
+	}
+
+	public void setIdOrganisationSyndicale(Integer idOrganisationSyndicale) {
+		this.idOrganisationSyndicale = idOrganisationSyndicale;
 	}
 
 }

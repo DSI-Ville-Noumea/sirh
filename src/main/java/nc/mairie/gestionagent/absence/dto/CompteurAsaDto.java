@@ -12,6 +12,8 @@ public class CompteurAsaDto {
 
 	private Date dateFin;
 
+	private OrganisationSyndicaleDto organisationSyndicaleDto;
+
 	public Integer getIdAgent() {
 		return idAgent;
 	}
@@ -42,6 +44,14 @@ public class CompteurAsaDto {
 
 	public void setNb(Double nb) {
 		this.nb = nb;
+	}
+
+	public OrganisationSyndicaleDto getOrganisationSyndicaleDto() {
+		return organisationSyndicaleDto;
+	}
+
+	public void setOrganisationSyndicaleDto(OrganisationSyndicaleDto organisationSyndicaleDto) {
+		this.organisationSyndicaleDto = organisationSyndicaleDto;
 	}
 
 }

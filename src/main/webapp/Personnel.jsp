@@ -116,6 +116,8 @@
 		listeDroits.add("ELECSaisieCompteurA48");
 		listeDroits.add("ELECSaisieCompteurA54");
 		listeDroits.add("ELECSaisieCompteurA55");
+		listeDroits.add("ELECSaisieCompteurA53");
+		listeDroits.add("ELECSaisieCompteurA52");
 		
 		
 		/*Module SUIVI MEDICAL*/

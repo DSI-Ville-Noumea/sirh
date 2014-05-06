@@ -48,11 +48,19 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json);
 
+	ReturnMessageDto addCompteurAsaA52(String idAgentConnecte, String json);
+
+	ReturnMessageDto addCompteurAsaA53(String idAgentConnecte, String json);
+
 	List<CompteurAsaDto> getListeCompteursA48();
 
 	List<CompteurAsaDto> getListeCompteursA54();
 
 	List<CompteurAsaDto> getListeCompteursA55();
+
+	List<CompteurAsaDto> getListeCompteursA52();
+
+	List<CompteurAsaDto> getListeCompteursA53();
 
 	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json);
 
