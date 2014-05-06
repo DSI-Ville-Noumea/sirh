@@ -45,7 +45,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	private boolean first = true;
 
 	/**
-	 * @return Renvoie focus.
+	 * @return String Renvoie focus.
 	 */
 	public String getFocus() {
 		if (focus == null) {
@@ -71,6 +71,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -187,6 +189,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * @return String
 	 */
 	public String getNomEcran() {
 		return "ECR-DROIT-KIOSQUE";
@@ -195,6 +198,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -248,6 +254,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
 	 * dans chaque formulaire de la JSP. Date de création : (20/10/11 11:05:27)
+	 * @return String
 	 * 
 	 */
 	public String getJSP() {
@@ -265,6 +272,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
+	 * @param i id
+	 * @return String
 	 * 
 	 */
 	public String getNOM_ST_AGENT(int i) {
@@ -274,6 +283,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
+	 * @param i id
+	 * @return String
 	 * 
 	 */
 	public String getVAL_ST_AGENT(int i) {
@@ -283,6 +294,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
 	 * création : (18/08/11 10:21:15)
+	 * @param i id
+	 * @return String
 	 * 
 	 */
 	public String getNOM_ST_SERVICE(int i) {
@@ -292,6 +305,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
 	 * de création : (18/08/11 10:21:15)
+	 * @param i id
+	 * @return String
 	 * 
 	 */
 	public String getVAL_ST_SERVICE(int i) {
@@ -301,6 +316,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
+	 * @return String
 	 * 
 	 */
 	public String getNOM_ST_ACTION() {
@@ -310,6 +326,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
+	 * @return String
 	 * 
 	 */
 	public String getVAL_ST_ACTION() {
@@ -319,6 +336,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
 	 * (05/09/11 11:31:37)
+	 * @return String
 	 * 
 	 */
 	public String getNOM_PB_AJOUTER() {
@@ -330,6 +348,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 * 
 	 */
 	public boolean performPB_AJOUTER(HttpServletRequest request) throws Exception {
@@ -341,6 +362,8 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
 	 * : (05/09/11 11:31:37)
+	 * @param i id
+	 * @return String
 	 * 
 	 */
 	public String getNOM_PB_SUPPRIMER(int i) {
@@ -352,6 +375,10 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * @param request HttpServletRequest
+	 * @param indiceEltASuprimer indice element
+	 * @throws Exception Exception
+	 * @return boolean
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
@@ -383,6 +410,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
 	 * (05/09/11 11:31:37)
+	 * @return String
 	 * 
 	 */
 	public String getNOM_PB_VALIDER() {
@@ -394,6 +422,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -440,6 +471,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
 	 * (05/09/11 11:31:37)
+	 * @return String
 	 * 
 	 */
 	public String getNOM_PB_ANNULER() {
@@ -451,6 +483,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {

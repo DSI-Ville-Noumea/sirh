@@ -50,6 +50,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_AJOUTER_ELEMENT
 	 * Date de création : (10/10/11 14:37:55)
+	 * @return String
 	 */
 	public String getNOM_PB_AJOUTER_ELEMENT() {
 		return "NOM_PB_AJOUTER_ELEMENT";
@@ -61,6 +62,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_AJOUTER_ELEMENT(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION_ELEMENT);
@@ -72,6 +76,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_AJOUTER_GROUPE
 	 * Date de création : (10/10/11 14:37:55)
+	 * @return String
 	 */
 	public String getNOM_PB_AJOUTER_GROUPE() {
 		return "NOM_PB_AJOUTER_GROUPE";
@@ -83,6 +88,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_AJOUTER_GROUPE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION_GROUPE);
@@ -94,6 +102,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_SUPPRIMER_ELEMENT
 	 * Date de création : (10/10/11 14:37:55)
+	 * @return String
 	 */
 	public String getNOM_PB_SUPPRIMER_ELEMENT() {
 		return "NOM_PB_SUPPRIMER_ELEMENT";
@@ -105,6 +114,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_SUPPRIMER_ELEMENT(HttpServletRequest request) throws Exception {
 		return true;
@@ -116,6 +128,10 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @param i numero ligne
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_SUPPRIMER_GROUPE(HttpServletRequest request, int i) throws Exception {
 		setGroupeCourant((Groupe) getListeGroupe().get(i));
@@ -181,6 +197,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_ANNULER
 	 * Date de création : (10/10/11 15:14:20)
+	 * @return String
 	 */
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
@@ -192,6 +209,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 15:14:20)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -202,6 +222,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_VALIDER
 	 * Date de création : (10/10/11 15:14:20)
+	 * @return String
 	 */
 	public String getNOM_PB_VALIDER() {
 		return "NOM_PB_VALIDER";
@@ -213,6 +234,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 15:14:20)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
@@ -315,6 +339,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * @return String
 	 */
 	public String getNomEcran() {
 		return "ECR-DROIT-GROUPE";
@@ -324,6 +349,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne pour la JSP le nom de la zone statique :
 	 * ST_ACTION
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getNOM_ST_ACTION() {
@@ -334,6 +360,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne la valeur à afficher par la JSP  pour la zone :
 	 * ST_ACTION
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getVAL_ST_ACTION() {
@@ -344,6 +371,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'une zone de saisie pour la JSP :
 	 * EF_NOM_ELEMENT
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getNOM_EF_NOM_ELEMENT() {
@@ -354,6 +382,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
 	 * EF_NOM_ELEMENT
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getVAL_EF_NOM_ELEMENT() {
@@ -364,6 +393,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'une zone de saisie pour la JSP :
 	 * EF_NOM_GROUPE
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getNOM_EF_NOM_GROUPE() {
@@ -374,6 +404,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
 	 * EF_NOM_GROUPE
 	 * Date de création : (10/10/11 16:15:06)
+	 * @return String
      *
 	 */
 	public String getVAL_EF_NOM_GROUPE() {
@@ -384,6 +415,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_VALIDER_AJOUT
 	 * Date de création : (10/10/11 16:22:57)
+	 * @return String
      *
 	 */
 	public String getNOM_PB_VALIDER_AJOUT() {
@@ -396,6 +428,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (10/10/11 16:22:57)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
      *
 	 */
 	public boolean performPB_VALIDER_AJOUT(HttpServletRequest request) throws Exception {
@@ -430,7 +465,7 @@ public class OeDROITSGestion extends BasicProcess {
 
 	/**
 	 * Vide le formulaire de saisie.
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	private void viderFormulaire() throws Exception {
 		addZone(getNOM_EF_NOM_ELEMENT(), Const.CHAINE_VIDE);
@@ -441,6 +476,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Getter de la liste avec un lazy initialize :
 	 * LB_TYPE_DROIT
 	 * Date de création : (11/10/11 11:39:06)
+	 * @return String[]
      *
 	 */
 	private String[] getLB_TYPE_DROIT(int i, int j) {
@@ -463,6 +499,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom de la zone pour la JSP :
 	 * NOM_LB_TYPE_DROIT
 	 * Date de création : (11/10/11 11:39:06)
+	 * @param i ligne
+	 * @param j colonne
+	 * @return String
      *
 	 */
 	public String getNOM_LB_TYPE_DROIT(int i, int j) {
@@ -473,6 +512,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
 	 * NOM_LB_TYPE_DROIT_SELECT
 	 * Date de création : (11/10/11 11:39:06)
+	 * @param i ligne
+	 * @param j colonne
+	 * @return String
      *
 	 */
 	public String getNOM_LB_TYPE_DROIT_SELECT(int i, int j) {
@@ -484,6 +526,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne la valeur à afficher pour la zone de la JSP :
 	 * LB_TYPE_DROIT
 	 * Date de création : (11/10/11 11:39:06)
+	 * @param i ligne
+	 * @param j colonne
+	 * @return String[]
      *
 	 */
 	public String[] getVAL_LB_TYPE_DROIT(int i, int j) {
@@ -495,6 +540,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne l'indice à sélectionner pour la zone de la JSP :
 	 * LB_TYPE_DROIT
 	 * Date de création : (11/10/11 11:39:06)
+	 * @param i ligne
+	 * @param j colonne
+	 * @return String
      *
 	 */
 	public String getVAL_LB_TYPE_DROIT_SELECT(int i, int j) {
@@ -559,6 +607,8 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_MODIFIER_GROUPE
 	 * Date de création : (20/10/11 10:25:32)
+	 * @param i id
+	 * @return String
      *
 	 */
 	public String getNOM_PB_MODIFIER_GROUPE(int i) {
@@ -571,6 +621,10 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (20/10/11 10:25:32)
+	 * @param i id
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return String
      *
 	 */
 	public boolean performPB_MODIFIER_GROUPE(HttpServletRequest request, int i) throws Exception {
@@ -584,6 +638,8 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_SUPPRIMER_GROUPE
 	 * Date de création : (20/10/11 10:25:32)
+	 * @param i id
+	 * @return String
      *
 	 */
 	public String getNOM_PB_SUPPRIMER_GROUPE(int i) {
@@ -594,6 +650,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Méthode appelée par la servlet qui aiguille le traitement : 
 	 * en fonction du bouton de la JSP 
 	 * Date de création : (10/10/11 14:37:55)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
      *
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
@@ -684,6 +743,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_VALIDER_MODIFICATION_GRPE
 	 * Date de création : (20/10/11 11:05:27)
+	 * @return String
      *
 	 */
 	public String getNOM_PB_VALIDER_MODIFICATION_GRPE() {
@@ -696,6 +756,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (20/10/11 11:05:27)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
      *
 	 */
 	public boolean performPB_VALIDER_MODIFICATION_GRPE(HttpServletRequest request) throws Exception {
@@ -711,6 +774,7 @@ public class OeDROITSGestion extends BasicProcess {
 	 * Retourne le nom d'un bouton pour la JSP :
 	 * PB_VALIDER_SUPPRESSION_GRPE
 	 * Date de création : (20/10/11 11:05:27)
+	 * @return String
      *
 	 */
 	public String getNOM_PB_VALIDER_SUPPRESSION_GRPE() {
@@ -723,6 +787,9 @@ public class OeDROITSGestion extends BasicProcess {
 	 * - Positionne un statut en fonction de ces règles :
 	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
 	 * Date de création : (20/10/11 11:05:27)
+	 * @param request HttpServletRequest
+	 * @throws Exception Exception
+	 * @return boolean
      *
 	 */
 	public boolean performPB_VALIDER_SUPPRESSION_GRPE(HttpServletRequest request) throws Exception {

@@ -126,20 +126,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		}
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
-	 * 
-	 */
 	public String getNOM_ST_ACTION() {
 		return "NOM_ST_ACTION";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (05/09/11 11:39:24)
-	 * 
-	 */
 	public String getVAL_ST_ACTION() {
 		return getZone(getNOM_ST_ACTION());
 	}

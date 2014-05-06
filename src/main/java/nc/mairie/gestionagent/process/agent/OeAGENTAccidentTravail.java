@@ -207,22 +207,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
-	 * (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION())) {
 			setStatut(STATUT_PROCESS_APPELANT);
@@ -233,22 +221,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER Date de création :
-	 * (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_PB_CREER() {
 		return "NOM_PB_CREER";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public boolean performPB_CREER(HttpServletRequest request) throws Exception {
 		// Si pas d'agent courant alors erreur
 		if (getAgentCourant() == null) {
@@ -308,21 +284,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
-	 * (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_PB_VALIDER() {
 		return "NOM_PB_VALIDER";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (30/06/11 13:56:32)
-	 * 
+	/*
 	 * RG_AG_AT_A02
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
@@ -522,239 +488,110 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_ST_DATE() {
 		return "NOM_ST_DATE";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_ST_DATE() {
 		return getZone(getNOM_ST_DATE());
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NB_JOUR_IIT Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_ST_NB_JOUR_IIT() {
 		return "NOM_ST_NB_JOUR_IIT";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_JOUR_IIT
-	 * Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_ST_NB_JOUR_IIT() {
 		return getZone(getNOM_ST_NB_JOUR_IIT());
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_SIEGE_LESION Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_ST_SIEGE_LESION() {
 		return "NOM_ST_SIEGE_LESION";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SIEGE_LESION
-	 * Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_ST_SIEGE_LESION() {
 		return getZone(getNOM_ST_SIEGE_LESION());
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_ST_TYPE() {
 		return "NOM_ST_TYPE";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_ST_TYPE() {
 		return getZone(getNOM_ST_TYPE());
 	}
 
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_EF_DATE() {
 		return "NOM_EF_DATE";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie : EF_DATE
-	 * Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_EF_DATE() {
 		return getZone(getNOM_EF_DATE());
 	}
 
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NB_JOUR_IIT Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_EF_NB_JOUR_IIT() {
 		return "NOM_EF_NB_JOUR_IIT";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NB_JOUR_IIT Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_EF_NB_JOUR_IIT() {
 		return getZone(getNOM_EF_NB_JOUR_IIT());
 	}
 
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_SIEGE_LESION Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	private String[] getLB_SIEGE_LESION() {
 		if (LB_SIEGE_LESION == null)
 			LB_SIEGE_LESION = initialiseLazyLB();
 		return LB_SIEGE_LESION;
 	}
 
-	/**
-	 * Setter de la liste: LB_SIEGE_LESION Date de création : (30/06/11
-	 * 13:56:32)
-	 * 
-	 */
 	private void setLB_SIEGE_LESION(String[] newLB_SIEGE_LESION) {
 		LB_SIEGE_LESION = newLB_SIEGE_LESION;
 	}
 
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_SIEGE_LESION Date de
-	 * création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_LB_SIEGE_LESION() {
 		return "NOM_LB_SIEGE_LESION";
 	}
 
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_SIEGE_LESION_SELECT Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_LB_SIEGE_LESION_SELECT() {
 		return "NOM_LB_SIEGE_LESION_SELECT";
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_SIEGE_LESION Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String[] getVAL_LB_SIEGE_LESION() {
 		return getLB_SIEGE_LESION();
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_SIEGE_LESION Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_LB_SIEGE_LESION_SELECT() {
 		return getZone(getNOM_LB_SIEGE_LESION_SELECT());
 	}
 
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_TYPE Date de création :
-	 * (30/06/11 13:56:32)
-	 * 
-	 */
 	private String[] getLB_TYPE() {
 		if (LB_TYPE == null)
 			LB_TYPE = initialiseLazyLB();
 		return LB_TYPE;
 	}
 
-	/**
-	 * Setter de la liste: LB_TYPE Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	private void setLB_TYPE(String[] newLB_TYPE) {
 		LB_TYPE = newLB_TYPE;
 	}
 
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_TYPE Date de création :
-	 * (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_LB_TYPE() {
 		return "NOM_LB_TYPE";
 	}
 
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_TYPE_SELECT Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getNOM_LB_TYPE_SELECT() {
 		return "NOM_LB_TYPE_SELECT";
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_TYPE Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String[] getVAL_LB_TYPE() {
 		return getLB_TYPE();
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_TYPE Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public String getVAL_LB_TYPE_SELECT() {
 		return getZone(getNOM_LB_TYPE_SELECT());
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
-	 * création : (30/06/11 14:19:14)
-	 * 
-	 */
 	public String getNOM_ST_ACTION() {
 		return "NOM_ST_ACTION";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
-	 * création : (30/06/11 14:19:14)
-	 * 
-	 */
 	public String getVAL_ST_ACTION() {
 		return getZone(getNOM_ST_ACTION());
 	}
@@ -813,38 +650,18 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		this.listeTypeAT = listeTypeAT;
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_INITIALE Date
-	 * de création : (05/07/11 14:50:39)
-	 * 
-	 */
 	public String getNOM_ST_DATE_INITIALE() {
 		return "NOM_ST_DATE_INITIALE";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_INITIALE
-	 * Date de création : (05/07/11 14:50:39)
-	 * 
-	 */
 	public String getVAL_ST_DATE_INITIALE() {
 		return getZone(getNOM_ST_DATE_INITIALE());
 	}
 
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_DATE_INITIALE Date
-	 * de création : (05/07/11 14:50:39)
-	 * 
-	 */
 	public String getNOM_EF_DATE_INITIALE() {
 		return "NOM_EF_DATE_INITIALE";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_DATE_INITIALE Date de création : (05/07/11 14:50:39)
-	 * 
-	 */
 	public String getVAL_EF_DATE_INITIALE() {
 		return getZone(getNOM_EF_DATE_INITIALE());
 	}
@@ -853,11 +670,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "ECR-AG-HSCT-ACCTRAVAIL";
 	}
 
-	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
-	 * du bouton de la JSP Date de création : (30/06/11 13:56:32)
-	 * 
-	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
 		String JSP = null;
@@ -943,101 +755,46 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
-	 * dans chaque formulaire de la JSP. Date de création : (17/10/11 15:55:25)
-	 * 
-	 */
 	public String getJSP() {
 		return "OeAGENTAccidentTravail.jsp";
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_DATE(int i) {
 		return "NOM_ST_DATE" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_DATE(int i) {
 		return getZone(getNOM_ST_DATE(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_RECHUTE
-	 * DATE_RECHUTE de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_DATE_RECHUTE(int i) {
 		return "NOM_ST_DATE_RECHUTE" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_RECHUTE
-	 * DATE_RECHUTE de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_DATE_RECHUTE(int i) {
 		return getZone(getNOM_ST_DATE_RECHUTE(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NB_JOURS NB_JOURS de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_NB_JOURS(int i) {
 		return "NOM_ST_NB_JOURS" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_JOURS
-	 * NB_JOURS de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_NB_JOURS(int i) {
 		return getZone(getNOM_ST_NB_JOURS(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE TYPE de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_TYPE(int i) {
 		return "NOM_ST_TYPE" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE TYPE de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_TYPE(int i) {
 		return getZone(getNOM_ST_TYPE(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_SIEGE SIEGE de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_SIEGE(int i) {
 		return "NOM_ST_SIEGE" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SIEGE SIEGE de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_SIEGE(int i) {
 		return getZone(getNOM_ST_SIEGE(i));
 	}
@@ -1046,13 +803,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_PB_MODIFIER" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (16/08/11 15:48:02)
-	 * 
-	 */
 	public boolean performPB_MODIFIER(HttpServletRequest request, int indiceEltAModifier) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -1073,22 +823,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VISUALISATION Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
 	public String getNOM_PB_CONSULTER(int i) {
 		return "NOM_PB_CONSULTER" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
 	public boolean performPB_CONSULTER(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -1109,22 +847,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_DOCUMENT Date de création :
-	 * (05/09/11 11:31:37)
-	 * 
-	 */
 	public String getNOM_PB_DOCUMENT(int i) {
 		return "NOM_PB_DOCUMENT" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * 
-	 */
 	public boolean performPB_DOCUMENT(HttpServletRequest request, int indiceEltDocument) throws Exception {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -1147,13 +873,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
-	 * 10:55:12)
-	 * 
-	 * @param newListeDocuments
-	 *            ArrayList
-	 */
 	private void setListeDocuments(ArrayList<Document> newListeDocuments) {
 		listeDocuments = newListeDocuments;
 	}
@@ -1165,10 +884,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return listeDocuments;
 	}
 
-	/**
-	 * Initialisation de la liste des contacts
-	 * 
-	 */
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
@@ -1207,112 +922,50 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NOM_DOC Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_NOM_DOC(int i) {
 		return "NOM_ST_NOM_DOC" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM_DOC Date
-	 * de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_NOM_DOC(int i) {
 		return getZone(getNOM_ST_NOM_DOC(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_TYPE_DOC Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_TYPE_DOC(int i) {
 		return "NOM_ST_TYPE_DOC" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_TYPE_DOC Date
-	 * de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_TYPE_DOC(int i) {
 		return getZone(getNOM_ST_TYPE_DOC(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_DATE_DOC Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_DATE_DOC(int i) {
 		return "NOM_ST_DATE_DOC" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_DATE_DOC Date
-	 * de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_DATE_DOC(int i) {
 		return getZone(getNOM_ST_DATE_DOC(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_COMMENTAIRE Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_COMMENTAIRE(int i) {
 		return "NOM_ST_COMMENTAIRE" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_COMMENTAIRE
-	 * Date de création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_COMMENTAIRE(int i) {
 		return getZone(getNOM_ST_COMMENTAIRE(i));
 	}
 
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getNOM_ST_NB_DOC(int i) {
 		return "NOM_ST_NB_DOC" + i;
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NB_DOC Date de
-	 * création : (18/08/11 10:21:15)
-	 * 
-	 */
 	public String getVAL_ST_NB_DOC(int i) {
 		return getZone(getNOM_ST_NB_DOC(i));
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_DOC Date de création :
-	 * (17/10/11 13:46:25)
-	 * 
-	 */
 	public String getNOM_PB_CREER_DOC() {
 		return "NOM_PB_CREER_DOC";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (17/10/11 13:46:25)
-	 * 
-	 */
 	public boolean performPB_CREER_DOC(HttpServletRequest request) throws Exception {
 
 		// init des documents courant
@@ -1328,22 +981,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CONSULTER_DOC Date de
-	 * création : (29/09/11 10:03:38)
-	 * 
-	 */
 	public String getNOM_PB_CONSULTER_DOC(int i) {
 		return "NOM_PB_CONSULTER_DOC" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
-	 * 
-	 */
 	public boolean performPB_CONSULTER_DOC(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
 		// Si pas d'agent courant alors erreur
 		if (getAgentCourant() == null) {
@@ -1391,22 +1032,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		}
 	}
 
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER_DOC Date de
-	 * création : (05/09/11 11:31:37)
-	 * 
-	 */
 	public String getNOM_PB_SUPPRIMER_DOC(int i) {
 		return "NOM_PB_SUPPRIMER_DOC" + i;
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * 
-	 */
 	public boolean performPB_SUPPRIMER_DOC(HttpServletRequest request, int indiceEltASuprimer) throws Exception {
 
 		// On nomme l'action
@@ -1450,21 +1079,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return true;
 	}
 
-	/**
-	 * Retourne le doc en cours.
-	 * 
-	 * @return documentCourant
-	 */
 	private Document getDocumentCourant() {
 		return documentCourant;
 	}
 
-	/**
-	 * Met à jour le doc en cours.
-	 * 
-	 * @param documentCourant
-	 *            Nouvelle document en cours
-	 */
 	private void setDocumentCourant(Document documentCourant) {
 		this.documentCourant = documentCourant;
 	}
@@ -1473,12 +1091,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return lienDocumentAgentCourant;
 	}
 
-	/**
-	 * Met à jour le doc en cours.
-	 * 
-	 * @param documentCourant
-	 *            Nouvelle document en cours
-	 */
 	private void setLienDocumentAgentCourant(LienDocumentAgent lienDocumentAgentCourant) {
 		this.lienDocumentAgentCourant = lienDocumentAgentCourant;
 	}
@@ -1558,20 +1170,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return getZone(getNOM_EF_COMMENTAIRE());
 	}
 
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIENDOCUMENT Date
-	 * de création : (11/10/11 08:38:48)
-	 * 
-	 */
 	public String getNOM_EF_LIENDOCUMENT() {
 		return "NOM_EF_LIENDOCUMENT";
 	}
 
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIENDOCUMENT Date de création : (11/10/11 08:38:48)
-	 * 
-	 */
 	public String getVAL_EF_LIENDOCUMENT() {
 		return getZone(getNOM_EF_LIENDOCUMENT());
 	}
@@ -1580,13 +1182,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_PB_VALIDER_DOCUMENT_CREATION";
 	}
 
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (11/10/11 08:38:48)
-	 * 
-	 */
 	public boolean performPB_VALIDER_DOCUMENT_CREATION(HttpServletRequest request) throws Exception {
 		// on sauvegarde le nom du fichier parcourir
 		if (multi.getFile(getNOM_EF_LIENDOCUMENT()) != null) {
@@ -1822,29 +1417,15 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return "NOM_ST_WARNING";
 	}
 
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_WARNING Date de création : (16/05/11 09:36:20)
-	 * 
-	 */
 	public String getVAL_ST_WARNING() {
 		return getZone(getNOM_ST_WARNING());
 	}
 
-	/**
-	 * Méthode qui teste si un paramètre se trouve dans le formulaire
-	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
 		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
 				.getParameter(param) != null));
 	}
 
-	/**
-	 * Process incoming requests for information*
-	 * 
-	 * @param request
-	 *            Object that encapsulates the request to the servlet
-	 */
 	public boolean recupererPreControles(HttpServletRequest request) throws Exception {
 		String type = request.getHeader("Content-Type");
 		String repTemp = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
