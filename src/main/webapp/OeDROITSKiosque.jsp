@@ -35,7 +35,7 @@ document.formu.elements[nom].focus();
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-		<legend class="sigp2Legend">Liste des approbateurs des pointages</legend>
+		<legend class="sigp2Legend">Liste des approbateurs des pointages/absences</legend>
 			<INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
 			<span style="margin-left: 18px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_AGENT())%>> Agent</span>
 			<span style="margin-left: 150px;"><INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_TRI() %>")'<%= process.forRadioHTML(process.getNOM_RG_TRI(),process.getNOM_RB_TRI_SERVICE())%>> Service</span>
