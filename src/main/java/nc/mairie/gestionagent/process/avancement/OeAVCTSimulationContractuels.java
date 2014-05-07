@@ -91,7 +91,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			//String anneeCourante = Services.dateDuJour().substring(6, 10);
+			// String anneeCourante = Services.dateDuJour().substring(6, 10);
 			String anneeCourante = "2014";
 			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
@@ -275,13 +275,14 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 			}
 
 			// Récupération des agents
-			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Contractuel");
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee,
+					"Contractuel");
 			String listeNomatrAgent = Const.CHAINE_VIDE;
 			for (Carriere carr : listeCarriereActive) {
 				listeNomatrAgent += carr.getNoMatricule() + ",";
 			}
-			if(!listeNomatrAgent.equals(Const.CHAINE_VIDE)){
-				listeNomatrAgent=listeNomatrAgent.substring(0,listeNomatrAgent.length()-1);
+			if (!listeNomatrAgent.equals(Const.CHAINE_VIDE)) {
+				listeNomatrAgent = listeNomatrAgent.substring(0, listeNomatrAgent.length() - 1);
 			}
 			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
 		}
@@ -294,9 +295,11 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(), a.getNoMatricule(), Services
-					.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
-			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null || paAgent.estPAInactive(getTransaction())) {
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
+					a.getNoMatricule(),
+					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
+			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
+					|| paAgent.estPAInactive(getTransaction()) || paAgent.estEnDispo(getTransaction())) {
 				getTransaction().traiterErreur();
 				continue;
 			}
@@ -305,11 +308,13 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 			// carr.getCodeGrade());
 			// L'agent doit avoir la date début de la nouvelle carriere comprise
 			// dans l'année d'avancement
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/" + annee) >= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "31/12/" + annee) <= 0) {
+			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/"
+					+ annee) >= 0
+					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2),
+							"31/12/" + annee) <= 0) {
 				// Récupération de l'avancement
-				AvancementContractuels avct = AvancementContractuels.chercherAvancementContractuelsAvecAnneeEtAgent(getTransaction(), annee,
-						a.getIdAgent());
+				AvancementContractuels avct = AvancementContractuels.chercherAvancementContractuelsAvecAnneeEtAgent(
+						getTransaction(), annee, a.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// Création de l'avancement
@@ -332,7 +337,8 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 					// on cherche à quelle categorie appartient l'agent
 					// (A,B,A+..;)
 					Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(),
+							g.getCodeGradeGenerique());
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 					// on recupere les points pour cette categorie (A,B,A+..)
 					if (gg.getCodCadre() == null || gg.getCodCadre().equals(Const.CHAINE_VIDE)) {
@@ -340,7 +346,8 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 					}
 					avct.setCodeCadre(gg.getCodCadre());
 					// on calcul le nouvel INM
-					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
+					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
+							+ Integer.valueOf(gg.getNbPointsAvct()));
 					// avec ce nouvel INM on recupere l'iban et l'ina
 					// correspondant
 					Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(getTransaction(), nouvINM).get(0);

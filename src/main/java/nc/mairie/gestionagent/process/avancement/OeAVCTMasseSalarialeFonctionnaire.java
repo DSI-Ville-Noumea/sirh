@@ -590,7 +590,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					a.getNoMatricule(),
 					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
 			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
-					|| paAgent.estPAInactive(getTransaction())) {
+					|| paAgent.estPAInactive(getTransaction()) || paAgent.estEnDispo(getTransaction())) {
 				getTransaction().traiterErreur();
 				continue;
 			}
@@ -699,7 +699,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						int nbJoursBonusDepart = nbJoursBM + nbJoursACC;
 						int nbJoursBonus = nbJoursBM + nbJoursACC;
 						// Calcul date avancement au Grade actuel
-						if (gradeActuel.getDureeMin() != null && gradeActuel.getDureeMin().length() != 0 && !gradeActuel.getDureeMin().equals("0")) {
+						if (gradeActuel.getDureeMin() != null && gradeActuel.getDureeMin().length() != 0
+								&& !gradeActuel.getDureeMin().equals("0")) {
 							if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMin()) * 30) {
 								avct.setDateAvctMini(carr.getDateDebut().substring(0, 6) + annee);
 								nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;

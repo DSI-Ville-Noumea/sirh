@@ -547,7 +547,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			}
 
 			// Récupération des agents
-			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee, "Contractuel");
+			ArrayList<Carriere> listeCarriereActive = Carriere.listerCarriereActive(getTransaction(), annee,
+					"Contractuel");
 			String listeNomatrAgent = Const.CHAINE_VIDE;
 			for (Carriere carr : listeCarriereActive) {
 				listeNomatrAgent += carr.getNoMatricule() + ",";
@@ -566,9 +567,11 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(), a.getNoMatricule(), Services
-					.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
-			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null || paAgent.estPAInactive(getTransaction())) {
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
+					a.getNoMatricule(),
+					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
+			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
+					|| paAgent.estPAInactive(getTransaction()) || paAgent.estEnDispo(getTransaction())) {
 				getTransaction().traiterErreur();
 				continue;
 			}
@@ -577,11 +580,13 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			// carr.getCodeGrade());
 			// L'agent doit avoir la date début de la nouvelle carriere comprise
 			// dans l'année d'avancement
-			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/" + annee) >= 0
-					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "31/12/" + annee) <= 0) {
+			if (Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2), "01/01/"
+					+ annee) >= 0
+					&& Services.compareDates(Services.ajouteAnnee(Services.formateDate(carr.getDateDebut()), 2),
+							"31/12/" + annee) <= 0) {
 				// Récupération de l'avancement
-				AvancementContractuels avct = AvancementContractuels.chercherAvancementContractuelsAvecAnneeEtAgent(getTransaction(), annee,
-						a.getIdAgent());
+				AvancementContractuels avct = AvancementContractuels.chercherAvancementContractuelsAvecAnneeEtAgent(
+						getTransaction(), annee, a.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// Création de l'avancement
@@ -604,7 +609,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					// on cherche à quelle categorie appartient l'agent
 					// (A,B,A+..;)
 					Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
-					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
+					GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(),
+							g.getCodeGradeGenerique());
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());
 					// on recupere les points pour cette categorie (A,B,A+..)
 					if (gg.getCodCadre() == null || gg.getCodCadre().equals(Const.CHAINE_VIDE)) {
@@ -612,7 +618,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					}
 					avct.setCodeCadre(gg.getCodCadre());
 					// on calcul le nouvel INM
-					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm()) + Integer.valueOf(gg.getNbPointsAvct()));
+					String nouvINM = String.valueOf(Integer.valueOf(bareme.getInm())
+							+ Integer.valueOf(gg.getNbPointsAvct()));
 					// avec ce nouvel INM on recupere l'iban et l'ina
 					// correspondant
 					Bareme nouvBareme = (Bareme) Bareme.listerBaremeByINM(getTransaction(), nouvINM).get(0);
@@ -707,7 +714,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					getTransaction().traiterErreur();
 			}
 
-			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_AGENT(i),
+					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche());
 			addZone(getNOM_ST_FP(i), av.getNumFP() + " <br> " + (tp == null ? "&nbsp;" : tp.getLibTitrePoste()));
 			addZone(getNOM_ST_PA(i), av.getPa());
@@ -720,16 +728,16 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			addZone(getNOM_ST_INM(i), av.getInm() + " <br> " + av.getNouvINM());
 			addZone(getNOM_ST_INA(i), av.getIna() + " <br> " + av.getNouvINA());
 
-			addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+			addZone(getNOM_CK_VALID_DRH(i),
+					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-			addZone(getNOM_CK_PROJET_ARRETE(i),
-					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
-							: getCHECKED_ON());
+			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
+					|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-			addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-			addZone(getNOM_CK_AFFECTER(i),
-					av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-							: getCHECKED_OFF());
+			addZone(getNOM_EF_DATE_ARRETE(i),
+					av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
+			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
+					|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 		}
@@ -1146,8 +1154,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la derniere carrière dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), Integer.valueOf(agentCarr.getNoMatricule()),
-							avct.getAnnee());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
+							Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -1193,7 +1201,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+								+ agentCarr.getNoMatricule() + "); ";
 					}
 				}
 			}
