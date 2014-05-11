@@ -346,6 +346,9 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 						avct.setAnnee(annee);
 						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 
+						// PA
+						avct.setCodePA(paAgent.getCdpadm());
+
 						avct.setDateArrete("01/01/" + annee);
 						avct.setNumArrete(annee);
 						avct.setDateEmbauche(a.getDateDerniereEmbauche());

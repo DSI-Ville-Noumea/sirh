@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
@@ -562,6 +563,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						avct.setIdAgent(a.getIdAgent());
 						avct.setAnnee(annee);
 						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
+						
+						// PA
+						avct.setCodePA(paAgent.getCdpadm());
 
 						avct.setDateArrete("01/01/" + annee);
 						avct.setNumArrete(annee);

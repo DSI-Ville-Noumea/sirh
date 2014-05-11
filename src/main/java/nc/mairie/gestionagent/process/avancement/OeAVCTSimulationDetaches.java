@@ -339,6 +339,10 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 					avct.setCodeCategorie(carr.getCodeCategorie());
 					avct.setAnnee(annee);
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
+
+					// PA
+					avct.setCodePA(paAgent.getCdpadm());
+
 					// on traite si l'agent est detaché ou non
 					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
 							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
