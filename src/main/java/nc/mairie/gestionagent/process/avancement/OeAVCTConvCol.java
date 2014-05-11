@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.avancement.AvancementConvCol;
@@ -77,6 +78,8 @@ public class OeAVCTConvCol extends BasicProcess {
 				addZone(getNOM_ST_AGENT(i),
 						agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
+				PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+				addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 
 				addZone(getNOM_CK_VALID_DRH(i),
 						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
@@ -369,7 +372,7 @@ public class OeAVCTConvCol extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
-		//on remet à vide pour réinitialiser l'affichage
+		// on remet à vide pour réinitialiser l'affichage
 		setListeAvct(new ArrayList<AvancementConvCol>());
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
@@ -829,5 +832,13 @@ public class OeAVCTConvCol extends BasicProcess {
 	 */
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }

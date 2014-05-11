@@ -189,6 +189,7 @@ function reduireHierarchy() {
 						<th>Dir. <br> Sect.</th>
 						<th>Nom <br> Prénom <br> Matr</th>
 						<th>Date embauche</th>
+						<th>PA</th>
 						<th>Carr Simu</th>
 						<th>Taux ancien <br> nouveau </th>
 						<th>Grade</th>
@@ -218,6 +219,7 @@ function reduireHierarchy() {
 							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_DATE_EMBAUCHE(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_CARRIERE_SIMU(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_MONTANT_PRIME(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
@@ -289,7 +291,7 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabAvctConvColl').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
+						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"aaSorting": [[ 2, "asc" ]],

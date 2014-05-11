@@ -11,6 +11,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.carriere.Bareme;
@@ -342,6 +343,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 			addZone(getNOM_ST_BM_A(i), av.getBMAnnee() + " <br> " + av.getNouvBMAnnee());
 			addZone(getNOM_ST_BM_M(i), av.getBMMois() + " <br> " + av.getNouvBMMois());
@@ -1609,5 +1612,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 			}
 		}
 		return true;
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }

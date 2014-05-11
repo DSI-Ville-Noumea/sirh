@@ -145,6 +145,7 @@ function reduireHierarchy() {
 							<th rowspan="2">Dir. <br> Sect.</th>
 							<th rowspan="2">Nom <br> Prénom <br> Matr</th>
 							<th rowspan="2">Cat <br> Filière</th>
+							<th rowspan="2">PA</th>
 							<th rowspan="2">Carr Simu</th>
 							<th rowspan="2">Code grade <br> Ancien <br> Nouveau</th>
 							<th rowspan="2">Libel. grade <br> Ancien <br> Nouveau</th>
@@ -181,6 +182,7 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CATEGORIE(indiceAvct)%></td>
+								<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CARRIERE_SIMU(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
@@ -213,7 +215,7 @@ function reduireHierarchy() {
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({			    						    
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false, "sType": "date-euro"},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false, "sType": "date-euro"},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"aaSorting": [[ 2, "asc" ]],
 							"sScrollY": "375px",

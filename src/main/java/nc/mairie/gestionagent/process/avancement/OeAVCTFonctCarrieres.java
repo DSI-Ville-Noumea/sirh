@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
@@ -351,6 +352,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 			addZone(getNOM_ST_DATE_CAP(i), av.getDateCap());
 			addZone(getNOM_ST_GRADE(i), av.getGrade()
 					+ " <br> "
@@ -1546,5 +1549,13 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		}
 		performPB_FILTRER(request);
 		return true;
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }

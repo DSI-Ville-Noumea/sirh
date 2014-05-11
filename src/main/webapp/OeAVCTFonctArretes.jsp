@@ -211,6 +211,7 @@ function SelectLigne(id,tailleTableau)
 							<th>Dir. <br> Sect.</th>
 							<th>Nom <br> Prénom <br> Matr</th>
 							<th>Cat <br> Filière</th>
+							<th>PA</th>
 							<th>Code grade <br> Ancien <br> Nouveau</th>
 							<th>Libel. grade <br> Ancien <br> Nouveau</th>
 							<th>Date Avct Mini <br> Moy <br> Maxi</th>
@@ -236,6 +237,7 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CATEGORIE(indiceAvct)%></td>
+								<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
@@ -309,7 +311,7 @@ function SelectLigne(id,tailleTableau)
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,

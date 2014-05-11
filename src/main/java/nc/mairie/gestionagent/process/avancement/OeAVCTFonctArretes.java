@@ -18,6 +18,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
@@ -181,6 +182,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 			addZone(getNOM_ST_GRADE(i), av.getGrade()
 					+ " <br> "
 					+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade()
@@ -2314,5 +2317,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 */
 	public String getVAL_LB_CAP_SELECT() {
 		return getZone(getNOM_LB_CAP_SELECT());
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }

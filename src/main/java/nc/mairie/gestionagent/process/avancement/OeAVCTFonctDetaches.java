@@ -15,6 +15,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
@@ -319,6 +320,8 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 							+ " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
 			addZone(getNOM_ST_BM_A(i), av.getBMAnnee() + " <br> " + av.getNouvBMAnnee());
 			addZone(getNOM_ST_BM_M(i), av.getBMMois() + " <br> " + av.getNouvBMMois());
@@ -1471,5 +1474,13 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	 */
 	public String getVAL_CK_REGUL_ARR_IMPR(int i) {
 		return getZone(getNOM_CK_REGUL_ARR_IMPR(i));
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }

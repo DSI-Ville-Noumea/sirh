@@ -20,7 +20,6 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -32,7 +31,6 @@ import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
@@ -79,8 +77,6 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
-		initialiseDao();
 
 		initialiseListeDeroulante();
 
@@ -138,11 +134,6 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			}
 		}
 
-	}
-
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
 	}
 
 	/**
@@ -563,7 +554,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						avct.setIdAgent(a.getIdAgent());
 						avct.setAnnee(annee);
 						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
-						
+
 						// PA
 						avct.setCodePA(paAgent.getCdpadm());
 
@@ -727,6 +718,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			addZone(getNOM_ST_AGENT(i),
 					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
 			addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 
 			addZone(getNOM_CK_VALID_DRH(i),
 					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
@@ -1207,5 +1200,13 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 */
 	public String getVAL_EF_NUM_ARRETE(int i) {
 		return getZone(getNOM_EF_NUM_ARRETE(i));
+	}
+
+	public String getNOM_ST_PA(int i) {
+		return "NOM_ST_PA_" + i;
+	}
+
+	public String getVAL_ST_PA(int i) {
+		return getZone(getNOM_ST_PA(i));
 	}
 }
