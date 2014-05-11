@@ -123,7 +123,8 @@ document.formu.elements[nom].focus();
 					<tr>
 						<th>NumAvct</th>
 						<th>Dir. <br> Sect.</th>
-						<th>Nom <br> Prénom <br> Matr</th>
+						<th>Matr</th>
+						<th>Nom <br> Prénom</th>
 						<th>Date embauche</th>
 						<th>PA</th>
 						<th>Carr Simu</th>
@@ -153,6 +154,7 @@ document.formu.elements[nom].focus();
 						<tr>
 							<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_MATRICULE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_DATE_EMBAUCHE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
@@ -233,7 +235,7 @@ document.formu.elements[nom].focus();
 				$(document).ready(function() {
 				    $('#tabAvctConvColl').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
+						"aoColumns": [{"bSearchable":false, "bVisible":false},{"bSearchable":false},null,null,{"bSortable":false,"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSortable":false,"bSearchable":false},null,null,{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false}],
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"aaSorting": [[ 2, "asc" ]],

@@ -80,7 +80,9 @@ public class OeAVCTContractuels extends BasicProcess {
 						getTransaction().traiterErreur();
 				}
 
-				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+
+				addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche());
 				addZone(getNOM_ST_FP(i), av.getNumFP() + " <br> " + (tp == null ? "&nbsp;" : tp.getLibTitrePoste()));
 				addZone(getNOM_ST_PA(i), av.getPa());
@@ -855,5 +857,13 @@ public class OeAVCTContractuels extends BasicProcess {
 	 */
 	public void setAnneeSelect(String newAnneeSelect) {
 		this.anneeSelect = newAnneeSelect;
+	}
+
+	public String getNOM_ST_MATRICULE(int i) {
+		return "NOM_ST_MATRICULE_" + i;
+	}
+
+	public String getVAL_ST_MATRICULE(int i) {
+		return getZone(getNOM_ST_MATRICULE(i));
 	}
 }

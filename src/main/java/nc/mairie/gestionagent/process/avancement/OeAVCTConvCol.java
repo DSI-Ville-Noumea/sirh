@@ -75,8 +75,8 @@ public class OeAVCTConvCol extends BasicProcess {
 				addZone(getNOM_ST_GRADE(i), av.getGrade());
 				addZone(getNOM_ST_GRADE_LIB(i), av.getLibelleGrade() == null ? "&nbsp;" : av.getLibelleGrade());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_AGENT(i),
-						agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+				addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i), av.getDateEmbauche() == null ? "&nbsp;" : av.getDateEmbauche());
 				PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
 				addZone(getNOM_ST_PA(i), pa.getLiPAdm());
@@ -840,5 +840,13 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	public String getVAL_ST_PA(int i) {
 		return getZone(getNOM_ST_PA(i));
+	}
+
+	public String getNOM_ST_MATRICULE(int i) {
+		return "NOM_ST_MATRICULE_" + i;
+	}
+
+	public String getVAL_ST_MATRICULE(int i) {
+		return getZone(getNOM_ST_MATRICULE(i));
 	}
 }
