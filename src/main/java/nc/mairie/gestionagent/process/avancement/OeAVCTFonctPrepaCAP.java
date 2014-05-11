@@ -180,8 +180,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_AGENT(i),
-					agent.getNomAgent() + " <br> " + agent.getPrenomAgent() + " <br> " + agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
 					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
 							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
@@ -191,10 +191,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
 			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
 			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
-			addZone(getNOM_ST_GRADE(i), av.getGrade()
-					+ " <br> "
-					+ (av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade()
-							: "&nbsp;"));
+			addZone(getNOM_ST_GRADE_ANCIEN(i), av.getGrade());
+			addZone(getNOM_ST_GRADE_NOUVEAU(i),
+					(av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
 			String libGrade = gradeAgent == null ? "&nbsp;" : gradeAgent.getLibGrade();
 			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
@@ -1016,24 +1015,6 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 */
 	public String getVAL_ST_GRADE_LIB(int i) {
 		return getZone(getNOM_ST_GRADE_LIB(i));
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_GRADE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_ST_GRADE(int i) {
-		return "NOM_ST_GRADE_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_GRADE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_ST_GRADE(int i) {
-		return getZone(getNOM_ST_GRADE(i));
 	}
 
 	/**
@@ -2134,5 +2115,29 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public String getVAL_ST_PA(int i) {
 		return getZone(getNOM_ST_PA(i));
+	}
+
+	public String getNOM_ST_GRADE_ANCIEN(int i) {
+		return "NOM_ST_GRADE_ANCIEN_" + i;
+	}
+
+	public String getVAL_ST_GRADE_ANCIEN(int i) {
+		return getZone(getNOM_ST_GRADE_ANCIEN(i));
+	}
+
+	public String getNOM_ST_GRADE_NOUVEAU(int i) {
+		return "NOM_ST_GRADE_NOUVEAU_" + i;
+	}
+
+	public String getVAL_ST_GRADE_NOUVEAU(int i) {
+		return getZone(getNOM_ST_GRADE_NOUVEAU(i));
+	}
+
+	public String getNOM_ST_MATRICULE(int i) {
+		return "NOM_ST_MATRICULE_" + i;
+	}
+
+	public String getVAL_ST_MATRICULE(int i) {
+		return getZone(getNOM_ST_MATRICULE(i));
 	}
 }

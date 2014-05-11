@@ -209,10 +209,12 @@ function SelectLigne(id,tailleTableau)
 						<tr>
 							<th>NumAvct</th>
 							<th>Dir. <br> Sect.</th>
-							<th>Nom <br> Prénom <br> Matr</th>
+							<th>Matr</th>
+							<th>Nom <br> Prénom</th>
 							<th>Cat <br> Filière</th>
 							<th>PA</th>
-							<th>Code grade <br> Ancien <br> Nouveau</th>
+							<th>Code grade <br> Ancien</th>
+							<th>Code grade <br> Nouveau</th>
 							<th>Libel. grade <br> Ancien <br> Nouveau</th>
 							<th>Date Avct Mini <br> Moy <br> Maxi</th>
 							<th>Prop avct <br> Type <br> SHD <br> VDN</th>
@@ -235,10 +237,12 @@ function SelectLigne(id,tailleTableau)
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+								<td><%=process.getVAL_ST_MATRICULE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CATEGORIE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
+								<td><%=process.getVAL_ST_GRADE_ANCIEN(indiceAvct)%></td>
+								<td><%=process.getVAL_ST_GRADE_NOUVEAU(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
@@ -311,7 +315,7 @@ function SelectLigne(id,tailleTableau)
 					$(document).ready(function() {
 					    $('#tabAvctFonct').dataTable({
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,{"bSearchable":false},{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+							"aoColumns": [{"bSearchable":false, "bVisible":false},null,null,null,{"bSearchable":false},{"bSearchable":false},null,null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
 							"sDom": '<"H"fl>t<"F"iT>',
 							"sScrollY": "375px",
 							"bPaginate": false,
