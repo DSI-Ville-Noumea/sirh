@@ -239,7 +239,6 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
-		addZone(getNOM_ST_OS(), Const.CHAINE_VIDE);
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -279,7 +278,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurAsaDto dto) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		addZone(getNOM_ST_OS(), dto.getOrganisationSyndicaleDto().getSigle());
+		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
+		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
 		String soldeAsaA52Heure = (dto.getNb().intValue() / 60) == 0 ? "" : dto.getNb().intValue() / 60 + "";
@@ -414,10 +414,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		}
 
 		// organisation syndicale
-		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
 		OrganisationSyndicaleDto os = null;
-		if (indiceOS >= 0) {
-			os = getListeOrganisationSyndicale().get(indiceOS);
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
+		if (indiceOS > 0) {
+			os = getListeOrganisationSyndicale().get(indiceOS - 1);
 		}
 
 		String dateDeb = getVAL_ST_DATE_DEBUT() + " 00:00:00";
@@ -569,13 +569,5 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	public String getVAL_LB_OS_SELECT() {
 		return getZone(getNOM_LB_OS_SELECT());
-	}
-
-	public String getNOM_ST_OS() {
-		return "NOM_ST_OS";
-	}
-
-	public String getVAL_ST_OS() {
-		return getZone(getNOM_ST_OS());
 	}
 }

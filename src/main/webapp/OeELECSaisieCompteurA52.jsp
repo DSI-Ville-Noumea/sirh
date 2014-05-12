@@ -90,9 +90,15 @@ function SelectLigne(id,tailleTableau)
 						<span class="sigp2Mandatory">Organisation syndicale :</span>
 					</td>
 					<td>
-						<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
-							<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
-						</SELECT>
+						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){%>
+							<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+								<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+							</SELECT>
+                        <%}else{ %>
+							<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+								<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+							</SELECT>
+                        <%} %>
                     </td>
 				</tr>
 				<tr>
@@ -146,11 +152,13 @@ function SelectLigne(id,tailleTableau)
 			
 			<table>
 				<tr>
-					<td width="70px;">
+					<td width="135px;">
 						<span class="sigp2Mandatory">Oragnisation syndicale :</span>
 					</td>
 					<td>
-						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_OS() %>" size="10" type="text"  value="<%= process.getVAL_ST_OS()%>">
+						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_OS() %>">
+							<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT()) %>
+						</SELECT>
                     </td>
 				</tr>
 				<tr>

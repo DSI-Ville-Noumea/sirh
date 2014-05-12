@@ -252,7 +252,6 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
-		addZone(getNOM_ST_OS(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
 	}
 
@@ -298,11 +297,10 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 
 		int ligneAnnee = getListeAnnee().indexOf(annee.toString());
 		addZone(getNOM_LB_ANNEE_SELECT(), String.valueOf(ligneAnnee));
-		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
-		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS));
 		addZone(getNOM_ST_NB_JOURS(), String.valueOf(dto.getNb().intValue()));
 		addZone(getNOM_ST_ANNEE(), annee.toString());
-		addZone(getNOM_ST_OS(), dto.getOrganisationSyndicaleDto().getSigle());
+		int ligneOS = getListeOrganisationSyndicale().indexOf(dto.getOrganisationSyndicaleDto());
+		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
 		return true;
 	}
 
@@ -343,14 +341,6 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 		return getZone(getNOM_ST_ANNEE());
 	}
 
-	public String getNOM_ST_OS() {
-		return "NOM_ST_OS";
-	}
-
-	public String getVAL_ST_OS() {
-		return getZone(getNOM_ST_OS());
-	}
-
 	public String getNOM_PB_VALIDER() {
 		return "NOM_PB_VALIDER";
 	}
@@ -374,20 +364,11 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 		}
 
 		// organisation syndicale obligatoire
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-			int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
-			if (indiceOS < 0) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "oragnisation syndicale"));
-				return false;
-			}
-		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
-			if (getVAL_ST_OS().equals(Const.CHAINE_VIDE)) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "oragnisation syndicale"));
-				return false;
-			}
-
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
+		if (indiceOS <= 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
+			return false;
 		}
 
 		// annee obligatoire
@@ -445,9 +426,9 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 		}
 
 		// organisation syndicale
-		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
 		OrganisationSyndicaleDto os = null;
-		if (indiceOS >= 0) {
+		int indiceOS = (Services.estNumerique(getVAL_LB_OS_SELECT()) ? Integer.parseInt(getVAL_LB_OS_SELECT()) : -1);
+		if (indiceOS > 0) {
 			os = getListeOrganisationSyndicale().get(indiceOS - 1);
 		}
 

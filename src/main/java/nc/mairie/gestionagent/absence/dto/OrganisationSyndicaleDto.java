@@ -39,4 +39,9 @@ public class OrganisationSyndicaleDto {
 		this.actif = actif;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return idOrganisation == ((OrganisationSyndicaleDto) obj).getIdOrganisation();
+	}
+
 }
