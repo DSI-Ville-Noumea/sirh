@@ -2,7 +2,6 @@ package nc.mairie.gestionagent.process.election;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -513,15 +512,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 	public boolean peutModifierCompteur(int i) {
 		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(i);
-
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		Integer anneeCourante = cal.get(Calendar.YEAR);
-
-		Calendar calDto = Calendar.getInstance();
-		calDto.setTime(compteurCourant.getDateDebut());
-		Integer anneeDto = calDto.get(Calendar.YEAR);
-		if (anneeDto < anneeCourante) {
+		if (compteurCourant.getDateFin().compareTo(new Date()) < 0) {
 			return false;
 		}
 		return true;
