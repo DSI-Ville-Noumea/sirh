@@ -959,8 +959,6 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 		}
 
-		// TODO modifier RG
-
 		// MOTIF AVCT et DUREE MIN/MOY/MAX
 		String motifAvctString = getZone(getNOM_LB_MOTIF_AVCT_SELECT()).equals(Const.CHAINE_VIDE) ? "0"
 				: getZone(getNOM_LB_MOTIF_AVCT_SELECT());

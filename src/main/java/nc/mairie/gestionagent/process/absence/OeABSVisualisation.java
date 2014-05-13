@@ -641,11 +641,13 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
-					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
 						.intValue()));
 			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
@@ -1126,9 +1128,11 @@ public class OeABSVisualisation extends BasicProcess {
 					|| p.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()) {
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()) {
 				duree = p.getDuree().toString() + "j";
-			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
+			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
 			}
 			ret[index][3] = duree;
@@ -1192,10 +1196,9 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// on recup l'organisation syndicale
 		OrganisationSyndicaleDto orga = null;
-		//TODO
-		/*if (dem.getOS() != null) {
-			orga = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(dem.getOS());
-		}*/
+		if (dem.getOrganisationSyndicale() != null) {
+			orga = dem.getOrganisationSyndicale();
+		}
 		AgentNW agt = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
 
 		addZone(getNOM_ST_AGENT_CREATION(), agt.getNoMatricule());
@@ -1279,11 +1282,13 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 ou ASA_A54 ou ASA_A55 et etat=validé ou prise, alors un
+		// Si ASA : A48, A54, A55, A52, A53 et etat=validé ou prise, alors un
 		// motif est
 		// obligatoire
 		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
 				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
@@ -1414,11 +1419,13 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA_A48 ou ASA_A54 ou ASA_A55 et etat=validé ou prise, alors un
+		// Si ASA : A48, A54, A55, A52, A53 et etat=validé ou prise, alors un
 		// motif est
 		// obligatoire
 		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
 				.getCode())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
@@ -1731,8 +1738,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		DemandeDto dto = new DemandeDto();
-		// TODO
-		// dto.setOS(orga);
+		dto.setOrganisationSyndicale(orga);
 		dto.setDateDebut(dateDeb);
 		dto.setDateDebutAM(matinDebut);
 		dto.setDateDebutPM(apresMidiDebut);
@@ -1814,8 +1820,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		DemandeDto dto = new DemandeDto();
-		// TODO
-		// dto.setOS(orga);
+		dto.setOrganisationSyndicale(orga);
 		dto.setDateDebut(dateDeb);
 		dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
 

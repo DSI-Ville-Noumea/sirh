@@ -41,6 +41,8 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	// depasement de droits
 	private boolean isDepassementCompteur;
 
+	private OrganisationSyndicaleDto organisationSyndicale;
+
 	public DemandeDto() {
 	}
 
@@ -247,6 +249,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setDepassementCompteur(boolean isDepassementCompteur) {
 		this.isDepassementCompteur = isDepassementCompteur;
+	}
+
+	public OrganisationSyndicaleDto getOrganisationSyndicale() {
+		return organisationSyndicale;
+	}
+
+	public void setOrganisationSyndicale(OrganisationSyndicaleDto organisationSyndicale) {
+		this.organisationSyndicale = organisationSyndicale;
 	}
 
 }
