@@ -314,7 +314,7 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode())){ %>                            	
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
                             <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
@@ -339,17 +339,17 @@
                             <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
                             	<INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>">
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
 							</td>  							
@@ -403,9 +403,9 @@
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%} %>
-            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48_A54)){ %>
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48_A54_A50)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48_A54 %></legend>
+	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48_A54_A50 %></legend>
 	            	<table>
 	            		<tr>
 	            			<td width="80px">
@@ -435,7 +435,7 @@
 	            		</tr>
 	            	</table>
 	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A48_A54()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A48_A54_A50()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A55)){ %>
@@ -565,6 +565,34 @@
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A52()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>   
+            <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A49)){%>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A49 %></legend>
+	            	<table>
+	            		<tr>
+	            			<td width="80px">
+                        		<span class="sigp2Mandatory">Date début : </span>
+	            			</td>
+	            			<td>
+		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
+		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+	            			</td>
+	            		</tr>
+	            		<tr>
+	            			<td>
+                        		<span class="sigp2Mandatory">Heure de début : </span>
+	            			</td>
+	            			<td>
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT()) %>
+								</SELECT>	
+	            			</td>
+	            		</tr>
+	            	</table>
+	            	<BR/>
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A49()%>">	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	            </FIELDSET>  
             <%} %>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">

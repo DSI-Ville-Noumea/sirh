@@ -81,10 +81,11 @@ public class OeABSVisualisation extends BasicProcess {
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
-	public String ACTION_CREATION_A48_A54 = "Création d'une demande ASA.";
+	public String ACTION_CREATION_A48_A54_A50 = "Création d'une demande ASA.";
 	public String ACTION_CREATION_A55 = "Création d'une délégation (DP).";
 	public String ACTION_CREATION_A53 = "Création d'une formation syndicale.";
 	public String ACTION_CREATION_A52 = "Création d'une décharge de service.";
+	public String ACTION_CREATION_A49 = "Création d'une participation à une réunion syndicale.";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
 
@@ -328,9 +329,9 @@ public class OeABSVisualisation extends BasicProcess {
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A48_A54())) {
-				return performPB_VALIDER_CREATION_A48_A54(request);
+			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54_A50
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A48_A54_A50())) {
+				return performPB_VALIDER_CREATION_A48_A54_A50(request);
 			}
 			// Si clic sur le bouton PB_VALIDER_CREATION_A55
 			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A55())) {
@@ -343,6 +344,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_CREATION_A52
 			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A52())) {
 				return performPB_VALIDER_CREATION_A52(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_CREATION_A49
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A49())) {
+				return performPB_VALIDER_CREATION_A49(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -642,12 +647,14 @@ public class OeABSVisualisation extends BasicProcess {
 			if (abs.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()) {
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
 						.intValue()));
 			} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()) {
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
+					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
@@ -817,14 +824,18 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// On nomme l'action
-		if (type != null && (type.equals(EnumTypeAbsence.ASA_A48) || type.equals(EnumTypeAbsence.ASA_A54))) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54);
+		if (type != null
+				&& (type.equals(EnumTypeAbsence.ASA_A48) || type.equals(EnumTypeAbsence.ASA_A54) || type
+						.equals(EnumTypeAbsence.ASA_A50))) {
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54_A50);
 		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A55)) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A55);
 		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A53)) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A53);
 		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A52)) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A52);
+		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A49)) {
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A49);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH");
 		}
@@ -911,11 +922,11 @@ public class OeABSVisualisation extends BasicProcess {
 		return getZone(getNOM_RG_FIN_MAM());
 	}
 
-	public String getNOM_PB_VALIDER_CREATION_A48_A54() {
-		return "NOM_PB_VALIDER_CREATION_A48_A54";
+	public String getNOM_PB_VALIDER_CREATION_A48_A54_A50() {
+		return "NOM_PB_VALIDER_CREATION_A48_A54_A50";
 	}
 
-	public boolean performPB_VALIDER_CREATION_A48_A54(HttpServletRequest request) throws Exception {
+	public boolean performPB_VALIDER_CREATION_A48_A54_A50(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
 		EnumTypeAbsence type = getTypeCreation();
 
@@ -1129,10 +1140,12 @@ public class OeABSVisualisation extends BasicProcess {
 				duree = getHeureMinute(p.getDuree().intValue());
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()) {
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()) {
 				duree = p.getDuree().toString() + "j";
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()) {
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
 			}
 			ret[index][3] = duree;
@@ -1282,13 +1295,16 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA : A48, A54, A55, A52, A53 et etat=validé ou prise, alors un
+		// Si ASA : A48, A54, A55, A52, A53, A50, A49 et etat=validé ou prise,
+		// alors un
 		// motif est
 		// obligatoire
 		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
 				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
 				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
@@ -1419,13 +1435,16 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA : A48, A54, A55, A52, A53 et etat=validé ou prise, alors un
+		// Si ASA : A48, A54, A55, A52, A53, A50, A49 et etat=validé ou prise,
+		// alors un
 		// motif est
 		// obligatoire
 		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
 				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()
+				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
 				.getCode())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
@@ -1823,6 +1842,67 @@ public class OeABSVisualisation extends BasicProcess {
 		dto.setOrganisationSyndicale(orga);
 		dto.setDateDebut(dateDeb);
 		dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
+
+		AgentWithServiceDto agDto = new AgentWithServiceDto();
+		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+		dto.setAgentWithServiceDto(agDto);
+		dto.setIdTypeDemande(type.getCode());
+		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
+
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur(err);
+			return false;
+		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		performPB_FILTRER(request);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_CREATION_A49() {
+		return "NOM_PB_VALIDER_CREATION_A49";
+	}
+
+	public boolean performPB_VALIDER_CREATION_A49(HttpServletRequest request) throws Exception {
+		AgentNW ag = getAgentCreation();
+		EnumTypeAbsence type = getTypeCreation();
+
+		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+			return false;
+		}
+		// heure obligatoire
+		int indiceHeure = (Services.estNumerique(getVAL_LB_HEURE_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT())
+				: -1);
+		if (indiceHeure <= 0) {
+			// "ERR002", "La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure"));
+			return false;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String heure = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT()));
+		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heure);
+
+		AgentNW agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			return false;
+		}
+
+		DemandeDto dto = new DemandeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDuree(60.0);
 
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
