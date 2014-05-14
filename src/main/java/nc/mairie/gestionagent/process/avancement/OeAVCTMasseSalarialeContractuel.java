@@ -571,7 +571,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					a.getNoMatricule(),
 					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
 			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
-					|| paAgent.estPAInactive(getTransaction()) || paAgent.estEnDispo(getTransaction())) {
+					|| paAgent.estPAInactive(getTransaction())) {
 				getTransaction().traiterErreur();
 				continue;
 			}
