@@ -22,6 +22,7 @@ import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.ModeReglement;
 import nc.mairie.metier.carriere.StatutCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.metier.parametrage.MotifCarriere;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
@@ -64,14 +65,14 @@ public class OeAGENTCarriere extends BasicProcess {
 	private ArrayList<Horaire> listeHoraire;
 	private ArrayList<String> listeRegime;
 	private ArrayList<ModeReglement> listeBaseReg;
-	private ArrayList<MotifAvancement> listeMotifAvancement;
+	private ArrayList<MotifCarriere> listeMotifCarriere;
 	private ArrayList<BaseHoraire> listeBaseHorairePointage;
 
 	private Hashtable<String, StatutCarriere> hashStatut;
 	private Hashtable<String, Grade> hashGrade;
 	private Hashtable<String, Horaire> hashHoraire;
 	private Hashtable<String, ModeReglement> hashModeReglement;
-	private Hashtable<String, MotifAvancement> hashMotifAvancement;
+	private Hashtable<String, MotifCarriere> hashMotifCarriere;
 	private Hashtable<String, BaseHoraire> hashBaseHorairePointage;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche Carrière.";
@@ -248,15 +249,15 @@ public class OeAGENTCarriere extends BasicProcess {
 		// RG_AG_CA_C10
 		if (getLB_MOTIFS() == LBVide) {
 
-			ArrayList<MotifAvancement> liste = MotifAvancement.listerMotifAvancement(getTransaction());
-			setListeMotifAvancement(liste);
+			ArrayList<MotifCarriere> liste = MotifCarriere.listerMotifCarriere(getTransaction());
+			setListeMotifCarriere(liste);
 
 			int[] tailles = { 100 };
-			String[] champs = { "libMotifAvct" };
+			String[] champs = { "libMotifCarriere" };
 			setLB_MOTIFS(new FormateListe(tailles, liste, champs).getListeFormatee(true));
 
-			for (MotifAvancement m : liste)
-				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
+			for (MotifCarriere m : liste)
+				getHashMotifCarriere().put(m.getIdMotifCarriere(), m);
 
 		}
 
@@ -492,7 +493,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		BaseHoraire baseHoraire = (BaseHoraire) getHashBaseHorairePointage().get(getCarriereCourante().getCodeBase());
 		ModeReglement baseReglement = (ModeReglement) getHashModeReglement().get(
 				getCarriereCourante().getModeReglement());
-		MotifAvancement motif = (MotifAvancement) getHashMotifAvancement().get(getCarriereCourante().getCodeMotif());
+		MotifCarriere motif = (MotifCarriere) getHashMotifCarriere().get(getCarriereCourante().getIdMotif());
 
 		// Alim zones
 		if (statut != null) {
@@ -537,9 +538,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		if (motif != null) {
-			int ligneMotif = getListeMotifAvancement().indexOf(motif);
+			int ligneMotif = getListeMotifCarriere().indexOf(motif);
 			addZone(getNOM_LB_MOTIFS_SELECT(), String.valueOf(ligneMotif + 1));
-			addZone(getNOM_ST_MOTIF(), motif.getLibMotifAvct());
+			addZone(getNOM_ST_MOTIF(), motif.getLibMotifCarriere());
+		} else {
+			addZone(getNOM_LB_MOTIFS_SELECT(), Const.ZERO);
+			addZone(getNOM_ST_MOTIF(), Const.CHAINE_VIDE);
 		}
 
 		addZone(getNOM_EF_DATE_DEBUT(), getCarriereCourante().getDateDebut());
@@ -683,7 +687,6 @@ public class OeAGENTCarriere extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
 				getCarriereCourante().modifierCarriere(getTransaction(), getAgentCourant(), user);
-				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				getCarriereCourante().creerCarriere(getTransaction(), getAgentCourant(), user);
@@ -706,19 +709,28 @@ public class OeAGENTCarriere extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		if (declarerModifDateFin)
-			getTransaction().declarerErreur(MessageUtils.getMessage("INF005"));
-
 		// Tout s'est bien passé
 		commitTransaction();
 		// on regarde sir il y a un changement de statut
 		String messageInf = Const.CHAINE_VIDE;
+
+		if (declarerModifDateFin)
+			messageInf += MessageUtils.getMessage("INF005");
+
+		// on regarde si le motif de la carriere est renseigné
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
+				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
+			if (getCarriereCourante().getIdMotif().equals(Const.ZERO)) {
+				// "INF300",
+				// "Attention, vous n'avez pas saisi de motif pour cette carrière."
+				messageInf += MessageUtils.getMessage("INF300");
+			}
+
+		}
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 			if (estChangementStatutCarriere()) {
 				messageInf += MessageUtils.getMessage("INF008");
 			}
-
-			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
 		// on regarde si l'année de la carriere crée est <=année -1
 		if (getCarriereCourante() != null) {
@@ -729,6 +741,8 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (!messageInf.equals(Const.CHAINE_VIDE))
 			getTransaction().declarerErreur(messageInf);
+
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -814,8 +828,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		// motif
 		int numLigneMotif = (Services.estNumerique(getZone(getNOM_LB_MOTIFS_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_MOTIFS_SELECT())) : -1);
-		MotifAvancement motif = numLigneMotif > 0 ? (MotifAvancement) getListeMotifAvancement().get(numLigneMotif - 1)
-				: null;
+		MotifCarriere motif = numLigneMotif > 0 ? (MotifCarriere) getListeMotifCarriere().get(numLigneMotif - 1) : null;
 
 		if (getCarriereCourante() == null)
 			setCarriereCourante(new Carriere());
@@ -879,7 +892,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setModeReglement(baseReg.getModReg());
 
 		// motif
-		getCarriereCourante().setCodeMotif(motif != null ? motif.getIdMotifAvct() : Const.ZERO);
+		getCarriereCourante().setIdMotif(motif != null ? motif.getIdMotifCarriere() : Const.ZERO);
 	}
 
 	/**
@@ -1821,12 +1834,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		this.listeBaseReg = listeBaseReg;
 	}
 
-	private ArrayList<MotifAvancement> getListeMotifAvancement() {
-		return listeMotifAvancement;
+	private ArrayList<MotifCarriere> getListeMotifCarriere() {
+		return listeMotifCarriere;
 	}
 
-	private void setListeMotifAvancement(ArrayList<MotifAvancement> listeMotifAvancement) {
-		this.listeMotifAvancement = listeMotifAvancement;
+	private void setListeMotifCarriere(ArrayList<MotifCarriere> listeMotifCarriere) {
+		this.listeMotifCarriere = listeMotifCarriere;
 	}
 
 	public Carriere getCarriereCourante() {
@@ -2202,10 +2215,10 @@ public class OeAGENTCarriere extends BasicProcess {
 		return hashModeReglement;
 	}
 
-	private Hashtable<String, MotifAvancement> getHashMotifAvancement() {
-		if (hashMotifAvancement == null)
-			hashMotifAvancement = new Hashtable<String, MotifAvancement>();
-		return hashMotifAvancement;
+	private Hashtable<String, MotifCarriere> getHashMotifCarriere() {
+		if (hashMotifCarriere == null)
+			hashMotifCarriere = new Hashtable<String, MotifCarriere>();
+		return hashMotifCarriere;
 	}
 
 	private Hashtable<String, BaseHoraire> getHashBaseHorairePointage() {

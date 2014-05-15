@@ -937,7 +937,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 						nouvelleCarriere.setCodeBase(carr.getCodeBase());
 						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
 						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
-						nouvelleCarriere.setCodeMotif(carr.getCodeMotif());
+						nouvelleCarriere.setIdMotif(Const.ZERO);
 						nouvelleCarriere.setModeReglement(carr.getModeReglement());
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 

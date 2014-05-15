@@ -7,9 +7,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.GradeGenerique;
-import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
@@ -45,7 +43,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String[] LB_MOTIF;
 	private String[] LB_EMPLOYEUR;
 	private String[] LB_REPRESENTANT;
 	private String[] LB_TYPE_REPRESENTANT;
@@ -58,9 +55,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	private String[] LB_REPRE_CAP_MULTI;
 	private String[] LB_EMP_CAP;
 	private String[] LB_EMP_CAP_MULTI;
-
-	private ArrayList<MotifAvancement> listeMotif;
-	private MotifAvancement motifCourant;
 
 	private ArrayList<Employeur> listeEmployeur;
 	private Employeur employeurCourant;
@@ -124,9 +118,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
-		if (getListeMotif().size() == 0) {
-			initialiseListeMotif(request);
-		}
 		if (getListeEmployeur().size() == 0) {
 			initialiseListeEmployeur(request);
 		}
@@ -308,29 +299,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Initialisation de la listes des motifs d'avancement Date de création :
-	 * (14/09/11)
-	 * 
-	 */
-	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
-		setListeMotif(MotifAvancement.listerMotifAvancement(getTransaction()));
-		if (getListeMotif().size() != 0) {
-			int tailles[] = { 40, 10 };
-			String padding[] = { "G", "G" };
-			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<MotifAvancement> list = getListeMotif().listIterator(); list.hasNext();) {
-				MotifAvancement ma = (MotifAvancement) list.next();
-				String ligne[] = { ma.getLibMotifAvct(), ma.getCodeMotifAvct() };
-
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_MOTIF(aFormat.getListeFormatee());
-		} else {
-			setLB_MOTIF(null);
-		}
-	}
-
-	/**
 	 * Initialisation de la listes des employeurs Date de création : (14/09/11)
 	 * 
 	 */
@@ -464,327 +432,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_PB_ANNULER_MOTIF() {
-		return "NOM_PB_ANNULER_MOTIF";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public boolean performPB_ANNULER_MOTIF(HttpServletRequest request) throws Exception {
-		addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
-		setStatut(STATUT_MEME_PROCESS);
-
-		setFocus(getNOM_PB_ANNULER_MOTIF());
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_CREER_MOTIF Date de création
-	 * : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_PB_CREER_MOTIF() {
-		return "NOM_PB_CREER_MOTIF";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public boolean performPB_CREER_MOTIF(HttpServletRequest request) throws Exception {
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION_MOTIF(), ACTION_CREATION);
-		addZone(getNOM_EF_LIB_MOTIF(), Const.CHAINE_VIDE);
-		addZone(getNOM_EF_CODE_MOTIF(), Const.CHAINE_VIDE);
-
-		setStatut(STATUT_MEME_PROCESS);
-
-		setFocus(getNOM_PB_ANNULER_MOTIF());
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_PB_SUPPRIMER_MOTIF() {
-		return "NOM_PB_SUPPRIMER_MOTIF";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public boolean performPB_SUPPRIMER_MOTIF(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
-		if (indice != -1 && indice < getListeMotif().size()) {
-			MotifAvancement ma = getListeMotif().get(indice);
-			setMotifCourant(ma);
-			addZone(getNOM_EF_LIB_MOTIF(), ma.getLibMotifAvct());
-			addZone(getNOM_EF_CODE_MOTIF(), ma.getCodeMotifAvct());
-			addZone(getNOM_ST_ACTION_MOTIF(), ACTION_SUPPRESSION);
-		} else {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "motifs d'avancement"));
-		}
-
-		setFocus(getNOM_PB_ANNULER_MOTIF());
-		return true;
-	}
-
-	/**
-	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_PB_VALIDER_MOTIF() {
-		return "NOM_PB_VALIDER_MOTIF";
-	}
-
-	/**
-	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
-	 * règles de gestion du process - Positionne un statut en fonction de ces
-	 * règles : setStatut(STATUT, boolean veutRetour) ou
-	 * setStatut(STATUT,Message d'erreur) Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public boolean performPB_VALIDER_MOTIF(HttpServletRequest request) throws Exception {
-		if (!performControlerSaisieMotif(request))
-			return false;
-
-		if (!performControlerRegleGestionMotif(request))
-			return false;
-
-		if (getVAL_ST_ACTION_MOTIF() != null && getVAL_ST_ACTION_MOTIF() != Const.CHAINE_VIDE) {
-			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
-				setMotifCourant(new MotifAvancement());
-				getMotifCourant().setLibMotifAvct(getVAL_EF_LIB_MOTIF());
-				getMotifCourant().setCodeMotifAvct(getVAL_EF_CODE_MOTIF());
-				getMotifCourant().creerMotifAvancement(getTransaction());
-				if (!getTransaction().isErreur())
-					getListeMotif().add(getMotifCourant());
-			} else if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)) {
-				getMotifCourant().supprimerMotifAvancement(getTransaction());
-				if (!getTransaction().isErreur())
-					getListeMotif().remove(getMotifCourant());
-				setMotifCourant(null);
-			}
-
-			if (getTransaction().isErreur())
-				return false;
-
-			commitTransaction();
-			initialiseListeMotif(request);
-			addZone(getNOM_ST_ACTION_MOTIF(), Const.CHAINE_VIDE);
-		}
-
-		setFocus(getNOM_PB_ANNULER_MOTIF());
-		return true;
-	}
-
-	/**
-	 * Contrôle les zones saisies d'un motif de recrutement Date de création :
-	 * (14/09/11)
-	 */
-	private boolean performControlerSaisieMotif(HttpServletRequest request) throws Exception {
-		// Verification libellé motif not null
-		if (getZone(getNOM_EF_LIB_MOTIF()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
-			return false;
-		}
-		// Verification code motif not null
-		if (getZone(getNOM_EF_CODE_MOTIF()).length() == 0) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Contrôle les règles de gestion d'une entité géographique Date de création
-	 * : (14/09/11)
-	 */
-	private boolean performControlerRegleGestionMotif(HttpServletRequest request) throws Exception {
-		// Verification si suppression d'un motif avancement utilisée sur un
-		// avancement
-		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)
-				&& AvancementFonctionnaires.listerAvancementAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
-			// "ERR989",
-			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction()
-					.declarerErreur(MessageUtils.getMessage("ERR989", "un avancement", "ce motif d'avancement"));
-			return false;
-		}
-
-		// Vérification des contraintes d'unicité de l'entité géographique
-		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
-
-			for (MotifAvancement motif : getListeMotif()) {
-				if (motif.getLibMotifAvct().equals(getVAL_EF_LIB_MOTIF().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce libellé"));
-					return false;
-				}
-				if (motif.getCodeMotifAvct().equals(getVAL_EF_CODE_MOTIF().toUpperCase())) {
-					// "ERR974",
-					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR974", "un motif d'avancement", "ce code"));
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_ST_ACTION_MOTIF() {
-		return "NOM_ST_ACTION_MOTIF";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION_MOTIF
-	 * Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getVAL_ST_ACTION_MOTIF() {
-		return getZone(getNOM_ST_ACTION_MOTIF());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_LIB_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_EF_LIB_MOTIF() {
-		return "NOM_EF_LIB_MOTIF";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_LIB_MOTIF Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getVAL_EF_LIB_MOTIF() {
-		return getZone(getNOM_EF_LIB_MOTIF());
-	}
-
-	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_MOTIF Date de
-	 * création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_EF_CODE_MOTIF() {
-		return "NOM_EF_CODE_MOTIF";
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_CODE_MOTIF Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getVAL_EF_CODE_MOTIF() {
-		return getZone(getNOM_EF_CODE_MOTIF());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_MOTIF Date de création :
-	 * (14/09/11 13:52:54)
-	 * 
-	 */
-	private String[] getLB_MOTIF() {
-		if (LB_MOTIF == null)
-			LB_MOTIF = initialiseLazyLB();
-		return LB_MOTIF;
-	}
-
-	/**
-	 * Setter de la liste: LB_MOTIF Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	private void setLB_MOTIF(String[] newLB_MOTIF) {
-		LB_MOTIF = newLB_MOTIF;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_MOTIF Date de création :
-	 * (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF() {
-		return "NOM_LB_MOTIF";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_MOTIF_SELECT Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getNOM_LB_MOTIF_SELECT() {
-		return "NOM_LB_MOTIF_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String[] getVAL_LB_MOTIF() {
-		return getLB_MOTIF();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_MOTIF Date de création : (14/09/11 13:52:54)
-	 * 
-	 */
-	public String getVAL_LB_MOTIF_SELECT() {
-		return getZone(getNOM_LB_MOTIF_SELECT());
-	}
-
-	private ArrayList<MotifAvancement> getListeMotif() {
-		if (listeMotif == null)
-			return new ArrayList<MotifAvancement>();
-		return listeMotif;
-	}
-
-	private void setListeMotif(ArrayList<MotifAvancement> listeMotif) {
-		this.listeMotif = listeMotif;
-	}
-
-	private MotifAvancement getMotifCourant() {
-		return motifCourant;
-	}
-
-	private void setMotifCourant(MotifAvancement motifCourant) {
-		this.motifCourant = motifCourant;
-	}
-
-	/**
 	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (14/09/11 13:52:54)
 	 * 
@@ -793,26 +440,6 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
-
-			// Si clic sur le bouton PB_ANNULER_MOTIF
-			if (testerParametre(request, getNOM_PB_ANNULER_MOTIF())) {
-				return performPB_ANNULER_MOTIF(request);
-			}
-
-			// Si clic sur le bouton PB_CREER_MOTIF
-			if (testerParametre(request, getNOM_PB_CREER_MOTIF())) {
-				return performPB_CREER_MOTIF(request);
-			}
-
-			// Si clic sur le bouton PB_SUPPRIMER_MOTIF
-			if (testerParametre(request, getNOM_PB_SUPPRIMER_MOTIF())) {
-				return performPB_SUPPRIMER_MOTIF(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER_MOTIF
-			if (testerParametre(request, getNOM_PB_VALIDER_MOTIF())) {
-				return performPB_VALIDER_MOTIF(request);
-			}
 
 			// Si clic sur le bouton PB_ANNULER_EMPLOYEUR
 			if (testerParametre(request, getNOM_PB_ANNULER_EMPLOYEUR())) {

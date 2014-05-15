@@ -586,7 +586,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 							nouvelleCarriere.setIban(gradeSuivant.getIban());
 						}
 
-						nouvelleCarriere.setCodeMotif(avct.getIdMotifAvct());
+						nouvelleCarriere.setIdMotif(Const.ZERO);
 
 						// champ à remplir pour creer une carriere NB : on
 						// reprend ceux de la carriere precedente

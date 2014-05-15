@@ -316,7 +316,7 @@ public class OeAVCTContractuels extends BasicProcess {
 						nouvelleCarriere.setCodeTypeEmploi(carr.getCodeTypeEmploi());
 						nouvelleCarriere.setCodeGrade(carr.getCodeGrade());
 						nouvelleCarriere.setCodeBaseHoraire2(carr.getCodeBaseHoraire2());
-						nouvelleCarriere.setCodeMotif(carr.getCodeMotif());
+						nouvelleCarriere.setIdMotif(Const.ZERO);
 						nouvelleCarriere.setModeReglement(carr.getModeReglement());
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 
