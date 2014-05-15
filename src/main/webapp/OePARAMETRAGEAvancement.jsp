@@ -220,6 +220,7 @@
 							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
 								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_EMPLOYEUR()%>">
 			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_EMPLOYEUR()%>">
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_EMPLOYEUR()%>">
 			    	        </div>
 			            	
 			            	<% if (process.getVAL_ST_ACTION_EMPLOYEUR()!= null && !process.getVAL_ST_ACTION_EMPLOYEUR().equals("")) {%>
@@ -243,7 +244,7 @@
 										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_TITRE_EMPLOYEUR() %>" size="70" type="text" value="<%= process.getVAL_EF_TITRE_EMPLOYEUR() %>">
 									</td>
 								</tr>
-								<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_EMPLOYEUR())) { %>
+								<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_EMPLOYEUR())||process.ACTION_MODIFICATION.equals(process.getVAL_ST_ACTION_EMPLOYEUR())) { %>
 								<tr>
 									<td colspan="2" align="center">
 										<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_EMPLOYEUR()%>">

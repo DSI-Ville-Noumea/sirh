@@ -824,6 +824,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				return performPB_CREER_EMPLOYEUR(request);
 			}
 
+			// Si clic sur le bouton PB_MODIFIER_EMPLOYEUR
+			if (testerParametre(request, getNOM_PB_MODIFIER_EMPLOYEUR())) {
+				return performPB_MODIFIER_EMPLOYEUR(request);
+			}
+
 			// Si clic sur le bouton PB_SUPPRIMER_EMPLOYEUR
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_EMPLOYEUR())) {
 				return performPB_SUPPRIMER_EMPLOYEUR(request);
@@ -1193,6 +1198,11 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				getEmployeurDao().supprimerEmployeur(getEmployeurCourant().getIdEmployeur());
 				getListeEmployeur().remove(getEmployeurCourant());
 				setEmployeurCourant(null);
+			} else if (getVAL_ST_ACTION_EMPLOYEUR().equals(ACTION_MODIFICATION)) {
+				getEmployeurCourant().setLibEmployeur(getVAL_EF_EMPLOYEUR());
+				getEmployeurCourant().setTitreEmployeur(getVAL_EF_TITRE_EMPLOYEUR());
+				getEmployeurDao().modifierEmployeur(getEmployeurCourant().getIdEmployeur(),
+						getEmployeurCourant().getLibEmployeur(), getEmployeurCourant().getTitreEmployeur());
 			}
 			initialiseListeEmployeur(request);
 			addZone(getNOM_ST_ACTION_EMPLOYEUR(), Const.CHAINE_VIDE);
@@ -3483,5 +3493,27 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 
 	public String getVAL_ST_CAP_VDN() {
 		return getZone(getNOM_ST_CAP_VDN());
+	}
+
+	public String getNOM_PB_MODIFIER_EMPLOYEUR() {
+		return "NOM_PB_MODIFIER_EMPLOYEUR";
+	}
+
+	public boolean performPB_MODIFIER_EMPLOYEUR(HttpServletRequest request) throws Exception {
+
+		int indice = (Services.estNumerique(getVAL_LB_EMPLOYEUR_SELECT()) ? Integer
+				.parseInt(getVAL_LB_EMPLOYEUR_SELECT()) : -1);
+		if (indice != -1 && indice < getListeEmployeur().size()) {
+			Employeur emp = getListeEmployeur().get(indice);
+			setEmployeurCourant(emp);
+			addZone(getNOM_EF_EMPLOYEUR(), emp.getLibEmployeur());
+			addZone(getNOM_EF_TITRE_EMPLOYEUR(), emp.getTitreEmployeur());
+			addZone(getNOM_ST_ACTION_EMPLOYEUR(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "employeurs"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_EMPLOYEUR());
+		return true;
 	}
 }
