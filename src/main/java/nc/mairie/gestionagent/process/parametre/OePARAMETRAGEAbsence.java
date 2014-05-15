@@ -544,7 +544,8 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().exclude("*.class").serialize(motifCompteur));
+				ReturnMessageDto message = consuAbs.saveMotifCompteur(new JSONSerializer().exclude("*.class")
+						.serialize(motifCompteur));
 
 				if (message.getErrors().size() > 0) {
 					String err = Const.CHAINE_VIDE;
@@ -574,6 +575,18 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			setFocus(getDefaultFocus());
 			return false;
 		}
+		// Verification si A50 ou A49 alors pas de motif saisissable
+		int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
+		EnumTypeAbsence typeAbsence = getListeTypeAbsence().get(indiceType);
+		if (typeAbsence.equals(EnumTypeAbsence.ASA_A49) || typeAbsence.equals(EnumTypeAbsence.ASA_A50)) {
+			// "ERR147",
+			// "Cette famille ne se gère pas par compteur.Il est donc impossible de saisir un motif.");
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR147"));
+			setFocus(getDefaultFocus());
+			return false;
+		}
+
 		return true;
 	}
 
