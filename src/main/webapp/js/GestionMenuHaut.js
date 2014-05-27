@@ -15,13 +15,13 @@ function MenuHaut(ssModule) {
 
 // Affichage du menu haut
 function AfficherMenu() {
-	var res = '<div id="'+ this.nom + '" class="menuHaut">';
+	var res = '<div id="'+ this.nom + '" class="menuHaut"><div id="menuHaut"><ul>';
 	var a;
 	// Parcours des objets et demande d'affichage
 	for (a in this.listeObjet) {
 		res += this.listeObjet[a].afficher();
 	}
-	return res+'</div>';
+	return res+'</ul></div></div>';
 }
 
 // Constructeur de la classe Lien
@@ -70,7 +70,13 @@ function afficherLien() {
 		/*var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclick+'">'+
 				this.titreLien + '</span>';*/
 
-		var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'"><img height="47" id="menuhaut_'+this.droit+'" onmouseover="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'_Rollover.gif\'" onmouseout="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'.gif\'" src="images/navigation/menuHaut/'+this.img+'.gif"/></span>';
+		var temp = '<li id="'+this.droit+'" onClick="'+onclic+'">'+this.img+'</li>';
+		/*var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'">' +
+		'<img height="47" id="menuhaut_'+this.droit+'" ' +
+		'onmouseover="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'_Rollover.gif\'" ' +
+			'onmouseout="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'.gif\'" ' +
+				'src="images/navigation/menuHaut/'+this.img+'.gif"/>' +
+		'</span>';*/
 		
 		return temp;
 	} else {
