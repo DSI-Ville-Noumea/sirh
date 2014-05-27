@@ -1,14 +1,8 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +19,6 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.carriere.Carriere;
@@ -64,7 +57,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
@@ -167,102 +159,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	public OeAGENTEmploisAffectation() {
 		super();
-	}
-
-	private void creerModeleDocument(String modele, String destination) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("NS");
-
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.resolveFile(modele);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		String ligne;
-		AgentNW a = getAgentCourant();
-		Affectation aff = getAffectationCourant();
-		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-		TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-		Contrat c = Contrat.chercherContratAgentDateComprise(getTransaction(), a.getIdAgent(), Services.dateDuJour());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-		EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
-
-		// on recupere les champs qui nous interessent
-		String prenom = a.getPrenomAgent().toLowerCase();
-		String premLettre = prenom.substring(0, 1).toUpperCase();
-		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
-		prenom = premLettre + restePrenom;
-		String nom = a.getNomAgent().toUpperCase();
-		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame"
-				: "Mademoiselle";
-		String dateDebAffectation = aff.getDateDebutAff();
-		String dateFinAffectation = aff.getDateFinAff() == null || aff.getDateFinAff().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin pour ce contrat !"
-				: aff.getDateFinAff();
-		String titrePoste = tp.getLibTitrePoste();
-		String dureePeriodeEssai = Const.CHAINE_VIDE;
-		String dateFinEssai = Const.CHAINE_VIDE;
-		if (c != null) {
-			if (c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL)) {
-				dureePeriodeEssai = "Il n'y a pas de date fin de periode d'essai pour ce contrat !";
-			} else {
-				dureePeriodeEssai = String.valueOf(Services.compteJoursEntreDates(c.getDateDebut(),
-						c.getDateFinPeriodeEssai()));
-			}
-			dateFinEssai = c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !"
-					: c.getDateFinPeriodeEssai();
-		}
-		String interesse = a.getCivilite().equals("0") ? "interesse" : "interessee";
-		String nomme = a.getCivilite().equals("0") ? "nomme" : "nommee";
-		String affecte = a.getCivilite().equals("0") ? "affecte" : "affectee";
-		String libService = s.getLibService();
-		String lieuPoste = eg.getLibEntiteGeo();
-
-		// tant qu'il y a des lignes
-		while ((ligne = in.readLine()) != null) {
-			// je fais mon traitement
-			ligne = StringUtils.replace(ligne, "$_DATE_JOUR", new Date().toString());
-			ligne = StringUtils.replace(ligne, "$_NOM", nom);
-			ligne = StringUtils.replace(ligne, "$_PRENOM", prenom);
-			ligne = StringUtils.replace(ligne, "$_CIVILITE", civilite);
-			ligne = StringUtils.replace(ligne, "$_DATEDEBAFFECTATION", dateDebAffectation);
-			ligne = StringUtils.replace(ligne, "$_DATEFINAFFECTATION", dateFinAffectation);
-			ligne = StringUtils.replace(ligne, "$_TITRE_POSTE", titrePoste);
-			ligne = StringUtils.replace(ligne, "$_DUREEESSAI", dureePeriodeEssai);
-			ligne = StringUtils.replace(ligne, "$_DATEFINESSAI", dateFinEssai);
-			ligne = StringUtils.replace(ligne, "$_INTERESSE", interesse);
-			ligne = StringUtils.replace(ligne, "$_NOMME", nomme);
-			ligne = StringUtils.replace(ligne, "$_AFFECTE", affecte);
-			ligne = StringUtils.replace(ligne, "$_LIB_SERVICE", libService);
-			ligne = StringUtils.replace(ligne, "$_LIEU_POSTE", lieuPoste);
-			out.write(ligne);
-		}
-
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + "NS" + destination));
 	}
 
 	/**
@@ -2119,16 +2015,18 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		return getZone(getNOM_ST_WARNING());
 	}
 
-	private boolean imprimeModele(HttpServletRequest request, String nomDoc) throws Exception {
+	private boolean imprimeModele(HttpServletRequest request, String typeDocument) throws Exception {
+		// on verifie que les repertoires existent
+		verifieRepertoire("NS");
+
 		Affectation aff = getAffectationCourant();
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String destination = "NS/NS_" + aff.getIdAffectation() + "_" + nomDoc.substring(3, nomDoc.length());
+		String destination = "NS/NS_" + aff.getIdAffectation() + "_" + typeDocument + ".doc";
+
 		// si le fichier existe alors on supprime l'entrée où il y a le fichier
-		// f
-		if (verifieExistFichier(aff.getIdAffectation(), nomDoc)) {
-			String nomSansExtension = nomDoc.substring(0, nomDoc.indexOf("."));
+		if (verifieExistFichier(aff.getIdAffectation(), typeDocument)) {
 			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "NS_" + aff.getIdAffectation() + "_"
-					+ nomSansExtension.substring(3, nomSansExtension.length()));
+					+ typeDocument);
 			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
 					.getIdAgent(), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -2140,31 +2038,86 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			d.supprimerDocument(getTransaction());
 		}
 
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_AFFECTATIONS");
-		String modele = repModeles + nomDoc;
+		try {
+			byte[] fileAsBytes = null;
+			if (typeDocument.equals("Interne")) {
+				fileAsBytes = getNoteServiceInterneReportAsByteArray(getAffectationCourant().getIdAffectation());
+			} else {
+				fileAsBytes = getNoteServiceReportAsByteArray(getAffectationCourant().getIdAffectation(), typeDocument);
+			}
 
-		// Tout s'est bien passé
-		// on crée le document en base de données
-		Document d = new Document();
-		d.setIdTypeDocument("3");
-		d.setLienDocument(destination);
-		d.setNomDocument("NS_" + aff.getIdAffectation() + "_" + nomDoc.substring(3, nomDoc.length()));
-		d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
-		d.setCommentaire("Document généré par l'application");
-		d.creerDocument(getTransaction());
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 
-		LienDocumentAgent lda = new LienDocumentAgent();
-		lda.setIdAgent(getAgentCourant().getIdAgent());
-		lda.setIdDocument(d.getIdDocument());
-		lda.creerLienDocumentAgent(getTransaction());
+			// Tout s'est bien passé
+			// on crée le document en base de données
+			Document d = new Document();
+			d.setIdTypeDocument("3");
+			d.setLienDocument(destination);
+			d.setNomDocument("NS_" + aff.getIdAffectation() + "_" + typeDocument + ".doc");
+			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setCommentaire("Document généré par l'application");
+			d.creerDocument(getTransaction());
 
-		if (getTransaction().isErreur())
+			LienDocumentAgent lda = new LienDocumentAgent();
+			lda.setIdAgent(getAgentCourant().getIdAgent());
+			lda.setIdDocument(d.getIdDocument());
+			lda.creerLienDocumentAgent(getTransaction());
+
+			if (getTransaction().isErreur())
+				return false;
+
+			destination = destination.substring(destination.lastIndexOf("/"), destination.length());
+			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+			setURLFichier(getScriptOuverture(repertoireStockage + "NS" + destination));
+
+			commitTransaction();
+
+		} catch (Exception e) {
+			// "ERR185",
+			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
-
-		creerModeleDocument(modele, repPartage + destination);
-		commitTransaction();
+		}
 
 		return true;
+	}
+
+	private byte[] getNoteServiceInterneReportAsByteArray(String idAffectation) throws Exception {
+
+		ClientResponse response = createAndFireRequestNoteService(idAffectation, null);
+
+		return readResponseAsByteArray(response);
+	}
+
+	private byte[] getNoteServiceReportAsByteArray(String idAffectation, String typeDocument) throws Exception {
+
+		ClientResponse response = createAndFireRequestNoteService(idAffectation, typeDocument);
+
+		return readResponseAsByteArray(response);
+	}
+
+	private ClientResponse createAndFireRequestNoteService(String idAffectation, String typeDocument) {
+		String urlWS = null;
+		if (typeDocument == null) {
+			urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_NS_INTERNE_SIRH") + "?idAffectation="
+					+ idAffectation;
+		} else {
+			urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_NS_SIRH") + "?idAffectation="
+					+ idAffectation + "&typeNoteService=" + typeDocument;
+		}
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWS);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
 	}
 
 	/**
@@ -3985,26 +3938,26 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		} else if (getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
 			if (performControlerChoixImpression()) {
 				// recup du document à imprimer
-				String nomDocument = EnumImpressionAffectation.getCodeImpressionAffectation(Integer
+				String typeDocument = EnumImpressionAffectation.getCodeImpressionAffectation(Integer
 						.parseInt(getZone(getNOM_LB_LISTE_IMPRESSION_SELECT())));
 				// Récup affectation courante
 				Affectation aff = getAffectationCourant();
 				if (getVAL_ST_WARNING().equals(Const.CHAINE_VIDE)) {
 					// on verifie si il existe dejà un fichier pour cette
 					// affectation dans la BD
-					if (verifieExistFichier(aff.getIdAffectation(), nomDocument)) {
+					if (verifieExistFichier(aff.getIdAffectation(), typeDocument)) {
 						// alors on affiche un message
-						// :" Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?"
+						// :"Attention un fichier du même type existe déjà pour cette affectation. Etes-vous sûr de vouloir écraser la version précédente ?"
 						addZone(getNOM_ST_WARNING(),
 								"Attention un fichier du même type existe déjà pour cette affectation. Etes-vous sûr de vouloir écraser la version précédente ?");
 					} else {
-						imprimeModele(request, nomDocument);
+						imprimeModele(request, typeDocument);
 						addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 						addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 						addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
 					}
 				} else {
-					imprimeModele(request, nomDocument);
+					imprimeModele(request, typeDocument);
 					addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
 					addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 					addZone(getNOM_ST_ACTION_spec(), Const.CHAINE_VIDE);
@@ -4911,11 +4864,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	// return "ECR-AG-EMPLOIS-SPECIFICITES";
 	// }
 
-	private boolean verifieExistFichier(String idAffectation, String nomDoc) throws Exception {
+	private boolean verifieExistFichier(String idAffectation, String typeDocument) throws Exception {
 		// on regarde si le fichier existe
-		String nomSansExtension = nomDoc.substring(0, nomDoc.indexOf("."));
-		Document.chercherDocumentByContainsNom(getTransaction(),
-				"NS_" + idAffectation + "_" + nomSansExtension.substring(3, nomSansExtension.length()));
+		Document.chercherDocumentByContainsNom(getTransaction(), "NS_" + idAffectation + "_" + typeDocument);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			return false;
