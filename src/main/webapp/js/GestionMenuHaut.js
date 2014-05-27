@@ -118,11 +118,11 @@ function changerMenuHaut(ssModule) {
 			menuAAfficher.style.display = 'block';
 			ssModuleCourant = ssModule;
 			
-			var eltsMenuHaut = document.getElementById(ssModule).getElementsByTagName("span");
+			var eltsMenuHaut = document.getElementById(ssModule).getElementsByTagName("li");
 			eltsMenuHaut[0].className = "LienHautCourant";
 			courant = eltsMenuHaut[0];
 			for (var i=1; i<eltsMenuHaut.length; i++){
-				if (eltsMenuHaut[i].className != "LienHautInactif"){
+				if (eltsMenuHaut[i].className != "LienHautActif"){
 					eltsMenuHaut[i].className = "LienHautActif";
 				}
 			}

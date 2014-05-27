@@ -156,5 +156,7 @@ body{
 
 #menuHaut ul li.LienHautActif {
 	color:#0096FF;
-	line-height: 37px;
+}
+#menuHaut ul li.LienHautActif:hover {
+	color:#FFFFFF;
 }
