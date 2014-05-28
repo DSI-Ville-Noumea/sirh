@@ -113,12 +113,15 @@ function incrementeNiveau(obj){
 // Implantation du code de la fonction membre 
 function afficherDossier() { 
 	var res;
-//	res = 	'<span id="'+this.nom+'" onClick="showhide('+this.nom+'o,'+this.nom+'sign); changerTitre(this.title);" class="Dossier" TITLE="'+this.titre+'">'+
-//	res = 	'<span id="'+this.nom+'" onmouseover="showhide('+this.nom+')" class="Dossier" TITLE="'+this.titre+'">'+
-//		'<font style="text-decoration:none"><IMG id="'+this.nom+'sign" src="images/menu_dossier_clos.gif"></font> '+this.titre+'</span><br>\n'+
-//		'<SPAN id="'+this.nom+'o" style="display:\'none\';">';
-	//res =  '<span id="'+this.nom+'" onClick="switchMenu('+this.nom+')" class="Dossier" TITLE="'+this.titre+'">'+this.titre+'</span><br>\n';
-	res =  '<span id="'+this.nom+'" onClick="switchMenu('+this.nom+')" class="Dossier" TITLE="'+this.titre+'"><img width="200" id="menu_'+this.nom+'" onmouseover="menu_'+this.nom+'.src=\'images/navigation/menuGauche/'+this.img+'_Rollover.gif\'" onmouseout="menu_'+this.nom+'.src=\'images/navigation/menuGauche/'+this.img+'.gif\'" src="images/navigation/menuGauche/'+this.img+'.gif"/></span><br>\n';
+	
+	/* res =  '<span id="'+this.nom+'" onClick="switchMenu('+this.nom+')" class="Dossier" TITLE="'+this.titre+'"> ' +
+		'<img width="200" id="menu_'+this.nom+'" onmouseover="menu_'+this.nom+'.src=\'images/navigation/menuGauche/'+this.img+'_Rollover.gif\'" ' +
+		'nmouseout="menu_'+this.nom+'.src=\'images/navigation/menuGauche/'+this.img+'.gif\'" src="images/navigation/menuGauche/'+this.img+'.gif"/>' +
+	'</span><br>\n'; */
+	
+	var res = '<div id="'+this.nom+'" onClick="switchMenu('+this.nom+')" class="Dossier" TITLE="'+this.titre+'"><span class="DossierContainer"> ' +
+				this.img + '</span></div>';
+	
 //	parcours des éléments et rajout
 	var a;
 	var contenu = '<DIV id="'+this.nom+'_SsMenu" class="SsMenu">';

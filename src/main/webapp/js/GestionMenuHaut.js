@@ -67,16 +67,7 @@ function afficherLien() {
 			onclic = '';
 		}
 
-		/*var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclick+'">'+
-				this.titreLien + '</span>';*/
-
 		var temp = '<li id="'+this.droit+'" onClick="'+onclic+'">'+this.img+'</li>';
-		/*var temp = 	'<span id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'">' +
-		'<img height="47" id="menuhaut_'+this.droit+'" ' +
-		'onmouseover="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'_Rollover.gif\'" ' +
-			'onmouseout="menuhaut_'+this.droit+'.src=\'images/navigation/menuHaut/'+this.img+'.gif\'" ' +
-				'src="images/navigation/menuHaut/'+this.img+'.gif"/>' +
-		'</span>';*/
 		
 		return temp;
 	} else {

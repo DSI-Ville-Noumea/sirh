@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
 <%@page import="nc.mairie.gestionagent.servlets.ServletAgent"%>
@@ -44,7 +44,7 @@ var menu = new Menu();
 //***************************************************************
 //*               Le module Postes et emplois
 //***************************************************************
-var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois","PE");
+var Module_posteEtEmploi = new Dossier("Module_posteEtEmploi", "Postes & emplois","POSTES ET EMPLOIS");
 	<% 
 	String affFicheEmploi =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_FICHE_EMPLOI");
 	if (affFicheEmploi.equals("TRUE")){ %>
@@ -76,7 +76,7 @@ var Module_agent = new Dossier("Module_agent", "Agent","AGENT");
 //***************************************************************
 //*               Le module Gestion des avancements
 //***************************************************************
-var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEMENT");
+var Module_avct = new Dossier("Module_avct", "Gestion des avancements","GESTION AVANCEMENT");
 	<% 
 	String affAvct =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_AVCT");
 	if (affAvct.equals("TRUE")){ %>
@@ -104,7 +104,7 @@ var Module_avct = new Dossier("Module_avct", "Gestion des avancements","AVANCEME
 <% 
 String affSuiviMed =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_SUIVI_MEDICAL");
 if (affSuiviMed.equals("TRUE")){ %>
-var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI_MED");
+var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical","SUIVI MEDICAL");
 	Module_suiviMed.ajouterFils(new Lien("suiviMed", "SMConvocation", "Suivi médical", "Gestion du suivi médical", true));
 <%}%>
 
@@ -115,7 +115,7 @@ var Module_suiviMed = new Dossier("Module_suiviMed", "Gestion du suivi medical",
 <% 
 String affPointage =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_POINTAGE");
 if (affPointage.equals("TRUE")){ %>
-	var Module_pointage = new Dossier("Module_pointage", "Gestion des pointages","POINTAGE");
+	var Module_pointage = new Dossier("Module_pointage", "Gestion des pointages","GESTION POINTAGES");
 	Module_pointage.ajouterFils(new Lien("saisiePointage", "PTGSaisie", "Visualisation et saisie", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("ventilationPointage", "PTGVentilationConvCol", "Ventilation et validation", "Gestion des pointages", true));
 	Module_pointage.ajouterFils(new Lien("payeurPointage", "PTGPayeurConvCol", "Editions du payeur", "Gestion des pointages", true));
@@ -128,7 +128,7 @@ if (affPointage.equals("TRUE")){ %>
 <% 
 String affAbsence =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ABSENCE");
 if (affAbsence.equals("TRUE")){ %>
-	var Module_absence = new Dossier("Module_absence", "Gestion des absences","ABSENCE");
+	var Module_absence = new Dossier("Module_absence", "Gestion des absences","GESTION DES ABSENCES");
 	Module_absence.ajouterFils(new Lien("visualisationAbsence", "ABSVisualisation", "Visualisation et validation", "Gestion des absences", true));
 <%}%>
 
@@ -138,7 +138,7 @@ if (affAbsence.equals("TRUE")){ %>
 	<% 
 	String affElection =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ELECTION");
 	if (affElection.equals("TRUE")){ %>
-		var Module_election = new Dossier("Module_election", "Gestion des élections","ELECTION");
+		var Module_election = new Dossier("Module_election", "Gestion des élections","GESTION ELECTIONS");
 		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteurA48", "Saisie des compteurs ASA", "Saisie des compteurs ASA", true));
 	<%}%>
 	
@@ -146,7 +146,7 @@ if (affAbsence.equals("TRUE")){ %>
 //***************************************************************
 //*               Le module Paramètres
 //***************************************************************
-var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAM");
+var Module_parametres = new Dossier("Module_parametres", "Paramètres","PARAMETRES");
 	Module_parametres.ajouterFils(new Lien("posteEtEmploi", "ParamFicheEmploi", "Postes & emplois", "Gestion des parametres du module postes et emplois", true));
 	Module_parametres.ajouterFils(new Lien("agent", "ParamDonneesPerso", "Agent", "Gestion des parametres du module agents", true));
 	Module_parametres.ajouterFils(new Lien("grade", "ParamGradeRef", "Grade", "Gestion des paramètres des grades", true));
@@ -161,7 +161,7 @@ Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Ges
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************
-var Module_gestionDroits = new Dossier("Module_gestionDroits", "Gestion des droits","DROIT");
+var Module_gestionDroits = new Dossier("Module_gestionDroits", "Gestion des droits","GESTION DES DROITS");
 	Module_gestionDroits.ajouterFils(new Lien("utilisateurs", "DroitsUtilisateur", "Utilisateurs", "Gestion des utilisateurs", true));
 	Module_gestionDroits.ajouterFils(new Lien("groupes", "DroitsProfil", "Groupes", "Gestion des droits par groupe", true));
 	Module_gestionDroits.ajouterFils(new Lien("kiosque", "DroitsKiosque", "Kiosque", "Gestion des droits du Kiosque RH", true));

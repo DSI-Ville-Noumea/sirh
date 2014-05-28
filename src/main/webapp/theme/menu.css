@@ -29,19 +29,32 @@
   background-position: top left;
 }
 
-.Dossier{
-  /*background-color:lightgray;*/
-  cursor:hand;
-  font-Family:Verdana;
-  font-weight : bold;
-  text-decoration:non;
-  font-size : 11px;
-  position: static;
-  /*padding-left: 5px;*/
-  /*padding-top:12px;
-  padding-bottom:12px;*/
-  width:100%;
-  /*border-bottom: 2px gray solid double;*/
+.Dossier {
+	display: block;
+    background-image: url(../images/navigation/menuGauche/DEFAUT.png);
+    background-repeat: no-repeat;
+	cursor:pointer;
+	font-Family:Verdana;
+	font-weight : bold;
+	text-decoration:non;
+	font-size : 11px;
+	position: static;
+	width:200px;
+	height: 30px;
+}
+.Dossier:hover {
+    background-image: url(../images/navigation/menuGauche/DEFAUT_Rollover.png);
+    background-repeat: no-repeat;
+	color: #FFFFFF;
+}
+.DossierContainer {
+	color: #0096FF;
+    display: block;
+    margin-left: 25px;
+    padding-top: 7px;
+}
+.DossierContainer:hover {
+	color: #FFFFFF;
 }
 
 .DossierSelected{
