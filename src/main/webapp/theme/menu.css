@@ -65,18 +65,14 @@
   text-decoration:non;
   font-size : 11px;
   position: static;
-  /*padding-left: 5px;*/
-  /*padding-top:12px;
-  padding-bottom:12px;*/
   width:100%;
-  /*border-bottom: 2px gray solid double;*/
 }
 
 .SsMenu{
   background-color : white;
   /*border:1px solid black;*/
   cursor:hand;
-  font-size : 10px;
+  font-size : 11px;
   font-weight : bold;
   position : static;
   margin-left: 20px;
@@ -84,11 +80,13 @@
   margin-bottom: 5px;
   margin-right: 5px;
   display:none;
+  font-family: Verdana;
 }
 
 .LienActif{
-  cursor:hand;
+  cursor:pointer;
   font-size : 10px;
+  color : #0080CC;
 }
 
 .LienInactif{
@@ -101,8 +99,8 @@
 
 .LienCourant{
   font-size : 10px;
-  cursor : default;
-  color : teal;
+  cursor:pointer;
+  color : #0080CC;
   text-decoration : underline;
 }
 
@@ -150,6 +148,9 @@ body{
 	padding:0px 10px 0px 10px;
 	color:#0096FF;
 	line-height: 37px;
+	font-family: Verdana;
+	font-size: 11px;
+	font-weight: bold;
 }
 #menuHaut li:hover { 
 	text-decoration: none;

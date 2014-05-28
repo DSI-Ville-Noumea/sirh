@@ -62,7 +62,7 @@ function afficherLien() {
 			comment=' EN CONSTRUCTION ';
 		}
 
-		var temp = 	'<span onmouseover="this.style.color=\'#00b4ff\';" onmouseout="this.style.color=\'black\';" id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'">'+
+		var temp = 	'<span onmouseover="this.style.color=\'#000000\';" onmouseout="this.style.color=\'#0080CC\';" id="'+this.droit+'" class="'+classe+'" TITLE="'+this.titre+'" onClick="'+onclic+'">'+
 				this.titreLien+comment+'<br></span>';
 		return temp;
 	} else {
