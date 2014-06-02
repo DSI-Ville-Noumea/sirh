@@ -1,8 +1,10 @@
 package nc.mairie.gestionagent.process;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -50,13 +52,20 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -237,16 +246,17 @@ public class OeSMConvocation extends BasicProcess {
 
 	private ArrayList<String> listerDocumentsSM() throws ParseException {
 		ArrayList<String> res = new ArrayList<String>();
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
-				+ ".xml";
-		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
-				+ ".xml";
-		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
-		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
+		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".doc";
+		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".doc";
+		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
 
 		// on verifie l'existance de chaque fichier
 		boolean existsConvocF = new File(docuConvocF).exists();
@@ -276,37 +286,39 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
-			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat().trim());
+			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat()
+					.trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
 			Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
+			addZone(getNOM_ST_SERVICE(i),
+					serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
 			addZone(getNOM_ST_DATE_DERNIERE_VISITE(i),
-					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite().toString(), "yyyy-MM-dd",
-							"dd/MM/yyyy"));
+					sm.getDateDerniereVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDateDerniereVisite()
+							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_DATE_PREVISION_VISITE(i),
-					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
-							"dd/MM/yyyy"));
+					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite()
+							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVM().toString()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
 			addZone(getNOM_LB_MEDECIN_SELECT(i),
-					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(getHashMedecin().get(sm.getIdMedecin().toString())))
-							: Const.ZERO);
+					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(
+							getHashMedecin().get(sm.getIdMedecin().toString()))) : Const.ZERO);
 			addZone(getNOM_ST_DATE_PROCHAIN_RDV(i),
-					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm.getDateProchaineVisite().toString(),
-							"yyyy-MM-dd", "dd/MM/yyyy"));
+					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm
+							.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			if (sm.getHeureProchaineVisite() != null) {
 				Integer resHeure = getListeHeureRDV().indexOf(sm.getHeureProchaineVisite());
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), resHeure.toString());
 			} else {
 				addZone(getNOM_LB_HEURE_RDV_SELECT(i), Const.ZERO);
 			}
-			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i),
-					sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode()) || sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON()
-							: getCHECKED_OFF());
-			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i), sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_A_IMPRIMER_CONVOC(i), sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())
+					|| sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
+			addZone(getNOM_CK_A_IMPRIMER_ACCOMP(i),
+					sm.getEtat().equals(EnumEtatSuiviMed.ACCOMP.getCode()) ? getCHECKED_ON() : getCHECKED_OFF());
 			addZone(getNOM_ST_ETAT(i), sm.getEtat());
 		}
 	}
@@ -607,31 +619,36 @@ public class OeSMConvocation extends BasicProcess {
 		// Mise à jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		if (indiceMois != -1) {
 			// récupération de l'état
-			int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
+			int indiceEtat = (Services.estNumerique(getVAL_LB_ETAT_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ETAT_SELECT()) : -1);
 			String etat = Const.CHAINE_VIDE;
 			if (indiceEtat > 0) {
 				etat = getListeEnumEtatSuiviMed().get(indiceEtat - 1).getCode();
 			}
 
 			// recupération motif
-			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
+					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			String motif = Const.CHAINE_VIDE;
 			if (indiceMotif > 0) {
 				motif = getListeMotif().get(indiceMotif - 1).getIdMotifVM().toString();
 			}
 
 			// recupération relance
-			int indiceRelance = (Services.estNumerique(getVAL_LB_RELANCE_SELECT()) ? Integer.parseInt(getVAL_LB_RELANCE_SELECT()) : -1);
+			int indiceRelance = (Services.estNumerique(getVAL_LB_RELANCE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_RELANCE_SELECT()) : -1);
 			String relance = Const.CHAINE_VIDE;
 			if (indiceRelance > 0) {
 				relance = getListeRelance().get(indiceRelance - 1);
 			}
 
 			// recupération statut
-			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
+			int indiceStatut = (Services.estNumerique(getVAL_LB_STATUT_SELECT()) ? Integer
+					.parseInt(getVAL_LB_STATUT_SELECT()) : -1);
 			String statut = Const.CHAINE_VIDE;
 			if (indiceStatut > 0) {
 				statut = getListeStatut().get(indiceStatut - 1);
@@ -651,8 +668,9 @@ public class OeSMConvocation extends BasicProcess {
 				listeSousService = Service.listSousService(getTransaction(), serv.getSigleService());
 			}
 
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(getMoisSelectionne(indiceMois),
-					getAnneeSelectionne(indiceMois), agent, listeSousService, relance, motif, etat, statut));
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(
+					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois), agent, listeSousService, relance,
+					motif, etat, statut));
 			afficheListeSuiviMed();
 			// getSuiviMedDao().detruitDao();
 			// pour les documents
@@ -689,7 +707,8 @@ public class OeSMConvocation extends BasicProcess {
 		// Mise à jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_CALCUL);
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		if (indiceMois != -1) {
 			Integer moisChoisi = getMoisSelectionne(indiceMois);
 			Integer anneeChoisi = getAnneeSelectionne(indiceMois);
@@ -698,7 +717,8 @@ public class OeSMConvocation extends BasicProcess {
 			// mois et de l'année
 			// SuiviMedicalDao getSuiviMedDao() = new SuiviMedicalDao();
 			try {
-				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(), moisChoisi, anneeChoisi);
+				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(),
+						moisChoisi, anneeChoisi);
 			} catch (Exception e) {
 				logger.error("Problème dans la suppression des suivi medicaux" + new Date());
 			}
@@ -707,8 +727,8 @@ public class OeSMConvocation extends BasicProcess {
 			performCalculSuiviMedical(moisChoisi, anneeChoisi);
 
 			// Affichage de la liste
-			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi, null, null, Const.CHAINE_VIDE,
-					Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE));
+			setListeSuiviMed(getSuiviMedDao().listerSuiviMedicalAvecMoisetAnneeSansEffectue(moisChoisi, anneeChoisi,
+					null, null, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE, Const.CHAINE_VIDE));
 			logger.info("Affichage de la liste");
 			afficheListeSuiviMed();
 			// pour les documents
@@ -775,7 +795,8 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°9 : AGENT SANS VISITES MEDICALES
 		// on liste tous les agents sans visites medicales
 		// avec une PA active à la date du jour
-		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
+		ArrayList<PositionAdmAgent> listeAgentActivite = PositionAdmAgent
+				.listerPositionAdmAgentEnActivite(getTransaction());
 		String listeNomatr = Const.CHAINE_VIDE;
 		for (PositionAdmAgent pa : listeAgentActivite) {
 			listeNomatr += pa.getNomatr() + ",";
@@ -789,7 +810,8 @@ public class OeSMConvocation extends BasicProcess {
 		for (int i = 0; i < listeSMCas9.size(); i++) {
 			AgentNW agent = listeSMCas9.get(i);
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					agent.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -801,10 +823,10 @@ public class OeSMConvocation extends BasicProcess {
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-			}else{
-				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+			} else {
+				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 					continue;
 				}
 			}
@@ -820,7 +842,8 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
@@ -838,7 +861,8 @@ public class OeSMConvocation extends BasicProcess {
 			// du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
+						moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -850,7 +874,8 @@ public class OeSMConvocation extends BasicProcess {
 				// la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
+							"yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -863,9 +888,10 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-					sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(),
+					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 			nbCas9++;
 		}
 		logger.info("Nb de cas 9 : " + nbCas9);
@@ -877,14 +903,16 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas5 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas5 = getSpabsenDao().listerMatriculeAbsencePourSMDoubleType("MA", "LM", moisChoisi, anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas5 = getSpabsenDao().listerMatriculeAbsencePourSMDoubleType("MA",
+					"LM", moisChoisi, anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 90
 			for (int i = 0; i < listeMatriculeSMCas5.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas5.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						nomatrAgent.toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -893,8 +921,8 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(nomatrAgent, "MA", "LM",
-						moisChoisi, anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnneeDoubleType(
+						nomatrAgent, "MA", "LM", moisChoisi, anneeChoisi);
 				Integer compteurJoursMA = 0;
 				SPABSEN dernierAM = null;
 				boolean dejaComptabilise = false;
@@ -911,8 +939,10 @@ public class OeSMConvocation extends BasicProcess {
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAM = ligneSuivante;
 						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+								1);
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
+								"yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -927,14 +957,15 @@ public class OeSMConvocation extends BasicProcess {
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-					if (getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
-					}else{
-						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+					} else {
+						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
+					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+							agent.getIdAgent());
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
@@ -946,10 +977,12 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+							carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
+					String datePrev = Services.ajouteJours(
+							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVM(Integer.valueOf(EnumMotifVisiteMed.VM_CONGE_LONGUE_MALADIE.getCode()));
@@ -965,7 +998,8 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
+								moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -977,8 +1011,8 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
-									"dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
+									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -991,9 +1025,10 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-							sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
+							sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 					nbCas5++;
 
 				}
@@ -1010,14 +1045,16 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas4 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas4 = getSpabsenDao().listerMatriculeAbsencePourSM("MA", moisChoisi, anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas4 = getSpabsenDao().listerMatriculeAbsencePourSM("MA", moisChoisi,
+					anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 30
 			for (int i = 0; i < listeMatriculeSMCas4.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas4.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						nomatrAgent.toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1026,8 +1063,8 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "MA", moisChoisi,
-						anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(
+						nomatrAgent, "MA", moisChoisi, anneeChoisi);
 				Integer compteurJoursMA = 0;
 				SPABSEN dernierAM = null;
 				boolean dejaComptabilise = false;
@@ -1044,8 +1081,10 @@ public class OeSMConvocation extends BasicProcess {
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAM = ligneSuivante;
 						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+								1);
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
+								"yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursMA = compteurJoursMA + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -1060,14 +1099,15 @@ public class OeSMConvocation extends BasicProcess {
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-					if (getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
-					}else{
-						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+					} else {
+						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
+					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+							agent.getIdAgent());
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
@@ -1079,10 +1119,12 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+							carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
+					String datePrev = Services.ajouteJours(
+							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVM(Integer.valueOf(EnumMotifVisiteMed.VM_MA_1MOIS.getCode()));
@@ -1098,7 +1140,8 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
+								moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -1110,8 +1153,8 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
-									"dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
+									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1124,9 +1167,10 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-							sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
+							sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 					nbCas4++;
 				}
 			}
@@ -1142,14 +1186,16 @@ public class OeSMConvocation extends BasicProcess {
 		// l'année donnée
 		int nbCas3 = 0;
 		try {
-			ArrayList<Integer> listeMatriculeSMCas3 = getSpabsenDao().listerMatriculeAbsencePourSM("AT", moisChoisi, anneeChoisi);
+			ArrayList<Integer> listeMatriculeSMCas3 = getSpabsenDao().listerMatriculeAbsencePourSM("AT", moisChoisi,
+					anneeChoisi);
 			// pour chaque matricule trouvé on va cherche la liste de ses
 			// SPABSEN et
 			// on regarde si il se suivent, que le nombre de jours est > 15
 			for (int i = 0; i < listeMatriculeSMCas3.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas3.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						nomatrAgent.toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1158,8 +1204,8 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(nomatrAgent, "AT", moisChoisi,
-						anneeChoisi);
+				ArrayList<SPABSEN> listeSPABSENAgent = getSpabsenDao().listerAbsencePourAgentTypeEtMoisAnnee(
+						nomatrAgent, "AT", moisChoisi, anneeChoisi);
 				Integer compteurJoursITT = 0;
 				SPABSEN dernierAT = null;
 				boolean dejaComptabilise = false;
@@ -1176,8 +1222,10 @@ public class OeSMConvocation extends BasicProcess {
 						SPABSEN ligneSuivante = listeSPABSENAgent.get(j + 1);
 						dernierAT = ligneSuivante;
 						String dateDebLigneSuiv = Services.enleveJours(
-								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
-						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy");
+								Services.convertitDate(ligneSuivante.getDatDeb().toString(), "yyyyMMdd", "dd/MM/yyyy"),
+								1);
+						String dateFinLignePrec = Services.convertitDate(lignePrecedente.getDatFin().toString(),
+								"yyyyMMdd", "dd/MM/yyyy");
 						if (dateFinLignePrec.equals(dateDebLigneSuiv)) {
 							compteurJoursITT = compteurJoursITT + ligneSuivante.getNbJour();
 							dejaComptabilise = true;
@@ -1192,14 +1240,15 @@ public class OeSMConvocation extends BasicProcess {
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-					if (getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
-					}else{
-						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+					} else {
+						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
+					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+							agent.getIdAgent());
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
@@ -1211,10 +1260,12 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+							carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					String datePrev = Services.ajouteJours(Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
+					String datePrev = Services.ajouteJours(
+							Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
 					sm.setIdMotifVM(Integer.valueOf(EnumMotifVisiteMed.VM_AT_ITT_15JOURS.getCode()));
@@ -1230,7 +1281,8 @@ public class OeSMConvocation extends BasicProcess {
 					// du meme
 					// agent
 					try {
-						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
+						SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
+								moisChoisi, anneeChoisi);
 						logger.debug("SM : " + smTemp.toString());
 						// si une ligne existe deja
 						// on regarde si etat Travail
@@ -1242,8 +1294,8 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
-									"dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
+									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1256,9 +1308,10 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-							sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
+							sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 					nbCas3++;
 				}
 			}
@@ -1273,7 +1326,8 @@ public class OeSMConvocation extends BasicProcess {
 		// on liste toutes les visites medicales du type "a la demande..."
 		Medecin m = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
 		ArrayList<VisiteMedicale> listeSMCas1 = VisiteMedicale.listerVisiteMedicalePourSMCas1(getTransaction(),
-				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(), m.getIdMedecin());
+				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(),
+				m.getIdMedecin());
 		int nbCas1 = 0;
 		for (int i = 0; i < listeSMCas1.size(); i++) {
 			VisiteMedicale vm = listeSMCas1.get(i);
@@ -1281,7 +1335,8 @@ public class OeSMConvocation extends BasicProcess {
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					agent.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1292,14 +1347,14 @@ public class OeSMConvocation extends BasicProcess {
 			}
 
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-			}else{
-				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+			} else {
+				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 					continue;
 				}
 			}
-				
+
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
@@ -1312,7 +1367,8 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
@@ -1330,7 +1386,8 @@ public class OeSMConvocation extends BasicProcess {
 			// du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(), moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(sm.getIdAgent(),
+						moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1342,7 +1399,8 @@ public class OeSMConvocation extends BasicProcess {
 				// la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
+							"yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1355,9 +1413,10 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-					sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(),
+					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 			nbCas1++;
 		}
 		logger.info("Nb de cas 1 : " + nbCas1);
@@ -1368,8 +1427,8 @@ public class OeSMConvocation extends BasicProcess {
 		// on liste tous les suivi médicaux de type "CONVOQUE" du mois précédent
 		int nbCas8 = 0;
 		try {
-			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao().listerSuiviMedicalNonEffectue(moisChoisi, anneeChoisi,
-					EnumEtatSuiviMed.CONVOQUE.getCode());
+			ArrayList<SuiviMedical> listeSMCas8 = getSuiviMedDao().listerSuiviMedicalNonEffectue(moisChoisi,
+					anneeChoisi, EnumEtatSuiviMed.CONVOQUE.getCode());
 			for (int i = 0; i < listeSMCas8.size(); i++) {
 				// on crée une nouvelle ligne avec les memes informations
 				// sauf pour le statut et le service on le remet à jour
@@ -1378,7 +1437,8 @@ public class OeSMConvocation extends BasicProcess {
 				SuiviMedical sm = new SuiviMedical();
 				AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), smAncien.getNomatr().toString());
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						agent.getNoMatricule());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1388,10 +1448,10 @@ public class OeSMConvocation extends BasicProcess {
 					}
 				}
 				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-				if (getTransaction().isErreur()){
+				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
-				}else{
-					if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+				} else {
+					if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 						continue;
 					}
 				}
@@ -1407,7 +1467,8 @@ public class OeSMConvocation extends BasicProcess {
 				sm.setIdAgent(smAncien.getIdAgent());
 				sm.setNomatr(smAncien.getNomatr());
 				sm.setAgent(smAncien.getAgent());
-				sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+				sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+						carr.getCodeCategorie()) : null);
 				sm.setIdServi(fp != null ? fp.getIdServi() : null);
 				sm.setDateDerniereVisite(smAncien.getDateDerniereVisite());
 				sm.setDatePrevisionVisite(smAncien.getDatePrevisionVisite());
@@ -1435,7 +1496,8 @@ public class OeSMConvocation extends BasicProcess {
 				// du meme
 				// agent
 				try {
-					SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(smAncien.getIdAgent(), moisChoisi, anneeChoisi);
+					SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(smAncien.getIdAgent(),
+							moisChoisi, anneeChoisi);
 					logger.debug("SM : " + smTemp.toString());
 					// si une ligne existe deja
 					// on regarde si etat Travail
@@ -1447,7 +1509,8 @@ public class OeSMConvocation extends BasicProcess {
 					// la
 					// nouvelle
 					if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-						String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+						String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
+								"yyyy-MM-dd", "dd/MM/yyyy");
 						String datePrevision = sm.getDatePrevisionVisite().toString();
 						if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 							continue;
@@ -1460,9 +1523,10 @@ public class OeSMConvocation extends BasicProcess {
 				} catch (Exception e) {
 					// aucune ligne n'a été trouvée alors on continue
 				}
-				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-						sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-						sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+				getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+						sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(),
+						sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+						sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 				nbCas8++;
 			}
 		} catch (Exception e) {
@@ -1475,28 +1539,30 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°7 : Changement de PA
 		// on liste toutes les PA hors-effectif
 		// on vérifie qu'il y a bien une PA normale apres cette PA hors-effectif
-		ArrayList<PositionAdmAgent> listePACas7 = PositionAdmAgent.listerPositionAdmAgentHorsEffectif(getTransaction(), moisChoisi, anneeChoisi);
+		ArrayList<PositionAdmAgent> listePACas7 = PositionAdmAgent.listerPositionAdmAgentHorsEffectif(getTransaction(),
+				moisChoisi, anneeChoisi);
 		int nbCas7 = 0;
 		for (int i = 0; i < listePACas7.size(); i++) {
 			// on regarde pour cette liste de PA si il en existe une qui suit en
 			// NORMALE 01
 			PositionAdmAgent paHorsEffectif = listePACas7.get(i);
-			PositionAdmAgent paSuivante = PositionAdmAgent.chercherPositionAdmAgent(getTransaction(), paHorsEffectif.getNomatr(),
-					paHorsEffectif.getDatfin());
+			PositionAdmAgent paSuivante = PositionAdmAgent.chercherPositionAdmAgent(getTransaction(),
+					paHorsEffectif.getNomatr(), paHorsEffectif.getDatfin());
 			if (paSuivante != null && paSuivante.getCdpadm() != null) {
 				if (paSuivante.getCdpadm().equals("01")) {
 					// si c'est bon alors on crée le suiviMedical
 					SuiviMedical sm = new SuiviMedical();
 					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), paSuivante.getNomatr());
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-					if (getTransaction().isErreur()){
+					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
-					}else{
-						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+					} else {
+						if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
+					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
+							agent.getIdAgent());
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
@@ -1508,10 +1574,12 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+							carr.getCodeCategorie()) : null);
 					sm.setIdServi(fp != null ? fp.getIdServi() : null);
 					sm.setDateDerniereVisite(null);
-					Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
+					Date d2 = new SimpleDateFormat("dd/MM/yyyy")
+							.parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
 					sm.setDatePrevisionVisite(d2);
 					sm.setIdMotifVM(Integer.valueOf(EnumMotifVisiteMed.VM_CHANGEMENT_PA.getCode()));
 					sm.setNbVisitesRatees(0);
@@ -1539,8 +1607,8 @@ public class OeSMConvocation extends BasicProcess {
 						// la
 						// nouvelle
 						if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd",
-									"dd/MM/yyyy");
+							String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite()
+									.toString(), "yyyy-MM-dd", "dd/MM/yyyy");
 							String datePrevision = sm.getDatePrevisionVisite().toString();
 							if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 								continue;
@@ -1553,9 +1621,10 @@ public class OeSMConvocation extends BasicProcess {
 					} catch (Exception e) {
 						// aucune ligne n'a été trouvée alors on continue
 					}
-					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-							sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-							sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+					getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+							sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(),
+							sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+							sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 					nbCas7++;
 				} else {
 					continue;
@@ -1570,13 +1639,15 @@ public class OeSMConvocation extends BasicProcess {
 	private void performCalculCas6(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°6 : Visite Nouvel arrivant
 		// on liste tous les nouveaux arrivant
-		ArrayList<AgentNW> listeAgentCas6 = AgentNW.listerAgentNouveauxArrivant(getTransaction(), moisChoisi, anneeChoisi);
+		ArrayList<AgentNW> listeAgentCas6 = AgentNW.listerAgentNouveauxArrivant(getTransaction(), moisChoisi,
+				anneeChoisi);
 		int nbCas6 = 0;
 		for (int i = 0; i < listeAgentCas6.size(); i++) {
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = listeAgentCas6.get(i);
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					agent.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1586,10 +1657,10 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-			}else{
-				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+			} else {
+				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 					continue;
 				}
 			}
@@ -1605,7 +1676,8 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
 			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(agent.getDateDerniereEmbauche());
@@ -1622,8 +1694,8 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas réecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(Integer.valueOf(agent.getIdAgent()), moisChoisi,
-						anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(
+						Integer.valueOf(agent.getIdAgent()), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1633,7 +1705,8 @@ public class OeSMConvocation extends BasicProcess {
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
+							"yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1646,9 +1719,10 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-					sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(),
+					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 			nbCas6++;
 		}
 		logger.info("Nb de cas 6 : " + nbCas6);
@@ -1658,7 +1732,8 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°2 : Visite Réguliere
 		// on liste toutes les visites medicales
 		// dont la dateVM + durée validitéVM = mois et année choisie du calcul
-		ArrayList<VisiteMedicale> listeVMCas2 = VisiteMedicale.listerVisiteMedicalePourSMCas2(getTransaction(), moisChoisi, anneeChoisi);
+		ArrayList<VisiteMedicale> listeVMCas2 = VisiteMedicale.listerVisiteMedicalePourSMCas2(getTransaction(),
+				moisChoisi, anneeChoisi);
 		int nbCas2 = 0;
 		for (int i = 0; i < listeVMCas2.size(); i++) {
 			VisiteMedicale vm = listeVMCas2.get(i);
@@ -1666,7 +1741,8 @@ public class OeSMConvocation extends BasicProcess {
 			SuiviMedical sm = new SuiviMedical();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					agent.getNoMatricule());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1676,10 +1752,10 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
-			if (getTransaction().isErreur()){
+			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
-			}else{
-				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())){
+			} else {
+				if (Carriere.isCarriereConseilMunicipal(carr.getCodeCategorie())) {
 					continue;
 				}
 			}
@@ -1695,12 +1771,13 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setIdAgent(Integer.valueOf(vm.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
-			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(carr.getCodeCategorie()) : null);
+			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
+					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse(vm.getDateDerniereVisite());
 			sm.setDateDerniereVisite(d);
-			Date d2 = new SimpleDateFormat("dd/MM/yyyy")
-					.parse(Services.ajouteMois(vm.getDateDerniereVisite(), Integer.valueOf(vm.getDureeValidite())));
+			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(vm.getDateDerniereVisite(),
+					Integer.valueOf(vm.getDureeValidite())));
 			sm.setDatePrevisionVisite(d2);
 			sm.setIdMotifVM(Integer.valueOf(EnumMotifVisiteMed.VM_REGULIERE.getCode()));
 			sm.setNbVisitesRatees(0);
@@ -1714,8 +1791,8 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas réecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao()
-						.chercherSuiviMedicalAgentMoisetAnnee(Integer.valueOf(vm.getIdAgent()), moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(
+						Integer.valueOf(vm.getIdAgent()), moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1725,7 +1802,8 @@ public class OeSMConvocation extends BasicProcess {
 				// si non , on supprime la ligne existante pour recréer la
 				// nouvelle
 				if (smTemp.getEtat().equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
-					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy");
+					String dateExistePrevision = Services.convertitDate(smTemp.getDatePrevisionVisite().toString(),
+							"yyyy-MM-dd", "dd/MM/yyyy");
 					String datePrevision = sm.getDatePrevisionVisite().toString();
 					if (Services.compareDates(dateExistePrevision, datePrevision) > 0) {
 						continue;
@@ -1738,9 +1816,10 @@ public class OeSMConvocation extends BasicProcess {
 			} catch (Exception e) {
 				// aucune ligne n'a été trouvée alors on continue
 			}
-			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(), sm.getIdServi(),
-					sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(), sm.getNbVisitesRatees(), sm.getIdMedecin(),
-					sm.getDateProchaineVisite(), sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
+			getSuiviMedDao().creerSuiviMedical(sm.getIdAgent(), sm.getNomatr(), sm.getAgent(), sm.getStatut(),
+					sm.getIdServi(), sm.getDateDerniereVisite(), sm.getDatePrevisionVisite(), sm.getIdMotifVM(),
+					sm.getNbVisitesRatees(), sm.getIdMedecin(), sm.getDateProchaineVisite(),
+					sm.getHeureProchaineVisite(), sm.getEtat(), sm.getMois(), sm.getAnnee(), sm.getRelance());
 			nbCas2++;
 		}
 		logger.info("Nb de cas 2 : " + nbCas2);
@@ -2282,11 +2361,13 @@ public class OeSMConvocation extends BasicProcess {
 				// si la date du prochain RDV est vide
 				if (dateRDV == null || dateRDV.trim().equals(Const.CHAINE_VIDE)) {
 					// "ERR002", "La zone @ est obligatoire."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date du prochain RDV pour la ligne " + i));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR002", "date du prochain RDV pour la ligne " + i));
 					return false;
 				}
 				// si la date du prochain RDV est inférieur au moins selectionné
-				int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+				int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer
+						.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
 				Integer moisChoisi = getMoisSelectionne(indiceMois);
 				Integer moisRDV = Integer.valueOf(dateRDV.substring(3, 5));
 				if (moisRDV < moisChoisi) {
@@ -2306,7 +2387,8 @@ public class OeSMConvocation extends BasicProcess {
 				}
 
 				// si la date du prochain RDV est inférieur à la date du jour
-				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode()) && !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
+				if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.CONVOQUE.getCode())
+						&& !getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.ACCOMP.getCode())
 						&& Services.compareDates(dateRDV, Services.dateDuJour()) < 0) {
 					// "ERR302",
 					// "La date du prochain RDV pour l'agent @ doit être supérieure ou égale à la date du jour"
@@ -2460,13 +2542,14 @@ public class OeSMConvocation extends BasicProcess {
 		sauvegardeTableau();
 
 		// on supprime les documents existants
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
-		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
-		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
+		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
 		// on verifie l'existance de chaque fichier
 		File accompF = new File(docuAccompagnementF.substring(8, docuAccompagnementF.length()));
 		if (accompF.exists()) {
@@ -2530,13 +2613,13 @@ public class OeSMConvocation extends BasicProcess {
 		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_SM");
 
 		if (smFonctionnaireAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".xml";
+			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
+					+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
 			creerModeleDocumentSVM4(smFonctionnaireAImprimer, repModeles, destination);
 		}
 		if (smCCAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".xml";
+			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
+					+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
 			creerModeleDocumentSVM5(smCCAImprimer, repModeles, destination);
 		}
 		performPB_RECHERCHER(request);
@@ -2567,13 +2650,14 @@ public class OeSMConvocation extends BasicProcess {
 		sauvegardeTableau();
 
 		// on supprime les documents existants
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
-		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
-				+ ".xml";
-		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois)
-				+ ".xml";
+		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".xml";
+		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
+				+ getAnneeSelectionne(indiceMois) + ".xml";
 		// on verifie l'existance de chaque fichier
 		File convocF = new File(docuConvocF.substring(8, docuConvocF.length()));
 		if (convocF.exists()) {
@@ -2586,8 +2670,8 @@ public class OeSMConvocation extends BasicProcess {
 
 		int nbConvocImpr = 0;
 		// on recupere les lignes qui sont cochées pour imprimer
-		ArrayList<SuiviMedical> smFonctionnaireAImprimer = new ArrayList<SuiviMedical>();
-		ArrayList<SuiviMedical> smCCAImprimer = new ArrayList<SuiviMedical>();
+		ArrayList<Integer> smFonctionnaireAImprimer = new ArrayList<Integer>();
+		ArrayList<Integer> smCCAImprimer = new ArrayList<Integer>();
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
@@ -2600,10 +2684,10 @@ public class OeSMConvocation extends BasicProcess {
 					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-1
-							smFonctionnaireAImprimer.add(sm);
+							smFonctionnaireAImprimer.add(sm.getIdSuiviMed());
 						} else if (sm.getStatut().equals("CC") || sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-2
-							smCCAImprimer.add(sm);
+							smCCAImprimer.add(sm.getIdSuiviMed());
 						}
 						sm.setEtat(EnumEtatSuiviMed.CONVOQUE.getCode());
 						getSuiviMedDao().modifierSuiviMedicalTravail(sm.getIdSuiviMed(), sm);
@@ -2635,20 +2719,110 @@ public class OeSMConvocation extends BasicProcess {
 		}
 
 		// on imprime les 2 listes
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_SM");
-
 		if (smFonctionnaireAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".xml";
-			creerModeleDocumentSVM1(smFonctionnaireAImprimer, repModeles, destination);
+			String destination = "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
+					+ getAnneeSelectionne(indiceMois) + ".doc";
+
+			byte[] fileAsBytes = getConvocationAsByteArray(smFonctionnaireAImprimer, "F",
+					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 		}
 		if (smCCAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
-					+ getAnneeSelectionne(indiceMois) + ".xml";
-			creerModeleDocumentSVM2(smCCAImprimer, repModeles, destination);
+			String destination = "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
+					+ getAnneeSelectionne(indiceMois) + ".doc";
+
+			byte[] fileAsBytes = getConvocationAsByteArray(smCCAImprimer, "CC", getMoisSelectionne(indiceMois),
+					getAnneeSelectionne(indiceMois));
+
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 		}
 		performPB_RECHERCHER(request);
 		return true;
+	}
+
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
+
+		BufferedOutputStream bos = null;
+		FileObject docFile = null;
+
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
+
+			if (docFile != null) {
+				try {
+					docFile.close();
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
+			}
+		} catch (Exception e) {
+			logger.error(String.format("An error occured while writing the report file to the following path  : "
+					+ chemin + filename + " : " + e));
+			return false;
+		}
+		return true;
+	}
+
+	public ClientResponse createAndFireRequestConvocation(String csvIdSuiviMedical, String typePopulation, String mois,
+			String annee) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONVOCATION_VM_SIRH")
+				+ "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois
+				+ "&annee=" + annee;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWS);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	private byte[] getConvocationAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
+			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
+
+		ClientResponse response = createAndFireRequestConvocation(smFonctionnaireAImprimer.toString().replace("[", "")
+				.replace("]", "").replace(" ", ""), typePopulation, moisSelectionne.toString(),
+				anneeSelectionne.toString());
+
+		return readResponseAsByteArray(response);
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
+		}
+
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
+		}
+
+		return reponseData;
 	}
 
 	private void verifieRepertoire(String codTypeDoc) {
@@ -2665,7 +2839,8 @@ public class OeSMConvocation extends BasicProcess {
 		}
 	}
 
-	private void creerModeleDocumentSVM5(ArrayList<SuiviMedical> smCCAImprimer, String modele, String destination) throws Exception {
+	private void creerModeleDocumentSVM5(ArrayList<SuiviMedical> smCCAImprimer, String modele, String destination)
+			throws Exception {
 		// on verifie que les repertoires existent
 		verifieRepertoire("SuiviMedical");
 
@@ -2710,7 +2885,8 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					for (int k = 0; k < listePrenomAgent.size(); k++) {
 						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
+						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
+								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
 						if (k != listePrenomAgent.size() - 1) {
 							nomPrenom += "-";
 						}
@@ -2722,17 +2898,19 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					for (int k = 0; k < listePrenomAgent.size(); k++) {
 						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
+						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
+								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
 					}
 				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
+					nomPrenom = prenom.substring(0, 1).toUpperCase()
+							+ prenom.substring(1, prenom.length()).toLowerCase();
 				}
 				nomPrenom += " " + agentSelectionne.getNomAgent();
 			} else {
 				nomPrenom = sm.getAgent();
 			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur " + nomPrenom : "Madame "
-					+ nomPrenom : Const.CHAINE_VIDE;
+			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur "
+					+ nomPrenom : "Madame " + nomPrenom : Const.CHAINE_VIDE;
 
 			// on recupere le rendez-vous
 			String rendezVous = "Sans Rendez-vous";
@@ -2754,7 +2932,8 @@ public class OeSMConvocation extends BasicProcess {
 					if (serv.getCodService().endsWith("AA")) {
 						continue;
 					} else {
-						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1) + "A";
+						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1)
+								+ "A";
 						Service servResponsable = Service.chercherService(getTransaction(), codeServResp);
 						responsable = servResponsable.getSignature();
 						serviceResponsable = servResponsable.getLibService().replace("&", " et ");
@@ -2823,7 +3002,8 @@ public class OeSMConvocation extends BasicProcess {
 		destinationFile.close();
 	}
 
-	private void creerModeleDocumentSVM4(ArrayList<SuiviMedical> smFonctionnaireAImprimer, String modele, String destination) throws Exception {
+	private void creerModeleDocumentSVM4(ArrayList<SuiviMedical> smFonctionnaireAImprimer, String modele,
+			String destination) throws Exception {
 		// on verifie que les repertoires existent
 		verifieRepertoire("SuiviMedical");
 
@@ -2868,7 +3048,8 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					for (int k = 0; k < listePrenomAgent.size(); k++) {
 						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
+						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
+								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
 						if (k != listePrenomAgent.size() - 1) {
 							nomPrenom += "-";
 						}
@@ -2880,17 +3061,19 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					for (int k = 0; k < listePrenomAgent.size(); k++) {
 						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
+						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
+								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
 					}
 				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
+					nomPrenom = prenom.substring(0, 1).toUpperCase()
+							+ prenom.substring(1, prenom.length()).toLowerCase();
 				}
 				nomPrenom += " " + agentSelectionne.getNomAgent();
 			} else {
 				nomPrenom = sm.getAgent();
 			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur " + nomPrenom : "Madame "
-					+ nomPrenom : Const.CHAINE_VIDE;
+			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur "
+					+ nomPrenom : "Madame " + nomPrenom : Const.CHAINE_VIDE;
 
 			// on recupere le rendez-vous
 			String rendezVous = Const.CHAINE_VIDE;
@@ -2926,7 +3109,8 @@ public class OeSMConvocation extends BasicProcess {
 					if (serv.getCodService().endsWith("AA")) {
 						continue;
 					} else {
-						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1) + "A";
+						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1)
+								+ "A";
 						Service servResponsable = Service.chercherService(getTransaction(), codeServResp);
 						responsable = servResponsable.getSignature();
 						serviceResponsable = servResponsable.getLibService().replace("&", " et ");
@@ -2975,331 +3159,6 @@ public class OeSMConvocation extends BasicProcess {
 		// on lit le fichier fin pour finir l'ecriture
 		// LECTURE
 		FileObject foFin = fsManager.resolveFile(modele + "fin_SM4.xml");
-		InputStream isFin = foFin.getContent().getInputStream();
-		InputStreamReader inRFin = new InputStreamReader(isFin, "UTF8");
-		BufferedReader inFin = new BufferedReader(inRFin);
-		String ligneFin;
-		while ((ligneFin = inFin.readLine()) != null) {
-			out.write(ligneFin);
-		}
-		// FERMETURE DES FLUX
-		inFin.close();
-		inRFin.close();
-		isFin.close();
-		foFin.close();
-
-		// FERMETURE DES FLUX
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-	}
-
-	private void creerModeleDocumentSVM1(ArrayList<SuiviMedical> smFonctionnaireAImprimer, String modele, String destination) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("SuiviMedical");
-
-		FileSystemManager fsManager = VFS.getManager();
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		// on lit le fichier debut pour demarrer l'ecriture
-		// LECTURE
-		FileObject foDebut = fsManager.resolveFile(modele + "debut_SM1.xml");
-		InputStream isDebut = foDebut.getContent().getInputStream();
-		InputStreamReader inRDebut = new InputStreamReader(isDebut, "UTF8");
-		BufferedReader inDebut = new BufferedReader(inRDebut);
-		String ligneDebut;
-		while ((ligneDebut = inDebut.readLine()) != null) {
-			out.write(ligneDebut);
-		}
-		// FERMETURE DES FLUX
-		inDebut.close();
-		inRDebut.close();
-		isDebut.close();
-		foDebut.close();
-
-		for (int i = 0; i < smFonctionnaireAImprimer.size(); i++) {
-			SuiviMedical sm = smFonctionnaireAImprimer.get(i);
-			// on recupere l'agent concerné pour connaitre sa civilité
-			// RG-SVM-22
-			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			// on recupere le nb de visites ratées pour connaitre le titre
-			// RG-SVM-21
-			String titre = Const.CHAINE_VIDE;
-			if (sm.getNbVisitesRatees() == 0) {
-				titre = "CONVOCATION";
-			} else if (sm.getNbVisitesRatees() == 1) {
-				titre = "CONVOCATION - 1 ère relance";
-			} else {
-				titre = "CONVOCATION - " + sm.getNbVisitesRatees() + " ème relance";
-			}
-			// on recupere le service
-			String service = Const.CHAINE_VIDE;
-			if (sm.getIdServi() != null && !sm.getIdServi().equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-				if (!getTransaction().isErreur()) {
-					service = serv.getLibService().replace("&", " et ");
-				} else {
-					getTransaction().traiterErreur();
-				}
-			}
-			// on recupere le rendez-vous
-			String rendezVous = Const.CHAINE_VIDE;
-			if (sm.getDateProchaineVisite() != null) {
-				// on determine convoqué en fonction de la civilité
-				rendezVous = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "convoqué " : "convoquée " : "convoqué ";
-				SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH);
-				rendezVous = rendezVous + "le " + sdf.format(sm.getDateProchaineVisite());
-				rendezVous = rendezVous + " à " + sm.getHeureProchaineVisite().replace(":", "h");
-			}
-			// on recupere le medecin
-			String medecin = Const.CHAINE_VIDE;
-			if (sm.getIdMedecin() != null) {
-				Medecin m = Medecin.chercherMedecin(getTransaction(), sm.getIdMedecin().toString());
-				if (!getTransaction().isErreur()) {
-					String prenom = m.getPrenomMedecin();
-					prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
-					String titreMedecin = m.getTitreMedecin();
-					titreMedecin = !titreMedecin.equals(Const.CHAINE_VIDE) ? titreMedecin.substring(0, 1).toUpperCase()
-							+ titreMedecin.substring(1, titreMedecin.length()).toLowerCase() : Const.CHAINE_VIDE;
-					medecin = titreMedecin + " " + prenom + " " + m.getNomMedecin();
-				} else {
-					getTransaction().traiterErreur();
-				}
-			}
-			String nomPrenom = Const.CHAINE_VIDE;
-			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
-				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomAgent();
-				if (prenom.contains("-")) {
-					StringTokenizer st = new StringTokenizer(prenom, "-");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
-						if (k != listePrenomAgent.size() - 1) {
-							nomPrenom += "-";
-						}
-					}
-				} else if (prenom.contains(" ")) {
-					StringTokenizer st = new StringTokenizer(prenom, " ");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
-					}
-				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
-				}
-				nomPrenom += " " + agentSelectionne.getNomAgent();
-			} else {
-				nomPrenom = sm.getAgent();
-			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur " + nomPrenom : "Madame "
-					+ nomPrenom : Const.CHAINE_VIDE;
-
-			// LECTURE
-			FileObject fo = fsManager.resolveFile(modele + "milieu_SM1.xml");
-			InputStream is = fo.getContent().getInputStream();
-			InputStreamReader inR = new InputStreamReader(is, "UTF8");
-			BufferedReader in = new BufferedReader(inR);
-
-			String ligne;
-
-			// tant qu'il y a des lignes
-			while ((ligne = in.readLine()) != null) {
-				// je fais mon traitement
-				// statut
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
-				ligne = StringUtils.replace(ligne, "$_ANNEE", Services.dateDuJour().substring(6, 10));
-				ligne = StringUtils.replace(ligne, "$_DATE", sdf.format(new Date()));
-				ligne = StringUtils.replace(ligne, "$_TITRE", titre);
-				ligne = StringUtils.replace(ligne, "$_AGENT", agent);
-				ligne = StringUtils.replace(ligne, "$_FONCTION", service);
-				ligne = StringUtils.replace(ligne, "$_RENDEZ_VOUS", rendezVous);
-				ligne = StringUtils.replace(ligne, "$_MEDECIN", medecin);
-
-				out.write(ligne);
-			}
-
-			// saut de page sauf pour le dernier
-			if (i < smFonctionnaireAImprimer.size() - 1) {
-				out.write("<w:br w:type=\"page\"/>");
-			}
-
-			// FERMETURE DES FLUX
-			in.close();
-			inR.close();
-			is.close();
-			fo.close();
-		}
-
-		// on lit le fichier fin pour finir l'ecriture
-		// LECTURE
-		FileObject foFin = fsManager.resolveFile(modele + "fin_SM1.xml");
-		InputStream isFin = foFin.getContent().getInputStream();
-		InputStreamReader inRFin = new InputStreamReader(isFin, "UTF8");
-		BufferedReader inFin = new BufferedReader(inRFin);
-		String ligneFin;
-		while ((ligneFin = inFin.readLine()) != null) {
-			out.write(ligneFin);
-		}
-		// FERMETURE DES FLUX
-		inFin.close();
-		inRFin.close();
-		isFin.close();
-		foFin.close();
-
-		// FERMETURE DES FLUX
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-	}
-
-	private void creerModeleDocumentSVM2(ArrayList<SuiviMedical> smCCAImprimer, String modele, String destination) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("SuiviMedical");
-
-		FileSystemManager fsManager = VFS.getManager();
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		// on lit le fichier debut pour demarrer l'ecriture
-		// LECTURE
-		FileObject foDebut = fsManager.resolveFile(modele + "debut_SM2.xml");
-		InputStream isDebut = foDebut.getContent().getInputStream();
-		InputStreamReader inRDebut = new InputStreamReader(isDebut, "UTF8");
-		BufferedReader inDebut = new BufferedReader(inRDebut);
-		String ligneDebut;
-		while ((ligneDebut = inDebut.readLine()) != null) {
-			out.write(ligneDebut);
-		}
-		// FERMETURE DES FLUX
-		inDebut.close();
-		inRDebut.close();
-		isDebut.close();
-		foDebut.close();
-
-		for (int i = 0; i < smCCAImprimer.size(); i++) {
-			SuiviMedical sm = smCCAImprimer.get(i);
-			// on recupere l'agent concerné pour connaitre sa civilité
-			// RG-SVM-24
-			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			// on recupere le nb de visites ratées pour connaitre le titre
-			// RG-SVM-23
-			String titre = Const.CHAINE_VIDE;
-			if (sm.getNbVisitesRatees() == 0) {
-				titre = "CONVOCATION";
-			} else if (sm.getNbVisitesRatees() == 1) {
-				titre = "CONVOCATION - 1 ère relance";
-			} else {
-				titre = "CONVOCATION - " + sm.getNbVisitesRatees() + " ème relance";
-			}
-			// on recupere le service
-			String service = Const.CHAINE_VIDE;
-			if (sm.getIdServi() != null && !sm.getIdServi().equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-				if (!getTransaction().isErreur()) {
-					service = serv.getLibService().replace("&", " et ");
-				} else {
-					getTransaction().traiterErreur();
-				}
-			}
-			// on recupere le rendez-vous
-			String rendezVous = Const.CHAINE_VIDE;
-			if (sm.getDateProchaineVisite() != null) {
-				// on determine convoqué en fonction de la civilité
-				rendezVous = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "convoqué " : "convoquée " : "convoqué ";
-				SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH);
-				rendezVous = rendezVous + "le " + sdf.format(sm.getDateProchaineVisite());
-				rendezVous = rendezVous + " à " + sm.getHeureProchaineVisite().replace(":", "h");
-			}
-			String nomPrenom = Const.CHAINE_VIDE;
-			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
-				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomAgent();
-				if (prenom.contains("-")) {
-					StringTokenizer st = new StringTokenizer(prenom, "-");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
-						if (k != listePrenomAgent.size() - 1) {
-							nomPrenom += "-";
-						}
-					}
-				} else if (prenom.contains(" ")) {
-					StringTokenizer st = new StringTokenizer(prenom, " ");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase() + prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
-					}
-				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
-				}
-				nomPrenom += " " + agentSelectionne.getNomAgent();
-			} else {
-				nomPrenom = sm.getAgent();
-			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur " + nomPrenom : "Madame "
-					+ nomPrenom : Const.CHAINE_VIDE;
-
-			// LECTURE
-			FileObject fo = fsManager.resolveFile(modele + "milieu_SM2.xml");
-			InputStream is = fo.getContent().getInputStream();
-			InputStreamReader inR = new InputStreamReader(is, "UTF8");
-			BufferedReader in = new BufferedReader(inR);
-
-			String ligne;
-
-			// tant qu'il y a des lignes
-			while ((ligne = in.readLine()) != null) {
-				// je fais mon traitement
-				// statut
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
-				ligne = StringUtils.replace(ligne, "$_ANNEE", Services.dateDuJour().substring(6, 10));
-				ligne = StringUtils.replace(ligne, "$_DATE", sdf.format(new Date()));
-				ligne = StringUtils.replace(ligne, "$_TITRE", titre);
-				ligne = StringUtils.replace(ligne, "$_AGENT", agent);
-				ligne = StringUtils.replace(ligne, "$_FONCTION", service);
-				ligne = StringUtils.replace(ligne, "$_RENDEZ_VOUS", rendezVous);
-
-				out.write(ligne);
-			}
-
-			// FERMETURE DES FLUX
-			in.close();
-			inR.close();
-			is.close();
-			fo.close();
-		}
-
-		// on lit le fichier fin pour finir l'ecriture
-		// LECTURE
-		FileObject foFin = fsManager.resolveFile(modele + "fin_SM2.xml");
 		InputStream isFin = foFin.getContent().getInputStream();
 		InputStreamReader inRFin = new InputStreamReader(isFin, "UTF8");
 		BufferedReader inFin = new BufferedReader(inRFin);

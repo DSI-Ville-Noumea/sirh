@@ -150,14 +150,13 @@
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/Contrats/" />
 	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/Contrats/</param-value> -->
 	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
-		override="false"
-		value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
+		override="false" value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
 	<Parameter description="SIRH WS url pour les Notes de service SIRH" name="SIRH_WS_URL_NS_SIRH"
-		override="false"
-		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceSIRH" />
+		override="false" value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceSIRH" />
 	<Parameter description="SIRH WS url pour les Notes de service interne SIRH" name="SIRH_WS_URL_NS_INTERNE_SIRH"
-		override="false"
-		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
+		override="false" value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
+	<Parameter description="SIRH WS url pour les convocations aux VM SIRH" name="SIRH_WS_URL_CONVOCATION_VM_SIRH"
+		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
