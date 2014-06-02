@@ -2982,6 +2982,20 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		fichierUpload = null;
 		return true;
 	}
+	
+	/**
+	 * Process incoming requests for information
+	 * 
+	 * @param request Object that encapsulates the request to the servlet 
+	 */
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
+		
+		if(super.recupererOnglet(request)){
+			performPB_RESET(request);
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER_PERMIS Date de

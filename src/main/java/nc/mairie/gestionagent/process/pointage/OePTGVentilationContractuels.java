@@ -261,6 +261,20 @@ public class OePTGVentilationContractuels extends BasicProcess {
 
 		return true;
 	}
+	
+	/**
+	 * Process incoming requests for information
+	 * 
+	 * @param request Object that encapsulates the request to the servlet 
+	 */
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
+		
+		if(super.recupererOnglet(request)){
+			performPB_RESET(request);
+			return true;
+		}
+		return false;
+	}
 
 	public String getNOM_ST_ACTION_VENTILATION() {
 		return "NOM_ST_ACTION_VENTILATION";

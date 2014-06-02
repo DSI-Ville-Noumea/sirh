@@ -45,19 +45,19 @@
 		
 		<div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
 			<% if (process.onglet.equals("ONGLET1")) {%>
-				<span id="titreOngletNonPrises" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Demandes non prises&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletNonPrises" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Demandes non prises&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletNonPrises" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Demandes non prises&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletNonPrises" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Demandes non prises&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 			<% if (process.onglet.equals("ONGLET2")) {%>
-				<span id="titreOngletEnCours" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Demandes en cours&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletEnCours" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Demandes en cours&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletEnCours" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Demandes en cours&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletEnCours" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Demandes en cours&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 			<% if (process.onglet.equals("ONGLET3")) {%>
-				<span id="titreOngletToutes" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Toutes les demandes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletToutes" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Toutes les demandes&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletToutes" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Toutes les demandes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletToutes" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Toutes les demandes&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 		</div>
 		

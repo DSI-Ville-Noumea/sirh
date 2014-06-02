@@ -280,29 +280,29 @@
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <div style="margin-left:10px;margin-top:20px;text-align:left;" align="left">
                 <% if (process.onglet.equals("ONGLET1")) {%>
-                <span id="titreOngletVentilation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletVentilation" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletVentilation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletVentilation" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET2")) {%>
-                <span id="titreOngletHS" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletHS" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletHS" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET3")) {%>
-                <span id="titreOngletPrimes" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletPrimes" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletPrimes" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletPrimes" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET4")) {%>
-                <span id="titreOngletAbs" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletAbs" class="OngletActif" onclick="afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletAbs" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletAbs" class="OngletInactif" onclick="afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
                 <% if (process.onglet.equals("ONGLET5")) {%>
-                <span id="titreOngletValidation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletValidation" class="OngletActif" onclick="afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
                 <% } else {%>
-                <span id="titreOngletValidation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
+                <span id="titreOngletValidation" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
                 <% }%>
             </div>
 

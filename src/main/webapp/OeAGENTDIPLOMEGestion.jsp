@@ -135,19 +135,19 @@
 
 		<div style="margin-left:10px;margin-top:20px;text-align:left;width:1030px" align="left">
 			<% if (process.onglet.equals("ONGLET1")) {%>
-				<span id="titreOngletDiplome" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletDiplome" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletDiplome" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletDiplome" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Diplômes&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 			<% if (process.onglet.equals("ONGLET2")) {%>
-				<span id="titreOngletFormation" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2')">&nbsp;Formations&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletFormation" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Formations&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletFormation" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET2')">&nbsp;Formations&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletFormation" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Formations&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 			<% if (process.onglet.equals("ONGLET3")) {%>
-				<span id="titreOngletPermis" class="OngletActif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3');">&nbsp;Permis & Habilitations&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletPermis" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Permis & Habilitations&nbsp;</span>&nbsp;&nbsp;
 			<% }else {%>
-				<span id="titreOngletPermis" class="OngletInactif" onclick="executeBouton('<%=process.getNOM_PB_RESET()%>');afficheOnglet('ONGLET3')">&nbsp;Permis & Habilitations&nbsp;</span>&nbsp;&nbsp;
+				<span id="titreOngletPermis" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Permis & Habilitations&nbsp;</span>&nbsp;&nbsp;
 			<% } %>
 		</div>
 		<% if (process.onglet.equals("ONGLET1")) {%>
@@ -796,9 +796,9 @@
 		</div>
 	<%=process.getUrlFichier()%>
 	<INPUT type="submit" style="display:none;"  name="<%=process.getNOM_PB_RESET()%>" value="reset">	
-	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET1" id="ONGLET1" style="visibility: hidden;">
-	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET2" id="ONGLET2" style="visibility: hidden;">	
-	<INPUT type="submit" name = "NOM_PB_ONGLET" value="ONGLET3" id="ONGLET3" style="visibility: hidden;">	
+	<INPUT type="submit" name="NOM_PB_ONGLET" value="ONGLET1" id="ONGLET1" style="visibility: hidden;">
+	<INPUT type="submit" name="NOM_PB_ONGLET" value="ONGLET2" id="ONGLET2" style="visibility: hidden;">
+	<INPUT type="submit" name="NOM_PB_ONGLET" value="ONGLET3" id="ONGLET3" style="visibility: hidden;">
 	</FORM>
 <%} %>
 </BODY>
