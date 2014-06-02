@@ -1,14 +1,8 @@
 package nc.mairie.gestionagent.process;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,7 +46,6 @@ import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
@@ -254,9 +246,9 @@ public class OeSMConvocation extends BasicProcess {
 		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
 				+ getAnneeSelectionne(indiceMois) + ".doc";
 		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 
 		// on verifie l'existance de chaque fichier
 		boolean existsConvocF = new File(docuConvocF).exists();
@@ -2547,9 +2539,11 @@ public class OeSMConvocation extends BasicProcess {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		String docuAccompagnementF = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
 		String docuAccompagnementCC = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
-				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
+				+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".doc";
+		// on verifie que les repertoires existent
+		verifieRepertoire("SuiviMedical");
 		// on verifie l'existance de chaque fichier
 		File accompF = new File(docuAccompagnementF.substring(8, docuAccompagnementF.length()));
 		if (accompF.exists()) {
@@ -2562,8 +2556,8 @@ public class OeSMConvocation extends BasicProcess {
 
 		int nbConvocImpr = 0;
 		// on recupere les lignes qui sont cochées pour imprimer
-		ArrayList<SuiviMedical> smFonctionnaireAImprimer = new ArrayList<SuiviMedical>();
-		ArrayList<SuiviMedical> smCCAImprimer = new ArrayList<SuiviMedical>();
+		ArrayList<Integer> smFonctionnaireAImprimer = new ArrayList<Integer>();
+		ArrayList<Integer> smCCAImprimer = new ArrayList<Integer>();
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
@@ -2575,10 +2569,10 @@ public class OeSMConvocation extends BasicProcess {
 					if (sm.getStatut() != null && !sm.getStatut().equals(Const.CHAINE_VIDE)) {
 						if (sm.getStatut().equals("F")) {
 							// alors on edite EDIT_SVM-4
-							smFonctionnaireAImprimer.add(sm);
+							smFonctionnaireAImprimer.add(sm.getIdSuiviMed());
 						} else if (sm.getStatut().equals("CC") || sm.getStatut().equals("C")) {
 							// alors on edite EDIT_SVM-5
-							smCCAImprimer.add(sm);
+							smCCAImprimer.add(sm.getIdSuiviMed());
 						}
 						sm.setEtat(EnumEtatSuiviMed.ACCOMP.getCode());
 						getSuiviMedDao().modifierSuiviMedicalTravail(sm.getIdSuiviMed(), sm);
@@ -2610,17 +2604,34 @@ public class OeSMConvocation extends BasicProcess {
 		}
 
 		// on imprime les 2 listes
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_SM");
-
 		if (smFonctionnaireAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_F_"
-					+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
-			creerModeleDocumentSVM4(smFonctionnaireAImprimer, repModeles, destination);
+			String destination = "SuiviMedical/SM_Lettre_Accompagnement_F_" + getMoisSelectionne(indiceMois) + "_"
+					+ getAnneeSelectionne(indiceMois) + ".doc";
+
+			byte[] fileAsBytes = getAccompagnementAsByteArray(smFonctionnaireAImprimer, "F",
+					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
+
 		}
 		if (smCCAImprimer.size() > 0) {
-			String destination = repPartage + "SuiviMedical/SM_Lettre_Accompagnement_CC_"
-					+ getMoisSelectionne(indiceMois) + "_" + getAnneeSelectionne(indiceMois) + ".xml";
-			creerModeleDocumentSVM5(smCCAImprimer, repModeles, destination);
+			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
+					+ getAnneeSelectionne(indiceMois) + ".doc";
+
+			byte[] fileAsBytes = getAccompagnementAsByteArray(smCCAImprimer, "CC",
+					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 		}
 		performPB_RECHERCHER(request);
 		return true;
@@ -2655,9 +2666,11 @@ public class OeSMConvocation extends BasicProcess {
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 
 		String docuConvocF = repPartage + "SuiviMedical/SM_Convocation_F_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
+				+ getAnneeSelectionne(indiceMois) + ".doc";
 		String docuConvocCC = repPartage + "SuiviMedical/SM_Convocation_CC_" + getMoisSelectionne(indiceMois) + "_"
-				+ getAnneeSelectionne(indiceMois) + ".xml";
+				+ getAnneeSelectionne(indiceMois) + ".doc";
+		// on verifie que les repertoires existent
+		verifieRepertoire("SuiviMedical");
 		// on verifie l'existance de chaque fichier
 		File convocF = new File(docuConvocF.substring(8, docuConvocF.length()));
 		if (convocF.exists()) {
@@ -2793,10 +2806,35 @@ public class OeSMConvocation extends BasicProcess {
 		return response;
 	}
 
+	public ClientResponse createAndFireRequestAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois,
+			String annee) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH")
+				+ "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois
+				+ "&annee=" + annee;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWS);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
 	private byte[] getConvocationAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
 			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
 
 		ClientResponse response = createAndFireRequestConvocation(smFonctionnaireAImprimer.toString().replace("[", "")
+				.replace("]", "").replace(" ", ""), typePopulation, moisSelectionne.toString(),
+				anneeSelectionne.toString());
+
+		return readResponseAsByteArray(response);
+	}
+
+	private byte[] getAccompagnementAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
+			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
+
+		ClientResponse response = createAndFireRequestAccompagnement(smFonctionnaireAImprimer.toString().replace("[", "")
 				.replace("]", "").replace(" ", ""), typePopulation, moisSelectionne.toString(),
 				anneeSelectionne.toString());
 
@@ -2837,347 +2875,6 @@ public class OeSMConvocation extends BasicProcess {
 		if (!ssDossier.exists()) {
 			ssDossier.mkdir();
 		}
-	}
-
-	private void creerModeleDocumentSVM5(ArrayList<SuiviMedical> smCCAImprimer, String modele, String destination)
-			throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("SuiviMedical");
-
-		FileSystemManager fsManager = VFS.getManager();
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		// on lit le fichier debut pour demarrer l'ecriture
-		// LECTURE
-		FileObject foDebut = fsManager.resolveFile(modele + "debut_SM5.xml");
-		InputStream isDebut = foDebut.getContent().getInputStream();
-		InputStreamReader inRDebut = new InputStreamReader(isDebut, "UTF8");
-		BufferedReader inDebut = new BufferedReader(inRDebut);
-		String ligneDebut;
-		while ((ligneDebut = inDebut.readLine()) != null) {
-			out.write(ligneDebut);
-		}
-		// FERMETURE DES FLUX
-		inDebut.close();
-		inRDebut.close();
-		isDebut.close();
-		foDebut.close();
-
-		for (int i = 0; i < smCCAImprimer.size(); i++) {
-			SuiviMedical sm = smCCAImprimer.get(i);
-			// on recupere l'agent concerné pour connaitre sa civilité
-			// RG-SVM-30
-			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			String nomPrenom = Const.CHAINE_VIDE;
-			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
-				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomAgent();
-				if (prenom.contains("-")) {
-					StringTokenizer st = new StringTokenizer(prenom, "-");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
-								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
-						if (k != listePrenomAgent.size() - 1) {
-							nomPrenom += "-";
-						}
-					}
-				} else if (prenom.contains(" ")) {
-					StringTokenizer st = new StringTokenizer(prenom, " ");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
-								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
-					}
-				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase()
-							+ prenom.substring(1, prenom.length()).toLowerCase();
-				}
-				nomPrenom += " " + agentSelectionne.getNomAgent();
-			} else {
-				nomPrenom = sm.getAgent();
-			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur "
-					+ nomPrenom : "Madame " + nomPrenom : Const.CHAINE_VIDE;
-
-			// on recupere le rendez-vous
-			String rendezVous = "Sans Rendez-vous";
-			if (sm.getDateProchaineVisite() != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH);
-				rendezVous = "le " + sdf.format(sm.getDateProchaineVisite());
-				rendezVous = rendezVous + " à " + sm.getHeureProchaineVisite().replace(":", "h");
-			}
-
-			// on recupere le responsable
-			// RG-SVM-26
-			String responsable = "Sans Responsable";
-			String serviceResponsable = "Sans Responsable";
-			if (sm.getIdServi() != null && !sm.getIdServi().equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-				if (!getTransaction().isErreur()) {
-					// si l'agent est chef de service alors on ne le prend pas
-					// en compte
-					if (serv.getCodService().endsWith("AA")) {
-						continue;
-					} else {
-						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1)
-								+ "A";
-						Service servResponsable = Service.chercherService(getTransaction(), codeServResp);
-						responsable = servResponsable.getSignature();
-						serviceResponsable = servResponsable.getLibService().replace("&", " et ");
-					}
-				} else {
-					getTransaction().traiterErreur();
-				}
-			}
-
-			// LECTURE
-			FileObject fo = fsManager.resolveFile(modele + "milieu_SM5.xml");
-			InputStream is = fo.getContent().getInputStream();
-			InputStreamReader inR = new InputStreamReader(is, "UTF8");
-			BufferedReader in = new BufferedReader(inR);
-
-			String ligne;
-
-			// tant qu'il y a des lignes
-			while ((ligne = in.readLine()) != null) {
-				// je fais mon traitement
-				// statut
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
-				ligne = StringUtils.replace(ligne, "$_ANNEE", Services.dateDuJour().substring(6, 10));
-				ligne = StringUtils.replace(ligne, "$_DATE", sdf.format(new Date()));
-				ligne = StringUtils.replace(ligne, "$RESPONSABLE", responsable);
-				ligne = StringUtils.replace(ligne, "$SERVICERESPONSABLE", serviceResponsable);
-				ligne = StringUtils.replace(ligne, "$_AGENT", agent);
-				ligne = StringUtils.replace(ligne, "$_RENDEZ_VOUS", rendezVous);
-
-				out.write(ligne);
-			}
-
-			// saut de page sauf pour le dernier
-			if (i < smCCAImprimer.size() - 1) {
-				out.write("<w:br w:type=\"page\"/>");
-			}
-
-			// FERMETURE DES FLUX
-			in.close();
-			inR.close();
-			is.close();
-			fo.close();
-		}
-
-		// on lit le fichier fin pour finir l'ecriture
-		// LECTURE
-		FileObject foFin = fsManager.resolveFile(modele + "fin_SM5.xml");
-		InputStream isFin = foFin.getContent().getInputStream();
-		InputStreamReader inRFin = new InputStreamReader(isFin, "UTF8");
-		BufferedReader inFin = new BufferedReader(inRFin);
-		String ligneFin;
-		while ((ligneFin = inFin.readLine()) != null) {
-			out.write(ligneFin);
-		}
-		// FERMETURE DES FLUX
-		inFin.close();
-		inRFin.close();
-		isFin.close();
-		foFin.close();
-
-		// FERMETURE DES FLUX
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-	}
-
-	private void creerModeleDocumentSVM4(ArrayList<SuiviMedical> smFonctionnaireAImprimer, String modele,
-			String destination) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("SuiviMedical");
-
-		FileSystemManager fsManager = VFS.getManager();
-
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
-
-		// on lit le fichier debut pour demarrer l'ecriture
-		// LECTURE
-		FileObject foDebut = fsManager.resolveFile(modele + "debut_SM4.xml");
-		InputStream isDebut = foDebut.getContent().getInputStream();
-		InputStreamReader inRDebut = new InputStreamReader(isDebut, "UTF8");
-		BufferedReader inDebut = new BufferedReader(inRDebut);
-		String ligneDebut;
-		while ((ligneDebut = inDebut.readLine()) != null) {
-			out.write(ligneDebut);
-		}
-		// FERMETURE DES FLUX
-		inDebut.close();
-		inRDebut.close();
-		isDebut.close();
-		foDebut.close();
-
-		for (int i = 0; i < smFonctionnaireAImprimer.size(); i++) {
-			SuiviMedical sm = smFonctionnaireAImprimer.get(i);
-			// on recupere l'agent concerné pour connaitre sa civilité
-			// RG-SVM-27
-			AgentNW agentSelectionne = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
-			String nomPrenom = Const.CHAINE_VIDE;
-			if (agentSelectionne != null && agentSelectionne.getIdAgent() != null) {
-				ArrayList<String> listePrenomAgent = new ArrayList<String>();
-				String prenom = agentSelectionne.getPrenomAgent();
-				if (prenom.contains("-")) {
-					StringTokenizer st = new StringTokenizer(prenom, "-");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
-								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase();
-						if (k != listePrenomAgent.size() - 1) {
-							nomPrenom += "-";
-						}
-					}
-				} else if (prenom.contains(" ")) {
-					StringTokenizer st = new StringTokenizer(prenom, " ");
-					while (st.hasMoreElements()) {
-						listePrenomAgent.add((String) st.nextElement());
-					}
-					for (int k = 0; k < listePrenomAgent.size(); k++) {
-						String prenomAgent = listePrenomAgent.get(k);
-						nomPrenom += prenomAgent.substring(0, 1).toUpperCase()
-								+ prenomAgent.substring(1, prenomAgent.length()).toLowerCase() + " ";
-					}
-				} else {
-					nomPrenom = prenom.substring(0, 1).toUpperCase()
-							+ prenom.substring(1, prenom.length()).toLowerCase();
-				}
-				nomPrenom += " " + agentSelectionne.getNomAgent();
-			} else {
-				nomPrenom = sm.getAgent();
-			}
-			String agent = agentSelectionne.getSexe() != null ? agentSelectionne.getSexe().equals("M") ? "Monsieur "
-					+ nomPrenom : "Madame " + nomPrenom : Const.CHAINE_VIDE;
-
-			// on recupere le rendez-vous
-			String rendezVous = Const.CHAINE_VIDE;
-			if (sm.getDateProchaineVisite() != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH);
-				rendezVous = "le " + sdf.format(sm.getDateProchaineVisite());
-				rendezVous = rendezVous + " à " + sm.getHeureProchaineVisite().replace(":", "h");
-			}
-
-			// on recupere le nb de visites ratées
-			String visitesRatees = Const.CHAINE_VIDE;
-			if (sm.getNbVisitesRatees() == 1) {
-				visitesRatees = " - 1 ère relance";
-			} else if (sm.getNbVisitesRatees() > 1) {
-				visitesRatees = " - " + sm.getNbVisitesRatees() + " ème relance";
-			}
-
-			// on recupere le motif
-			String motif = Const.CHAINE_VIDE;
-			if (sm.getIdMotifVM() != null) {
-				motif = " - " + getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVM()).getLibMotifVM();
-			}
-
-			// on recupere le responsable
-			// RG-SVM-26
-			String responsable = "Sans Responsable";
-			String serviceResponsable = "Sans Responsable";
-			if (sm.getIdServi() != null && !sm.getIdServi().equals(Const.CHAINE_VIDE)) {
-				Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
-				if (!getTransaction().isErreur()) {
-					// si l'agent est chef de service alors on ne le prend pas
-					// en compte
-					if (serv.getCodService().endsWith("AA")) {
-						continue;
-					} else {
-						String codeServResp = serv.getCodService().substring(0, serv.getCodService().length() - 1)
-								+ "A";
-						Service servResponsable = Service.chercherService(getTransaction(), codeServResp);
-						responsable = servResponsable.getSignature();
-						serviceResponsable = servResponsable.getLibService().replace("&", " et ");
-					}
-				} else {
-					getTransaction().traiterErreur();
-				}
-			}
-
-			// LECTURE
-			FileObject fo = fsManager.resolveFile(modele + "milieu_SM4.xml");
-			InputStream is = fo.getContent().getInputStream();
-			InputStreamReader inR = new InputStreamReader(is, "UTF8");
-			BufferedReader in = new BufferedReader(inR);
-
-			String ligne;
-
-			// tant qu'il y a des lignes
-			while ((ligne = in.readLine()) != null) {
-				// je fais mon traitement
-				// statut
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
-				ligne = StringUtils.replace(ligne, "$_ANNEE", Services.dateDuJour().substring(6, 10));
-				ligne = StringUtils.replace(ligne, "$_DATE", sdf.format(new Date()));
-				ligne = StringUtils.replace(ligne, "$RESPONSABLE", responsable);
-				ligne = StringUtils.replace(ligne, "$SERVICERESPONSABLE", serviceResponsable);
-				ligne = StringUtils.replace(ligne, "$_AGENT", agent);
-				ligne = StringUtils.replace(ligne, "$_RENDEZ_VOUS", rendezVous);
-				ligne = StringUtils.replace(ligne, "$_VISITES_RATEES", visitesRatees);
-				ligne = StringUtils.replace(ligne, "$_MOTIF", motif);
-
-				out.write(ligne);
-			}
-
-			// saut de page sauf pour le dernier
-			if (i < smFonctionnaireAImprimer.size() - 1) {
-				out.write("<w:br w:type=\"page\"/>");
-			}
-
-			// FERMETURE DES FLUX
-			in.close();
-			inR.close();
-			is.close();
-			fo.close();
-		}
-		// on lit le fichier fin pour finir l'ecriture
-		// LECTURE
-		FileObject foFin = fsManager.resolveFile(modele + "fin_SM4.xml");
-		InputStream isFin = foFin.getContent().getInputStream();
-		InputStreamReader inRFin = new InputStreamReader(isFin, "UTF8");
-		BufferedReader inFin = new BufferedReader(inRFin);
-		String ligneFin;
-		while ((ligneFin = inFin.readLine()) != null) {
-			out.write(ligneFin);
-		}
-		// FERMETURE DES FLUX
-		inFin.close();
-		inRFin.close();
-		isFin.close();
-		foFin.close();
-
-		// FERMETURE DES FLUX
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
 	}
 
 	private void sauvegardeTableau() throws Exception {

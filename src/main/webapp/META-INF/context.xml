@@ -157,6 +157,8 @@
 		override="false" value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
 	<Parameter description="SIRH WS url pour les convocations aux VM SIRH" name="SIRH_WS_URL_CONVOCATION_VM_SIRH"
 		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
+	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH"
+		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
@@ -164,11 +166,7 @@
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ROOT" override="false"
 		value="//cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
-	<!-- <param-value>/mnt/sirh-document/Document_Associe/</param-value> -->
-	<Parameter description="repertoire pour les modeles des suivis medicaux"
-		name="REPERTOIRE_MODELES_SM" override="false"
-		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/SuiviMedical/" />
-	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/SuiviMedical/</param-value> -->
+	<!-- <param-value>/mnt/sirh-document/Document_Associe/</param-value> -->	
 	<Parameter description="repertoire pour les documents temporaires"
 		name="REPERTOIRE_TEMP" override="false"
 		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" />
