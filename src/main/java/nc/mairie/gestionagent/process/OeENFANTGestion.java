@@ -1,6 +1,8 @@
 package nc.mairie.gestionagent.process;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,12 +18,16 @@ import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Departement;
 import nc.mairie.metier.commun.Pays;
+import nc.mairie.spring.dao.metier.agent.ScolariteDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeENFANTGestion Date de création : (25/03/03 15:33:10)
@@ -49,7 +55,7 @@ public class OeENFANTGestion extends BasicProcess {
 	private AgentNW agentCourant;
 	private LienEnfantNWAgentNW lienEnfantAgentCourant;
 	private ArrayList<EnfantNW> listeEnfants;
-	private ArrayList<Scolarite> listeScolarites;
+	private List<Scolarite> listeScolarites;
 	private EnfantNW enfantCourant;
 	private Scolarite scolariteCourant;
 	private Pays paysNaissance;
@@ -57,8 +63,21 @@ public class OeENFANTGestion extends BasicProcess {
 	private AgentNW autreParentCourant;
 	private LienEnfantNWAgentNW lienEnfantAutreParent;
 
-	public String focus = null;
+	private ScolariteDao scolariteDao;
 
+	public String focus = null;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		
+		if (getScolariteDao() == null) {
+			setScolariteDao((ScolariteDao) context.getBean("scolariteDao"));
+		}
+	}
+	
 	/**
 	 * Alimente l'enfant courant.
 	 * 
@@ -120,7 +139,8 @@ public class OeENFANTGestion extends BasicProcess {
 	 * Affiche la liste des scolarites de l'enfant
 	 */
 	private void afficheListeScolarite(HttpServletRequest request) throws Exception {
-		setListeScolarites(Scolarite.listerScolariteEnfant(getTransaction(), getEnfantCourant().getId_enfant()));
+		
+		setListeScolarites(getScolariteDao().listerScolariteEnfant(new Integer(getEnfantCourant().getId_enfant())));
 		rafraichirListeScolarite(request);
 	}
 
@@ -133,8 +153,8 @@ public class OeENFANTGestion extends BasicProcess {
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
 
-				addZone(getNOM_ST_DATE_DEBUT(indiceScol), scol.getDateDebutScolarite());
-				addZone(getNOM_ST_DATE_FIN(indiceScol), scol.getDateFinScolarite() == null ? "&nbsp;" : scol.getDateFinScolarite());
+				addZone(getNOM_ST_DATE_DEBUT(indiceScol), sdf.format(scol.getDateDebutScolarite()));
+				addZone(getNOM_ST_DATE_FIN(indiceScol), scol.getDateFinScolarite() == null ? "&nbsp;" : sdf.format(scol.getDateFinScolarite()));
 
 				indiceScol++;
 			}
@@ -829,6 +849,7 @@ public class OeENFANTGestion extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide ou si etat recherche
@@ -968,9 +989,9 @@ public class OeENFANTGestion extends BasicProcess {
 			// RG_AG_EN_C04
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
-				if (Services.compareDates(getVAL_EF_DATE_NAISS(), Services.ajouteAnnee(Services.formateDate(scol.getDateDebutScolarite()), -2)) >= 0) {
+				if (Services.compareDates(getVAL_EF_DATE_NAISS(), Services.ajouteAnnee(Services.formateDate(sdf.format(scol.getDateDebutScolarite())), -2)) >= 0) {
 					// Si date de début inférieure à date de naissance + 2 ans
-					if (Services.compareDates(scol.getDateDebutScolarite(),
+					if (Services.compareDates(sdf.format(scol.getDateDebutScolarite()),
 							Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
 						// "ERR205","La date @ doit être supérieure à la date @"
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
@@ -1275,8 +1296,10 @@ public class OeENFANTGestion extends BasicProcess {
 			// Liste des scolarites
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
-				scol.setIdEnfant(getEnfantCourant().getId_enfant());
-				scol.creerScolarite(getTransaction());
+				scol.setIdEnfant(new Integer(getEnfantCourant().getId_enfant()));
+				
+				getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(), scol.getDateFinScolarite());
+				
 				if (getTransaction().isErreur())
 					return false;
 			}
@@ -1334,17 +1357,17 @@ public class OeENFANTGestion extends BasicProcess {
 			return false;
 
 		// Liste des scolarites
-		ArrayList<Scolarite> scolaritesActuelles = Scolarite.listerScolariteEnfant(getTransaction(), getEnfantCourant().getId_enfant());
+		List<Scolarite> scolaritesActuelles = getScolariteDao().listerScolariteEnfant(new Integer(getEnfantCourant().getId_enfant()));
 		for (int i = 0; i < scolaritesActuelles.size(); i++) {
 			Scolarite scol = (Scolarite) scolaritesActuelles.get(i);
 			if (!getListeScolarites().contains(scol)) {
-				scol.supprimerScolarite(getTransaction());
+				getScolariteDao().supprimerScolarite(scol.getIdScolarite());
 			}
 			getListeScolarites().remove(scol);
 		}
 		for (int j = 0; j < getListeScolarites().size(); j++) {
 			Scolarite scol = (Scolarite) getListeScolarites().get(j);
-			scol.creerScolarite(getTransaction());
+			getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(), scol.getDateFinScolarite());
 		}
 
 		commitTransaction();
@@ -1372,7 +1395,7 @@ public class OeENFANTGestion extends BasicProcess {
 			// Suppression des scolarites
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
-				scol.supprimerScolarite(getTransaction());
+				getScolariteDao().supprimerScolarite(scol.getIdScolarite());
 			}
 			if (getTransaction().isErreur())
 				return false;
@@ -1764,9 +1787,9 @@ public class OeENFANTGestion extends BasicProcess {
 		if (performControlerSaisieScolarite(request, dateDebutScolarite, dateFinScolarite)) {
 			// Affectation des attributs
 			setScolariteCourant(new Scolarite());
-			getScolariteCourant().setIdEnfant(getEnfantCourant() == null ? null : getEnfantCourant().getId_enfant());
-			getScolariteCourant().setDateDebutScolarite(dateDebutScolarite);
-			getScolariteCourant().setDateFinScolarite(dateFinScolarite);
+			getScolariteCourant().setIdEnfant(getEnfantCourant() == null ? null : new Integer(getEnfantCourant().getId_enfant()));
+			getScolariteCourant().setDateDebutScolarite(sdf.parse(dateDebutScolarite));
+			getScolariteCourant().setDateFinScolarite(sdf.parse(dateFinScolarite));
 
 			// Ajout à la liste
 			getListeScolarites().add(getScolariteCourant());
@@ -1799,7 +1822,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return ArrayList d'objets Scolarite
 	 */
-	public ArrayList<Scolarite> getListeScolarites() {
+	public List<Scolarite> getListeScolarites() {
 		if (listeScolarites == null)
 			listeScolarites = new ArrayList<Scolarite>();
 		return listeScolarites;
@@ -1810,7 +1833,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @param listeScolarites
 	 */
-	private void setListeScolarites(ArrayList<Scolarite> listeScolarites) {
+	private void setListeScolarites(List<Scolarite> listeScolarites) {
 		this.listeScolarites = listeScolarites;
 	}
 
@@ -2245,4 +2268,16 @@ public class OeENFANTGestion extends BasicProcess {
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
+
+	public ScolariteDao getScolariteDao() {
+		return scolariteDao;
+	}
+
+	public void setScolariteDao(ScolariteDao scolariteDao) {
+		this.scolariteDao = scolariteDao;
+	}
+
+	
+	
+	
 }
