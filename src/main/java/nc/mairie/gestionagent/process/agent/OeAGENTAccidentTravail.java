@@ -1268,8 +1268,6 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			return false;
 
 		// on crée le document en base de données
-		// String repPartage = (String)
-		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());

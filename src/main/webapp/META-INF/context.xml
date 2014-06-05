@@ -145,10 +145,6 @@
 		name="AFFICHAGE_ELECTION" override="false" value="TRUE" />
 
 	<!-- Parametres extrait du web.xml -->
-	<Parameter description="repertoire pour les modeles des contrats"
-		name="REPERTOIRE_MODELES_CONTRATS" override="false"
-		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Modeles_Documents/Contrats/" />
-	<!-- <param-value>file:///mnt/sirh-document/Modeles_Documents/Contrats/</param-value> -->
 	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
 		override="false" value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
 	<Parameter description="SIRH WS url pour les Notes de service SIRH" name="SIRH_WS_URL_NS_SIRH"
@@ -158,7 +154,9 @@
 	<Parameter description="SIRH WS url pour les convocations aux VM SIRH" name="SIRH_WS_URL_CONVOCATION_VM_SIRH"
 		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
 	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />
+		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />		
+	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_CONTRAT_SIRH"
+		override="false" value="http://svi-tomcat0:8085/sirhws/contrat/downloadContratSIRH" />		
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />

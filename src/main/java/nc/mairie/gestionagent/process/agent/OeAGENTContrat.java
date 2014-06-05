@@ -1,17 +1,12 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,23 +18,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
-import nc.mairie.metier.agent.LienEnfantNWAgentNW;
-import nc.mairie.metier.commun.BanqueGuichet;
-import nc.mairie.metier.commun.Commune;
-import nc.mairie.metier.commun.CommuneEtrangere;
-import nc.mairie.metier.commun.CommunePostal;
-import nc.mairie.metier.commun.Pays;
-import nc.mairie.metier.commun.Voie;
-import nc.mairie.metier.diplome.DiplomeAgent;
-import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
-import nc.mairie.metier.parametrage.TitreDiplome;
-import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.EntiteGeo;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.Motif;
-import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -48,16 +27,26 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Process OeAGENTContrat Date de création : (16/05/11 09:36:20)
  * 
  */
 public class OeAGENTContrat extends BasicProcess {
+
+	private Logger logger = LoggerFactory.getLogger(OeAGENTContrat.class);
 
 	/**
 	 * 
@@ -145,7 +134,8 @@ public class OeAGENTContrat extends BasicProcess {
 			if (getContratReference() != null) {
 				addZone(getNOM_ST_NUM_CONTRAT_REF(), getContratReference().getNumContrat());
 				addZone(getNOM_LB_TYPE_CONTRAT_SELECT(),
-						String.valueOf(getListeTypeContrat().indexOf(getHashTypeContrat().get(getContratReference().getIdTypeContrat()))));
+						String.valueOf(getListeTypeContrat().indexOf(
+								getHashTypeContrat().get(getContratReference().getIdTypeContrat()))));
 				Motif m = (Motif) getHashMotif().get(getContratReference().getIdMotif());
 				setMotifCourant(m);
 				int ligneMotif = getListeMotif().indexOf(m);
@@ -153,8 +143,10 @@ public class OeAGENTContrat extends BasicProcess {
 				addZone(getNOM_EF_JUSTIFICATION(), getContratReference().getJustification());
 				// on met la date de debut du contrat si CDD à datefin
 				// contratRef +1
-				if (TypeContrat.chercherTypeContrat(getTransaction(), getContratReference().getIdTypeContrat()).getLibTypeContrat().equals("CDD")) {
-					addZone(getNOM_EF_DATE_DEB(), Services.ajouteJours(Services.formateDate(getContratReference().getDateFin()), 1));
+				if (TypeContrat.chercherTypeContrat(getTransaction(), getContratReference().getIdTypeContrat())
+						.getLibTypeContrat().equals("CDD")) {
+					addZone(getNOM_EF_DATE_DEB(),
+							Services.ajouteJours(Services.formateDate(getContratReference().getDateFin()), 1));
 				}
 			}
 		}
@@ -274,7 +266,8 @@ public class OeAGENTContrat extends BasicProcess {
 				// RG_AG_CON_C09
 				String numSeq = getContratCourant().getNumContratChrono(getTransaction());
 
-				getContratCourant().setNumContrat(Services.dateDuJour().substring(6) + "/" + Services.lpad(numSeq, 5, "0"));
+				getContratCourant().setNumContrat(
+						Services.dateDuJour().substring(6) + "/" + Services.lpad(numSeq, 5, "0"));
 				getContratCourant().creerContrat(getTransaction());
 			}
 			if (getTransaction().isErreur())
@@ -304,7 +297,8 @@ public class OeAGENTContrat extends BasicProcess {
 	 */
 	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
 
-		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
+		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(
+				Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 		messageInfo = null;
 
 		// **********************************************************
@@ -341,7 +335,8 @@ public class OeAGENTContrat extends BasicProcess {
 			// ******************************************************
 			if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI())) >= 0) {
 				// ERR205 : La date @ doit être supérieure à la date @.
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de fin de période d'essai", "de début"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR205", "de fin de période d'essai", "de début"));
 				setFocus(getNOM_EF_DATE_FIN_PERIODE_ESSAI());
 				return false;
 			}
@@ -350,7 +345,8 @@ public class OeAGENTContrat extends BasicProcess {
 		// *****************************************
 		// RG_AG_CON_C01 : justification obligatoire
 		// *****************************************
-		if (!(getZone(getNOM_RG_AVENANT()).equals(getNOM_RB_AVENANT_O()) && tc.getLibTypeContrat().equals(EnumTypeContrat.CDD.getValue()))
+		if (!(getZone(getNOM_RG_AVENANT()).equals(getNOM_RB_AVENANT_O()) && tc.getLibTypeContrat().equals(
+				EnumTypeContrat.CDD.getValue()))
 				&& (Const.CHAINE_VIDE).equals(getZone(getNOM_EF_JUSTIFICATION()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "Justification"));
 			setFocus(getNOM_EF_JUSTIFICATION());
@@ -398,12 +394,12 @@ public class OeAGENTContrat extends BasicProcess {
 				Contrat c = (Contrat) lc.get(i);
 				if (!c.getIdContrat().equals(getContratCourant().getIdContrat())) {
 					if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services.compareDates(c.getDateFin(),
-									getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services
+									.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
 						rgOK = false;
 					} else if (Services.compareDates(getZone(getNOM_EF_DATE_FIN()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services.compareDates(c.getDateFin(),
-									getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services
+									.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
 						rgOK = false;
 					}
 				}
@@ -426,31 +422,38 @@ public class OeAGENTContrat extends BasicProcess {
 
 				if (Services.compareDates(getContratCourant().getDateDebut(), getContratReference().getDateDebut()) <= 0) {
 					// "ERR205", "La date @ doit être supérieure à la date @."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de début de contrat", "de début du contrat de référence"));
+					getTransaction().declarerErreur(
+							MessageUtils
+									.getMessage("ERR205", "de début de contrat", "de début du contrat de référence"));
 					return false;
 				}
 
 			} else {
 				// le contrat reference est un CDD
 
-				ArrayList<Contrat> listeAvenant = Contrat.listerContratAvenantAvecContratReference(getTransaction(), getContratReference());
+				ArrayList<Contrat> listeAvenant = Contrat.listerContratAvenantAvecContratReference(getTransaction(),
+						getContratReference());
 				if (listeAvenant.size() == 0) {
 					// 1er Avenant pour ce CDD : on vérifie la date de début
 					// avec la date de fin du contrat reference
 					if (Services.compareDates(getContratCourant().getDateDebut(), getContratReference().getDateFin()) <= 0) {
 						// "ERR205",
 						// "La date @ doit être supérieure à la date @."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de début de contrat", "de fin du contrat de référence"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR205", "de début de contrat",
+										"de fin du contrat de référence"));
 						return false;
 					}
 				} else {
 					// Un ou des evenants pour ce contrat exite déjà : on
 					// verifie la date du debut avec la date de fin du dernier
 					// avenant
-					if (Services.compareDates(getContratCourant().getDateDebut(), listeAvenant.get(listeAvenant.size() - 1).getDateFin()) <= 0) {
+					if (Services.compareDates(getContratCourant().getDateDebut(),
+							listeAvenant.get(listeAvenant.size() - 1).getDateFin()) <= 0) {
 						// "ERR205",
 						// "La date @ doit être supérieure à la date @."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "de début de contrat", "de fin du dernier avenant"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR205", "de début de contrat", "de fin du dernier avenant"));
 						return false;
 					}
 				}
@@ -478,7 +481,8 @@ public class OeAGENTContrat extends BasicProcess {
 		// en cours.
 		// ******************************************************************************
 		boolean rgOK = true;
-		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
+		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(
+				Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 		if (tc.getLibTypeContrat().equals(EnumTypeContrat.CDD.getValue())) {
 			if (Services.compareDates(Services.dateDuJour(), getZone(getNOM_EF_DATE_DEB())) < 0
 					|| Services.compareDates(getZone(getNOM_EF_DATE_FIN()), Services.dateDuJour()) < 0) {
@@ -513,7 +517,8 @@ public class OeAGENTContrat extends BasicProcess {
 		// RG_AG_CON_C03 : une impression ne peut se faire que sur un contrat
 		// CDD.
 		// ******************************************************************************
-		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
+		TypeContrat tc = (TypeContrat) getListeTypeContrat().get(
+				Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 		if (tc.getLibTypeContrat().equals(EnumTypeContrat.CDI.getValue())) {
 			return false;
 		}
@@ -914,17 +919,20 @@ public class OeAGENTContrat extends BasicProcess {
 				TypeContrat t = (TypeContrat) getHashTypeContrat().get(c.getIdTypeContrat());
 				Motif m = (Motif) getHashMotif().get(c.getIdMotif());
 
-				addZone(getNOM_ST_NUM(indiceContrat), c.getNumContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumContrat());
-				addZone(getNOM_ST_TYPE(indiceContrat), t.getLibTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat());
+				addZone(getNOM_ST_NUM(indiceContrat),
+						c.getNumContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumContrat());
+				addZone(getNOM_ST_TYPE(indiceContrat),
+						t.getLibTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat());
 				addZone(getNOM_ST_AVENANT(indiceContrat), c.isAvenant() ? "Oui" : "Non");
 				addZone(getNOM_ST_DATE_DEBUT(indiceContrat), c.getDateDebut());
-				addZone(getNOM_ST_DATE_ESSAI(indiceContrat),
-						c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "&nbsp;" : c
-								.getDateFinPeriodeEssai());
+				addZone(getNOM_ST_DATE_ESSAI(indiceContrat), c.getDateFinPeriodeEssai() == null
+						|| c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateFinPeriodeEssai());
 				addZone(getNOM_ST_DATE_FIN(indiceContrat),
 						c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateFin());
-				addZone(getNOM_ST_MOTIF(indiceContrat), m.getLibMotif().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif());
-				addZone(getNOM_ST_JUSTIFICATION(indiceContrat), c.getJustification().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getJustification());
+				addZone(getNOM_ST_MOTIF(indiceContrat),
+						m.getLibMotif().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif());
+				addZone(getNOM_ST_JUSTIFICATION(indiceContrat),
+						c.getJustification().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getJustification());
 
 				indiceContrat++;
 			}
@@ -974,7 +982,8 @@ public class OeAGENTContrat extends BasicProcess {
 		addZone(getNOM_ST_TYPE_CONTRAT(), t.getLibTypeContrat());
 		addZone(getNOM_RG_AVENANT(), c.isAvenant() ? getNOM_RB_AVENANT_O() : getNOM_RB_AVENANT_N());
 		addZone(getNOM_EF_DATE_DEB(), Const.DATE_NULL.equals(c.getDateDebut()) ? null : c.getDateDebut());
-		addZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI(), Const.DATE_NULL.equals(c.getDateFinPeriodeEssai()) ? null : c.getDateFinPeriodeEssai());
+		addZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI(),
+				Const.DATE_NULL.equals(c.getDateFinPeriodeEssai()) ? null : c.getDateFinPeriodeEssai());
 		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(c.getDateFin()) ? null : c.getDateFin());
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif));
 		addZone(getNOM_ST_MOTIF(), m.getLibMotif());
@@ -1257,16 +1266,20 @@ public class OeAGENTContrat extends BasicProcess {
 			return false;
 		}
 
-		if (!getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O()) && Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()))
-				&& !Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEB())) && Services.estUneDate(getZone(getNOM_EF_DATE_DEB()))) {
+		if (!getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O())
+				&& Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()))
+				&& !Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_DEB()))
+				&& Services.estUneDate(getZone(getNOM_EF_DATE_DEB()))) {
 			String datePeriodeEssai = Const.CHAINE_VIDE;
-			TypeContrat tc = (TypeContrat) getListeTypeContrat().get(Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
+			TypeContrat tc = (TypeContrat) getListeTypeContrat().get(
+					Integer.parseInt(getZone(getNOM_LB_TYPE_CONTRAT_SELECT())));
 			if (tc.getLibTypeContrat().equals(EnumTypeContrat.CDI.getValue())) {
 				// si CDI 3mois
 				datePeriodeEssai = Services.ajouteMois(Services.formateDate(getZone(getNOM_EF_DATE_DEB())), 3);
 			} else {
 				// si CDD et date fin saisie
-				if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN())) && Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
+				if (!Const.CHAINE_VIDE.equals(getZone(getNOM_EF_DATE_FIN()))
+						&& Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 					// si + de 1an entre les dates alors dateFin = DateDeb+1mois
 					// si entre 6 mois et 1an alors dateFin = DateDeb+14 jours
 					// si inf à 6 mois alors dateFin = DateDeb+1 jours par
@@ -1424,13 +1437,18 @@ public class OeAGENTContrat extends BasicProcess {
 	}
 
 	private boolean imprimeModele(HttpServletRequest request) throws Exception {
+		// on verifie que les repertoires existent
+		verifieRepertoire("C");
+
 		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
-		String destination = "C/C_" + getContratCourant().getIdContrat() + ".xml";
+		String destination = "C/C_" + getContratCourant().getIdContrat() + ".doc";
+
 		// si le fichier existe alors on supprime l'entrée où il y a le fichier
-		// f
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
-			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "C_" + getContratCourant().getIdContrat());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant().getIdAgent(), d.getIdDocument());
+			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "C_"
+					+ getContratCourant().getIdContrat());
+			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
+					.getIdAgent(), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
@@ -1440,42 +1458,54 @@ public class OeAGENTContrat extends BasicProcess {
 			d.supprimerDocument(getTransaction());
 		}
 
-		String modele;
-		String type;
-		String repModeles = (String) ServletAgent.getMesParametres().get("REPERTOIRE_MODELES_CONTRATS");
-
-		if (TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant().getIdTypeContrat()).getLibTypeContrat().equals("CDD")) {
-			if (Integer.parseInt(getContratCourant().getIdMotif()) < 10) {
-				modele = repModeles + "ModeleCDD_" + getContratCourant().getIdMotif() + ".xml";
-			} else {
-				modele = repModeles + "ModeleCDD.xml";
-			}
-			type = "CDD";
-		} else {
-			modele = repModeles + "ModeleCDI.xml";
-			type = "CDI";
+		if (!TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant().getIdTypeContrat())
+				.getLibTypeContrat().equals("CDD")) {
+			// "ERR034", "Une impression ne peut se faire que sur un CDD."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR034"));
+			return false;
 		}
 
-		// Tout s'est bien passé
-		// on crée le document en base de données
-		Document d = new Document();
-		d.setIdTypeDocument("2");
-		d.setLienDocument(destination);
-		d.setNomDocument("C_" + getContratCourant().getIdContrat() + ".xml");
-		d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
-		d.setCommentaire("Document généré par l'application");
-		d.creerDocument(getTransaction());
+		try {
+			byte[] fileAsBytes = getContratReportAsByteArray(getAgentCourant().getIdAgent(), getContratCourant()
+					.getIdContrat());
 
-		LienDocumentAgent lda = new LienDocumentAgent();
-		lda.setIdAgent(getAgentCourant().getIdAgent());
-		lda.setIdDocument(d.getIdDocument());
-		lda.creerLienDocumentAgent(getTransaction());
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR185",
+				// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
+				return false;
+			}
 
-		if (getTransaction().isErreur())
+			// Tout s'est bien passé
+			// on crée le document en base de données
+			Document d = new Document();
+			d.setIdTypeDocument("2");
+			d.setLienDocument(destination);
+			d.setNomDocument("C_" + getContratCourant().getIdContrat() + ".doc");
+			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setCommentaire("Document généré par l'application");
+			d.creerDocument(getTransaction());
+
+			LienDocumentAgent lda = new LienDocumentAgent();
+			lda.setIdAgent(getAgentCourant().getIdAgent());
+			lda.setIdDocument(d.getIdDocument());
+			lda.creerLienDocumentAgent(getTransaction());
+
+			if (getTransaction().isErreur())
+				return false;
+
+			destination = destination.substring(destination.lastIndexOf("/"), destination.length());
+			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+			setURLFichier(getScriptOuverture(repertoireStockage + "C" + destination));
+
+			commitTransaction();
+
+		} catch (Exception e) {
+			// "ERR185",
+			// "Une erreur est survenue dans la génération des documents. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR185"));
 			return false;
-
-		creerModeleDocument(modele, repPartage + destination, type);
-		commitTransaction();
+		}
 
 		initialiseListeContratsAgent(request);
 		addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
@@ -1484,197 +1514,73 @@ public class OeAGENTContrat extends BasicProcess {
 		return true;
 	}
 
-	private void creerModeleDocument(String modele, String destination, String type) throws Exception {
-		// on verifie que les repertoires existent
-		verifieRepertoire("C");
+	public boolean saveFileToRemoteFileSystem(byte[] fileAsBytes, String chemin, String filename) throws Exception {
 
-		FileSystemManager fsManager = VFS.getManager();
-		// LECTURE
-		FileObject fo = fsManager.resolveFile(modele);
-		InputStream is = fo.getContent().getInputStream();
-		InputStreamReader inR = new InputStreamReader(is, "UTF8");
-		BufferedReader in = new BufferedReader(inR);
+		BufferedOutputStream bos = null;
+		FileObject docFile = null;
 
-		// ECRITURE
-		FileObject destinationFile = fsManager.resolveFile(destination);
-		destinationFile.createFile();
-		OutputStream os = destinationFile.getContent().getOutputStream();
-		OutputStreamWriter ouw = new OutputStreamWriter(os, "UTF8");
-		BufferedWriter out = new BufferedWriter(ouw);
+		try {
+			FileSystemManager fsManager = VFS.getManager();
+			docFile = fsManager.resolveFile(String.format("%s", chemin + filename));
+			bos = new BufferedOutputStream(docFile.getContent().getOutputStream());
+			IOUtils.write(fileAsBytes, bos);
+			IOUtils.closeQuietly(bos);
 
-		String ligne;
-		AgentNW a = getAgentCourant();
-		Contrat c = getContratCourant();
-		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		}
-		boolean affectation = false;
-
-		// on recupère les champs de l'affectation
-		String titrePoste = null;
-		String lieuPoste = null;
-		String libService = null;
-		if (aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
-			affectation = true;
-			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-			EntiteGeo eg = EntiteGeo.chercherEntiteGeo(getTransaction(), fp.getIdEntiteGeo());
-			Service s = Service.chercherService(getTransaction(), fp.getIdServi());
-			titrePoste = tp.getLibTitrePoste();
-			lieuPoste = eg.getLibEntiteGeo();
-			libService = s.getLibService();
-		}
-
-		// on récupère les diplomes de l'agent
-		ArrayList<DiplomeAgent> diplomesAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), a);
-		String listeDiplome = Const.CHAINE_VIDE;
-		for (Iterator<DiplomeAgent> iter = diplomesAgent.iterator(); iter.hasNext();) {
-			DiplomeAgent da = (DiplomeAgent) iter.next();
-			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), da.getIdTitreDiplome());
-			SpecialiteDiplomeNW sd = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(), da.getIdSpecialiteDiplome());
-			listeDiplome += td.getLibTitreDiplome() + " " + sd.getLibSpeDiplome() + ",";
-		}
-		if (!listeDiplome.equals(Const.CHAINE_VIDE)) {
-			listeDiplome = listeDiplome.substring(0, listeDiplome.length() - 1);
-		}
-
-		// on recupere les champs qui nous interessent
-		String prenom = a.getPrenomAgent().toLowerCase();
-		String premLettre = prenom.substring(0, 1).toUpperCase();
-		String restePrenom = prenom.substring(1, prenom.length()).toLowerCase();
-		prenom = premLettre + restePrenom;
-		String nom = a.getNomAgent().toUpperCase();
-		String civilite = a.getCivilite().equals("0") ? "Monsieur" : a.getCivilite().equals("1") ? "Madame" : "Mademoiselle";
-		String contractant = a.getCivilite().equals("0") ? "le contractant" : "la contractante";
-		String nationalite = a.getNationalite().equals("F") ? "Française" : "Etrangère";
-		String dateNaiss = a.getDateNaissance();
-		String situFam = SituationFamiliale.chercherSituationFamilialeById(getTransaction(), a.getIdSituationFamiliale()).getLibSituation();
-		String commNaiss;
-		if (a.getCodeCommuneNaissanceFr() == null) {
-			commNaiss = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), a.getCodePaysNaissanceEt(), a.getCodeCommuneNaissanceEt())
-					.getLibCommuneEtrangere();
-			commNaiss += " ("
-					+ Pays.chercherPays(
-							getTransaction(),
-							CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), a.getCodePaysNaissanceEt(), a.getCodeCommuneNaissanceEt())
-									.getCodPays()).getLibPays() + ")";
-		} else {
-			commNaiss = Commune.chercherCommune(getTransaction(), a.getCodeCommuneNaissanceFr()).getLibCommune();
-		}
-		int nbEnftCharge = 0;
-		for (Iterator<LienEnfantNWAgentNW> iter = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecAgent(getTransaction(), a).iterator(); iter
-				.hasNext();) {
-			LienEnfantNWAgentNW element = (LienEnfantNWAgentNW) iter.next();
-			if (element.isEnfantACharge()) {
-				nbEnftCharge = nbEnftCharge + 1;
+			if (docFile != null) {
+				try {
+					docFile.close();
+				} catch (FileSystemException e) {
+					// ignore the exception
+				}
 			}
+		} catch (Exception e) {
+			logger.error(String.format("An error occured while writing the report file to the following path  : "
+					+ chemin + filename + " : " + e));
+			return false;
 		}
-		String numCpte = Const.CHAINE_VIDE;
-		String banque = Const.CHAINE_VIDE;
-		if (a.getCodeBanque() != null) {
-			numCpte = a.getCodeBanque() + " " + a.getCodeGuichet() + " " + a.getNumCompte() + " " + a.getRib();
-			banque = BanqueGuichet.chercherBanqueGuichet(getTransaction(), a.getCodeBanque(), a.getCodeGuichet()).getLibBanque();
+		return true;
+	}
 
-		}
-		String cafat = a.getNumCafat().equals(Const.CHAINE_VIDE) ? "Inconnu" : a.getNumCafat();
-		String mutuelle = a.getNumMutuelle().equals(Const.CHAINE_VIDE) ? "Inconnu" : a.getNumMutuelle();
-		String numCre = a.getNumCre().equals(Const.CHAINE_VIDE) ? "En cours d'affiliation" : a.getNumCre();
+	private byte[] getContratReportAsByteArray(String idAgent, String idContrat) throws Exception {
 
-		String dateDebContrat = c.getDateDebut();
-		String dateFinContrat = c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin pour ce contrat !"
-				: c.getDateFin();
-		String dateFinEssai = c.getDateFinPeriodeEssai() == null || c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "Il n'y a pas de date de fin de periode d'essai pour ce contrat !"
-				: c.getDateFinPeriodeEssai();
-		String dureeContrat;
-		if (c.getDateFin() == null|| c.getDateFin().equals(Const.DATE_NULL)) {
-			dureeContrat = "Il n'y a pas de date de fin pour ce contrat !";
-		} else {
-			long aTimeUneDate = java.sql.Date.valueOf(Services.formateDateInternationale(c.getDateDebut())).getTime();
-			long aTimeAutreDate = java.sql.Date.valueOf(Services.formateDateInternationale(c.getDateFin())).getTime();
-			int nbMois = Integer.parseInt(String.valueOf(((aTimeAutreDate - aTimeUneDate) / 262800000) / 10));
-			dureeContrat = String.valueOf(nbMois);
-		}
-		String dureePeriodeEssai;
-		if (c.getDateFinPeriodeEssai() == null|| c.getDateFinPeriodeEssai().equals(Const.DATE_NULL)) {
-			dureePeriodeEssai = "Il n'y a pas de date fin de periode d'essai pour ce contrat !";
-		} else {
-			dureePeriodeEssai = String.valueOf(Services.compteJoursEntreDates(c.getDateDebut(), c.getDateFinPeriodeEssai()));
-		}
+		ClientResponse response = createAndFireRequestContrat(idAgent, idContrat);
 
-		String adresse = Const.CHAINE_VIDE;
-		if (null == a.getNumRue())
-			adresse += Const.CHAINE_VIDE;
-		else
-			adresse += " " + a.getNumRue();
-		if (null == a.getNumRueBisTer())
-			adresse += Const.CHAINE_VIDE;
-		else
-			adresse += " " + a.getNumRueBisTer();
-		if (null == a.getIdVoie())
-			adresse += " " + a.getAdresseComplementaire();
-		else
-			adresse += " " + Voie.chercherVoie(getTransaction(), a.getIdVoie()).getNomvoi();
-		if (a.getCodeComVilleDom() == null) {
-			adresse += " "
-					+ CommunePostal.chercherCommunePostal(getTransaction(), a.getCodePostalVilleBp(), a.getCodeComVilleBp()).getCodCodePostal()
-					+ " "
-					+ CommunePostal.chercherCommunePostal(getTransaction(), a.getCodePostalVilleBp(), a.getCodeComVilleBp()).getLibCodePostal()
-							.toUpperCase();
-		} else {
-			adresse += " "
-					+ CommunePostal.chercherCommunePostal(getTransaction(), a.getCodePostalVilleDom(), a.getCodeComVilleDom()).getCodCodePostal()
-					+ " "
-					+ CommunePostal.chercherCommunePostal(getTransaction(), a.getCodePostalVilleDom(), a.getCodeComVilleDom()).getLibCodePostal();
+		return readResponseAsByteArray(response);
+	}
+
+	private ClientResponse createAndFireRequestContrat(String idAgent, String idContrat) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONTRAT_SIRH") + "?idAgent=" + idAgent
+				+ "&idContrat=" + idContrat;
+
+		Client client = Client.create();
+
+		WebResource webResource = client.resource(urlWS);
+
+		ClientResponse response = webResource.get(ClientResponse.class);
+
+		return response;
+	}
+
+	public byte[] readResponseAsByteArray(ClientResponse response) throws Exception {
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new Exception(String.format("An error occured ", response.getStatus()));
 		}
 
-		// tant qu'il y a des lignes
-		while ((ligne = in.readLine()) != null) {
-			// je fais mon traitement
-			ligne = StringUtils.replace(ligne, "$_NOM", nom);
-			ligne = StringUtils.replace(ligne, "$_PRENOM", prenom);
-			ligne = StringUtils.replace(ligne, "$_CIVILITE", civilite);
-			ligne = StringUtils.replace(ligne, "$_CONTRACTANT", contractant);
-			ligne = StringUtils.replace(ligne, "$_CONTRACTANT_MAJ", contractant.toUpperCase());
-			ligne = StringUtils.replace(ligne, "$_NATIONALITE", nationalite);
-			ligne = StringUtils.replace(ligne, "$_DATENAISS", dateNaiss);
-			ligne = StringUtils.replace(ligne, "$_SITUFAM", situFam);
-			ligne = StringUtils.replace(ligne, "$_LIEUNAISS", commNaiss);
-			ligne = StringUtils.replace(ligne, "$_NBENFTCHARGE", String.valueOf(nbEnftCharge));
-			ligne = StringUtils.replace(ligne, "$_COMPTE", numCpte);
-			ligne = StringUtils.replace(ligne, "$_BANQUE", banque);
-			ligne = StringUtils.replace(ligne, "$_CAFAT", cafat);
-			ligne = StringUtils.replace(ligne, "$_MUTUELLE", mutuelle);
-			ligne = StringUtils.replace(ligne, "$_NUMCRE", numCre);
-			ligne = StringUtils.replace(ligne, "$_DATEDEBCONTRAT", dateDebContrat);
-			ligne = StringUtils.replace(ligne, "$_DATEFINCONTRAT", dateFinContrat);
-			ligne = StringUtils.replace(ligne, "$_DUREECONTRAT", dureeContrat);
-			ligne = StringUtils.replace(ligne, "$_DUREEESSAI", dureePeriodeEssai);
-			ligne = StringUtils.replace(ligne, "$_DATEFINESSAI", dateFinEssai);
-			ligne = StringUtils.replace(ligne, "$_ADRESSE", adresse);
-			ligne = StringUtils.replace(ligne, "$_DIPLOMES", listeDiplome);
-			if (affectation) {
-				ligne = StringUtils.replace(ligne, "$_TITREPOSTE", titrePoste);
-				ligne = StringUtils.replace(ligne, "$_LIEU_DU_POSTE", lieuPoste);
-				ligne = StringUtils.replace(ligne, "$_LIB_SERVICE", libService.replace("&", "et"));
-			}
-			out.write(ligne);
+		byte[] reponseData = null;
+		File reportFile = null;
+
+		try {
+			reportFile = response.getEntity(File.class);
+			reponseData = IOUtils.toByteArray(new FileInputStream(reportFile));
+		} catch (Exception e) {
+			throw new Exception("An error occured while reading the downloaded report.", e);
+		} finally {
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
 		}
 
-		// FERMETURE DES FLUX
-		in.close();
-		inR.close();
-		is.close();
-		fo.close();
-
-		out.close();
-		ouw.close();
-		os.close();
-		destinationFile.close();
-
-		destination = destination.substring(destination.lastIndexOf("/"), destination.length());
-		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-		setURLFichier(getScriptOuverture(repertoireStockage + "C" + destination));
+		return reponseData;
 	}
 
 	private void setURLFichier(String scriptOuverture) {
@@ -2091,7 +1997,8 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getContratCourant().isAvenant()) {
 			addZone(getNOM_ST_WARNING(), "Veuillez valider votre choix.");
 		} else {
-			addZone(getNOM_ST_WARNING(), "Attention : les avenants du contrat seront aussi supprimés. Veuillez valider votre choix.");
+			addZone(getNOM_ST_WARNING(),
+					"Attention : les avenants du contrat seront aussi supprimés. Veuillez valider votre choix.");
 		}
 
 		// On pose le statut
@@ -2131,7 +2038,8 @@ public class OeAGENTContrat extends BasicProcess {
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
 			// alors on affiche un message
 			// :" Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?"
-			addZone(getNOM_ST_WARNING(), "Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?");
+			addZone(getNOM_ST_WARNING(),
+					"Attention un fichier existe déjà pour ce contrat. Etes-vous sûr de vouloir écraser la version précédente ?");
 			// On nomme l'action
 			addZone(getNOM_ST_ACTION(), ACTION_IMPRESSION);
 		} else {
