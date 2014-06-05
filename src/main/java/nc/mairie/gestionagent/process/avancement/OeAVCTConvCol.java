@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.ApplicationContext;
+
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -11,6 +13,9 @@ import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.avancement.AvancementConvCol;
+import nc.mairie.spring.dao.metier.agent.PrimeAgentDao;
+import nc.mairie.spring.dao.metier.agent.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -37,6 +42,17 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
+	private PrimeAgentDao primeAgentDao;
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		
+		if (getPrimeAgentDao() == null) {
+			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+	
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -57,6 +73,7 @@ public class OeAVCTConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
@@ -322,7 +339,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							prime.setDatFin("01/01/" + avct.getAnnee());
 							prime.setNoRubr(prime.getNoRubr());
 							prime.setDatDeb(prime.getDatDeb());
-							prime.modifierPrime(getTransaction(), agent, user);
+							prime.modifierPrime(getTransaction(), getPrimeAgentDao(), agent, user);
 
 							Prime newPrime = new Prime();
 							newPrime.setNoMatr(agent.getNoMatricule());
@@ -339,9 +356,11 @@ public class OeAVCTConvCol extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
-									newPrime.getNoRubr(), newPrime.getDatDeb());
-							primeAgent.creerPrimeAgent(getTransaction());
+							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
+									new Integer(agent.getNoMatricule()), 
+									new Integer(newPrime.getNoRubr()), 
+									newPrime.getDatDeb());
+							getPrimeAgentDao().creerPrimeAgent(primeAgent);
 						}
 					} else {
 						getTransaction().traiterErreur();
@@ -357,9 +376,11 @@ public class OeAVCTConvCol extends BasicProcess {
 						newPrime.creerPrime(getTransaction(), user);
 
 						// on crée aussi une prime agent
-						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
-								newPrime.getNoRubr(), newPrime.getDatDeb());
-						primeAgent.creerPrimeAgent(getTransaction());
+						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
+								new Integer(agent.getNoMatricule()), 
+								new Integer(newPrime.getNoRubr()), 
+								newPrime.getDatDeb());
+						getPrimeAgentDao().creerPrimeAgent(primeAgent);
 					}
 
 					if (getTransaction().isErreur()) {
@@ -849,4 +870,13 @@ public class OeAVCTConvCol extends BasicProcess {
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
 	}
+
+	public PrimeAgentDao getPrimeAgentDao() {
+		return primeAgentDao;
+	}
+
+	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
+		this.primeAgentDao = primeAgentDao;
+	}
+	
 }

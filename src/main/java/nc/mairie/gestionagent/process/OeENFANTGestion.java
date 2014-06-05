@@ -19,6 +19,7 @@ import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Departement;
 import nc.mairie.metier.commun.Pays;
 import nc.mairie.spring.dao.metier.agent.ScolariteDao;
+import nc.mairie.spring.dao.metier.agent.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -74,7 +75,7 @@ public class OeENFANTGestion extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		
 		if (getScolariteDao() == null) {
-			setScolariteDao((ScolariteDao) context.getBean("scolariteDao"));
+			setScolariteDao(new ScolariteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 	

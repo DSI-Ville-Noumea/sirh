@@ -20,6 +20,9 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.PrimeAgentDao;
+import nc.mairie.spring.dao.metier.agent.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -31,6 +34,7 @@ import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
@@ -56,6 +60,17 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private ArrayList<AvancementConvCol> listeAvct;
 
 	public String ACTION_CALCUL = "Calcul";
+	
+	private PrimeAgentDao primeAgentDao;
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		
+		if (getPrimeAgentDao() == null) {
+			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -78,6 +93,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 
 		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -840,7 +856,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							prime.setDatFin("01/01/" + avct.getAnnee());
 							prime.setNoRubr(prime.getNoRubr());
 							prime.setDatDeb(prime.getDatDeb());
-							prime.modifierPrime(getTransaction(), agent, user);
+							prime.modifierPrime(getTransaction(), getPrimeAgentDao(), agent, user);
 
 							Prime newPrime = new Prime();
 							newPrime.setNoMatr(agent.getNoMatricule());
@@ -853,9 +869,11 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
-									newPrime.getNoRubr(), newPrime.getDatDeb());
-							primeAgent.creerPrimeAgent(getTransaction());
+							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
+									new Integer(agent.getNoMatricule()), 
+									new Integer(newPrime.getNoRubr()), 
+									newPrime.getDatDeb());
+							getPrimeAgentDao().creerPrimeAgent(primeAgent);
 						}
 					} else {
 						getTransaction().traiterErreur();
@@ -870,10 +888,12 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						newPrime.setNoRubr("1200");
 						newPrime.creerPrime(getTransaction(), user);
 
-						// on crée aussi une prime agent
-						PrimeAgent primeAgent = new PrimeAgent(agent.getIdAgent(), agent.getNoMatricule(),
-								newPrime.getNoRubr(), newPrime.getDatDeb());
-						primeAgent.creerPrimeAgent(getTransaction());
+						// on crée aussi une prime agentPrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
+						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
+								new Integer(agent.getNoMatricule()), 
+								new Integer(newPrime.getNoRubr()), 
+								newPrime.getDatDeb());
+						getPrimeAgentDao().creerPrimeAgent(primeAgent);
 					}
 
 					if (getTransaction().isErreur()) {
@@ -1216,5 +1236,13 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public PrimeAgentDao getPrimeAgentDao() {
+		return primeAgentDao;
+	}
+
+	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
+		this.primeAgentDao = primeAgentDao;
 	}
 }

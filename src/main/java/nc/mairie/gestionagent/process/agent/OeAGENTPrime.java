@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -13,12 +14,17 @@ import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.agent.PrimeAgentDao;
+import nc.mairie.spring.dao.metier.agent.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.CharacterDataArea;
@@ -56,7 +62,20 @@ public class OeAGENTPrime extends BasicProcess {
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
 			CALC_PATH.getPath());
 	private String calculPaye;
+	
+	private PrimeAgentDao primeAgentDao;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		
+		if (getPrimeAgentDao() == null) {
+			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+	
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -80,6 +99,7 @@ public class OeAGENTPrime extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
 		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
@@ -444,9 +464,15 @@ public class OeAGENTPrime extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 
 			// Suppression du lien
-			PrimeAgent primeAgent = PrimeAgent.chercherPrimeAgent(getTransaction(), getAgentCourant().idAgent, getAgentCourant().getNoMatricule(),
-					getPrimeCourante().getNoRubr(), getPrimeCourante().getDatDeb());
-			primeAgent.supprimerPrimeAgent(getTransaction());
+			PrimeAgent primeAgent = getPrimeAgentDao().chercherPrimeAgent(
+					new Integer(getAgentCourant().idAgent), 
+					new Integer(getAgentCourant().getNoMatricule()),
+					new Integer(getPrimeCourante().getNoRubr()), 
+					new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? 
+							Services.convertitDate(Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") 
+							: "0")
+					);
+			getPrimeAgentDao().supprimerPrimeAgent(primeAgent);
 			if (getTransaction().isErreur())
 				return false;
 
@@ -495,16 +521,19 @@ public class OeAGENTPrime extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-				getPrimeCourante().modifierPrime(getTransaction(), getAgentCourant(), user);
+				getPrimeCourante().modifierPrime(getTransaction(), getPrimeAgentDao(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 
 				getPrimeCourante().creerPrime(getTransaction(), user);
 
-				PrimeAgent primeAgent = new PrimeAgent(getAgentCourant().getIdAgent(), getAgentCourant().getNoMatricule(), getPrimeCourante()
-						.getNoRubr(), getPrimeCourante().getDatDeb());
-				primeAgent.creerPrimeAgent(getTransaction());
+				PrimeAgent primeAgent = new PrimeAgent(
+						new Integer(getAgentCourant().getIdAgent()), 
+						new Integer(getAgentCourant().getNoMatricule()), 
+						new Integer(getPrimeCourante().getNoRubr()), 
+						getPrimeCourante().getDatDeb());
+				getPrimeAgentDao().creerPrimeAgent(primeAgent);
 			}
 			// RG_AG_PR_A01
 			Matricule.updateMatricule(getTransaction(), getAgentCourant(), getPrimeCourante().getDatDeb());
@@ -1043,4 +1072,13 @@ public class OeAGENTPrime extends BasicProcess {
 	public void setListeRubriquesTotales(ArrayList<Rubrique> listeRubriquesTotales) {
 		this.listeRubriquesTotales = listeRubriquesTotales;
 	}
+
+	public PrimeAgentDao getPrimeAgentDao() {
+		return primeAgentDao;
+	}
+
+	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
+		this.primeAgentDao = primeAgentDao;
+	}
+	
 }
