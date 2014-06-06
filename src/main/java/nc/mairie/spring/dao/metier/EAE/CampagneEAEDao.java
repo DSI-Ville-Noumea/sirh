@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.CampagneEAERowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneEAEDao implements CampagneEAEDaoInterface {
@@ -54,7 +54,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 			CampagneEAE camp = new CampagneEAE();
 			logger.info("List campagne EAE : " + row.toString());
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			camp.setIdCampagneEAE(id.intValue());
+			camp.setIdCampagneEae(id.intValue());
 			BigDecimal annee = (BigDecimal) row.get(CHAMP_ANNEE);
 			camp.setAnnee(annee.intValue());
 			camp.setDateDebut((Date) row.get(CHAMP_DATE_DEBUT));
@@ -72,7 +72,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	public CampagneEAE chercherCampagneEAE(Integer idCampagneEAE) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_EAE + " = ? ";
 
-		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEAE }, new CampagneEAERowMapper());
+		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEAE }, new BeanPropertyRowMapper<CampagneEAE>(CampagneEAE.class));
 
 		return camp;
 	}
@@ -117,7 +117,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	public CampagneEAE chercherCampagneEAEAnnee(Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + " = ? ";
 
-		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { annee }, new CampagneEAERowMapper());
+		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { annee }, new BeanPropertyRowMapper<CampagneEAE>(CampagneEAE.class));
 
 		return camp;
 	}
@@ -125,7 +125,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	@Override
 	public CampagneEAE chercherCampagneEAEOuverte() throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_DATE_FIN + " is null ";
-		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new CampagneEAERowMapper());
+		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<CampagneEAE>(CampagneEAE.class));
 		return camp;
 	}
 }

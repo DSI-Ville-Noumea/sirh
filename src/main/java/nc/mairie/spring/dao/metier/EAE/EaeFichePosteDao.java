@@ -8,9 +8,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeFichePosteRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
@@ -78,7 +78,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	@Override
 	public EaeFichePoste chercherEaeFichePoste(Integer idEAE, boolean type) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? and " + CHAMP_PRIMAIRE + "=?";
-		EaeFichePoste eaeFDP = (EaeFichePoste) jdbcTemplate.queryForObject(sql, new Object[] { idEAE, type }, new EaeFichePosteRowMapper());
+		EaeFichePoste eaeFDP = (EaeFichePoste) jdbcTemplate.queryForObject(sql, new Object[] { idEAE, type }, new BeanPropertyRowMapper<EaeFichePoste>(EaeFichePoste.class));
 		return eaeFDP;
 	}
 
@@ -93,8 +93,8 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFichePoste eae = new EaeFichePoste();
-			eae.setDirectionServ((String) row.get(CHAMP_DIRECTION_SERVICE));
-			eae.setSectionServ((String) row.get(CHAMP_SECTION_SERVICE));
+			eae.setDirectionService((String) row.get(CHAMP_DIRECTION_SERVICE));
+			eae.setSectionService((String) row.get(CHAMP_SECTION_SERVICE));
 			listeEAE.add(eae);
 		}
 
@@ -118,16 +118,16 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 			eae.setIdSHD(idSHD == null ? null : idSHD.intValue());
 			BigDecimal primaire = (BigDecimal) row.get(CHAMP_PRIMAIRE);
 			eae.setPrimaire(primaire.intValue() == 0 ? false : true);
-			eae.setDirectionServ((String) row.get(CHAMP_DIRECTION_SERVICE));
-			eae.setServiceServ((String) row.get(CHAMP_SERVICE));
-			eae.setSectionServ((String) row.get(CHAMP_SECTION_SERVICE));
+			eae.setDirectionService((String) row.get(CHAMP_DIRECTION_SERVICE));
+			eae.setService((String) row.get(CHAMP_SERVICE));
+			eae.setSectionService((String) row.get(CHAMP_SECTION_SERVICE));
 			eae.setEmploi((String) row.get(CHAMP_EMPLOI));
 			eae.setFonction((String) row.get(CHAMP_FONCTION));
 			eae.setDateEntreeFonction((Date) row.get(CHAMP_DATE_ENTREE_FONCTION));
 			eae.setGradePoste((String) row.get(CHAMP_GRADE_POSTE));
 			eae.setLocalisation((String) row.get(CHAMP_LOCALISATION));
-			eae.setMission((String) row.get(CHAMP_MISSIONS));
-			eae.setFonctionResponsable((String) row.get(CHAMP_FONCTION_RESP));
+			eae.setMissions((String) row.get(CHAMP_MISSIONS));
+			eae.setFonctionResp((String) row.get(CHAMP_FONCTION_RESP));
 			listeEAE.add(eae);
 		}
 

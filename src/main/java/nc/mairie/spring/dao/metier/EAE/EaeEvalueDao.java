@@ -8,9 +8,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvalueRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvalueDao implements EaeEvalueDaoInterface {
@@ -79,7 +79,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	@Override
 	public EaeEvalue chercherEaeEvalue(Integer idEae) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
-		EaeEvalue eval = (EaeEvalue) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new EaeEvalueRowMapper());
+		EaeEvalue eval = (EaeEvalue) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new BeanPropertyRowMapper<EaeEvalue>(EaeEvalue.class));
 		return eval;
 	}
 
@@ -119,13 +119,13 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setPrecisionStatut((String) row.get(CHAMP_STATUT_PRECISION));
 			evalue.setTypeAvct((String) row.get(CHAMP_TYPE_AVCT));
 			BigDecimal min = (BigDecimal) row.get(CHAMP_AVCT_DUR_MIN);
-			evalue.setNbMoisDureeMin(min == null ? null : min.intValue());
+			evalue.setAvctDurMin(min == null ? null : min.intValue());
 			BigDecimal moy = (BigDecimal) row.get(CHAMP_AVCT_DUR_MOY);
-			evalue.setNbMoisDureeMoy(moy == null ? null : moy.intValue());
+			evalue.setAvctDurMoy(moy == null ? null : moy.intValue());
 			BigDecimal max = (BigDecimal) row.get(CHAMP_AVCT_DUR_MAX);
-			evalue.setNbMoisDureeMax(max == null ? null : max.intValue());
+			evalue.setAvctDurMax(max == null ? null : max.intValue());
 			BigDecimal affecte = (BigDecimal) row.get(CHAMP_AGENT_DETACHE);
-			evalue.setAgentAffecte(affecte.intValue() == 0 ? false : true);
+			evalue.setAgentDetache(affecte.intValue() == 0 ? false : true);
 
 			listeEaeEvalue.add(evalue);
 		}

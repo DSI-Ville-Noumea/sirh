@@ -222,7 +222,7 @@ public class OeAGENTEae extends BasicProcess {
 				} catch (Exception e) {
 					// on ne fait rien
 				}
-				CampagneEAE camp = getCampagneEaeDao().chercherCampagneEAE(eae.getIdCampagneEAE());
+				CampagneEAE camp = getCampagneEaeDao().chercherCampagneEAE(eae.getIdCampagneEae());
 				ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(evalue.getIdEae());
 				String evaluateur = Const.CHAINE_VIDE;
 				for (int j = 0; j < listeEvaluateur.size(); j++) {
@@ -237,7 +237,7 @@ public class OeAGENTEae extends BasicProcess {
 				addZone(getNOM_ST_DATE_ENTRETIEN(indiceEae),
 						eae.getDateEntretien() == null ? "&nbsp;" : sdf.format(eae.getDateEntretien()));
 				addZone(getNOM_ST_SERVICE(indiceEae), eaeFDP == null ? "&nbsp;"
-						: eaeFDP.getServiceServ() == null ? "&nbsp;" : eaeFDP.getServiceServ());
+						: eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService());
 				addZone(getNOM_ST_STATUT(indiceEae), EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()));
 
 				indiceEae++;
@@ -727,7 +727,7 @@ public class OeAGENTEae extends BasicProcess {
 		// Alim zone Informations
 		addZone(getNOM_ST_DATE_ENTRETIEN(),
 				eae.getDateEntretien() == null ? "non renseigné" : sdf.format(eae.getDateEntretien()));
-		ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
+		ArrayList<EaeEvaluateur> listeEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEae());
 		setListeEvaluateurEae(listeEvaluateur);
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
 			EaeEvaluateur eval = listeEvaluateur.get(j);
@@ -739,14 +739,14 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné"
 					: eval.getFonction());
 		}
-		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEAE(), true);
-		String direction = eaeFDP.getDirectionServ() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionServ();
-		String serv = eaeFDP.getServiceServ() == null ? Const.CHAINE_VIDE : eaeFDP.getServiceServ();
+		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
+		String direction = eaeFDP.getDirectionService() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionService();
+		String serv = eaeFDP.getService() == null ? Const.CHAINE_VIDE : eaeFDP.getService();
 		addZone(getNOM_ST_SERVICE(), direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;"
 				: serv : direction + " / " + serv);
 
 		// Alim zone evaluation
-		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
+		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEae());
 		if (evaluation == null) {
 			addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_NIVEAU(), "non renseigné");
@@ -763,20 +763,20 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 		} else {
 			// commentaire de l'evaluateur
-			if (evaluation.getIdCommEvaluateur() != null) {
+			if (evaluation.getIdEaeCommEvaluateur() != null) {
 				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-						evaluation.getIdCommEvaluateur());
+						evaluation.getIdEaeCommEvaluateur());
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(),
-						commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getCommentaire());
+						commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getText());
 			} else {
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			}
 			// commentaire de l'evaluateur sur le rapport circonstancié
-			if (evaluation.getIdCommAvctEvaluateur() != null) {
+			if (evaluation.getIdEaeCommAvctEvaluateur() != null) {
 				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-						evaluation.getIdCommAvctEvaluateur());
+						evaluation.getIdEaeCommAvctEvaluateur());
 				addZone(getNOM_ST_RAPPORT_CIRCON(),
-						commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getCommentaire());
+						commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getText());
 			} else {
 				addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 			}
@@ -861,7 +861,7 @@ public class OeAGENTEae extends BasicProcess {
 		}
 
 		// alim zone plan action
-		ArrayList<EaePlanAction> listeObjectifPro = getEaePlanActionDao().listerPlanActionParType(eae.getIdEAE(), 1);
+		ArrayList<EaePlanAction> listeObjectifPro = getEaePlanActionDao().listerPlanActionParType(eae.getIdEae(), 1);
 		setListeObjectifPro(listeObjectifPro);
 		for (int j = 0; j < listeObjectifPro.size(); j++) {
 			EaePlanAction plan = listeObjectifPro.get(j);
@@ -870,7 +870,7 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_LIB_MESURE_PRO(j), plan.getMesure());
 		}
 
-		ArrayList<EaePlanAction> listeObjectifIndi = getEaePlanActionDao().listerPlanActionParType(eae.getIdEAE(), 2);
+		ArrayList<EaePlanAction> listeObjectifIndi = getEaePlanActionDao().listerPlanActionParType(eae.getIdEae(), 2);
 		setListeObjectifIndi(listeObjectifIndi);
 		for (int j = 0; j < listeObjectifIndi.size(); j++) {
 			EaePlanAction plan = listeObjectifIndi.get(j);
@@ -880,12 +880,12 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Alim zone Evolution
 		try {
-			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
-			if (evolution.getIdComEvolution() != null) {
+			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEae());
+			if (evolution.getIdEaeComEvolution() != null) {
 				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(
-						evolution.getIdComEvolution());
+						evolution.getIdEaeComEvolution());
 				addZone(getNOM_ST_COM_EVOLUTION(),
-						commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getCommentaire());
+						commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getText());
 			} else {
 				addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 			}
@@ -980,7 +980,7 @@ public class OeAGENTEae extends BasicProcess {
 			}
 			// Horaire tempsPart = Horaire.chercherHoraire(getTransaction(),
 			// evolution.getIdSpbhorTpsPartiel().toString());
-			Horaire tempsPart = (Horaire) getHashHoraire().get(evolution.getIdSpbhorTpsPartiel().toString());
+			Horaire tempsPart = (Horaire) getHashHoraire().get(evolution.getTempsPartielIdSpbhor().toString());
 			if (tempsPart != null) {
 				Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
 				int ligneHoraire = getListeHoraire().indexOf(tempsPart);
@@ -1373,7 +1373,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Récup de l'EAE courant
 		EAE eae = (EAE) getListeEae().get(indiceEltAVisualiser);
-		String finalisation = getEaeFinalisationDao().chercherDernierDocumentFinalise(eae.getIdEAE());
+		String finalisation = getEaeFinalisationDao().chercherDernierDocumentFinalise(eae.getIdEae());
 		// on affiche le document
 		setURLFichier(getScriptOuverture(repertoireStockage + finalisation));
 
@@ -2240,7 +2240,7 @@ public class OeAGENTEae extends BasicProcess {
 				return false;
 
 			EAE eae = getEaeCourant();
-			if (eae != null && eae.getIdEAE() != null) {
+			if (eae != null && eae.getIdEae() != null) {
 				performSauvegardeEvaluation(request, eae);
 				if (!performSauvegardeEvolution(request, eae)) {
 					// "ERR164",
@@ -2267,12 +2267,12 @@ public class OeAGENTEae extends BasicProcess {
 		/************* PARTIE EVOLUTION **********************/
 		EaeEvolution evolution = null;
 		try {
-			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEae());
 		} catch (Exception e) {
 			evolution = new EaeEvolution();
-			evolution.setIdEae(eae.getIdEAE());
+			evolution.setIdEae(eae.getIdEae());
 			getEaeEvolutionDao().creerEaeEvolution(evolution);
-			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+			evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEae());
 		}
 
 		// Mobilités
@@ -2401,16 +2401,16 @@ public class OeAGENTEae extends BasicProcess {
 				evolution.getDateRetraite());
 
 		// commentaire de l'evolution
-		if (evolution.getIdComEvolution() != null && evolution.getIdComEvolution() != 0) {
-			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdComEvolution());
-			commEvolution.setCommentaire(getVAL_ST_COM_EVOLUTION());
-			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommenatire(),
-					commEvolution.getCommentaire());
+		if (evolution.getIdEaeComEvolution() != null && evolution.getIdEaeComEvolution() != 0) {
+			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdEaeComEvolution());
+			commEvolution.setText(getVAL_ST_COM_EVOLUTION());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommentaire(),
+					commEvolution.getText());
 		} else {
 			if (!getVAL_ST_COM_EVOLUTION().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
-				comm.setCommentaire(getVAL_ST_COM_EVOLUTION());
-				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				comm.setText(getVAL_ST_COM_EVOLUTION());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getText());
 				getEaeEvolutionDao().modifierCommentaireEaeEvaluation(evolution.getIdEaeEvolution(), idCree);
 			}
 		}
@@ -2419,27 +2419,27 @@ public class OeAGENTEae extends BasicProcess {
 		int numLigneBH = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_SELECT())) : -1);
 		Horaire horaire = numLigneBH > 0 ? (Horaire) getListeHoraire().get(numLigneBH - 1) : null;
-		evolution.setIdSpbhorTpsPartiel(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
+		evolution.setTempsPartielIdSpbhor(horaire == null ? null : Integer.valueOf(horaire.getCdtHor()));
 		getEaeEvolutionDao().modifierPourcTpsPartielEaeEvolution(evolution.getIdEaeEvolution(),
-				evolution.getIdSpbhorTpsPartiel());
+				evolution.getTempsPartielIdSpbhor());
 		return true;
 
 	}
 
 	private void performSauvegardeEvaluation(HttpServletRequest request, EAE eae) throws Exception {
 		/************* PARTIE EVALUATION **********************/
-		EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEAE());
+		EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEae());
 		// commentaire de l'evaluateur
-		if (eval.getIdCommEvaluateur() != null && eval.getIdCommEvaluateur() != 0) {
-			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdCommEvaluateur());
-			commEvaluateur.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
-			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommenatire(),
-					commEvaluateur.getCommentaire());
+		if (eval.getIdEaeCommEvaluateur() != null && eval.getIdEaeCommEvaluateur() != 0) {
+			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdEaeCommEvaluateur());
+			commEvaluateur.setText(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommentaire(),
+					commEvaluateur.getText());
 		} else {
 			if (!getVAL_ST_COMMENTAIRE_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
-				comm.setCommentaire(getVAL_ST_COMMENTAIRE_EVALUATEUR());
-				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				comm.setText(getVAL_ST_COMMENTAIRE_EVALUATEUR());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getText());
 				getEaeEvaluationDao().modifierCommentaireEvaluateurEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
 			}
 		}
@@ -2508,17 +2508,17 @@ public class OeAGENTEae extends BasicProcess {
 		getEaeEvaluationDao().modifierRevaloEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisRevalorisation());
 
 		// rapport circonstancié de l'evaluateur
-		if (eval.getIdCommAvctEvaluateur() != null && eval.getIdCommAvctEvaluateur() != 0) {
+		if (eval.getIdEaeCommAvctEvaluateur() != null && eval.getIdEaeCommAvctEvaluateur() != 0) {
 			EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-					eval.getIdCommAvctEvaluateur());
-			commAvctEvaluateur.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
-			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommenatire(),
-					commAvctEvaluateur.getCommentaire());
+					eval.getIdEaeCommAvctEvaluateur());
+			commAvctEvaluateur.setText(getVAL_ST_RAPPORT_CIRCON());
+			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommentaire(),
+					commAvctEvaluateur.getText());
 		} else {
 			if (!getVAL_ST_RAPPORT_CIRCON().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
-				comm.setCommentaire(getVAL_ST_RAPPORT_CIRCON());
-				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getCommentaire());
+				comm.setText(getVAL_ST_RAPPORT_CIRCON());
+				Integer idCree = getEaeCommentaireDao().creerEaeCommentaire(comm.getText());
 				getEaeEvaluationDao().modifierRapportCirconstancieEaeEvaluation(eval.getIdEaeEvaluation(), idCree);
 			}
 		}
@@ -3257,7 +3257,7 @@ public class OeAGENTEae extends BasicProcess {
 				return false;
 			}
 			EaePlanAction planActionIndi = new EaePlanAction();
-			planActionIndi.setIdEae(eae.getIdEAE());
+			planActionIndi.setIdEae(eae.getIdEae());
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
 			planActionIndi.setMesure(null);
 			planActionIndi.setIdTypeObjectif(2);
@@ -3487,7 +3487,7 @@ public class OeAGENTEae extends BasicProcess {
 				return false;
 			}
 			EaePlanAction planActionPro = new EaePlanAction();
-			planActionPro.setIdEae(eae.getIdEAE());
+			planActionPro.setIdEae(eae.getIdEae());
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
 			planActionPro.setIdTypeObjectif(1);
@@ -3682,7 +3682,7 @@ public class OeAGENTEae extends BasicProcess {
 			if (!performControlerChampDev(request)) {
 				return false;
 			}
-			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEAE());
+			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEae());
 			EaeDeveloppement dev = new EaeDeveloppement();
 			dev.setIdEaeEvolution(evolution.getIdEaeEvolution());
 			dev.setLibelleDeveloppement(getVAL_ST_LIB_DEV());
@@ -4041,7 +4041,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<EaeFinalisation> listeDocAgent = getEaeFinalisationDao().listerDocumentFinalise(
-				getEaeCourant().getIdEAE());
+				getEaeCourant().getIdEae());
 		setListeDocuments(listeDocAgent);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -4270,12 +4270,12 @@ public class OeAGENTEae extends BasicProcess {
 			getTransaction().declarerErreur("Err : le nom de fichier est incorrect");
 			return false;
 		}
-		ArrayList<EaeEvaluateur> premierEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEAE());
+		ArrayList<EaeEvaluateur> premierEvaluateur = getEaeEvaluateurDao().listerEvaluateurEAE(eae.getIdEae());
 		Integer numIncrement = getEaeNumIncrementDocumentDao().chercherEaeNumIncrement();
 
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
-		String nom = "EAE_" + premierEvaluateur.get(0).getIdAgent() + "_" + eae.getIdEAE() + "_"
+		String nom = "EAE_" + premierEvaluateur.get(0).getIdAgent() + "_" + eae.getIdEae() + "_"
 				+ numIncrement.toString() + extension;
 
 		// on upload le fichier

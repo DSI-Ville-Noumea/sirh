@@ -228,10 +228,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 						Integer.valueOf(getAnneeSelect()));
 				// on cherche l'eae correspondant ainsi que l'eae evaluation
 				EAE eaeAgent = getEaeDao().chercherEAEAgent(Integer.valueOf(av.getIdAgent()),
-						campagneEAE.getIdCampagneEAE());
+						campagneEAE.getIdCampagneEae());
 				if (eaeAgent.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())
 						|| eaeAgent.getEtat().equals(EnumEtatEAE.FINALISE.getCode())) {
-					EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEAE());
+					EaeEvaluation eaeEvaluation = getEaeEvaluationDao().chercherEaeEvaluation(eaeAgent.getIdEae());
 					if (av.getIdMotifAvct().equals("7")) {
 						avisSHD = eaeEvaluation.getPropositionAvancement() == null ? Const.CHAINE_VIDE : eaeEvaluation
 								.getPropositionAvancement();

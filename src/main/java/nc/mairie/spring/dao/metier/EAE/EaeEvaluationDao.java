@@ -3,9 +3,9 @@ package nc.mairie.spring.dao.metier.EAE;
 import javax.sql.DataSource;
 
 import nc.mairie.metier.Const;
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvaluationRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
@@ -47,7 +47,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
 		EaeEvaluation eval = null;
 		try {
-			eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvaluationRowMapper());
+			eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new BeanPropertyRowMapper<EaeEvaluation>(EaeEvaluation.class));
 
 		} catch (Exception e) {
 		}

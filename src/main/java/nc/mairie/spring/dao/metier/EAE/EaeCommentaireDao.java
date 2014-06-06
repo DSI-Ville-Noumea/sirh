@@ -2,9 +2,9 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeCommentaireRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeCommentaire;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
@@ -33,7 +33,8 @@ public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE_COMMENTAIRE + " = ? ";
 		EaeCommentaire comm = null;
 		try {
-			comm = (EaeCommentaire) jdbcTemplate.queryForObject(sql, new Object[] { idEaeCommentaire }, new EaeCommentaireRowMapper());
+			comm = (EaeCommentaire) jdbcTemplate.queryForObject(sql, new Object[] { idEaeCommentaire }, 
+					new BeanPropertyRowMapper<EaeCommentaire>(EaeCommentaire.class));
 
 		} catch (Exception e) {
 		}

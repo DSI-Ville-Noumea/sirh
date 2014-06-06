@@ -8,9 +8,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.CampagneActionRowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneAction;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneActionDao implements CampagneActionDaoInterface {
@@ -53,7 +53,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());
 			BigDecimal idCamp = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			camp.setIdCampagneEAE(idCamp.intValue());
+			camp.setIdCampagneEae(idCamp.intValue());
 			camp.setNomAction((String) row.get(CHAMP_NOM_ACTION));
 			camp.setMessage((String) row.get(CHAMP_MESSAGE));
 			camp.setDateTransmission((Date) row.get(CHAMP_DATE_TRANSMISSION));
@@ -72,7 +72,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 	public CampagneAction chercherCampagneAction(Integer idCampagneAction) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_ACTION + " = ? ";
 
-		CampagneAction camp = (CampagneAction) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneAction }, new CampagneActionRowMapper());
+		CampagneAction camp = (CampagneAction) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneAction }, new BeanPropertyRowMapper<CampagneAction>(CampagneAction.class));
 
 		return camp;
 	}
@@ -106,7 +106,7 @@ public class CampagneActionDao implements CampagneActionDaoInterface {
 			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(id.intValue());
 			BigDecimal idCamp = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			camp.setIdCampagneEAE(idCamp.intValue());
+			camp.setIdCampagneEae(idCamp.intValue());
 			camp.setNomAction((String) row.get(CHAMP_NOM_ACTION));
 			camp.setMessage((String) row.get(CHAMP_MESSAGE));
 			camp.setDateTransmission((Date) row.get(CHAMP_DATE_TRANSMISSION));

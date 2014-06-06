@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeDocumentRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeDocumentDao implements EaeDocumentDaoInterface {
@@ -52,7 +52,7 @@ public class EaeDocumentDao implements EaeDocumentDaoInterface {
 	@Override
 	public EaeDocument chercherEaeDocument(Integer idDocument) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_DOCUMENT + " = ? ";
-		EaeDocument doc = (EaeDocument) jdbcTemplate.queryForObject(sql, new Object[] { idDocument }, new EaeDocumentRowMapper());
+		EaeDocument doc = (EaeDocument) jdbcTemplate.queryForObject(sql, new Object[] { idDocument }, new BeanPropertyRowMapper<EaeDocument>(EaeDocument.class));
 		return doc;
 	}
 

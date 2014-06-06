@@ -150,7 +150,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 			CampagneEAE campEnCours = getCampagneEAEDao().chercherCampagneEAEOuverte();
 			// on determine les section différentes
 			ArrayList<EaeFichePoste> listeDirectionSection = getEaeFichePosteDao().listerEaeFichePosteGrouperParDirectionSection(
-					campEnCours.getIdCampagneEAE());
+					campEnCours.getIdCampagneEae());
 			Integer nbNonAff = 0;
 			Integer nbNonDeb = 0;
 			Integer nbCree = 0;
@@ -168,49 +168,49 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 				EaeFichePoste eaeFDP = listeDirectionSection.get(i);
 				// on cherche la liste des EAE pour cette direction et section
 				// et par etat
-				Integer nbEAENonAffecte = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.NON_AFFECTE.getCode());
+				Integer nbEAENonAffecte = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.NON_AFFECTE.getCode());
 				nbNonAff += nbEAENonAffecte;
-				Integer nbEAENonDebute = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.NON_DEBUTE.getCode());
+				Integer nbEAENonDebute = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.NON_DEBUTE.getCode());
 				nbNonDeb += nbEAENonDebute;
-				Integer nbEAECRee = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.CREE.getCode());
+				Integer nbEAECRee = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.CREE.getCode());
 				nbCree += nbEAECRee;
-				Integer nbEAEEnCours = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.EN_COURS.getCode());
+				Integer nbEAEEnCours = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.EN_COURS.getCode());
 				nbEnCours += nbEAEEnCours;
-				Integer nbEAEFinalise = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.FINALISE.getCode());
+				Integer nbEAEFinalise = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.FINALISE.getCode());
 				nbFinalise += nbEAEFinalise;
-				Integer nbEAEControle = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), EnumEtatEAE.CONTROLE.getCode());
+				Integer nbEAEControle = getEaeDao().compterEAEDirectionSectionEtat(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), EnumEtatEAE.CONTROLE.getCode());
 				nbControle += nbEAEControle;
-				Integer nbEAECAP = getEaeDao().compterEAEDirectionSectionCAP(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ());
+				Integer nbEAECAP = getEaeDao().compterEAEDirectionSectionCAP(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService());
 				nbCAP += nbEAECAP;
 				Integer totalEAE = nbEAENonAffecte + nbEAENonDebute + nbEAECRee + nbEAEEnCours + nbEAEFinalise + nbEAEControle;
 				nbTotalEae += totalEAE;
 
 				// on cherche les propositions d'avancement
-				Integer nbAvctNonDefini = getEaeEvaluationDao().compterAvisSHDNonDefini(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ());
+				Integer nbAvctNonDefini = getEaeEvaluationDao().compterAvisSHDNonDefini(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService());
 				nbNonDef += nbAvctNonDefini;
-				Integer nbAvctMini = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), "MINI");
+				Integer nbAvctMini = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), "MINI");
 				nbMini += nbAvctMini;
-				Integer nbAvctMoy = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), "MOY");
+				Integer nbAvctMoy = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), "MOY");
 				nbMoy += nbAvctMoy;
-				Integer nbAvctMAxi = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEAE(), eaeFDP.getDirectionServ(),
-						eaeFDP.getSectionServ(), "MAXI");
+				Integer nbAvctMAxi = getEaeEvaluationDao().compterAvisSHDAvct(campEnCours.getIdCampagneEae(), eaeFDP.getDirectionService(),
+						eaeFDP.getSectionService(), "MAXI");
 				nbMaxi += nbAvctMAxi;
-				Integer nbAvctChangementClasse = getEaeEvaluationDao().compterAvisSHDChangementClasse(campEnCours.getIdCampagneEAE(),
-						eaeFDP.getDirectionServ(), eaeFDP.getSectionServ());
+				Integer nbAvctChangementClasse = getEaeEvaluationDao().compterAvisSHDChangementClasse(campEnCours.getIdCampagneEae(),
+						eaeFDP.getSectionService(), eaeFDP.getSectionService());
 				nbChangementClasse += nbAvctChangementClasse;
 
-				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirectionServ());
-				addZone(getNOM_ST_SECTION(i), eaeFDP.getSectionServ());
+				addZone(getNOM_ST_DIRECTION(i), eaeFDP.getDirectionService());
+				addZone(getNOM_ST_SECTION(i), eaeFDP.getSectionService());
 				addZone(getNOM_ST_NON_AFF(i), nbEAENonAffecte == 0 ? "&nbsp;" : nbEAENonAffecte.toString());
 				addZone(getNOM_ST_NON_DEB(i), nbEAENonDebute == 0 ? "&nbsp;" : nbEAENonDebute.toString());
 				addZone(getNOM_ST_CREE(i), nbEAECRee == 0 ? "&nbsp;" : nbEAECRee.toString());

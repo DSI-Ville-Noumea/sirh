@@ -11,11 +11,11 @@ import javax.sql.DataSource;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.dao.mapper.metier.EAE.EAERowMapper;
 import nc.mairie.spring.domain.metier.EAE.EAE;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EAEDao implements EAEDaoInterface {
@@ -64,14 +64,14 @@ public class EAEDao implements EAEDaoInterface {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEAE(idEAE.intValue());
+			eae.setIdEae(idEAE.intValue());
 			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEAE(idCampEAE.intValue());
+			eae.setIdCampagneEae(idCampEAE.intValue());
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
 			eae.setCap(cap.intValue() == 0 ? false : true);
 			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocumentAttache(document.intValue() == 0 ? false : true);
+			eae.setDocAttache(document.intValue() == 0 ? false : true);
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
@@ -102,7 +102,7 @@ public class EAEDao implements EAEDaoInterface {
 				+ CHAMP_ID_CAMPAGNE_EAE + "=?";
 		try {
 			EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, idCampagneEAE },
-					new EAERowMapper());
+					new BeanPropertyRowMapper<EAE>(EAE.class));
 			return eae;
 		} catch (Exception e) {
 			logger.debug("Aucun EAE trouvé pour l'agent " + idAgent.toString() + " pour la campagne id="
@@ -188,14 +188,14 @@ public class EAEDao implements EAEDaoInterface {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEAE(idEAE.intValue());
+			eae.setIdEae(idEAE.intValue());
 			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEAE(idCampEAE.intValue());
+			eae.setIdCampagneEae(idCampEAE.intValue());
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
 			eae.setCap(cap.intValue() == 0 ? false : true);
 			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocumentAttache(document.intValue() == 0 ? false : true);
+			eae.setDocAttache(document.intValue() == 0 ? false : true);
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
@@ -259,14 +259,14 @@ public class EAEDao implements EAEDaoInterface {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
 			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEAE(idEAE.intValue());
+			eae.setIdEae(idEAE.intValue());
 			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEAE(idCampEAE.intValue());
+			eae.setIdCampagneEae(idCampEAE.intValue());
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
 			eae.setCap(cap.intValue() == 0 ? false : true);
 			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocumentAttache(document.intValue() == 0 ? false : true);
+			eae.setDocAttache(document.intValue() == 0 ? false : true);
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
@@ -352,7 +352,7 @@ public class EAEDao implements EAEDaoInterface {
 	@Override
 	public EAE chercherEAE(Integer idEae) {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
-		EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new EAERowMapper());
+		EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new BeanPropertyRowMapper<EAE>(EAE.class));
 		return eae;
 	}
 }

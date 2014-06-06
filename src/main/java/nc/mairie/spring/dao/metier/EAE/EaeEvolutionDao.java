@@ -4,9 +4,9 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.EaeEvolutionRowMapper;
 import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
@@ -54,7 +54,7 @@ public class EaeEvolutionDao implements EaeEvolutionDaoInterface {
 	@Override
 	public EaeEvolution chercherEaeEvolution(Integer idEAE) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? ";
-		EaeEvolution evol = (EaeEvolution) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new EaeEvolutionRowMapper());
+		EaeEvolution evol = (EaeEvolution) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new BeanPropertyRowMapper<EaeEvolution>(EaeEvolution.class));
 
 		return evol;
 	}

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.diplome.PermisAgentRowMapper;
 import nc.mairie.spring.domain.metier.diplome.PermisAgent;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class PermisAgentDao implements PermisAgentDaoInterface {
@@ -75,7 +75,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 					+ CHAMP_DATE_OBTENTION + "=?";
 
 			PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idPermis, idAgent,
-					dateObtention }, new PermisAgentRowMapper());
+					dateObtention }, new BeanPropertyRowMapper<PermisAgent>(PermisAgent.class));
 
 			return perm.getIdPermisAgent();
 		} else {
@@ -84,7 +84,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 					+ "=?";
 
 			PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idPermis, idAgent,
-					dureePermis, uniteDuree, dateObtention }, new PermisAgentRowMapper());
+					dureePermis, uniteDuree, dateObtention }, new BeanPropertyRowMapper<PermisAgent>(PermisAgent.class));
 
 			return perm.getIdPermisAgent();
 		}

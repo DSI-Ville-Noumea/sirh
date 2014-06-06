@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.diplome.FormationAgentRowMapper;
 import nc.mairie.spring.domain.metier.diplome.FormationAgent;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class FormationAgentDao implements FormationAgentDaoInterface {
@@ -79,7 +79,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 
 		FormationAgent form = (FormationAgent) jdbcTemplate
 				.queryForObject(sqlId, new Object[] { idTitreFormation, idCentreFormation, idAgent, dureeFormation,
-						uniteDuree, anneeFormation }, new FormationAgentRowMapper());
+						uniteDuree, anneeFormation }, new BeanPropertyRowMapper<FormationAgent>(FormationAgent.class));
 
 		return form.getIdFormation();
 	}

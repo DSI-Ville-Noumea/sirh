@@ -159,7 +159,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		if (indiceCampagne > -1 && !getListeCampagneEAE().isEmpty()) {
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
-			ArrayList<CampagneAction> listeAction = getCampagneActionDao().listerCampagneActionPourCampagne(getCampagneCourante().getIdCampagneEAE());
+			ArrayList<CampagneAction> listeAction = getCampagneActionDao().listerCampagneActionPourCampagne(getCampagneCourante().getIdCampagneEae());
 			setListeAction(listeAction);
 
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -168,7 +168,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			for (int i = 0; i < getListeAction().size(); i++) {
 				CampagneAction action = (CampagneAction) getListeAction().get(i);
 				// calcul du nb de docs
-				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(action.getIdCampagneEAE(), action.getIdCampagneAction(),
+				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(action.getIdCampagneEae(), action.getIdCampagneAction(),
 						"ACT");
 				int nbDoc = 0;
 				if (listeDocCamp != null) {
@@ -619,7 +619,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 				// Création
 				Integer idAction = getCampagneActionDao().creerCampagneAction(getActionCourante().getNomAction(), getActionCourante().getMessage(),
 						getActionCourante().getDateTransmission(), getActionCourante().getDateAFaireLe(), getActionCourante().getDateFaitLe(),
-						getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(), getCampagneCourante().getIdCampagneEAE());
+						getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(), getCampagneCourante().getIdCampagneEae());
 				getActionCourante().setIdCampagneAction(idAction);
 			}
 			if (getTransaction().isErreur())
@@ -1260,7 +1260,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			CampagneActeur acteur = getCampagneActeurDao().chercherCampagneActeur(getActionCourante().getIdCampagneAction(),
 					Integer.valueOf(a.getIdAgent()));
 			if (acteur != null) {
-				getCampagneActeurDao().supprimerCampagneActeur(acteur.getIdCampagneActeur());
+				getCampagneActeurDao().supprimerCampagneActeur(acteur.getIdCampagneActeurs());
 			}
 		} else {
 			if (getListeDestinataireMulti().contains(a)) {
@@ -1621,7 +1621,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		// Recherche des documents de la campagne
 
-		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(getCampagneCourante().getIdCampagneEAE(),
+		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(getCampagneCourante().getIdCampagneEae(),
 				getActionCourante().getIdCampagneAction(), "ACT");
 		setListeDocuments(new ArrayList<Document>());
 		for (int i = 0; i < listeDoc.size(); i++) {
@@ -1808,7 +1808,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
-		String nom = codTypeDoc.toUpperCase() + "_" + camp.getIdCampagneEAE() + "_" + dateJour + extension;
+		String nom = codTypeDoc.toUpperCase() + "_" + camp.getIdCampagneEae() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
@@ -1830,7 +1830,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		getDocumentCourant().creerDocument(getTransaction());
 
 		setLienEaeDocument(new EaeDocument());
-		getLienEaeDocument().setIdCampagneEae(camp.getIdCampagneEAE());
+		getLienEaeDocument().setIdCampagneEae(camp.getIdCampagneEae());
 		getLienEaeDocument().setIdDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
 		getLienEaeDocument().setTypeDocument(codTypeDoc);
 		getLienEaeDocument().setIdCampagneAction(getActionCourante().getIdCampagneAction());

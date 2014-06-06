@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.EAE.CampagneActeurRowMapper;
 import nc.mairie.spring.domain.metier.EAE.CampagneActeur;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CampagneActeurDao implements CampagneActeurDaoInterface {
@@ -50,7 +50,7 @@ public class CampagneActeurDao implements CampagneActeurDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_ACTION + " = ? and " + CHAMP_ID_AGENT + "=?";
 
 		CampagneActeur acteur = (CampagneActeur) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneAction, idAgent },
-				new CampagneActeurRowMapper());
+				new BeanPropertyRowMapper<CampagneActeur>(CampagneActeur.class));
 
 		return acteur;
 	}
@@ -72,7 +72,7 @@ public class CampagneActeurDao implements CampagneActeurDaoInterface {
 			CampagneActeur camp = new CampagneActeur();
 			logger.info("List Campagne Acteur : " + row.toString());
 			BigDecimal idCampActeur = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTEUR);
-			camp.setIdCampagneActeur(idCampActeur.intValue());
+			camp.setIdCampagneActeurs(idCampActeur.intValue());
 			BigDecimal idCampAction = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_ACTION);
 			camp.setIdCampagneAction(idCampAction.intValue());
 			BigDecimal idAgent = (BigDecimal) row.get(CHAMP_ID_AGENT);

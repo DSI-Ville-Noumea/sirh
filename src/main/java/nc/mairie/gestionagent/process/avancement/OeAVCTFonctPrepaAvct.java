@@ -497,10 +497,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 					// on regarde si il y a une ligne dans EAE
 					try {
 						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
-								campagne.getIdCampagneEAE());
+								campagne.getIdCampagneEae());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à true;
-							getEAEDao().modifierCAP(eaeAgentAnne.getIdEAE(), true);
+							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), true);
 						}
 					} catch (Exception e) {
 						// il n'y a pas de ligne dans EAE
@@ -531,10 +531,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 					// on regarde si il y a une ligne dans EAE
 					try {
 						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
-								campagne.getIdCampagneEAE());
+								campagne.getIdCampagneEae());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à false;
-							getEAEDao().modifierCAP(eaeAgentAnne.getIdEAE(), false);
+							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), false);
 						}
 					} catch (Exception e) {
 						// il n'y a pas de ligne dans EAE
