@@ -66,7 +66,7 @@ function reduireHierarchy() {
 			<%
 			for (int j = 0;j<process.getListeEAE().size();j++){
 				EAE eae = process.getListeEAE().get(j);
-				Integer i = eae.getIdEAE();
+				Integer i = eae.getIdEae();
 			%>
 			var box = document.formu.elements['NOM_CK_VALID_MAJ_'+<%=i %>];  		
 	  		if(document.formu.elements['CHECK_ALL_MAJ'].checked ){
@@ -188,8 +188,8 @@ function reduireHierarchy() {
 				<tbody>
 				<%for (int i = 0;i<process.getListeEAE().size();i++){
 				EAE eae = process.getListeEAE().get(i);
-				Integer indiceAvct = eae.getIdEAE();
-				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEAE());
+				Integer indiceAvct = eae.getIdEae();
+				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
 				%>
 						<tr>
 							<td width="30px;" ><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
@@ -197,11 +197,11 @@ function reduireHierarchy() {
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
 							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
-							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentAffecte() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
+							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
 							<td><%=process.getVAL_ST_DELEGATAIRE(indiceAvct)%>
-							<%if(!eaeEvalue.isAgentAffecte()){ %>							
+							<%if(!eaeEvalue.isAgentDetache()){ %>							
 								<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte()&& !eae.getEtat().equals(EnumEtatEAE.NON_AFFECTE.getCode())&&!eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 									<br/>
 									<%if(eae.getIdDelegataire()==null){ %>

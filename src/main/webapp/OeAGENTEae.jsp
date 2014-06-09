@@ -81,7 +81,7 @@
 					    					<%if((aUser.getUserName().equals("chata73")||aUser.getUserName().equals("nicno85")) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 												<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
 					    					<%}else{ %>
-												<%if(!process.isCampagneOuverte(eae.getIdCampagneEAE()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
+												<%if(!process.isCampagneOuverte(eae.getIdCampagneEae()) && eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())){ %>
 													<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceEae)%>">
 						    					<%} %>
 					    					<%} %>									
@@ -111,29 +111,29 @@
 						<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CONSULTATION) ){ %>
 						<div style="margin-left:10px;text-align:left;width:980px" align="left">
 							<% if (process.onglet.equals("ONGLET1")) {%>
-								<span id="titreOngletInformations" class="OngletActif" onclick="afficheOnglet('ONGLET1');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletInformations" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletInformations" class="OngletInactif" onclick="afficheOnglet('ONGLET1');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletInformations" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET3")) {%>
-								<span id="titreOngletEvaluation" class="OngletActif" onclick="afficheOnglet('ONGLET3');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvaluation" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletEvaluation" class="OngletInactif" onclick="afficheOnglet('ONGLET3');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvaluation" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET4")) {%>
-								<span id="titreOngletPlanAction" class="OngletActif" onclick="afficheOnglet('ONGLET4');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletPlanAction" class="OngletActif" onclick="afficheOnglet('ONGLET4');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletPlanAction" class="OngletInactif" onclick="afficheOnglet('ONGLET4');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletPlanAction" class="OngletInactif" onclick="afficheOnglet('ONGLET4');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET5")) {%>
-								<span id="titreOngletEvolution" class="OngletActif" onclick="afficheOnglet('ONGLET5');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvolution" class="OngletActif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						
@@ -359,29 +359,29 @@
 						<%}else if (process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_INDI)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_OBJ_PRO)||process.getVAL_ST_ACTION().equals(process.ACTION_AJOUT_DEV)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION_DEV)||process.getVAL_ST_ACTION().equals(process.ACTION_SUPPRESSION_DEV)){%>
 						<div style="margin-left:10px;margin-top:20px;text-align:left;width:900px" align="left">
 							<% if (process.onglet.equals("ONGLET1")) {%>
-								<span id="titreOngletInformations" class="OngletActif" onclick="afficheOnglet('ONGLET1');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletInformations" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletInformations" class="OngletInactif" onclick="afficheOnglet('ONGLET1');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletInformations" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Informations&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET3")) {%>
-								<span id="titreOngletEvaluation" class="OngletActif" onclick="afficheOnglet('ONGLET3');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvaluation" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletEvaluation" class="OngletInactif" onclick="afficheOnglet('ONGLET3');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvaluation" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Evaluation&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET4")) {%>
-								<span id="titreOngletPlanAction" class="OngletActif" onclick="afficheOnglet('ONGLET4');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletPlanAction" class="OngletActif" onclick="afficheOnglet('ONGLET4');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletPlanAction" class="OngletInactif" onclick="afficheOnglet('ONGLET4');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletPlanAction" class="OngletInactif" onclick="afficheOnglet('ONGLET4');">&nbsp;Plan d'action&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET5")) {%>
-								<span id="titreOngletEvolution" class="OngletActif" onclick="afficheOnglet('ONGLET5');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvolution" class="OngletActif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletEvolution" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Evolution&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 							<% if (process.onglet.equals("ONGLET6")) {%>
-								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletActif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% }else {%>
-								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');executeBouton('<%=process.getNOM_PB_RESET()%>');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
+								<span id="titreOngletDeveloppement" class="OngletInactif" onclick="afficheOnglet('ONGLET6');">&nbsp;Développement&nbsp;</span>&nbsp;&nbsp;
 							<% } %>
 						</div>
 						

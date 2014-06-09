@@ -4643,4 +4643,18 @@ public class OeAGENTEae extends BasicProcess {
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
+	
+	/**
+	 * Process incoming requests for information
+	 * 
+	 * @param request Object that encapsulates the request to the servlet 
+	 */
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
+		
+		if(super.recupererOnglet(request)){
+			performPB_RESET(request);
+			return true;
+		}
+		return false;
+	}
 }
