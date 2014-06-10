@@ -252,7 +252,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			for (ListIterator<Cap> list = getListeCap().listIterator(); list.hasNext();) {
 				Cap cap = (Cap) list.next();
 				String ligne[] = { cap.getCodeCap(), cap.getTypeCap(), cap.getRefCap(),
-						cap.getCapVDN() == 1 ? "oui" : "non" };
+						cap.getCapVdn() == 1 ? "oui" : "non" };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -1912,7 +1912,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
-			addZone(getNOM_ST_CAP_VDN(), cap.getCapVDN().toString().equals("1") ? "Oui" : "Non");
+			addZone(getNOM_ST_CAP_VDN(), cap.getCapVdn().toString().equals("1") ? "Oui" : "Non");
 
 			// on affiche la liste des employeurs CAP
 			ArrayList<EmployeurCap> listeEmpCap = getEmployeurCapDao().listerEmployeurCapParCap(
@@ -2014,20 +2014,20 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 				getCapCourant().setDescription(getVAL_EF_DESCRIPTION_CAP());
 				getCapCourant().setTypeCap(typeCap);
 				// on recupere le CAP VDN
-				getCapCourant().setCapVDN(getVAL_RG_CAP_VDN().equals(getNOM_RB_CAP_VDN_O()) ? 1 : 0);
+				getCapCourant().setCapVdn(getVAL_RG_CAP_VDN().equals(getNOM_RB_CAP_VDN_O()) ? 1 : 0);
 				Cap capAjoute = null;
 				if (getVAL_ST_ACTION_CAP().equals(ACTION_CREATION)) {
 					getCapDao()
 							.creerCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap(),
 									getCapCourant().getDescription(), getCapCourant().getTypeCap(),
-									getCapCourant().getCapVDN());
+									getCapCourant().getCapVdn());
 					capAjoute = getCapDao().chercherCap(getCapCourant().getCodeCap(), getCapCourant().getRefCap());
 				} else {
 					// modification
 					capAjoute = getCapCourant();
 					getCapDao().modifierCap(getCapCourant().getIdCap(), getCapCourant().getCodeCap(),
 							getCapCourant().getRefCap(), getCapCourant().getDescription(),
-							getCapCourant().getTypeCap(), getCapCourant().getCapVDN());
+							getCapCourant().getTypeCap(), getCapCourant().getCapVdn());
 
 					// on supprime les corps liés
 					getCorpsCapDao().supprimerCorpsCapParCap(getCapCourant().getIdCap());
@@ -2397,7 +2397,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			addZone(getNOM_EF_CODE_CAP(), cap.getCodeCap());
 			addZone(getNOM_EF_REF_CAP(), cap.getRefCap());
 			addZone(getNOM_EF_DESCRIPTION_CAP(), cap.getDescription());
-			addZone(getNOM_RG_CAP_VDN(), cap.getCapVDN().toString().equals("1") ? getNOM_RB_CAP_VDN_O()
+			addZone(getNOM_RG_CAP_VDN(), cap.getCapVdn().toString().equals("1") ? getNOM_RB_CAP_VDN_O()
 					: getNOM_RB_CAP_VDN_N());
 
 			int ligneTypeCap = getListeTypeCap().indexOf(cap.getTypeCap());

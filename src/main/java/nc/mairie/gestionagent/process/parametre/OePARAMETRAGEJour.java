@@ -87,7 +87,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (TypeJourFerie list : listeType) {
-				String ligne[] = { list.getLibelle() };
+				String ligne[] = { list.getLibTypeJourFerie() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -95,7 +95,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 			// remplissage de la hashTable
 			for (TypeJourFerie sc : listeType)
-				getHashTypeJour().put(sc.getIdTypeJour(), sc);
+				getHashTypeJour().put(sc.getIdTypeJourFerie(), sc);
 		}
 
 	}
@@ -368,10 +368,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		// on cherche tous les jours fériés de cette année là
 		TypeJourFerie typeJour = getTypeJourFerieDao().chercherTypeJourByLibelle("Férié");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		ArrayList<JourFerie> listeExistante = getJourFerieDao().listerJourByAnneeWithType(annee, typeJour.getIdTypeJour());
+		ArrayList<JourFerie> listeExistante = getJourFerieDao().listerJourByAnneeWithType(annee, typeJour.getIdTypeJourFerie());
 		for (JourFerie jour : listeExistante) {
 			JourFerie newJour = new JourFerie();
-			newJour.setIdTypeJour(typeJour.getIdTypeJour());
+			newJour.setIdTypeJour(typeJour.getIdTypeJourFerie());
 			newJour.setDescription(jour.getDescription());
 			newJour.setDateJour(sdf.parse(Services.ajouteAnnee(sdf.format(jour.getDateJour()), 1)));
 			getJourFerieDao().creerJourFerie(newJour.getIdTypeJour(), newJour.getDateJour(), newJour.getDescription());
@@ -661,7 +661,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 					: -1);
 			TypeJourFerie type = (TypeJourFerie) getListeTypeJourFerie().get(numType);
 
-			getJourFerieCourant().setIdTypeJour(type.getIdTypeJour());
+			getJourFerieCourant().setIdTypeJour(type.getIdTypeJourFerie());
 			getJourFerieCourant().setDateJour(new SimpleDateFormat("dd/MM/yyyy").parse(dateJour));
 			getJourFerieCourant().setDescription(getVAL_ST_DESCRIPTION());
 
@@ -681,7 +681,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 					: -1);
 			TypeJourFerie type = (TypeJourFerie) getListeTypeJourFerie().get(numType);
 
-			getJourFerieCourant().setIdTypeJour(type.getIdTypeJour());
+			getJourFerieCourant().setIdTypeJour(type.getIdTypeJourFerie());
 			getJourFerieCourant().setDateJour(new SimpleDateFormat("dd/MM/yyyy").parse(dateJour));
 			getJourFerieCourant().setDescription(getVAL_ST_DESCRIPTION());
 

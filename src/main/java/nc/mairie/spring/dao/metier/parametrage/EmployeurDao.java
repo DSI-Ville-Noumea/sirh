@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.EmployeurRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Employeur;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class EmployeurDao implements EmployeurDaoInterface {
@@ -52,7 +52,7 @@ public class EmployeurDao implements EmployeurDaoInterface {
 	@Override
 	public Employeur chercherEmployeur(Integer idEmployeur) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EMPLOYEUR + " = ? ";
-		Employeur centre = (Employeur) jdbcTemplate.queryForObject(sql, new Object[] { idEmployeur }, new EmployeurRowMapper());
+		Employeur centre = (Employeur) jdbcTemplate.queryForObject(sql, new Object[] { idEmployeur }, new BeanPropertyRowMapper<Employeur>(Employeur.class));
 		return centre;
 	}
 

@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.TitreFormationRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TitreFormationDao implements TitreFormationDaoInterface {
@@ -51,7 +51,7 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 	public TitreFormation chercherTitreFormation(Integer idTitreFormation) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TITRE_FORMATION + " = ? ";
 		TitreFormation titre = (TitreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idTitreFormation },
-				new TitreFormationRowMapper());
+				new BeanPropertyRowMapper<TitreFormation>(TitreFormation.class));
 		return titre;
 	}
 

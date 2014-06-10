@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.TypeJourFerieRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.TypeJourFerie;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TypeJourFerieDao implements TypeJourFerieDaoInterface {
@@ -39,8 +39,8 @@ public class TypeJourFerieDao implements TypeJourFerieDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			TypeJourFerie type = new TypeJourFerie();
-			type.setIdTypeJour((Integer) row.get(CHAMP_ID_TYPE_JOUR_FERIE));
-			type.setLibelle((String) row.get(CHAMP_LIB_TYPE_JOUR_FERIE));
+			type.setIdTypeJourFerie((Integer) row.get(CHAMP_ID_TYPE_JOUR_FERIE));
+			type.setLibTypeJourFerie((String) row.get(CHAMP_LIB_TYPE_JOUR_FERIE));
 			listeTypeJourFerie.add(type);
 		}
 
@@ -50,7 +50,7 @@ public class TypeJourFerieDao implements TypeJourFerieDaoInterface {
 	@Override
 	public TypeJourFerie chercherTypeJourByLibelle(String libelle) {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_LIB_TYPE_JOUR_FERIE + " = ? ";
-		TypeJourFerie type = (TypeJourFerie) jdbcTemplate.queryForObject(sql, new Object[] { libelle }, new TypeJourFerieRowMapper());
+		TypeJourFerie type = (TypeJourFerie) jdbcTemplate.queryForObject(sql, new Object[] { libelle }, new BeanPropertyRowMapper<TypeJourFerie>(TypeJourFerie.class));
 		return type;
 	}
 }

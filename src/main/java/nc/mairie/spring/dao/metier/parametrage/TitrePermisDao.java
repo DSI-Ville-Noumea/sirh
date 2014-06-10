@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.TitrePermisRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.TitrePermis;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TitrePermisDao implements TitrePermisDaoInterface {
@@ -39,8 +39,8 @@ public class TitrePermisDao implements TitrePermisDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			TitrePermis titre = new TitrePermis();
-			titre.setIdTitrePermis((Integer) row.get(CHAMP_ID_PERMIS));
-			titre.setLibTitrePermis((String) row.get(CHAMP_LIB_PERMIS));
+			titre.setIdPermis((Integer) row.get(CHAMP_ID_PERMIS));
+			titre.setLibPermis((String) row.get(CHAMP_LIB_PERMIS));
 			listeTitrePermis.add(titre);
 		}
 
@@ -50,7 +50,7 @@ public class TitrePermisDao implements TitrePermisDaoInterface {
 	@Override
 	public TitrePermis chercherTitrePermis(Integer idTitrePermis) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_PERMIS + " = ? ";
-		TitrePermis titre = (TitrePermis) jdbcTemplate.queryForObject(sql, new Object[] { idTitrePermis }, new TitrePermisRowMapper());
+		TitrePermis titre = (TitrePermis) jdbcTemplate.queryForObject(sql, new Object[] { idTitrePermis }, new BeanPropertyRowMapper<TitrePermis>(TitrePermis.class));
 		return titre;
 	}
 

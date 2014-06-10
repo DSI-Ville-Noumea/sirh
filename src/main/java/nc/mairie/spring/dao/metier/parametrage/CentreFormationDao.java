@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.CentreFormationRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CentreFormationDao implements CentreFormationDaoInterface {
@@ -51,7 +51,7 @@ public class CentreFormationDao implements CentreFormationDaoInterface {
 	public CentreFormation chercherCentreFormation(Integer idCentreFormation) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CENTRE_FORMATION + " = ? ";
 		CentreFormation centre = (CentreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idCentreFormation },
-				new CentreFormationRowMapper());
+				new BeanPropertyRowMapper<CentreFormation>(CentreFormation.class));
 		return centre;
 	}
 

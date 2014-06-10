@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.RepresentantRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Representant;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RepresentantDao implements RepresentantDaoInterface {
@@ -35,7 +35,7 @@ public class RepresentantDao implements RepresentantDaoInterface {
 	@Override
 	public Representant chercherRepresentant(Integer idRepresentant) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_REPRESENTANT + " = ? ";
-		Representant repre = (Representant) jdbcTemplate.queryForObject(sql, new Object[] { idRepresentant }, new RepresentantRowMapper());
+		Representant repre = (Representant) jdbcTemplate.queryForObject(sql, new Object[] { idRepresentant }, new BeanPropertyRowMapper<Representant>(Representant.class));
 		return repre;
 	}
 

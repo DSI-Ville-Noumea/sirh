@@ -691,7 +691,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator<TitrePermis> list = listeTitrePermis.listIterator(); list.hasNext();) {
 				TitrePermis permis = (TitrePermis) list.next();
-				String ligne[] = { permis.getLibTitrePermis() };
+				String ligne[] = { permis.getLibPermis() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_TITRE_PERMIS(aFormat.getListeFormatee(false));
@@ -3084,7 +3084,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			String uniteDuree = (numligneUnite >= 0 ? (String) getListeUniteDuree().get(numligneUnite) : null);
 
 			// Affectation des attributs
-			getPermisAgentCourant().setIdPermis(titrePermis.getIdTitrePermis());
+			getPermisAgentCourant().setIdPermis(titrePermis.getIdPermis());
 			getPermisAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 			getPermisAgentCourant().setDureePermis(
 					dureePermis.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureePermis));
@@ -3137,7 +3137,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					: null);
 
 			for (PermisAgent permis : getListePermisAgent()) {
-				if (permis.getIdPermis().toString().equals(titrePermis.getIdTitrePermis().toString())
+				if (permis.getIdPermis().toString().equals(titrePermis.getIdPermis().toString())
 						&& permis.getIdAgent().toString().equals(getAgentCourant().getIdAgent())
 						&& permis.getDateObtention().toString()
 								.equals(sdf.parse(getVAL_EF_DATE_OBTENTION_PERMIS()).toString())) {
@@ -3219,7 +3219,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				PermisAgent p = (PermisAgent) getListePermisAgent().get(i);
 				TitrePermis t = getTitrePermisDao().chercherTitrePermis(p.getIdPermis());
 
-				addZone(getNOM_ST_PERMIS(indicePermis), t.getLibTitrePermis());
+				addZone(getNOM_ST_PERMIS(indicePermis), t.getLibPermis());
 				String dateLimite = "&nbsp;";
 				if (p.getUniteDuree() != null) {
 					if (p.getUniteDuree().equals("heures")) {

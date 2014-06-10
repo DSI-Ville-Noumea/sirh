@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.parametrage.CapRowMapper;
 import nc.mairie.spring.domain.metier.parametrage.Cap;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class CapDao implements CapDaoInterface {
@@ -48,7 +48,7 @@ public class CapDao implements CapDaoInterface {
 			cap.setRefCap((String) row.get(CHAMP_REF_CAP));
 			cap.setDescription((String) row.get(CHAMP_DESCRIPTION));
 			cap.setTypeCap((String) row.get(CHAMP_TYPE_CAP));
-			cap.setCapVDN((Integer) row.get(CHAMP_CAP_VDN));
+			cap.setCapVdn((Integer) row.get(CHAMP_CAP_VDN));
 
 			listeCap.add(cap);
 		}
@@ -74,7 +74,7 @@ public class CapDao implements CapDaoInterface {
 	@Override
 	public Cap chercherCap(String codeCap, String refCap) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? and " + CHAMP_REF_CAP + " =? ";
-		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap }, new CapRowMapper());
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap }, new BeanPropertyRowMapper<Cap>(Cap.class));
 		return c;
 	}
 
@@ -91,7 +91,7 @@ public class CapDao implements CapDaoInterface {
 	@Override
 	public Cap chercherCapByCodeCap(String codeCap) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? ";
-		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new CapRowMapper());
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new BeanPropertyRowMapper<Cap>(Cap.class));
 		return c;
 	}
 
@@ -107,7 +107,7 @@ public class CapDao implements CapDaoInterface {
 		sb.append("and av.agent_vdn = pc.cap_vdn ");
 		sb.append("and pc.type_cap= ? ");
 		Cap c = (Cap) jdbcTemplate.queryForObject(sb.toString(), new Object[] { idAgent, annee, type },
-				new CapRowMapper());
+				new BeanPropertyRowMapper<Cap>(Cap.class));
 		return c;
 	}
 }

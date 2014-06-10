@@ -208,7 +208,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<TitrePermis> list = getListeTitrePermis().listIterator(); list.hasNext();) {
 				TitrePermis titre = (TitrePermis) list.next();
-				String ligne[] = { titre.getLibTitrePermis().toUpperCase() };
+				String ligne[] = { titre.getLibPermis().toUpperCase() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -599,7 +599,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		if (indice != -1 && indice < getListeTitrePermis().size()) {
 			TitrePermis titre = getListeTitrePermis().get(indice);
 			setTitrePermisCourant(titre);
-			addZone(getNOM_EF_TITRE_PERMIS(), titre.getLibTitrePermis());
+			addZone(getNOM_EF_TITRE_PERMIS(), titre.getLibPermis());
 			addZone(getNOM_ST_ACTION_TITRE_PERMIS(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de permis"));
@@ -985,16 +985,16 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		if (getVAL_ST_ACTION_TITRE_PERMIS() != null && getVAL_ST_ACTION_TITRE_PERMIS() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_CREATION)) {
 				setTitrePermisCourant(new TitrePermis());
-				getTitrePermisCourant().setLibTitrePermis(getVAL_EF_TITRE_PERMIS());
-				getTitrePermisDao().creerTitrePermis(getTitrePermisCourant().getLibTitrePermis());
+				getTitrePermisCourant().setLibPermis(getVAL_EF_TITRE_PERMIS());
+				getTitrePermisDao().creerTitrePermis(getTitrePermisCourant().getLibPermis());
 				getListeTitrePermis().add(getTitrePermisCourant());
 			} else if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_SUPPRESSION)) {
-				getTitrePermisDao().supprimerTitrePermis(getTitrePermisCourant().getIdTitrePermis());
+				getTitrePermisDao().supprimerTitrePermis(getTitrePermisCourant().getIdPermis());
 				getListeTitrePermis().remove(getTitrePermisCourant());
 				setTitrePermisCourant(null);
 			} else if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_MODIFICATION)) {
-				getTitrePermisCourant().setLibTitrePermis(getVAL_EF_TITRE_PERMIS());
-				getTitrePermisDao().modifierTitrePermis(getTitrePermisCourant().getIdTitrePermis(), getTitrePermisCourant().getLibTitrePermis());
+				getTitrePermisCourant().setLibPermis(getVAL_EF_TITRE_PERMIS());
+				getTitrePermisDao().modifierTitrePermis(getTitrePermisCourant().getIdPermis(), getTitrePermisCourant().getLibPermis());
 
 			}
 
@@ -1032,7 +1032,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// permis d'agent
 		if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_SUPPRESSION)) {
 			ArrayList<PermisAgent> listePermisAgent = getPermisAgentDao()
-					.listerPermisAgentAvecTitrePermis(getTitrePermisCourant().getIdTitrePermis());
+					.listerPermisAgentAvecTitrePermis(getTitrePermisCourant().getIdPermis());
 			if (listePermisAgent.size() > 0) {
 				// "ERR989",
 				// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1044,7 +1044,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité du titre de permis
 		if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_CREATION)) {
 			for (TitrePermis titre : getListeTitrePermis()) {
-				if (titre.getLibTitrePermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())) {
+				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
@@ -1056,7 +1056,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité du titre de permis
 		if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_MODIFICATION)) {
 			for (TitrePermis titre : getListeTitrePermis()) {
-				if (titre.getLibTitrePermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase()) && (!titre.equals(getTitrePermisCourant()))) {
+				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase()) && (!titre.equals(getTitrePermisCourant()))) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
@@ -2651,7 +2651,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		if (indice != -1 && indice < getListeTitrePermis().size()) {
 			TitrePermis titre = getListeTitrePermis().get(indice);
 			setTitrePermisCourant(titre);
-			addZone(getNOM_EF_TITRE_PERMIS(), titre.getLibTitrePermis());
+			addZone(getNOM_EF_TITRE_PERMIS(), titre.getLibPermis());
 			addZone(getNOM_ST_ACTION_TITRE_PERMIS(), ACTION_MODIFICATION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de permis"));
