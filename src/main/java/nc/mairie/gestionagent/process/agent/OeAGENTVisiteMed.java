@@ -225,7 +225,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
 				MotifVisiteMed motif = (MotifVisiteMed) list.next();
-				String ligne[] = { motif.getLibMotifVM() };
+				String ligne[] = { motif.getLibMotifVm() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_MOTIF(aFormat.getListeFormatee(true));
@@ -233,7 +233,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// remplissage de la hashTable
 			for (int i = 0; i < listeMotif.size(); i++) {
 				MotifVisiteMed m = (MotifVisiteMed) listeMotif.get(i);
-				getHashMotif().put(m.getIdMotifVM().toString(), m);
+				getHashMotif().put(m.getIdMotifVm().toString(), m);
 			}
 		}
 
@@ -307,7 +307,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			vm.setDureeValidite(Const.ZERO);
 			vm.setApte(null);
-			vm.setIdMotif(sm.getIdMotifVM().toString());
+			vm.setIdMotif(sm.getIdMotifVm().toString());
 			vm.setIdSuiviMed(sm.getIdSuiviMed().toString());
 			listeVisiteMed.add(vm);
 		}
@@ -356,8 +356,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						m == null || m.getNomMedecin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getTitreMedecin() + " "
 								+ m.getPrenomMedecin() + " " + m.getNomMedecin());
 				addZone(getNOM_ST_MOTIF(indiceVisite),
-						motif == null || motif.getLibMotifVM().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
-								.getLibMotifVM());
+						motif == null || motif.getLibMotifVm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
+								.getLibMotifVm());
 				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;"
 						: vm.getApte().equals("1") ? "Apte" : "Inapte");
 				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
@@ -558,7 +558,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						.getDureeValidite());
 		addZone(getNOM_ST_NOM_MEDECIN(),
 				medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
-		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVM() : Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVm() : Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante()
 				.getApte().equals("1") ? "APTE" : "INAPTE");
 		addZone(getNOM_ST_RECOMMANDATION(),
@@ -1033,7 +1033,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setDureeValidite(duree);
 				getVisiteCourante().setApte(apteVM);
 				getVisiteCourante().setIdMedecin(medecin.getIdMedecin());
-				getVisiteCourante().setIdMotif(motif.getIdMotifVM().toString());
+				getVisiteCourante().setIdMotif(motif.getIdMotifVm().toString());
 				getVisiteCourante().setIdRecommandation(
 						recommandation != null ? recommandation.getIdRecommandation() : null);
 
@@ -3293,8 +3293,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				return false;
 			MotifVisiteMed motif = (MotifVisiteMed) getListeMotif().get(numMotif - 1);
 			// RG-SVM-19
-			if (motif.getLibMotifVM().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getValue())
-					|| motif.getLibMotifVM().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getValue())) {
+			if (motif.getLibMotifVm().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getValue())
+					|| motif.getLibMotifVm().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getValue())) {
 				elementModifibale = false;
 
 				addZone(getNOM_LB_RECOMMANDATION_SELECT(), Const.ZERO);

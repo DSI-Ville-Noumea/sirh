@@ -118,7 +118,7 @@ public class OeSMHistorique extends BasicProcess {
 			}
 			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
 
-			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVM()).getLibMotifVM());
+			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVm()).getLibMotifVm());
 			// RG-SVM-15
 			// si SM effectué alors on prend les infos de la VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {

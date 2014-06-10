@@ -6,11 +6,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.suiviMedical.MotifVisiteMedRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
@@ -38,7 +38,7 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotifByLib(String lib) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_LIB_MOTIF_VM + " = ? ";
 
-		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { lib }, new MotifVisiteMedRowMapper());
+		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { lib }, new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
 
 		return motifVM;
 	}
@@ -47,7 +47,7 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotif(Integer idMotif) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_MOTIF_VM + " = ? ";
 
-		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { idMotif }, new MotifVisiteMedRowMapper());
+		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { idMotif }, new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
 
 		return motifVM;
 	}
@@ -61,8 +61,8 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			MotifVisiteMed motif = new MotifVisiteMed();
-			motif.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
-			motif.setLibMotifVM((String) row.get(CHAMP_LIB_MOTIF_VM));
+			motif.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			motif.setLibMotifVm((String) row.get(CHAMP_LIB_MOTIF_VM));
 			listeMotifVisiteMed.add(motif);
 		}
 

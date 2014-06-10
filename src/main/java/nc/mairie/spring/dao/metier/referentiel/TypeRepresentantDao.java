@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.dao.mapper.metier.referentiel.TypeRepresentantRowMapper;
 import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TypeRepresentantDao implements TypeRepresentantDaoInterface {
@@ -51,7 +51,7 @@ public class TypeRepresentantDao implements TypeRepresentantDaoInterface {
 	public TypeRepresentant chercherTypeRepresentant(Integer idTypeRepresentant) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TYPE_REPRESENTANT + " = ? ";
 		TypeRepresentant type = (TypeRepresentant) jdbcTemplate.queryForObject(sql, new Object[] { idTypeRepresentant },
-				new TypeRepresentantRowMapper());
+				new BeanPropertyRowMapper<TypeRepresentant>(TypeRepresentant.class));
 		return type;
 	}
 }

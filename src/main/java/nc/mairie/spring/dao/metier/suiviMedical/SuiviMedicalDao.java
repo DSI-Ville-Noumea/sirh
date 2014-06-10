@@ -11,11 +11,11 @@ import javax.sql.DataSource;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.dao.mapper.metier.suiviMedical.SuiviMedicalRowMapper;
 import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -75,7 +75,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -94,7 +94,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedical(Integer idSuiviMed) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_SUIVI_MED + " = ? ";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idSuiviMed }, new SuiviMedicalRowMapper());
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idSuiviMed }, new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
@@ -180,7 +180,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -233,7 +233,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -252,7 +252,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedicalAgentMoisetAnnee(Integer idAgent, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, mois, annee }, new SuiviMedicalRowMapper());
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent, mois, annee }, new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
@@ -261,7 +261,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 	public SuiviMedical chercherSuiviMedicalAgentNomatrMoisetAnnee(Integer noMatr, Integer mois, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + " = ? and " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? ";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { noMatr, mois, annee }, new SuiviMedicalRowMapper());
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { noMatr, mois, annee }, new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
@@ -275,7 +275,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		jdbcTemplate.update(
 				sql,
 				new Object[] { smSelct.getIdAgent(), smSelct.getNomatr(), smSelct.getAgent(), smSelct.getStatut(), smSelct.getIdServi(),
-						smSelct.getDateDerniereVisite(), smSelct.getDatePrevisionVisite(), smSelct.getIdMotifVM(), smSelct.getNbVisitesRatees(),
+						smSelct.getDateDerniereVisite(), smSelct.getDatePrevisionVisite(), smSelct.getIdMotifVm(), smSelct.getNbVisitesRatees(),
 						smSelct.getIdMedecin(), smSelct.getDateProchaineVisite(), smSelct.getHeureProchaineVisite(), smSelct.getEtat(),
 						smSelct.getMois(), smSelct.getAnnee(), smSelct.getRelance(), idSuiviMed });
 	}
@@ -306,7 +306,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -341,7 +341,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -374,7 +374,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 			sm.setIdServi((String) row.get(CHAMP_ID_SERVI));
 			sm.setDateDerniereVisite((Date) row.get(CHAMP_DATE_DERNIERE_VISITE));
 			sm.setDatePrevisionVisite((Date) row.get(CHAMP_DATE_PREVISION_VISITE));
-			sm.setIdMotifVM((Integer) row.get(CHAMP_ID_MOTIF_VM));
+			sm.setIdMotifVm((Integer) row.get(CHAMP_ID_MOTIF_VM));
 			sm.setNbVisitesRatees((Integer) row.get(CHAMP_NB_VISITES_RATEES));
 			sm.setIdMedecin((Integer) row.get(CHAMP_ID_MEDECIN));
 			sm.setDateProchaineVisite((Date) row.get(CHAMP_DATE_PROCHAINE_VISITE));
@@ -394,7 +394,7 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + " = ? and " + CHAMP_ID_SUIVI_MED + " in (select max("
 				+ CHAMP_ID_SUIVI_MED + ") from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=" + CHAMP_ID_AGENT + ")";
 
-		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent }, new SuiviMedicalRowMapper());
+		SuiviMedical sm = (SuiviMedical) jdbcTemplate.queryForObject(sql, new Object[] { idAgent }, new BeanPropertyRowMapper<SuiviMedical>(SuiviMedical.class));
 
 		return sm;
 	}
