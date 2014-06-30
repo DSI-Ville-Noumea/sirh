@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
@@ -106,10 +107,12 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			String anneeCourante = Services.dateDuJour().substring(6, 10);
+			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_MASSE_SALARIALE");
 			setListeAnnee(new String[1]);
-			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante) + 1);
+			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
+
 			setLB_ANNEE(getListeAnnee());
+			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 		}
 		// Si la liste des services est nulle
 		if (getListeServices() == null || getListeServices().size() == 0) {

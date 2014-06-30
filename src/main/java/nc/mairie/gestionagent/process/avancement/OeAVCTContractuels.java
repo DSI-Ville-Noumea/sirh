@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.avancement.AvancementContractuels;
@@ -64,7 +65,8 @@ public class OeAVCTContractuels extends BasicProcess {
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 			String annee = (String) getListeAnnee()[indiceAnnee];
 			setListeAvct(AvancementContractuels.listerAvancementContractuelsAnnee(getTransaction(), annee));
 
@@ -76,10 +78,9 @@ public class OeAVCTContractuels extends BasicProcess {
 				TitrePoste tp = null;
 				if (fp != null && fp.getIdTitrePoste() != null) {
 					tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-					if(getTransaction().isErreur())
+					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 				}
-
 
 				addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
@@ -95,16 +96,17 @@ public class OeAVCTContractuels extends BasicProcess {
 				addZone(getNOM_ST_INM(i), av.getInm() + " <br> " + av.getNouvINM());
 				addZone(getNOM_ST_INA(i), av.getIna() + " <br> " + av.getNouvINA());
 
-				addZone(getNOM_CK_VALID_DRH(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
+				addZone(getNOM_CK_VALID_DRH(i),
+						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_ST_MOTIF_AVCT(i), "REVALORISATION");
-				addZone(getNOM_CK_PROJET_ARRETE(i),
-						av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) || av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF()
-								: getCHECKED_ON());
+				addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
+						|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 				addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
-				addZone(getNOM_EF_DATE_ARRETE(i), av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
-				addZone(getNOM_CK_AFFECTER(i),
-						av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue()) || av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
-								: getCHECKED_OFF());
+				addZone(getNOM_EF_DATE_ARRETE(i),
+						av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
+				addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
+						|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON()
+						: getCHECKED_OFF());
 				addZone(getNOM_ST_ETAT(i), av.getEtat());
 				addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
 			}
@@ -118,21 +120,10 @@ public class OeAVCTContractuels extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*String anneeCourante = (String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT);
-			if (anneeCourante == null || anneeCourante.length() == 0)
-				anneeCourante = Services.dateDuJour().substring(6, 10);*/
-			String anneeCourante = "2014";
-			setListeAnnee(new String[5]);
+			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_AVCT");
+			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
-			// TODO
-			// changement de l'année pour faire au mieux.
-			// getListeAnnee()[0] =
-			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
-			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
-			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
-			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
-			getListeAnnee()[4] = String.valueOf(Integer.parseInt(anneeCourante) + 5);
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
@@ -235,7 +226,8 @@ public class OeAVCTContractuels extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_CHANGER_ANNEE(HttpServletRequest request) throws Exception {
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
+				: -1);
 		String annee = (String) getListeAnnee()[indiceAnnee];
 		if (!annee.equals(getAnneeSelect())) {
 			setListeAvct(null);
@@ -286,7 +278,8 @@ public class OeAVCTContractuels extends BasicProcess {
 					// on recupere l'agent concerné
 					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
 					// on recupere la derniere carrière dans l'année
-					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(), Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee());
+					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
+							Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -332,7 +325,8 @@ public class OeAVCTContractuels extends BasicProcess {
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " (" + agentCarr.getNoMatricule() + "); ";
+						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+								+ agentCarr.getNoMatricule() + "); ";
 					}
 				}
 			}

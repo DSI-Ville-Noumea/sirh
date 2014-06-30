@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.context.ApplicationContext;
-
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.PositionAdm;
@@ -22,6 +21,8 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -47,12 +48,12 @@ public class OeAVCTConvCol extends BasicProcess {
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		
+
 		if (getPrimeAgentDao() == null) {
 			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
-	
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -127,24 +128,10 @@ public class OeAVCTConvCol extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
-			/*
-			 * String anneeCourante = (String) VariablesActivite.recuperer(this,
-			 * VariablesActivite.ACTIVITE_ANNEE_SIMULATION_AVCT); if
-			 * (anneeCourante == null || anneeCourante.length() == 0)
-			 * anneeCourante = Services.dateDuJour().substring(6, 10);
-			 */
-			String anneeCourante = "2014";
-			setListeAnnee(new String[5]);
+			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_AVCT");
+			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));
 
-			// TODO
-			// changement de l'année pour faire au mieux.
-			// getListeAnnee()[0] =
-			// String.valueOf(Integer.parseInt(anneeCourante) + 1);
-			getListeAnnee()[1] = String.valueOf(Integer.parseInt(anneeCourante) + 2);
-			getListeAnnee()[2] = String.valueOf(Integer.parseInt(anneeCourante) + 3);
-			getListeAnnee()[3] = String.valueOf(Integer.parseInt(anneeCourante) + 4);
-			getListeAnnee()[4] = String.valueOf(Integer.parseInt(anneeCourante) + 5);
 			setLB_ANNEE(getListeAnnee());
 			addZone(getNOM_LB_ANNEE_SELECT(), Const.ZERO);
 			setAnneeSelect(String.valueOf(Integer.parseInt(anneeCourante) + 1));
@@ -356,10 +343,8 @@ public class OeAVCTConvCol extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
-									new Integer(agent.getNoMatricule()), 
-									new Integer(newPrime.getNoRubr()), 
-									newPrime.getDatDeb());
+							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), new Integer(
+									agent.getNoMatricule()), new Integer(newPrime.getNoRubr()), newPrime.getDatDeb());
 							getPrimeAgentDao().creerPrimeAgent(primeAgent);
 						}
 					} else {
@@ -376,10 +361,8 @@ public class OeAVCTConvCol extends BasicProcess {
 						newPrime.creerPrime(getTransaction(), user);
 
 						// on crée aussi une prime agent
-						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
-								new Integer(agent.getNoMatricule()), 
-								new Integer(newPrime.getNoRubr()), 
-								newPrime.getDatDeb());
+						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), new Integer(
+								agent.getNoMatricule()), new Integer(newPrime.getNoRubr()), newPrime.getDatDeb());
 						getPrimeAgentDao().creerPrimeAgent(primeAgent);
 					}
 
@@ -878,5 +861,5 @@ public class OeAVCTConvCol extends BasicProcess {
 	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
 		this.primeAgentDao = primeAgentDao;
 	}
-	
+
 }
