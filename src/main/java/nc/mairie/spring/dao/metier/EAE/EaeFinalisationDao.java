@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_FINALISATION";
-
-	public static final String NOM_SEQUENCE = "EAE_S_FINALISATION";
 
 	public static final String CHAMP_ID_EAE_FINALISATION = "ID_EAE_FINALISATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
@@ -67,10 +64,8 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFinalisation dev = new EaeFinalisation();
-			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_FINALISATION);
-			dev.setIdEaeFinalisation(id.intValue());
-			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
-			dev.setIdEae(idEae.intValue());
+			dev.setIdEaeFinalisation((Integer) row.get(CHAMP_ID_EAE_FINALISATION));
+			dev.setIdEae((Integer) row.get(CHAMP_ID_EAE));
 			dev.setDateFinalisation((Date) row.get(CHAMP_DATE_FINALISATION));
 			dev.setIdGedDocument((String) row.get(CHAMP_ID_GED_DOCUMENT));
 			dev.setVersionGedDocument((String) row.get(CHAMP_VERSION_GED_DOCUMENT));

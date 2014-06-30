@@ -12,8 +12,6 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_EVALUATION";
 
-	public static final String NOM_SEQUENCE = "EAE_S_EVALUATION";
-
 	public static final String CHAMP_ID_EAE_EVALUATION = "ID_EAE_EVALUATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_NIVEAU = "NIVEAU";
@@ -64,7 +62,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ " inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE });
 		} else if (section == null && direction != null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -72,7 +70,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE });
 		} else if (direction == null && section == null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -80,7 +78,7 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE });
 		} else {
 			sql = "select count(ev.ID_EAE) from "
@@ -88,14 +86,15 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) ";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) ";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE });
 		}
 		return total;
 	}
 
 	@Override
-	public int compterAvisSHDAvct(Integer idCampagneEAE, String direction, String section, String dureeAvct) throws Exception {
+	public int compterAvisSHDAvct(Integer idCampagneEAE, String direction, String section, String dureeAvct)
+			throws Exception {
 		String sql = Const.CHAINE_VIDE;
 		int total = 0;
 		if (direction == null && section != null) {
@@ -104,7 +103,8 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null  or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ CHAMP_AVIS_REVALORISATION + " is null  or ev." + CHAMP_AVIS_REVALORISATION + "=0) and ev."
+					+ CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE, dureeAvct });
 		} else if (section == null && direction != null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -112,7 +112,8 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) and ev."
+					+ CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE, dureeAvct });
 		} else if (direction == null && section == null) {
 			sql = "select count(ev.ID_EAE) from "
@@ -120,7 +121,8 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) and ev."
+					+ CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE, dureeAvct });
 		} else {
 			sql = "select count(ev.ID_EAE) from "
@@ -128,7 +130,8 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 					+ " ev inner join EAE e on e.ID_EAE = ev."
 					+ CHAMP_ID_EAE
 					+ "  inner join EAE_FICHE_POSTE fp on fp.id_eae=ev.id_eae where fp.DIRECTION_SERVICE =? and fp.SECTION_SERVICE =? and e.ID_CAMPAGNE_EAE =? and (ev."
-					+ CHAMP_AVIS_REVALORISATION + " is null or ev."+CHAMP_AVIS_REVALORISATION+"=0) and ev." + CHAMP_PROPOSITION_AVANCEMENT + "=?";
+					+ CHAMP_AVIS_REVALORISATION + " is null or ev." + CHAMP_AVIS_REVALORISATION + "=0) and ev."
+					+ CHAMP_PROPOSITION_AVANCEMENT + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE, dureeAvct });
 		}
 		return total;
@@ -175,8 +178,10 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 	}
 
 	@Override
-	public void modifierCommentaireEvaluateurEaeEvaluation(Integer idEaeEvaluation, Integer idEaeCommentaire) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_EVALUATEUR + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+	public void modifierCommentaireEvaluateurEaeEvaluation(Integer idEaeEvaluation, Integer idEaeCommentaire)
+			throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_EVALUATEUR + " =? where "
+				+ CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { idEaeCommentaire, idEaeEvaluation });
 	}
 
@@ -195,31 +200,36 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 
 	@Override
 	public void modifierADEaeEvaluation(Integer idEaeEvaluation, String propositionAD) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_PROPOSITION_AVANCEMENT + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_PROPOSITION_AVANCEMENT + " =? where "
+				+ CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { propositionAD, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierChgtClasseEaeEvaluation(Integer idEaeEvaluation, Integer chgtClasse) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_CHANGEMENT_CLASSE + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_CHANGEMENT_CLASSE + " =? where "
+				+ CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { chgtClasse, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierRevaloEaeEvaluation(Integer idEaeEvaluation, Integer revalorisation) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_REVALORISATION + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_REVALORISATION + " =? where "
+				+ CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { revalorisation, idEaeEvaluation });
 	}
 
 	@Override
-	public void modifierRapportCirconstancieEaeEvaluation(Integer idEaeEvaluation, Integer idEaeRapportCircon) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+	public void modifierRapportCirconstancieEaeEvaluation(Integer idEaeEvaluation, Integer idEaeRapportCircon)
+			throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where "
+				+ CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { idEaeRapportCircon, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierAvisSHDEaeEvaluation(Integer idEaeEvaluation, String avis_shd) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_SHD+ " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_SHD + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
 		jdbcTemplate.update(sql, new Object[] { avis_shd, idEaeEvaluation });
 	}
 }

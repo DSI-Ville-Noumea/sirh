@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class EaePlanActionDao implements EaePlanActionDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_PLAN_ACTION";
-
-	public static final String NOM_SEQUENCE = "EAE_S_PLAN_ACTION";
 
 	public static final String CHAMP_ID_EAE_PLAN_ACTION = "ID_EAE_PLAN_ACTION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
@@ -38,19 +35,17 @@ public class EaePlanActionDao implements EaePlanActionDaoInterface {
 
 	@Override
 	public ArrayList<EaePlanAction> listerPlanActionParType(Integer idEAE, Integer idtypeObj) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? and " + CHAMP_ID_EAE_TYPE_OBJECTIF + "=?";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? and " + CHAMP_ID_EAE_TYPE_OBJECTIF
+				+ "=?";
 
 		ArrayList<EaePlanAction> listeEaePlanAction = new ArrayList<EaePlanAction>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE, idtypeObj });
 		for (Map<String, Object> row : rows) {
 			EaePlanAction plan = new EaePlanAction();
-			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_PLAN_ACTION);
-			plan.setIdEaePlanAction(id.intValue());
-			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
-			plan.setIdEae(idEae.intValue());
-			BigDecimal idTypeObjectif = (BigDecimal) row.get(CHAMP_ID_EAE_TYPE_OBJECTIF);
-			plan.setIdTypeObjectif(idTypeObjectif.intValue());
+			plan.setIdEaePlanAction((Integer) row.get(CHAMP_ID_EAE_PLAN_ACTION));
+			plan.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			plan.setIdTypeObjectif((Integer) row.get(CHAMP_ID_EAE_TYPE_OBJECTIF));
 			plan.setObjectif((String) row.get(CHAMP_OBJECTIF));
 			plan.setMesure((String) row.get(CHAMP_MESURE));
 
@@ -61,8 +56,8 @@ public class EaePlanActionDao implements EaePlanActionDaoInterface {
 
 	@Override
 	public void creerPlanAction(Integer idEae, Integer idTypeObjectif, String objectif, String mesure) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_PLAN_ACTION + "," + CHAMP_ID_EAE + "," + CHAMP_ID_EAE_TYPE_OBJECTIF + ","
-				+ CHAMP_OBJECTIF + "," + CHAMP_MESURE + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE + "," + CHAMP_ID_EAE_TYPE_OBJECTIF + ","
+				+ CHAMP_OBJECTIF + "," + CHAMP_MESURE + ") " + "VALUES (?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idEae, idTypeObjectif, objectif, mesure });
 	}
@@ -74,9 +69,10 @@ public class EaePlanActionDao implements EaePlanActionDaoInterface {
 	}
 
 	@Override
-	public void modifierEaePlanAction(Integer idEaePlanAction, Integer idTypeObjectif, String objectif, String mesure) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_TYPE_OBJECTIF + " =?," + CHAMP_OBJECTIF + "=?," + CHAMP_MESURE + "=? where "
-				+ CHAMP_ID_EAE_PLAN_ACTION + "=?";
+	public void modifierEaePlanAction(Integer idEaePlanAction, Integer idTypeObjectif, String objectif, String mesure)
+			throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_TYPE_OBJECTIF + " =?," + CHAMP_OBJECTIF + "=?,"
+				+ CHAMP_MESURE + "=? where " + CHAMP_ID_EAE_PLAN_ACTION + "=?";
 		jdbcTemplate.update(sql, new Object[] { idTypeObjectif, objectif, mesure, idEaePlanAction });
 	}
 }

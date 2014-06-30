@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,25 +51,28 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	}
 
 	@Override
-	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service, String section,
-			String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission, String fonctionResp,
-			Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
+	public void creerEaeFichePoste(Integer id, Integer idEae, Integer idSHD, boolean typeFDP, String direction,
+			String service, String section, String emploi, String fonction, Date dateEntreeFonction, String grade,
+			String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
 			throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_ID_EAE + "," + CHAMP_ID_SHD + "," + CHAMP_PRIMAIRE
-				+ "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + "," + CHAMP_SECTION_SERVICE + "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + ","
-				+ CHAMP_DATE_ENTREE_FONCTION + "," + CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP
-				+ "," + CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + "," + CHAMP_DATE_ENTREE_FONCTION_RESP + ","
-				+ CHAMP_CODE_SERVICE + "," + CHAMP_ID_SIRH_FICHE_POSTE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_ID_EAE + ","
+				+ CHAMP_ID_SHD + "," + CHAMP_PRIMAIRE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + ","
+				+ CHAMP_SECTION_SERVICE + "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + "," + CHAMP_DATE_ENTREE_FONCTION
+				+ "," + CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP
+				+ "," + CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + ","
+				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "," + CHAMP_CODE_SERVICE + "," + CHAMP_ID_SIRH_FICHE_POSTE + ") "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-		jdbcTemplate.update(sql, new Object[] { id, idEae, idSHD, typeFDP, direction, service, section, emploi, fonction, dateEntreeFonction, grade,
-				localisation, mission, fonctionResp, dateEntreeServiceResp, dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService,
-				idSirhFichePoste });
+		jdbcTemplate.update(sql, new Object[] { id, idEae, idSHD, typeFDP, direction, service, section, emploi,
+				fonction, dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
+				dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService, idSirhFichePoste });
 
 	}
 
 	@Override
 	public Integer getIdEaeFichePoste() throws Exception {
-		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
+		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 		return id;
 	}
@@ -85,8 +87,8 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	@Override
 	public ArrayList<EaeFichePoste> listerEaeFichePosteGrouperParDirectionSection(Integer idCampagneEAE) {
 		String sql = "select fp." + CHAMP_DIRECTION_SERVICE + ",fp." + CHAMP_SECTION_SERVICE + " from " + NOM_TABLE
-				+ " fp inner join EAE e on e.id_eae=fp." + CHAMP_ID_EAE + " where e.ID_CAMPAGNE_EAE=? group by fp." + CHAMP_DIRECTION_SERVICE
-				+ ",fp." + CHAMP_SECTION_SERVICE + " order by fp." + CHAMP_DIRECTION_SERVICE;
+				+ " fp inner join EAE e on e.id_eae=fp." + CHAMP_ID_EAE + " where e.ID_CAMPAGNE_EAE=? group by fp."
+				+ CHAMP_DIRECTION_SERVICE + ",fp." + CHAMP_SECTION_SERVICE + " order by fp." + CHAMP_DIRECTION_SERVICE;
 
 		ArrayList<EaeFichePoste> listeEAE = new ArrayList<EaeFichePoste>();
 
@@ -110,14 +112,10 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFichePoste eae = new EaeFichePoste();
-			BigDecimal idFDP = (BigDecimal) row.get(CHAMP_ID_EAE_FICHE_POSTE);
-			eae.setIdEaeFichePoste(idFDP.intValue());
-			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEae(idEae.intValue());
-			BigDecimal idSHD = (BigDecimal) row.get(CHAMP_ID_SHD);
-			eae.setIdSHD(idSHD == null ? null : idSHD.intValue());
-			BigDecimal primaire = (BigDecimal) row.get(CHAMP_PRIMAIRE);
-			eae.setPrimaire(primaire.intValue() == 0 ? false : true);
+			eae.setIdEaeFichePoste((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
+			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdSHD((Integer) row.get(CHAMP_ID_SHD));
+			eae.setPrimaire((boolean) row.get(CHAMP_PRIMAIRE));
 			eae.setDirectionService((String) row.get(CHAMP_DIRECTION_SERVICE));
 			eae.setService((String) row.get(CHAMP_SERVICE));
 			eae.setSectionService((String) row.get(CHAMP_SECTION_SERVICE));
@@ -135,20 +133,22 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	}
 
 	@Override
-	public void modifierEaeFichePoste(Integer idEaeFichePoste, Integer idEae, Integer idSHD, boolean typeFDP, String direction, String service,
-			String section, String emploi, String fonction, Date dateEntreeFonction, String grade, String localisation, String mission,
-			String fonctionResp, Date dateEntreeServiceResp, Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService,
-			Integer idSirhFichePoste) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE + "=?," + CHAMP_ID_SHD + "=?," + CHAMP_PRIMAIRE + "=?," + CHAMP_DIRECTION_SERVICE
-				+ "=?," + CHAMP_SERVICE + "=?," + CHAMP_SECTION_SERVICE + "=?," + CHAMP_EMPLOI + "=?," + CHAMP_FONCTION + "=?,"
-				+ CHAMP_DATE_ENTREE_FONCTION + "=?," + CHAMP_GRADE_POSTE + "=?," + CHAMP_LOCALISATION + "=?," + CHAMP_MISSIONS + "=?,"
-				+ CHAMP_FONCTION_RESP + "=?," + CHAMP_DATE_ENTREE_SERVICE_RESP + "=?," + CHAMP_DATE_ENTREE_COLLECT_RESP + "=?,"
-				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "=?," + CHAMP_CODE_SERVICE + "=?," + CHAMP_ID_SIRH_FICHE_POSTE + "=? where "
-				+ CHAMP_ID_EAE_FICHE_POSTE + "=?";
+	public void modifierEaeFichePoste(Integer idEaeFichePoste, Integer idEae, Integer idSHD, boolean typeFDP,
+			String direction, String service, String section, String emploi, String fonction, Date dateEntreeFonction,
+			String grade, String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
+			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
+			throws Exception {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE + "=?," + CHAMP_ID_SHD + "=?," + CHAMP_PRIMAIRE
+				+ "=?," + CHAMP_DIRECTION_SERVICE + "=?," + CHAMP_SERVICE + "=?," + CHAMP_SECTION_SERVICE + "=?,"
+				+ CHAMP_EMPLOI + "=?," + CHAMP_FONCTION + "=?," + CHAMP_DATE_ENTREE_FONCTION + "=?,"
+				+ CHAMP_GRADE_POSTE + "=?," + CHAMP_LOCALISATION + "=?," + CHAMP_MISSIONS + "=?," + CHAMP_FONCTION_RESP
+				+ "=?," + CHAMP_DATE_ENTREE_SERVICE_RESP + "=?," + CHAMP_DATE_ENTREE_COLLECT_RESP + "=?,"
+				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "=?," + CHAMP_CODE_SERVICE + "=?," + CHAMP_ID_SIRH_FICHE_POSTE
+				+ "=? where " + CHAMP_ID_EAE_FICHE_POSTE + "=?";
 
-		jdbcTemplate.update(sql, new Object[] { idEae, idSHD, typeFDP, direction, service, section, emploi, fonction, dateEntreeFonction, grade,
-				localisation, mission, fonctionResp, dateEntreeServiceResp, dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService,
-				idSirhFichePoste, idEaeFichePoste });
+		jdbcTemplate.update(sql, new Object[] { idEae, idSHD, typeFDP, direction, service, section, emploi, fonction,
+				dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
+				dateEntreeCollectiviteResp, dateEntreeFonctionResp, codeService, idSirhFichePoste, idEaeFichePoste });
 
 	}
 

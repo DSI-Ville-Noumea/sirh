@@ -64,12 +64,19 @@
 		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE2,SIRH2,SYSIBM;errors=full;date 
 		format=iso;" /> -->
 
+
+	<Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
+		maxWait="10000" initialSize="1" username="eae_adm" password="changemi"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
+		poolPreparedStatements="true" />
+		
 	<!-- Quand SIRH passera sous Oracle -->
-	<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver"
-		initialSize="1" maxActive="100" maxIdle="30" maxWait="10000" minIdle="0"
-		name="jdbc/SIRH_DS3" password="eae" poolPreparedStatements="false"
-		type="javax.sql.DataSource" url="jdbc:oracle:thin:@DVLP:1521:ORADEV"
-		username="eae" validationQuery="select 1 from dual" />
+<!-- 	<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" -->
+<!-- 		initialSize="1" maxActive="100" maxIdle="30" maxWait="10000" minIdle="0" -->
+<!-- 		name="jdbc/SIRH_DS3" password="eae" poolPreparedStatements="false" -->
+<!-- 		type="javax.sql.DataSource" url="jdbc:oracle:thin:@DVLP:1521:ORADEV" -->
+<!-- 		username="eae" validationQuery="select 1 from dual" /> -->
 	<!-- PROD -->
 	<!-- <Resource name="jdbc/SIRH_DS3" auth="Container" type="javax.sql.DataSource" 
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" 

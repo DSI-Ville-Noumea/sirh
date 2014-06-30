@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class EaeDiplomeDao implements EaeDiplomeDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_DIPLOME";
-
-	public static final String NOM_SEQUENCE = "EAE_S_DIPLOME";
 
 	public static final String CHAMP_ID_EAE_DIPLOME = "ID_EAE_DIPLOME";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
@@ -37,8 +34,8 @@ public class EaeDiplomeDao implements EaeDiplomeDaoInterface {
 	@Override
 	public void creerEaeDiplome(Integer idEae, String libDiplome) throws Exception {
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_DIPLOME + "," + CHAMP_ID_EAE + "," + CHAMP_LIBELLE_DIPLOME + ") " + "VALUES ("
-				+ NOM_SEQUENCE + ".nextval,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE + "," + CHAMP_LIBELLE_DIPLOME + ") "
+				+ "VALUES (?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idEae, libDiplome });
 	}
@@ -53,10 +50,8 @@ public class EaeDiplomeDao implements EaeDiplomeDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EaeDiplome dip = new EaeDiplome();
 			// logger.debug("List diplomes : " + row.toString());
-			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_DIPLOME);
-			dip.setIdEaeDiplome(id.intValue());
-			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
-			dip.setIdEae(idEae.intValue());
+			dip.setIdEaeDiplome((Integer) row.get(CHAMP_ID_EAE_DIPLOME));
+			dip.setIdEae((Integer) row.get(CHAMP_ID_EAE));
 			dip.setLibelleDiplome((String) row.get(CHAMP_LIBELLE_DIPLOME));
 
 			listeEaeDiplome.add(dip);

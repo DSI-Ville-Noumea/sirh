@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,26 +62,20 @@ public class EAEDao implements EAEDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
-			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEae(idEAE.intValue());
-			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEae(idCampEAE.intValue());
+			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
-			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
-			eae.setCap(cap.intValue() == 0 ? false : true);
-			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocAttache(document.intValue() == 0 ? false : true);
+			eae.setCap((boolean) row.get(CHAMP_CAP));
+			eae.setDocAttache((boolean) row.get(CHAMP_DOC_ATTACHE));
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
-			BigDecimal dureeEntretien = (BigDecimal) row.get(CHAMP_DUREE_ENTRETIEN);
-			eae.setDureeEntretien(dureeEntretien == null ? null : dureeEntretien.intValue());
+			eae.setDureeEntretien((Integer) row.get(CHAMP_DUREE_ENTRETIEN));
 			eae.setDateFinalise((Date) row.get(CHAMP_DATE_FINALISE));
 			eae.setDateControle((Date) row.get(CHAMP_DATE_CONTROLE));
 			eae.setHeureControle((String) row.get(CHAMP_HEURE_CONTROLE));
 			eae.setUserControle((String) row.get(CHAMP_USER_CONTROLE));
-			BigDecimal idDelegataire = (BigDecimal) row.get(CHAMP_ID_DELEGATAIRE);
-			eae.setIdDelegataire(idDelegataire == null ? null : idDelegataire.intValue());
+			eae.setIdDelegataire((Integer) row.get(CHAMP_ID_DELEGATAIRE));
 			listeEAE.add(eae);
 		}
 
@@ -116,7 +109,7 @@ public class EAEDao implements EAEDaoInterface {
 			Date dateFin, Date dateEntretien, Integer dureeEntretien, Date dateFinalise, Date dateControle,
 			String heureControle, String userControle, Integer idDelegataire) throws Exception {
 
-		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
+		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ETAT
@@ -157,16 +150,16 @@ public class EAEDao implements EAEDaoInterface {
 		}
 		if (!capBool.equals(Const.CHAINE_VIDE)) {
 			if (capBool.equals("oui")) {
-				reqWhere += " and " + CHAMP_CAP + " = 1 ";
+				reqWhere += " and " + CHAMP_CAP + " = true ";
 			} else {
-				reqWhere += " and " + CHAMP_CAP + " = 0";
+				reqWhere += " and " + CHAMP_CAP + " = false";
 			}
 		}
 		if (!affecte.equals(Const.CHAINE_VIDE)) {
 			if (affecte.equals("oui")) {
-				reqWhere += " and eval.AGENT_DETACHE = 1 ";
+				reqWhere += " and eval.AGENT_DETACHE = true ";
 			} else {
-				reqWhere += " and eval.AGENT_DETACHE = 0 ";
+				reqWhere += " and eval.AGENT_DETACHE = false ";
 			}
 		}
 		if (agentEvaluateur != null) {
@@ -187,26 +180,20 @@ public class EAEDao implements EAEDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
-			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEae(idEAE.intValue());
-			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEae(idCampEAE.intValue());
+			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
-			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
-			eae.setCap(cap.intValue() == 0 ? false : true);
-			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocAttache(document.intValue() == 0 ? false : true);
+			eae.setCap((boolean) row.get(CHAMP_CAP));
+			eae.setDocAttache((boolean) row.get(CHAMP_DOC_ATTACHE));
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
-			BigDecimal dureeEntretien = (BigDecimal) row.get(CHAMP_DUREE_ENTRETIEN);
-			eae.setDureeEntretien(dureeEntretien == null ? null : dureeEntretien.intValue());
+			eae.setDureeEntretien((Integer) row.get(CHAMP_DUREE_ENTRETIEN));
 			eae.setDateFinalise((Date) row.get(CHAMP_DATE_FINALISE));
 			eae.setDateControle((Date) row.get(CHAMP_DATE_CONTROLE));
 			eae.setHeureControle((String) row.get(CHAMP_HEURE_CONTROLE));
 			eae.setUserControle((String) row.get(CHAMP_USER_CONTROLE));
-			BigDecimal idDelegataire = (BigDecimal) row.get(CHAMP_ID_DELEGATAIRE);
-			eae.setIdDelegataire(idDelegataire == null ? null : idDelegataire.intValue());
+			eae.setIdDelegataire((Integer) row.get(CHAMP_ID_DELEGATAIRE));
 			listeEAE.add(eae);
 		}
 
@@ -258,26 +245,20 @@ public class EAEDao implements EAEDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
 			// logger.debug("List eae : " + row.toString());
-			BigDecimal idEAE = (BigDecimal) row.get(CHAMP_ID_EAE);
-			eae.setIdEae(idEAE.intValue());
-			BigDecimal idCampEAE = (BigDecimal) row.get(CHAMP_ID_CAMPAGNE_EAE);
-			eae.setIdCampagneEae(idCampEAE.intValue());
+			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
-			BigDecimal cap = (BigDecimal) row.get(CHAMP_CAP);
-			eae.setCap(cap.intValue() == 0 ? false : true);
-			BigDecimal document = (BigDecimal) row.get(CHAMP_DOC_ATTACHE);
-			eae.setDocAttache(document.intValue() == 0 ? false : true);
+			eae.setCap((boolean) row.get(CHAMP_CAP));
+			eae.setDocAttache((boolean) row.get(CHAMP_DOC_ATTACHE));
 			eae.setDateCreation((Date) row.get(CHAMP_DATE_CREATION));
 			eae.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			eae.setDateEntretien((Date) row.get(CHAMP_DATE_ENTRETIEN));
-			BigDecimal dureeEntretien = (BigDecimal) row.get(CHAMP_DUREE_ENTRETIEN);
-			eae.setDureeEntretien(dureeEntretien == null ? null : dureeEntretien.intValue());
+			eae.setDureeEntretien((Integer) row.get(CHAMP_DUREE_ENTRETIEN));
 			eae.setDateFinalise((Date) row.get(CHAMP_DATE_FINALISE));
 			eae.setDateControle((Date) row.get(CHAMP_DATE_CONTROLE));
 			eae.setHeureControle((String) row.get(CHAMP_HEURE_CONTROLE));
 			eae.setUserControle((String) row.get(CHAMP_USER_CONTROLE));
-			BigDecimal idDelegataire = (BigDecimal) row.get(CHAMP_ID_DELEGATAIRE);
-			eae.setIdDelegataire(idDelegataire == null ? null : idDelegataire.intValue());
+			eae.setIdDelegataire((Integer) row.get(CHAMP_ID_DELEGATAIRE));
 			listeEAE.add(eae);
 		}
 
@@ -325,25 +306,25 @@ public class EAEDao implements EAEDaoInterface {
 			sql = "select count(e.id_eae) from "
 					+ NOM_TABLE
 					+ "  e inner join EAE_FICHE_POSTE fp on e.id_eae=fp.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE=? and "
-					+ CHAMP_CAP + "=1 and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
+					+ CHAMP_CAP + "=true and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { section, idCampagneEAE });
 		} else if (section == null && direction != null) {
 			sql = "select count(e.id_eae) from "
 					+ NOM_TABLE
 					+ "  e inner join EAE_FICHE_POSTE fp on e.id_eae=fp.id_eae where fp.DIRECTION_SERVICE=? and fp.SECTION_SERVICE is null and "
-					+ CHAMP_CAP + "=1 and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
+					+ CHAMP_CAP + "=true and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, idCampagneEAE });
 		} else if (direction == null && section == null) {
 			sql = "select count(e.id_eae) from "
 					+ NOM_TABLE
 					+ "  e inner join EAE_FICHE_POSTE fp on e.id_eae=fp.id_eae where fp.DIRECTION_SERVICE is null and fp.SECTION_SERVICE is null and "
-					+ CHAMP_CAP + "=1 and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
+					+ CHAMP_CAP + "=true and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { idCampagneEAE });
 		} else {
 			sql = "select count(e.id_eae) from "
 					+ NOM_TABLE
 					+ "  e inner join EAE_FICHE_POSTE fp on e.id_eae=fp.id_eae where fp.DIRECTION_SERVICE=? and fp.SECTION_SERVICE=? and "
-					+ CHAMP_CAP + "=1 and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
+					+ CHAMP_CAP + "=true and  " + CHAMP_ID_CAMPAGNE_EAE + "=?";
 			total = jdbcTemplate.queryForInt(sql, new Object[] { direction, section, idCampagneEAE });
 		}
 		return total;
@@ -352,7 +333,8 @@ public class EAEDao implements EAEDaoInterface {
 	@Override
 	public EAE chercherEAE(Integer idEae) {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
-		EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new BeanPropertyRowMapper<EAE>(EAE.class));
+		EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new BeanPropertyRowMapper<EAE>(
+				EAE.class));
 		return eae;
 	}
 }

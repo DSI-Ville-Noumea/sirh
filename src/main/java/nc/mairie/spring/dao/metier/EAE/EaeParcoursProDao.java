@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,8 +18,6 @@ public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
 	private Logger logger = LoggerFactory.getLogger(EaeParcoursProDao.class);
 
 	public static final String NOM_TABLE = "EAE_PARCOURS_PRO";
-
-	public static final String NOM_SEQUENCE = "EAE_S_PARCOURS_PRO";
 
 	public static final String CHAMP_ID_EAE_PARCOURS_PRO = "ID_EAE_PARCOURS_PRO";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
@@ -42,9 +39,8 @@ public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
 
 	@Override
 	public void creerParcoursPro(Integer idEae, Date dateDebut, Date dateFin, String libParcours) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_PARCOURS_PRO + "," + CHAMP_ID_EAE + ","
-				+ CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN + "," + CHAMP_LIBELLE_PARCOURS_PRO + ") " + "VALUES ("
-				+ NOM_SEQUENCE + ".nextval,?,?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE + "," + CHAMP_DATE_DEBUT + "," + CHAMP_DATE_FIN
+				+ "," + CHAMP_LIBELLE_PARCOURS_PRO + ") " + "VALUES (?,?,?,?)";
 		try {
 			jdbcTemplate.update(sql, new Object[] { idEae, dateDebut, dateFin, libParcours });
 		} catch (Exception e) {
@@ -62,10 +58,8 @@ public class EaeParcoursProDao implements EaeParcoursProDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EaeParcoursPro parc = new EaeParcoursPro();
 			// logger.debug("List diplomes : " + row.toString());
-			BigDecimal id = (BigDecimal) row.get(CHAMP_ID_EAE_PARCOURS_PRO);
-			parc.setIdEaeParcoursPro(id.intValue());
-			BigDecimal idEae = (BigDecimal) row.get(CHAMP_ID_EAE);
-			parc.setIdEAE(idEae.intValue());
+			parc.setIdEaeParcoursPro((Integer) row.get(CHAMP_ID_EAE_PARCOURS_PRO));
+			parc.setIdEAE((Integer) row.get(CHAMP_ID_EAE));
 			parc.setDateDebut((Date) row.get(CHAMP_DATE_DEBUT));
 			parc.setDateFin((Date) row.get(CHAMP_DATE_FIN));
 			parc.setLibelleParcoursPro((String) row.get(CHAMP_LIBELLE_PARCOURS_PRO));

@@ -17,8 +17,6 @@ public class EaeCampagneTaskDao implements EaeCampagneTaskDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_CAMPAGNE_TASK";
 
-	public static final String NOM_SEQUENCE = "EAE_S_CAMPAGNE_TASK";
-
 	public static final String CHAMP_ID_CAMPAGNE_TASK = "ID_CAMPAGNE_TASK";
 	public static final String CHAMP_ID_CAMPAGNE_EAE = "ID_CAMPAGNE_EAE";
 	public static final String CHAMP_ANNEE = "ANNEE";
@@ -36,53 +34,43 @@ public class EaeCampagneTaskDao implements EaeCampagneTaskDaoInterface {
 
 	public EaeCampagneTaskDao() {
 	}
-	
+
 	@Override
-	public Integer creerEaeCampagneTask(Integer idCampagneEae, Integer annee, String idAgent,
-			Date dateCalculEae, String taskStatus) throws Exception {
+	public void creerEaeCampagneTask(Integer idCampagneEae, Integer annee, Integer idAgent, Date dateCalculEae,
+			String taskStatus) throws Exception {
 
-		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
-		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ANNEE + ","
+				+ CHAMP_ID_AGENT + "," + CHAMP_DATE_CALCUL_EAE + "," + CHAMP_TASK_STATUS + ") " + "VALUES (?,?,?,?,?)";
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_CAMPAGNE_TASK + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ANNEE
-				+ "," + CHAMP_ID_AGENT + "," + CHAMP_DATE_CALCUL_EAE + "," + CHAMP_TASK_STATUS + ") " 
-				+ "VALUES (?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idCampagneEae, annee, idAgent, dateCalculEae, taskStatus });
 
-		jdbcTemplate.update(sql, new Object[] { id, idCampagneEae, annee, idAgent, dateCalculEae, taskStatus});
-
-		return id;
 	}
 
 	@Override
-	public EaeCampagneTask chercherEaeCampagneTask(Integer idCampagneTask)
-			throws Exception {
-		
-		String sql = "select * from " + NOM_TABLE
-				+ " where "	+ CHAMP_ID_CAMPAGNE_TASK + "=?";
+	public EaeCampagneTask chercherEaeCampagneTask(Integer idCampagneTask) throws Exception {
+
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_TASK + "=?";
 		try {
 			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneTask },
 					new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
 			return eaeCampagneTask;
 		} catch (Exception e) {
-			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneTask="
-					+ idCampagneTask.toString());
+			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneTask=" + idCampagneTask.toString());
 			return null;
 		}
 	}
-	
+
 	@Override
-	public EaeCampagneTask chercherEaeCampagneTaskByIdCampagneEae(Integer idCampagneEae)
-			throws Exception {
-		
-		String sql = "select * from " + NOM_TABLE
-				+ " where "	+ CHAMP_ID_CAMPAGNE_EAE + "=? AND " + CHAMP_DATE_CALCUL_EAE + " IS NULL AND " + CHAMP_TASK_STATUS + " IS NULL";
+	public EaeCampagneTask chercherEaeCampagneTaskByIdCampagneEae(Integer idCampagneEae) throws Exception {
+
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_EAE + "=? AND "
+				+ CHAMP_DATE_CALCUL_EAE + " IS NULL AND " + CHAMP_TASK_STATUS + " IS NULL";
 		try {
 			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEae },
 					new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
 			return eaeCampagneTask;
 		} catch (Exception e) {
-			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneEae="
-					+ idCampagneEae.toString());
+			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneEae=" + idCampagneEae.toString());
 			return null;
 		}
 	}

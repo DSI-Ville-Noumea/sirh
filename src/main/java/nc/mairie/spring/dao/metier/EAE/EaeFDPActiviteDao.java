@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_FDP_ACTIVITE";
-
-	public static final String NOM_SEQUENCE = "EAE_S_FDP_ACTIVITE";
 
 	public static final String CHAMP_ID_EAE_FDP_ACTIVITE = "ID_EAE_FDP_ACTIVITE";
 	public static final String CHAMP_ID_EAE_FICHE_POSTE = "ID_EAE_FICHE_POSTE";
@@ -36,8 +33,8 @@ public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 	@Override
 	public void creerEaeFDPActivite(Integer idEaeFichePoste, String libActi) throws Exception {
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FDP_ACTIVITE + "," + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_LIBELLE_ACTIVITE
-				+ ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_LIBELLE_ACTIVITE + ") "
+				+ "VALUES (?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idEaeFichePoste, libActi });
 	}
@@ -52,10 +49,8 @@ public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EaeFDPActivite acti = new EaeFDPActivite();
 			// logger.debug("List activites : " + row.toString());
-			BigDecimal idActi = (BigDecimal) row.get(CHAMP_ID_EAE_FDP_ACTIVITE);
-			acti.setIdEaeFDPActivite(idActi.intValue());
-			BigDecimal idFDP = (BigDecimal) row.get(CHAMP_ID_EAE_FICHE_POSTE);
-			acti.setIdEaeFDP(idFDP.intValue());
+			acti.setIdEaeFDPActivite((Integer) row.get(CHAMP_ID_EAE_FDP_ACTIVITE));
+			acti.setIdEaeFDP((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
 			acti.setLibActivite((String) row.get(CHAMP_LIBELLE_ACTIVITE));
 			listeEaeFDPActivite.add(acti);
 		}

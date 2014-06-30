@@ -1,6 +1,5 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class EaeFDPCompetenceDao implements EaeFDPCompetenceDaoInterface {
 
 	public static final String NOM_TABLE = "EAE_FDP_COMPETENCE";
-
-	public static final String NOM_SEQUENCE = "EAE_S_FDP_COMPETENCE";
 
 	public static final String CHAMP_ID_EAE_FDP_COMPETENCE = "ID_EAE_FDP_COMPETENCE";
 	public static final String CHAMP_ID_EAE_FICHE_POSTE = "ID_EAE_FICHE_POSTE";
@@ -37,8 +34,8 @@ public class EaeFDPCompetenceDao implements EaeFDPCompetenceDaoInterface {
 	@Override
 	public void creerEaeFDPCompetence(Integer idEaeFichePoste, String typeComp, String libComp) throws Exception {
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FDP_COMPETENCE + "," + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_TYPE_COMPETENCE
-				+ "," + CHAMP_LIBELLE_COMPETENCE + ") " + "VALUES (" + NOM_SEQUENCE + ".nextval,?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_TYPE_COMPETENCE + ","
+				+ CHAMP_LIBELLE_COMPETENCE + ") " + "VALUES (?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { idEaeFichePoste, typeComp, libComp });
 	}
@@ -53,10 +50,8 @@ public class EaeFDPCompetenceDao implements EaeFDPCompetenceDaoInterface {
 		for (Map<String, Object> row : rows) {
 			EaeFDPCompetence comp = new EaeFDPCompetence();
 			// logger.debug("List competences : " + row.toString());
-			BigDecimal idComp = (BigDecimal) row.get(CHAMP_ID_EAE_FDP_COMPETENCE);
-			comp.setIdEaeFDPCompetence(idComp.intValue());
-			BigDecimal idFDP = (BigDecimal) row.get(CHAMP_ID_EAE_FICHE_POSTE);
-			comp.setIdEaeFDP(idFDP.intValue());
+			comp.setIdEaeFDPCompetence((Integer) row.get(CHAMP_ID_EAE_FDP_COMPETENCE));
+			comp.setIdEaeFDP((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
 			comp.setTypeCompetence((String) row.get(CHAMP_TYPE_COMPETENCE));
 			comp.setLibCompetence((String) row.get(CHAMP_LIBELLE_COMPETENCE));
 			listeEaeFDPComp.add(comp);

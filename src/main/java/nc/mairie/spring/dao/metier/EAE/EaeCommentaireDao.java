@@ -44,10 +44,11 @@ public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
 	@Override
 	public Integer creerEaeCommentaire(String commentaire) throws Exception {
 
-		String sqlClePrimaire = "select " + NOM_SEQUENCE + ".nextval from DUAL";
+		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_COMMENTAIRE + "," + CHAMP_TEXT + ") VALUES (?, ?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_COMMENTAIRE + "," + CHAMP_TEXT
+				+ ") VALUES (?, ?)";
 		jdbcTemplate.update(sql, new Object[] { id, commentaire });
 
 		return id;

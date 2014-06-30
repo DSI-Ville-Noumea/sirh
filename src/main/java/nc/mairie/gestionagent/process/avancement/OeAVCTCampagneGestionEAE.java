@@ -1286,7 +1286,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						return false;
 					} else {
 						getEaeCampagneTaskDao().creerEaeCampagneTask(getCampagneCourante().getIdCampagneEae(),
-								getCampagneCourante().getAnnee(), getAgentConnecte(request).getIdAgent(), null, null);
+								getCampagneCourante().getAnnee(),
+								Integer.valueOf(getAgentConnecte(request).getIdAgent()), null, null);
 					}
 				}
 			}
