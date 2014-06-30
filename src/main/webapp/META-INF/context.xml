@@ -162,7 +162,7 @@
 		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
 	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH"
 		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />		
-	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_CONTRAT_SIRH"
+	<Parameter description="SIRH WS url pour les contrats de travail SIRH" name="SIRH_WS_URL_CONTRAT_SIRH"
 		override="false" value="http://svi-tomcat0:8085/sirhws/contrat/downloadContratSIRH" />		
 	<Parameter description="repertoire pour les documents issus des modeles"
 		name="REPERTOIRE_ACTES" override="false"
