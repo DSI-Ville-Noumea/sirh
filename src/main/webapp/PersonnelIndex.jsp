@@ -33,7 +33,7 @@ res+=")</script>";
 </script>
 <LINK rel="stylesheet" href="theme/menu.css" type="text/css">
 </HEAD>
-<BODY text="#000000" onload="preload();" style="cursor : auto;" >
+<BODY text="#000000" onload="preload();" style="cursor : auto;" class="menuGauche" >
 <BASEFONT FACE="Arial" SIZE=2> 
 <nobr>
 <FORM name="leForm" method="POST" target="Main" action="GestionAgentServlet">
