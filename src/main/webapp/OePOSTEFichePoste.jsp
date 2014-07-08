@@ -693,6 +693,9 @@
 				<%} %>
 				<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
 				</FIELDSET>
+				<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2Fieldset") %>">
+					<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+				</FIELDSET>
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
