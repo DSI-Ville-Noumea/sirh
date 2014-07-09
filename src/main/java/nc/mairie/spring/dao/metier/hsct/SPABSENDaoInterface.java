@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.hsct;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.hsct.SPABSEN;
+import nc.mairie.metier.hsct.SPABSEN;
 
 public interface SPABSENDaoInterface {
 

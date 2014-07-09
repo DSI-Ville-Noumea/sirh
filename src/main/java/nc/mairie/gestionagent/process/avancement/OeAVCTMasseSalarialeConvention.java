@@ -33,8 +33,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -48,8 +46,6 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = LoggerFactory.getLogger(OeAVCTMasseSalarialeConvention.class);
-
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	private String[] LB_ANNEE;
@@ -61,13 +57,13 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private ArrayList<AvancementConvCol> listeAvct;
 
 	public String ACTION_CALCUL = "Calcul";
-	
+
 	private PrimeAgentDao primeAgentDao;
 
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		
+
 		if (getPrimeAgentDao() == null) {
 			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
@@ -872,10 +868,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							newPrime.creerPrime(getTransaction(), user);
 
 							// on crée aussi une prime agent
-							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
-									new Integer(agent.getNoMatricule()), 
-									new Integer(newPrime.getNoRubr()), 
-									newPrime.getDatDeb());
+							PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), new Integer(
+									agent.getNoMatricule()), new Integer(newPrime.getNoRubr()), newPrime.getDatDeb());
 							getPrimeAgentDao().creerPrimeAgent(primeAgent);
 						}
 					} else {
@@ -891,11 +885,10 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						newPrime.setNoRubr("1200");
 						newPrime.creerPrime(getTransaction(), user);
 
-						// on crée aussi une prime agentPrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
-						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), 
-								new Integer(agent.getNoMatricule()), 
-								new Integer(newPrime.getNoRubr()), 
-								newPrime.getDatDeb());
+						// on crée aussi une prime agentPrimeAgent primeAgent =
+						// new PrimeAgent(new Integer(agent.getIdAgent()),
+						PrimeAgent primeAgent = new PrimeAgent(new Integer(agent.getIdAgent()), new Integer(
+								agent.getNoMatricule()), new Integer(newPrime.getNoRubr()), newPrime.getDatDeb());
 						getPrimeAgentDao().creerPrimeAgent(primeAgent);
 					}
 

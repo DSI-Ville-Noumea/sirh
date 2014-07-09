@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.parametrage.JourFerie;
+import nc.mairie.metier.parametrage.JourFerie;
 
 public interface JourFerieDaoInterface {
 

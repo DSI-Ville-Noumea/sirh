@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.parametrage.Employeur;
+import nc.mairie.metier.parametrage.Employeur;
 
 public interface EmployeurDaoInterface {
 

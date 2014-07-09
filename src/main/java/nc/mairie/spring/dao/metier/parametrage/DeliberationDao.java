@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.parametrage.Deliberation;
+import nc.mairie.metier.parametrage.Deliberation;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

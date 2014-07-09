@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.EAE.EaeDeveloppement;
+import nc.mairie.metier.eae.EaeDeveloppement;
 
 public interface EaeDeveloppementDaoInterface {
 

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.parametrage.RepresentantCap;
+import nc.mairie.metier.parametrage.RepresentantCap;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

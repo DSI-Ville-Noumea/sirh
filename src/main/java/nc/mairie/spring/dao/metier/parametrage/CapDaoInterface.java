@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.parametrage.Cap;
+import nc.mairie.metier.parametrage.Cap;
 
 public interface CapDaoInterface {
 

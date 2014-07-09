@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
+import nc.mairie.metier.eae.EaeEvolution;
 
 public interface EaeEvolutionDaoInterface {
 

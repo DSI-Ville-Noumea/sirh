@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeFinalisation;
+import nc.mairie.metier.eae.EaeFinalisation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

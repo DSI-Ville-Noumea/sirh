@@ -38,6 +38,7 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		if (getListeActeurs().size()==0) {
+			@SuppressWarnings("unchecked")
 			ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEACTEURS");
 			ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), "DD");

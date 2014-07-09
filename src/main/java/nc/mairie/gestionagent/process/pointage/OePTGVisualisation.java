@@ -882,6 +882,7 @@ public class OePTGVisualisation extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean performPB_FILTRER() throws Exception {
 		if (!performControlerFiltres()) {
 			return false;
@@ -1000,7 +1001,7 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 
 		// on fait l'intersection des listes d'agent
-		Collection intersectionCollection = new ArrayList<>();
+		Collection<String> intersectionCollection = new ArrayList<>();
 		if (idAgentPopulation.size() > 0) {
 			intersectionCollection = idAgentPopulation;
 			if (idAgentMinMax.size() > 0) {

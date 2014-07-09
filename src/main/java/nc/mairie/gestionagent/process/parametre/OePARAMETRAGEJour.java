@@ -7,10 +7,10 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
+import nc.mairie.metier.parametrage.JourFerie;
+import nc.mairie.metier.parametrage.TypeJourFerie;
 import nc.mairie.spring.dao.metier.parametrage.JourFerieDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao;
-import nc.mairie.spring.domain.metier.parametrage.JourFerie;
-import nc.mairie.spring.domain.metier.parametrage.TypeJourFerie;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;

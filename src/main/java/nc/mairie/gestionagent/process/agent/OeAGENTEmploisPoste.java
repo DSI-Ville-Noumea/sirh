@@ -42,10 +42,10 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
+import nc.mairie.metier.specificites.PrimePointageAff;
+import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
-import nc.mairie.spring.domain.metier.specificites.PrimePointageAff;
-import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -298,6 +298,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialiserSpecificites() throws Exception {
 		setListeAvantage(null);
 		setListeDelegation(null);

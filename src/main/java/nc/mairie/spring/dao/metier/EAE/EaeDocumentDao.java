@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeDocument;
+import nc.mairie.metier.eae.EaeDocument;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

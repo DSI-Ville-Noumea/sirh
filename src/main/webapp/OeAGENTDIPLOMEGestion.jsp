@@ -1,6 +1,6 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.spring.domain.metier.parametrage.CentreFormation"%>
-<%@page import="nc.mairie.spring.domain.metier.parametrage.TitreFormation"%>
+<%@page import="nc.mairie.metier.parametrage.CentreFormation"%>
+<%@page import="nc.mairie.metier.parametrage.TitreFormation"%>
 <%@page import="nc.mairie.metier.diplome.DiplomeAgent"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>

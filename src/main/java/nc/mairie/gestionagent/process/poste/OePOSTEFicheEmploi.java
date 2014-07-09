@@ -758,7 +758,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		if (getListeAutreAppellationMulti() == null)
 			setListeAutreAppellationMulti(new ArrayList<AutreAppellationEmploi>());
-		AutreAppellationEmploi aae = new AutreAppellationEmploi(getFicheEmploiCourant().getIdFicheEmploi(), getVAL_EF_AUTRE_APPELLATION());
+		AutreAppellationEmploi aae = new AutreAppellationEmploi(getFicheEmploiCourant().getIdFicheEmploi(),
+				getVAL_EF_AUTRE_APPELLATION());
 		if (!getListeAutreAppellationMulti().contains(aae)) {
 			getListeAutreAppellationMulti().add(aae);
 
@@ -812,12 +813,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
-		// dans le cas ou l on vient de la fiche de poste, on retourne sur la fiche de poste
-		if(null != getProcessAppelant()
-				&& OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())){
+		// dans le cas ou l on vient de la fiche de poste, on retourne sur la
+		// fiche de poste
+		if (null != getProcessAppelant() && OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		}
-		
+
 		return true;
 	}
 
@@ -850,7 +851,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				}
 			}
 			if (getFicheEmploiCourant().supprimerFicheEmploi(getTransaction())) {
-				messageInf = MessageUtils.getMessage("INF101", "Fiche emploi " + getFicheEmploiCourant().getRefMairie());
+				messageInf = MessageUtils
+						.getMessage("INF101", "Fiche emploi " + getFicheEmploiCourant().getRefMairie());
 				setFicheEmploiCourant(null);
 				setSuppression(false);
 				viderFicheEmploi();
@@ -869,21 +871,27 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			if (getFicheEmploiCourant().getIdFicheEmploi() == null) {
 				// Création de la Ref Mairie
-				int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
-				int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT())
-						: -1);
-				String codeDomaineEtCodeFamille = ((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getCodeDomaineEmploi()
+				int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer
+						.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
+				int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
+						.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
+				String codeDomaineEtCodeFamille = ((DomaineEmploi) getListeDomaine().get(indiceDomaine))
+						.getCodeDomaineEmploi()
 						+ ((FamilleEmploi) getListeFamille().get(indiceFamille)).getCodeFamilleEmploi();
 				// RG_PE_FE_A04
 				getFicheEmploiCourant().setRefMairie(
 						codeDomaineEtCodeFamille
-								+ Services.lpad(String.valueOf(FicheEmploi.genererNumChrono(getTransaction(), codeDomaineEtCodeFamille)), 3, "0"));
+								+ Services.lpad(String.valueOf(FicheEmploi.genererNumChrono(getTransaction(),
+										codeDomaineEtCodeFamille)), 3, "0"));
 
 				// Création de la fiche emploi
 				getFicheEmploiCourant().creerFicheEmploi(getTransaction());
 
 				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Fiche emploi " + getFicheEmploiCourant().getRefMairie()));
+					getTransaction()
+							.declarerErreur(
+									MessageUtils.getMessage("ERR976", "Fiche emploi "
+											+ getFicheEmploiCourant().getRefMairie()));
 					return false;
 				}
 
@@ -892,7 +900,10 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				// Modification de la fiche emploi
 				getFicheEmploiCourant().modifierFicheEmploi(getTransaction());
 				if (getTransaction().isErreur()) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR978", "Fiche emploi " + getFicheEmploiCourant().getRefMairie()));
+					getTransaction()
+							.declarerErreur(
+									MessageUtils.getMessage("ERR978", "Fiche emploi "
+											+ getFicheEmploiCourant().getRefMairie()));
 					return false;
 				}
 
@@ -909,7 +920,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				aae.creerAutreAppellationEmploi(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR976", "AutreAppellation '" + aae.getLibAutreAppellationEmploi() + "'"));
+							MessageUtils.getMessage("ERR976", "AutreAppellation '" + aae.getLibAutreAppellationEmploi()
+									+ "'"));
 					return false;
 				}
 			}
@@ -920,7 +932,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				aae.supprimerAutreAppellationEmploi(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR975", "AutreAppellation '" + aae.getLibAutreAppellationEmploi() + "'"));
+							MessageUtils.getMessage("ERR975", "AutreAppellation '" + aae.getLibAutreAppellationEmploi()
+									+ "'"));
 					return false;
 				}
 			}
@@ -932,7 +945,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				CategorieFE catFE = new CategorieFE(getFicheEmploiCourant().getIdFicheEmploi(), cat.getIdCategorie());
 				catFE.creerCategorieFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Categorie '" + cat.getLibCategorie() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "Categorie '" + cat.getLibCategorie() + "'"));
 					return false;
 				}
 			}
@@ -940,11 +954,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCategorieASupprimer().size(); i++) {
 				Categorie cat = (Categorie) getListeCategorieASupprimer().get(i);
-				CategorieFE catFE = CategorieFE.chercherCategorieFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						cat.getIdCategorie());
+				CategorieFE catFE = CategorieFE.chercherCategorieFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), cat.getIdCategorie());
 				catFE.supprimerCategorieFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "Categorie '" + cat.getLibCategorie() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "Categorie '" + cat.getLibCategorie() + "'"));
 					return false;
 				}
 			}
@@ -953,10 +968,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouveaux cadres emploi et suppression des anciens
 			for (int i = 0; i < getListeCadresEmploiAAjouter().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiAAjouter().get(i);
-				CadreEmploiFE cadreFE = new CadreEmploiFE(getFicheEmploiCourant().getIdFicheEmploi(), cadre.getIdCadreEmploi());
+				CadreEmploiFE cadreFE = new CadreEmploiFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						cadre.getIdCadreEmploi());
 				cadreFE.creerCadreEmploiFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
 					return false;
 				}
 			}
@@ -964,11 +981,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCadresEmploiASupprimer().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiASupprimer().get(i);
-				CadreEmploiFE cadreFE = CadreEmploiFE.chercherCadreEmploiFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						cadre.getIdCadreEmploi());
+				CadreEmploiFE cadreFE = CadreEmploiFE.chercherCadreEmploiFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), cadre.getIdCadreEmploi());
 				cadreFE.supprimerCadreEmploiFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
 					return false;
 				}
 			}
@@ -978,10 +996,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciens
 			for (int i = 0; i < getListeNiveauEtudeAAjouter().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeAAjouter().get(i);
-				NiveauEtudeFE nivEtudeFE = new NiveauEtudeFE(getFicheEmploiCourant().getIdFicheEmploi(), niv.getIdNiveauEtude());
+				NiveauEtudeFE nivEtudeFE = new NiveauEtudeFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						niv.getIdNiveauEtude());
 				nivEtudeFE.creerNiveauEtudeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
 					return false;
 				}
 			}
@@ -989,11 +1009,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeNiveauEtudeASupprimer().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeASupprimer().get(i);
-				NiveauEtudeFE nivEtudeFE = NiveauEtudeFE.chercherNiveauEtudeFE(getTransaction(), niv.getIdNiveauEtude(), getFicheEmploiCourant()
-						.getIdFicheEmploi());
+				NiveauEtudeFE nivEtudeFE = NiveauEtudeFE.chercherNiveauEtudeFE(getTransaction(),
+						niv.getIdNiveauEtude(), getFicheEmploiCourant().getIdFicheEmploi());
 				nivEtudeFE.supprimerNiveauEtudeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
 					return false;
 				}
 			}
@@ -1002,10 +1023,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouveaux diplômes et suppression des anciens
 			for (int i = 0; i < getListeDiplomeAAjouter().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeAAjouter().get(i);
-				DiplomeFE diplFE = new DiplomeFE(getFicheEmploiCourant().getIdFicheEmploi(), dipl.getIdDiplomeGenerique());
+				DiplomeFE diplFE = new DiplomeFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						dipl.getIdDiplomeGenerique());
 				diplFE.creerDiplomeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
 					return false;
 				}
 			}
@@ -1013,11 +1036,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeDiplomeASupprimer().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeASupprimer().get(i);
-				DiplomeFE diplFE = DiplomeFE.chercherDiplomeFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						dipl.getIdDiplomeGenerique());
+				DiplomeFE diplFE = DiplomeFE.chercherDiplomeFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), dipl.getIdDiplomeGenerique());
 				diplFE.supprimerDiplomeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
 					return false;
 				}
 			}
@@ -1030,7 +1054,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				ActiviteFE actiFE = new ActiviteFE(getFicheEmploiCourant().getIdFicheEmploi(), acti.getIdActivite());
 				actiFE.creerActiviteFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "Activité principale '" + acti.getNomActivite() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "Activité principale '" + acti.getNomActivite() + "'"));
 					return false;
 				}
 			}
@@ -1038,10 +1063,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeActiPrincASupprimer().size(); i++) {
 				Activite acti = (Activite) getListeActiPrincASupprimer().get(i);
-				ActiviteFE actiFE = ActiviteFE.chercherActiviteFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(), acti.getIdActivite());
+				ActiviteFE actiFE = ActiviteFE.chercherActiviteFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), acti.getIdActivite());
 				actiFE.supprimerActiviteFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "Activité principale '" + acti.getNomActivite() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "Activité principale '" + acti.getNomActivite() + "'"));
 					return false;
 				}
 			}
@@ -1051,10 +1078,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciennes
 			for (int i = 0; i < getListeSavoirAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeSavoirAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(), comp.getIdCompetence());
+				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						comp.getIdCompetence());
 				compFE.creerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1062,11 +1091,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeSavoirASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeSavoirASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						comp.getIdCompetence());
+				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), comp.getIdCompetence());
 				compFE.supprimerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1076,10 +1106,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// des anciennes
 			for (int i = 0; i < getListeSavoirFaireAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeSavoirFaireAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(), comp.getIdCompetence());
+				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						comp.getIdCompetence());
 				compFE.creerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1087,11 +1119,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeSavoirFaireASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeSavoirFaireASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						comp.getIdCompetence());
+				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), comp.getIdCompetence());
 				compFE.supprimerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1101,10 +1134,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// des anciennes
 			for (int i = 0; i < getListeComportementAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeComportementAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(), comp.getIdCompetence());
+				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+						comp.getIdCompetence());
 				compFE.creerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1112,11 +1147,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeComportementASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeComportementASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant().getIdFicheEmploi(),
-						comp.getIdCompetence());
+				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
+						.getIdFicheEmploi(), comp.getIdCompetence());
 				compFE.supprimerCompetenceFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
 				}
 			}
@@ -1133,13 +1169,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			setFocus(null);
 			getTransaction().declarerErreur(messageInf);
 		}
-		
-		// dans le cas ou l on vient de la fiche de poste, on retourne sur la fiche de poste
-		if(null != getProcessAppelant()
-				&& OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())){
+
+		// dans le cas ou l on vient de la fiche de poste, on retourne sur la
+		// fiche de poste
+		if (null != getProcessAppelant() && OePOSTEFichePoste.class.equals(getProcessAppelant().getClass())) {
 			setStatut(STATUT_PROCESS_APPELANT);
 		}
-		
+
 		return true;
 	}
 
@@ -1169,11 +1205,15 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		getFicheEmploiCourant().setLienHierarchique(Const.CHAINE_VIDE);
 		getFicheEmploiCourant().setDefinitionEmploi(getVAL_EF_DEFINITION_EMPLOI());
 
-		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
-		getFicheEmploiCourant().setIdDomaineFE(((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi());
+		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
+		getFicheEmploiCourant().setIdDomaineFE(
+				((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi());
 
-		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
-		getFicheEmploiCourant().setIdFamilleEmploi(((FamilleEmploi) getListeFamille().get(indiceFamille)).getIdFamilleEmploi());
+		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
+				.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
+		getFicheEmploiCourant().setIdFamilleEmploi(
+				((FamilleEmploi) getListeFamille().get(indiceFamille)).getIdFamilleEmploi());
 
 		return true;
 	}
@@ -1200,7 +1240,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 
 		// Récupération de la fiche emploi en session
-		FicheEmploi feRechAvancee = (FicheEmploi) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
+		FicheEmploi feRechAvancee = (FicheEmploi) VariablesActivite.recuperer(this,
+				VariablesActivite.ACTIVITE_FICHE_EMPLOI);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI);
 
 		if (feRechAvancee != null) {
@@ -1221,7 +1262,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			addZone(getNOM_RG_TYPE_COMPETENCE(), getNOM_RB_TYPE_COMPETENCE_S());
 		} else {
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_S()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(), EnumTypeCompetence.SAVOIR.getValue()));
+				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+						EnumTypeCompetence.SAVOIR.getValue()));
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_SF()))
 				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
 						EnumTypeCompetence.SAVOIR_FAIRE.getValue()));
@@ -1268,10 +1310,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		addZone(getNOM_EF_DEFINITION_EMPLOI(), getFicheEmploiCourant().getDefinitionEmploi());
 
 		if (getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			DomaineEmploi domaine = DomaineEmploi.chercherDomaineEmploi(getTransaction(), getFicheEmploiCourant().getIdDomaineFE());
+			DomaineEmploi domaine = DomaineEmploi.chercherDomaineEmploi(getTransaction(), getFicheEmploiCourant()
+					.getIdDomaineFE());
 			addZone(getNOM_LB_DOMAINE_SELECT(), String.valueOf(getListeDomaine().indexOf(domaine)));
 
-			FamilleEmploi famille = FamilleEmploi.chercherFamilleEmploi(getTransaction(), getFicheEmploiCourant().getIdFamilleEmploi());
+			FamilleEmploi famille = FamilleEmploi.chercherFamilleEmploi(getTransaction(), getFicheEmploiCourant()
+					.getIdFamilleEmploi());
 			addZone(getNOM_LB_FAMILLE_EMPLOI_SELECT(), String.valueOf(getListeFamille().indexOf(famille)));
 
 		}
@@ -1294,26 +1338,30 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private void initialiserCompetence() throws Exception {
 
 		// Recherche des types de compétence
-		TypeCompetence savoir = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(), EnumTypeCompetence.SAVOIR.getValue());
+		TypeCompetence savoir = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				EnumTypeCompetence.SAVOIR.getValue());
 
-		TypeCompetence savoirFaire = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(), EnumTypeCompetence.SAVOIR_FAIRE.getValue());
+		TypeCompetence savoirFaire = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				EnumTypeCompetence.SAVOIR_FAIRE.getValue());
 
-		TypeCompetence comportement = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(), EnumTypeCompetence.COMPORTEMENT.getValue());
+		TypeCompetence comportement = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				EnumTypeCompetence.COMPORTEMENT.getValue());
 
 		if (getListeSavoirMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
 					EnumTypeCompetence.SAVOIR.getCode()));
 		}
 		if (getListeSavoirFaireMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-					EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
+			setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
+					getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
 		}
 		if (getListeComportementMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-					EnumTypeCompetence.COMPORTEMENT.getCode()));
+			setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
+					getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode()));
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
+		@SuppressWarnings("unchecked")
 		ArrayList<Competence> listeCompSelect = (ArrayList<Competence>) VariablesActivite.recuperer(this, "COMPETENCE");
 		if (listeCompSelect != null && listeCompSelect.size() != 0) {
 			for (int i = 0; i < listeCompSelect.size(); i++) {
@@ -1374,7 +1422,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < getListeSavoirMulti().size(); i++) {
 				Competence co = (Competence) getListeSavoirMulti().get(i);
 
-				addZone(getNOM_ST_LIB_COMP_S(indiceCompS), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
+				addZone(getNOM_ST_LIB_COMP_S(indiceCompS), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: co.getNomCompetence());
 
 				indiceCompS++;
 			}
@@ -1385,7 +1434,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < getListeSavoirFaireMulti().size(); i++) {
 				Competence co = (Competence) getListeSavoirFaireMulti().get(i);
 
-				addZone(getNOM_ST_LIB_COMP_SF(indiceCompSF), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
+				addZone(getNOM_ST_LIB_COMP_SF(indiceCompSF), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: co.getNomCompetence());
 
 				indiceCompSF++;
 			}
@@ -1396,7 +1446,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < getListeComportementMulti().size(); i++) {
 				Competence co = (Competence) getListeComportementMulti().get(i);
 
-				addZone(getNOM_ST_LIB_COMP_PRO(indiceCompPro), co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
+				addZone(getNOM_ST_LIB_COMP_PRO(indiceCompPro),
+						co.getNomCompetence().equals(Const.CHAINE_VIDE) ? "&nbsp;" : co.getNomCompetence());
 
 				indiceCompPro++;
 			}
@@ -1518,14 +1569,16 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseAutreAppellationMulti() throws Exception {
 		if (getListeAutreAppellationMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(getTransaction(), getFicheEmploiCourant()));
+			setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(getTransaction(),
+					getFicheEmploiCourant()));
 		}
 
 		if (getListeAutreAppellationMulti() != null) {
 			int tailles[] = { 100 };
 			FormateListe aListeFormatee = new FormateListe(tailles);
 			for (int i = 0; i < getListeAutreAppellationMulti().size(); i++) {
-				AutreAppellationEmploi autreAppellEmpl = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(i);
+				AutreAppellationEmploi autreAppellEmpl = (AutreAppellationEmploi) getListeAutreAppellationMulti()
+						.get(i);
 				String colonnes[] = { autreAppellEmpl.getLibAutreAppellationEmploi() };
 				aListeFormatee.ajouteLigne(colonnes);
 			}
@@ -1551,7 +1604,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				catMulti += categorie.getLibCategorie() + ", ";
 			}
 		}
-		addZone(getNOM_EF_CATEGORIE_MULTI(), catMulti.length() > 0 ? catMulti.substring(0, catMulti.length() - 2) : catMulti);
+		addZone(getNOM_EF_CATEGORIE_MULTI(), catMulti.length() > 0 ? catMulti.substring(0, catMulti.length() - 2)
+				: catMulti);
 	}
 
 	/**
@@ -1561,7 +1615,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseCadresEmploiMulti() throws Exception {
 		if (getListeCadresEmploiMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(), getFicheEmploiCourant()));
+			setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(),
+					getFicheEmploiCourant()));
 		}
 
 		int tailles[] = { 100 };
@@ -1593,7 +1648,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
 			}
 		}
-		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(), nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
+		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
+				nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
 	}
 
 	/**
@@ -1603,7 +1659,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseDiplomeMulti() throws Exception {
 		if (getListeDiplomeMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeDiplomeMulti(DiplomeGenerique.listerDiplomeGeneriqueAvecFE(getTransaction(), getFicheEmploiCourant()));
+			setListeDiplomeMulti(DiplomeGenerique.listerDiplomeGeneriqueAvecFE(getTransaction(),
+					getFicheEmploiCourant()));
 		}
 
 		int tailles[] = { 100 };
@@ -1629,6 +1686,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
 		}
 		// on recupere les activites selectionnées dans l'ecran de selection
+		@SuppressWarnings("unchecked")
 		ArrayList<Activite> listeActiSelect = (ArrayList<Activite>) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
 		if (listeActiSelect != null && listeActiSelect.size() != 0) {
 			for (int i = 0; i < listeActiSelect.size(); i++) {
@@ -1653,7 +1711,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < getListeActiPrincMulti().size(); i++) {
 				Activite acti = (Activite) getListeActiPrincMulti().get(i);
 
-				addZone(getNOM_ST_LIB_ACTI(indiceActi), acti.getNomActivite().equals(Const.CHAINE_VIDE) ? "&nbsp;" : acti.getNomActivite());
+				addZone(getNOM_ST_LIB_ACTI(indiceActi), acti.getNomActivite().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: acti.getNomActivite());
 
 				indiceActi++;
 			}
@@ -1789,7 +1848,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_CADRE_EMPLOI(HttpServletRequest request) throws Exception {
 		// Récupération du cadre emploi à ajouter
-		int indiceCadre = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
+		int indiceCadre = (Services.estNumerique(getVAL_LB_CADRE_EMPLOI_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CADRE_EMPLOI_SELECT()) : -1);
 		if (indiceCadre == -1 || getListeCadresEmploi().size() == 0 || indiceCadre > getListeCadresEmploi().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Cadres emploi"));
 			return false;
@@ -1871,7 +1931,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_CATEGORIE(HttpServletRequest request) throws Exception {
 		// Récupération de la catégorie à ajouter
-		int indiceCat = (Services.estNumerique(getVAL_LB_CATEGORIE_SELECT()) ? Integer.parseInt(getVAL_LB_CATEGORIE_SELECT()) : -1);
+		int indiceCat = (Services.estNumerique(getVAL_LB_CATEGORIE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CATEGORIE_SELECT()) : -1);
 		if (indiceCat == -1 || getListeCategorie().size() == 0 || indiceCat > getListeCategorie().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Catégories"));
 			return false;
@@ -1914,7 +1975,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_DIPLOME(HttpServletRequest request) throws Exception {
 		// Récupération du diplome à ajouter
-		int indiceDipl = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
+		int indiceDipl = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
 		if (indiceDipl == -1 || getListeDiplome().size() == 0 || indiceDipl > getListeDiplome().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Diplomes"));
 			return false;
@@ -1958,7 +2020,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_NIVEAU_ETUDE(HttpServletRequest request) throws Exception {
 		// Récupération du niveau d'étude à ajouter
-		int indiceNiv = (Services.estNumerique(getVAL_LB_NIVEAU_ETUDE_SELECT()) ? Integer.parseInt(getVAL_LB_NIVEAU_ETUDE_SELECT()) : -1);
+		int indiceNiv = (Services.estNumerique(getVAL_LB_NIVEAU_ETUDE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_NIVEAU_ETUDE_SELECT()) : -1);
 		if (indiceNiv == -1 || getListeNiveauEtude().size() == 0 || indiceNiv > getListeNiveauEtude().size()) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Niveaux d'étude"));
 			return false;
@@ -2019,7 +2082,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Positionnement sur le dernier élément de la liste
 		if (getListeCadresEmploiMulti() != null && getListeCadresEmploiMulti().size() > 0) {
-			CadreEmploi dernierCadreEmploiMulti = (CadreEmploi) getListeCadresEmploiMulti().get(getListeCadresEmploiMulti().size() - 1);
+			CadreEmploi dernierCadreEmploiMulti = (CadreEmploi) getListeCadresEmploiMulti().get(
+					getListeCadresEmploiMulti().size() - 1);
 			int i = getListeCadresEmploi().indexOf(dernierCadreEmploiMulti) + 1;
 			addZone(getNOM_LB_CADRE_EMPLOI_SELECT(), String.valueOf(i));
 		} else {
@@ -2063,7 +2127,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Positionnement sur le dernier élément de la liste
 		if (getListeCategorieMulti() != null && getListeCategorieMulti().size() > 0) {
-			Categorie derniereCategorieMulti = (Categorie) getListeCategorieMulti().get(getListeCategorieMulti().size() - 1);
+			Categorie derniereCategorieMulti = (Categorie) getListeCategorieMulti().get(
+					getListeCategorieMulti().size() - 1);
 			int i = getListeCategorie().indexOf(derniereCategorieMulti) + 1;
 			addZone(getNOM_LB_CATEGORIE_SELECT(), String.valueOf(i));
 		} else {
@@ -2108,7 +2173,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Positionnement sur le dernier élément de la liste
 		if (getListeDiplomeMulti() != null && getListeDiplomeMulti().size() > 0) {
-			DiplomeGenerique dernierDipMulti = (DiplomeGenerique) getListeDiplomeMulti().get(getListeDiplomeMulti().size() - 1);
+			DiplomeGenerique dernierDipMulti = (DiplomeGenerique) getListeDiplomeMulti().get(
+					getListeDiplomeMulti().size() - 1);
 			int i = getListeDiplome().indexOf(dernierDipMulti) + 1;
 			addZone(getNOM_LB_DIPLOME_SELECT(), String.valueOf(i));
 		} else {
@@ -2152,7 +2218,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Positionnement sur le dernier élément de la liste
 		if (getListeNiveauEtudeMulti() != null && getListeNiveauEtudeMulti().size() > 0) {
-			NiveauEtude dernierNivMulti = (NiveauEtude) getListeNiveauEtudeMulti().get(getListeNiveauEtudeMulti().size() - 1);
+			NiveauEtude dernierNivMulti = (NiveauEtude) getListeNiveauEtudeMulti().get(
+					getListeNiveauEtudeMulti().size() - 1);
 			int i = getListeNiveauEtude().indexOf(dernierNivMulti) + 1;
 			addZone(getNOM_LB_NIVEAU_ETUDE_SELECT(), String.valueOf(i));
 		} else {
@@ -2530,7 +2597,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	public boolean performPB_RECHERCHER_FE(HttpServletRequest request) throws Exception {
 		// Recherche de la fiche emploi
 		if (getVAL_EF_RECHERCHE_REF_MAIRIE() != null && getVAL_EF_RECHERCHE_REF_MAIRIE() != Const.CHAINE_VIDE) {
-			FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_EF_RECHERCHE_REF_MAIRIE());
+			FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(),
+					getVAL_EF_RECHERCHE_REF_MAIRIE());
 			if (getTransaction().isErreur()) {
 				return false;
 			}
@@ -2541,18 +2609,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			if (fiche != null && !fiche.getRefMairie().equals(getFicheEmploiCourant().getRefMairie())) {
 				viderFicheEmploi();
 				setFicheEmploiCourant(fiche);
-				setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(getTransaction(), getFicheEmploiCourant()));
+				setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(
+						getTransaction(), getFicheEmploiCourant()));
 				setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-						EnumTypeCompetence.SAVOIR.getCode()));
-				setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-						EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
-				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-						EnumTypeCompetence.COMPORTEMENT.getCode()));
+				setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
+						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR.getCode()));
+				setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
+						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
+				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
+						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode()));
 				setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(), getFicheEmploiCourant()));
+				setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(),
+						getFicheEmploiCourant()));
 				setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeDiplomeMulti(DiplomeGenerique.listerDiplomeGeneriqueAvecFE(getTransaction(), getFicheEmploiCourant()));
+				setListeDiplomeMulti(DiplomeGenerique.listerDiplomeGeneriqueAvecFE(getTransaction(),
+						getFicheEmploiCourant()));
 			}
 		} else {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR982"));
@@ -2605,7 +2676,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	public boolean performPB_SUPPRIMER_AUTRE_APPELLATION(HttpServletRequest request) throws Exception {
 		// Suppression de la dernière appellation de la liste
 		if (getListeAutreAppellationMulti() != null && getListeAutreAppellationMulti().size() != 0) {
-			AutreAppellationEmploi aae = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(getListeAutreAppellationMulti().size() - 1);
+			AutreAppellationEmploi aae = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(
+					getListeAutreAppellationMulti().size() - 1);
 			getListeAutreAppellationMulti().remove(aae);
 
 			if (getListeAutreAppellationAAjouter().contains(aae)) {
@@ -2620,8 +2692,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Positionnement sur le dernier élément de la liste
 		if (getListeAutreAppellationMulti() != null && getListeAutreAppellationMulti().size() > 0) {
-			AutreAppellationEmploi dernierAutreAppelMulti = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(
-					getListeAutreAppellationMulti().size() - 1);
+			AutreAppellationEmploi dernierAutreAppelMulti = (AutreAppellationEmploi) getListeAutreAppellationMulti()
+					.get(getListeAutreAppellationMulti().size() - 1);
 			addZone(getNOM_EF_AUTRE_APPELLATION(), dernierAutreAppelMulti.getLibAutreAppellationEmploi());
 		}
 
@@ -3182,14 +3254,15 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			FicheEmploi ficheDupliquee = (FicheEmploi) getFicheEmploiCourant().clone();
 			ficheDupliquee.setRefMairie(ficheDupliquee.getRefMairie().substring(0, 5)
-					+ Services.lpad(String.valueOf(FicheEmploi.genererNumChrono(getTransaction(), ficheDupliquee.getRefMairie().substring(0, 5))), 3,
-							"0"));
+					+ Services.lpad(String.valueOf(FicheEmploi.genererNumChrono(getTransaction(), ficheDupliquee
+							.getRefMairie().substring(0, 5))), 3, "0"));
 			ficheDupliquee.creerFicheEmploi(getTransaction());
 
 			// Duplique les AutreAppellation
 			for (int i = 0; i < getListeAutreAppellationMulti().size(); i++) {
 				AutreAppellationEmploi aa = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(i);
-				AutreAppellationEmploi newAA = new AutreAppellationEmploi(ficheDupliquee.getIdFicheEmploi(), aa.getLibAutreAppellationEmploi());
+				AutreAppellationEmploi newAA = new AutreAppellationEmploi(ficheDupliquee.getIdFicheEmploi(),
+						aa.getLibAutreAppellationEmploi());
 				newAA.creerAutreAppellationEmploi(getTransaction());
 			}
 			// Duplique les Activites principales
@@ -3201,19 +3274,22 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les Savoir
 			for (int i = 0; i < getListeSavoirMulti().size(); i++) {
 				Competence compSavoir = (Competence) getListeSavoirMulti().get(i);
-				CompetenceFE newCompSavoirFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(), compSavoir.getIdCompetence());
+				CompetenceFE newCompSavoirFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
+						compSavoir.getIdCompetence());
 				newCompSavoirFE.creerCompetenceFE(getTransaction());
 			}
 			// Duplique les SavoirFaire
 			for (int i = 0; i < getListeSavoirFaireMulti().size(); i++) {
 				Competence compSavoirFaire = (Competence) getListeSavoirFaireMulti().get(i);
-				CompetenceFE newCompSavoirFaireFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(), compSavoirFaire.getIdCompetence());
+				CompetenceFE newCompSavoirFaireFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
+						compSavoirFaire.getIdCompetence());
 				newCompSavoirFaireFE.creerCompetenceFE(getTransaction());
 			}
 			// Duplique les Comportement
 			for (int i = 0; i < getListeComportementMulti().size(); i++) {
 				Competence compComportement = (Competence) getListeComportementMulti().get(i);
-				CompetenceFE newCompComportementFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(), compComportement.getIdCompetence());
+				CompetenceFE newCompComportementFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
+						compComportement.getIdCompetence());
 				newCompComportementFE.creerCompetenceFE(getTransaction());
 			}
 			// Duplique les Categorie
@@ -3225,7 +3301,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les CadreEmploi
 			for (int i = 0; i < getListeCadresEmploiMulti().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiMulti().get(i);
-				CadreEmploiFE newCadreFE = new CadreEmploiFE(ficheDupliquee.getIdFicheEmploi(), cadre.getIdCadreEmploi());
+				CadreEmploiFE newCadreFE = new CadreEmploiFE(ficheDupliquee.getIdFicheEmploi(),
+						cadre.getIdCadreEmploi());
 				newCadreFE.creerCadreEmploiFE(getTransaction());
 			}
 			// Duplique les NiveauEtude
@@ -3241,7 +3318,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				newDiplFE.creerDiplomeFE(getTransaction());
 			}
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "FicheEmploi " + ficheDupliquee.getRefMairie()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR976", "FicheEmploi " + ficheDupliquee.getRefMairie()));
 				return false;
 			}
 			setFicheEmploiCourant(ficheDupliquee);
@@ -3538,10 +3616,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			setSuppression(true);
 			ArrayList<FEFP> lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
 			if (lienFE_FP.size() > 0) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("INF105", getFicheEmploiCourant().getRefMairie()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("INF105", getFicheEmploiCourant().getRefMairie()));
 				setSuppressionLienFE_FP(true);
 			} else {
-				getTransaction().declarerErreur(MessageUtils.getMessage("INF102", getFicheEmploiCourant().getRefMairie()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("INF102", getFicheEmploiCourant().getRefMairie()));
 			}
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR122"));
@@ -3737,7 +3817,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
 	 * 
 	 */
-	public boolean performPB_SUPPRIMER_COMPETENCE_SAVOIR_FAIRE(HttpServletRequest request, int elemASupprimer) throws Exception {
+	public boolean performPB_SUPPRIMER_COMPETENCE_SAVOIR_FAIRE(HttpServletRequest request, int elemASupprimer)
+			throws Exception {
 		Competence c = (Competence) getListeSavoirFaireMulti().get(elemASupprimer);
 
 		if (c != null) {
@@ -3771,7 +3852,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 * setStatut(STATUT,Message d'erreur) Date de création : (18/07/11 16:08:47)
 	 * 
 	 */
-	public boolean performPB_SUPPRIMER_COMPETENCE_COMPORTEMENT(HttpServletRequest request, int elemASupp) throws Exception {
+	public boolean performPB_SUPPRIMER_COMPETENCE_COMPORTEMENT(HttpServletRequest request, int elemASupp)
+			throws Exception {
 		Competence c = (Competence) getListeComportementMulti().get(elemASupp);
 
 		if (c != null) {

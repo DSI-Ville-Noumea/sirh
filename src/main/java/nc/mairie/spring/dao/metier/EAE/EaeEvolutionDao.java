@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeEvolution;
+import nc.mairie.metier.eae.EaeEvolution;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

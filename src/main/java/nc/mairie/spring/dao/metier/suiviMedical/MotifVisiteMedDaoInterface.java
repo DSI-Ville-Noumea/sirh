@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.suiviMedical;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
+import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 
 public interface MotifVisiteMedDaoInterface {
 

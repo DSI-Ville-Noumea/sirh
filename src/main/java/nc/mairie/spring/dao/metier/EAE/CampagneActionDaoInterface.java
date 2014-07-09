@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.EAE.CampagneAction;
+import nc.mairie.metier.eae.CampagneAction;
 
 public interface CampagneActionDaoInterface {
 

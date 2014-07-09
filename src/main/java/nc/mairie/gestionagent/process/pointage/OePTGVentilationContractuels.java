@@ -117,6 +117,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 	private void initialiseListeAgent() {
 		// on recupere les agents selectionnées dans l'ecran de
 		// selection
+		@SuppressWarnings("unchecked")
 		ArrayList<AgentNW> listeAgentSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "AGENTS");
 		if (listeAgentSelect != null) {
 			setListeAgentsVentil(new ArrayList<AgentNW>());
@@ -142,6 +143,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 

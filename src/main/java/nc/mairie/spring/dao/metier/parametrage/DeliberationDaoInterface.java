@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.parametrage.Deliberation;
+import nc.mairie.metier.parametrage.Deliberation;
 
 public interface DeliberationDaoInterface {
 

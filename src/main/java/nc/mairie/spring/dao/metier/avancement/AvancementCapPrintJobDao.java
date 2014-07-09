@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
+import nc.mairie.metier.avancement.AvancementCapPrintJob;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

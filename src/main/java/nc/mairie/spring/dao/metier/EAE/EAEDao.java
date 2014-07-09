@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.domain.metier.EAE.EAE;
+import nc.mairie.metier.eae.EAE;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

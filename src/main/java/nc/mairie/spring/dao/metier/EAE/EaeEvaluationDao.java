@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import javax.sql.DataSource;
 
 import nc.mairie.metier.Const;
-import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.metier.eae.EaeEvaluation;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -34,9 +34,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
@@ -49,8 +46,6 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
-
-	private Logger logger = LoggerFactory.getLogger(OeAVCTMasseSalarialeDetaches.class);
 
 	private String[] LB_ANNEE;
 

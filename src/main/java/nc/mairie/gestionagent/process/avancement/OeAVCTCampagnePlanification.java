@@ -21,15 +21,15 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
+import nc.mairie.metier.eae.CampagneActeur;
+import nc.mairie.metier.eae.CampagneAction;
+import nc.mairie.metier.eae.CampagneEAE;
+import nc.mairie.metier.eae.EaeDocument;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
-import nc.mairie.spring.domain.metier.EAE.CampagneActeur;
-import nc.mairie.spring.domain.metier.EAE.CampagneAction;
-import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
-import nc.mairie.spring.domain.metier.EAE.EaeDocument;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -1328,6 +1328,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		}
 		// on recupere les Destinataire selectionnées dans l'ecran de
 		// selection
+		@SuppressWarnings("unchecked")
 		ArrayList<AgentNW> listeDestinataireSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "ACTEURS");
 		if (listeDestinataireSelect != null && listeDestinataireSelect.size() != 0) {
 			for (int i = 0; i < listeDestinataireSelect.size(); i++) {

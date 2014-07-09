@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.referentiel;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.referentiel.TypeRepresentant;
+import nc.mairie.metier.referentiel.TypeRepresentant;
 
 public interface TypeRepresentantDaoInterface {
 

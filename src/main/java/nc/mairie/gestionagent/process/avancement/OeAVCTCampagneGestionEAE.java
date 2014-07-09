@@ -30,9 +30,24 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.carriere.StatutCarriere;
 import nc.mairie.metier.diplome.DiplomeAgent;
+import nc.mairie.metier.diplome.FormationAgent;
+import nc.mairie.metier.eae.CampagneEAE;
+import nc.mairie.metier.eae.EAE;
+import nc.mairie.metier.eae.EaeCampagneTask;
+import nc.mairie.metier.eae.EaeDiplome;
+import nc.mairie.metier.eae.EaeEvaluateur;
+import nc.mairie.metier.eae.EaeEvaluation;
+import nc.mairie.metier.eae.EaeEvalue;
+import nc.mairie.metier.eae.EaeFDPActivite;
+import nc.mairie.metier.eae.EaeFDPCompetence;
+import nc.mairie.metier.eae.EaeFichePoste;
+import nc.mairie.metier.eae.EaeFormation;
+import nc.mairie.metier.eae.EaeParcoursPro;
+import nc.mairie.metier.parametrage.CentreFormation;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
 import nc.mairie.metier.parametrage.TitreDiplome;
+import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
@@ -59,21 +74,6 @@ import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
-import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
-import nc.mairie.spring.domain.metier.EAE.EAE;
-import nc.mairie.spring.domain.metier.EAE.EaeCampagneTask;
-import nc.mairie.spring.domain.metier.EAE.EaeDiplome;
-import nc.mairie.spring.domain.metier.EAE.EaeEvaluateur;
-import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
-import nc.mairie.spring.domain.metier.EAE.EaeEvalue;
-import nc.mairie.spring.domain.metier.EAE.EaeFDPActivite;
-import nc.mairie.spring.domain.metier.EAE.EaeFDPCompetence;
-import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
-import nc.mairie.spring.domain.metier.EAE.EaeFormation;
-import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
-import nc.mairie.spring.domain.metier.diplome.FormationAgent;
-import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
-import nc.mairie.spring.domain.metier.parametrage.TitreFormation;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
@@ -274,6 +274,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	}
 
 	private void initialiseEvaluateur() throws Exception {
+		@SuppressWarnings("unchecked")
 		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite
 				.recuperer(this, "EVALUATEURS");
 		VariablesActivite.enlever(this, "EVALUATEURS");

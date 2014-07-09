@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
+import nc.mairie.metier.specificites.PrimePointageFP;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -56,26 +55,24 @@ public class OeAGENTPrime extends BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'une fiche Prime.";
 	private String ACTION_CREATION = "Création d'une fiche Prime.";
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
-			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
-			CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
-	
+
 	private PrimeAgentDao primeAgentDao;
-	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		
+
 		if (getPrimeAgentDao() == null) {
 			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
-	
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -172,14 +169,20 @@ public class OeAGENTPrime extends BasicProcess {
 				Prime p = (Prime) getListePrimes().get(i);
 				Rubrique r = Rubrique.chercherRubrique(getTransaction(), p.getNoRubr());
 
-				addZone(getNOM_ST_CODE_RUBR(indicePrime), r == null || r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
-				addZone(getNOM_ST_LIB_RUBR(indicePrime), r == null || r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
-				addZone(getNOM_ST_REF_ARR(indicePrime), p.getRefArr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr());
+				addZone(getNOM_ST_CODE_RUBR(indicePrime),
+						r == null || r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_LIB_RUBR(indicePrime),
+						r == null || r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+				addZone(getNOM_ST_REF_ARR(indicePrime),
+						p.getRefArr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr());
 				addZone(getNOM_ST_DATE_ARR(indicePrime),
-						p.getDateArrete() == null || p.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;" : p.getDateArrete());
-				addZone(getNOM_ST_MONTANT(indicePrime), p.getMtPri().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getMtPri());
+						p.getDateArrete() == null || p.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;" : p
+								.getDateArrete());
+				addZone(getNOM_ST_MONTANT(indicePrime),
+						p.getMtPri().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getMtPri());
 				addZone(getNOM_ST_DATE_DEBUT(indicePrime), p.getDatDeb());
-				addZone(getNOM_ST_DATE_FIN(indicePrime), p.getDatFin() == null || p.getDatFin().equals(Const.DATE_NULL) ? "&nbsp;" : p.getDatFin());
+				addZone(getNOM_ST_DATE_FIN(indicePrime),
+						p.getDatFin() == null || p.getDatFin().equals(Const.DATE_NULL) ? "&nbsp;" : p.getDatFin());
 
 				indicePrime++;
 			}
@@ -326,13 +329,15 @@ public class OeAGENTPrime extends BasicProcess {
 		}
 
 		// reference arrete
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_REF_ARR())) && !Services.estNumerique(getZone(getNOM_EF_REF_ARR()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_REF_ARR()))
+				&& !Services.estNumerique(getZone(getNOM_EF_REF_ARR()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Ref. arrêté"));
 			return false;
 		}
 
 		// date de l'arrêté en format date
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_ARR())) && !Services.estUneDate(getZone(getNOM_EF_DATE_ARR()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_ARR()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_ARR()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'arrêté"));
 			return false;
 		}
@@ -353,7 +358,8 @@ public class OeAGENTPrime extends BasicProcess {
 		}
 
 		// date de fin format date
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN())) && !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin"));
 			return false;
 		}
@@ -386,7 +392,8 @@ public class OeAGENTPrime extends BasicProcess {
 
 				if (Services.compareDates(p.getDatDeb(), getPrimeCourante().getDatDeb()) >= 0) {
 					// dateDebCur < dateDeb
-					if (getPrimeCourante().getDatFin() == null || getPrimeCourante().getDatFin().equals(Const.CHAINE_VIDE)) {
+					if (getPrimeCourante().getDatFin() == null
+							|| getPrimeCourante().getDatFin().equals(Const.CHAINE_VIDE)) {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR100"));
 						return false;
 					} else if (Services.compareDates(getPrimeCourante().getDatFin(), p.getDatDeb()) > 0) {
@@ -465,13 +472,11 @@ public class OeAGENTPrime extends BasicProcess {
 
 			// Suppression du lien
 			PrimeAgent primeAgent = getPrimeAgentDao().chercherPrimeAgent(
-					new Integer(getAgentCourant().idAgent), 
+					new Integer(getAgentCourant().idAgent),
 					new Integer(getAgentCourant().getNoMatricule()),
-					new Integer(getPrimeCourante().getNoRubr()), 
-					new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? 
-							Services.convertitDate(Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") 
-							: "0")
-					);
+					new Integer(getPrimeCourante().getNoRubr()),
+					new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? Services.convertitDate(
+							Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") : "0"));
 			getPrimeAgentDao().supprimerPrimeAgent(primeAgent);
 			if (getTransaction().isErreur())
 				return false;
@@ -528,10 +533,8 @@ public class OeAGENTPrime extends BasicProcess {
 
 				getPrimeCourante().creerPrime(getTransaction(), user);
 
-				PrimeAgent primeAgent = new PrimeAgent(
-						new Integer(getAgentCourant().getIdAgent()), 
-						new Integer(getAgentCourant().getNoMatricule()), 
-						new Integer(getPrimeCourante().getNoRubr()), 
+				PrimeAgent primeAgent = new PrimeAgent(new Integer(getAgentCourant().getIdAgent()), new Integer(
+						getAgentCourant().getNoMatricule()), new Integer(getPrimeCourante().getNoRubr()),
 						getPrimeCourante().getDatDeb());
 				getPrimeAgentDao().creerPrimeAgent(primeAgent);
 			}
@@ -1080,5 +1083,5 @@ public class OeAGENTPrime extends BasicProcess {
 	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
 		this.primeAgentDao = primeAgentDao;
 	}
-	
+
 }

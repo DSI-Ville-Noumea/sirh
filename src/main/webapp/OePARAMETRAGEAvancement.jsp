@@ -1,8 +1,8 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.metier.carriere.GradeGenerique"%>
-<%@page import="nc.mairie.spring.domain.metier.parametrage.EmployeurCap"%>
-<%@page import="nc.mairie.spring.domain.metier.parametrage.Representant"%>
-<%@page import="nc.mairie.spring.domain.metier.parametrage.Employeur"%>
+<%@page import="nc.mairie.metier.parametrage.EmployeurCap"%>
+<%@page import="nc.mairie.metier.parametrage.Representant"%>
+<%@page import="nc.mairie.metier.parametrage.Employeur"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <HTML>

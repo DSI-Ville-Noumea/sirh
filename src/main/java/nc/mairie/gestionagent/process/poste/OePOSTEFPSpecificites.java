@@ -14,9 +14,9 @@ import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
+import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
-import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -1293,6 +1293,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialiseListeSpecificites() throws Exception {
 		// Avantages en nature
 		if (getListeAvantage() == null)

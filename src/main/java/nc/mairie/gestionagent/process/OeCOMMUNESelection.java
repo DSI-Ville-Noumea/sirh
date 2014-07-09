@@ -620,6 +620,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 		}
 
 		// Recup des villes
+		@SuppressWarnings("unchecked")
 		ArrayList<CommuneEtrangere> lesCommunes = (ArrayList<CommuneEtrangere>) getHashPaysCommuneEtrangere().get(aPays);
 
 		setListeCommunePays(lesCommunes);

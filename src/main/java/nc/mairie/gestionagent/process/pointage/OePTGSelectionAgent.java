@@ -45,6 +45,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 			setFirst(false);
 		}
 
+		@SuppressWarnings("unchecked")
 		ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEAGENT");
 		if (getListeAgentsDepart() == null)
 			setListeAgentsDepart(new ArrayList<AgentNW>());

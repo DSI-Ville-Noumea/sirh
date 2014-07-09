@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.EAE.EaeCampagneTask;
+import nc.mairie.metier.eae.EaeCampagneTask;
 
 public interface EaeCampagneTaskDaoInterface {
 

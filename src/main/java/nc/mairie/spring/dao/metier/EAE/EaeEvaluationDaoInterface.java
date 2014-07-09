@@ -1,6 +1,6 @@
 package nc.mairie.spring.dao.metier.EAE;
 
-import nc.mairie.spring.domain.metier.EAE.EaeEvaluation;
+import nc.mairie.metier.eae.EaeEvaluation;
 
 public interface EaeEvaluationDaoInterface {
 

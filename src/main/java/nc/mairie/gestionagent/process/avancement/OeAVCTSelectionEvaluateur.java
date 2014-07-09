@@ -37,6 +37,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	 * addZone(getNOMxxx, String); Date de création : (03/02/09 14:56:59)
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// on recupere les evaluateurs deja present
 		ArrayList<AgentNW> listDep = new ArrayList<AgentNW>();

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatEAE;
+import nc.mairie.metier.eae.CampagneEAE;
+import nc.mairie.metier.eae.EaeFichePoste;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
-import nc.mairie.spring.domain.metier.EAE.CampagneEAE;
-import nc.mairie.spring.domain.metier.EAE.EaeFichePoste;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;

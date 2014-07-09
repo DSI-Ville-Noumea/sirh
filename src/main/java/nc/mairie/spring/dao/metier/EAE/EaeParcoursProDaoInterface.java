@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.EAE.EaeParcoursPro;
+import nc.mairie.metier.eae.EaeParcoursPro;
 
 public interface EaeParcoursProDaoInterface {
 

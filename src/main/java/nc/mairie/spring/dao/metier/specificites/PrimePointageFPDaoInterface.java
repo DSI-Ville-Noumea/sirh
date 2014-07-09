@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.specificites;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
+import nc.mairie.metier.specificites.PrimePointageFP;
 
 public interface PrimePointageFPDaoInterface {
 

@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.diplome;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.spring.domain.metier.diplome.PermisAgent;
+import nc.mairie.metier.diplome.PermisAgent;
 
 public interface PermisAgentDaoInterface {
 

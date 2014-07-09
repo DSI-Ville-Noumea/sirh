@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeCampagneTask;
+import nc.mairie.metier.eae.EaeCampagneTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

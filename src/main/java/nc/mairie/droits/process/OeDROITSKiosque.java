@@ -134,6 +134,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private void ajouteApprobateurs(HttpServletRequest request) throws Exception {
 
+		@SuppressWarnings("unchecked")
 		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this,
 				"APPROBATEURS");
 		VariablesActivite.enlever(this, "APPROBATEURS");

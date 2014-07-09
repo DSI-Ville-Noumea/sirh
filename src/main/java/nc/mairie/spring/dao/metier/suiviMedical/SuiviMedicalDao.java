@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
+import nc.mairie.metier.suiviMedical.SuiviMedical;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -45,6 +45,7 @@ public class OePOSTEFEActiviteSelection extends BasicProcess {
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		if (getListeActivites() == null) {
+			@SuppressWarnings("unchecked")
 			ArrayList<Activite> xcludeListe = (ArrayList<Activite>) VariablesActivite.recuperer(this, "LISTEACTIVITE");
 			ArrayList<Activite> aListe = new ArrayList<Activite>();
 

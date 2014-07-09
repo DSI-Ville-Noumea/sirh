@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeFDPActivite;
+import nc.mairie.metier.eae.EaeFDPActivite;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

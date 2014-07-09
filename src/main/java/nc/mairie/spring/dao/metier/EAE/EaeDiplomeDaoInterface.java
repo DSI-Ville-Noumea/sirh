@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.EAE.EaeDiplome;
+import nc.mairie.metier.eae.EaeDiplome;
 
 public interface EaeDiplomeDaoInterface {
 

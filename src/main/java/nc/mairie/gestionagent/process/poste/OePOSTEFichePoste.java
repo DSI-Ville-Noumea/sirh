@@ -29,6 +29,7 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.NatureAvantage;
+import nc.mairie.metier.parametrage.NatureCredit;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
@@ -55,14 +56,13 @@ import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.AvantageNatureFP;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.DelegationFP;
+import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
-import nc.mairie.spring.domain.metier.parametrage.NatureCredit;
-import nc.mairie.spring.domain.metier.specificites.PrimePointageFP;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -878,6 +878,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
+		@SuppressWarnings("unchecked")
 		ArrayList<Competence> listeCompSelect = (ArrayList<Competence>) VariablesActivite.recuperer(this, "COMPETENCE");
 
 		if (listeCompSelect != null && !listeCompSelect.isEmpty() && getListeAjoutCompFP() != null) {
@@ -966,6 +967,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialiseSpecificites() throws Exception {
 		// Avantages en nature
 		setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
@@ -3447,6 +3449,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
+		@SuppressWarnings("unchecked")
 		ArrayList<Activite> listeActiSelect = (ArrayList<Activite>) VariablesActivite.recuperer(this, "ACTIVITE_PRINC");
 		if (listeActiSelect != null && !listeActiSelect.isEmpty()) {
 			if (getListeAjoutActiFP() != null) {

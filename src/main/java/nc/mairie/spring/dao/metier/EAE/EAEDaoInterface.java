@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.domain.metier.EAE.EAE;
+import nc.mairie.metier.eae.EAE;
 
 public interface EAEDaoInterface {
 

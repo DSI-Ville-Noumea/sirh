@@ -2,12 +2,12 @@
 <%@page import="nc.mairie.metier.agent.Document"%>
 <%@page import="nc.mairie.technique.VariableGlobale"%>
 <%@page import="nc.mairie.technique.UserAppli"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.CampagneEAE"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.EaeDeveloppement"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.EaePlanAction"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.EaeEvaluateur"%>
+<%@page import="nc.mairie.metier.eae.CampagneEAE"%>
+<%@page import="nc.mairie.metier.eae.EaeDeveloppement"%>
+<%@page import="nc.mairie.metier.eae.EaePlanAction"%>
+<%@page import="nc.mairie.metier.eae.EaeEvaluateur"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.EAE"%>
+<%@page import="nc.mairie.metier.eae.EAE"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>

@@ -40,6 +40,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	 * Date de création : (03/10/11 14:00:29)
      *
 	 */
+	@SuppressWarnings("unchecked")
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		if (getAgentCourant() == null) {

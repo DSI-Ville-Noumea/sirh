@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.EAE.EaeEvaluateur;
+import nc.mairie.metier.eae.EaeEvaluateur;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

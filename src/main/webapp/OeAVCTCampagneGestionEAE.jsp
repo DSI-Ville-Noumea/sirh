@@ -1,7 +1,7 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="nc.mairie.spring.domain.metier.EAE.EaeEvalue"%>
+<%@page import="nc.mairie.metier.eae.EaeEvalue"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.spring.domain.metier.EAE.EAE"%>
+<%@page import="nc.mairie.metier.eae.EAE"%>
 <%@page import="nc.mairie.enums.EnumEtatEAE"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>

@@ -31,9 +31,6 @@ import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
  * 
@@ -44,8 +41,6 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private Logger logger = LoggerFactory.getLogger(OeAVCTMasseSalarialeContractuel.class);
 
 	private String[] LB_ANNEE;
 
@@ -93,7 +88,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 
 		// Si liste annee vide alors affectation
-		if (getLB_ANNEE() == LBVide) {			
+		if (getLB_ANNEE() == LBVide) {
 			String anneeCourante = (String) ServletAgent.getMesParametres().get("ANNEE_MASSE_SALARIALE");
 			setListeAnnee(new String[1]);
 			getListeAnnee()[0] = String.valueOf(Integer.parseInt(anneeCourante));

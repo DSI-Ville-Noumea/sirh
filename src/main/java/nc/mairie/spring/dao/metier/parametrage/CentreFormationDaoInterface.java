@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.parametrage.CentreFormation;
+import nc.mairie.metier.parametrage.CentreFormation;
 
 public interface CentreFormationDaoInterface {
 

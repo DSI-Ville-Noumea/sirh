@@ -44,6 +44,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	 * Date de création : (03/02/09 14:56:59)
      *
 	 */
+	@SuppressWarnings("unchecked")
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		if (getListeCompetences() == null) {

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.suiviMedical.MotifVisiteMed;
+import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,8 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotifByLib(String lib) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_LIB_MOTIF_VM + " = ? ";
 
-		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { lib }, new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
+		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { lib },
+				new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
 
 		return motifVM;
 	}
@@ -47,7 +48,8 @@ public class MotifVisiteMedDao implements MotifVisiteMedDaoInterface {
 	public MotifVisiteMed chercherMotif(Integer idMotif) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_MOTIF_VM + " = ? ";
 
-		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { idMotif }, new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
+		MotifVisiteMed motifVM = (MotifVisiteMed) jdbcTemplate.queryForObject(sql, new Object[] { idMotif },
+				new BeanPropertyRowMapper<MotifVisiteMed>(MotifVisiteMed.class));
 
 		return motifVM;
 	}

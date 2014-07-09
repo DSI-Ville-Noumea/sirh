@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.parametrage.JourFerie;
+import nc.mairie.metier.parametrage.JourFerie;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

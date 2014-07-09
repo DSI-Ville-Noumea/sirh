@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.diplome;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.diplome.FormationAgent;
+import nc.mairie.metier.diplome.FormationAgent;
 
 public interface FormationAgentDaoInterface {
 

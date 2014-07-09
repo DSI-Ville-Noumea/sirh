@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.avancement;
 
 import java.util.ArrayList;
 
-import nc.mairie.spring.domain.metier.avancement.AvancementCapPrintJob;
+import nc.mairie.metier.avancement.AvancementCapPrintJob;
 
 public interface AvancementCapPrintJobDaoInterface {
 

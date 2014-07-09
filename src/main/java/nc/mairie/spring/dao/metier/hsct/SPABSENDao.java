@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import nc.mairie.spring.domain.metier.hsct.SPABSEN;
+import nc.mairie.metier.hsct.SPABSEN;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

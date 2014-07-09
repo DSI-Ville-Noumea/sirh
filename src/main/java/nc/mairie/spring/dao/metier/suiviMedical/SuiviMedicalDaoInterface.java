@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.spring.domain.metier.suiviMedical.SuiviMedical;
+import nc.mairie.metier.suiviMedical.SuiviMedical;
 
 public interface SuiviMedicalDaoInterface {
 
