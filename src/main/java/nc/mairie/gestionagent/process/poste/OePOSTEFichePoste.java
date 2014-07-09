@@ -60,6 +60,7 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
@@ -407,13 +408,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getPrimePointageAffDao() == null) {
-			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
+			setPrimePointageAffDao(new PrimePointageAffDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getPrimePointageFPDao() == null) {
-			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
+			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getNatureCreditDao() == null) {
-			setNatureCreditDao((NatureCreditDao) context.getBean("natureCreditDao"));
+			setNatureCreditDao(new NatureCreditDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

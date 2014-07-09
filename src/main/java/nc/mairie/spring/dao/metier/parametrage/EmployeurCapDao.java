@@ -4,35 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.EmployeurCap;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class EmployeurCapDao implements EmployeurCapDaoInterface {
-
-	public static final String NOM_TABLE = "EMPLOYEUR_CAP";
+public class EmployeurCapDao extends SirhDao implements EmployeurCapDaoInterface {
 
 	public static final String CHAMP_ID_EMPLOYEUR = "ID_EMPLOYEUR";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
 	public static final String CHAMP_POSITION = "POSITION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EmployeurCapDao() {
-
+	public EmployeurCapDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "EMPLOYEUR_CAP";
 	}
 
 	@Override
 	public void creerEmployeurCap(Integer idEmployeur, Integer idCap, Integer position) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EMPLOYEUR + "," + CHAMP_ID_CAP + "," + CHAMP_POSITION + ") " + "VALUES (?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EMPLOYEUR + "," + CHAMP_ID_CAP + "," + CHAMP_POSITION
+				+ ") " + "VALUES (?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { idEmployeur, idCap, position });
 	}
 

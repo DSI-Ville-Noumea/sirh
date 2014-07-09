@@ -18,6 +18,7 @@ import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.parametrage.TitrePermis;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.referentiel.AutreAdministration;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -114,7 +115,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeSpecialite() == null) {
 			// Recherche des spécialités de diplôme
-			ArrayList<SpecialiteDiplomeNW> listeSpecialite = SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction());
+			ArrayList<SpecialiteDiplomeNW> listeSpecialite = SpecialiteDiplomeNW
+					.listerSpecialiteDiplomeNW(getTransaction());
 			setListeSpecialite(listeSpecialite);
 			initialiseListeSpecialite(request);
 		}
@@ -128,7 +130,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeTypeDocument() == null) {
 			// Recherche des types de documents
-			ArrayList<TypeDocument> listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES");
+			ArrayList<TypeDocument> listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),
+					"DONNEES PERSONNELLES");
 			setListeTypeDocument(listeTypeDocument);
 			initialiseListeTypeDocument(request);
 		}
@@ -149,7 +152,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeTitrePermis() == null) {
 			// Recherche des titres de permis
-			ArrayList<TitrePermis> listeTitrePermis = getTitrePermisDao().listerTitrePermis();
+			ArrayList<TitrePermis> listeTitrePermis = (ArrayList<TitrePermis>) getTitrePermisDao().listerTitrePermis();
 			setListeTitrePermis(listeTitrePermis);
 			initialiseListeTitrePermis(request);
 		}
@@ -159,19 +162,19 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTitreFormationDao() == null) {
-			setTitreFormationDao((TitreFormationDao) context.getBean("titreFormationDao"));
+			setTitreFormationDao(new TitreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getCentreFormationDao() == null) {
-			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
+			setCentreFormationDao(new CentreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getFormationAgentDao() == null) {
-			setFormationAgentDao((FormationAgentDao) context.getBean("formationAgentDao"));
+			setFormationAgentDao(new FormationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getPermisAgentDao() == null) {
-			setPermisAgentDao((PermisAgentDao) context.getBean("permisAgentDao"));
+			setPermisAgentDao(new PermisAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getTitrePermisDao() == null) {
-			setTitrePermisDao((TitrePermisDao) context.getBean("titrePermisDao"));
+			setTitrePermisDao(new TitrePermisDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -594,7 +597,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TITRE_PERMIS(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TITRE_PERMIS_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_PERMIS_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_PERMIS_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TITRE_PERMIS_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTitrePermis().size()) {
 			TitrePermis titre = getListeTitrePermis().get(indice);
@@ -626,7 +630,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TITRE_FORMATION(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TITRE_FORMATION_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_FORMATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_FORMATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TITRE_FORMATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTitreFormation().size()) {
 			TitreFormation titre = getListeTitreFormation().get(indice);
@@ -658,7 +663,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_CENTRE_FORMATION(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_CENTRE_FORMATION_SELECT()) ? Integer.parseInt(getVAL_LB_CENTRE_FORMATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CENTRE_FORMATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CENTRE_FORMATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCentreFormation().size()) {
 			CentreFormation centre = getListeCentreFormation().get(indice);
@@ -690,7 +696,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_DIPLOME(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeDiplome().size()) {
 			TitreDiplome td = getListeDiplome().get(indice);
@@ -723,7 +730,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_SPECIALITE(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_SPECIALITE_SELECT()) ? Integer.parseInt(getVAL_LB_SPECIALITE_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_SPECIALITE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_SPECIALITE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeSpecialite().size()) {
 			SpecialiteDiplomeNW sd = getListeSpecialite().get(indice);
@@ -810,12 +818,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un centre de formation utilisé sur une
 		// formation d'agent
 		if (getVAL_ST_ACTION_CENTRE_FORMATION().equals(ACTION_SUPPRESSION)) {
-			ArrayList<FormationAgent> listeFormationAgent = getFormationAgentDao().listerFormationAgentAvecCentreFormation(
-					getCentreFormationCourant().getIdCentreFormation());
+			ArrayList<FormationAgent> listeFormationAgent = getFormationAgentDao()
+					.listerFormationAgentAvecCentreFormation(getCentreFormationCourant().getIdCentreFormation());
 			if (listeFormationAgent.size() > 0) {
 				// "ERR989",
 				// "Suppression impossible. Il existe au moins @ rattaché à @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une formation d'agent", "ce centre de formation"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR989", "une formation d'agent", "ce centre de formation"));
 				return false;
 			}
 		}
@@ -826,7 +835,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (centre.getLibCentreFormation().equals(getVAL_EF_CENTRE_FORMATION().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
 					return false;
 				}
 			}
@@ -839,7 +849,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 						&& (!centre.equals(getCentreFormationCourant()))) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un centre de formation", "ce libellé"));
 					return false;
 				}
 			}
@@ -921,12 +932,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un titre de formation utilisé sur une
 		// formation d'agent
 		if (getVAL_ST_ACTION_TITRE_FORMATION().equals(ACTION_SUPPRESSION)) {
-			ArrayList<FormationAgent> listeFormationAgent = getFormationAgentDao().listerFormationAgentAvecTitreFormation(
-					getTitreFormationCourant().getIdTitreFormation());
+			ArrayList<FormationAgent> listeFormationAgent = getFormationAgentDao()
+					.listerFormationAgentAvecTitreFormation(getTitreFormationCourant().getIdTitreFormation());
 			if (listeFormationAgent.size() > 0) {
 				// "ERR989",
 				// "Suppression impossible. Il existe au moins @ rattaché à @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une formation d'agent", "ce titre de formation"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR989", "une formation d'agent", "ce titre de formation"));
 				return false;
 			}
 		}
@@ -938,7 +950,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibTitreFormation().equals(getVAL_EF_TITRE_FORMATION().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
 					return false;
 				}
 			}
@@ -947,10 +960,12 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité du titre de formation
 		if (getVAL_ST_ACTION_TITRE_FORMATION().equals(ACTION_MODIFICATION)) {
 			for (TitreFormation titre : getListeTitreFormation()) {
-				if (titre.getLibTitreFormation().equals(getVAL_EF_TITRE_FORMATION().toUpperCase()) && (!titre.equals(getTitreFormationCourant()))) {
+				if (titre.getLibTitreFormation().equals(getVAL_EF_TITRE_FORMATION().toUpperCase())
+						&& (!titre.equals(getTitreFormationCourant()))) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de formation", "ce libellé"));
 					return false;
 				}
 			}
@@ -994,7 +1009,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				setTitrePermisCourant(null);
 			} else if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_MODIFICATION)) {
 				getTitrePermisCourant().setLibPermis(getVAL_EF_TITRE_PERMIS());
-				getTitrePermisDao().modifierTitrePermis(getTitrePermisCourant().getIdPermis(), getTitrePermisCourant().getLibPermis());
+				getTitrePermisDao().modifierTitrePermis(getTitrePermisCourant().getIdPermis(),
+						getTitrePermisCourant().getLibPermis());
 
 			}
 
@@ -1031,12 +1047,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un titre de permis utilisé sur un
 		// permis d'agent
 		if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_SUPPRESSION)) {
-			ArrayList<PermisAgent> listePermisAgent = getPermisAgentDao()
-					.listerPermisAgentAvecTitrePermis(getTitrePermisCourant().getIdPermis());
+			ArrayList<PermisAgent> listePermisAgent = getPermisAgentDao().listerPermisAgentAvecTitrePermis(
+					getTitrePermisCourant().getIdPermis());
 			if (listePermisAgent.size() > 0) {
 				// "ERR989",
 				// "Suppression impossible. Il existe au moins @ rattaché à @."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un permis d'agent", "ce titre de permis"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR989", "un permis d'agent", "ce titre de permis"));
 				return false;
 			}
 		}
@@ -1047,7 +1064,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
 					return false;
 				}
 			}
@@ -1056,10 +1074,12 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité du titre de permis
 		if (getVAL_ST_ACTION_TITRE_PERMIS().equals(ACTION_MODIFICATION)) {
 			for (TitrePermis titre : getListeTitrePermis()) {
-				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase()) && (!titre.equals(getTitrePermisCourant()))) {
+				if (titre.getLibPermis().equals(getVAL_EF_TITRE_PERMIS().toUpperCase())
+						&& (!titre.equals(getTitrePermisCourant()))) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de permis", "ce libellé"));
 					return false;
 				}
 			}
@@ -1158,7 +1178,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un diplôme d'agent", "ce titre de diplôme"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "un diplôme d'agent", "ce titre de diplôme"));
 			return false;
 		}
 
@@ -1169,7 +1190,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (titre.getLibTitreDiplome().equals(getVAL_EF_DIPLOME().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
 					return false;
 				}
 			}
@@ -1178,10 +1200,12 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité du titre de diplome
 		if (getVAL_ST_ACTION_DIPLOME().equals(ACTION_MODIFICATION)) {
 			for (TitreDiplome titre : getListeDiplome()) {
-				if (titre.getLibTitreDiplome().equals(getVAL_EF_DIPLOME().toUpperCase()) && (!titre.equals(diplomeCourant))) {
+				if (titre.getLibTitreDiplome().equals(getVAL_EF_DIPLOME().toUpperCase())
+						&& (!titre.equals(diplomeCourant))) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un titre de diplôme", "ce libellé"));
 					return false;
 				}
 			}
@@ -1263,11 +1287,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'une spécialité utilisée sur un diplome
 		// d'agent
 		if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_SUPPRESSION)
-				&& DiplomeAgent.listerDiplomeAgentAvecSpecialiteDiplome(getTransaction(), getSpecialiteCourante()).size() > 0) {
+				&& DiplomeAgent.listerDiplomeAgentAvecSpecialiteDiplome(getTransaction(), getSpecialiteCourante())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "un diplôme d'agent", "cette spécialité de diplôme"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR989", "un diplôme d'agent", "cette spécialité de diplôme"));
 			return false;
 		}
 
@@ -1278,7 +1304,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (specialite.getLibSpeDiplome().equals(getVAL_EF_SPECIALITE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une spécialité de diplôme", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une spécialité de diplôme", "ce libellé"));
 					return false;
 				}
 			}
@@ -2093,7 +2120,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_TYPE_DOCUMENT(HttpServletRequest request) throws Exception {
 
-		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTypeDocument().size()) {
 			TypeDocument type = getListeTypeDocument().get(indice);
@@ -2207,7 +2235,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un titre de diplome utilisé sur un
 		// diplome d'agent
 		if (getVAL_ST_ACTION_ADMIN().equals(ACTION_SUPPRESSION)
-				&& AutreAdministrationAgent.listerAutreAdministrationAgentAvecAutreAdministration(getTransaction(), getAdminCourante()).size() > 0) {
+				&& AutreAdministrationAgent.listerAutreAdministrationAgentAvecAutreAdministration(getTransaction(),
+						getAdminCourante()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2222,7 +2251,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (admin.getLibAutreAdmin().equals(getVAL_EF_ADMIN().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une administration", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une administration", "ce libellé"));
 					return false;
 				}
 			}
@@ -2256,13 +2286,15 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				if (typeDoc.getLibTypeDocument().equals(getVAL_EF_TYPE_DOCUMENT().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un type de document", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un type de document", "ce libellé"));
 					return false;
 				}
 				if (typeDoc.getCodTypeDocument().equals(getVAL_EF_CODE_TYPE_DOCUMENT().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un code type de document", "ce libellé"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "un code type de document", "ce libellé"));
 					return false;
 				}
 			}
@@ -2613,7 +2645,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_DIPLOME(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_DIPLOME_SELECT()) ? Integer.parseInt(getVAL_LB_DIPLOME_SELECT())
+				: -1);
 
 		if (indice != -1 && indice < getListeDiplome().size()) {
 			TitreDiplome diplome = getListeDiplome().get(indice);
@@ -2646,7 +2679,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_TITRE_PERMIS(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_TITRE_PERMIS_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_PERMIS_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_PERMIS_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TITRE_PERMIS_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTitrePermis().size()) {
 			TitrePermis titre = getListeTitrePermis().get(indice);
@@ -2678,7 +2712,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_TITRE_FORMATION(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_TITRE_FORMATION_SELECT()) ? Integer.parseInt(getVAL_LB_TITRE_FORMATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_TITRE_FORMATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TITRE_FORMATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeTitreFormation().size()) {
 			TitreFormation titre = getListeTitreFormation().get(indice);
@@ -2710,7 +2745,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_MODIFIER_CENTRE_FORMATION(HttpServletRequest request) throws Exception {
-		int indice = (Services.estNumerique(getVAL_LB_CENTRE_FORMATION_SELECT()) ? Integer.parseInt(getVAL_LB_CENTRE_FORMATION_SELECT()) : -1);
+		int indice = (Services.estNumerique(getVAL_LB_CENTRE_FORMATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_CENTRE_FORMATION_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeCentreFormation().size()) {
 			CentreFormation centre = getListeCentreFormation().get(indice);

@@ -43,6 +43,7 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -2344,10 +2345,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getPrimePointageAffDao() == null) {
-			setPrimePointageAffDao((PrimePointageAffDao) context.getBean("primePointageAffDao"));
+			setPrimePointageAffDao(new PrimePointageAffDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getPrimePointageFPDao() == null) {
-			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
+			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

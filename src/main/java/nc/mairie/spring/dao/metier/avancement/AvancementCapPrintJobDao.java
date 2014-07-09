@@ -5,17 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.avancement.AvancementCapPrintJob;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+public class AvancementCapPrintJobDao extends SirhDao implements AvancementCapPrintJobDaoInterface {
 
-public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterface {
-
-	public static final String NOM_TABLE = "AVCT_CAP_PRINT_JOB";
-
-	public static final String CHAMP_ID_AVCT_CAP_PRINT_JOB = "ID_AVCT_CAP_PRINT_JOB";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
 	public static final String CHAMP_LOGIN = "LOGIN";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
@@ -29,24 +23,21 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 	public static final String CHAMP_JOB_ID = "JOB_ID";
 	public static final String CHAMP_AVIS_EAE = "AVIS_EAE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public AvancementCapPrintJobDao() {
-
+	public AvancementCapPrintJobDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "AVCT_CAP_PRINT_JOB";
+		super.CHAMP_ID = "ID_AVCT_CAP_PRINT_JOB";
 	}
 
 	@Override
-	public void creerAvancementCapPrintJob(Integer idAgent, String login, Integer idCap, String codeCap, Integer idCadreEmploi,
-			String libCadreEmploi, boolean isEaes, boolean avisEAE) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_LOGIN + "," + CHAMP_ID_CAP + "," + CHAMP_CODE_CAP + ","
-				+ CHAMP_ID_CADRE_EMPLOI + "," + CHAMP_LIB_CADRE_EMPLOI + "," + CHAMP_IS_EAES + "," + CHAMP_AVIS_EAE + ") " + "VALUES (?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idAgent, login, idCap, codeCap, idCadreEmploi, libCadreEmploi, isEaes ,avisEAE});
+	public void creerAvancementCapPrintJob(Integer idAgent, String login, Integer idCap, String codeCap,
+			Integer idCadreEmploi, String libCadreEmploi, boolean isEaes, boolean avisEAE) throws Exception {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_AGENT + "," + CHAMP_LOGIN + "," + CHAMP_ID_CAP + ","
+				+ CHAMP_CODE_CAP + "," + CHAMP_ID_CADRE_EMPLOI + "," + CHAMP_LIB_CADRE_EMPLOI + "," + CHAMP_IS_EAES
+				+ "," + CHAMP_AVIS_EAE + ") " + "VALUES (?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { idAgent, login, idCap, codeCap, idCadreEmploi, libCadreEmploi, isEaes,
+				avisEAE });
 
 	}
 
@@ -60,7 +51,7 @@ public class AvancementCapPrintJobDao implements AvancementCapPrintJobDaoInterfa
 		for (Map<String, Object> row : rows) {
 			AvancementCapPrintJob job = new AvancementCapPrintJob();
 
-			job.setIdAvancementCapPrintJob((Integer) row.get(CHAMP_ID_AVCT_CAP_PRINT_JOB));
+			job.setIdAvancementCapPrintJob((Integer) row.get(CHAMP_ID));
 			job.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
 			job.setLogin((String) row.get(CHAMP_LOGIN));
 			job.setIdCap((Integer) row.get(CHAMP_ID_CAP));

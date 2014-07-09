@@ -1,12 +1,12 @@
 package nc.mairie.spring.dao.metier.parametrage;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import nc.mairie.metier.parametrage.Employeur;
 
 public interface EmployeurDaoInterface {
 
-	public ArrayList<Employeur> listerEmployeur() throws Exception;
+	public List<Employeur> listerEmployeur() throws Exception;
 
 	public Employeur chercherEmployeur(Integer idEmployeur) throws Exception;
 

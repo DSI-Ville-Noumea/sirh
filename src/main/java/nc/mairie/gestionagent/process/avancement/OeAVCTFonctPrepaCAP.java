@@ -37,6 +37,7 @@ import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
 import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
@@ -424,15 +425,15 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		}
 
 		if (getCapDao() == null) {
-			setCapDao((CapDao) context.getBean("capDao"));
+			setCapDao(new CapDao((SirhDao) context.getBean("sirhDao")));
 		}
 
 		if (getCorpsCapDao() == null) {
-			setCorpsCapDao((CorpsCapDao) context.getBean("corpsCapDao"));
+			setCorpsCapDao(new CorpsCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 
 		if (getAvancementCapPrintJobDao() == null) {
-			setAvancementCapPrintJobDao((AvancementCapPrintJobDao) context.getBean("avancementCapPrintJobDao"));
+			setAvancementCapPrintJobDao(new AvancementCapPrintJobDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

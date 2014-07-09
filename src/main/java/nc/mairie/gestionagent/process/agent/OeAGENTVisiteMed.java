@@ -37,6 +37,7 @@ import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -184,9 +185,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getSuiviMedDao() == null)
-			setSuiviMedDao((SuiviMedicalDao) context.getBean("suiviMedicalDao"));
+			setSuiviMedDao(new SuiviMedicalDao((SirhDao) context.getBean("sirhDao")));
+		
 		if (getMotifVisiteMedDao() == null)
-			setMotifVisiteMedDao((MotifVisiteMedDao) context.getBean("motifVisiteMedDao"));
+			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
 	}
 
 	/**
@@ -218,7 +220,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		// Si hashtable des motifs vide
 		if (getHashMotif().size() == 0) {
-			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 
 			int[] tailles = { 40 };

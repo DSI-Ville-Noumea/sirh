@@ -32,6 +32,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -219,10 +220,10 @@ public class OeSMConvocation extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getSuiviMedDao() == null)
-			setSuiviMedDao((SuiviMedicalDao) context.getBean("suiviMedicalDao"));
+			setSuiviMedDao(new SuiviMedicalDao((SirhDao) context.getBean("sirhDao")));
 
 		if (getMotifVisiteMedDao() == null)
-			setMotifVisiteMedDao((MotifVisiteMedDao) context.getBean("motifVisiteMedDao"));
+			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
 
 		if (getSpabsenDao() == null)
 			setSpabsenDao((SPABSENDao) context.getBean("spabsenDao"));
@@ -444,7 +445,7 @@ public class OeSMConvocation extends BasicProcess {
 
 		// Si liste motif vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList<MotifVisiteMed> listeMotif = getMotifVisiteMedDao().listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -707,7 +708,6 @@ public class OeSMConvocation extends BasicProcess {
 
 			// Suppression des suivi medicaux à l'état 'Travail' en fonction du
 			// mois et de l'année
-			// SuiviMedicalDao getSuiviMedDao() = new SuiviMedicalDao();
 			try {
 				getSuiviMedDao().supprimerSuiviMedicalTravailAvecMoisetAnnee(EnumEtatSuiviMed.TRAVAIL.getCode(),
 						moisChoisi, anneeChoisi);

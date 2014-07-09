@@ -4,46 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.CorpsCap;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class CorpsCapDao implements CorpsCapDaoInterface {
+public class CorpsCapDao extends SirhDao implements CorpsCapDaoInterface {
 
 	public static final String NOM_TABLE = "CORPS_CAP";
 
 	public static final String CHAMP_CDGENG = "CDGENG";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public CorpsCapDao() {
-
-	}
-
-	@Override
-	public ArrayList<CorpsCap> listerCorpsCap() throws Exception {
-		String sql = "select * from " + NOM_TABLE;
-
-		ArrayList<CorpsCap> listeCorpsCap = new ArrayList<CorpsCap>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map<String, Object> row : rows) {
-			CorpsCap corpsCap = new CorpsCap();
-			corpsCap.setCodeSpgeng((String) row.get(CHAMP_CDGENG));
-			corpsCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
-			listeCorpsCap.add(corpsCap);
-		}
-
-		return listeCorpsCap;
+	public CorpsCapDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "CORPS_CAP";
 	}
 
 	@Override

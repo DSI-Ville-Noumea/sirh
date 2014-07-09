@@ -45,6 +45,7 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.PrimePointageAff;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -199,7 +200,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getPrimePointageFPDao() == null) {
-			setPrimePointageFPDao((PrimePointageFPDao) context.getBean("primePointageFPDao"));
+			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

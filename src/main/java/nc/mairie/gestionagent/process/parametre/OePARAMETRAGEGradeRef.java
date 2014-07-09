@@ -16,6 +16,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.Deliberation;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -139,7 +140,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getDeliberationDao() == null) {
-			setDeliberationDao((DeliberationDao) context.getBean("deliberationDao"));
+			setDeliberationDao(new DeliberationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

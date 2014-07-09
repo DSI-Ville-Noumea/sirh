@@ -13,7 +13,7 @@ public interface JourFerieDaoInterface {
 
 	public ArrayList<JourFerie> listerJourByAnneeWithType(String annee, Integer idTypeJour);
 
-	public void supprimerJourFerie(Integer idJourFerie);
+	public void supprimerJourFerie(Integer idJourFerie) throws Exception;
 
 	public void modifierJourFerie(Integer idJourFerie, Integer idTypeJour, Date dateJour, String description);
 

@@ -4,42 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.CentreFormation;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+public class CentreFormationDao extends SirhDao implements CentreFormationDaoInterface {
 
-public class CentreFormationDao implements CentreFormationDaoInterface {
-
-	public static final String NOM_TABLE = "P_CENTRE_FORMATION";
-
-	public static final String CHAMP_ID_CENTRE_FORMATION = "ID_CENTRE_FORMATION";
 	public static final String CHAMP_LIB_CENTRE_FORMATION = "LIB_CENTRE_FORMATION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public CentreFormationDao() {
-
+	public CentreFormationDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "P_CENTRE_FORMATION";
+		super.CHAMP_ID = "ID_CENTRE_FORMATION";
 	}
 
 	@Override
 	public ArrayList<CentreFormation> listerCentreFormation() throws Exception {
-		String sql = "select * from " + NOM_TABLE + " order by "+CHAMP_LIB_CENTRE_FORMATION;
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_LIB_CENTRE_FORMATION;
 
 		ArrayList<CentreFormation> listeCentreFormation = new ArrayList<CentreFormation>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			CentreFormation centre = new CentreFormation();
-			centre.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
+			centre.setIdCentreFormation((Integer) row.get(CHAMP_ID));
 			centre.setLibCentreFormation((String) row.get(CHAMP_LIB_CENTRE_FORMATION));
 			listeCentreFormation.add(centre);
 		}
@@ -49,10 +37,7 @@ public class CentreFormationDao implements CentreFormationDaoInterface {
 
 	@Override
 	public CentreFormation chercherCentreFormation(Integer idCentreFormation) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CENTRE_FORMATION + " = ? ";
-		CentreFormation centre = (CentreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idCentreFormation },
-				new BeanPropertyRowMapper<CentreFormation>(CentreFormation.class));
-		return centre;
+		return super.chercherObject(CentreFormation.class, idCentreFormation);
 	}
 
 	@Override
@@ -63,13 +48,12 @@ public class CentreFormationDao implements CentreFormationDaoInterface {
 
 	@Override
 	public void modifierCentreFormation(Integer idCentre, String libelleCentre) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_CENTRE_FORMATION + "=?where " + CHAMP_ID_CENTRE_FORMATION + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_CENTRE_FORMATION + "=?where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(sql, new Object[] { libelleCentre, idCentre });
 	}
 
 	@Override
 	public void supprimerCentreFormation(Integer idCentreFormation) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_CENTRE_FORMATION + "=?";
-		jdbcTemplate.update(sql, new Object[] { idCentreFormation });
+		super.supprimerObject(idCentreFormation);
 	}
 }

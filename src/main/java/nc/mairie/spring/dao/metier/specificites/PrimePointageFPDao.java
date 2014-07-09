@@ -4,29 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.specificites.PrimePointageFP;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class PrimePointageFPDao implements PrimePointageFPDaoInterface {
-
-	public static final String NOM_TABLE = "PRIME_POINTAGE_FP";
+public class PrimePointageFPDao extends SirhDao implements PrimePointageFPDaoInterface {
 
 	public static final String CHAMP_NUM_RUBRIQUE = "NUM_RUBRIQUE";
 	public static final String CHAMP_ID_FICHE_POSTE = "ID_FICHE_POSTE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public PrimePointageFPDao() {
-
+	public PrimePointageFPDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "PRIME_POINTAGE_FP";
 	}
 
 	@Override

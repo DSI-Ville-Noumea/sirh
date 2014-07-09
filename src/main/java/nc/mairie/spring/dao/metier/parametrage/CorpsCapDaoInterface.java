@@ -6,8 +6,6 @@ import nc.mairie.metier.parametrage.CorpsCap;
 
 public interface CorpsCapDaoInterface {
 
-	public ArrayList<CorpsCap> listerCorpsCap() throws Exception;
-
 	public ArrayList<CorpsCap> listerCorpsCapParCap(Integer idCap) throws Exception;
 
 	public void creerCorpsCap(String codeSpgeng, Integer idCap) throws Exception;

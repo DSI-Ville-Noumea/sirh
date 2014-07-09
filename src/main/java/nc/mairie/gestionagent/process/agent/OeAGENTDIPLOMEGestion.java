@@ -33,6 +33,7 @@ import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.parametrage.TitrePermis;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -685,7 +686,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 		// Si liste titre permis vide alors affectation
 		if (getLB_TITRE_PERMIS() == LBVide) {
-			ArrayList<TitrePermis> listeTitrePermis = getTitrePermisDao().listerTitrePermis();
+			ArrayList<TitrePermis> listeTitrePermis = (ArrayList<TitrePermis>) getTitrePermisDao().listerTitrePermis();
 			setListeTitrePermis(listeTitrePermis);
 			int[] tailles = { 25 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -704,19 +705,19 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTitreFormationDao() == null) {
-			setTitreFormationDao((TitreFormationDao) context.getBean("titreFormationDao"));
+			setTitreFormationDao(new TitreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getCentreFormationDao() == null) {
-			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
+			setCentreFormationDao(new CentreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getFormationAgentDao() == null) {
-			setFormationAgentDao((FormationAgentDao) context.getBean("formationAgentDao"));
+			setFormationAgentDao(new FormationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getTitrePermisDao() == null) {
-			setTitrePermisDao((TitrePermisDao) context.getBean("titrePermisDao"));
+			setTitrePermisDao(new TitrePermisDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getPermisAgentDao() == null) {
-			setPermisAgentDao((PermisAgentDao) context.getBean("permisAgentDao"));
+			setPermisAgentDao(new PermisAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2982,15 +2983,16 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		fichierUpload = null;
 		return true;
 	}
-	
+
 	/**
 	 * Process incoming requests for information
 	 * 
-	 * @param request Object that encapsulates the request to the servlet 
+	 * @param request
+	 *            Object that encapsulates the request to the servlet
 	 */
-	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
-		
-		if(super.recupererOnglet(request)){
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception {
+
+		if (super.recupererOnglet(request)) {
 			performPB_RESET(request);
 			return true;
 		}

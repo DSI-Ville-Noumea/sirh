@@ -4,30 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.TitreFormation;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+public class TitreFormationDao extends SirhDao implements TitreFormationDaoInterface {
 
-public class TitreFormationDao implements TitreFormationDaoInterface {
-
-	public static final String NOM_TABLE = "P_TITRE_FORMATION";
-
-	public static final String CHAMP_ID_TITRE_FORMATION = "ID_TITRE_FORMATION";
 	public static final String CHAMP_LIB_TITRE_FORMATION = "LIB_TITRE_FORMATION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public TitreFormationDao() {
-
+	public TitreFormationDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "P_TITRE_FORMATION";
+		super.CHAMP_ID = "ID_TITRE_FORMATION";
 	}
 
 	@Override
@@ -39,7 +27,7 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			TitreFormation titre = new TitreFormation();
-			titre.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
+			titre.setIdTitreFormation((Integer) row.get(CHAMP_ID));
 			titre.setLibTitreFormation((String) row.get(CHAMP_LIB_TITRE_FORMATION));
 			listeTitreFormation.add(titre);
 		}
@@ -49,10 +37,7 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 
 	@Override
 	public TitreFormation chercherTitreFormation(Integer idTitreFormation) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_TITRE_FORMATION + " = ? ";
-		TitreFormation titre = (TitreFormation) jdbcTemplate.queryForObject(sql, new Object[] { idTitreFormation },
-				new BeanPropertyRowMapper<TitreFormation>(TitreFormation.class));
-		return titre;
+		return super.chercherObject(TitreFormation.class, idTitreFormation);
 	}
 
 	@Override
@@ -63,14 +48,12 @@ public class TitreFormationDao implements TitreFormationDaoInterface {
 
 	@Override
 	public void modifierTitreFormation(Integer idTitre, String libelleTitre) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_TITRE_FORMATION + "=? where "
-				+ CHAMP_ID_TITRE_FORMATION + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_TITRE_FORMATION + "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(sql, new Object[] { libelleTitre, idTitre });
 	}
 
 	@Override
 	public void supprimerTitreFormation(Integer idTitreFormation) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_TITRE_FORMATION + "=?";
-		jdbcTemplate.update(sql, new Object[] { idTitreFormation });
+		super.supprimerObject(idTitreFormation);
 	}
 }

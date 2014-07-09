@@ -1,12 +1,12 @@
 package nc.mairie.spring.dao.metier.parametrage;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import nc.mairie.metier.parametrage.TitrePermis;
 
 public interface TitrePermisDaoInterface {
 
-	public ArrayList<TitrePermis> listerTitrePermis() throws Exception;
+	public List<TitrePermis> listerTitrePermis() throws Exception;
 
 	public TitrePermis chercherTitrePermis(Integer idTitrePermis) throws Exception;
 

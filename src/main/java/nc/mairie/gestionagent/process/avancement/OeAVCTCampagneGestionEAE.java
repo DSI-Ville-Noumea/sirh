@@ -59,6 +59,7 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.eae.EaeCampagneTaskDao;
@@ -803,15 +804,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// AS400
 		if (getFormationAgentDao() == null) {
-			setFormationAgentDao((FormationAgentDao) context.getBean("formationAgentDao"));
+			setFormationAgentDao(new FormationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 
 		if (getTitreFormationDao() == null) {
-			setTitreFormationDao((TitreFormationDao) context.getBean("titreFormationDao"));
+			setTitreFormationDao(new TitreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 
 		if (getCentreFormationDao() == null) {
-			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
+			setCentreFormationDao(new CentreFormationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 

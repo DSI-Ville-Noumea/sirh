@@ -5,34 +5,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.diplome.PermisAgent;
+import nc.mairie.spring.dao.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class PermisAgentDao implements PermisAgentDaoInterface {
+public class PermisAgentDao extends SirhDao implements PermisAgentDaoInterface {
 
-	public static final String NOM_TABLE = "PERMIS_AGENT";
-
-	public static final String CHAMP_ID_PERMIS_AGENT = "ID_PERMIS_AGENT";
 	public static final String CHAMP_ID_PERMIS = "ID_PERMIS";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
 	public static final String CHAMP_DUREE_PERMIS = "DUREE_PERMIS";
 	public static final String CHAMP_UNITE_DUREE = "UNITE_DUREE";
 	public static final String CHAMP_DATE_OBTENTION = "DATE_OBTENTION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public PermisAgentDao() {
-
+	public PermisAgentDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "PERMIS_AGENT";
+		super.CHAMP_ID = "ID_PERMIS_AGENT";
 	}
 
 	@Override
@@ -44,7 +34,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
 		for (Map<String, Object> row : rows) {
 			PermisAgent permis = new PermisAgent();
-			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID_PERMIS_AGENT));
+			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID));
 			permis.setIdPermis((Integer) row.get(CHAMP_ID_PERMIS));
 			permis.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
 			permis.setDureePermis((Integer) row.get(CHAMP_DUREE_PERMIS));
@@ -57,8 +47,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 
 	@Override
 	public void supprimerPermisAgent(Integer idPermisAgent) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_PERMIS_AGENT + "=?";
-		jdbcTemplate.update(sql, new Object[] { idPermisAgent });
+		super.supprimerObject(idPermisAgent);
 	}
 
 	@Override
@@ -83,8 +72,9 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 					+ "=? and " + CHAMP_DUREE_PERMIS + "=? and " + CHAMP_UNITE_DUREE + "=? and " + CHAMP_DATE_OBTENTION
 					+ "=?";
 
-			PermisAgent perm = (PermisAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idPermis, idAgent,
-					dureePermis, uniteDuree, dateObtention }, new BeanPropertyRowMapper<PermisAgent>(PermisAgent.class));
+			PermisAgent perm = (PermisAgent) jdbcTemplate
+					.queryForObject(sqlId, new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention },
+							new BeanPropertyRowMapper<PermisAgent>(PermisAgent.class));
 
 			return perm.getIdPermisAgent();
 		}
@@ -95,7 +85,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 			String uniteDuree, Date dateObtention) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_PERMIS + "=? , " + CHAMP_ID_AGENT + "=?,"
 				+ CHAMP_DUREE_PERMIS + "=?," + CHAMP_UNITE_DUREE + "=?," + CHAMP_DATE_OBTENTION + "=? where "
-				+ CHAMP_ID_PERMIS_AGENT + " =?";
+				+ CHAMP_ID + " =?";
 
 		jdbcTemplate.update(sql, new Object[] { idPermis, idAgent, dureePermis, uniteDuree, dateObtention,
 				idPermisAgent });
@@ -110,7 +100,7 @@ public class PermisAgentDao implements PermisAgentDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idPermis });
 		for (Map<String, Object> row : rows) {
 			PermisAgent permis = new PermisAgent();
-			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID_PERMIS_AGENT));
+			permis.setIdPermisAgent((Integer) row.get(CHAMP_ID));
 			permis.setIdPermis((Integer) row.get(CHAMP_ID_PERMIS));
 			permis.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
 			permis.setDureePermis((Integer) row.get(CHAMP_DUREE_PERMIS));

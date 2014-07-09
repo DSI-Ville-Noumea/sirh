@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.diplome.FormationAgent;
+import nc.mairie.spring.dao.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class FormationAgentDao implements FormationAgentDaoInterface {
+public class FormationAgentDao extends SirhDao implements FormationAgentDaoInterface {
 
-	public static final String NOM_TABLE = "FORMATION_AGENT";
-
-	public static final String CHAMP_ID_FORMATION = "ID_FORMATION";
 	public static final String CHAMP_ID_TITRE_FORMATION = "ID_TITRE_FORMATION";
 	public static final String CHAMP_ID_CENTRE_FORMATION = "ID_CENTRE_FORMATION";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
@@ -23,16 +18,11 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 	public static final String CHAMP_UNITE_DUREE = "UNITE_DUREE";
 	public static final String CHAMP_ANNEE_FORMATION = "ANNEE_FORMATION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public FormationAgentDao() {
-
+	public FormationAgentDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "FORMATION_AGENT";
+		super.CHAMP_ID = "ID_FORMATION";
 	}
 
 	@Override
@@ -45,7 +35,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
 		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
-			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
+			formation.setIdFormation((Integer) row.get(CHAMP_ID));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
 			formation.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
 			formation.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -59,8 +49,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 
 	@Override
 	public void supprimerFormationAgent(Integer idFormationAgent) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_FORMATION + "=?";
-		jdbcTemplate.update(sql, new Object[] { idFormationAgent });
+		super.supprimerObject(idFormationAgent);
 	}
 
 	@Override
@@ -77,9 +66,9 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 				+ CHAMP_ID_CENTRE_FORMATION + "=? and " + CHAMP_ID_AGENT + "=? and " + CHAMP_DUREE_FORMATION
 				+ "=? and " + CHAMP_UNITE_DUREE + "=? and " + CHAMP_ANNEE_FORMATION + "=?";
 
-		FormationAgent form = (FormationAgent) jdbcTemplate
-				.queryForObject(sqlId, new Object[] { idTitreFormation, idCentreFormation, idAgent, dureeFormation,
-						uniteDuree, anneeFormation }, new BeanPropertyRowMapper<FormationAgent>(FormationAgent.class));
+		FormationAgent form = (FormationAgent) jdbcTemplate.queryForObject(sqlId, new Object[] { idTitreFormation,
+				idCentreFormation, idAgent, dureeFormation, uniteDuree, anneeFormation },
+				new BeanPropertyRowMapper<FormationAgent>(FormationAgent.class));
 
 		return form.getIdFormation();
 	}
@@ -89,7 +78,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 			Integer idAgent, Integer dureeFormation, String uniteDuree, Integer anneeFormation) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_TITRE_FORMATION + "=? , " + CHAMP_ID_CENTRE_FORMATION
 				+ "=?," + CHAMP_ID_AGENT + "=?," + CHAMP_DUREE_FORMATION + "=?," + CHAMP_UNITE_DUREE + "=?,"
-				+ CHAMP_ANNEE_FORMATION + "=? where " + CHAMP_ID_FORMATION + " =?";
+				+ CHAMP_ANNEE_FORMATION + "=? where " + CHAMP_ID + " =?";
 
 		jdbcTemplate.update(sql, new Object[] { idTitreFormation, idCentreFormation, idAgent, dureeFormation,
 				uniteDuree, anneeFormation, idFormation });
@@ -104,7 +93,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idTitreFormation });
 		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
-			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
+			formation.setIdFormation((Integer) row.get(CHAMP_ID));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
 			formation.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
 			formation.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -126,7 +115,7 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCentreFormation });
 		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
-			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
+			formation.setIdFormation((Integer) row.get(CHAMP_ID));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
 			formation.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
 			formation.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
@@ -141,14 +130,14 @@ public class FormationAgentDao implements FormationAgentDaoInterface {
 	@Override
 	public ArrayList<FormationAgent> listerFormationAgentByAnnee(Integer idAgent, Integer annee) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_AGENT + "=? and " + CHAMP_ANNEE_FORMATION
-				+ "=? order by " + CHAMP_ID_FORMATION + " desc";
+				+ "=? order by " + CHAMP_ID + " desc";
 
 		ArrayList<FormationAgent> listeFormationAgent = new ArrayList<FormationAgent>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent, annee });
 		for (Map<String, Object> row : rows) {
 			FormationAgent formation = new FormationAgent();
-			formation.setIdFormation((Integer) row.get(CHAMP_ID_FORMATION));
+			formation.setIdFormation((Integer) row.get(CHAMP_ID));
 			formation.setIdTitreFormation((Integer) row.get(CHAMP_ID_TITRE_FORMATION));
 			formation.setIdCentreFormation((Integer) row.get(CHAMP_ID_CENTRE_FORMATION));
 			formation.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));

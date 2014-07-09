@@ -4,35 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.RepresentantCap;
+import nc.mairie.spring.dao.SirhDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class RepresentantCapDao implements RepresentantCapDaoInterface {
-
-	public static final String NOM_TABLE = "REPRESENTANT_CAP";
+public class RepresentantCapDao extends SirhDao implements RepresentantCapDaoInterface {
 
 	public static final String CHAMP_ID_REPRESENTANT = "ID_REPRESENTANT";
 	public static final String CHAMP_ID_CAP = "ID_CAP";
 	public static final String CHAMP_POSITION = "POSITION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public RepresentantCapDao() {
-
+	public RepresentantCapDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "REPRESENTANT_CAP";
 	}
 
 	@Override
 	public void creerRepresentantCap(Integer idRepresentant, Integer idCap, Integer position) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_REPRESENTANT + "," + CHAMP_ID_CAP + "," + CHAMP_POSITION + ") " + "VALUES (?,?,?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_REPRESENTANT + "," + CHAMP_ID_CAP + ","
+				+ CHAMP_POSITION + ") " + "VALUES (?,?,?)";
 		jdbcTemplate.update(sql, new Object[] { idRepresentant, idCap, position });
 	}
 

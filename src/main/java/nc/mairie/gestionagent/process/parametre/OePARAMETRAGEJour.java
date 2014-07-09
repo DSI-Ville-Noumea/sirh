@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.JourFerie;
 import nc.mairie.metier.parametrage.TypeJourFerie;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.JourFerieDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -77,10 +78,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 
 	}
 
-	private void initialiseListeDeroulante() {
+	private void initialiseListeDeroulante() throws Exception {
 		// si liste typeJour
 		if (getHashTypeJour().size() == 0) {
-			ArrayList<TypeJourFerie> listeType = getTypeJourFerieDao().listerTypeJour();
+			ArrayList<TypeJourFerie> listeType = (ArrayList<TypeJourFerie>) getTypeJourFerieDao().listerTypeJour();
 			setListeTypeJourFerie(listeType);
 
 			int[] tailles = { 30 };
@@ -116,10 +117,10 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getJourFerieDao() == null) {
-			setJourFerieDao((JourFerieDao) context.getBean("jourFerieDao"));
+			setJourFerieDao(new JourFerieDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getTypeJourFerieDao() == null) {
-			setTypeJourFerieDao((TypeJourFerieDao) context.getBean("typeJourFerieDao"));
+			setTypeJourFerieDao(new TypeJourFerieDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -368,7 +369,8 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		// on cherche tous les jours fériés de cette année là
 		TypeJourFerie typeJour = getTypeJourFerieDao().chercherTypeJourByLibelle("Férié");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		ArrayList<JourFerie> listeExistante = getJourFerieDao().listerJourByAnneeWithType(annee, typeJour.getIdTypeJourFerie());
+		ArrayList<JourFerie> listeExistante = getJourFerieDao().listerJourByAnneeWithType(annee,
+				typeJour.getIdTypeJourFerie());
 		for (JourFerie jour : listeExistante) {
 			JourFerie newJour = new JourFerie();
 			newJour.setIdTypeJour(typeJour.getIdTypeJourFerie());
@@ -657,16 +659,17 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			String dateJour = getVAL_ST_DATE_JOUR();
 
 			// type de jour
-			int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_JOUR_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_TYPE_JOUR_SELECT()))
-					: -1);
+			int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_JOUR_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_JOUR_SELECT())) : -1);
 			TypeJourFerie type = (TypeJourFerie) getListeTypeJourFerie().get(numType);
 
 			getJourFerieCourant().setIdTypeJour(type.getIdTypeJourFerie());
 			getJourFerieCourant().setDateJour(new SimpleDateFormat("dd/MM/yyyy").parse(dateJour));
 			getJourFerieCourant().setDescription(getVAL_ST_DESCRIPTION());
 
-			getJourFerieDao().modifierJourFerie(getJourFerieCourant().getIdJourFerie(), getJourFerieCourant().getIdTypeJour(),
-					getJourFerieCourant().getDateJour(), getJourFerieCourant().getDescription());
+			getJourFerieDao().modifierJourFerie(getJourFerieCourant().getIdJourFerie(),
+					getJourFerieCourant().getIdTypeJour(), getJourFerieCourant().getDateJour(),
+					getJourFerieCourant().getDescription());
 		} else if (getZone(getNOM_ST_ACTION_JOUR()).equals(ACTION_CREATION_JOUR)) {
 			setJourFerieCourant(new JourFerie());
 
@@ -677,16 +680,16 @@ public class OePARAMETRAGEJour extends BasicProcess {
 			String dateJour = getVAL_ST_DATE_JOUR();
 
 			// type de jour
-			int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_JOUR_SELECT())) ? Integer.parseInt(getZone(getNOM_LB_TYPE_JOUR_SELECT()))
-					: -1);
+			int numType = (Services.estNumerique(getZone(getNOM_LB_TYPE_JOUR_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_JOUR_SELECT())) : -1);
 			TypeJourFerie type = (TypeJourFerie) getListeTypeJourFerie().get(numType);
 
 			getJourFerieCourant().setIdTypeJour(type.getIdTypeJourFerie());
 			getJourFerieCourant().setDateJour(new SimpleDateFormat("dd/MM/yyyy").parse(dateJour));
 			getJourFerieCourant().setDescription(getVAL_ST_DESCRIPTION());
 
-			getJourFerieDao().creerJourFerie(getJourFerieCourant().getIdTypeJour(), getJourFerieCourant().getDateJour(),
-					getJourFerieCourant().getDescription());
+			getJourFerieDao().creerJourFerie(getJourFerieCourant().getIdTypeJour(),
+					getJourFerieCourant().getDateJour(), getJourFerieCourant().getDescription());
 
 		}
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);

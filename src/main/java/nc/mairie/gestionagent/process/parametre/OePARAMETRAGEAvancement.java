@@ -16,6 +16,7 @@ import nc.mairie.metier.parametrage.EmployeurCap;
 import nc.mairie.metier.parametrage.Representant;
 import nc.mairie.metier.parametrage.RepresentantCap;
 import nc.mairie.metier.referentiel.TypeRepresentant;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
@@ -214,28 +215,28 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getEmployeurDao() == null) {
-			setEmployeurDao((EmployeurDao) context.getBean("employeurDao"));
+			setEmployeurDao(new EmployeurDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getRepresentantDao() == null) {
-			setRepresentantDao((RepresentantDao) context.getBean("representantDao"));
+			setRepresentantDao(new RepresentantDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getTypeRepresentantDao() == null) {
-			setTypeRepresentantDao((TypeRepresentantDao) context.getBean("typeRepresentantDao"));
+			setTypeRepresentantDao(new TypeRepresentantDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getDeliberationDao() == null) {
-			setDeliberationDao((DeliberationDao) context.getBean("deliberationDao"));
+			setDeliberationDao(new DeliberationDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getCapDao() == null) {
-			setCapDao((CapDao) context.getBean("capDao"));
+			setCapDao(new CapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getEmployeurCapDao() == null) {
-			setEmployeurCapDao((EmployeurCapDao) context.getBean("employeurCapDao"));
+			setEmployeurCapDao(new EmployeurCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getRepresentantCapDao() == null) {
-			setRepresentantCapDao((RepresentantCapDao) context.getBean("representantCapDao"));
+			setRepresentantCapDao(new RepresentantCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getCorpsCapDao() == null) {
-			setCorpsCapDao((CorpsCapDao) context.getBean("corpsCapDao"));
+			setCorpsCapDao(new CorpsCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -280,7 +281,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			setLB_REPRE_CAP(null);
 		}
 
-		setListeEmployeurCap(getEmployeurDao().listerEmployeur());
+		setListeEmployeurCap((ArrayList<Employeur>) getEmployeurDao().listerEmployeur());
 		if (getListeEmployeurCap().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -303,7 +304,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeEmployeur(HttpServletRequest request) throws Exception {
-		setListeEmployeur(getEmployeurDao().listerEmployeur());
+		setListeEmployeur((ArrayList<Employeur>) getEmployeurDao().listerEmployeur());
 		if (getListeEmployeur().size() != 0) {
 			int tailles[] = { 50, 90 };
 			String padding[] = { "G", "G" };
@@ -352,7 +353,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTypeRepresentant(HttpServletRequest request) throws Exception {
-		setListeTypeRepresentant(getTypeRepresentantDao().listerTypeRepresentant());
+		setListeTypeRepresentant((ArrayList<TypeRepresentant>) getTypeRepresentantDao().listerTypeRepresentant());
 		if (getListeTypeRepresentant().size() != 0) {
 			setHashTypeRepresentant(new Hashtable<Integer, TypeRepresentant>());
 			int tailles[] = { 70 };

@@ -4,46 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.Cap;
+import nc.mairie.spring.dao.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class CapDao implements CapDaoInterface {
+public class CapDao extends SirhDao implements CapDaoInterface {
 
-	public static final String NOM_TABLE = "P_CAP";
-
-	public static final String CHAMP_ID_CAP = "ID_CAP";
 	public static final String CHAMP_CODE_CAP = "CODE_CAP";
 	public static final String CHAMP_REF_CAP = "REF_CAP";
 	public static final String CHAMP_DESCRIPTION = "DESCRIPTION";
 	public static final String CHAMP_TYPE_CAP = "TYPE_CAP";
 	public static final String CHAMP_CAP_VDN = "CAP_VDN";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public CapDao() {
-
+	public CapDao(SirhDao sirhDao) {
+		super.dataSource = sirhDao.getDataSource();
+		super.jdbcTemplate = sirhDao.getJdbcTemplate();
+		super.NOM_TABLE = "P_CAP";
+		super.CHAMP_ID = "ID_CAP";
 	}
 
 	@Override
 	public ArrayList<Cap> listerCap() throws Exception {
-		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_ID_CAP;
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_ID;
 
 		ArrayList<Cap> listeCap = new ArrayList<Cap>();
 
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			Cap cap = new Cap();
-			cap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
+			cap.setIdCap((Integer) row.get(CHAMP_ID));
 			cap.setCodeCap((String) row.get(CHAMP_CODE_CAP));
 			cap.setRefCap((String) row.get(CHAMP_REF_CAP));
 			cap.setDescription((String) row.get(CHAMP_DESCRIPTION));
@@ -67,14 +57,14 @@ public class CapDao implements CapDaoInterface {
 
 	@Override
 	public void supprimerCap(Integer idCap) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_CAP + "=?";
-		jdbcTemplate.update(sql, new Object[] { idCap });
+		super.supprimerObject(idCap);
 	}
 
 	@Override
 	public Cap chercherCap(String codeCap, String refCap) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? and " + CHAMP_REF_CAP + " =? ";
-		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap }, new BeanPropertyRowMapper<Cap>(Cap.class));
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap, refCap },
+				new BeanPropertyRowMapper<Cap>(Cap.class));
 		return c;
 	}
 
@@ -82,8 +72,7 @@ public class CapDao implements CapDaoInterface {
 	public void modifierCap(Integer idCap, String codeCap, String refCap, String description, String typeCap,
 			Integer capVDN) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CODE_CAP + "=?," + CHAMP_REF_CAP + "=?,"
-				+ CHAMP_DESCRIPTION + "=?," + CHAMP_TYPE_CAP + "=?," + CHAMP_CAP_VDN + "=? where " + CHAMP_ID_CAP
-				+ "=?";
+				+ CHAMP_DESCRIPTION + "=?," + CHAMP_TYPE_CAP + "=?," + CHAMP_CAP_VDN + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { codeCap.toUpperCase(), refCap.toUpperCase(), description, typeCap,
 				capVDN, idCap });
 	}
@@ -91,7 +80,8 @@ public class CapDao implements CapDaoInterface {
 	@Override
 	public Cap chercherCapByCodeCap(String codeCap) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_CODE_CAP + " = ? ";
-		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new BeanPropertyRowMapper<Cap>(Cap.class));
+		Cap c = (Cap) jdbcTemplate.queryForObject(sql, new Object[] { codeCap }, new BeanPropertyRowMapper<Cap>(
+				Cap.class));
 		return c;
 	}
 

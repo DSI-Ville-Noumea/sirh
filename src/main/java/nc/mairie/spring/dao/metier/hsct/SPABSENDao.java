@@ -9,13 +9,9 @@ import javax.sql.DataSource;
 
 import nc.mairie.metier.hsct.SPABSEN;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SPABSENDao implements SPABSENDaoInterface {
-
-	private Logger logger = LoggerFactory.getLogger(SPABSENDao.class);
 
 	public static final String NOM_TABLE = "SPABSEN";
 
@@ -44,13 +40,14 @@ public class SPABSENDao implements SPABSENDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Integer> listerMatriculeAbsencePourSM(String type, Integer moisChoisi, Integer anneeChoisi) throws Exception {
+	public ArrayList<Integer> listerMatriculeAbsencePourSM(String type, Integer moisChoisi, Integer anneeChoisi)
+			throws Exception {
 		String mois = moisChoisi.toString();
 		if (mois.toString().length() == 1) {
 			mois = "0" + moisChoisi.toString();
 		}
-		String sql = "select " + CHAMP_NOMATR + " from " + NOM_TABLE + " where " + CHAMP_TYPE3 + "=? and substring(" + CHAMP_DATFIN
-				+ ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? group by " + CHAMP_NOMATR;
+		String sql = "select " + CHAMP_NOMATR + " from " + NOM_TABLE + " where " + CHAMP_TYPE3 + "=? and substring("
+				+ CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? group by " + CHAMP_NOMATR;
 
 		ArrayList<Integer> listeMatricule = new ArrayList<Integer>();
 
@@ -64,18 +61,20 @@ public class SPABSENDao implements SPABSENDaoInterface {
 	}
 
 	@Override
-	public ArrayList<SPABSEN> listerAbsencePourAgentTypeEtMoisAnnee(Integer nomatr, String type, Integer moisChoisi, Integer anneeChoisi)
-			throws Exception {
+	public ArrayList<SPABSEN> listerAbsencePourAgentTypeEtMoisAnnee(Integer nomatr, String type, Integer moisChoisi,
+			Integer anneeChoisi) throws Exception {
 		String mois = moisChoisi.toString();
 		if (mois.toString().length() == 1) {
 			mois = "0" + moisChoisi.toString();
 		}
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + "=? and " + CHAMP_TYPE3 + "=? and substring(" + CHAMP_DATFIN
-				+ ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? order by " + CHAMP_DATDEB + " desc";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + "=? and " + CHAMP_TYPE3
+				+ "=? and substring(" + CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? order by "
+				+ CHAMP_DATDEB + " desc";
 
 		ArrayList<SPABSEN> listeSPABSEN = new ArrayList<SPABSEN>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, type, mois, anneeChoisi });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
+				new Object[] { nomatr, type, mois, anneeChoisi });
 		for (Map<String, Object> row : rows) {
 			SPABSEN abs = new SPABSEN();
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
@@ -106,18 +105,20 @@ public class SPABSENDao implements SPABSENDaoInterface {
 	}
 
 	@Override
-	public ArrayList<Integer> listerMatriculeAbsencePourSMDoubleType(String typeMA, String typeLM, Integer moisChoisi, Integer anneeChoisi)
-			throws Exception {
+	public ArrayList<Integer> listerMatriculeAbsencePourSMDoubleType(String typeMA, String typeLM, Integer moisChoisi,
+			Integer anneeChoisi) throws Exception {
 		String mois = moisChoisi.toString();
 		if (mois.toString().length() == 1) {
 			mois = "0" + moisChoisi.toString();
 		}
-		String sql = "select " + CHAMP_NOMATR + " from " + NOM_TABLE + " where (" + CHAMP_TYPE3 + "=? or " + CHAMP_TYPE3 + "=? )and substring("
-				+ CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? group by " + CHAMP_NOMATR;
+		String sql = "select " + CHAMP_NOMATR + " from " + NOM_TABLE + " where (" + CHAMP_TYPE3 + "=? or "
+				+ CHAMP_TYPE3 + "=? )and substring(" + CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN
+				+ ",0,5)=? group by " + CHAMP_NOMATR;
 
 		ArrayList<Integer> listeMatricule = new ArrayList<Integer>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { typeMA, typeLM, mois, anneeChoisi });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { typeMA, typeLM, mois,
+				anneeChoisi });
 		for (Map<String, Object> row : rows) {
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);
 			listeMatricule.add(noMat.intValue());
@@ -127,18 +128,20 @@ public class SPABSENDao implements SPABSENDaoInterface {
 	}
 
 	@Override
-	public ArrayList<SPABSEN> listerAbsencePourAgentTypeEtMoisAnneeDoubleType(Integer nomatr, String typeMA, String typeLM, Integer moisChoisi,
-			Integer anneeChoisi) throws Exception {
+	public ArrayList<SPABSEN> listerAbsencePourAgentTypeEtMoisAnneeDoubleType(Integer nomatr, String typeMA,
+			String typeLM, Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		String mois = moisChoisi.toString();
 		if (mois.toString().length() == 1) {
 			mois = "0" + moisChoisi.toString();
 		}
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + "=? and (" + CHAMP_TYPE3 + "=? or " + CHAMP_TYPE3
-				+ "=? ) and substring(" + CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN + ",0,5)=? order by " + CHAMP_DATDEB + " desc";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_NOMATR + "=? and (" + CHAMP_TYPE3 + "=? or "
+				+ CHAMP_TYPE3 + "=? ) and substring(" + CHAMP_DATFIN + ",5,2)=? and substring(" + CHAMP_DATFIN
+				+ ",0,5)=? order by " + CHAMP_DATDEB + " desc";
 
 		ArrayList<SPABSEN> listeSPABSEN = new ArrayList<SPABSEN>();
 
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, typeMA, typeLM, mois, anneeChoisi });
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { nomatr, typeMA, typeLM, mois,
+				anneeChoisi });
 		for (Map<String, Object> row : rows) {
 			SPABSEN abs = new SPABSEN();
 			BigDecimal noMat = (BigDecimal) row.get(CHAMP_NOMATR);

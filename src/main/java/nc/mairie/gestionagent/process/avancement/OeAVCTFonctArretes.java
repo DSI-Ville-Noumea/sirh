@@ -27,6 +27,7 @@ import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -144,7 +145,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getCapDao() == null) {
-			setCapDao((CapDao) context.getBean("capDao"));
+			setCapDao(new CapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
