@@ -169,8 +169,6 @@ public class SuiviMedicalDao implements SuiviMedicalDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { mois, annee, EnumEtatSuiviMed.EFFECTUE.getCode() });
 		for (Map<String, Object> row : rows) {
 			SuiviMedical sm = new SuiviMedical();
-			// logger.debug("List suiviMed listerSuiviMedicalNonEffectue : " +
-			// row.toString());
 			BigDecimal idSuivi = (BigDecimal) row.get(CHAMP_ID_SUIVI_MED);
 			sm.setIdSuiviMed(idSuivi.intValue());
 			sm.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));

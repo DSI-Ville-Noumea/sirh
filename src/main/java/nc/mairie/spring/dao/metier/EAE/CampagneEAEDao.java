@@ -1,28 +1,23 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.CampagneEAE;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class CampagneEAEDao implements CampagneEAEDaoInterface {
+public class CampagneEAEDao extends EaeDao implements CampagneEAEDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(CampagneEAEDao.class);
 
-	public static final String NOM_TABLE = "EAE_CAMPAGNE_EAE";
-
 	public static final String NOM_SEQUENCE = "EAE_S_CAMPAGNE_EAE";
 
-	public static final String CHAMP_ID_CAMPAGNE_EAE = "ID_CAMPAGNE_EAE";
 	public static final String CHAMP_ANNEE = "ANNEE";
 	public static final String CHAMP_DATE_DEBUT = "DATE_DEBUT";
 	public static final String CHAMP_DATE_FIN = "DATE_FIN";
@@ -30,16 +25,11 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	public static final String CHAMP_DATE_FERMETURE_KIOSQUE = "DATE_FERMETURE_KIOSQUE";
 	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public CampagneEAEDao() {
-
+	public CampagneEAEDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_CAMPAGNE_EAE";
+		super.CHAMP_ID = "ID_CAMPAGNE_EAE";
 	}
 
 	@Override
@@ -52,7 +42,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 		for (Map<String, Object> row : rows) {
 			CampagneEAE camp = new CampagneEAE();
 			logger.info("List campagne EAE : " + row.toString());
-			camp.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
+			camp.setIdCampagneEae((Integer) row.get(CHAMP_ID));
 			camp.setAnnee((Integer) row.get(CHAMP_ANNEE));
 			camp.setDateDebut((Date) row.get(CHAMP_DATE_DEBUT));
 			camp.setDateFin((Date) row.get(CHAMP_DATE_FIN));
@@ -67,12 +57,7 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 
 	@Override
 	public CampagneEAE chercherCampagneEAE(Integer idCampagneEAE) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_EAE + " = ? ";
-
-		CampagneEAE camp = (CampagneEAE) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEAE },
-				new BeanPropertyRowMapper<CampagneEAE>(CampagneEAE.class));
-
-		return camp;
+		return super.chercherObject(CampagneEAE.class, idCampagneEAE);
 	}
 
 	@Override
@@ -80,8 +65,8 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ANNEE + ","
-				+ CHAMP_DATE_DEBUT + "," + CHAMP_COMMENTAIRE + ") VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_ANNEE + "," + CHAMP_DATE_DEBUT + ","
+				+ CHAMP_COMMENTAIRE + ") VALUES (?, ?, ?, ?)";
 		jdbcTemplate.update(sql, new Object[] { id, annee, dateDebut, commentaire });
 
 		return id;
@@ -90,27 +75,25 @@ public class CampagneEAEDao implements CampagneEAEDaoInterface {
 	@Override
 	public void modifierCampagneEAE(Integer idCampagneEAE, Date dateDebut, String commentaire) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_DEBUT + " =?," + CHAMP_COMMENTAIRE + "=? where "
-				+ CHAMP_ID_CAMPAGNE_EAE + "=?";
+				+ CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateDebut, commentaire, idCampagneEAE });
 	}
 
 	@Override
 	public void modifierOuvertureKiosqueCampagneEAE(Integer idCampagneEAE, Date dateOuvertureKiosque) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_OUVERTURE_KIOSQUE + " =? where "
-				+ CHAMP_ID_CAMPAGNE_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_OUVERTURE_KIOSQUE + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateOuvertureKiosque, idCampagneEAE });
 	}
 
 	@Override
 	public void modifierFermetureKiosqueCampagneEAE(Integer idCampagneEAE, Date dateFermetureKiosque) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FERMETURE_KIOSQUE + " =? where "
-				+ CHAMP_ID_CAMPAGNE_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FERMETURE_KIOSQUE + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateFermetureKiosque, idCampagneEAE });
 	}
 
 	@Override
 	public void modifierFinCampagneEAE(Integer idCampagneEAE, Date dateFin) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FIN + " =? where " + CHAMP_ID_CAMPAGNE_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_FIN + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateFin, idCampagneEAE });
 	}
 

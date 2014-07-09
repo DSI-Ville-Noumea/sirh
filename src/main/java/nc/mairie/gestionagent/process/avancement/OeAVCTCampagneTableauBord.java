@@ -7,10 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeFichePoste;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
+import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.eae.EaeFichePosteDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
@@ -34,7 +35,7 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 
 	private ArrayList<EaeFichePoste> listeTableauBord;
 
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private CampagneEAEDao campagneEAEDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeFichePosteDao eaeFichePosteDao;
@@ -70,19 +71,19 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDao() == null) {
-			setEaeDao((EAEDao) context.getBean("eaeDao"));
+			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFichePosteDao() == null) {
-			setEaeFichePosteDao((EaeFichePosteDao) context.getBean("eaeFichePosteDao"));
+			setEaeFichePosteDao(new EaeFichePosteDao((EaeDao) context.getBean("eaeDao")));
 		}
 	}
 
@@ -528,11 +529,11 @@ public class OeAVCTCampagneTableauBord extends BasicProcess {
 		this.listeTableauBord = listeTableauBord;
 	}
 
-	public EAEDao getEaeDao() {
+	public EaeEAEDao getEaeDao() {
 		return eaeDao;
 	}
 
-	public void setEaeDao(EAEDao eaeDao) {
+	public void setEaeDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 

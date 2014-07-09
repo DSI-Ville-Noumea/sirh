@@ -1,18 +1,13 @@
-package nc.mairie.spring.dao.metier.EAE;
-
-import javax.sql.DataSource;
+package nc.mairie.spring.dao.metier.eae;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.eae.EaeEvaluation;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
+public class EaeEvaluationDao extends EaeDao implements EaeEvaluationDaoInterface {
 
-	public static final String NOM_TABLE = "EAE_EVALUATION";
-
-	public static final String CHAMP_ID_EAE_EVALUATION = "ID_EAE_EVALUATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_NIVEAU = "NIVEAU";
 	public static final String CHAMP_NOTE_ANNEE = "NOTE_ANNEE";
@@ -28,16 +23,11 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 	public static final String CHAMP_ID_EAE_COM_AVCT_EVALUATEUR = "ID_EAE_COM_AVCT_EVALUATEUR";
 	public static final String CHAMP_ID_EAE_COM_AVCT_EVALUE = "ID_EAE_COM_AVCT_EVALUE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeEvaluationDao() {
-
+	public EaeEvaluationDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_EVALUATION";
+		super.CHAMP_ID = "ID_EAE_EVALUATION";
 	}
 
 	@Override
@@ -45,7 +35,8 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
 		EaeEvaluation eval = null;
 		try {
-			eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE }, new BeanPropertyRowMapper<EaeEvaluation>(EaeEvaluation.class));
+			eval = (EaeEvaluation) jdbcTemplate.queryForObject(sql, new Object[] { idEAE },
+					new BeanPropertyRowMapper<EaeEvaluation>(EaeEvaluation.class));
 
 		} catch (Exception e) {
 		}
@@ -180,56 +171,52 @@ public class EaeEvaluationDao implements EaeEvaluationDaoInterface {
 	@Override
 	public void modifierCommentaireEvaluateurEaeEvaluation(Integer idEaeEvaluation, Integer idEaeCommentaire)
 			throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_EVALUATEUR + " =? where "
-				+ CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_EVALUATEUR + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { idEaeCommentaire, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierNoteEaeEvaluation(Integer idEaeEvaluation, double note) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NOTE_ANNEE + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NOTE_ANNEE + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { note, idEaeEvaluation });
 
 	}
 
 	@Override
 	public void modifierNiveauEaeEvaluation(Integer idEaeEvaluation, String niveau) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NIVEAU + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_NIVEAU + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { niveau, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierADEaeEvaluation(Integer idEaeEvaluation, String propositionAD) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_PROPOSITION_AVANCEMENT + " =? where "
-				+ CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_PROPOSITION_AVANCEMENT + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { propositionAD, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierChgtClasseEaeEvaluation(Integer idEaeEvaluation, Integer chgtClasse) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_CHANGEMENT_CLASSE + " =? where "
-				+ CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_CHANGEMENT_CLASSE + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { chgtClasse, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierRevaloEaeEvaluation(Integer idEaeEvaluation, Integer revalorisation) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_REVALORISATION + " =? where "
-				+ CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_REVALORISATION + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { revalorisation, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierRapportCirconstancieEaeEvaluation(Integer idEaeEvaluation, Integer idEaeRapportCircon)
 			throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where "
-				+ CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_EAE_COM_AVCT_EVALUATEUR + " =? where " + CHAMP_ID
+				+ "=?";
 		jdbcTemplate.update(sql, new Object[] { idEaeRapportCircon, idEaeEvaluation });
 	}
 
 	@Override
 	public void modifierAvisSHDEaeEvaluation(Integer idEaeEvaluation, String avis_shd) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_SHD + " =? where " + CHAMP_ID_EAE_EVALUATION + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_AVIS_SHD + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { avis_shd, idEaeEvaluation });
 	}
 }

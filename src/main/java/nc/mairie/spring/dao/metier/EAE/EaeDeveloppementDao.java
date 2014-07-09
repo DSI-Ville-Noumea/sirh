@@ -1,45 +1,33 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeDeveloppement;
+import nc.mairie.spring.dao.EaeDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+public class EaeDeveloppementDao extends EaeDao implements EaeDeveloppementDaoInterface {
 
-public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
-
-	public static final String NOM_TABLE = "EAE_DEVELOPPEMENT";
-
-	public static final String CHAMP_ID_EAE_DEVELOPPEMENT = "ID_EAE_DEVELOPPEMENT";
 	public static final String CHAMP_ID_EAE_EVOLUTION = "ID_EAE_EVOLUTION";
 	public static final String CHAMP_LIBELLE = "LIBELLE";
 	public static final String CHAMP_ECHEANCE = "ECHEANCE";
 	public static final String CHAMP_PRIORISATION = "PRIORISATION";
 	public static final String CHAMP_TYPE_DEVELOPPEMENT = "TYPE_DEVELOPPEMENT";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-
-	}
-
-	public EaeDeveloppementDao() {
-
+	public EaeDeveloppementDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_DEVELOPPEMENT";
+		super.CHAMP_ID = "ID_EAE_DEVELOPPEMENT";
 	}
 
 	@Override
 	public void modifierEaeDeveloppement(Integer idEaeDeveloppement, String typeDeveloppement,
 			String libelleDeveloppement, Date echeanceDeveloppement, Integer priorisation) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TYPE_DEVELOPPEMENT + " =?," + CHAMP_LIBELLE + "=?,"
-				+ CHAMP_ECHEANCE + "=?," + CHAMP_PRIORISATION + "=? where " + CHAMP_ID_EAE_DEVELOPPEMENT + "=?";
+				+ CHAMP_ECHEANCE + "=?," + CHAMP_PRIORISATION + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { typeDeveloppement, libelleDeveloppement, echeanceDeveloppement,
 				priorisation, idEaeDeveloppement });
 	}
@@ -65,10 +53,10 @@ public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEvolution });
 		for (Map<String, Object> row : rows) {
 			EaeDeveloppement dev = new EaeDeveloppement();
-			dev.setIdEaeDeveloppement((Integer) row.get(CHAMP_ID_EAE_DEVELOPPEMENT));
+			dev.setIdEaeDeveloppement((Integer) row.get(CHAMP_ID));
 			dev.setIdEaeEvolution((Integer) row.get(CHAMP_ID_EAE_EVOLUTION));
-			dev.setLibelleDeveloppement((String) row.get(CHAMP_LIBELLE));
-			dev.setEcheanceDeveloppement((Date) row.get(CHAMP_ECHEANCE));
+			dev.setLibelle((String) row.get(CHAMP_LIBELLE));
+			dev.setEcheance((Date) row.get(CHAMP_ECHEANCE));
 			dev.setPriorisation((Integer) row.get(CHAMP_PRIORISATION));
 			dev.setTypeDeveloppement((String) row.get(CHAMP_TYPE_DEVELOPPEMENT));
 
@@ -79,7 +67,6 @@ public class EaeDeveloppementDao implements EaeDeveloppementDaoInterface {
 
 	@Override
 	public void supprimerEaeDeveloppement(Integer idEaeDeveloppement) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_EAE_DEVELOPPEMENT + "=?";
-		jdbcTemplate.update(sql, new Object[] { idEaeDeveloppement });
+		super.supprimerObject(idEaeDeveloppement);
 	}
 }

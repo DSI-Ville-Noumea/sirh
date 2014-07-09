@@ -16,12 +16,12 @@
 	<context:component-scan base-package="nc.mairie.*"
 		scoped-proxy="targetClass" />
 
-	<bean id="contextApplicationContextProvider" class="nc.mairie.spring.utils.ApplicationContextProvider"/>
+	<bean id="contextApplicationContextProvider" class="nc.mairie.spring.utils.ApplicationContextProvider" />
 
 	<!-- Declaration des datasources recupéré depuis context.xml -->
 	<jee:jndi-lookup id="dataSourceSIRH" jndi-name="jdbc/SIRH_DS1" />
 	<jee:jndi-lookup id="dataSourceMairie" jndi-name="jdbc/SIRH_DS2" />
-	<jee:jndi-lookup id="dataSourceEae" jndi-name="jdbc/SIRH_DS3"/>
+	<jee:jndi-lookup id="dataSourceEae" jndi-name="jdbc/SIRH_DS3" />
 
 	<!-- DAO SIRH -->
 	<bean id="motifVisiteMedDao"
@@ -55,7 +55,8 @@
 	<bean id="representantDao" class="nc.mairie.spring.dao.metier.parametrage.RepresentantDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="typeRepresentantDao" class="nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao">
+	<bean id="typeRepresentantDao"
+		class="nc.mairie.spring.dao.metier.referentiel.TypeRepresentantDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 	<bean id="deliberationDao" class="nc.mairie.spring.dao.metier.parametrage.DeliberationDao">
@@ -67,35 +68,40 @@
 	<bean id="employeurCapDao" class="nc.mairie.spring.dao.metier.parametrage.EmployeurCapDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="representantCapDao" class="nc.mairie.spring.dao.metier.parametrage.RepresentantCapDao">
+	<bean id="representantCapDao"
+		class="nc.mairie.spring.dao.metier.parametrage.RepresentantCapDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 	<bean id="corpsCapDao" class="nc.mairie.spring.dao.metier.parametrage.CorpsCapDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="avancementCapPrintJobDao" class="nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+	<bean id="avancementCapPrintJobDao"
+		class="nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="primePointageAffDao" class="nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+	<bean id="primePointageAffDao"
+		class="nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="primePointageFPDao" class="nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+	<bean id="primePointageFPDao"
+		class="nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 	<bean id="jourFerieDao" class="nc.mairie.spring.dao.metier.parametrage.JourFerieDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	<bean id="typeJourFerieDao" class="nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+	<bean id="typeJourFerieDao"
+		class="nc.mairie.spring.dao.metier.parametrage.TypeJourFerieDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 	<bean id="natureCreditDao" class="nc.mairie.spring.dao.metier.parametrage.NatureCreditDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 
-	<bean id="sirhDao" class="nc.mairie.spring.dao.metier.agent.DefaultSirhDao">
-		<property name="dataSource" ref="dataSourceSIRH" />		
+	<bean id="sirhDao" class="nc.mairie.spring.dao.DefaultSirhDao">
+		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
-	
+
 
 	<!-- DAO Mairie -->
 	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
@@ -104,74 +110,15 @@
 	<bean id="spbaseDao" class="nc.mairie.spring.dao.metier.parametrage.SPBASEDao">
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
-	
-	
+
+
 	<!-- DAO EAE -->
-	<bean id="campagneEAEDao" class="nc.mairie.spring.dao.metier.EAE.CampagneEAEDao">
+
+	<bean id="eaeDao" class="nc.mairie.spring.dao.DefaultEaeDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>
-	<bean id="campagneActionDao" class="nc.mairie.spring.dao.metier.EAE.CampagneActionDao">
+	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.eae.EaeNumIncrementDocumentDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>
-	<bean id="campagneActeurDao" class="nc.mairie.spring.dao.metier.EAE.CampagneActeurDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeDao" class="nc.mairie.spring.dao.metier.EAE.EAEDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeEvaluateurDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeEvalueDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvalueDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeFDPActiviteDao" class="nc.mairie.spring.dao.metier.EAE.EaeFDPActiviteDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeFDPCompetenceDao" class="nc.mairie.spring.dao.metier.EAE.EaeFDPCompetenceDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeFichePosteDao" class="nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeDiplomeDao" class="nc.mairie.spring.dao.metier.EAE.EaeDiplomeDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeParcoursProDao" class="nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeFormationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFormationDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeEvaluationDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeDocumentDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeCommentaireDao" class="nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeFinalisationDao" class="nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaePlanActionDao" class="nc.mairie.spring.dao.metier.EAE.EaePlanActionDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeEvolutionDao" class="nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeDeveloppementDao" class="nc.mairie.spring.dao.metier.EAE.EaeDeveloppementDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeTypeDeveloppementDao" class="nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	<bean id="eaeCampagneTaskDao" class="nc.mairie.spring.dao.metier.EAE.EaeCampagneTaskDao">
-		<property name="dataSource" ref="dataSourceEae" />
-	</bean>
-	
+
 </beans>

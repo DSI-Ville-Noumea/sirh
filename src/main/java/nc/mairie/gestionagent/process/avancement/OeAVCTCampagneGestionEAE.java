@@ -58,20 +58,21 @@ import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.TypeCompetence;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeCampagneTaskDao;
-import nc.mairie.spring.dao.metier.EAE.EaeDiplomeDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFDPActiviteDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFDPCompetenceDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
+import nc.mairie.spring.dao.EaeDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeCampagneTaskDao;
+import nc.mairie.spring.dao.metier.eae.EaeDiplomeDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluateurDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvalueDao;
+import nc.mairie.spring.dao.metier.eae.EaeFDPActiviteDao;
+import nc.mairie.spring.dao.metier.eae.EaeFDPCompetenceDao;
+import nc.mairie.spring.dao.metier.eae.EaeFichePosteDao;
+import nc.mairie.spring.dao.metier.eae.EaeFinalisationDao;
+import nc.mairie.spring.dao.metier.eae.EaeFormationDao;
+import nc.mairie.spring.dao.metier.eae.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -141,7 +142,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private EaeDiplomeDao eaeDiplomeDao;
 	private EaeFichePosteDao eaeFichePosteDao;
 	private EaeFDPActiviteDao eaeFDPActiviteDao;
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private EaeEvalueDao eaeEvalueDao;
 	private EaeEvaluateurDao eaeEvaluateurDao;
 	private CampagneEAEDao campagneEAEDao;
@@ -726,8 +727,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			addZone(getNOM_ST_CAP(i), eae.isCap() ? "oui" : "&nbsp;");
-			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvis_shd() == null ? "&nbsp;"
-					: evaluation.getAvis_shd());
+			addZone(getNOM_ST_AVIS_SHD(i), evaluation == null || evaluation.getAvisShd() == null ? "&nbsp;"
+					: evaluation.getAvisShd());
 			addZone(getNOM_ST_EAE_JOINT(i), eae.isDocAttache() ? "oui" : "non");
 			addZone(getNOM_ST_CONTROLE(i),
 					EnumEtatEAE.getValueEnumEtatEAE(eae.getEtat()) + " <br> "
@@ -749,51 +750,55 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDao() == null) {
-			setEaeDao((EAEDao) context.getBean("eaeDao"));
+			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvalueDao() == null) {
-			setEaeEvalueDao((EaeEvalueDao) context.getBean("eaeEvalueDao"));
+			setEaeEvalueDao(new EaeEvalueDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvaluateurDao() == null) {
-			setEaeEvaluateurDao((EaeEvaluateurDao) context.getBean("eaeEvaluateurDao"));
+			setEaeEvaluateurDao(new EaeEvaluateurDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFDPActiviteDao() == null) {
-			setEaeFDPActiviteDao((EaeFDPActiviteDao) context.getBean("eaeFDPActiviteDao"));
+			setEaeFDPActiviteDao(new EaeFDPActiviteDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFDPCompetenceDao() == null) {
-			setEaeFDPCompetenceDao((EaeFDPCompetenceDao) context.getBean("eaeFDPCompetenceDao"));
+			setEaeFDPCompetenceDao(new EaeFDPCompetenceDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFichePosteDao() == null) {
-			setEaeFichePosteDao((EaeFichePosteDao) context.getBean("eaeFichePosteDao"));
+			setEaeFichePosteDao(new EaeFichePosteDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDiplomeDao() == null) {
-			setEaeDiplomeDao((EaeDiplomeDao) context.getBean("eaeDiplomeDao"));
+			setEaeDiplomeDao(new EaeDiplomeDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeParcoursProDao() == null) {
-			setEaeParcoursProDao((EaeParcoursProDao) context.getBean("eaeParcoursProDao"));
+			setEaeParcoursProDao(new EaeParcoursProDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFormationDao() == null) {
-			setEaeFormationDao((EaeFormationDao) context.getBean("eaeFormationDao"));
+			setEaeFormationDao(new EaeFormationDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeFinalisationDao() == null) {
-			setEaeFinalisationDao((EaeFinalisationDao) context.getBean("eaeFinalisationDao"));
+			setEaeFinalisationDao(new EaeFinalisationDao((EaeDao) context.getBean("eaeDao")));
+		}
+
+		if (getEaeCampagneTaskDao() == null) {
+			setEaeCampagneTaskDao(new EaeCampagneTaskDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		// AS400
@@ -807,10 +812,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		if (getCentreFormationDao() == null) {
 			setCentreFormationDao((CentreFormationDao) context.getBean("centreFormationDao"));
-		}
-
-		if (getEaeCampagneTaskDao() == null) {
-			setEaeCampagneTaskDao((EaeCampagneTaskDao) context.getBean("eaeCampagneTaskDao"));
 		}
 	}
 
@@ -1718,12 +1719,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			TypeCompetence typComp = TypeCompetence
 					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
-			compEAE.setIdEaeFDP(getIdCreerFichePosteSecondaire());
+			compEAE.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
-			compEAE.setLibCompetence(comp.getNomCompetence());
+			compEAE.setLibelleCompetence(comp.getNomCompetence());
 
-			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(),
-					compEAE.getLibCompetence());
+			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFichePoste(), compEAE.getTypeCompetence(),
+					compEAE.getLibelleCompetence());
 		}
 	}
 
@@ -1735,12 +1736,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			TypeCompetence typComp = TypeCompetence
 					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
-			compEAE.setIdEaeFDP(getIdCreerFichePostePrimaire());
+			compEAE.setIdEaeFichePoste(getIdCreerFichePostePrimaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
-			compEAE.setLibCompetence(comp.getNomCompetence());
+			compEAE.setLibelleCompetence(comp.getNomCompetence());
 
-			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFDP(), compEAE.getTypeCompetence(),
-					compEAE.getLibCompetence());
+			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFichePoste(), compEAE.getTypeCompetence(),
+					compEAE.getLibelleCompetence());
 		}
 	}
 
@@ -1751,10 +1752,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
 			EaeFDPActivite acti = new EaeFDPActivite();
-			acti.setIdEaeFDP(getIdCreerFichePostePrimaire());
-			acti.setLibActivite(act.getNomActivite());
+			acti.setIdEaeFichePoste(getIdCreerFichePostePrimaire());
+			acti.setLibelleActivite(act.getNomActivite());
 
-			getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFDP(), acti.getLibActivite());
+			getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFichePoste(), acti.getLibelleActivite());
 		}
 	}
 
@@ -1765,10 +1766,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
 			EaeFDPActivite acti = new EaeFDPActivite();
-			acti.setIdEaeFDP(getIdCreerFichePosteSecondaire());
-			acti.setLibActivite(act.getNomActivite());
+			acti.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
+			acti.setLibelleActivite(act.getNomActivite());
 
-			getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFDP(), acti.getLibActivite());
+			getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFichePoste(), acti.getLibelleActivite());
 		}
 	}
 
@@ -1788,13 +1789,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
-						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
+						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFdpActivite());
 					}
 					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
 							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
-						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
+						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFdpCompetence());
 					}
 				} catch (Exception e) {
 					// il n'y avait pas d'activites
@@ -1961,13 +1962,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
-						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
+						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFdpActivite());
 					}
 					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
 							aSupp.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
-						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
+						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFdpCompetence());
 					}
 				} catch (Exception e) {
 					// il n'y avait pas d'activites
@@ -1995,14 +1996,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listActi.size(); i++) {
 						EaeFDPActivite a = listActi.get(i);
-						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFDPActivite());
+						getEaeFDPActiviteDao().supprimerEaeFDPActivite(a.getIdEaeFdpActivite());
 					}
 
 					ArrayList<EaeFDPCompetence> listComp = getEaeFDPCompetenceDao().listerEaeFDPCompetence(
 							fpModif.getIdEaeFichePoste());
 					for (int i = 0; i < listComp.size(); i++) {
 						EaeFDPCompetence c = listComp.get(i);
-						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFDPCompetence());
+						getEaeFDPCompetenceDao().supprimerEaeFDPCompetence(c.getIdEaeFdpCompetence());
 					}
 				} catch (Exception e) {
 					// il n'y avait pas d'activites
@@ -2557,7 +2558,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (carrCours != null & carrCours.getNoMatricule() != null) {
 				evalAModif.setStatut(Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()));
 				if (evalAModif.getStatut().equals("A")) {
-					evalAModif.setPrecisionStatut(StatutCarriere.chercherStatutCarriere(getTransaction(),
+					evalAModif.setStatutPrecision(StatutCarriere.chercherStatutCarriere(getTransaction(),
 							carrCours.getCodeCategorie()).getLiCate());
 				}
 				if (Carriere.getStatutCarriereEAE(carrCours.getCodeCategorie()).equals("F")) {
@@ -2756,7 +2757,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						evalAModif.getCategorie(), evalAModif.getClassification(), evalAModif.getGrade(),
 						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
 						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
-						evalAModif.getPrecisionStatut(), evalAModif.getAvctDurMin(), evalAModif.getAvctDurMoy(),
+						evalAModif.getStatutPrecision(), evalAModif.getAvctDurMin(), evalAModif.getAvctDurMoy(),
 						evalAModif.getAvctDurMax(), evalAModif.isAgentDetache());
 			} else {
 				getEaeEvalueDao().modifierEaeEvalue(evalAModif.getIdEae(), evalAModif.getIdAgent(),
@@ -2766,7 +2767,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						evalAModif.getCategorie(), evalAModif.getClassification(), evalAModif.getGrade(),
 						evalAModif.getEchelon(), evalAModif.getDateEffetAvct(), evalAModif.getNouvGrade(),
 						evalAModif.getNouvEchelon(), evalAModif.getPosition(), evalAModif.getTypeAvct(),
-						evalAModif.getPrecisionStatut(), evalAModif.getAvctDurMin(), evalAModif.getAvctDurMoy(),
+						evalAModif.getStatutPrecision(), evalAModif.getAvctDurMin(), evalAModif.getAvctDurMoy(),
 						evalAModif.getAvctDurMax(), evalAModif.isAgentDetache());
 			}
 		}
@@ -3145,11 +3146,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		this.eaeFDPActiviteDao = eaeFDPActiviteDao;
 	}
 
-	public EAEDao getEaeDao() {
+	public EaeEAEDao getEaeDao() {
 		return eaeDao;
 	}
 
-	public void setEaeDao(EAEDao eaeDao) {
+	public void setEaeDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 

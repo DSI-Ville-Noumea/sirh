@@ -1,35 +1,24 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeFormation;
+import nc.mairie.spring.dao.EaeDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+public class EaeFormationDao extends EaeDao implements EaeFormationDaoInterface {
 
-public class EaeFormationDao implements EaeFormationDaoInterface {
-
-	public static final String NOM_TABLE = "EAE_FORMATION";
-
-	public static final String CHAMP_ID_EAE_FORMATION = "ID_EAE_FORMATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_ANNEE_FORMATION = "ANNEE_FORMATION";
 	public static final String CHAMP_DUREE_FORMATION = "DUREE_FORMATION";
 	public static final String CHAMP_LIBELLE_FORMATION = "LIBELLE_FORMATION";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeFormationDao() {
-
+	public EaeFormationDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_FORMATION";
+		super.CHAMP_ID = "ID_EAE_FORMATION";
 	}
 
 	@Override
@@ -51,8 +40,7 @@ public class EaeFormationDao implements EaeFormationDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFormation form = new EaeFormation();
-			// logger.debug("List diplomes : " + row.toString());
-			form.setIdEaeFormation((Integer) row.get(CHAMP_ID_EAE_FORMATION));
+			form.setIdEaeFormation((Integer) row.get(CHAMP_ID));
 			form.setIdEAE((Integer) row.get(CHAMP_ID_EAE));
 			form.setAnneeFormation((Integer) row.get(CHAMP_ANNEE_FORMATION));
 			form.setDureeFormation((String) row.get(CHAMP_DUREE_FORMATION));
@@ -65,7 +53,6 @@ public class EaeFormationDao implements EaeFormationDaoInterface {
 
 	@Override
 	public void supprimerEaeFormation(Integer idFormation) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_EAE_FORMATION + "=?";
-		jdbcTemplate.update(sql, new Object[] { idFormation });
+		super.supprimerObject(idFormation);
 	}
 }

@@ -1,31 +1,25 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.eae.EAE;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EAEDao implements EAEDaoInterface {
+public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 
-	private Logger logger = LoggerFactory.getLogger(EAEDao.class);
-
-	public static final String NOM_TABLE = "EAE";
+	private Logger logger = LoggerFactory.getLogger(EaeEAEDao.class);
 
 	public static final String NOM_SEQUENCE = "EAE_S_EAE";
-
-	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_ID_CAMPAGNE_EAE = "ID_CAMPAGNE_EAE";
 	public static final String CHAMP_ETAT = "ETAT";
 	public static final String CHAMP_CAP = "CAP";
@@ -40,16 +34,11 @@ public class EAEDao implements EAEDaoInterface {
 	public static final String CHAMP_USER_CONTROLE = "USER_CONTROLE";
 	public static final String CHAMP_ID_DELEGATAIRE = "ID_DELEGATAIRE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EAEDao() {
-
+	public EaeEAEDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE";
+		super.CHAMP_ID = "ID_EAE";
 	}
 
 	@Override
@@ -61,8 +50,7 @@ public class EAEDao implements EAEDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { etat, idCampagneEAE });
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
-			// logger.debug("List eae : " + row.toString());
-			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdEae((Integer) row.get(CHAMP_ID));
 			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			eae.setCap((boolean) row.get(CHAMP_CAP));
@@ -84,8 +72,7 @@ public class EAEDao implements EAEDaoInterface {
 
 	@Override
 	public void supprimerEAE(Integer idEAE) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=?";
-		jdbcTemplate.update(sql, new Object[] { idEAE });
+		super.supprimerObject(idEAE);
 	}
 
 	@Override
@@ -112,7 +99,7 @@ public class EAEDao implements EAEDaoInterface {
 		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ETAT
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_ID_CAMPAGNE_EAE + "," + CHAMP_ETAT
 				+ "," + CHAMP_CAP + "," + CHAMP_DOC_ATTACHE + "," + CHAMP_DATE_CREATION + "," + CHAMP_DATE_FIN + ","
 				+ CHAMP_DATE_ENTRETIEN + "," + CHAMP_DUREE_ENTRETIEN + "," + CHAMP_DATE_FINALISE + ","
 				+ CHAMP_DATE_CONTROLE + "," + CHAMP_HEURE_CONTROLE + "," + CHAMP_USER_CONTROLE + ","
@@ -145,7 +132,7 @@ public class EAEDao implements EAEDaoInterface {
 			}
 			if (!list.equals(Const.CHAINE_VIDE))
 				list = list.substring(0, list.length() - 1);
-			reqInner += " inner join EAE_FICHE_POSTE fp on e." + CHAMP_ID_EAE + "=fp.id_eae ";
+			reqInner += " inner join EAE_FICHE_POSTE fp on e." + CHAMP_ID + "=fp.id_eae ";
 			reqWhere += " and (fp.CODE_SERVICE in (" + list + ")) ";
 		}
 		if (!capBool.equals(Const.CHAINE_VIDE)) {
@@ -163,7 +150,7 @@ public class EAEDao implements EAEDaoInterface {
 			}
 		}
 		if (agentEvaluateur != null) {
-			reqInner += " inner join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID_EAE + "=evaluateur.id_eae ";
+			reqInner += " inner join EAE_EVALUATEUR evaluateur on e." + CHAMP_ID + "=evaluateur.id_eae ";
 			reqWhere += " and evaluateur.id_agent = " + agentEvaluateur.getIdAgent();
 		}
 
@@ -179,8 +166,7 @@ public class EAEDao implements EAEDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCampagneEAE });
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
-			// logger.debug("List eae : " + row.toString());
-			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdEae((Integer) row.get(CHAMP_ID));
 			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			eae.setCap((boolean) row.get(CHAMP_CAP));
@@ -202,26 +188,26 @@ public class EAEDao implements EAEDaoInterface {
 
 	@Override
 	public void modifierDelegataire(Integer idEAE, Integer idDelegataire) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_DELEGATAIRE + " =? where " + CHAMP_ID_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_DELEGATAIRE + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { idDelegataire, idEAE });
 	}
 
 	@Override
 	public void modifierCAP(Integer idEAE, boolean cap) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CAP + " =? where " + CHAMP_ID_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_CAP + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { cap, idEAE });
 	}
 
 	@Override
 	public void modifierSuiteCreation(Integer idEAE, Date dateCreation, String etat) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_CREATION + " =?," + CHAMP_ETAT + "=? where "
-				+ CHAMP_ID_EAE + "=?";
+				+ CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateCreation, etat, idEAE });
 	}
 
 	@Override
 	public void modifierEtat(Integer idEAE, String etat) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ETAT + "=? where " + CHAMP_ID_EAE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ETAT + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { etat, idEAE });
 	}
 
@@ -229,7 +215,7 @@ public class EAEDao implements EAEDaoInterface {
 	public void modifierControle(Integer idEAE, Date dateControle, String heureControle, String userControle,
 			String etat) throws Exception {
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_DATE_CONTROLE + "=?," + CHAMP_HEURE_CONTROLE + "=?,"
-				+ CHAMP_USER_CONTROLE + "=?," + CHAMP_ETAT + "=? where " + CHAMP_ID_EAE + "=?";
+				+ CHAMP_USER_CONTROLE + "=?," + CHAMP_ETAT + "=? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { dateControle, heureControle, userControle, etat, idEAE });
 	}
 
@@ -244,8 +230,7 @@ public class EAEDao implements EAEDaoInterface {
 				EnumEtatEAE.CONTROLE.getCode(), idCampagneEAE });
 		for (Map<String, Object> row : rows) {
 			EAE eae = new EAE();
-			// logger.debug("List eae : " + row.toString());
-			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
+			eae.setIdEae((Integer) row.get(CHAMP_ID));
 			eae.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
 			eae.setEtat((String) row.get(CHAMP_ETAT));
 			eae.setCap((boolean) row.get(CHAMP_CAP));
@@ -331,10 +316,7 @@ public class EAEDao implements EAEDaoInterface {
 	}
 
 	@Override
-	public EAE chercherEAE(Integer idEae) {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + " = ? ";
-		EAE eae = (EAE) jdbcTemplate.queryForObject(sql, new Object[] { idEae }, new BeanPropertyRowMapper<EAE>(
-				EAE.class));
-		return eae;
+	public EAE chercherEAE(Integer idEae) throws Exception {
+		return super.chercherObject(EAE.class, idEae);
 	}
 }

@@ -24,13 +24,14 @@ import nc.mairie.metier.eae.CampagneAction;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeDocument;
 import nc.mairie.metier.parametrage.TypeDocument;
-import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
-import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
+import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.metier.eae.CampagneActeurDao;
+import nc.mairie.spring.dao.metier.eae.CampagneActionDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeDocumentDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvalueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -83,7 +84,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	private CampagneActionDao campagneActionDao;
 	private CampagneActeurDao campagneActeurDao;
 	private EaeDocumentDao eaeDocumentDao;
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeEvalueDao eaeEvalueDao;
 
@@ -123,31 +124,31 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCampagneActionDao() == null) {
-			setCampagneActionDao((CampagneActionDao) context.getBean("campagneActionDao"));
+			setCampagneActionDao(new CampagneActionDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCampagneActeurDao() == null) {
-			setCampagneActeurDao((CampagneActeurDao) context.getBean("campagneActeurDao"));
+			setCampagneActeurDao(new CampagneActeurDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDocumentDao() == null) {
-			setEaeDocumentDao((EaeDocumentDao) context.getBean("eaeDocumentDao"));
+			setEaeDocumentDao(new EaeDocumentDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDao() == null) {
-			setEaeDao((EAEDao) context.getBean("eaeDao"));
+			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvalueDao() == null) {
-			setEaeEvalueDao((EaeEvalueDao) context.getBean("eaeEvalueDao"));
+			setEaeEvalueDao(new EaeEvalueDao((EaeDao) context.getBean("eaeDao")));
 		}
 	}
 
@@ -1695,11 +1696,11 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		this.lienEaeDocument = lienEaeDocument;
 	}
 
-	public EAEDao getEaeDao() {
+	public EaeEAEDao getEaeDao() {
 		return eaeDao;
 	}
 
-	public void setEaeDao(EAEDao eaeDao) {
+	public void setEaeDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 

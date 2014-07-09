@@ -1,44 +1,24 @@
-package nc.mairie.spring.dao.metier.EAE;
-
-import javax.sql.DataSource;
+package nc.mairie.spring.dao.metier.eae;
 
 import nc.mairie.metier.eae.EaeCommentaire;
+import nc.mairie.spring.dao.EaeDao;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
-
-	public static final String NOM_TABLE = "EAE_COMMENTAIRE";
+public class EaeCommentaireDao extends EaeDao implements EaeCommentaireDaoInterface {
 
 	public static final String NOM_SEQUENCE = "EAE_S_COMMENTAIRE";
 
-	public static final String CHAMP_ID_EAE_COMMENTAIRE = "ID_EAE_COMMENTAIRE";
 	public static final String CHAMP_TEXT = "TEXT";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeCommentaireDao() {
-
+	public EaeCommentaireDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_COMMENTAIRE";
+		super.CHAMP_ID = "ID_EAE_COMMENTAIRE";
 	}
 
 	@Override
 	public EaeCommentaire chercherEaeCommentaire(Integer idEaeCommentaire) throws Exception {
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE_COMMENTAIRE + " = ? ";
-		EaeCommentaire comm = null;
-		try {
-			comm = (EaeCommentaire) jdbcTemplate.queryForObject(sql, new Object[] { idEaeCommentaire }, 
-					new BeanPropertyRowMapper<EaeCommentaire>(EaeCommentaire.class));
-
-		} catch (Exception e) {
-		}
-		return comm;
+		return super.chercherObject(EaeCommentaire.class, idEaeCommentaire);
 	}
 
 	@Override
@@ -47,8 +27,7 @@ public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
 		String sqlClePrimaire = "select nextval('" + NOM_SEQUENCE + "')";
 		Integer id = jdbcTemplate.queryForInt(sqlClePrimaire);
 
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_COMMENTAIRE + "," + CHAMP_TEXT
-				+ ") VALUES (?, ?)";
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_TEXT + ") VALUES (?, ?)";
 		jdbcTemplate.update(sql, new Object[] { id, commentaire });
 
 		return id;
@@ -56,7 +35,7 @@ public class EaeCommentaireDao implements EaeCommentaireDaoInterface {
 
 	@Override
 	public void modifierEaeCommentaire(Integer idEaeCommentaire, String commentaire) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEXT + " =? where " + CHAMP_ID_EAE_COMMENTAIRE + "=?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_TEXT + " =? where " + CHAMP_ID + "=?";
 		jdbcTemplate.update(sql, new Object[] { commentaire, idEaeCommentaire });
 	}
 }

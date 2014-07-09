@@ -1,24 +1,19 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeFichePoste;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
-
-	public static final String NOM_TABLE = "EAE_FICHE_POSTE";
+public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterface {
 
 	public static final String NOM_SEQUENCE = "EAE_S_FICHE_POSTE";
 
-	public static final String CHAMP_ID_EAE_FICHE_POSTE = "ID_EAE_FICHE_POSTE";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_ID_SHD = "ID_SHD";
 	public static final String CHAMP_PRIMAIRE = "PRIMAIRE";
@@ -38,16 +33,11 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	public static final String CHAMP_CODE_SERVICE = "CODE_SERVICE";
 	public static final String CHAMP_ID_SIRH_FICHE_POSTE = "ID_SIRH_FICHE_POSTE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeFichePosteDao() {
-
+	public EaeFichePosteDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_FICHE_POSTE";
+		super.CHAMP_ID = "ID_EAE_FICHE_POSTE";
 	}
 
 	@Override
@@ -56,11 +46,11 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 			String localisation, String mission, String fonctionResp, Date dateEntreeServiceResp,
 			Date dateEntreeCollectiviteResp, Date dateEntreeFonctionResp, String codeService, Integer idSirhFichePoste)
 			throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_EAE_FICHE_POSTE + "," + CHAMP_ID_EAE + ","
-				+ CHAMP_ID_SHD + "," + CHAMP_PRIMAIRE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + ","
-				+ CHAMP_SECTION_SERVICE + "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + "," + CHAMP_DATE_ENTREE_FONCTION
-				+ "," + CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP
-				+ "," + CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + ","
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID + "," + CHAMP_ID_EAE + "," + CHAMP_ID_SHD + ","
+				+ CHAMP_PRIMAIRE + "," + CHAMP_DIRECTION_SERVICE + "," + CHAMP_SERVICE + "," + CHAMP_SECTION_SERVICE
+				+ "," + CHAMP_EMPLOI + "," + CHAMP_FONCTION + "," + CHAMP_DATE_ENTREE_FONCTION + ","
+				+ CHAMP_GRADE_POSTE + "," + CHAMP_LOCALISATION + "," + CHAMP_MISSIONS + "," + CHAMP_FONCTION_RESP + ","
+				+ CHAMP_DATE_ENTREE_SERVICE_RESP + "," + CHAMP_DATE_ENTREE_COLLECT_RESP + ","
 				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "," + CHAMP_CODE_SERVICE + "," + CHAMP_ID_SIRH_FICHE_POSTE + ") "
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -80,7 +70,8 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 	@Override
 	public EaeFichePoste chercherEaeFichePoste(Integer idEAE, boolean type) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_EAE + "=? and " + CHAMP_PRIMAIRE + "=?";
-		EaeFichePoste eaeFDP = (EaeFichePoste) jdbcTemplate.queryForObject(sql, new Object[] { idEAE, type }, new BeanPropertyRowMapper<EaeFichePoste>(EaeFichePoste.class));
+		EaeFichePoste eaeFDP = (EaeFichePoste) jdbcTemplate.queryForObject(sql, new Object[] { idEAE, type },
+				new BeanPropertyRowMapper<EaeFichePoste>(EaeFichePoste.class));
 		return eaeFDP;
 	}
 
@@ -112,7 +103,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFichePoste eae = new EaeFichePoste();
-			eae.setIdEaeFichePoste((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
+			eae.setIdEaeFichePoste((Integer) row.get(CHAMP_ID));
 			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
 			eae.setIdSHD((Integer) row.get(CHAMP_ID_SHD));
 			eae.setPrimaire((boolean) row.get(CHAMP_PRIMAIRE));
@@ -144,7 +135,7 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 				+ CHAMP_GRADE_POSTE + "=?," + CHAMP_LOCALISATION + "=?," + CHAMP_MISSIONS + "=?," + CHAMP_FONCTION_RESP
 				+ "=?," + CHAMP_DATE_ENTREE_SERVICE_RESP + "=?," + CHAMP_DATE_ENTREE_COLLECT_RESP + "=?,"
 				+ CHAMP_DATE_ENTREE_FONCTION_RESP + "=?," + CHAMP_CODE_SERVICE + "=?," + CHAMP_ID_SIRH_FICHE_POSTE
-				+ "=? where " + CHAMP_ID_EAE_FICHE_POSTE + "=?";
+				+ "=? where " + CHAMP_ID + "=?";
 
 		jdbcTemplate.update(sql, new Object[] { idEae, idSHD, typeFDP, direction, service, section, emploi, fonction,
 				dateEntreeFonction, grade, localisation, mission, fonctionResp, dateEntreeServiceResp,
@@ -154,7 +145,6 @@ public class EaeFichePosteDao implements EaeFichePosteDaoInterface {
 
 	@Override
 	public void supprimerEaeFichePoste(Integer idEaeFichePoste) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_EAE_FICHE_POSTE + "=?";
-		jdbcTemplate.update(sql, new Object[] { idEaeFichePoste });
+		super.supprimerObject(idEaeFichePoste);
 	}
 }

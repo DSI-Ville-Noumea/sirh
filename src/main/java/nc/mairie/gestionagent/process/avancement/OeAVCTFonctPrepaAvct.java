@@ -23,8 +23,9 @@ import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EAE;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
+import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -67,14 +68,14 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private CampagneEAEDao campagneEAEDao;
 
-	public EAEDao getEAEDao() {
+	public EaeEAEDao getEAEDao() {
 		return eaeDao;
 	}
 
-	public void setEAEDao(EAEDao eaeDao) {
+	public void setEAEDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 
@@ -232,10 +233,10 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getEAEDao() == null) {
-			setEAEDao((EAEDao) context.getBean("eaeDao"));
+			setEAEDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 	}
 

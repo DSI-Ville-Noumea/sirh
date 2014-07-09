@@ -21,7 +21,6 @@ import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
-import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -36,7 +35,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
@@ -83,7 +81,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-		initialiseDao();
 
 		addZone(getNOM_RG_TYPE(), getNOM_RB_TYPE_TOUT());
 
@@ -135,12 +132,6 @@ public class OePTGVentilationConvCol extends BasicProcess {
 				indiceAgent++;
 			}
 		}
-	}
-
-	private void initialiseDao() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -263,15 +254,16 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 		return true;
 	}
-	
+
 	/**
 	 * Process incoming requests for information
 	 * 
-	 * @param request Object that encapsulates the request to the servlet 
+	 * @param request
+	 *            Object that encapsulates the request to the servlet
 	 */
-	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
-		
-		if(super.recupererOnglet(request)){
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception {
+
+		if (super.recupererOnglet(request)) {
 			performPB_RESET(request);
 			return true;
 		}

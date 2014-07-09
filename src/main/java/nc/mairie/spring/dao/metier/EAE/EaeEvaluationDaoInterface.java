@@ -1,4 +1,4 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import nc.mairie.metier.eae.EaeEvaluation;
 

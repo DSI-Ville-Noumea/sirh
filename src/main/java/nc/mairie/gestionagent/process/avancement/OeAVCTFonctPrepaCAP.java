@@ -36,10 +36,11 @@ import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.dao.EaeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -103,7 +104,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private CampagneEAEDao campagneEAEDao;
 	private CapDao capDao;
@@ -411,15 +412,15 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getEaeDao() == null) {
-			setEaeDao((EAEDao) context.getBean("eaeDao"));
+			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCapDao() == null) {
@@ -1293,11 +1294,11 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		return getZone(getNOM_ST_MOTIF_AVCT(i));
 	}
 
-	public EAEDao getEaeDao() {
+	public EaeEAEDao getEaeDao() {
 		return eaeDao;
 	}
 
-	public void setEaeDao(EAEDao eaeDao) {
+	public void setEaeDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 

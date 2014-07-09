@@ -32,19 +32,20 @@ import nc.mairie.metier.eae.EaePlanAction;
 import nc.mairie.metier.eae.EaeTypeDeveloppement;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.poste.Horaire;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao;
-import nc.mairie.spring.dao.metier.EAE.EaeDeveloppementDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluateurDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
-import nc.mairie.spring.dao.metier.EAE.EaeEvolutionDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
-import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
-import nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao;
-import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
-import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
+import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeCommentaireDao;
+import nc.mairie.spring.dao.metier.eae.EaeDeveloppementDao;
+import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluateurDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvalueDao;
+import nc.mairie.spring.dao.metier.eae.EaeEvolutionDao;
+import nc.mairie.spring.dao.metier.eae.EaeFichePosteDao;
+import nc.mairie.spring.dao.metier.eae.EaeFinalisationDao;
+import nc.mairie.spring.dao.metier.eae.EaeNumIncrementDocumentDao;
+import nc.mairie.spring.dao.metier.eae.EaePlanActionDao;
+import nc.mairie.spring.dao.metier.eae.EaeTypeDeveloppementDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -108,7 +109,7 @@ public class OeAGENTEae extends BasicProcess {
 	private EaeDeveloppement developpementCourant;
 	private ArrayList<EaeFinalisation> listeDocuments;
 
-	private EAEDao eaeDao;
+	private EaeEAEDao eaeDao;
 	private CampagneEAEDao campagneEaeDao;
 	private EaeEvaluateurDao eaeEvaluateurDao;
 	private EaeFichePosteDao eaeFichePosteDao;
@@ -287,40 +288,40 @@ public class OeAGENTEae extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getEaeDao() == null) {
-			setEaeDao((EAEDao) context.getBean("eaeDao"));
+			setEaeDao(new EaeEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getCampagneEaeDao() == null) {
-			setCampagneEaeDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEaeDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeEvaluateurDao() == null) {
-			setEaeEvaluateurDao((EaeEvaluateurDao) context.getBean("eaeEvaluateurDao"));
+			setEaeEvaluateurDao(new EaeEvaluateurDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeFichePosteDao() == null) {
-			setEaeFichePosteDao((EaeFichePosteDao) context.getBean("eaeFichePosteDao"));
+			setEaeFichePosteDao(new EaeFichePosteDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeEvalueDao() == null) {
-			setEaeEvalueDao((EaeEvalueDao) context.getBean("eaeEvalueDao"));
+			setEaeEvalueDao(new EaeEvalueDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeEvaluationDao() == null) {
-			setEaeEvaluationDao((EaeEvaluationDao) context.getBean("eaeEvaluationDao"));
+			setEaeEvaluationDao(new EaeEvaluationDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeCommentaireDao() == null) {
-			setEaeCommentaireDao((EaeCommentaireDao) context.getBean("eaeCommentaireDao"));
+			setEaeCommentaireDao(new EaeCommentaireDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeFinalisationDao() == null) {
-			setEaeFinalisationDao((EaeFinalisationDao) context.getBean("eaeFinalisationDao"));
+			setEaeFinalisationDao(new EaeFinalisationDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaePlanActionDao() == null) {
-			setEaePlanActionDao((EaePlanActionDao) context.getBean("eaePlanActionDao"));
+			setEaePlanActionDao(new EaePlanActionDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeEvolutionDao() == null) {
-			setEaeEvolutionDao((EaeEvolutionDao) context.getBean("eaeEvolutionDao"));
+			setEaeEvolutionDao(new EaeEvolutionDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeDeveloppementDao() == null) {
-			setEaeDeveloppementDao((EaeDeveloppementDao) context.getBean("eaeDeveloppementDao"));
+			setEaeDeveloppementDao(new EaeDeveloppementDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeTypeDeveloppementDao() == null) {
-			setEaeTypeDeveloppementDao((EaeTypeDeveloppementDao) context.getBean("eaeTypeDeveloppementDao"));
+			setEaeTypeDeveloppementDao(new EaeTypeDeveloppementDao((EaeDao) context.getBean("eaeDao")));
 		}
 		if (getEaeNumIncrementDocumentDao() == null) {
 			setEaeNumIncrementDocumentDao((EaeNumIncrementDocumentDao) context.getBean("eaeNumIncrementDocumentDao"));
@@ -763,18 +764,18 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_RAPPORT_CIRCON(), Const.CHAINE_VIDE);
 		} else {
 			// commentaire de l'evaluateur
-			if (evaluation.getIdEaeCommEvaluateur() != null) {
+			if (evaluation.getIdEaeComEvaluateur() != null) {
 				EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-						evaluation.getIdEaeCommEvaluateur());
+						evaluation.getIdEaeComEvaluateur());
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(),
 						commEvaluateur == null ? Const.CHAINE_VIDE : commEvaluateur.getText());
 			} else {
 				addZone(getNOM_ST_COMMENTAIRE_EVALUATEUR(), Const.CHAINE_VIDE);
 			}
 			// commentaire de l'evaluateur sur le rapport circonstancié
-			if (evaluation.getIdEaeCommAvctEvaluateur() != null) {
+			if (evaluation.getIdEaeComAvctEvaluateur() != null) {
 				EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-						evaluation.getIdEaeCommAvctEvaluateur());
+						evaluation.getIdEaeComAvctEvaluateur());
 				addZone(getNOM_ST_RAPPORT_CIRCON(),
 						commAvctEvaluateur == null ? Const.CHAINE_VIDE : commAvctEvaluateur.getText());
 			} else {
@@ -799,21 +800,20 @@ public class OeAGENTEae extends BasicProcess {
 
 			addZone(getNOM_ST_NOTE(), evaluation.getNoteAnnee() == null ? "non renseigné" : evaluation.getNoteAnnee()
 					.toString());
-			addZone(getNOM_ST_AVIS_SHD(),
-					evaluation.getAvis_shd() == null ? "non renseigné " : evaluation.getAvis_shd());
+			addZone(getNOM_ST_AVIS_SHD(), evaluation.getAvisShd() == null ? "non renseigné " : evaluation.getAvisShd());
 			// pour la modif
-			if (evaluation.getAvis_shd() == null) {
+			if (evaluation.getAvisShd() == null) {
 				addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
 			} else {
-				if (evaluation.getAvis_shd().equals("Durée minimale")) {
+				if (evaluation.getAvisShd().equals("Durée minimale")) {
 					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MIN());
-				} else if (evaluation.getAvis_shd().equals("Durée maximale")) {
+				} else if (evaluation.getAvisShd().equals("Durée maximale")) {
 					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MAX());
-				} else if (evaluation.getAvis_shd().equals("Durée moyenne")) {
+				} else if (evaluation.getAvisShd().equals("Durée moyenne")) {
 					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_MOY());
-				} else if (evaluation.getAvis_shd().equals("Favorable")) {
+				} else if (evaluation.getAvisShd().equals("Favorable")) {
 					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_FAV());
-				} else if (evaluation.getAvis_shd().equals("Défavorable")) {
+				} else if (evaluation.getAvisShd().equals("Défavorable")) {
 					addZone(getNOM_RG_SHD(), getNOM_RB_SHD_DEFAV());
 				}
 			}
@@ -884,8 +884,7 @@ public class OeAGENTEae extends BasicProcess {
 			if (evolution.getIdEaeComEvolution() != null) {
 				EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(
 						evolution.getIdEaeComEvolution());
-				addZone(getNOM_ST_COM_EVOLUTION(),
-						commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getText());
+				addZone(getNOM_ST_COM_EVOLUTION(), commEvolution == null ? Const.CHAINE_VIDE : commEvolution.getText());
 			} else {
 				addZone(getNOM_ST_COM_EVOLUTION(), Const.CHAINE_VIDE);
 			}
@@ -978,16 +977,19 @@ public class OeAGENTEae extends BasicProcess {
 			} else {
 				addZone(getNOM_RG_TPS_PARTIEL(), getNOM_RB_TPS_PARTIEL_OUI());
 			}
-			// Horaire tempsPart = Horaire.chercherHoraire(getTransaction(),
-			// evolution.getIdSpbhorTpsPartiel().toString());
-			Horaire tempsPart = (Horaire) getHashHoraire().get(evolution.getTempsPartielIdSpbhor().toString());
-			if (tempsPart != null) {
-				Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
-				int ligneHoraire = getListeHoraire().indexOf(tempsPart);
-				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), String.valueOf(ligneHoraire + 1));
-				addZone(getNOM_ST_POURC_TPS_PARTIEL(),
-						tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart.getLibHor()
-								+ " - " + String.valueOf(taux.intValue()) + "%");
+			if (evolution.getTempsPartielIdSpbhor() != null) {
+				Horaire tempsPart = (Horaire) getHashHoraire().get(evolution.getTempsPartielIdSpbhor().toString());
+				if (tempsPart != null) {
+					Float taux = Float.parseFloat(tempsPart.getCdTaux()) * 100;
+					int ligneHoraire = getListeHoraire().indexOf(tempsPart);
+					addZone(getNOM_LB_BASE_HORAIRE_SELECT(), String.valueOf(ligneHoraire + 1));
+					addZone(getNOM_ST_POURC_TPS_PARTIEL(),
+							tempsPart == null || tempsPart.getCdtHor() == null ? "non renseigné" : tempsPart
+									.getLibHor() + " - " + String.valueOf(taux.intValue()) + "%");
+				} else {
+					addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
+					addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
+				}
 			} else {
 				addZone(getNOM_LB_BASE_HORAIRE_SELECT(), Const.ZERO);
 				addZone(getNOM_ST_POURC_TPS_PARTIEL(), "non renseigné");
@@ -1019,9 +1021,9 @@ public class OeAGENTEae extends BasicProcess {
 			for (int j = 0; j < listeDeveloppement.size(); j++) {
 				EaeDeveloppement dev = listeDeveloppement.get(j);
 				addZone(getNOM_ST_TYPE_DEV(j), dev.getTypeDeveloppement());
-				addZone(getNOM_ST_LIB_DEV(j), dev.getLibelleDeveloppement());
-				addZone(getNOM_ST_ECHEANCE_DEV(j), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
-						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+				addZone(getNOM_ST_LIB_DEV(j), dev.getLibelle());
+				addZone(getNOM_ST_ECHEANCE_DEV(j), dev.getEcheance() == null ? Const.CHAINE_VIDE
+						: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheance()));
 				addZone(getNOM_ST_PRIORISATION_DEV(j), dev.getPriorisation() == null ? Const.CHAINE_VIDE : dev
 						.getPriorisation().toString());
 			}
@@ -1115,11 +1117,11 @@ public class OeAGENTEae extends BasicProcess {
 		this.eaeCourant = eaeCourant;
 	}
 
-	public EAEDao getEaeDao() {
+	public EaeEAEDao getEaeDao() {
 		return eaeDao;
 	}
 
-	public void setEaeDao(EAEDao eaeDao) {
+	public void setEaeDao(EaeEAEDao eaeDao) {
 		this.eaeDao = eaeDao;
 	}
 
@@ -2402,10 +2404,10 @@ public class OeAGENTEae extends BasicProcess {
 
 		// commentaire de l'evolution
 		if (evolution.getIdEaeComEvolution() != null && evolution.getIdEaeComEvolution() != 0) {
-			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(evolution.getIdEaeComEvolution());
+			EaeCommentaire commEvolution = getEaeCommentaireDao().chercherEaeCommentaire(
+					evolution.getIdEaeComEvolution());
 			commEvolution.setText(getVAL_ST_COM_EVOLUTION());
-			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommentaire(),
-					commEvolution.getText());
+			getEaeCommentaireDao().modifierEaeCommentaire(commEvolution.getIdEaeCommentaire(), commEvolution.getText());
 		} else {
 			if (!getVAL_ST_COM_EVOLUTION().equals(Const.CHAINE_VIDE)) {
 				EaeCommentaire comm = new EaeCommentaire();
@@ -2430,8 +2432,8 @@ public class OeAGENTEae extends BasicProcess {
 		/************* PARTIE EVALUATION **********************/
 		EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEae());
 		// commentaire de l'evaluateur
-		if (eval.getIdEaeCommEvaluateur() != null && eval.getIdEaeCommEvaluateur() != 0) {
-			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdEaeCommEvaluateur());
+		if (eval.getIdEaeComEvaluateur() != null && eval.getIdEaeComEvaluateur() != 0) {
+			EaeCommentaire commEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(eval.getIdEaeComEvaluateur());
 			commEvaluateur.setText(getVAL_ST_COMMENTAIRE_EVALUATEUR());
 			getEaeCommentaireDao().modifierEaeCommentaire(commEvaluateur.getIdEaeCommentaire(),
 					commEvaluateur.getText());
@@ -2465,17 +2467,17 @@ public class OeAGENTEae extends BasicProcess {
 		// Avis SHD
 		String shd = getVAL_RG_SHD();
 		if (shd.equals(getNOM_RB_SHD_MIN())) {
-			eval.setAvis_shd("Durée minimale");
+			eval.setAvisShd("Durée minimale");
 		} else if (shd.equals(getNOM_RB_SHD_MAX())) {
-			eval.setAvis_shd("Durée maximale");
+			eval.setAvisShd("Durée maximale");
 		} else if (shd.equals(getNOM_RB_SHD_MOY())) {
-			eval.setAvis_shd("Durée moyenne");
+			eval.setAvisShd("Durée moyenne");
 		} else if (shd.equals(getNOM_RB_SHD_FAV())) {
-			eval.setAvis_shd("Favorable");
+			eval.setAvisShd("Favorable");
 		} else if (shd.equals(getNOM_RB_SHD_DEFAV())) {
-			eval.setAvis_shd("Défavorable");
+			eval.setAvisShd("Défavorable");
 		}
-		getEaeEvaluationDao().modifierAvisSHDEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvis_shd());
+		getEaeEvaluationDao().modifierAvisSHDEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisShd());
 
 		// Avancement Diff
 		String ad = getVAL_RG_AD();
@@ -2508,9 +2510,9 @@ public class OeAGENTEae extends BasicProcess {
 		getEaeEvaluationDao().modifierRevaloEaeEvaluation(eval.getIdEaeEvaluation(), eval.getAvisRevalorisation());
 
 		// rapport circonstancié de l'evaluateur
-		if (eval.getIdEaeCommAvctEvaluateur() != null && eval.getIdEaeCommAvctEvaluateur() != 0) {
+		if (eval.getIdEaeComAvctEvaluateur() != null && eval.getIdEaeComAvctEvaluateur() != 0) {
 			EaeCommentaire commAvctEvaluateur = getEaeCommentaireDao().chercherEaeCommentaire(
-					eval.getIdEaeCommAvctEvaluateur());
+					eval.getIdEaeComAvctEvaluateur());
 			commAvctEvaluateur.setText(getVAL_ST_RAPPORT_CIRCON());
 			getEaeCommentaireDao().modifierEaeCommentaire(commAvctEvaluateur.getIdEaeCommentaire(),
 					commAvctEvaluateur.getText());
@@ -3260,8 +3262,8 @@ public class OeAGENTEae extends BasicProcess {
 			planActionIndi.setIdEae(eae.getIdEae());
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
 			planActionIndi.setMesure(null);
-			planActionIndi.setIdTypeObjectif(2);
-			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdTypeObjectif(),
+			planActionIndi.setIdEaeTypeObjectif(2);
+			getEaePlanActionDao().creerPlanAction(planActionIndi.getIdEae(), planActionIndi.getIdEaeTypeObjectif(),
 					planActionIndi.getObjectif(), planActionIndi.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_INDI)) {
 			if (!performControlerChampObjIndi(request)) {
@@ -3270,7 +3272,7 @@ public class OeAGENTEae extends BasicProcess {
 			EaePlanAction planActionIndi = getObjectifIndiCourant();
 			planActionIndi.setObjectif(getVAL_ST_LIB_OBJ_INDI());
 			getEaePlanActionDao().modifierEaePlanAction(planActionIndi.getIdEaePlanAction(),
-					planActionIndi.getIdTypeObjectif(), planActionIndi.getObjectif(), planActionIndi.getMesure());
+					planActionIndi.getIdEaeTypeObjectif(), planActionIndi.getObjectif(), planActionIndi.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_INDI)) {
 			EaePlanAction planActionIndi = getObjectifIndiCourant();
 			getEaePlanActionDao().supprimerEaePlanAction(planActionIndi.getIdEaePlanAction());
@@ -3490,8 +3492,8 @@ public class OeAGENTEae extends BasicProcess {
 			planActionPro.setIdEae(eae.getIdEae());
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
-			planActionPro.setIdTypeObjectif(1);
-			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdTypeObjectif(),
+			planActionPro.setIdEaeTypeObjectif(1);
+			getEaePlanActionDao().creerPlanAction(planActionPro.getIdEae(), planActionPro.getIdEaeTypeObjectif(),
 					planActionPro.getObjectif(), planActionPro.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_OBJ_PRO)) {
 			if (!performControlerChampObjPro(request)) {
@@ -3501,7 +3503,7 @@ public class OeAGENTEae extends BasicProcess {
 			planActionPro.setObjectif(getVAL_ST_LIB_OBJ_PRO());
 			planActionPro.setMesure(getVAL_ST_LIB_MESURE_PRO());
 			getEaePlanActionDao().modifierEaePlanAction(planActionPro.getIdEaePlanAction(),
-					planActionPro.getIdTypeObjectif(), planActionPro.getObjectif(), planActionPro.getMesure());
+					planActionPro.getIdEaeTypeObjectif(), planActionPro.getObjectif(), planActionPro.getMesure());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_OBJ_PRO)) {
 			EaePlanAction planActionPro = getObjectifProCourant();
 			getEaePlanActionDao().supprimerEaePlanAction(planActionPro.getIdEaePlanAction());
@@ -3602,16 +3604,15 @@ public class OeAGENTEae extends BasicProcess {
 
 		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltAModifier);
 		setDeveloppementCourant(dev);
-		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(
-				dev.getLibelleDeveloppement());
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelle());
 		if (typeDev != null) {
 			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
 			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
 		}
-		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
+		addZone(getNOM_ST_LIB_DEV(), dev.getLibelle());
 		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
-		addZone(getNOM_ST_DATE_DEV(), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
-				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+		addZone(getNOM_ST_DATE_DEV(), dev.getEcheance() == null ? Const.CHAINE_VIDE
+				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheance()));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_DEV);
@@ -3643,16 +3644,15 @@ public class OeAGENTEae extends BasicProcess {
 
 		EaeDeveloppement dev = getListeDeveloppement().get(indiceEltASuprimer);
 		setDeveloppementCourant(dev);
-		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(
-				dev.getLibelleDeveloppement());
+		EaeTypeDeveloppement typeDev = (EaeTypeDeveloppement) getHashTypeDeveloppement().get(dev.getLibelle());
 		if (typeDev != null) {
 			int ligneTypeDev = getListeTypeDeveloppement().indexOf(typeDev);
 			addZone(getNOM_LB_TYPE_DEV_SELECT(), String.valueOf(ligneTypeDev));
 		}
-		addZone(getNOM_ST_LIB_DEV(), dev.getLibelleDeveloppement());
+		addZone(getNOM_ST_LIB_DEV(), dev.getLibelle());
 		addZone(getNOM_ST_PRIO_DEV(), dev.getPriorisation().toString());
-		addZone(getNOM_ST_DATE_DEV(), dev.getEcheanceDeveloppement() == null ? Const.CHAINE_VIDE
-				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheanceDeveloppement()));
+		addZone(getNOM_ST_DATE_DEV(), dev.getEcheance() == null ? Const.CHAINE_VIDE
+				: new SimpleDateFormat("dd/MM/yyyy").format(dev.getEcheance()));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION_DEV);
@@ -3685,8 +3685,8 @@ public class OeAGENTEae extends BasicProcess {
 			EaeEvolution evolution = getEaeEvolutionDao().chercherEaeEvolution(eae.getIdEae());
 			EaeDeveloppement dev = new EaeDeveloppement();
 			dev.setIdEaeEvolution(evolution.getIdEaeEvolution());
-			dev.setLibelleDeveloppement(getVAL_ST_LIB_DEV());
-			dev.setEcheanceDeveloppement(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
+			dev.setLibelle(getVAL_ST_LIB_DEV());
+			dev.setEcheance(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
 			dev.setPriorisation(Integer.valueOf(getVAL_ST_PRIO_DEV()));
 			// type developpement
 			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
@@ -3695,14 +3695,14 @@ public class OeAGENTEae extends BasicProcess {
 					.get(numLigneTypeDev) : null;
 			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
 			getEaeDeveloppementDao().creerEaeDeveloppement(dev.getIdEaeEvolution(), dev.getTypeDeveloppement(),
-					dev.getLibelleDeveloppement(), dev.getEcheanceDeveloppement(), dev.getPriorisation());
+					dev.getLibelle(), dev.getEcheance(), dev.getPriorisation());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION_DEV)) {
 			if (!performControlerChampDev(request)) {
 				return false;
 			}
 			EaeDeveloppement dev = getDeveloppementCourant();
-			dev.setLibelleDeveloppement(getVAL_ST_LIB_DEV());
-			dev.setEcheanceDeveloppement(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
+			dev.setLibelle(getVAL_ST_LIB_DEV());
+			dev.setEcheance(new SimpleDateFormat("dd/MM/yyyy").parse(getVAL_ST_DATE_DEV()));
 			dev.setPriorisation(Integer.valueOf(getVAL_ST_PRIO_DEV()));
 			// type developpement
 			int numLigneTypeDev = (Services.estNumerique(getZone(getNOM_LB_TYPE_DEV_SELECT())) ? Integer
@@ -3711,7 +3711,7 @@ public class OeAGENTEae extends BasicProcess {
 					.get(numLigneTypeDev) : null;
 			dev.setTypeDeveloppement(typeDev.getLibelleTypeDeveloppement());
 			getEaeDeveloppementDao().modifierEaeDeveloppement(dev.getIdEaeDeveloppement(), dev.getTypeDeveloppement(),
-					dev.getLibelleDeveloppement(), dev.getEcheanceDeveloppement(), dev.getPriorisation());
+					dev.getLibelle(), dev.getEcheance(), dev.getPriorisation());
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION_DEV)) {
 			EaeDeveloppement dev = getDeveloppementCourant();
 			getEaeDeveloppementDao().supprimerEaeDeveloppement(dev.getIdEaeDeveloppement());
@@ -4643,15 +4643,16 @@ public class OeAGENTEae extends BasicProcess {
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
 	}
-	
+
 	/**
 	 * Process incoming requests for information
 	 * 
-	 * @param request Object that encapsulates the request to the servlet 
+	 * @param request
+	 *            Object that encapsulates the request to the servlet
 	 */
-	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
-		
-		if(super.recupererOnglet(request)){
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception {
+
+		if (super.recupererOnglet(request)) {
 			performPB_RESET(request);
 			return true;
 		}

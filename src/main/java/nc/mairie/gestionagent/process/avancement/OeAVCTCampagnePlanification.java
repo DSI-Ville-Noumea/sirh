@@ -26,10 +26,11 @@ import nc.mairie.metier.eae.CampagneAction;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeDocument;
 import nc.mairie.metier.parametrage.TypeDocument;
-import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
-import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
-import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
+import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.metier.eae.CampagneActeurDao;
+import nc.mairie.spring.dao.metier.eae.CampagneActionDao;
+import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.eae.EaeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -137,29 +138,31 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
 		if (getCampagneActionDao() == null) {
-			setCampagneActionDao((CampagneActionDao) context.getBean("campagneActionDao"));
+			setCampagneActionDao(new CampagneActionDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCampagneEAEDao() == null) {
-			setCampagneEAEDao((CampagneEAEDao) context.getBean("campagneEAEDao"));
+			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getCampagneActeurDao() == null) {
-			setCampagneActeurDao((CampagneActeurDao) context.getBean("campagneActeurDao"));
+			setCampagneActeurDao(new CampagneActeurDao((EaeDao) context.getBean("eaeDao")));
 		}
 
 		if (getEaeDocumentDao() == null) {
-			setEaeDocumentDao((EaeDocumentDao) context.getBean("eaeDocumentDao"));
+			setEaeDocumentDao(new EaeDocumentDao((EaeDao) context.getBean("eaeDao")));
 		}
 	}
 
 	private void initialiseListeAction(HttpServletRequest request) throws Exception {
 		// Recherche des actions de la campagne en fonction de l'année
-		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
 		if (indiceCampagne > -1 && !getListeCampagneEAE().isEmpty()) {
 			setCampagneCourante((CampagneEAE) getListeCampagneEAE().get(indiceCampagne));
 
-			ArrayList<CampagneAction> listeAction = getCampagneActionDao().listerCampagneActionPourCampagne(getCampagneCourante().getIdCampagneEae());
+			ArrayList<CampagneAction> listeAction = getCampagneActionDao().listerCampagneActionPourCampagne(
+					getCampagneCourante().getIdCampagneEae());
 			setListeAction(listeAction);
 
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -168,8 +171,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			for (int i = 0; i < getListeAction().size(); i++) {
 				CampagneAction action = (CampagneAction) getListeAction().get(i);
 				// calcul du nb de docs
-				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(action.getIdCampagneEae(), action.getIdCampagneAction(),
-						"ACT");
+				ArrayList<EaeDocument> listeDocCamp = getEaeDocumentDao().listerEaeDocument(action.getIdCampagneEae(),
+						action.getIdCampagneAction(), "ACT");
 				int nbDoc = 0;
 				if (listeDocCamp != null) {
 					nbDoc = listeDocCamp.size();
@@ -178,9 +181,11 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 				addZone(getNOM_ST_TRANSMETTRE(indiceAction), sdf.format(action.getDateTransmission()));
 				addZone(getNOM_ST_MESSAGE(indiceAction), action.getMessage());
 				AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
-				addZone(getNOM_ST_REALISER_PAR(indiceAction), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
+				addZone(getNOM_ST_REALISER_PAR(indiceAction),
+						agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 				addZone(getNOM_ST_POUR_LE(indiceAction), sdf.format(action.getDateAFaireLe()));
-				addZone(getNOM_ST_FAIT_LE(indiceAction), action.getDateFaitLe() == null ? "&nbsp;" : sdf.format(action.getDateFaitLe()));
+				addZone(getNOM_ST_FAIT_LE(indiceAction),
+						action.getDateFaitLe() == null ? "&nbsp;" : sdf.format(action.getDateFaitLe()));
 				addZone(getNOM_ST_NB_DOC(indiceAction), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceAction++;
@@ -399,13 +404,16 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		addZone(getNOM_ST_NOM_ACTION(), action.getNomAction());
 		addZone(getNOM_ST_MESSAGE(), action.getMessage());
-		addZone(getNOM_ST_TRANSMETTRE(), action.getDateTransmission() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateTransmission()));
+		addZone(getNOM_ST_TRANSMETTRE(),
+				action.getDateTransmission() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateTransmission()));
 		AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
 		addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 		addZone(getNOM_ST_ID_AGENT(), action.getIdAgentRealisation().toString());
 		addZone(getNOM_ST_NOM_ACTION(), action.getNomAction());
-		addZone(getNOM_ST_POUR_LE(), action.getDateAFaireLe() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateAFaireLe()));
-		addZone(getNOM_ST_FAIT_LE(), action.getDateFaitLe() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateFaitLe()));
+		addZone(getNOM_ST_POUR_LE(),
+				action.getDateAFaireLe() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateAFaireLe()));
+		addZone(getNOM_ST_FAIT_LE(),
+				action.getDateFaitLe() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateFaitLe()));
 		addZone(getNOM_ST_COMMENTAIRE(), action.getCommentaire());
 
 		return true;
@@ -599,7 +607,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR006"));
 			return false;
 		}
-		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION) || getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
+		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)
+				|| getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
 			// vérification de la validité du formulaire
 			if (!performControlerChamps(request))
@@ -612,14 +621,18 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getCampagneActionDao().modifierCampagneAction(getActionCourante().getIdCampagneAction(), getActionCourante().getNomAction(),
-						getActionCourante().getMessage(), getActionCourante().getDateTransmission(), getActionCourante().getDateAFaireLe(),
-						getActionCourante().getDateFaitLe(), getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation());
+				getCampagneActionDao().modifierCampagneAction(getActionCourante().getIdCampagneAction(),
+						getActionCourante().getNomAction(), getActionCourante().getMessage(),
+						getActionCourante().getDateTransmission(), getActionCourante().getDateAFaireLe(),
+						getActionCourante().getDateFaitLe(), getActionCourante().getCommentaire(),
+						getActionCourante().getIdAgentRealisation());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
-				Integer idAction = getCampagneActionDao().creerCampagneAction(getActionCourante().getNomAction(), getActionCourante().getMessage(),
-						getActionCourante().getDateTransmission(), getActionCourante().getDateAFaireLe(), getActionCourante().getDateFaitLe(),
-						getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(), getCampagneCourante().getIdCampagneEae());
+				Integer idAction = getCampagneActionDao().creerCampagneAction(getActionCourante().getNomAction(),
+						getActionCourante().getMessage(), getActionCourante().getDateTransmission(),
+						getActionCourante().getDateAFaireLe(), getActionCourante().getDateFaitLe(),
+						getActionCourante().getCommentaire(), getActionCourante().getIdAgentRealisation(),
+						getCampagneCourante().getIdCampagneEae());
 				getActionCourante().setIdCampagneAction(idAction);
 			}
 			if (getTransaction().isErreur())
@@ -689,7 +702,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		getActionCourante().setMessage(getVAL_ST_MESSAGE());
 		getActionCourante().setDateTransmission(sdf.parse(getVAL_ST_TRANSMETTRE()));
 		getActionCourante().setDateAFaireLe(sdf.parse(getVAL_ST_POUR_LE()));
-		getActionCourante().setDateFaitLe(getVAL_ST_FAIT_LE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_ST_FAIT_LE()));
+		getActionCourante().setDateFaitLe(
+				getVAL_ST_FAIT_LE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_ST_FAIT_LE()));
 		getActionCourante().setCommentaire(getVAL_ST_COMMENTAIRE());
 		getActionCourante().setIdAgentRealisation(Integer.valueOf(getVAL_ST_ID_AGENT()));
 	}
@@ -1257,8 +1271,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 	private void supprimeDestinataire(AgentNW a) throws Exception {
 		if (getActionCourante() != null) {
-			CampagneActeur acteur = getCampagneActeurDao().chercherCampagneActeur(getActionCourante().getIdCampagneAction(),
-					Integer.valueOf(a.getIdAgent()));
+			CampagneActeur acteur = getCampagneActeurDao().chercherCampagneActeur(
+					getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
 			if (acteur != null) {
 				getCampagneActeurDao().supprimerCampagneActeur(acteur.getIdCampagneActeurs());
 			}
@@ -1316,7 +1330,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	private void initialiseDestinataire() throws Exception {
 		if (getActionCourante() != null) {
 			if (getListeDestinataireMulti().size() == 0 && getActionCourante().getIdCampagneAction() != null) {
-				ArrayList<CampagneActeur> listeDestinataire = getCampagneActeurDao().listerCampagneActeur(getActionCourante().getIdCampagneAction());
+				ArrayList<CampagneActeur> listeDestinataire = getCampagneActeurDao().listerCampagneActeur(
+						getActionCourante().getIdCampagneAction());
 				ArrayList<AgentNW> listeAgentDestinataire = new ArrayList<AgentNW>();
 				for (int i = 0; i < listeDestinataire.size(); i++) {
 					CampagneActeur campAct = listeDestinataire.get(i);
@@ -1360,10 +1375,11 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		if (getActionCourante() != null) {
 			// Sauvegarde des nouveaux acteurs
 			try {
-				CampagneActeur campAct = getCampagneActeurDao().chercherCampagneActeur(getActionCourante().getIdCampagneAction(),
-						Integer.valueOf(a.getIdAgent()));
+				CampagneActeur campAct = getCampagneActeurDao().chercherCampagneActeur(
+						getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
 			} catch (Exception e) {
-				getCampagneActeurDao().creerCampagneActeur(getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
+				getCampagneActeurDao().creerCampagneActeur(getActionCourante().getIdCampagneAction(),
+						Integer.valueOf(a.getIdAgent()));
 			}
 		}
 	}
@@ -1622,8 +1638,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		// Recherche des documents de la campagne
 
-		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(getCampagneCourante().getIdCampagneEae(),
-				getActionCourante().getIdCampagneAction(), "ACT");
+		ArrayList<EaeDocument> listeDoc = getEaeDocumentDao().listerEaeDocument(
+				getCampagneCourante().getIdCampagneEae(), getActionCourante().getIdCampagneAction(), "ACT");
 		setListeDocuments(new ArrayList<Document>());
 		for (int i = 0; i < listeDoc.size(); i++) {
 			EaeDocument lien = listeDoc.get(i);
@@ -1635,10 +1651,13 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getNomDocument());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
+						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
-				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getCommentaire());
+				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: doc.getCommentaire());
 
 				indiceActeVM++;
 			}
@@ -1720,7 +1739,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
+		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(
+				Integer.valueOf(getDocumentCourant().getIdDocument()));
 		setLienEaeDocument(ldoc);
 
 		// Alim zones
@@ -1807,7 +1827,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		// on recupère le type de document
 		String codTypeDoc = "ACT";
 		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
-		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'), fichierUpload.getName().length());
+		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
+				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = codTypeDoc.toUpperCase() + "_" + camp.getIdCampagneEae() + "_" + dateJour + extension;
 
@@ -1835,8 +1856,9 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		getLienEaeDocument().setIdDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
 		getLienEaeDocument().setTypeDocument(codTypeDoc);
 		getLienEaeDocument().setIdCampagneAction(getActionCourante().getIdCampagneAction());
-		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(), getLienEaeDocument().getIdCampagneAction(),
-				getLienEaeDocument().getIdDocument(), getLienEaeDocument().getTypeDocument());
+		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(),
+				getLienEaeDocument().getIdCampagneAction(), getLienEaeDocument().getIdDocument(),
+				getLienEaeDocument().getTypeDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1957,7 +1979,8 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * Méthode qui teste si un paramètre se trouve dans le formulaire
 	 */
 	public boolean testerParametre(HttpServletRequest request, String param) {
-		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi.getParameter(param) != null));
+		return (request.getParameter(param) != null || request.getParameter(param + ".x") != null || (multi != null && multi
+				.getParameter(param) != null));
 	}
 
 	/**
@@ -1974,7 +1997,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		if (type != null && type.indexOf("multipart/form-data") != -1) {
 			request.setCharacterEncoding("UTF-8");
-			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024,"UTF-8");
+			multi = new MultipartRequest(request, repTemp, 10 * 1024 * 1024, "UTF-8");
 			JSP = multi.getParameter("JSP");
 		} else {
 			JSP = request.getParameter("JSP");

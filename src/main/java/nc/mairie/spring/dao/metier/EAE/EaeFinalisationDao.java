@@ -1,23 +1,18 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeFinalisation;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
+public class EaeFinalisationDao extends EaeDao implements EaeFinalisationDaoInterface {
 
-	public static final String NOM_TABLE = "EAE_FINALISATION";
-
-	public static final String CHAMP_ID_EAE_FINALISATION = "ID_EAE_FINALISATION";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_DATE_FINALISATION = "DATE_FINALISATION";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
@@ -27,16 +22,11 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(EaeFinalisationDao.class);
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeFinalisationDao() {
-
+	public EaeFinalisationDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_FINALISATION";
+		super.CHAMP_ID = "ID_EAE_FINALISATION";
 	}
 
 	@Override
@@ -64,7 +54,7 @@ public class EaeFinalisationDao implements EaeFinalisationDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEAE });
 		for (Map<String, Object> row : rows) {
 			EaeFinalisation dev = new EaeFinalisation();
-			dev.setIdEaeFinalisation((Integer) row.get(CHAMP_ID_EAE_FINALISATION));
+			dev.setIdEaeFinalisation((Integer) row.get(CHAMP_ID));
 			dev.setIdEae((Integer) row.get(CHAMP_ID_EAE));
 			dev.setDateFinalisation((Date) row.get(CHAMP_DATE_FINALISATION));
 			dev.setIdGedDocument((String) row.get(CHAMP_ID_GED_DOCUMENT));

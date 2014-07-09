@@ -1,22 +1,17 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeEvalue;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EaeEvalueDao implements EaeEvalueDaoInterface {
+public class EaeEvalueDao extends EaeDao implements EaeEvalueDaoInterface {
 
-	public static final String NOM_TABLE = "EAE_EVALUE";
-
-	public static final String CHAMP_ID_EAE_EVALUE = "ID_EAE_EVALUE";
 	public static final String CHAMP_ID_EAE = "ID_EAE";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
 	public static final String CHAMP_DATE_ENTREE_SERVICE = "DATE_ENTREE_SERVICE";
@@ -41,16 +36,11 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 	public static final String CHAMP_AVCT_DUR_MAX = "AVCT_DUR_MAX";
 	public static final String CHAMP_AGENT_DETACHE = "AGENT_DETACHE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeEvalueDao() {
-
+	public EaeEvalueDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_EVALUE";
+		super.CHAMP_ID = "ID_EAE_EVALUE";
 	}
 
 	@Override
@@ -96,8 +86,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
 		for (Map<String, Object> row : rows) {
 			EaeEvalue evalue = new EaeEvalue();
-			// logger.debug("List evalue : " + row.toString());
-			evalue.setIdEaeEvalue((Integer) row.get(CHAMP_ID_EAE_EVALUE));
+			evalue.setIdEaeEvalue((Integer) row.get(CHAMP_ID));
 			evalue.setIdEae((Integer) row.get(CHAMP_ID_EAE));
 			evalue.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
 			evalue.setDateEntreeService((Date) row.get(CHAMP_DATE_ENTREE_SERVICE));
@@ -115,7 +104,7 @@ public class EaeEvalueDao implements EaeEvalueDaoInterface {
 			evalue.setNouvGrade((String) row.get(CHAMP_NOUV_GRADE));
 			evalue.setNouvEchelon((String) row.get(CHAMP_NOUV_ECHELON));
 			evalue.setPosition((String) row.get(CHAMP_POSITION));
-			evalue.setPrecisionStatut((String) row.get(CHAMP_STATUT_PRECISION));
+			evalue.setStatutPrecision((String) row.get(CHAMP_STATUT_PRECISION));
 			evalue.setTypeAvct((String) row.get(CHAMP_TYPE_AVCT));
 			evalue.setAvctDurMin((Integer) row.get(CHAMP_AVCT_DUR_MIN));
 			evalue.setAvctDurMoy((Integer) row.get(CHAMP_AVCT_DUR_MOY));

@@ -1,38 +1,29 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.Date;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeCampagneTask;
+import nc.mairie.spring.dao.EaeDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class EaeCampagneTaskDao implements EaeCampagneTaskDaoInterface {
+public class EaeCampagneTaskDao extends EaeDao implements EaeCampagneTaskDaoInterface {
 
 	private Logger logger = LoggerFactory.getLogger(EaeCampagneTaskDao.class);
 
-	public static final String NOM_TABLE = "EAE_CAMPAGNE_TASK";
-
-	public static final String CHAMP_ID_CAMPAGNE_TASK = "ID_CAMPAGNE_TASK";
 	public static final String CHAMP_ID_CAMPAGNE_EAE = "ID_CAMPAGNE_EAE";
 	public static final String CHAMP_ANNEE = "ANNEE";
 	public static final String CHAMP_ID_AGENT = "ID_AGENT";
 	public static final String CHAMP_DATE_CALCUL_EAE = "DATE_CALCUL_EAE";
 	public static final String CHAMP_TASK_STATUS = "TASK_STATUS";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeCampagneTaskDao() {
+	public EaeCampagneTaskDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_CAMPAGNE_TASK";
+		super.CHAMP_ID = "ID_CAMPAGNE_TASK";
 	}
 
 	@Override
@@ -49,10 +40,10 @@ public class EaeCampagneTaskDao implements EaeCampagneTaskDaoInterface {
 	@Override
 	public EaeCampagneTask chercherEaeCampagneTask(Integer idCampagneTask) throws Exception {
 
-		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_TASK + "=?";
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID + "=?";
 		try {
-			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneTask },
-					new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
+			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql,
+					new Object[] { idCampagneTask }, new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
 			return eaeCampagneTask;
 		} catch (Exception e) {
 			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneTask=" + idCampagneTask.toString());
@@ -66,8 +57,8 @@ public class EaeCampagneTaskDao implements EaeCampagneTaskDaoInterface {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ID_CAMPAGNE_EAE + "=? AND "
 				+ CHAMP_DATE_CALCUL_EAE + " IS NULL AND " + CHAMP_TASK_STATUS + " IS NULL";
 		try {
-			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql, new Object[] { idCampagneEae },
-					new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
+			EaeCampagneTask eaeCampagneTask = (EaeCampagneTask) jdbcTemplate.queryForObject(sql,
+					new Object[] { idCampagneEae }, new BeanPropertyRowMapper<EaeCampagneTask>(EaeCampagneTask.class));
 			return eaeCampagneTask;
 		} catch (Exception e) {
 			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneEae=" + idCampagneEae.toString());

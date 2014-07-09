@@ -1,33 +1,22 @@
-package nc.mairie.spring.dao.metier.EAE;
+package nc.mairie.spring.dao.metier.eae;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.eae.EaeFDPActivite;
+import nc.mairie.spring.dao.EaeDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+public class EaeFDPActiviteDao extends EaeDao implements EaeFDPActiviteDaoInterface {
 
-public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
-
-	public static final String NOM_TABLE = "EAE_FDP_ACTIVITE";
-
-	public static final String CHAMP_ID_EAE_FDP_ACTIVITE = "ID_EAE_FDP_ACTIVITE";
 	public static final String CHAMP_ID_EAE_FICHE_POSTE = "ID_EAE_FICHE_POSTE";
 	public static final String CHAMP_LIBELLE_ACTIVITE = "LIBELLE_ACTIVITE";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public EaeFDPActiviteDao() {
-
+	public EaeFDPActiviteDao(EaeDao eaeDao) {
+		super.dataSource = eaeDao.getDataSource();
+		super.jdbcTemplate = eaeDao.getJdbcTemplate();
+		super.NOM_TABLE = "EAE_FDP_ACTIVITE";
+		super.CHAMP_ID = "ID_EAE_FDP_ACTIVITE";
 	}
 
 	@Override
@@ -48,10 +37,9 @@ public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idEaeFichePoste });
 		for (Map<String, Object> row : rows) {
 			EaeFDPActivite acti = new EaeFDPActivite();
-			// logger.debug("List activites : " + row.toString());
-			acti.setIdEaeFDPActivite((Integer) row.get(CHAMP_ID_EAE_FDP_ACTIVITE));
-			acti.setIdEaeFDP((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
-			acti.setLibActivite((String) row.get(CHAMP_LIBELLE_ACTIVITE));
+			acti.setIdEaeFdpActivite((Integer) row.get(CHAMP_ID));
+			acti.setIdEaeFichePoste((Integer) row.get(CHAMP_ID_EAE_FICHE_POSTE));
+			acti.setLibelleActivite((String) row.get(CHAMP_LIBELLE_ACTIVITE));
 			listeEaeFDPActivite.add(acti);
 		}
 
@@ -60,7 +48,6 @@ public class EaeFDPActiviteDao implements EaeFDPActiviteDaoInterface {
 
 	@Override
 	public void supprimerEaeFDPActivite(Integer idEaeFDPActivite) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_EAE_FDP_ACTIVITE + "=?";
-		jdbcTemplate.update(sql, new Object[] { idEaeFDPActivite });
+		super.supprimerObject(idEaeFDPActivite);
 	}
 }
