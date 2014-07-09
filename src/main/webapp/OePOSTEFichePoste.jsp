@@ -113,6 +113,12 @@
 							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
 							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
 							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
+						<%}else if(process.getEmploiPrimaire() == null){ %>
+							<span class="sigp2Mandatory"> Il n'y a pas de fiche emploi associé à cette fiche de poste (<%=process.getVAL_ST_NUMERO()%>). Merci d'en choisir une.</span>
+							<BR/><BR/>
+							<span class="sigp2Mandatory" style="width:150px;"> Fiche emploi primaire : </span>
+							<INPUT class="sigp2-saisie" maxlength="5" size="6"	type="text" style="margin-right:10px;" readonly="readonly" value="<%=process.getVAL_ST_EMPLOI_PRIMAIRE()%>" >
+							<INPUT type="image" src="images/loupe.gif" height="16px" width="16px" editable="false" name="<%=process.getNOM_PB_RECHERCHE_EMPLOI_PRIMAIRE()%>">
 						<%} else {%>
 							<span class="sigp2Mandatory" style="width:70px"> Numéro : </span>
 							<span class="sigp2-saisie" style="width:150px"><%=process.getVAL_ST_NUMERO()%></span>
@@ -682,20 +688,22 @@
 						<%}%>
 					</fieldset>
 				<% } %>
-				<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
-				<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) ){ %>
-					<INPUT type="submit" value="Créer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
-				<%} else if (process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) {%>
-					<INPUT type="submit" value="Dupliquer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
-				<%} else {%>
-					<INPUT type="submit" value="Modifier" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
-					<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+				<% if (process.getEmploiPrimaire() != null){ %>
+					<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "sigp2Fieldset") %>">
+					<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION()) ){ %>
+						<INPUT type="submit" value="Créer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
+					<%} else if (process.ACTION_DUPLICATION.equals(process.getVAL_ST_ACTION())) {%>
+						<INPUT type="submit" value="Dupliquer" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
+					<%} else {%>
+						<INPUT type="submit" value="Modifier" name="<%=process.getNOM_PB_CREER()%>" class="sigp2-Bouton-100">
+						<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+					<%} %>
+					<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
+					</FIELDSET>
+					<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2Fieldset") %>">
+						<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
+					</FIELDSET>
 				<%} %>
-				<INPUT type="submit" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>" class="sigp2-Bouton-100">
-				</FIELDSET>
-				<FIELDSET style="text-align: center; margin: 10px; width:1020px;" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "sigp2Fieldset") %>">
-					<INPUT type="submit" value="Imprimer" name="<%=process.getNOM_PB_IMPRIMER()%>" class="sigp2-Bouton-100">
-				</FIELDSET>
 			<% } %>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SELECT_STATUT()%>" value="x">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_GRADE()%>">
