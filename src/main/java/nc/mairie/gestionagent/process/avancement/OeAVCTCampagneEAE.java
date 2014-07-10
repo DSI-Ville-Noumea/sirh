@@ -25,13 +25,13 @@ import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeDocument;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.EaeDao;
-import nc.mairie.spring.dao.metier.eae.CampagneActeurDao;
-import nc.mairie.spring.dao.metier.eae.CampagneActionDao;
-import nc.mairie.spring.dao.metier.eae.CampagneEAEDao;
-import nc.mairie.spring.dao.metier.eae.EaeEAEDao;
-import nc.mairie.spring.dao.metier.eae.EaeDocumentDao;
-import nc.mairie.spring.dao.metier.eae.EaeEvaluationDao;
-import nc.mairie.spring.dao.metier.eae.EaeEvalueDao;
+import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
+import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
+import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
+import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
+import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
+import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -1647,7 +1647,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 				Document doc = (Document) getListeDocuments().get(i);
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
-				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
+						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
