@@ -11,6 +11,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.parametrage.MotifCarriere;
 import nc.mairie.metier.parametrage.SPBASE;
+import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -187,7 +188,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getSpbaseDao() == null) {
-			setSpbaseDao((SPBASEDao) context.getBean("spbaseDao"));
+			setSpbaseDao(new SPBASEDao((MairieDao) context.getBean("mairieDao")));
 		}
 	}
 
@@ -1529,8 +1530,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 				&& Carriere.listerCarriereAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
-			getTransaction()
-					.declarerErreur(MessageUtils.getMessage("ERR989", "une carrière", "ce motif de carrière"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une carrière", "ce motif de carrière"));
 			return false;
 		}
 

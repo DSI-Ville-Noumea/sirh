@@ -5,15 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.parametrage.SPBASE;
+import nc.mairie.spring.dao.MairieDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class SPBASEDao implements SPBASEDaoInterface {
-
-	public static final String NOM_TABLE = "SPBASE";
+public class SPBASEDao extends MairieDao implements SPBASEDaoInterface {
 
 	public static final String CHAMP_CDBASE = "CDBASE";
 	public static final String CHAMP_NBASHH = "NBASHH";
@@ -27,16 +22,10 @@ public class SPBASEDao implements SPBASEDaoInterface {
 	public static final String CHAMP_NBAHVE = "NBAHVE";
 	public static final String CHAMP_NBASCH = "NBASCH";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public SPBASEDao() {
-
+	public SPBASEDao(MairieDao mairieDao) {
+		super.dataSource = mairieDao.getDataSource();
+		super.jdbcTemplate = mairieDao.getJdbcTemplate();
+		super.NOM_TABLE = "SPBASE";
 	}
 
 	@Override
@@ -76,22 +65,25 @@ public class SPBASEDao implements SPBASEDaoInterface {
 	}
 
 	@Override
-	public void creerSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe, Double nbhVe, Double nbhSa,
-			Double nbhDi, Double nbasCH, Double nbasHH) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CDBASE + "," + CHAMP_LIBASE + "," + CHAMP_NBAHLU + "," + CHAMP_NBAHMA + ","
-				+ CHAMP_NBAHME + "," + CHAMP_NBAHJE + "," + CHAMP_NBAHVE + "," + CHAMP_NBAHSA + "," + CHAMP_NBAHDI + "," + CHAMP_NBASCH + ","
-				+ CHAMP_NBASHH + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { cdBase, liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH, nbasHH });
+	public void creerSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe,
+			Double nbhVe, Double nbhSa, Double nbhDi, Double nbasCH, Double nbasHH) {
+		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_CDBASE + "," + CHAMP_LIBASE + "," + CHAMP_NBAHLU + ","
+				+ CHAMP_NBAHMA + "," + CHAMP_NBAHME + "," + CHAMP_NBAHJE + "," + CHAMP_NBAHVE + "," + CHAMP_NBAHSA
+				+ "," + CHAMP_NBAHDI + "," + CHAMP_NBASCH + "," + CHAMP_NBASHH + ") "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(sql, new Object[] { cdBase, liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi,
+				nbasCH, nbasHH });
 
 	}
 
 	@Override
-	public void modifierSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe, Double nbhVe, Double nbhSa,
-			Double nbhDi, Double nbasCH, Double nbasHH) {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIBASE + "=?," + CHAMP_NBAHLU + "=?," + CHAMP_NBAHMA + "=?," + CHAMP_NBAHME + "=?,"
-				+ CHAMP_NBAHJE + "=?," + CHAMP_NBAHVE + "=?," + CHAMP_NBAHSA + "=?," + CHAMP_NBAHDI + "=?," + CHAMP_NBASCH + "=?," + CHAMP_NBASHH
-				+ "=? where " + CHAMP_CDBASE + " =?";
-		jdbcTemplate.update(sql, new Object[] { liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH, nbasHH, cdBase });
+	public void modifierSPBASE(String cdBase, String liBase, Double nbhLu, Double nbhMa, Double nbhMe, Double nbhJe,
+			Double nbhVe, Double nbhSa, Double nbhDi, Double nbasCH, Double nbasHH) {
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIBASE + "=?," + CHAMP_NBAHLU + "=?," + CHAMP_NBAHMA
+				+ "=?," + CHAMP_NBAHME + "=?," + CHAMP_NBAHJE + "=?," + CHAMP_NBAHVE + "=?," + CHAMP_NBAHSA + "=?,"
+				+ CHAMP_NBAHDI + "=?," + CHAMP_NBASCH + "=?," + CHAMP_NBASHH + "=? where " + CHAMP_CDBASE + " =?";
+		jdbcTemplate.update(sql, new Object[] { liBase, nbhLu, nbhMa, nbhMe, nbhJe, nbhVe, nbhSa, nbhDi, nbasCH,
+				nbasHH, cdBase });
 
 	}
 }

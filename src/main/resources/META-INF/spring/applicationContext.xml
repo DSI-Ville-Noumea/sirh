@@ -28,18 +28,12 @@
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 
-
 	<!-- DAO Mairie -->
-	<bean id="spabsenDao" class="nc.mairie.spring.dao.metier.hsct.SPABSENDao">
+	<bean id="mairieDao" class="nc.mairie.spring.dao.DefaultMairieDao">
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
-	<bean id="spbaseDao" class="nc.mairie.spring.dao.metier.parametrage.SPBASEDao">
-		<property name="dataSource" ref="dataSourceMairie" />
-	</bean>
-
 
 	<!-- DAO EAE -->
-
 	<bean id="eaeDao" class="nc.mairie.spring.dao.DefaultEaeDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>

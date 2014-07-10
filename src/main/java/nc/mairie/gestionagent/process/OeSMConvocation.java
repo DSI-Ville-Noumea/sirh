@@ -32,6 +32,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
@@ -226,7 +227,7 @@ public class OeSMConvocation extends BasicProcess {
 			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
 
 		if (getSpabsenDao() == null)
-			setSpabsenDao((SPABSENDao) context.getBean("spabsenDao"));
+			setSpabsenDao(new SPABSENDao((MairieDao) context.getBean("mairieDao")));
 
 	}
 
@@ -445,7 +446,8 @@ public class OeSMConvocation extends BasicProcess {
 
 		// Si liste motif vide alors affectation
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao()
+					.listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 			int[] tailles = { 30 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -2623,8 +2625,8 @@ public class OeSMConvocation extends BasicProcess {
 			String destination = "SuiviMedical/SM_Lettre_Accompagnement_CC_" + getMoisSelectionne(indiceMois) + "_"
 					+ getAnneeSelectionne(indiceMois) + ".doc";
 
-			byte[] fileAsBytes = getAccompagnementAsByteArray(smCCAImprimer, "CC",
-					getMoisSelectionne(indiceMois), getAnneeSelectionne(indiceMois));
+			byte[] fileAsBytes = getAccompagnementAsByteArray(smCCAImprimer, "CC", getMoisSelectionne(indiceMois),
+					getAnneeSelectionne(indiceMois));
 
 			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
 				// "ERR185",
@@ -2806,8 +2808,8 @@ public class OeSMConvocation extends BasicProcess {
 		return response;
 	}
 
-	public ClientResponse createAndFireRequestAccompagnement(String csvIdSuiviMedical, String typePopulation, String mois,
-			String annee) {
+	public ClientResponse createAndFireRequestAccompagnement(String csvIdSuiviMedical, String typePopulation,
+			String mois, String annee) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH")
 				+ "?csvIdSuiviMedical=" + csvIdSuiviMedical + "&typePopulation=" + typePopulation + "&mois=" + mois
 				+ "&annee=" + annee;
@@ -2834,9 +2836,9 @@ public class OeSMConvocation extends BasicProcess {
 	private byte[] getAccompagnementAsByteArray(ArrayList<Integer> smFonctionnaireAImprimer, String typePopulation,
 			Integer moisSelectionne, Integer anneeSelectionne) throws Exception {
 
-		ClientResponse response = createAndFireRequestAccompagnement(smFonctionnaireAImprimer.toString().replace("[", "")
-				.replace("]", "").replace(" ", ""), typePopulation, moisSelectionne.toString(),
-				anneeSelectionne.toString());
+		ClientResponse response = createAndFireRequestAccompagnement(
+				smFonctionnaireAImprimer.toString().replace("[", "").replace("]", "").replace(" ", ""), typePopulation,
+				moisSelectionne.toString(), anneeSelectionne.toString());
 
 		return readResponseAsByteArray(response);
 	}

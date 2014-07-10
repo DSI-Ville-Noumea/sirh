@@ -5,15 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import nc.mairie.metier.hsct.SPABSEN;
+import nc.mairie.spring.dao.MairieDao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-public class SPABSENDao implements SPABSENDaoInterface {
-
-	public static final String NOM_TABLE = "SPABSEN";
+public class SPABSENDao extends MairieDao implements SPABSENDaoInterface {
 
 	public static final String CHAMP_NOMATR = "NOMATR";
 	public static final String CHAMP_TYPE3 = "TYPE3";
@@ -27,16 +22,10 @@ public class SPABSENDao implements SPABSENDaoInterface {
 	public static final String CHAMP_RAPDS = "RAPDS";
 	public static final String CHAMP_DATESS = "DATESS";
 
-	private JdbcTemplate jdbcTemplate;
-	private DataSource dataSource;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	public SPABSENDao() {
-
+	public SPABSENDao(MairieDao mairieDao) {
+		super.dataSource = mairieDao.getDataSource();
+		super.jdbcTemplate = mairieDao.getJdbcTemplate();
+		super.NOM_TABLE = "SPABSEN";
 	}
 
 	@Override
