@@ -1323,6 +1323,7 @@ public class OePTGVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
 			return false;
 		}
+		@SuppressWarnings("unused")
 		AgentNW agent = AgentNW.chercherAgent(getTransaction(), "900" + idAgent);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();

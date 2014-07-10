@@ -242,6 +242,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			for (PositionAdmAgent pa : listeNomatrActif) {
 				// on regarde si il y a une affectation active
 				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), pa.getNomatr());
+				@SuppressWarnings("unused")
 				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -264,6 +265,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur())
 				return false;
+			@SuppressWarnings("unused")
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
 			if (getTransaction().isErreur()) {
 				return false;
@@ -286,6 +288,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 				} else {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
+					@SuppressWarnings("unused")
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -310,6 +313,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 				} else {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
+					@SuppressWarnings("unused")
 					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -328,6 +332,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			ArrayList<AgentNW> listeAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
 			for (AgentNW agt : listeAgent) {
+				@SuppressWarnings("unused")
 				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();

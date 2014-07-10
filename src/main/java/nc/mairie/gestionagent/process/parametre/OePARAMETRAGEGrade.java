@@ -750,6 +750,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			// on verifie que le grade suivant existe
 			String cdgrad = getVAL_EF_CODE_GRADE_SUIVANT();
 			if (cdgrad != Const.CHAINE_VIDE) {
+				@SuppressWarnings("unused")
 				Grade gradeSuiv = Grade.chercherGrade(getTransaction(), cdgrad);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -912,6 +913,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 		// codeGrade Existant
 		if (getVAL_ST_ACTION_GRADE().equals(ACTION_CREATION_GRADE)) {
 
+			@SuppressWarnings("unused")
 			Grade gradeExist = Grade.chercherGrade(getTransaction(), getVAL_EF_CODE_GRADE().toUpperCase());
 			if (!getTransaction().isErreur()) {
 				// listeMessages.put("ERR974",

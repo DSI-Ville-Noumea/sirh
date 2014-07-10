@@ -494,6 +494,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			FileOutputStream out = new FileOutputStream(newFile);
 			try {
 				byte[] byteBuffer = new byte[in.available()];
+				@SuppressWarnings("unused")
 				int s = in.read(byteBuffer);
 				out.write(byteBuffer);
 				out.flush();
@@ -1131,6 +1132,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	public boolean recupererPreControles(HttpServletRequest request) throws Exception {
 		String type = request.getHeader("Content-Type");
 		String repTemp = (String) ServletAgent.getMesParametres().get("REPERTOIRE_TEMP");
+		@SuppressWarnings("unused")
 		String JSP = null;
 		multi = null;
 

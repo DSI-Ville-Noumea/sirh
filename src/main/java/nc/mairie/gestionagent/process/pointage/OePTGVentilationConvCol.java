@@ -589,6 +589,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 				return false;
 			}
 			String idAgentMin = "900" + agentMin;
+			@SuppressWarnings("unused")
 			AgentNW agMin = AgentNW.chercherAgent(getTransaction(), idAgentMin);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -606,6 +607,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 				return false;
 			}
 			String idAgentMax = "900" + agentMax;
+			@SuppressWarnings("unused")
 			AgentNW agMax = AgentNW.chercherAgent(getTransaction(), idAgentMax);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
