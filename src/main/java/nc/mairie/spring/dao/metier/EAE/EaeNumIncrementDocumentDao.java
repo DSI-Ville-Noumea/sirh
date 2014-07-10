@@ -1,4 +1,4 @@
-package nc.mairie.spring.dao.metier.eae;
+package nc.mairie.spring.dao.metier.EAE;
 
 import javax.sql.DataSource;
 

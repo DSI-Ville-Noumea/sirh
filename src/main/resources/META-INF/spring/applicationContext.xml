@@ -37,7 +37,7 @@
 	<bean id="eaeDao" class="nc.mairie.spring.dao.DefaultEaeDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>
-	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.eae.EaeNumIncrementDocumentDao">
+	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>
 
