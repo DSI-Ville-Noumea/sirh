@@ -150,12 +150,9 @@ function reduireHierarchy() {
 			</SELECT>
 			<BR/><BR/>
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
-			<INPUT type="submit" class="sigp2-Bouton-150" value="Générer les EAEs" name="<%=process.getNOM_PB_CALCULER()%>">
+			<!-- <INPUT type="submit" class="sigp2-Bouton-150" value="Générer les EAEs" name="<%=process.getNOM_PB_CALCULER()%>"> -->
 			<INPUT type="submit" class="sigp2-Bouton-100" value="Mettre à jour" name="<%=process.getNOM_PB_METTRE_A_JOUR_EAE()%>">	
-			<% String environnement = (String) ServletAgent.getMesParametres().get("TYPE_SIRH");
-			if("DEV".equals(environnement) || "RECETTE".equals(environnement)) { %>
 			<INPUT type="submit" class="sigp2-Bouton-150" value="Générer les EAEs en différé" name="<%=process.getNOM_PB_INITIALISE_CALCUL_EAE_JOB()%>">
-			<% } %>
 			<BR/><BR/>
 			<span class="sigp2Mandatory" style="width:1000px">Pour info : le bouton "mettre à jour" met à jour les informations de l'évalué (ainsi que sa CAP), de sa fiche de poste, de ses diplomes, de ses parcours pro. et de ses formations.</span>	
 		</FIELDSET>
