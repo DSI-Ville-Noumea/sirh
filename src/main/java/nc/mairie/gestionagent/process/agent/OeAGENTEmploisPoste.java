@@ -46,6 +46,7 @@ import nc.mairie.metier.specificites.PrimePointageAff;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -118,6 +119,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private String urlFichier;
 
 	private PrimePointageFPDao primePointageFPDao;
+	private CadreEmploiDao cadreEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -202,6 +204,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getPrimePointageFPDao() == null) {
 			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
+
+		if (getCadreEmploiDao() == null) {
+			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
@@ -228,7 +234,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), g.getCodeGradeGenerique());
 				CadreEmploi cadreEmp = null;
 				if (gg != null && gg.getIdCadreEmploi() != null) {
-					cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(), gg.getIdCadreEmploi());
+					cadreEmp = getCadreEmploiDao().chercherCadreEmploi(Integer.valueOf(gg.getIdCadreEmploi()));
 				}
 				setCadreEmploi(cadreEmp == null || cadreEmp.getIdCadreEmploi() == null ? Const.CHAINE_VIDE : cadreEmp
 						.getLibCadreEmploi());
@@ -2235,5 +2241,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	public CadreEmploiDao getCadreEmploiDao() {
+		return cadreEmploiDao;
+	}
+
+	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
+		this.cadreEmploiDao = cadreEmploiDao;
 	}
 }

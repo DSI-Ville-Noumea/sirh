@@ -42,6 +42,7 @@ import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
+import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -111,6 +112,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private CapDao capDao;
 	private CorpsCapDao corpsCapDao;
 	private AvancementCapPrintJobDao avancementCapPrintJobDao;
+	private CadreEmploiDao cadreEmploiDao;
 
 	private Hashtable<Cap, ArrayList<CadreEmploi>> hashListeImpression;
 	ArrayList<CadreEmploi> listeImpression = new ArrayList<CadreEmploi>();
@@ -362,8 +364,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 						getTransaction().traiterErreur();
 					} else {
 						if (gradeWithCadreEmploi.getIdCadreEmploi() != null) {
-							CadreEmploi cadreEmp = CadreEmploi.chercherCadreEmploi(getTransaction(),
-									gradeWithCadreEmploi.getIdCadreEmploi());
+							CadreEmploi cadreEmp = getCadreEmploiDao().chercherCadreEmploi(
+									Integer.valueOf(gradeWithCadreEmploi.getIdCadreEmploi()));
 							if (getTransaction().isErreur())
 								getTransaction().traiterErreur();
 							else {
@@ -434,6 +436,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		if (getAvancementCapPrintJobDao() == null) {
 			setAvancementCapPrintJobDao(new AvancementCapPrintJobDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getCadreEmploiDao() == null) {
+			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -706,7 +712,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		for (int i = 0; i < getListeImpression().size(); i++) {
 			if (getVAL_CK_TAB_SHD(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -722,7 +728,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 			if (getVAL_CK_EAE_SHD(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -738,7 +744,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 			if (getVAL_CK_TAB_VDN(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -754,7 +760,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 			if (getVAL_CK_EAE_VDN(i).equals(getCHECKED_ON())) {
 				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), getVAL_ST_CADRE_EMPLOI(i));
+				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -1452,7 +1458,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
 		// on receupere la CAP et le cadre Emploi
 		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-		CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), indiceCadreEmploi);
+		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR182",
@@ -2041,7 +2047,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
 		// on receupere la CAP et le cadre Emploi
 		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-		CadreEmploi cadre = CadreEmploi.chercherCadreEmploiByLib(getTransaction(), indiceCadreEmploi);
+		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR182",
@@ -2127,5 +2133,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public CadreEmploiDao getCadreEmploiDao() {
+		return cadreEmploiDao;
+	}
+
+	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
+		this.cadreEmploiDao = cadreEmploiDao;
 	}
 }

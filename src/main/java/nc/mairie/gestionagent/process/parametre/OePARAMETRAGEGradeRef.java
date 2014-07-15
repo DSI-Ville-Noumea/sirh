@@ -17,6 +17,7 @@ import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.Deliberation;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -71,6 +72,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	private Hashtable<String, FiliereGrade> hashFiliere;
 
 	private DeliberationDao deliberationDao;
+	private CadreEmploiDao cadreEmploiDao;
+
 	private ArrayList<Deliberation> listeDeliberationTerr;
 	private ArrayList<Deliberation> listeDeliberationComm;
 	private Hashtable<String, Deliberation> hashDeliberationComm;
@@ -141,6 +144,10 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getDeliberationDao() == null) {
 			setDeliberationDao(new DeliberationDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getCadreEmploiDao() == null) {
+			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -320,7 +327,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeCadreEmploi(HttpServletRequest request) throws Exception {
-		setListeCadreEmploi(CadreEmploi.listerCadreEmploi(getTransaction()));
+		setListeCadreEmploi(getCadreEmploiDao().listerCadreEmploi());
 		if (getListeCadreEmploi().size() != 0) {
 			int tailles[] = { 40 };
 			String padding[] = { "G" };
@@ -335,7 +342,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 			// remplissage de la hashTable
 			for (CadreEmploi cadreEmp : getListeCadreEmploi())
-				getHashCadreEmploi().put(cadreEmp.getIdCadreEmploi(), cadreEmp);
+				getHashCadreEmploi().put(cadreEmp.getIdCadreEmploi().toString(), cadreEmp);
 
 			setLB_CADRE_EMPLOI(aFormat.getListeFormatee());
 
@@ -995,7 +1002,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
-				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
+				getGradeGeneriqueCourant().setIdCadreEmploi(
+						cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
@@ -1012,7 +1020,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
-				getGradeGeneriqueCourant().setIdCadreEmploi(cadreEmp != null ? cadreEmp.getIdCadreEmploi() : null);
+				getGradeGeneriqueCourant().setIdCadreEmploi(
+						cadreEmp != null ? cadreEmp.getIdCadreEmploi().toString() : null);
 				getGradeGeneriqueCourant().setCdfili(filiere != null ? filiere.getCodeFiliere() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setTexteCapCadreEmploi(getVAL_EF_TEXTE_CAP_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setIdDeliberationTerritoriale(
@@ -2438,11 +2447,11 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_CREATION)) {
 				setCadreEmploiCourant(new CadreEmploi());
 				getCadreEmploiCourant().setLibCadreEmploi(getVAL_EF_CADRE_EMPLOI());
-				getCadreEmploiCourant().creerCadreEmploi(getTransaction());
+				getCadreEmploiDao().creerCadreEmploi(getCadreEmploiCourant().getLibCadreEmploi());
 				if (!getTransaction().isErreur())
 					getListeCadreEmploi().add(getCadreEmploiCourant());
 			} else if (getVAL_EF_ACTION_CADRE_EMPLOI().equals(ACTION_SUPPRESSION)) {
-				getCadreEmploiCourant().supprimerCadreEmploi(getTransaction());
+				getCadreEmploiDao().supprimerCadreEmploi(getCadreEmploiCourant().getIdCadreEmploi());
 				if (!getTransaction().isErreur())
 					getListeCadreEmploi().remove(getCadreEmploiCourant());
 				setCadreEmploiCourant(null);
@@ -2748,5 +2757,13 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 */
 	public String getVAL_LB_DELIB_COMM_GRADE_SELECT() {
 		return getZone(getNOM_LB_DELIB_COMM_GRADE_SELECT());
+	}
+
+	public CadreEmploiDao getCadreEmploiDao() {
+		return cadreEmploiDao;
+	}
+
+	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
+		this.cadreEmploiDao = cadreEmploiDao;
 	}
 }

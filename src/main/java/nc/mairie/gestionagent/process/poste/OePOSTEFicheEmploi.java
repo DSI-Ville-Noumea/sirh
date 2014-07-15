@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.poste;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,9 @@ import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.NiveauEtudeFE;
 import nc.mairie.metier.referentiel.NiveauEtude;
 import nc.mairie.metier.referentiel.TypeCompetence;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -33,6 +37,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFicheEmploi Date de création : (21/06/11 16:27:37)
@@ -111,6 +117,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	public String ACTION_CREATION = "Création.";
 	public String ACTION_DUPLICATION = "Duplication.";
 	public String ACTION_MODIFICATION = "Modification.";
+
+	private CadreEmploiDao cadreEmploiDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -968,8 +976,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouveaux cadres emploi et suppression des anciens
 			for (int i = 0; i < getListeCadresEmploiAAjouter().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiAAjouter().get(i);
-				CadreEmploiFE cadreFE = new CadreEmploiFE(getFicheEmploiCourant().getIdFicheEmploi(),
-						cadre.getIdCadreEmploi());
+				CadreEmploiFE cadreFE = new CadreEmploiFE(getFicheEmploiCourant().getIdFicheEmploi(), cadre
+						.getIdCadreEmploi().toString());
 				cadreFE.creerCadreEmploiFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
@@ -1239,6 +1247,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Récupération de la fiche emploi en session
 		FicheEmploi feRechAvancee = (FicheEmploi) VariablesActivite.recuperer(this,
 				VariablesActivite.ACTIVITE_FICHE_EMPLOI);
@@ -1294,6 +1304,14 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		// Mise à jour de l'action
 		if (Const.CHAINE_VIDE.equals(getVAL_ST_ACTION()))
 			addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getCadreEmploiDao() == null) {
+			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1526,12 +1544,25 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Si liste cadres emploi vide alors affectation
 		if (getLB_CADRE_EMPLOI() == LBVide) {
-			ArrayList<CadreEmploi> cadresE = CadreEmploi.listerCadreEmploi(getTransaction());
-			setListeCadresEmploi(cadresE);
-
 			int[] tailles = { 100 };
-			String[] champs = { "libCadreEmploi" };
-			setLB_CADRE_EMPLOI(new FormateListe(tailles, cadresE, champs).getListeFormatee(true));
+
+			ArrayList<CadreEmploi> cadresE = getCadreEmploiDao().listerCadreEmploi();
+			setListeCadresEmploi(cadresE);
+			if (getListeCadresEmploi().size() != 0) {
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<CadreEmploi> list = getListeCadresEmploi().listIterator(); list.hasNext();) {
+					CadreEmploi cadre = (CadreEmploi) list.next();
+
+					String ligne[] = { cadre.getLibCadreEmploi() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+
+				setLB_CADRE_EMPLOI(aFormat.getListeFormatee(true));
+
+			} else {
+				setLB_CADRE_EMPLOI(null);
+			}
 		}
 
 		// Si liste diplomes vide alors affectation
@@ -1615,7 +1646,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseCadresEmploiMulti() throws Exception {
 		if (getListeCadresEmploiMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(),
+			setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getTransaction(),
 					getFicheEmploiCourant()));
 		}
 
@@ -2619,7 +2650,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
 						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode()));
 				setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeCadresEmploiMulti(CadreEmploi.listerCadreEmploiAvecFicheEmploi(getTransaction(),
+				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getTransaction(),
 						getFicheEmploiCourant()));
 				setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
 				setListeDiplomeMulti(DiplomeGenerique.listerDiplomeGeneriqueAvecFE(getTransaction(),
@@ -3301,8 +3332,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les CadreEmploi
 			for (int i = 0; i < getListeCadresEmploiMulti().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiMulti().get(i);
-				CadreEmploiFE newCadreFE = new CadreEmploiFE(ficheDupliquee.getIdFicheEmploi(),
-						cadre.getIdCadreEmploi());
+				CadreEmploiFE newCadreFE = new CadreEmploiFE(ficheDupliquee.getIdFicheEmploi(), cadre
+						.getIdCadreEmploi().toString());
 				newCadreFE.creerCadreEmploiFE(getTransaction());
 			}
 			// Duplique les NiveauEtude
@@ -4028,5 +4059,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	private void setListeCodeRome(ArrayList<CodeRome> listeCodeRome) {
 		this.listeCodeRome = listeCodeRome;
+	}
+
+	public CadreEmploiDao getCadreEmploiDao() {
+		return cadreEmploiDao;
+	}
+
+	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
+		this.cadreEmploiDao = cadreEmploiDao;
 	}
 }
