@@ -28,6 +28,7 @@ import nc.mairie.metier.referentiel.NiveauEtude;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
+import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -119,6 +120,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	public String ACTION_MODIFICATION = "Modification.";
 
 	private CadreEmploiDao cadreEmploiDao;
+	private CodeRomeDao codeRomeDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1201,7 +1203,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		for (int i = 0; i < getListeCodeRome().size(); i++) {
 			CodeRome codeRome = (CodeRome) getListeCodeRome().get(i);
 			if (codeRome.getLibCodeRome().equals(getVAL_EF_CODE_ROME())) {
-				idCodeRome = codeRome.getIdCodeRome();
+				idCodeRome = codeRome.getIdCodeRome().toString();
 				break;
 			}
 		}
@@ -1312,6 +1314,10 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getCadreEmploiDao() == null) {
 			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
+
+		if (getCodeRomeDao() == null) {
+			setCodeRomeDao(new CodeRomeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1321,8 +1327,6 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseZonesFicheCourante() throws Exception {
 		addZone(getNOM_EF_REF_MAIRIE(), getFicheEmploiCourant().getRefMairie());
-		// addZone(getNOM_EF_CODE_ROME(),
-		// getFicheEmploiCourant().getCodeRome());
 		addZone(getNOM_EF_NOM_METIER(), getFicheEmploiCourant().getNomMetierEmploi());
 		addZone(getNOM_EF_PRECISIONS_DIPLOMES(), getFicheEmploiCourant().getPrecisionsDiplomes());
 		addZone(getNOM_EF_DEFINITION_EMPLOI(), getFicheEmploiCourant().getDefinitionEmploi());
@@ -1341,7 +1345,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getListeCodeRome() != null)
 			for (int i = 0; i < getListeCodeRome().size(); i++) {
 				CodeRome cr = (CodeRome) getListeCodeRome().get(i);
-				if (cr.getIdCodeRome().equals(getFicheEmploiCourant().getIdCodeRome())) {
+				if (cr.getIdCodeRome().toString().equals(getFicheEmploiCourant().getIdCodeRome())) {
 					addZone(getNOM_EF_CODE_ROME(), cr.getLibCodeRome());
 					break;
 				}
@@ -1587,7 +1591,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Si liste code rome vide alors affectation
 		if (getListeCodeRome().size() == 0) {
-			ArrayList<CodeRome> codeRome = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> codeRome = (ArrayList<CodeRome>) getCodeRomeDao().listerCodeRome();
 			setListeCodeRome(codeRome);
 		}
 	}
@@ -4067,5 +4071,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
 		this.cadreEmploiDao = cadreEmploiDao;
+	}
+
+	public CodeRomeDao getCodeRomeDao() {
+		return codeRomeDao;
+	}
+
+	public void setCodeRomeDao(CodeRomeDao codeRomeDao) {
+		this.codeRomeDao = codeRomeDao;
 	}
 }

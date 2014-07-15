@@ -9,16 +9,20 @@ import nc.mairie.metier.parametrage.CodeRome;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.FicheEmploi;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
 
+import org.springframework.context.ApplicationContext;
+
 /**
- * Process OePOSTEFERechercheAvancee
- * Date de création : (13/09/11 08:45:29)
-     *
+ * Process OePOSTEFERechercheAvancee Date de création : (13/09/11 08:45:29)
+ * 
  */
 public class OePOSTEFERechercheAvancee extends BasicProcess {
 	/**
@@ -36,21 +40,33 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	public String focus = null;
 
+	private CodeRomeDao codeRomeDao;
+
 	/**
-	 * Initialisation des zones à afficher dans la JSP
-	 * Alimentation des listes, s'il y en a, avec setListeLB_XXX()
-	 * ATTENTION : Les Objets dans la liste doivent avoir les Fields PUBLIC
-	 * Utilisation de la méthode addZone(getNOMxxx, String);
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
+	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
+	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
+	 * addZone(getNOMxxx, String); Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 		initialiseListeDeroulante();
-		//fillList();
+		// fillList();
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getCodeRomeDao() == null) {
+			setCodeRomeDao(new CodeRomeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
 	 * Initialise les listes déroulantes de l'écran.
+	 * 
 	 * @throws Exception
 	 */
 	private void initialiseListeDeroulante() throws Exception {
@@ -75,10 +91,10 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 		// Si liste code rome vide alors affectation
 		if (getListeCodeRome().size() == 0) {
-			ArrayList<CodeRome> codeRome = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> codeRome = (ArrayList<CodeRome>) getCodeRomeDao().listerCodeRome();
 			setListeCodeRome(codeRome);
 		}
-		
+
 		// Si liste Nom Emploi vide alors affectation
 		if (getListeFormNomEmploi().size() == 0) {
 			ArrayList<FicheEmploi> listFicheEmploi = FicheEmploi.listerFicheEmploi(getTransaction());
@@ -101,7 +117,8 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * @param focus focus à définir.
+	 * @param focus
+	 *            focus à définir.
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
@@ -117,12 +134,13 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 				FicheEmploi fe = (FicheEmploi) getListeFE().get(i);
 
 				addZone(getNOM_ST_REF(indiceFe), fe.getRefMairie());
-				addZone(getNOM_ST_NOM(indiceFe), fe.getNomMetierEmploi().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fe.getNomMetierEmploi());
+				addZone(getNOM_ST_NOM(indiceFe),
+						fe.getNomMetierEmploi().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fe.getNomMetierEmploi());
 
 				indiceFe++;
 			}
 
-			//Si liste vide alors erreur
+			// Si liste vide alors erreur
 			if (getListeFE().size() == 0) {
 				setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
 				return false;
@@ -133,22 +151,20 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_ANNULER
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
+	 * (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_PB_ANNULER() {
 		return "NOM_PB_ANNULER";
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public boolean performPB_ANNULER(HttpServletRequest request) throws Exception {
 		setStatut(STATUT_PROCESS_APPELANT);
@@ -156,58 +172,59 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_RECHERCHER
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER Date de création
+	 * : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_PB_RECHERCHER() {
 		return "NOM_PB_RECHERCHER";
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public boolean performPB_RECHERCHER(HttpServletRequest request) throws Exception {
-		//Remise à 0 de la liste des fiches de poste.
+		// Remise à 0 de la liste des fiches de poste.
 		setListeFE(null);
 
-		//Recuperation Domaine Emploi
+		// Recuperation Domaine Emploi
 		DomaineEmploi domaineEmploi = null;
-		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_DOMAINE_EMPLOI_SELECT()) : -1);
+		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_EMPLOI_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DOMAINE_EMPLOI_SELECT()) : -1);
 		if (indiceDomaine > 0)
 			domaineEmploi = (DomaineEmploi) getListeDomaineEmploi().get(indiceDomaine - 1);
 
-		//Recuperation Famille emploi
+		// Recuperation Famille emploi
 		FamilleEmploi famEmploi = null;
-		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
+		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
+				.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
 		if (indiceFamille > 0)
 			famEmploi = (FamilleEmploi) getListeFamilleEmploi().get(indiceFamille - 1);
 
-		//Recuperation Code Rome
+		// Recuperation Code Rome
 		String codeRome = getVAL_EF_CODE_ROME_RECH();
 
-		//Recuperation ref Mairie
+		// Recuperation ref Mairie
 		String refMairie = getVAL_EF_REF_MAIRIE_RECH();
-		
-		//Recuperation Nom mploi
+
+		// Recuperation Nom mploi
 		String nomEmploi = getVAL_EF_NOM_EMPLOI();
 
-		ArrayList<FicheEmploi> fe = FicheEmploi.listerFicheEmploiAvecCriteresAvances(getTransaction(), domaineEmploi, famEmploi, codeRome, refMairie, nomEmploi);
+		ArrayList<FicheEmploi> fe = FicheEmploi.listerFicheEmploiAvecCriteresAvances(getTransaction(), domaineEmploi,
+				famEmploi, codeRome, refMairie, nomEmploi);
 		setListeFE(fe);
 
 		return fillList();
 	}
 
 	/**
-	 * Constructeur du process OePOSTEFERechercheAvancee.
-	 * Date de création : (13/09/11 11:47:15)
-     *
+	 * Constructeur du process OePOSTEFERechercheAvancee. Date de création :
+	 * (13/09/11 11:47:15)
+	 * 
 	 */
 	public OePOSTEFERechercheAvancee() {
 		super();
@@ -215,6 +232,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Getter liste Fiche emploi
+	 * 
 	 * @return listeFE
 	 */
 	public ArrayList<FicheEmploi> getListeFE() {
@@ -225,6 +243,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Setter liste Fiche emploi
+	 * 
 	 * @param listeFE
 	 */
 	private void setListeFE(ArrayList<FicheEmploi> listeFE) {
@@ -233,6 +252,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Getter de la liste des domaines emploi
+	 * 
 	 * @return ArrayList
 	 */
 	private ArrayList<DomaineEmploi> getListeDomaineEmploi() {
@@ -241,6 +261,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Setter de la liste des domaines emploi
+	 * 
 	 * @param listeDomaineEmploi
 	 */
 	private void setListeDomaineEmploi(ArrayList<DomaineEmploi> listeDomaineEmploi) {
@@ -249,6 +270,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Getter de la liste des familles emploi
+	 * 
 	 * @return ArrayList
 	 */
 	private ArrayList<FamilleEmploi> getListeFamilleEmploi() {
@@ -257,14 +279,17 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Setter de la liste des familles emploi
+	 * 
 	 * @param listeFamilleEmploi
 	 */
 	private void setListeFamilleEmploi(ArrayList<FamilleEmploi> listeFamilleEmploi) {
 		this.listeFamilleEmploi = listeFamilleEmploi;
 	}
-	
+
 	/**
-	 * Getter liste Fiche emploi (liste emploi pour autocompletion champ Nom Emploi)
+	 * Getter liste Fiche emploi (liste emploi pour autocompletion champ Nom
+	 * Emploi)
+	 * 
 	 * @return listeFE
 	 */
 	public ArrayList<FicheEmploi> getListeFormNomEmploi() {
@@ -274,7 +299,9 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Setter liste Fiche emploi (liste emploi pour autocompletion champ Nom Emploi)
+	 * Setter liste Fiche emploi (liste emploi pour autocompletion champ Nom
+	 * Emploi)
+	 * 
 	 * @param listeFE
 	 */
 	private void setListeFormNomEmploi(ArrayList<FicheEmploi> listeFormNomEmploi) {
@@ -282,10 +309,9 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize :
-	 * LB_DOMAINE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Getter de la liste avec un lazy initialize : LB_DOMAINE_EMPLOI Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
 	 */
 	private String[] getLB_DOMAINE_EMPLOI() {
 		if (LB_DOMAINE_EMPLOI == null)
@@ -294,20 +320,18 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste:
-	 * LB_DOMAINE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Setter de la liste: LB_DOMAINE_EMPLOI Date de création : (13/09/11
+	 * 08:45:29)
+	 * 
 	 */
 	private void setLB_DOMAINE_EMPLOI(String[] newLB_DOMAINE_EMPLOI) {
 		LB_DOMAINE_EMPLOI = newLB_DOMAINE_EMPLOI;
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP :
-	 * NOM_LB_DOMAINE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_DOMAINE_EMPLOI Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_LB_DOMAINE_EMPLOI() {
 		return "NOM_LB_DOMAINE_EMPLOI";
@@ -315,41 +339,35 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_DOMAINE_EMPLOI_SELECT
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * NOM_LB_DOMAINE_EMPLOI_SELECT Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_LB_DOMAINE_EMPLOI_SELECT() {
 		return "NOM_LB_DOMAINE_EMPLOI_SELECT";
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne la valeur à afficher pour la zone de la JSP :
-	 * LB_DOMAINE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_DOMAINE_EMPLOI Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String[] getVAL_LB_DOMAINE_EMPLOI() {
 		return getLB_DOMAINE_EMPLOI();
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne l'indice à sélectionner pour la zone de la JSP :
-	 * LB_DOMAINE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_DOMAINE_EMPLOI Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getVAL_LB_DOMAINE_EMPLOI_SELECT() {
 		return getZone(getNOM_LB_DOMAINE_EMPLOI_SELECT());
 	}
 
 	/**
-	 * Getter de la liste avec un lazy initialize :
-	 * LB_FAMILLE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Getter de la liste avec un lazy initialize : LB_FAMILLE_EMPLOI Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
 	 */
 	private String[] getLB_FAMILLE_EMPLOI() {
 		if (LB_FAMILLE_EMPLOI == null)
@@ -358,20 +376,18 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Setter de la liste:
-	 * LB_FAMILLE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Setter de la liste: LB_FAMILLE_EMPLOI Date de création : (13/09/11
+	 * 08:45:29)
+	 * 
 	 */
 	private void setLB_FAMILLE_EMPLOI(String[] newLB_FAMILLE_EMPLOI) {
 		LB_FAMILLE_EMPLOI = newLB_FAMILLE_EMPLOI;
 	}
 
 	/**
-	 * Retourne le nom de la zone pour la JSP :
-	 * NOM_LB_FAMILLE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Retourne le nom de la zone pour la JSP : NOM_LB_FAMILLE_EMPLOI Date de
+	 * création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_LB_FAMILLE_EMPLOI() {
 		return "NOM_LB_FAMILLE_EMPLOI";
@@ -379,85 +395,77 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_FAMILLE_EMPLOI_SELECT
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * NOM_LB_FAMILLE_EMPLOI_SELECT Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_LB_FAMILLE_EMPLOI_SELECT() {
 		return "NOM_LB_FAMILLE_EMPLOI_SELECT";
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne la valeur à afficher pour la zone de la JSP :
-	 * LB_FAMILLE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
+	 * JSP : LB_FAMILLE_EMPLOI Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String[] getVAL_LB_FAMILLE_EMPLOI() {
 		return getLB_FAMILLE_EMPLOI();
 	}
 
 	/**
-	 * Méthode à personnaliser
-	 * Retourne l'indice à sélectionner pour la zone de la JSP :
-	 * LB_FAMILLE_EMPLOI
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
+	 * la JSP : LB_FAMILLE_EMPLOI Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getVAL_LB_FAMILLE_EMPLOI_SELECT() {
 		return getZone(getNOM_LB_FAMILLE_EMPLOI_SELECT());
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_REF_MAIRIE_RECH
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_REF_MAIRIE_RECH
 	 * Date de création : (21/06/11 16:27:37)
-     *
+	 * 
 	 */
 	public String getNOM_EF_REF_MAIRIE_RECH() {
 		return "NOM_EF_REF_MAIRIE_RECH";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
-	 * EF_REF_MAIRIE_RECH
-	 * Date de création : (21/06/11 16:27:37)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_REF_MAIRIE_RECH Date de création : (21/06/11 16:27:37)
+	 * 
 	 */
 	public String getVAL_EF_REF_MAIRIE_RECH() {
 		return getZone(getNOM_EF_REF_MAIRIE_RECH());
 	}
 
 	/**
-	 * Retourne le nom d'une zone de saisie pour la JSP :
-	 * EF_CODE_ROME_RECH
-	 * Date de création : (21/06/11 16:27:37)
-     *
+	 * Retourne le nom d'une zone de saisie pour la JSP : EF_CODE_ROME_RECH Date
+	 * de création : (21/06/11 16:27:37)
+	 * 
 	 */
 	public String getNOM_EF_CODE_ROME_RECH() {
 		return "NOM_EF_CODE_ROME_RECH";
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone de saisie  :
-	 * EF_CODE_ROME_RECH
-	 * Date de création : (21/06/11 16:27:37)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
+	 * EF_CODE_ROME_RECH Date de création : (21/06/11 16:27:37)
+	 * 
 	 */
 	public String getVAL_EF_CODE_ROME_RECH() {
 		return getZone(getNOM_EF_CODE_ROME_RECH());
 	}
-	
+
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_NOM_EMPLOI Date de
 	 */
 	public String getNOM_EF_NOM_EMPLOI() {
 		return "NOM_EF_NOM_EMPLOI";
 	}
+
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone de saisie :
-	 * EF_NOM_EMPLOI 
+	 * EF_NOM_EMPLOI
 	 * 
 	 */
 	public String getVAL_EF_NOM_EMPLOI() {
@@ -465,27 +473,26 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Méthode appelée par la servlet qui aiguille le traitement : 
-	 * en fonction du bouton de la JSP 
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
+	 * du bouton de la JSP Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public boolean recupererStatut(HttpServletRequest request) throws Exception {
 
-		//Si on arrive de la JSP alors on traite le get
+		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
-			//Si clic sur le bouton PB_TRI
+			// Si clic sur le bouton PB_TRI
 			if (testerParametre(request, getNOM_PB_TRI())) {
 				return performPB_TRI(request);
 			}
 
-			//Si clic sur le bouton PB_ANNULER
+			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
 			}
 
-			//Si clic sur le bouton PB_RECHERCHER
+			// Si clic sur le bouton PB_RECHERCHER
 			if (testerParametre(request, getNOM_PB_RECHERCHER())) {
 				return performPB_RECHERCHER(request);
 			}
@@ -498,38 +505,35 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 			}
 
 		}
-		//Si TAG INPUT non géré par le process
+		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
 	}
 
 	/**
-	 * Retourne le nom de la JSP du process
-	 * Zone à utiliser dans un champ caché dans chaque formulaire de la JSP.
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
+	 * dans chaque formulaire de la JSP. Date de création : (07/11/11 15:51:20)
+	 * 
 	 */
 	public String getJSP() {
 		return "OePOSTEFERechercheAvancee.jsp";
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_TRI
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_TRI Date de création :
+	 * (07/11/11 15:51:20)
+	 * 
 	 */
 	public String getNOM_PB_TRI() {
 		return "NOM_PB_TRI";
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (07/11/11 15:51:20)
+	 * 
 	 */
 	public boolean performPB_TRI(HttpServletRequest request) throws Exception {
 		String tri = "refMairie";
@@ -539,7 +543,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 			tri = "nomMetierEmploi";
 		}
 
-		//Remplissage de la liste
+		// Remplissage de la liste
 		String[] colonnes = { tri };
 		boolean[] ordres = { true };
 		setListeFE(Services.trier(getListeFE(), colonnes, ordres));
@@ -547,106 +551,97 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	}
 
 	/**
-	 * Retourne le nom du groupe de radio boutons coché pour la JSP :
-	 * RG_TRI
+	 * Retourne le nom du groupe de radio boutons coché pour la JSP : RG_TRI
 	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * 
 	 */
 	public String getNOM_RG_TRI() {
 		return "NOM_RG_TRI";
 	}
 
 	/**
-	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP :
-	 * RG_TRI
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * Retourne la valeur du radio bouton (RB_) coché dans la JSP : RG_TRI Date
+	 * de création : (07/11/11 15:51:20)
+	 * 
 	 */
 	public String getVAL_RG_TRI() {
 		return getZone(getNOM_RG_TRI());
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP :
-	 * RB_TRI_DESC
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_DESC Date de
+	 * création : (07/11/11 15:51:20)
+	 * 
 	 */
 	public String getNOM_RB_TRI_DESC() {
 		return "NOM_RB_TRI_DESC";
 	}
 
 	/**
-	 * Retourne le nom du radio bouton pour la JSP :
-	 * RB_TRI_REFMAIRIE
-	 * Date de création : (07/11/11 15:51:20)
-     *
+	 * Retourne le nom du radio bouton pour la JSP : RB_TRI_REFMAIRIE Date de
+	 * création : (07/11/11 15:51:20)
+	 * 
 	 */
 	public String getNOM_RB_TRI_REFMAIRIE() {
 		return "NOM_RB_TRI_REFMAIRIE";
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_REF
-	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_REF Date de création
+	 * : (18/08/11 10:21:15)
+	 * 
 	 */
 	public String getNOM_ST_REF(int i) {
 		return "NOM_ST_REF" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_REF
-	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_REF Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
 	 */
 	public String getVAL_ST_REF(int i) {
 		return getZone(getNOM_ST_REF(i));
 	}
 
 	/**
-	 * Retourne pour la JSP le nom de la zone statique :
-	 * ST_NOM
-	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * Retourne pour la JSP le nom de la zone statique : ST_NOM Date de création
+	 * : (18/08/11 10:21:15)
+	 * 
 	 */
 	public String getNOM_ST_NOM(int i) {
 		return "NOM_ST_NOM" + i;
 	}
 
 	/**
-	 * Retourne la valeur à afficher par la JSP  pour la zone :
-	 * ST_NOM
-	 * Date de création : (18/08/11 10:21:15)
-     *
+	 * Retourne la valeur à afficher par la JSP pour la zone : ST_NOM Date de
+	 * création : (18/08/11 10:21:15)
+	 * 
 	 */
 	public String getVAL_ST_NOM(int i) {
 		return getZone(getNOM_ST_NOM(i));
 	}
 
 	/**
-	 * Retourne le nom d'un bouton pour la JSP :
-	 * PB_VALIDER
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
+	 * (13/09/11 08:45:29)
+	 * 
 	 */
 	public String getNOM_PB_VALIDER(int i) {
 		return "NOM_PB_VALIDER" + i;
 	}
 
 	/**
-	 * - Traite et affecte les zones saisies dans la JSP.
-	 * - Implémente les règles de gestion du process
-	 * - Positionne un statut en fonction de ces règles :
-	 *   setStatut(STATUT, boolean veutRetour) ou setStatut(STATUT,Message d'erreur)
-	 * Date de création : (13/09/11 08:45:29)
-     *
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (13/09/11 08:45:29)
+	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request, int elemSelection) throws Exception {
 
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, (FicheEmploi) getListeFE().get(elemSelection));
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI,
+				(FicheEmploi) getListeFE().get(elemSelection));
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
 	}
@@ -659,5 +654,13 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	private void setListeCodeRome(ArrayList<CodeRome> listeCodeRome) {
 		this.listeCodeRome = listeCodeRome;
+	}
+
+	public CodeRomeDao getCodeRomeDao() {
+		return codeRomeDao;
+	}
+
+	public void setCodeRomeDao(CodeRomeDao codeRomeDao) {
+		this.codeRomeDao = codeRomeDao;
 	}
 }

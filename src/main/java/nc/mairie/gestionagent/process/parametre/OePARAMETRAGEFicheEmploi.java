@@ -13,12 +13,17 @@ import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.CategorieFE;
 import nc.mairie.metier.poste.FicheEmploi;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFicheEmploi Date de création : (09/09/11 11:54:33)
@@ -52,6 +57,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
 
+	private CodeRomeDao codeRomeDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -72,6 +79,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+
+		initialiseDao();
 
 		// ---------------------------//
 		// Initialisation de la page.//
@@ -107,11 +116,20 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		if (getListeCodeRome() == null) {
 			// Recherche des codes rome d'emploi
-			ArrayList<CodeRome> liste = CodeRome.listerCodeRome(getTransaction());
+			ArrayList<CodeRome> liste = (ArrayList<CodeRome>) getCodeRomeDao().listerCodeRome();
 			setListeCodeRome(liste);
 			initialiseListeCodeRome(request);
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getCodeRomeDao() == null) {
+			setCodeRomeDao(new CodeRomeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -119,7 +137,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 * @throws Exception
 	 */
 	private void initialiseListeCodeRome(HttpServletRequest request) throws Exception {
-		setListeCodeRome(CodeRome.listerCodeRome(getTransaction()));
+		setListeCodeRome((ArrayList<CodeRome>) getCodeRomeDao().listerCodeRome());
 		if (getListeCodeRome().size() != 0) {
 			int tailles[] = { 6, 100 };
 			String padding[] = { "G", "G" };
@@ -1696,11 +1714,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				setCodeRomeCourant(new CodeRome());
 				getCodeRomeCourant().setLibCodeRome(getVAL_EF_CODE_ROME());
 				getCodeRomeCourant().setDescCodeRome(getVAL_EF_DESC_CODE_ROME());
-				getCodeRomeCourant().creerCodeRome(getTransaction());
+				getCodeRomeDao().creerCodeRome(getCodeRomeCourant().getLibCodeRome(),
+						getCodeRomeCourant().getDescCodeRome());
 				if (!getTransaction().isErreur())
 					getListeCodeRome().add(getCodeRomeCourant());
 			} else if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_SUPPRESSION)) {
-				getCodeRomeCourant().supprimerCodeRome(getTransaction());
+				getCodeRomeDao().supprimerCodeRome(getCodeRomeCourant().getIdCodeRome());
 				if (!getTransaction().isErreur())
 					getListeCodeRome().remove(getCodeRomeCourant());
 				setCodeRomeCourant(null);
@@ -1753,8 +1772,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// emploi
 		// **********************************************************************
 		if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecCodeRome(getTransaction(), getCodeRomeCourant().getIdCodeRome())
-						.size() > 0) {
+				&& FicheEmploi.listerFicheEmploiAvecCodeRome(getTransaction(),
+						getCodeRomeCourant().getIdCodeRome().toString()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1882,5 +1901,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 */
 	public String getVAL_LB_CODE_ROME_SELECT() {
 		return getZone(getNOM_LB_CODE_ROME_SELECT());
+	}
+
+	public CodeRomeDao getCodeRomeDao() {
+		return codeRomeDao;
+	}
+
+	public void setCodeRomeDao(CodeRomeDao codeRomeDao) {
+		this.codeRomeDao = codeRomeDao;
 	}
 }
