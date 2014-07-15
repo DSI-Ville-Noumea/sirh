@@ -15,6 +15,7 @@ import nc.mairie.metier.poste.CategorieFE;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
+import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -58,6 +59,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	public String ACTION_CREATION = "1";
 
 	private CodeRomeDao codeRomeDao;
+	private DiplomeGeneriqueDao diplomeGeneriqueDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -102,7 +104,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		if (getListeDiplome() == null) {
 			// Recherche des domaines d'activité
-			ArrayList<DiplomeGenerique> liste = DiplomeGenerique.listerDiplomeGenerique(getTransaction());
+			ArrayList<DiplomeGenerique> liste = getDiplomeGeneriqueDao().listerDiplomeGenerique();
 			setListeDiplome(liste);
 			initialiseListeDiplome(request);
 		}
@@ -129,6 +131,9 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		if (getCodeRomeDao() == null) {
 			setCodeRomeDao(new CodeRomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDiplomeGeneriqueDao() == null) {
+			setDiplomeGeneriqueDao(new DiplomeGeneriqueDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -206,14 +211,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDiplome(HttpServletRequest request) throws Exception {
-		setListeDiplome(DiplomeGenerique.listerDiplomeGenerique(getTransaction()));
+		setListeDiplome(getDiplomeGeneriqueDao().listerDiplomeGenerique());
 		if (getListeDiplome().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<DiplomeGenerique> list = getListeDiplome().listIterator(); list.hasNext();) {
 				DiplomeGenerique dg = (DiplomeGenerique) list.next();
-				String ligne[] = { dg.libDiplomeGenerique };
+				String ligne[] = { dg.getLibDiplomeGenerique() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -932,11 +937,11 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_CREATION)) {
 				setDiplomeCourant(new DiplomeGenerique());
 				getDiplomeCourant().setLibDiplomeGenerique(getVAL_EF_DIPLOME());
-				getDiplomeCourant().creerDiplomeGenerique(getTransaction());
+				getDiplomeGeneriqueDao().creerDiplomeGenerique(getDiplomeCourant().getLibDiplomeGenerique());
 				if (!getTransaction().isErreur())
 					getListeDiplome().add(getDiplomeCourant());
 			} else if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)) {
-				getDiplomeCourant().supprimerDiplomeGenerique(getTransaction());
+				getDiplomeGeneriqueDao().supprimerDiplomeGenerique(getDiplomeCourant().getIdDiplomeGenerique());
 				if (!getTransaction().isErreur())
 					getListeDiplome().remove(getDiplomeCourant());
 				setDiplomeCourant(null);
@@ -1909,5 +1914,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setCodeRomeDao(CodeRomeDao codeRomeDao) {
 		this.codeRomeDao = codeRomeDao;
+	}
+
+	public DiplomeGeneriqueDao getDiplomeGeneriqueDao() {
+		return diplomeGeneriqueDao;
+	}
+
+	public void setDiplomeGeneriqueDao(DiplomeGeneriqueDao diplomeGeneriqueDao) {
+		this.diplomeGeneriqueDao = diplomeGeneriqueDao;
 	}
 }
