@@ -12,7 +12,7 @@ import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.diplome.FormationAgent;
 import nc.mairie.metier.diplome.PermisAgent;
 import nc.mairie.metier.parametrage.CentreFormation;
-import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
+import nc.mairie.metier.parametrage.SpecialiteDiplome;
 import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.parametrage.TitrePermis;
@@ -22,6 +22,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
+import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -54,8 +55,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private ArrayList<TitreDiplome> listeDiplome;
 	private TitreDiplome diplomeCourant;
 
-	private ArrayList<SpecialiteDiplomeNW> listeSpecialite;
-	private SpecialiteDiplomeNW specialiteCourante;
+	private ArrayList<SpecialiteDiplome> listeSpecialite;
+	private SpecialiteDiplome specialiteCourante;
 
 	private ArrayList<AutreAdministration> listeAdmin;
 	private AutreAdministration adminCourante;
@@ -81,6 +82,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private FormationAgentDao formationAgentDao;
 	private TitrePermisDao titrePermisDao;
 	private PermisAgentDao permisAgentDao;
+	private SpecialiteDiplomeDao specialiteDiplomeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -115,8 +117,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeSpecialite() == null) {
 			// Recherche des spécialités de diplôme
-			ArrayList<SpecialiteDiplomeNW> listeSpecialite = SpecialiteDiplomeNW
-					.listerSpecialiteDiplomeNW(getTransaction());
+			ArrayList<SpecialiteDiplome> listeSpecialite = getSpecialiteDiplomeDao().listerSpecialiteDiplome();
 			setListeSpecialite(listeSpecialite);
 			initialiseListeSpecialite(request);
 		}
@@ -175,6 +176,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getTitrePermisDao() == null) {
 			setTitrePermisDao(new TitrePermisDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getSpecialiteDiplomeDao() == null) {
+			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -272,14 +276,14 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeSpecialite(HttpServletRequest request) throws Exception {
-		setListeSpecialite(SpecialiteDiplomeNW.listerSpecialiteDiplomeNW(getTransaction()));
+		setListeSpecialite(getSpecialiteDiplomeDao().listerSpecialiteDiplome());
 		if (getListeSpecialite().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<SpecialiteDiplomeNW> list = getListeSpecialite().listIterator(); list.hasNext();) {
-				SpecialiteDiplomeNW sd = (SpecialiteDiplomeNW) list.next();
-				String ligne[] = { sd.getLibSpeDiplome() };
+			for (ListIterator<SpecialiteDiplome> list = getListeSpecialite().listIterator(); list.hasNext();) {
+				SpecialiteDiplome sd = (SpecialiteDiplome) list.next();
+				String ligne[] = { sd.getLibSpecialiteDiplome() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_SPECIALITE(aFormat.getListeFormatee());
@@ -734,9 +738,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				.parseInt(getVAL_LB_SPECIALITE_SELECT()) : -1);
 
 		if (indice != -1 && indice < getListeSpecialite().size()) {
-			SpecialiteDiplomeNW sd = getListeSpecialite().get(indice);
+			SpecialiteDiplome sd = getListeSpecialite().get(indice);
 			setSpecialiteCourante(sd);
-			addZone(getNOM_EF_SPECIALITE(), sd.getLibSpeDiplome());
+			addZone(getNOM_EF_SPECIALITE(), sd.getLibSpecialiteDiplome());
 			addZone(getNOM_ST_ACTION_SPECIALITE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "spécialités de diplômes"));
@@ -1239,13 +1243,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getVAL_ST_ACTION_SPECIALITE() != null && getVAL_ST_ACTION_SPECIALITE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_CREATION)) {
-				setSpecialiteCourante(new SpecialiteDiplomeNW());
+				setSpecialiteCourante(new SpecialiteDiplome());
 				getSpecialiteCourante().setLibSpeDiplome(getVAL_EF_SPECIALITE());
-				getSpecialiteCourante().creerSpecialiteDiplomeNW(getTransaction());
+				getSpecialiteDiplomeDao().creerSpecialiteDiplome(getSpecialiteCourante().getLibSpecialiteDiplome());
 				if (!getTransaction().isErreur())
 					getListeSpecialite().add(getSpecialiteCourante());
 			} else if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_SUPPRESSION)) {
-				getSpecialiteCourante().supprimerSpecialiteDiplomeNW(getTransaction());
+				getSpecialiteDiplomeDao().supprimerSpecialiteDiplome(getSpecialiteCourante().getIdSpecialiteDiplome());
 				if (!getTransaction().isErreur())
 					getListeSpecialite().remove(getSpecialiteCourante());
 				setSpecialiteCourante(null);
@@ -1300,8 +1304,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Vérification des contraintes d'unicité de la spécialite de diplome
 		if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_CREATION)) {
 
-			for (SpecialiteDiplomeNW specialite : getListeSpecialite()) {
-				if (specialite.getLibSpeDiplome().equals(getVAL_EF_SPECIALITE().toUpperCase())) {
+			for (SpecialiteDiplome specialite : getListeSpecialite()) {
+				if (specialite.getLibSpecialiteDiplome().equals(getVAL_EF_SPECIALITE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
@@ -1806,19 +1810,19 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		this.listeDiplome = listeDiplome;
 	}
 
-	private ArrayList<SpecialiteDiplomeNW> getListeSpecialite() {
+	private ArrayList<SpecialiteDiplome> getListeSpecialite() {
 		return listeSpecialite;
 	}
 
-	private void setListeSpecialite(ArrayList<SpecialiteDiplomeNW> listeSpecialite) {
+	private void setListeSpecialite(ArrayList<SpecialiteDiplome> listeSpecialite) {
 		this.listeSpecialite = listeSpecialite;
 	}
 
-	private SpecialiteDiplomeNW getSpecialiteCourante() {
+	private SpecialiteDiplome getSpecialiteCourante() {
 		return specialiteCourante;
 	}
 
-	private void setSpecialiteCourante(SpecialiteDiplomeNW specialiteCourante) {
+	private void setSpecialiteCourante(SpecialiteDiplome specialiteCourante) {
 		this.specialiteCourante = specialiteCourante;
 	}
 
@@ -2847,5 +2851,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setPermisAgentDao(PermisAgentDao permisAgentDao) {
 		this.permisAgentDao = permisAgentDao;
+	}
+
+	public SpecialiteDiplomeDao getSpecialiteDiplomeDao() {
+		return specialiteDiplomeDao;
+	}
+
+	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
+		this.specialiteDiplomeDao = specialiteDiplomeDao;
 	}
 }

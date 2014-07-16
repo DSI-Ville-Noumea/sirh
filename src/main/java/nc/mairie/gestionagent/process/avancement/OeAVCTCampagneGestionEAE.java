@@ -45,7 +45,7 @@ import nc.mairie.metier.eae.EaeFormation;
 import nc.mairie.metier.eae.EaeParcoursPro;
 import nc.mairie.metier.parametrage.CentreFormation;
 import nc.mairie.metier.parametrage.MotifAvancement;
-import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
+import nc.mairie.metier.parametrage.SpecialiteDiplome;
 import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.poste.Activite;
@@ -76,6 +76,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -152,6 +153,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private EaeFinalisationDao eaeFinalisationDao;
 	private EaeCampagneTaskDao eaeCampagneTaskDao;
 	private MotifAvancementDao motifAvancementDao;
+	private SpecialiteDiplomeDao specialiteDiplomeDao;
 
 	private String message;
 	private String urlFichier;
@@ -819,6 +821,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		if (getMotifAvancementDao() == null) {
 			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getSpecialiteDiplomeDao() == null) {
+			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2376,8 +2381,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		for (int i = 0; i < listDiploAgent.size(); i++) {
 			DiplomeAgent d = listDiploAgent.get(i);
 			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), d.getIdTitreDiplome());
-			SpecialiteDiplomeNW spe = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(),
-					d.getIdSpecialiteDiplome());
+			SpecialiteDiplome spe = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
+					Integer.valueOf(d.getIdSpecialiteDiplome()));
 			EaeDiplome eaeDiplome = new EaeDiplome();
 			eaeDiplome.setIdEae(getEaeCourant().getIdEae());
 			String anneeObtention = Const.CHAINE_VIDE;
@@ -2387,7 +2392,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 			eaeDiplome.setLibelleDiplome((anneeObtention.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : anneeObtention
 					+ " : ")
-					+ td.getLibTitreDiplome() + " " + spe.getLibSpeDiplome());
+					+ td.getLibTitreDiplome() + " " + spe.getLibSpecialiteDiplome());
 			getEaeDiplomeDao().creerEaeDiplome(eaeDiplome.getIdEae(), eaeDiplome.getLibelleDiplome());
 		}
 	}
@@ -3958,5 +3963,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
 		this.motifAvancementDao = motifAvancementDao;
+	}
+
+	public SpecialiteDiplomeDao getSpecialiteDiplomeDao() {
+		return specialiteDiplomeDao;
+	}
+
+	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
+		this.specialiteDiplomeDao = specialiteDiplomeDao;
 	}
 }

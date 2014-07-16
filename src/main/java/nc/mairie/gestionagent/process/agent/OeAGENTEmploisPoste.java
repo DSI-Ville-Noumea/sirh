@@ -24,7 +24,7 @@ import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.NatureAvantage;
-import nc.mairie.metier.parametrage.SpecialiteDiplomeNW;
+import nc.mairie.metier.parametrage.SpecialiteDiplome;
 import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
@@ -48,6 +48,7 @@ import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -122,6 +123,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private PrimePointageFPDao primePointageFPDao;
 	private CadreEmploiDao cadreEmploiDao;
 	private NatureAvantageDao natureAvantageDao;
+	private SpecialiteDiplomeDao specialiteDiplomeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -214,6 +216,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getNatureAvantageDao() == null) {
 			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getSpecialiteDiplomeDao() == null) {
+			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
@@ -254,9 +259,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				getTransaction().traiterErreur();
 			} else {
 				TitreDiplome t = TitreDiplome.chercherTitreDiplome(getTransaction(), dipl.getIdTitreDiplome());
-				SpecialiteDiplomeNW s = SpecialiteDiplomeNW.chercherSpecialiteDiplomeNW(getTransaction(),
-						dipl.getIdSpecialiteDiplome());
-				setDiplomeAgt(t.getLibTitreDiplome() + " - " + s.getLibSpeDiplome());
+				SpecialiteDiplome s = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
+						Integer.valueOf(dipl.getIdSpecialiteDiplome()));
+				setDiplomeAgt(t.getLibTitreDiplome() + " - " + s.getLibSpecialiteDiplome());
 			}
 
 			// Carriere
@@ -2263,5 +2268,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
 		this.natureAvantageDao = natureAvantageDao;
+	}
+
+	public SpecialiteDiplomeDao getSpecialiteDiplomeDao() {
+		return specialiteDiplomeDao;
+	}
+
+	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
+		this.specialiteDiplomeDao = specialiteDiplomeDao;
 	}
 }
