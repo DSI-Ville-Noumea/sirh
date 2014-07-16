@@ -11,6 +11,7 @@ import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifNonRecrutementDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifRecrutementDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -43,6 +44,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	public String ACTION_CREATION = "1";
 
 	private MotifNonRecrutementDao motifNonRecrutementDao;
+	private MotifRecrutementDao motifRecrutementDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -71,7 +73,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		// Initialisation de la page.//
 		// ---------------------------//
 		if (getListeMotif() == null) {
-			setListeMotif(MotifRecrutement.listerMotifRecrutement(getTransaction()));
+			setListeMotif(getMotifRecrutementDao().listerMotifRecrutement());
 			initialiseListeMotif(request);
 		}
 
@@ -88,6 +90,9 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		if (getMotifNonRecrutementDao() == null) {
 			setMotifNonRecrutementDao(new MotifNonRecrutementDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getMotifRecrutementDao() == null) {
+			setMotifRecrutementDao(new MotifRecrutementDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -96,7 +101,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
-		setListeMotif(MotifRecrutement.listerMotifRecrutement(getTransaction()));
+		setListeMotif(getMotifRecrutementDao().listerMotifRecrutement());
 		if (getListeMotif().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -252,11 +257,11 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
 				setMotifCourant(new MotifRecrutement());
 				getMotifCourant().setLibMotifRecrut(getVAL_EF_MOTIF());
-				getMotifCourant().creerMotifRecrutement(getTransaction());
+				getMotifRecrutementDao().creerMotifRecrutement(getMotifCourant().getLibMotifRecrut());
 				if (!getTransaction().isErreur())
 					getListeMotif().add(getMotifCourant());
 			} else if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)) {
-				getMotifCourant().supprimerMotifRecrutement(getTransaction());
+				getMotifRecrutementDao().supprimerMotifRecrutement(getMotifCourant().getIdMotifRecrut());
 				if (!getTransaction().isErreur())
 					getListeMotif().remove(getMotifCourant());
 				setMotifCourant(null);
@@ -797,5 +802,13 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	public void setMotifNonRecrutementDao(MotifNonRecrutementDao motifNonRecrutementDao) {
 		this.motifNonRecrutementDao = motifNonRecrutementDao;
+	}
+
+	public MotifRecrutementDao getMotifRecrutementDao() {
+		return motifRecrutementDao;
+	}
+
+	public void setMotifRecrutementDao(MotifRecrutementDao motifRecrutementDao) {
+		this.motifRecrutementDao = motifRecrutementDao;
 	}
 }

@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifNonRecrutementDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifRecrutementDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -47,6 +48,7 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 	public String focus = null;
 
 	private MotifNonRecrutementDao motifNonRecrutementDao;
+	private MotifRecrutementDao motifRecrutementDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
@@ -798,6 +800,9 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 		if (getMotifNonRecrutementDao() == null) {
 			setMotifNonRecrutementDao(new MotifNonRecrutementDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getMotifRecrutementDao() == null) {
+			setMotifRecrutementDao(new MotifRecrutementDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -808,12 +813,21 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste motif recrutement vide alors affectation
 		if (getLB_MOTIF_RECRUTEMENT() == LBVide) {
-			ArrayList<MotifRecrutement> rec = MotifRecrutement.listerMotifRecrutement(getTransaction());
+			ArrayList<MotifRecrutement> rec = getMotifRecrutementDao().listerMotifRecrutement();
 			setListeMotifRecrutement(rec);
 
-			int[] tailles = { 50 };
-			String[] champs = { "libMotifRecrut" };
-			setLB_MOTIF_RECRUTEMENT(new FormateListe(tailles, rec, champs).getListeFormatee());
+			if (getListeMotifRecrutement().size() != 0) {
+				int[] tailles = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<MotifRecrutement> list = getListeMotifRecrutement().listIterator(); list.hasNext();) {
+					MotifRecrutement de = (MotifRecrutement) list.next();
+					String ligne[] = { de.getLibMotifRecrut() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_MOTIF_RECRUTEMENT(aFormat.getListeFormatee());
+			} else {
+				setLB_MOTIF_RECRUTEMENT(null);
+			}
 		}
 
 		// Si liste motif non recrutement vide alors affectation
@@ -995,5 +1009,13 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 
 	public void setMotifNonRecrutementDao(MotifNonRecrutementDao motifNonRecrutementDao) {
 		this.motifNonRecrutementDao = motifNonRecrutementDao;
+	}
+
+	public MotifRecrutementDao getMotifRecrutementDao() {
+		return motifRecrutementDao;
+	}
+
+	public void setMotifRecrutementDao(MotifRecrutementDao motifRecrutementDao) {
+		this.motifRecrutementDao = motifRecrutementDao;
 	}
 }
