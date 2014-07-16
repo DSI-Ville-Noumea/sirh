@@ -24,6 +24,9 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -31,6 +34,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
@@ -55,6 +60,8 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
+	private MotifAvancementDao motifAvancementDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -76,6 +83,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 		initialiseListeService();
 
@@ -84,6 +92,15 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
 			performPB_LANCER(request);
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -553,7 +570,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 							// moyenne
 							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
 								avct.setIdMotifAvct(grd.getCodeTava());
-								MotifAvancement motif = MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
+								MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancementByLib(
 										"AVANCEMENT DIFFERENCIE");
 								if (!motif.getIdMotifAvct().equals(avct.getIdMotifAvct())) {
 									avct.setDateAvctMaxi(Const.DATE_NULL);
@@ -893,5 +910,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

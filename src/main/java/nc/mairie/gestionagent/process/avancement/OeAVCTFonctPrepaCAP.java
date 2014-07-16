@@ -45,6 +45,7 @@ import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -113,6 +114,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private CorpsCapDao corpsCapDao;
 	private AvancementCapPrintJobDao avancementCapPrintJobDao;
 	private CadreEmploiDao cadreEmploiDao;
+	private MotifAvancementDao motifAvancementDao;
 
 	private Hashtable<Cap, ArrayList<CadreEmploi>> hashListeImpression;
 	ArrayList<CadreEmploi> listeImpression = new ArrayList<CadreEmploi>();
@@ -254,7 +256,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			}
 			// motif Avct
 			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
-				motif = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+				motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(av.getIdMotifAvct()));
 			}
 			addZone(getNOM_ST_MOTIF_AVCT(i), (motif == null ? Const.CHAINE_VIDE : motif.getCodeMotifAvct()) + "<br/>"
 					+ avisSHD);
@@ -440,6 +442,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		if (getCadreEmploiDao() == null) {
 			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2141,5 +2147,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
 		this.cadreEmploiDao = cadreEmploiDao;
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

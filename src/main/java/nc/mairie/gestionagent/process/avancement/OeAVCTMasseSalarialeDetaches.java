@@ -25,6 +25,9 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AutreAdministration;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -33,6 +36,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTCampagneTableauBord Date de création : (21/11/11 09:55:36)
@@ -63,6 +68,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 	public String ACTION_CALCUL = "Calcul";
 
+	private MotifAvancementDao motifAvancementDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -84,6 +91,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 
 		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
@@ -91,6 +99,15 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
 			performPB_LANCER(request);
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -106,13 +123,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		}
 		// Si liste motifs avancement vide alors affectation
 		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
-			ArrayList<MotifAvancement> motif = MotifAvancement.listerMotifAvancementSansRevalo(getTransaction());
+			ArrayList<MotifAvancement> motif = getMotifAvancementDao().listerMotifAvancementSansRevalo();
 			setListeMotifAvct(motif);
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeMotifAvct().size(); i++) {
 				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
-				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
+				getHashMotifAvancement().put(m.getIdMotifAvct().toString(), m);
 			}
 		}
 		// Si la liste des services est nulle
@@ -1623,5 +1640,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

@@ -29,6 +29,7 @@ import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -99,6 +100,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private ArrayList<String> listeDocuments;
 	private String urlFichier;
 
+	private MotifAvancementDao motifAvancementDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -146,6 +149,10 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		if (getCapDao() == null) {
 			setCapDao(new CapDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -204,7 +211,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			// motif avancement
 			MotifAvancement motifVDN = null;
 			if (av.getIdMotifAvct() != null && !av.getIdMotifAvct().equals(Const.CHAINE_VIDE)) {
-				motifVDN = MotifAvancement.chercherMotifAvancement(getTransaction(), av.getIdMotifAvct());
+				motifVDN = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(av.getIdMotifAvct()));
 			}
 			// avis SHD
 			String avisSHD = av.getAvisSHD() == null ? "&nbsp;" : av.getAvisSHD();
@@ -2317,5 +2324,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

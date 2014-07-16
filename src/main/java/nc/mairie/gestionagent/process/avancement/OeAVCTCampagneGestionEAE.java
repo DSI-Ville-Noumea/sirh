@@ -75,6 +75,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -150,6 +151,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private EaeFDPCompetenceDao eaeFDPCompetenceDao;
 	private EaeFinalisationDao eaeFinalisationDao;
 	private EaeCampagneTaskDao eaeCampagneTaskDao;
+	private MotifAvancementDao motifAvancementDao;
 
 	private String message;
 	private String urlFichier;
@@ -813,6 +815,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		if (getCentreFormationDao() == null) {
 			setCentreFormationDao(new CentreFormationDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2672,8 +2678,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						}
 						evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
 						if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
-							MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
-									gradeAvct.getCodeTava());
+							MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(
+									Integer.valueOf(gradeAvct.getCodeTava()));
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							}
@@ -2719,8 +2725,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					}
 					evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
 					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
-						MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(),
-								gradeAvct.getCodeTava());
+						MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(
+								Integer.valueOf(gradeAvct.getCodeTava()));
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -3267,13 +3273,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on cherche pour chaque EAE de la campagne si il y a une ligne
 			// dans
 			// Avanacement pourla meme année
-			MotifAvancement motifRevalo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
-					"REVALORISATION");
-			MotifAvancement motifAD = MotifAvancement.chercherMotifAvancementByLib(getTransaction(),
-					"AVANCEMENT DIFFERENCIE");
-			MotifAvancement motifPromo = MotifAvancement.chercherMotifAvancementByLib(getTransaction(), "PROMOTION");
-			MotifAvancement motifTitu = MotifAvancement
-					.chercherMotifAvancementByLib(getTransaction(), "TITULARISATION");
+			MotifAvancement motifRevalo = getMotifAvancementDao().chercherMotifAvancementByLib("REVALORISATION");
+			MotifAvancement motifAD = getMotifAvancementDao().chercherMotifAvancementByLib("AVANCEMENT DIFFERENCIE");
+			MotifAvancement motifPromo = getMotifAvancementDao().chercherMotifAvancementByLib("PROMOTION");
+			MotifAvancement motifTitu = getMotifAvancementDao().chercherMotifAvancementByLib("TITULARISATION");
 			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
 					getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
 			if (getTransaction().isErreur()) {
@@ -3293,13 +3296,14 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						String typeAvct = gradeAgent.getCodeTava();
 						if (!typeAvct.equals(Const.CHAINE_VIDE)) {
 							// on cherche le type avancement correspondant
-							MotifAvancement motif = MotifAvancement.chercherMotifAvancement(getTransaction(), typeAvct);
+							MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(
+									Integer.valueOf(typeAvct));
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								avct.setIdMotifAvct(null);
 								avct.setAvisSHD(null);
 							} else {
-								avct.setIdMotifAvct(motif.getIdMotifAvct());
+								avct.setIdMotifAvct(motif.getIdMotifAvct().toString());
 								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(
 										getEaeCourant().getIdEae());
 								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
@@ -3946,5 +3950,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setListeAffecte(ArrayList<String> listeAffecte) {
 		this.listeAffecte = listeAffecte;
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

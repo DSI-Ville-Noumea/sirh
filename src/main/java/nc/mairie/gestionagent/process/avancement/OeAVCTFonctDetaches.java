@@ -21,6 +21,9 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.referentiel.AutreAdministration;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
@@ -35,6 +38,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 
 import com.sun.jersey.api.client.Client;
@@ -70,6 +74,8 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	private ArrayList<String> listeDocuments;
 	private String urlFichier;
 
+	private MotifAvancementDao motifAvancementDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -91,6 +97,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
 		initialiseListeDeroulante();
 
 		// Initialisation de la liste des documents suivi medicaux
@@ -98,6 +105,15 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			setListeDocuments(listerDocumentsArretes());
 			afficheListeDocuments();
 
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -114,13 +130,13 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		// Si liste motifs avancement vide alors affectation
 		if (getListeMotifAvct() == null || getListeMotifAvct().size() == 0) {
-			ArrayList<MotifAvancement> motif = MotifAvancement.listerMotifAvancementSansRevalo(getTransaction());
+			ArrayList<MotifAvancement> motif = getMotifAvancementDao().listerMotifAvancementSansRevalo();
 			setListeMotifAvct(motif);
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeMotifAvct().size(); i++) {
 				MotifAvancement m = (MotifAvancement) getListeMotifAvct().get(i);
-				getHashMotifAvancement().put(m.getIdMotifAvct(), m);
+				getHashMotifAvancement().put(m.getIdMotifAvct().toString(), m);
 			}
 		}
 
@@ -1473,5 +1489,13 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

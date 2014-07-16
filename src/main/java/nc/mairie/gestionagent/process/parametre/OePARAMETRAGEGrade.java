@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process.parametre;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,12 +14,17 @@ import nc.mairie.metier.carriere.Echelon;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.CharacterDataArea;
@@ -68,6 +74,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
+
+	private MotifAvancementDao motifAvancementDao;
 
 	/**
 	 * Retourne le nom d'une zone de saisie pour la JSP : EF_GRADE Date de
@@ -274,6 +282,8 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
 		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
@@ -288,6 +298,15 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			initialiseListeGrille();
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -356,16 +375,25 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 		// initialisation de la liste des motifs d'avancement
 		if (getHashMotifAvct().size() == 0) {
-			ArrayList<MotifAvancement> listeMotifAvct = MotifAvancement.listerMotifAvancement(getTransaction());
+			ArrayList<MotifAvancement> listeMotifAvct = getMotifAvancementDao().listerMotifAvancement();
 			setListeMotifAvct(listeMotifAvct);
 
-			int[] tailles = { 60 };
-			String[] champs = { "libMotifAvct" };
-			setLB_MOTIF_AVCT(new FormateListe(tailles, listeMotifAvct, champs).getListeFormatee(true));
+			if (getListeMotifAvct().size() != 0) {
+				int[] tailles = { 60 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<MotifAvancement> list = getListeMotifAvct().listIterator(); list.hasNext();) {
+					MotifAvancement de = (MotifAvancement) list.next();
+					String ligne[] = { de.getLibMotifAvct() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_MOTIF_AVCT(aFormat.getListeFormatee(true));
+			} else {
+				setLB_MOTIF_AVCT(null);
+			}
 
 			// remplissage de la hashTable
 			for (MotifAvancement m : listeMotifAvct) {
-				getHashMotifAvct().put(m.getIdMotifAvct(), m);
+				getHashMotifAvct().put(m.getIdMotifAvct().toString(), m);
 			}
 		}
 
@@ -1113,7 +1141,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			getGradeCourant().setCodeEchelon(Const.CHAINE_VIDE);
 
 		if (motifAvct != null)
-			getGradeCourant().setCodeTava(motifAvct.getIdMotifAvct());
+			getGradeCourant().setCodeTava(motifAvct.getIdMotifAvct().toString());
 		else
 			getGradeCourant().setCodeTava(Const.CHAINE_VIDE);
 
@@ -1911,5 +1939,13 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 
 	public String getVAL_LB_MOTIF_AVCT_SELECT() {
 		return getZone(getNOM_LB_MOTIF_AVCT_SELECT());
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }

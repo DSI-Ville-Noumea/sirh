@@ -28,6 +28,9 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -35,6 +38,8 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.CharacterDataArea;
@@ -95,6 +100,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
+	private MotifAvancementDao motifAvancementDao;
+
 	/**
 	 * Constructeur du process OeAGENTCarriere. Date de création : (05/09/11
 	 * 11:39:24)
@@ -127,6 +134,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
 		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
@@ -147,6 +156,14 @@ public class OeAGENTCarriere extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getMotifAvancementDao() == null) {
+			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2690,7 +2707,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			// motif de l'avancement
 			MotifAvancement motif = null;
 			if (gradeActuel.getCodeTava() != null && !gradeActuel.getCodeTava().equals(Const.CHAINE_VIDE)) {
-				motif = MotifAvancement.chercherMotifAvancement(getTransaction(), gradeActuel.getCodeTava());
+				motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(gradeActuel.getCodeTava()));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -3178,5 +3195,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public String getVAL_ST_INFO_AVCT_PREV() {
 		return getZone(getNOM_ST_INFO_AVCT_PREV());
+	}
+
+	public MotifAvancementDao getMotifAvancementDao() {
+		return motifAvancementDao;
+	}
+
+	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
+		this.motifAvancementDao = motifAvancementDao;
 	}
 }
