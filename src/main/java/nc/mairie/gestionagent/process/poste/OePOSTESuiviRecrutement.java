@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.poste;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,11 +12,16 @@ import nc.mairie.metier.parametrage.MotifRecrutement;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifNonRecrutementDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTESuiviRecrutement Date de création : (22/07/11 10:17:45)
@@ -39,6 +45,8 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 
 	private Recrutement recrutementCourant;
 	public String focus = null;
+
+	private MotifNonRecrutementDao motifNonRecrutementDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
@@ -764,6 +772,8 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialise les listes fixes
 		initialiseListeDeroulante();
 
@@ -779,6 +789,15 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 			addZone(getNOM_ST_GRADE(), grade == null ? Const.CHAINE_VIDE : grade.getGrade());
 		}
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getMotifNonRecrutementDao() == null) {
+			setMotifNonRecrutementDao(new MotifNonRecrutementDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -799,12 +818,22 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 
 		// Si liste motif non recrutement vide alors affectation
 		if (getLB_MOTIF_NON_RECRUTEMENT() == LBVide) {
-			ArrayList<MotifNonRecrutement> nrec = MotifNonRecrutement.listerMotifNonRecrutement(getTransaction());
+			ArrayList<MotifNonRecrutement> nrec = getMotifNonRecrutementDao().listerMotifNonRecrutement();
 			setListeMotifNonRecrutement(nrec);
 
-			int[] tailles = { 50 };
-			String[] champs = { "libMotifNonRecrut" };
-			setLB_MOTIF_NON_RECRUTEMENT(new FormateListe(tailles, nrec, champs).getListeFormatee());
+			if (getListeMotifNonRecrutement().size() != 0) {
+				int[] tailles = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<MotifNonRecrutement> list = getListeMotifNonRecrutement().listIterator(); list
+						.hasNext();) {
+					MotifNonRecrutement de = (MotifNonRecrutement) list.next();
+					String ligne[] = { de.getLibMotifNonRecrut() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_MOTIF_NON_RECRUTEMENT(aFormat.getListeFormatee());
+			} else {
+				setLB_MOTIF_NON_RECRUTEMENT(null);
+			}
 		}
 	}
 
@@ -958,5 +987,13 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 	 */
 	private void setListeMotifRecrutement(ArrayList<MotifRecrutement> listeMotifRecrutement) {
 		this.listeMotifRecrutement = listeMotifRecrutement;
+	}
+
+	public MotifNonRecrutementDao getMotifNonRecrutementDao() {
+		return motifNonRecrutementDao;
+	}
+
+	public void setMotifNonRecrutementDao(MotifNonRecrutementDao motifNonRecrutementDao) {
+		this.motifNonRecrutementDao = motifNonRecrutementDao;
 	}
 }
