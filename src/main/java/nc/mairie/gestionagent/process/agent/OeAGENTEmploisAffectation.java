@@ -47,6 +47,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAffectationDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -159,6 +160,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private MotifAffectationDao motifAffectationDao;
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
+	private TypeDelegationDao typeDelegationDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2382,8 +2384,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeDelegationFP().size(); i++) {
 				Delegation aDel = (Delegation) getListeDelegationFP().get(i);
 				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
-							aDel.getIdTypeDelegation());
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
+							Integer.valueOf(aDel.getIdTypeDelegation()));
 					addZone(getNOM_ST_LST_DELEGATION_TYPE_spec(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT_spec(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2394,8 +2396,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeDelegationAFF().size(); j++) {
 				Delegation aDel = (Delegation) getListeDelegationAFF().get(j);
 				if (aDel != null && !getListeDelegationFP().contains(aDel)) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
-							aDel.getIdTypeDelegation());
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
+							Integer.valueOf(aDel.getIdTypeDelegation()));
 					addZone(getNOM_ST_LST_DELEGATION_TYPE_spec(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT_spec(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2406,8 +2408,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeDelegationAAjouter().size(); k++) {
 				Delegation aDel = (Delegation) getListeDelegationAAjouter().get(k);
 				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
-							aDel.getIdTypeDelegation());
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
+							Integer.valueOf(aDel.getIdTypeDelegation()));
 					addZone(getNOM_ST_LST_DELEGATION_TYPE_spec(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT_spec(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2642,12 +2644,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si liste type délégation vide alors affectation
 		if (getLB_TYPE_DELEGATION_spec() == LBVide) {
-			ArrayList<TypeDelegation> typeDelegation = TypeDelegation.listerTypeDelegation(getTransaction());
+			ArrayList<TypeDelegation> typeDelegation = getTypeDelegationDao().listerTypeDelegation();
 			setListeTypeDelegation_spec(typeDelegation);
 
-			int[] tailles = { 30 };
-			String[] champs = { "libTypeDelegation" };
-			setLB_TYPE_DELEGATION_spec(new FormateListe(tailles, typeDelegation, champs).getListeFormatee());
+			if (getListeNatureAvantage().size() != 0) {
+				int[] tailles = { 30 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeDelegation> list = getListeTypeDelegation_spec().listIterator(); list.hasNext();) {
+					TypeDelegation de = (TypeDelegation) list.next();
+					String ligne[] = { de.getLibTypeDelegation() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_DELEGATION_spec(aFormat.getListeFormatee());
+			} else {
+				setLB_TYPE_DELEGATION_spec(null);
+			}
 		}
 
 		// Si liste type régime vide alors affectation
@@ -3031,6 +3042,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getTypeAvantageDao() == null) {
 			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeDelegationDao() == null) {
+			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4292,7 +4306,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT_spec()) ? Integer
 					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT_spec()) : -1);
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation_spec().get(indiceTypeDelegation))
-					.getIdTypeDelegation());
+					.getIdTypeDelegation().toString());
 
 			if (getListeDelegationAFF() == null)
 				setListeDelegationAFF(new ArrayList<Delegation>());
@@ -5151,6 +5165,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
 		this.typeAvantageDao = typeAvantageDao;
+	}
+
+	public TypeDelegationDao getTypeDelegationDao() {
+		return typeDelegationDao;
+	}
+
+	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
+		this.typeDelegationDao = typeDelegationDao;
 	}
 
 }

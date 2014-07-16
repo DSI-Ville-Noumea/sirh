@@ -22,6 +22,7 @@ import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -84,6 +85,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
+	private TypeDelegationDao typeDelegationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -134,6 +136,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getTypeAvantageDao() == null) {
 			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeDelegationDao() == null) {
+			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -269,7 +274,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTypeDelegation(HttpServletRequest request) throws Exception {
-		setListeTypeDelegation(TypeDelegation.listerTypeDelegation(getTransaction()));
+		setListeTypeDelegation(getTypeDelegationDao().listerTypeDelegation());
 		if (getListeTypeDelegation().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -384,7 +389,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeTypeDelegation() == null) {
 			// Recherche des types de délégation
-			setListeTypeDelegation(TypeDelegation.listerTypeDelegation(getTransaction()));
+			setListeTypeDelegation(getTypeDelegationDao().listerTypeDelegation());
 			initialiseListeTypeDelegation(request);
 		}
 
@@ -1403,11 +1408,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_TYPE_DELEGATION().equals(ACTION_CREATION)) {
 				setTypeDelegationCourant(new TypeDelegation());
 				getTypeDelegationCourant().setLibTypeDelegation(getVAL_EF_TYPE_DELEGATION());
-				getTypeDelegationCourant().creerTypeDelegation(getTransaction());
+				getTypeDelegationDao().creerTypeDelegation(getTypeDelegationCourant().getLibTypeDelegation());
 				if (!getTransaction().isErreur())
 					getListeTypeDelegation().add(getTypeDelegationCourant());
 			} else if (getVAL_ST_ACTION_TYPE_DELEGATION().equals(ACTION_SUPPRESSION)) {
-				getTypeDelegationCourant().supprimerTypeDelegation(getTransaction());
+				getTypeDelegationDao().supprimerTypeDelegation(getTypeDelegationCourant().getIdTypeDelegation());
 				if (!getTransaction().isErreur())
 					getListeTypeDelegation().remove(getTypeDelegationCourant());
 				setTypeDelegationCourant(null);
@@ -3143,5 +3148,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
 		this.typeAvantageDao = typeAvantageDao;
+	}
+
+	public TypeDelegationDao getTypeDelegationDao() {
+		return typeDelegationDao;
+	}
+
+	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
+		this.typeDelegationDao = typeDelegationDao;
 	}
 }

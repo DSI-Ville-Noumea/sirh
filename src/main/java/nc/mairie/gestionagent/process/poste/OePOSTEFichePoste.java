@@ -64,6 +64,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -213,6 +214,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NatureCreditDao natureCreditDao;
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
+	private TypeDelegationDao typeDelegationDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -425,6 +427,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeAvantageDao() == null) {
 			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeDelegationDao() == null) {
+			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1022,9 +1027,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
-							aDel.getIdTypeDelegation());
-					getHashTypDel().put(typDel.getIdTypeDelegation(), typDel);
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
+							Integer.valueOf(aDel.getIdTypeDelegation()));
+					getHashTypDel().put(typDel.getIdTypeDelegation().toString(), typDel);
 				}
 			}
 		}
@@ -6475,5 +6480,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
 		this.typeAvantageDao = typeAvantageDao;
+	}
+
+	public TypeDelegationDao getTypeDelegationDao() {
+		return typeDelegationDao;
+	}
+
+	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
+		this.typeDelegationDao = typeDelegationDao;
 	}
 }
