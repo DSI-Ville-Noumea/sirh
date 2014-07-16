@@ -19,12 +19,17 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePARAMETRAGEFichePoste Date de création : (13/09/11 15:49:10)
@@ -76,6 +81,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
 
+	private NatureAvantageDao natureAvantageDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -96,6 +103,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// ---------------------------//
 		// Initialisation de la page.//
@@ -112,6 +120,15 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				Ecole aEcole = (Ecole) a.get(i);
 				getHashEntiteEcole().put(aEcole.getCdecol(), aEcole);
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getNatureAvantageDao() == null) {
+			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -224,7 +241,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeNatureAvantage(HttpServletRequest request) throws Exception {
-		setListeNatureAvantage(NatureAvantage.listerNatureAvantage(getTransaction()));
+		setListeNatureAvantage(getNatureAvantageDao().listerNatureAvantage());
 		if (getListeNatureAvantage().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -356,7 +373,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeNatureAvantage() == null) {
 			// Recherche des natures d'avantage en nature
-			setListeNatureAvantage(NatureAvantage.listerNatureAvantage(getTransaction()));
+			setListeNatureAvantage(getNatureAvantageDao().listerNatureAvantage());
 			initialiseListeNatureAvantage(request);
 		}
 
@@ -1082,11 +1099,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_CREATION)) {
 				setNatureAvantageCourant(new NatureAvantage());
 				getNatureAvantageCourant().setLibNatureAvantage(getVAL_EF_NATURE_AVANTAGE());
-				getNatureAvantageCourant().creerNatureAvantage(getTransaction());
+				getNatureAvantageDao().creerNatureAvantage(getNatureAvantageCourant().getLibNatureAvantage());
 				if (!getTransaction().isErreur())
 					getListeNatureAvantage().add(getNatureAvantageCourant());
 			} else if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_SUPPRESSION)) {
-				getNatureAvantageCourant().supprimerNatureAvantage(getTransaction());
+				getNatureAvantageDao().supprimerNatureAvantage(getNatureAvantageCourant().getIdNatureAvantage());
 				if (!getTransaction().isErreur())
 					getListeNatureAvantage().remove(getNatureAvantageCourant());
 				setNatureAvantageCourant(null);
@@ -3105,5 +3122,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	private void setListeEcole(ArrayList<Ecole> listeEcole) {
 		this.listeEcole = listeEcole;
+	}
+
+	public NatureAvantageDao getNatureAvantageDao() {
+		return natureAvantageDao;
+	}
+
+	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
+		this.natureAvantageDao = natureAvantageDao;
 	}
 }

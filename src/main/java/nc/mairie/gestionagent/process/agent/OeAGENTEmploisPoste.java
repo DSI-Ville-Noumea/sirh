@@ -47,6 +47,7 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
+import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -120,6 +121,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	private PrimePointageFPDao primePointageFPDao;
 	private CadreEmploiDao cadreEmploiDao;
+	private NatureAvantageDao natureAvantageDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -142,6 +144,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
@@ -154,7 +157,6 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				return;
 			}
 		}
-		initialiseDao();
 
 		// Mise à jour de la liste des compétences
 		if (getTypeCompetenceCourant() == null || getTypeCompetenceCourant().getIdTypeCompetence() == null) {
@@ -207,6 +209,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		if (getCadreEmploiDao() == null) {
 			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getNatureAvantageDao() == null) {
+			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -328,8 +334,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage
 							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
+					NatureAvantage natAv = getNatureAvantageDao().chercherNatureAvantage(
+							Integer.valueOf(aAvNat.getIdNatureAvantage()));
 
 					addZone(getNOM_ST_AV_TYPE(indiceAvantage),
 							typAv.getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typAv
@@ -2249,5 +2255,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
 		this.cadreEmploiDao = cadreEmploiDao;
+	}
+
+	public NatureAvantageDao getNatureAvantageDao() {
+		return natureAvantageDao;
+	}
+
+	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
+		this.natureAvantageDao = natureAvantageDao;
 	}
 }

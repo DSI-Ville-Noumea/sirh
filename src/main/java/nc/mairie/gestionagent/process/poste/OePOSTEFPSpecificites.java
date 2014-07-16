@@ -17,12 +17,17 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFPSpecificites Date de création : (27/07/11 12:13:47)
@@ -75,6 +80,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	public String focus = null;
 
+	private NatureAvantageDao natureAvantageDao;
+
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
 	 * (27/07/11 12:13:47)
@@ -116,30 +123,38 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getListeAvantage() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE, getListeAvantage());
 		if (getListeAvantageAAjouter() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT, getListeAvantageAAjouter());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_AJOUT,
+					getListeAvantageAAjouter());
 		if (getListeAvantageASupprimer() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR, getListeAvantageASupprimer());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR,
+					getListeAvantageASupprimer());
 
 		if (getListeDelegation() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION, getListeDelegation());
 		if (getListeDelegationAAjouter() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT, getListeDelegationAAjouter());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_AJOUT,
+					getListeDelegationAAjouter());
 		if (getListeDelegationASupprimer() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR, getListeDelegationASupprimer());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR,
+					getListeDelegationASupprimer());
 
 		if (getListeRegime() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN, getListeRegime());
 		if (getListeRegimeAAjouter() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT, getListeRegimeAAjouter());
+			VariablesActivite
+					.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_AJOUT, getListeRegimeAAjouter());
 		if (getListeRegimeASupprimer() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR, getListeRegimeASupprimer());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR,
+					getListeRegimeASupprimer());
 
 		if (getListePrimes() != null)
 			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE, getListePrimePointageFP());
 		if (getListePrimePointageFPAAjouter() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT, getListePrimePointageFPAAjouter());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_AJOUT,
+					getListePrimePointageFPAAjouter());
 		if (getListePrimePointageFPASupprimer() != null)
-			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR, getListePrimePointageFPASupprimer());
+			VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE_A_SUPPR,
+					getListePrimePointageFPASupprimer());
 
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
@@ -165,7 +180,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		// Verification Montant OU Nature renseigné
 		// ****************************************
 		if (getVAL_EF_MONTANT_AVANTAGE().length() == 0
-				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()))).getIdNatureAvantage() == null) {
+				&& ((NatureAvantage) getListeNatureAvantage().get(Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())))
+						.getIdNatureAvantage() == null) {
 			// "ERR979","Au moins une des 2 zones suivantes doit être renseignée : @ ou @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR979", "Nature avantage", "Montant"));
 			setFocus(getNOM_LB_NATURE_AVANTAGE());
@@ -861,7 +877,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_AVANTAGE(HttpServletRequest request) throws Exception {
 		// Récupération de l'avantage à supprimer
-		int indiceAvNat = (Services.estNumerique(getVAL_LB_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_AVANTAGE_SELECT()) : -1);
+		int indiceAvNat = (Services.estNumerique(getVAL_LB_AVANTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_AVANTAGE_SELECT()) : -1);
 		if (indiceAvNat == -1 || getListeAvantage().size() == 0 || indiceAvNat > getListeAvantage().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Avantages en nature"));
 			return false;
@@ -900,7 +917,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_DELEGATION(HttpServletRequest request) throws Exception {
 		// Récupération de la délégation à supprimer
-		int indiceDel = (Services.estNumerique(getVAL_LB_DELEGATION_SELECT()) ? Integer.parseInt(getVAL_LB_DELEGATION_SELECT()) : -1);
+		int indiceDel = (Services.estNumerique(getVAL_LB_DELEGATION_SELECT()) ? Integer
+				.parseInt(getVAL_LB_DELEGATION_SELECT()) : -1);
 		if (indiceDel == -1 || getListeDelegation().size() == 0 || indiceDel > getListeDelegation().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Délégations"));
 			return false;
@@ -939,7 +957,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_REGIME(HttpServletRequest request) throws Exception {
 		// Récupération du régime indemnitaire à supprimer
-		int indiceRI = (Services.estNumerique(getVAL_LB_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_REGIME_SELECT()) : -1);
+		int indiceRI = (Services.estNumerique(getVAL_LB_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_REGIME_SELECT())
+				: -1);
 		if (indiceRI == -1 || getListeRegime().size() == 0 || indiceRI > getListeRegime().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Régimes indemnitaires"));
 			return false;
@@ -978,8 +997,10 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 */
 	public boolean performPB_SUPPRIMER_PRIME_POINTAGE(HttpServletRequest request) throws Exception {
 		// Récupération de la prime pointage à supprimer
-		int indicePrime = (Services.estNumerique(getVAL_LB_PRIME_POINTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_PRIME_POINTAGE_SELECT()) : -1);
-		if (indicePrime == -1 || getListePrimePointageFP().isEmpty() || indicePrime > getListePrimePointageFP().size() - 1) {
+		int indicePrime = (Services.estNumerique(getVAL_LB_PRIME_POINTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_PRIME_POINTAGE_SELECT()) : -1);
+		if (indicePrime == -1 || getListePrimePointageFP().isEmpty()
+				|| indicePrime > getListePrimePointageFP().size() - 1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Primes"));
 			return false;
 		}
@@ -1282,10 +1303,20 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 		initialiseListeDeroulante();
 		initialiseListeSpecificites();
 		if (getVAL_RG_SPECIFICITE() == null || getVAL_RG_SPECIFICITE().length() == 0)
 			addZone(getNOM_RG_SPECIFICITE(), getNOM_RB_SPECIFICITE_PP());
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getNatureAvantageDao() == null) {
+			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1297,17 +1328,20 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private void initialiseListeSpecificites() throws Exception {
 		// Avantages en nature
 		if (getListeAvantage() == null)
-			setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_AV_NATURE));
+			setListeAvantage((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_AV_NATURE));
 		if (getListeAvantage() != null && getListeAvantage().size() != 0) {
 			int tailles[] = { 52, 10, 52 };
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : NatureAvantage.chercherNatureAvantage(getTransaction(),
-							aAvNat.getIdNatureAvantage());
-					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(), natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
+					TypeAvantage typAv = TypeAvantage
+							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
+							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
+					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(),
+							natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
 				}
 			}
@@ -1318,14 +1352,16 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Délégations
 		if (getListeDelegation() == null)
-			setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_DELEGATION));
+			setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_DELEGATION));
 		if (getListeDelegation() != null && getListeDelegation().size() != 0) {
 			int taillesDel[] = { 32, 100 };
 			FormateListe aFormatDel = new FormateListe(taillesDel);
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(), aDel.getIdTypeDelegation());
+					TypeDelegation typDel = TypeDelegation.chercherTypeDelegation(getTransaction(),
+							aDel.getIdTypeDelegation());
 					String ligne[] = { typDel.libTypeDelegation, aDel.getLibDelegation() };
 					aFormatDel.ajouteLigne(ligne);
 				}
@@ -1337,14 +1373,16 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Régimes indemnitaires
 		if (getListeRegime() == null)
-			setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_REG_INDEMN));
+			setListeRegime((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_REG_INDEMN));
 		if (getListeRegime() != null && getListeRegime().size() != 0) {
 			int taillesReg[] = { 22, 10, 10 };
 			FormateListe aFormatReg = new FormateListe(taillesReg);
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(), aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
+							aReg.getIdTypeRegIndemn());
 					String ligne[] = { typReg.libTypeRegIndemn, aReg.getForfait(), aReg.getNombrePoints() };
 					aFormatReg.ajouteLigne(ligne);
 				}
@@ -1359,7 +1397,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 
 		if (getListePrimePointageFP() == null || getListePrimePointageFP().size() == 0)
-			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
+			setListePrimePointageFP((ArrayList<PrimePointageFP>) VariablesActivite.recuperer(this,
+					VariablesActivite.ACTIVITE_LST_PRIME_POINTAGE));
 		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() > 0) {
 			int taillesReg[] = { 10, 50 };
 			FormateListe aFormatReg = new FormateListe(taillesReg);
@@ -1407,7 +1446,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getLB_TYPE_AVANTAGE() == LBVide) {
 			ArrayList<TypeAvantage> typeAvantage = TypeAvantage.listerTypeAvantage(getTransaction());
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des type avantage non trouvée");
+				getTransaction().declarerErreur(
+						getTransaction().traiterErreur() + "Liste des type avantage non trouvée");
 			}
 			setListeTypeAvantage(typeAvantage);
 
@@ -1418,17 +1458,27 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Si liste nature avantage vide alors affectation
 		if (getLB_NATURE_AVANTAGE() == LBVide) {
-			ArrayList<NatureAvantage> natureAvantage = NatureAvantage.listerNatureAvantage(getTransaction());
+			ArrayList<NatureAvantage> natureAvantage = getNatureAvantageDao().listerNatureAvantage();
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des nature avantage non trouvée");
+				getTransaction().declarerErreur(
+						getTransaction().traiterErreur() + "Liste des nature avantage non trouvée");
 			}
 			NatureAvantage natAvVide = new NatureAvantage();
 			natureAvantage.add(0, natAvVide);
 			setListeNatureAvantage(natureAvantage);
+			if (getListeNatureAvantage().size() != 0) {
+				int tailles[] = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<NatureAvantage> list = getListeNatureAvantage().listIterator(); list.hasNext();) {
+					NatureAvantage na = (NatureAvantage) list.next();
+					String ligne[] = { na.getLibNatureAvantage() };
 
-			int[] tailles = { 50 };
-			String[] champs = { "libNatureAvantage" };
-			setLB_NATURE_AVANTAGE(new FormateListe(tailles, natureAvantage, champs).getListeFormatee());
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NATURE_AVANTAGE(aFormat.getListeFormatee());
+			} else {
+				setLB_NATURE_AVANTAGE(null);
+			}
 		}
 
 		// Si liste rubrique vide alors affectation
@@ -1465,7 +1515,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			if (getListePrimes() != null) {
 				String[] content = new String[getListePrimes().size()];
 				for (int i = 0; i < getListePrimes().size(); i++) {
-					content[i] = getListePrimes().get(i).getNumRubrique() + " - " + getListePrimes().get(i).getLibelle();
+					content[i] = getListePrimes().get(i).getNumRubrique() + " - "
+							+ getListePrimes().get(i).getLibelle();
 				}
 				setLB_RUBRIQUE_PRIME_POINTAGE(content);
 			}
@@ -1478,7 +1529,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getLB_TYPE_DELEGATION() == LBVide) {
 			ArrayList<TypeDelegation> typeDelegation = TypeDelegation.listerTypeDelegation(getTransaction());
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des types délégation non trouvée");
+				getTransaction().declarerErreur(
+						getTransaction().traiterErreur() + "Liste des types délégation non trouvée");
 			}
 			setListeTypeDelegation(typeDelegation);
 
@@ -1491,7 +1543,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getLB_TYPE_REGIME() == LBVide) {
 			ArrayList<TypeRegIndemn> typeRegime = TypeRegIndemn.listerTypeRegIndemn(getTransaction());
 			if (getTransaction().isErreur()) {
-				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des types de régimes indemnitaires non trouvée");
+				getTransaction().declarerErreur(
+						getTransaction().traiterErreur() + "Liste des types de régimes indemnitaires non trouvée");
 			}
 			setListeTypeRegIndemn(typeRegime);
 			int[] tailles = { 20 };
@@ -1705,15 +1758,17 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE());
 
-			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT())
-					: -1);
+			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
-			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT())
-					: -1);
-			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage)).getIdNatureAvantage());
+			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
+			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage))
+					.getIdNatureAvantage().toString());
 			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
-			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(indiceRubAvantage - 1)).getNumRubrique());
+			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(
+					indiceRubAvantage - 1)).getNumRubrique());
 
 			if (getListeAvantage() == null)
 				setListeAvantage(new ArrayList<AvantageNature>());
@@ -1738,7 +1793,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
-			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation)).getIdTypeDelegation());
+			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation))
+					.getIdTypeDelegation());
 
 			if (getListeDelegation() == null)
 				setListeDelegation(new ArrayList<Delegation>());
@@ -1762,9 +1818,12 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			regIndemn.setForfait(getVAL_EF_FORFAIT_REGIME());
 			regIndemn.setNombrePoints(getVAL_EF_NB_POINTS_REGIME());
 
-			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
-			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn)).getIdTypeRegIndemn());
-			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
+			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer
+					.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
+			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn))
+					.getIdTypeRegIndemn());
+			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer
+					.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
 			regIndemn.setNumRubrique(indiceRub <= 0 ? null : getListeRubrique().get(indiceRub - 1).getNumRubrique());
 
 			if (getListeRegime() == null)
@@ -2085,5 +2144,13 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	public boolean performPB_CHANGER_SPECIFICITE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	public NatureAvantageDao getNatureAvantageDao() {
+		return natureAvantageDao;
+	}
+
+	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
+		this.natureAvantageDao = natureAvantageDao;
 	}
 }

@@ -61,6 +61,7 @@ import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
@@ -209,6 +210,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private PrimePointageAffDao primePointageAffDao;
 	private PrimePointageFPDao primePointageFPDao;
 	private NatureCreditDao natureCreditDao;
+	private NatureAvantageDao natureAvantageDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -415,6 +417,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getNatureCreditDao() == null) {
 			setNatureCreditDao(new NatureCreditDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNatureAvantageDao() == null) {
+			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -988,10 +993,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (aAvNat != null) {
 					TypeAvantage typAv = TypeAvantage
 							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
-					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? NatureAvantage
-							.chercherNatureAvantage(getTransaction(), aAvNat.getIdNatureAvantage()) : null;
+					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? getNatureAvantageDao()
+							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage())) : null;
 					getHashtypAv().put(typAv.getIdTypeAvantage(), typAv);
-					getHashNatAv().put(natAv.getIdNatureAvantage(), natAv);
+					getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
 				}
 			}
 		}
@@ -6449,5 +6454,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return true;
 		}
 		return false;
+	}
+
+	public NatureAvantageDao getNatureAvantageDao() {
+		return natureAvantageDao;
+	}
+
+	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
+		this.natureAvantageDao = natureAvantageDao;
 	}
 }
