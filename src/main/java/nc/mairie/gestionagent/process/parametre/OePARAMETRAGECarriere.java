@@ -12,6 +12,8 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.parametrage.MotifCarriere;
 import nc.mairie.metier.parametrage.SPBASE;
 import nc.mairie.spring.dao.MairieDao;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.SPBASEDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -49,6 +51,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	private ArrayList<MotifCarriere> listeMotif;
 	private MotifCarriere motifCourant;
+	private MotifCarriereDao motifCarriereDao;
 
 	private ArrayList<String> listeHeure;
 
@@ -97,7 +100,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
-		setListeMotif(MotifCarriere.listerMotifCarriere(getTransaction()));
+		setListeMotif(getMotifCarriereDao().listerMotifCarriere());
 		if (getListeMotif().size() != 0) {
 			int tailles[] = { 100 };
 			String padding[] = { "G" };
@@ -189,6 +192,9 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getSpbaseDao() == null) {
 			setSpbaseDao(new SPBASEDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getMotifCarriereDao() == null) {
+			setMotifCarriereDao(new MotifCarriereDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1491,11 +1497,11 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 			if (getVAL_ST_ACTION_MOTIF().equals(ACTION_CREATION)) {
 				setMotifCourant(new MotifCarriere());
 				getMotifCourant().setLibMotifCarriere(getVAL_EF_LIB_MOTIF());
-				getMotifCourant().creerMotifCarriere(getTransaction());
+				getMotifCarriereDao().creerMotifCarriere(getMotifCourant().getLibMotifCarriere());
 				if (!getTransaction().isErreur())
 					getListeMotif().add(getMotifCourant());
 			} else if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)) {
-				getMotifCourant().supprimerMotifCarriere(getTransaction());
+				getMotifCarriereDao().supprimerMotifCarriere(getMotifCourant().getIdMotifCarriere());
 				if (!getTransaction().isErreur())
 					getListeMotif().remove(getMotifCourant());
 				setMotifCourant(null);
@@ -1549,5 +1555,13 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		}
 
 		return true;
+	}
+
+	public MotifCarriereDao getMotifCarriereDao() {
+		return motifCarriereDao;
+	}
+
+	public void setMotifCarriereDao(MotifCarriereDao motifCarriereDao) {
+		this.motifCarriereDao = motifCarriereDao;
 	}
 }

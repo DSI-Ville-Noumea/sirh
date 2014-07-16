@@ -30,6 +30,7 @@ import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -101,6 +102,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private String calculPaye;
 
 	private MotifAvancementDao motifAvancementDao;
+	private MotifCarriereDao motifCarriereDao;
 
 	/**
 	 * Constructeur du process OeAGENTCarriere. Date de création : (05/09/11
@@ -164,6 +166,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getMotifAvancementDao() == null) {
 			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getMotifCarriereDao() == null) {
+			setMotifCarriereDao(new MotifCarriereDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -266,15 +271,24 @@ public class OeAGENTCarriere extends BasicProcess {
 		// RG_AG_CA_C10
 		if (getLB_MOTIFS() == LBVide) {
 
-			ArrayList<MotifCarriere> liste = MotifCarriere.listerMotifCarriere(getTransaction());
+			ArrayList<MotifCarriere> liste = getMotifCarriereDao().listerMotifCarriere();
 			setListeMotifCarriere(liste);
 
-			int[] tailles = { 100 };
-			String[] champs = { "libMotifCarriere" };
-			setLB_MOTIFS(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+			if (getListeMotifCarriere().size() != 0) {
+				int[] tailles = { 1000 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<MotifCarriere> list = getListeMotifCarriere().listIterator(); list.hasNext();) {
+					MotifCarriere de = (MotifCarriere) list.next();
+					String ligne[] = { de.getLibMotifCarriere() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_MOTIFS(aFormat.getListeFormatee(true));
+			} else {
+				setLB_MOTIFS(null);
+			}
 
 			for (MotifCarriere m : liste)
-				getHashMotifCarriere().put(m.getIdMotifCarriere(), m);
+				getHashMotifCarriere().put(m.getIdMotifCarriere().toString(), m);
 
 		}
 
@@ -909,7 +923,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setModeReglement(baseReg.getModReg());
 
 		// motif
-		getCarriereCourante().setIdMotif(motif != null ? motif.getIdMotifCarriere() : Const.ZERO);
+		getCarriereCourante().setIdMotif(motif != null ? motif.getIdMotifCarriere().toString() : Const.ZERO);
 	}
 
 	/**
@@ -3203,5 +3217,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
 		this.motifAvancementDao = motifAvancementDao;
+	}
+
+	public MotifCarriereDao getMotifCarriereDao() {
+		return motifCarriereDao;
+	}
+
+	public void setMotifCarriereDao(MotifCarriereDao motifCarriereDao) {
+		this.motifCarriereDao = motifCarriereDao;
 	}
 }
