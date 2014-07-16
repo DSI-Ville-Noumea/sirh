@@ -50,6 +50,7 @@ import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -126,6 +127,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private NatureAvantageDao natureAvantageDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
 	private TitreDiplomeDao titreDiplomeDao;
+	private TypeAvantageDao typeAvantageDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -223,6 +225,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getTitreDiplomeDao() == null) {
 			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeAvantageDao() == null) {
+			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -342,8 +347,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = getNatureAvantageDao().chercherNatureAvantage(
 							Integer.valueOf(aAvNat.getIdNatureAvantage()));
 
@@ -2289,5 +2294,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
 		this.titreDiplomeDao = titreDiplomeDao;
+	}
+
+	public TypeAvantageDao getTypeAvantageDao() {
+		return typeAvantageDao;
+	}
+
+	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
+		this.typeAvantageDao = typeAvantageDao;
 	}
 }

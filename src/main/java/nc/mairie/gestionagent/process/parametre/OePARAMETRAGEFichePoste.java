@@ -21,6 +21,7 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -82,6 +83,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	public String ACTION_MODIFICATION = "2";
 
 	private NatureAvantageDao natureAvantageDao;
+	private TypeAvantageDao typeAvantageDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -129,6 +131,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getNatureAvantageDao() == null) {
 			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeAvantageDao() == null) {
+			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -218,7 +223,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTypeAvantage(HttpServletRequest request) throws Exception {
-		setListeTypeAvantage(TypeAvantage.listerTypeAvantage(getTransaction()));
+		setListeTypeAvantage(getTypeAvantageDao().listerTypeAvantage());
 		if (getListeTypeAvantage().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -367,7 +372,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeTypeAvantage() == null) {
 			// Recherche des types d'avantage en nature
-			setListeTypeAvantage(TypeAvantage.listerTypeAvantage(getTransaction()));
+			setListeTypeAvantage(getTypeAvantageDao().listerTypeAvantage());
 			initialiseListeTypeAvantage(request);
 		}
 
@@ -1298,11 +1303,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_CREATION)) {
 				setTypeAvantageCourant(new TypeAvantage());
 				getTypeAvantageCourant().setLibTypeAvantage(getVAL_EF_TYPE_AVANTAGE());
-				getTypeAvantageCourant().creerTypeAvantage(getTransaction());
+				getTypeAvantageDao().creerTypeAvantage(getTypeAvantageCourant().getLibTypeAvantage());
 				if (!getTransaction().isErreur())
 					getListeTypeAvantage().add(getTypeAvantageCourant());
 			} else if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_SUPPRESSION)) {
-				getTypeAvantageCourant().supprimerTypeAvantage(getTransaction());
+				getTypeAvantageDao().supprimerTypeAvantage(getTypeAvantageCourant().getIdTypeAvantage());
 				if (!getTransaction().isErreur())
 					getListeTypeAvantage().remove(getTypeAvantageCourant());
 				setTypeAvantageCourant(null);
@@ -3130,5 +3135,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
 		this.natureAvantageDao = natureAvantageDao;
+	}
+
+	public TypeAvantageDao getTypeAvantageDao() {
+		return typeAvantageDao;
+	}
+
+	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
+		this.typeAvantageDao = typeAvantageDao;
 	}
 }

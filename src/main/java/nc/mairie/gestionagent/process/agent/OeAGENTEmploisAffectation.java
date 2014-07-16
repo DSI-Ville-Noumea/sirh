@@ -46,6 +46,7 @@ import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAffectationDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -157,6 +158,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	private MotifAffectationDao motifAffectationDao;
 	private NatureAvantageDao natureAvantageDao;
+	private TypeAvantageDao typeAvantageDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2285,8 +2287,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeAvantageFP().size(); i++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageFP().get(i);
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(
@@ -2306,8 +2308,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeAvantageAFF().size(); j++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAFF().get(j);
 				if (aAvNat != null && !getListeAvantageFP().contains(aAvNat)) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(
@@ -2327,8 +2329,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeAvantageAAjouter().size(); k++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAAjouter().get(k);
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : Rubrique.chercherRubrique(
@@ -2565,12 +2567,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private void initialiseListeDeroulante_spec() throws Exception {
 		// Si liste type avantage vide alors affectation
 		if (getLB_TYPE_AVANTAGE() == LBVide) {
-			ArrayList<TypeAvantage> typeAvantage = TypeAvantage.listerTypeAvantage(getTransaction());
+			ArrayList<TypeAvantage> typeAvantage = getTypeAvantageDao().listerTypeAvantage();
 			setListeTypeAvantage(typeAvantage);
 
-			int[] tailles = { 50 };
-			String[] champs = { "libTypeAvantage" };
-			setLB_TYPE_AVANTAGE(new FormateListe(tailles, typeAvantage, champs).getListeFormatee());
+			if (getListeTypeAvantage().size() != 0) {
+				int[] tailles = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeAvantage> list = getListeTypeAvantage().listIterator(); list.hasNext();) {
+					TypeAvantage de = (TypeAvantage) list.next();
+					String ligne[] = { de.getLibTypeAvantage() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_AVANTAGE(aFormat.getListeFormatee());
+			} else {
+				setLB_TYPE_AVANTAGE(null);
+			}
 		}
 
 		// Si liste nature avantage vide alors affectation
@@ -3017,6 +3028,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getNatureAvantageDao() == null) {
 			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeAvantageDao() == null) {
+			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4240,7 +4254,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) ? Integer
 					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT_spec()) : -1);
-			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
+			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage()
+					.toString());
 			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT_spec()) ? Integer
 					.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT_spec()) : -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage))
@@ -5128,6 +5143,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
 		this.natureAvantageDao = natureAvantageDao;
+	}
+
+	public TypeAvantageDao getTypeAvantageDao() {
+		return typeAvantageDao;
+	}
+
+	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
+		this.typeAvantageDao = typeAvantageDao;
 	}
 
 }

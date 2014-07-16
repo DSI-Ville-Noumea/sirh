@@ -63,6 +63,7 @@ import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -211,6 +212,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private PrimePointageFPDao primePointageFPDao;
 	private NatureCreditDao natureCreditDao;
 	private NatureAvantageDao natureAvantageDao;
+	private TypeAvantageDao typeAvantageDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -420,6 +422,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getNatureAvantageDao() == null) {
 			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeAvantageDao() == null) {
+			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -991,11 +996,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage())) : null;
-					getHashtypAv().put(typAv.getIdTypeAvantage(), typAv);
+					getHashtypAv().put(typAv.getIdTypeAvantage().toString(), typAv);
 					getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
 				}
 			}
@@ -6462,5 +6467,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
 		this.natureAvantageDao = natureAvantageDao;
+	}
+
+	public TypeAvantageDao getTypeAvantageDao() {
+		return typeAvantageDao;
+	}
+
+	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
+		this.typeAvantageDao = typeAvantageDao;
 	}
 }

@@ -19,6 +19,7 @@ import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -81,6 +82,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	public String focus = null;
 
 	private NatureAvantageDao natureAvantageDao;
+	private TypeAvantageDao typeAvantageDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -1317,6 +1319,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getNatureAvantageDao() == null) {
 			setNatureAvantageDao(new NatureAvantageDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeAvantageDao() == null) {
+			setTypeAvantageDao(new TypeAvantageDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1336,8 +1341,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = TypeAvantage
-							.chercherTypeAvantage(getTransaction(), aAvNat.getIdTypeAvantage());
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
+							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
 					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(),
@@ -1444,16 +1449,25 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste type avantage vide alors affectation
 		if (getLB_TYPE_AVANTAGE() == LBVide) {
-			ArrayList<TypeAvantage> typeAvantage = TypeAvantage.listerTypeAvantage(getTransaction());
+			ArrayList<TypeAvantage> typeAvantage = getTypeAvantageDao().listerTypeAvantage();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + "Liste des type avantage non trouvée");
 			}
 			setListeTypeAvantage(typeAvantage);
+			if (getListeTypeAvantage().size() != 0) {
+				int tailles[] = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeAvantage> list = getListeTypeAvantage().listIterator(); list.hasNext();) {
+					TypeAvantage na = (TypeAvantage) list.next();
+					String ligne[] = { na.getLibTypeAvantage() };
 
-			int[] tailles = { 50 };
-			String[] champs = { "libTypeAvantage" };
-			setLB_TYPE_AVANTAGE(new FormateListe(tailles, typeAvantage, champs).getListeFormatee());
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_AVANTAGE(aFormat.getListeFormatee());
+			} else {
+				setLB_TYPE_AVANTAGE(null);
+			}
 		}
 
 		// Si liste nature avantage vide alors affectation
@@ -1760,7 +1774,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
-			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
+			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage()
+					.toString());
 			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage))
@@ -2152,5 +2167,13 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	public void setNatureAvantageDao(NatureAvantageDao natureAvantageDao) {
 		this.natureAvantageDao = natureAvantageDao;
+	}
+
+	public TypeAvantageDao getTypeAvantageDao() {
+		return typeAvantageDao;
+	}
+
+	public void setTypeAvantageDao(TypeAvantageDao typeAvantageDao) {
+		this.typeAvantageDao = typeAvantageDao;
 	}
 }
