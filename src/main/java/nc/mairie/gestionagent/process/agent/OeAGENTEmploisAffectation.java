@@ -44,6 +44,7 @@ import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.MotifAffectationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -152,6 +153,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public final String SPEC_REG_INDEMN_SPEC = "régime indemnitaire";
 	private String urlFichier;
+
+	private MotifAffectationDao motifAffectationDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2210,8 +2213,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			// Récup du motif d'affectation et temps de travail
 			if (getAffectationCourant().getIdMotifAffectation() != null) {
-				MotifAffectation ma = (MotifAffectation) MotifAffectation.chercherMotifAffectation(getTransaction(),
-						getAffectationCourant().getIdMotifAffectation());
+				MotifAffectation ma = getMotifAffectationDao().chercherMotifAffectation(
+						Integer.valueOf(getAffectationCourant().getIdMotifAffectation()));
 				addZone(getNOM_LB_MOTIF_AFFECTATION_SELECT(), String.valueOf(getListeMotifAffectation().indexOf(ma)));
 				for (int i = 0; i < getListeTempsTravail().length; i++) {
 					String tpsT = getListeTempsTravail()[i];
@@ -2524,12 +2527,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Si liste motif affectation vide alors affectation
 		// RG_AG_AF_C06
 		if (getLB_MOTIF_AFFECTATION() == LBVide) {
-			ArrayList<MotifAffectation> motifAff = MotifAffectation.listerMotifAffectation(getTransaction());
+			ArrayList<MotifAffectation> motifAff = (ArrayList<MotifAffectation>) getMotifAffectationDao()
+					.listerMotifAffectation();
 			setListeMotifAffectation(motifAff);
 
-			int[] tailles = { 30 };
-			String[] champs = { "libMotifAffectation" };
-			setLB_MOTIF_AFFECTATION(new FormateListe(tailles, motifAff, champs).getListeFormatee());
+			if (getListeMotifAffectation().size() != 0) {
+				int[] tailles = { 30 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<MotifAffectation> list = getListeMotifAffectation().listIterator(); list.hasNext();) {
+					MotifAffectation de = (MotifAffectation) list.next();
+					String ligne[] = { de.getLibMotifAffectation() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_MOTIF_AFFECTATION(aFormat.getListeFormatee());
+			} else {
+				setLB_MOTIF_AFFECTATION(null);
+			}
 		}
 
 		// Si liste pourcentages Temps de travail alors affectation
@@ -2930,6 +2943,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
@@ -2981,6 +2996,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			addZone(getNOM_ST_SPECIFICITE_spec(), SPEC_PRIME_POINTAGE_SPEC);
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getMotifAffectationDao() == null) {
+			setMotifAffectationDao(new MotifAffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -3991,7 +4014,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getAffectationCourant().setDateFinAff(
 					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : Services
 							.formateDate(getVAL_EF_DATE_FIN()));
-			getAffectationCourant().setIdMotifAffectation(newMotifAffectation.getIdMotifAffectation());
+			getAffectationCourant().setIdMotifAffectation(newMotifAffectation.getIdMotifAffectation().toString());
 			getAffectationCourant().setTempsTravail(
 					getListeTempsTravail()[Integer.parseInt(getVAL_LB_TEMPS_TRAVAIL_SELECT())]);
 			getAffectationCourant().setCodeEcole(eg.getCdEcol());
@@ -5075,6 +5098,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	public MotifAffectationDao getMotifAffectationDao() {
+		return motifAffectationDao;
+	}
+
+	public void setMotifAffectationDao(MotifAffectationDao motifAffectationDao) {
+		this.motifAffectationDao = motifAffectationDao;
 	}
 
 }
