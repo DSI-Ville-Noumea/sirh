@@ -30,6 +30,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
+import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -123,6 +124,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private CadreEmploiDao cadreEmploiDao;
 	private CodeRomeDao codeRomeDao;
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
+	private DomaineEmploiDao domaineEmploiDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1220,7 +1222,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
 		getFicheEmploiCourant().setIdDomaineFE(
-				((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi());
+				((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi().toString());
 
 		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
 				.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
@@ -1324,6 +1326,10 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getDiplomeGeneriqueDao() == null) {
 			setDiplomeGeneriqueDao(new DiplomeGeneriqueDao((SirhDao) context.getBean("sirhDao")));
 		}
+
+		if (getDomaineEmploiDao() == null) {
+			setDomaineEmploiDao(new DomaineEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1338,8 +1344,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		addZone(getNOM_EF_DEFINITION_EMPLOI(), getFicheEmploiCourant().getDefinitionEmploi());
 
 		if (getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			DomaineEmploi domaine = DomaineEmploi.chercherDomaineEmploi(getTransaction(), getFicheEmploiCourant()
-					.getIdDomaineFE());
+			DomaineEmploi domaine = getDomaineEmploiDao().chercherDomaineEmploi(
+					Integer.valueOf(getFicheEmploiCourant().getIdDomaineFE()));
 			addZone(getNOM_LB_DOMAINE_SELECT(), String.valueOf(getListeDomaine().indexOf(domaine)));
 
 			FamilleEmploi famille = FamilleEmploi.chercherFamilleEmploi(getTransaction(), getFicheEmploiCourant()
@@ -1524,12 +1530,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste domaine vide alors affectation
 		if (getLB_DOMAINE() == LBVide) {
-			ArrayList<DomaineEmploi> dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
+			ArrayList<DomaineEmploi> dom = getDomaineEmploiDao().listerDomaineEmploi();
 			setListeDomaine(dom);
 
-			int[] tailles = { 4, 100 };
-			String[] champs = { "codeDomaineEmploi", "libDomaineEmploi" };
-			setLB_DOMAINE(new FormateListe(tailles, dom, champs).getListeFormatee());
+			if (getListeDomaine().size() != 0) {
+				int[] tailles = { 4, 100 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<DomaineEmploi> list = getListeDomaine().listIterator(); list.hasNext();) {
+					DomaineEmploi de = (DomaineEmploi) list.next();
+					String ligne[] = { de.getCodeDomaineEmploi(), de.getLibDomaineEmploi() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_DOMAINE(aFormat.getListeFormatee());
+			} else {
+				setLB_DOMAINE(null);
+			}
 		}
 
 		// Si liste famille vide alors affectation
@@ -4098,5 +4113,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setDiplomeGeneriqueDao(DiplomeGeneriqueDao diplomeGeneriqueDao) {
 		this.diplomeGeneriqueDao = diplomeGeneriqueDao;
+	}
+
+	public DomaineEmploiDao getDomaineEmploiDao() {
+		return domaineEmploiDao;
+	}
+
+	public void setDomaineEmploiDao(DomaineEmploiDao domaineEmploiDao) {
+		this.domaineEmploiDao = domaineEmploiDao;
 	}
 }

@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.poste;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,6 +12,7 @@ import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
+import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -41,6 +43,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	public String focus = null;
 
 	private CodeRomeDao codeRomeDao;
+	private DomaineEmploiDao domaineEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -62,6 +65,9 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		if (getCodeRomeDao() == null) {
 			setCodeRomeDao(new CodeRomeDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getDomaineEmploiDao() == null) {
+			setDomaineEmploiDao(new DomaineEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -81,12 +87,21 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		}
 		// Si liste domaine vide alors affectation
 		if (getLB_DOMAINE_EMPLOI() == LBVide) {
-			ArrayList<DomaineEmploi> dom = DomaineEmploi.listerDomaineEmploi(getTransaction());
+			ArrayList<DomaineEmploi> dom = getDomaineEmploiDao().listerDomaineEmploi();
 			setListeDomaineEmploi(dom);
-
-			int[] tailles = { 4, 100 };
-			String[] champs = { "codeDomaineEmploi", "libDomaineEmploi" };
-			setLB_DOMAINE_EMPLOI(new FormateListe(tailles, dom, champs).getListeFormatee(true));
+			if (getListeDomaineEmploi().size() != 0) {
+				int[] tailles = { 4, 100 };
+				String padding[] = { "C", "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<DomaineEmploi> list = getListeDomaineEmploi().listIterator(); list.hasNext();) {
+					DomaineEmploi de = (DomaineEmploi) list.next();
+					String ligne[] = { de.getCodeDomaineEmploi(), de.getLibDomaineEmploi() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_DOMAINE_EMPLOI(aFormat.getListeFormatee(true));
+			} else {
+				setLB_DOMAINE_EMPLOI(null);
+			}
 		}
 
 		// Si liste code rome vide alors affectation
@@ -662,5 +677,13 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	public void setCodeRomeDao(CodeRomeDao codeRomeDao) {
 		this.codeRomeDao = codeRomeDao;
+	}
+
+	public DomaineEmploiDao getDomaineEmploiDao() {
+		return domaineEmploiDao;
+	}
+
+	public void setDomaineEmploiDao(DomaineEmploiDao domaineEmploiDao) {
+		this.domaineEmploiDao = domaineEmploiDao;
 	}
 }
