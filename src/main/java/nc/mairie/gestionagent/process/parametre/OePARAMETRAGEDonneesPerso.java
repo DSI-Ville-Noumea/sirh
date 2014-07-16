@@ -23,6 +23,7 @@ import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
+import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -83,6 +84,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private TitrePermisDao titrePermisDao;
 	private PermisAgentDao permisAgentDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
+	private TitreDiplomeDao titreDiplomeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -110,7 +112,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Initialisation de la page.//
 		// ---------------------------//
 		if (getListeDiplome() == null) {
-			ArrayList<TitreDiplome> listeDiplome = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> listeDiplome = getTitreDiplomeDao().listerTitreDiplome();
 			setListeDiplome(listeDiplome);
 			initialiseListeDiplome(request);
 		}
@@ -179,6 +181,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getSpecialiteDiplomeDao() == null) {
 			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitreDiplomeDao() == null) {
+			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -253,7 +258,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDiplome(HttpServletRequest request) throws Exception {
-		setListeDiplome(TitreDiplome.listerTitreDiplome(getTransaction()));
+		setListeDiplome(getTitreDiplomeDao().listerTitreDiplome());
 		if (getListeDiplome().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -1120,18 +1125,20 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				setDiplomeCourant(new TitreDiplome());
 				getDiplomeCourant().setLibTitreDiplome(getVAL_EF_DIPLOME());
 				getDiplomeCourant().setNiveauEtude(getVAL_EF_NIV_ETUDE());
-				getDiplomeCourant().creerTitreDiplome(getTransaction());
+				getTitreDiplomeDao().creerTitreDiplome(getDiplomeCourant().getLibTitreDiplome(),
+						getDiplomeCourant().getNiveauEtude());
 				if (!getTransaction().isErreur())
 					getListeDiplome().add(getDiplomeCourant());
 			} else if (getVAL_ST_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)) {
-				getDiplomeCourant().supprimerTitreDiplome(getTransaction());
+				getTitreDiplomeDao().supprimerTitreDiplome(getDiplomeCourant().getIdTitreDiplome());
 				if (!getTransaction().isErreur())
 					getListeDiplome().remove(getDiplomeCourant());
 				setDiplomeCourant(null);
 			} else if (getVAL_ST_ACTION_DIPLOME().equals(ACTION_MODIFICATION)) {
 				getDiplomeCourant().setLibTitreDiplome(getVAL_EF_DIPLOME());
 				getDiplomeCourant().setNiveauEtude(getVAL_EF_NIV_ETUDE());
-				getDiplomeCourant().modifierTitreDiplome(getTransaction());
+				getTitreDiplomeDao().modifierTitreDiplome(getDiplomeCourant().getIdTitreDiplome(),
+						getDiplomeCourant().getLibTitreDiplome(), getDiplomeCourant().getNiveauEtude());
 
 			}
 
@@ -2859,5 +2866,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
 		this.specialiteDiplomeDao = specialiteDiplomeDao;
+	}
+
+	public TitreDiplomeDao getTitreDiplomeDao() {
+		return titreDiplomeDao;
+	}
+
+	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
+		this.titreDiplomeDao = titreDiplomeDao;
 	}
 }

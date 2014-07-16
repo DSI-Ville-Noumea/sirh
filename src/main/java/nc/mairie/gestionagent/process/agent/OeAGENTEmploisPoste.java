@@ -49,6 +49,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
+import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -124,6 +125,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private CadreEmploiDao cadreEmploiDao;
 	private NatureAvantageDao natureAvantageDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
+	private TitreDiplomeDao titreDiplomeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -219,6 +221,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getSpecialiteDiplomeDao() == null) {
 			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTitreDiplomeDao() == null) {
+			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
@@ -258,7 +263,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
-				TitreDiplome t = TitreDiplome.chercherTitreDiplome(getTransaction(), dipl.getIdTitreDiplome());
+				TitreDiplome t = getTitreDiplomeDao().chercherTitreDiplome(Integer.valueOf(dipl.getIdTitreDiplome()));
 				SpecialiteDiplome s = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
 						Integer.valueOf(dipl.getIdSpecialiteDiplome()));
 				setDiplomeAgt(t.getLibTitreDiplome() + " - " + s.getLibSpecialiteDiplome());
@@ -2276,5 +2281,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
 		this.specialiteDiplomeDao = specialiteDiplomeDao;
+	}
+
+	public TitreDiplomeDao getTitreDiplomeDao() {
+		return titreDiplomeDao;
+	}
+
+	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
+		this.titreDiplomeDao = titreDiplomeDao;
 	}
 }

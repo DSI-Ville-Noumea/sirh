@@ -38,6 +38,7 @@ import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
+import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -130,6 +131,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private TitrePermisDao titrePermisDao;
 	private PermisAgentDao permisAgentDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
+	private TitreDiplomeDao titreDiplomeDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
@@ -599,12 +601,21 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// Si liste des titres vide
 		if (getLB_TITRE_DIPLOME() == LBVide) {
-			ArrayList<TitreDiplome> a = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> a = getTitreDiplomeDao().listerTitreDiplome();
 			setListeTitreDiplome(a);
 
-			int[] tailles = { 70 };
-			String[] champs = { "libTitreDiplome" };
-			setLB_TITRE_DIPLOME(new FormateListe(tailles, a, champs).getListeFormatee(true));
+			if (getListeTitreDiplome().size() != 0) {
+				int[] tailles = { 70 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TitreDiplome> list = getListeTitreDiplome().listIterator(); list.hasNext();) {
+					TitreDiplome de = (TitreDiplome) list.next();
+					String ligne[] = { de.getLibTitreDiplome() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TITRE_DIPLOME(aFormat.getListeFormatee(true));
+			} else {
+				setLB_TITRE_DIPLOME(null);
+			}
 		}
 
 		// Si liste des spécialités vide
@@ -628,12 +639,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// Si hashtable des titres vide ou statut gestion diplomes
 		if (getHashTitreDiplome().size() == 0) {
-			ArrayList<TitreDiplome> a = TitreDiplome.listerTitreDiplome(getTransaction());
+			ArrayList<TitreDiplome> a = getTitreDiplomeDao().listerTitreDiplome();
 			setListeTitreDiplome(a);
 			// remplissage de la hashTable
 			for (int i = 0; i < a.size(); i++) {
 				TitreDiplome aTitreDiplome = (TitreDiplome) a.get(i);
-				getHashTitreDiplome().put(aTitreDiplome.getIdTitreDiplome(), aTitreDiplome);
+				getHashTitreDiplome().put(aTitreDiplome.getIdTitreDiplome().toString(), aTitreDiplome);
 			}
 		}
 
@@ -732,6 +743,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 		if (getSpecialiteDiplomeDao() == null) {
 			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitreDiplomeDao() == null) {
+			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -906,7 +920,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			getDiplomeAgentCourant().setDateObtention(newDateObt);
 			getDiplomeAgentCourant().setIdSpecialiteDiplome(newSpec.getIdSpecialiteDiplome().toString());
 			getDiplomeAgentCourant().setNomEcole(newNomEcole.toUpperCase());
-			getDiplomeAgentCourant().setIdTitreDiplome(newTitre.getIdTitreDiplome());
+			getDiplomeAgentCourant().setIdTitreDiplome(newTitre.getIdTitreDiplome().toString());
 			if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_MODIFICATION_DIPLOME)) {
 				// Modification
 				getDiplomeAgentCourant().modifierDiplomeAgent(getTransaction());
@@ -4174,5 +4188,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
 		this.specialiteDiplomeDao = specialiteDiplomeDao;
+	}
+
+	public TitreDiplomeDao getTitreDiplomeDao() {
+		return titreDiplomeDao;
+	}
+
+	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
+		this.titreDiplomeDao = titreDiplomeDao;
 	}
 }

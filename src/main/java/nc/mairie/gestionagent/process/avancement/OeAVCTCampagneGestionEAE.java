@@ -77,6 +77,7 @@ import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
+import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -154,6 +155,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private EaeCampagneTaskDao eaeCampagneTaskDao;
 	private MotifAvancementDao motifAvancementDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
+	private TitreDiplomeDao titreDiplomeDao;
 
 	private String message;
 	private String urlFichier;
@@ -824,6 +826,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getSpecialiteDiplomeDao() == null) {
 			setSpecialiteDiplomeDao(new SpecialiteDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitreDiplomeDao() == null) {
+			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2380,7 +2385,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		ArrayList<DiplomeAgent> listDiploAgent = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), ag);
 		for (int i = 0; i < listDiploAgent.size(); i++) {
 			DiplomeAgent d = listDiploAgent.get(i);
-			TitreDiplome td = TitreDiplome.chercherTitreDiplome(getTransaction(), d.getIdTitreDiplome());
+			TitreDiplome td = getTitreDiplomeDao().chercherTitreDiplome(Integer.valueOf(d.getIdTitreDiplome()));
 			SpecialiteDiplome spe = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
 					Integer.valueOf(d.getIdSpecialiteDiplome()));
 			EaeDiplome eaeDiplome = new EaeDiplome();
@@ -3971,5 +3976,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setSpecialiteDiplomeDao(SpecialiteDiplomeDao specialiteDiplomeDao) {
 		this.specialiteDiplomeDao = specialiteDiplomeDao;
+	}
+
+	public TitreDiplomeDao getTitreDiplomeDao() {
+		return titreDiplomeDao;
+	}
+
+	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
+		this.titreDiplomeDao = titreDiplomeDao;
 	}
 }
