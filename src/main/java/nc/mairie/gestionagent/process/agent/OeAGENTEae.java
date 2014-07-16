@@ -33,6 +33,7 @@ import nc.mairie.metier.eae.EaeTypeDeveloppement;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeCommentaireDao;
 import nc.mairie.spring.dao.metier.EAE.EaeDeveloppementDao;
@@ -46,6 +47,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -131,6 +133,8 @@ public class OeAGENTEae extends BasicProcess {
 	public String focus = null;
 
 	private ArrayList<Document> listeAncienEAE;
+
+	private TypeDocumentDao typeDocumentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -325,6 +329,9 @@ public class OeAGENTEae extends BasicProcess {
 		}
 		if (getEaeNumIncrementDocumentDao() == null) {
 			setEaeNumIncrementDocumentDao((EaeNumIncrementDocumentDao) context.getBean("eaeNumIncrementDocumentDao"));
+		}
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4568,10 +4575,10 @@ public class OeAGENTEae extends BasicProcess {
 		}
 
 		// on crée le document en base de données
-		TypeDocument typeEAE = TypeDocument.chercherTypeDocumentByCod(getTransaction(), "EAE");
+		TypeDocument typeEAE = getTypeDocumentDao().chercherTypeDocumentByCod("EAE");
 		Document doc = new Document();
 		doc.setLienDocument("EAE/" + nom);
-		doc.setIdTypeDocument(typeEAE.getIdTypeDocument());
+		doc.setIdTypeDocument(typeEAE.getIdTypeDocument().toString());
 		doc.setNomOriginal(fichierUpload.getName());
 		doc.setNomDocument(nom);
 		doc.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -4660,5 +4667,13 @@ public class OeAGENTEae extends BasicProcess {
 			return true;
 		}
 		return false;
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }

@@ -27,6 +27,9 @@ import nc.mairie.metier.hsct.Handicap;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -39,6 +42,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -86,6 +90,8 @@ public class OeAGENTHandicap extends BasicProcess {
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
+	private TypeDocumentDao typeDocumentDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -111,7 +117,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
+		initialiseDao();
 		// Si hashtable des noms de handicap vide
 		// RG_AG_HC_C04
 		if (getHashNomHandicap().size() == 0) {
@@ -156,6 +162,14 @@ public class OeAGENTHandicap extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1792,12 +1806,13 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
-						doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+						Integer.valueOf(doc.getIdTypeDocument()));
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
-				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
+						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
@@ -2240,7 +2255,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "HANDI";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -2260,7 +2275,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		// String repPartage = (String)
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -2461,6 +2476,14 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 
 }

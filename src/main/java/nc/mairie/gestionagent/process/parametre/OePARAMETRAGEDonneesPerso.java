@@ -26,6 +26,7 @@ import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -85,6 +86,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private PermisAgentDao permisAgentDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
 	private TitreDiplomeDao titreDiplomeDao;
+	private TypeDocumentDao typeDocumentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -133,7 +135,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeTypeDocument() == null) {
 			// Recherche des types de documents
-			ArrayList<TypeDocument> listeTypeDocument = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),
+			ArrayList<TypeDocument> listeTypeDocument = getTypeDocumentDao().listerTypeDocumentAvecModule(
 					"DONNEES PERSONNELLES");
 			setListeTypeDocument(listeTypeDocument);
 			initialiseListeTypeDocument(request);
@@ -184,6 +186,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getTitreDiplomeDao() == null) {
 			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -326,7 +331,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTypeDocument(HttpServletRequest request) throws Exception {
-		setListeTypeDocument(TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "DONNEES PERSONNELLES"));
+		setListeTypeDocument(getTypeDocumentDao().listerTypeDocumentAvecModule("DONNEES PERSONNELLES"));
 		if (getListeTypeDocument().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -2566,14 +2571,17 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				setTypeDocumentCourant(new TypeDocument());
 				getTypeDocumentCourant().setLibTypeDocument(getVAL_EF_TYPE_DOCUMENT());
 				getTypeDocumentCourant().setCodTypeDocument(getVAL_EF_CODE_TYPE_DOCUMENT());
-				getTypeDocumentCourant().setModule("DONNEES PERSONNELLES");
-				getTypeDocumentCourant().creerTypeDocument(getTransaction());
+				getTypeDocumentCourant().setModuleTypeDocument("DONNEES PERSONNELLES");
+				getTypeDocumentDao()
+						.creerTypeDocument(getTypeDocumentCourant().getLibTypeDocument(),
+								getTypeDocumentCourant().getCodTypeDocument(),
+								getTypeDocumentCourant().getModuleTypeDocument());
 				if (!getTransaction().isErreur())
 					getListeTypeDocument().add(getTypeDocumentCourant());
 				else
 					return false;
 			} else if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_SUPPRESSION)) {
-				getTypeDocumentCourant().supprimerTypeDocument(getTransaction());
+				getTypeDocumentDao().supprimerTypeDocument(getTypeDocumentCourant().getIdTypeDocument());
 				if (!getTransaction().isErreur())
 					getListeTypeDocument().remove(getTypeDocumentCourant());
 				else
@@ -2874,5 +2882,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
 		this.titreDiplomeDao = titreDiplomeDao;
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }

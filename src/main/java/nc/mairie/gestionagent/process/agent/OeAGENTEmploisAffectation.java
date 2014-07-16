@@ -48,6 +48,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAffectationDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -161,6 +162,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
+	private TypeRegIndemnDao typeRegIndemnDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2663,11 +2665,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si liste type régime vide alors affectation
 		if (getLB_TYPE_REGIME_spec() == LBVide) {
-			ArrayList<TypeRegIndemn> typeRegime = TypeRegIndemn.listerTypeRegIndemn(getTransaction());
+			ArrayList<TypeRegIndemn> typeRegime = getTypeRegIndemnDao().listerTypeRegIndemn();
 			setListeTypeRegIndemn(typeRegime);
-			int[] tailles = { 20 };
-			String[] champs = { "libTypeRegIndemn" };
-			setLB_TYPE_REGIME_spec(new FormateListe(tailles, typeRegime, champs).getListeFormatee());
+
+			if (getListeTypeRegIndemn().size() != 0) {
+				int[] tailles = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeRegIndemn> list = getListeTypeRegIndemn().listIterator(); list.hasNext();) {
+					TypeRegIndemn de = (TypeRegIndemn) list.next();
+					String ligne[] = { de.getLibTypeRegIndemn() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_REGIME_spec(aFormat.getListeFormatee());
+			} else {
+				setLB_TYPE_REGIME_spec(null);
+			}
 		}
 	}
 
@@ -2817,8 +2829,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeRegimeFP().size(); i++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeFP().get(i);
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
-							aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
+							Integer.valueOf(aReg.getIdTypeRegIndemn()));
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(),
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE_spec(indiceReg), typReg.getLibTypeRegIndemn());
@@ -2834,8 +2846,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeRegimeAFF().size(); j++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeAFF().get(j);
 				if (aReg != null && !getListeRegimeFP().contains(aReg)) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
-							aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
+							Integer.valueOf(aReg.getIdTypeRegIndemn()));
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(),
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE_spec(indiceReg), typReg.getLibTypeRegIndemn());
@@ -2851,8 +2863,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeRegimeAAjouter().size(); k++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeAAjouter().get(k);
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
-							aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
+							Integer.valueOf(aReg.getIdTypeRegIndemn()));
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : Rubrique.chercherRubrique(getTransaction(),
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE_spec(indiceReg), typReg.getLibTypeRegIndemn());
@@ -3045,6 +3057,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getTypeDelegationDao() == null) {
 			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeRegIndemnDao() == null) {
+			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4336,7 +4351,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT_spec()) ? Integer
 					.parseInt(getVAL_LB_TYPE_REGIME_SELECT_spec()) : -1);
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn))
-					.getIdTypeRegIndemn());
+					.getIdTypeRegIndemn().toString());
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
 			if (indiceRub > 0)
@@ -5173,6 +5188,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
 		this.typeDelegationDao = typeDelegationDao;
+	}
+
+	public TypeRegIndemnDao getTypeRegIndemnDao() {
+		return typeRegIndemnDao;
+	}
+
+	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
+		this.typeRegIndemnDao = typeRegIndemnDao;
 	}
 
 }

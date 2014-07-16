@@ -21,6 +21,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -85,6 +86,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
+	private TypeRegIndemnDao typeRegIndemnDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -1327,6 +1329,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getTypeDelegationDao() == null) {
 			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeRegIndemnDao() == null) {
+			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1391,8 +1396,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
-							aReg.getIdTypeRegIndemn());
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
+							Integer.valueOf(aReg.getIdTypeRegIndemn()));
 					String ligne[] = { typReg.libTypeRegIndemn, aReg.getForfait(), aReg.getNombrePoints() };
 					aFormatReg.ajouteLigne(ligne);
 				}
@@ -1569,15 +1574,25 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Si liste type régime vide alors affectation
 		if (getLB_TYPE_REGIME() == LBVide) {
-			ArrayList<TypeRegIndemn> typeRegime = TypeRegIndemn.listerTypeRegIndemn(getTransaction());
+			ArrayList<TypeRegIndemn> typeRegime = getTypeRegIndemnDao().listerTypeRegIndemn();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + "Liste des types de régimes indemnitaires non trouvée");
 			}
 			setListeTypeRegIndemn(typeRegime);
-			int[] tailles = { 20 };
-			String[] champs = { "libTypeRegIndemn" };
-			setLB_TYPE_REGIME(new FormateListe(tailles, typeRegime, champs).getListeFormatee());
+			if (getListeTypeRegIndemn().size() != 0) {
+				int tailles[] = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeRegIndemn> list = getListeTypeRegIndemn().listIterator(); list.hasNext();) {
+					TypeRegIndemn na = (TypeRegIndemn) list.next();
+					String ligne[] = { na.getLibTypeRegIndemn() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_REGIME(aFormat.getListeFormatee());
+			} else {
+				setLB_TYPE_REGIME(null);
+			}
 		}
 	}
 
@@ -1850,7 +1865,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn))
-					.getIdTypeRegIndemn());
+					.getIdTypeRegIndemn().toString());
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
 			regIndemn.setNumRubrique(indiceRub <= 0 ? null : getListeRubrique().get(indiceRub - 1).getNumRubrique());
@@ -2197,5 +2212,13 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
 		this.typeDelegationDao = typeDelegationDao;
+	}
+
+	public TypeRegIndemnDao getTypeRegIndemnDao() {
+		return typeRegIndemnDao;
+	}
+
+	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
+		this.typeRegIndemnDao = typeRegIndemnDao;
 	}
 }

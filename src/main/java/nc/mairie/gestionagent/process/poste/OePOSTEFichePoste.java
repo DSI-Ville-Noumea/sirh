@@ -65,6 +65,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -215,6 +216,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
+	private TypeRegIndemnDao typeRegIndemnDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -430,6 +432,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeDelegationDao() == null) {
 			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeRegIndemnDao() == null) {
+			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1050,9 +1055,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = TypeRegIndemn.chercherTypeRegIndemn(getTransaction(),
-							aReg.getIdTypeRegIndemn());
-					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn(), typReg);
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
+							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn().toString(), typReg);
 				}
 			}
 		}
@@ -6488,5 +6493,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
 		this.typeDelegationDao = typeDelegationDao;
+	}
+
+	public TypeRegIndemnDao getTypeRegIndemnDao() {
+		return typeRegIndemnDao;
+	}
+
+	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
+		this.typeRegIndemnDao = typeRegIndemnDao;
 	}
 }

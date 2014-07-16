@@ -23,6 +23,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -86,6 +87,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private NatureAvantageDao natureAvantageDao;
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
+	private TypeRegIndemnDao typeRegIndemnDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -139,6 +141,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getTypeDelegationDao() == null) {
 			setTypeDelegationDao(new TypeDelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeRegIndemnDao() == null) {
+			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -297,7 +302,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTypeRegime(HttpServletRequest request) throws Exception {
-		setListeTypeRegime(TypeRegIndemn.listerTypeRegIndemn(getTransaction()));
+		setListeTypeRegime(getTypeRegIndemnDao().listerTypeRegIndemn());
 		if (getListeTypeRegime().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -395,7 +400,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeTypeRegime() == null) {
 			// Recherche des types de régime indemnitaires
-			setListeTypeRegime(TypeRegIndemn.listerTypeRegIndemn(getTransaction()));
+			setListeTypeRegime(getTypeRegIndemnDao().listerTypeRegIndemn());
 			initialiseListeTypeRegime(request);
 		}
 
@@ -1507,11 +1512,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_CREATION)) {
 				setTypeRegimeCourant(new TypeRegIndemn());
 				getTypeRegimeCourant().setLibTypeRegIndemn(getVAL_EF_TYPE_REGIME());
-				getTypeRegimeCourant().creerTypeRegIndemn(getTransaction());
+				getTypeRegIndemnDao().creerTypeRegIndemn(getTypeRegimeCourant().getLibTypeRegIndemn());
 				if (!getTransaction().isErreur())
 					getListeTypeRegime().add(getTypeRegimeCourant());
 			} else if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_SUPPRESSION)) {
-				getTypeRegimeCourant().supprimerTypeRegIndemn(getTransaction());
+				getTypeRegIndemnDao().supprimerTypeRegIndemn(getTypeRegimeCourant().getIdTypeRegIndemn());
 				if (!getTransaction().isErreur())
 					getListeTypeRegime().remove(getTypeRegimeCourant());
 				setTypeRegimeCourant(null);
@@ -3156,5 +3161,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setTypeDelegationDao(TypeDelegationDao typeDelegationDao) {
 		this.typeDelegationDao = typeDelegationDao;
+	}
+
+	public TypeRegIndemnDao getTypeRegIndemnDao() {
+		return typeRegIndemnDao;
+	}
+
+	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
+		this.typeRegIndemnDao = typeRegIndemnDao;
 	}
 }

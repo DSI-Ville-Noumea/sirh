@@ -41,6 +41,7 @@ import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -132,6 +133,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private PermisAgentDao permisAgentDao;
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
 	private TitreDiplomeDao titreDiplomeDao;
+	private TypeDocumentDao typeDocumentDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
@@ -747,6 +749,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getTitreDiplomeDao() == null) {
 			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1058,7 +1063,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "DIP";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -1076,7 +1081,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -1114,7 +1119,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "FORM";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -1132,7 +1137,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -1170,7 +1175,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "PERM";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -1188,7 +1193,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -4196,5 +4201,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
 		this.titreDiplomeDao = titreDiplomeDao;
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }

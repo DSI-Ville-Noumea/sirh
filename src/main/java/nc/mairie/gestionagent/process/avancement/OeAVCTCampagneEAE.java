@@ -25,6 +25,7 @@ import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EaeDocument;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
@@ -32,6 +33,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -87,6 +89,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	private EaeEAEDao eaeDao;
 	private EaeEvaluationDao eaeEvaluationDao;
 	private EaeEvalueDao eaeEvalueDao;
+
+	private TypeDocumentDao typeDocumentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -149,6 +153,9 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		if (getEaeEvalueDao() == null) {
 			setEaeEvalueDao(new EaeEvalueDao((EaeDao) context.getBean("eaeDao")));
+		}
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1427,7 +1434,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "CAMP";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -1445,7 +1452,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -1737,5 +1744,13 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }

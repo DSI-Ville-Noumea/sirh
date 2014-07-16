@@ -30,6 +30,9 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -42,6 +45,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -84,6 +88,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesDonneesPerso.class);
 
+	private TypeDocumentDao typeDocumentDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -113,6 +119,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		if (getVueCourant() == null) {
 			setVueCourant("Autre");
 			addZone(getNOM_RG_VUE(), getNOM_RB_VUE_AUTRE());
@@ -137,17 +145,32 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		initialiseListeDeroulante();
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	private void initialiseListeDeroulante() throws Exception {
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
-			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(),
-					"DONNEES PERSONNELLES");
-			TypeDocument typeVide = new TypeDocument();
-			td.add(0, typeVide);
+			ArrayList<TypeDocument> td = getTypeDocumentDao().listerTypeDocumentAvecModule("DONNEES PERSONNELLES");
 			setListeTypeDocument(td);
-			int[] tailles = { 25 };
-			String[] champs = { "libTypeDocument", "idTypeDocument" };
-			setLB_TYPE_DOCUMENT(new FormateListe(tailles, td, champs).getListeFormatee());
+
+			if (getListeTypeDocument().size() != 0) {
+				int[] tailles = { 25 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeDocument> list = getListeTypeDocument().listIterator(); list.hasNext();) {
+					TypeDocument de = (TypeDocument) list.next();
+					String ligne[] = { de.getLibTypeDocument(), de.getIdTypeDocument().toString() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_DOCUMENT(aFormat.getListeFormatee(true));
+			} else {
+				setLB_TYPE_DOCUMENT(null);
+			}
 		}
 		if (getLB_CONTRAT() == LBVide) {
 			if (null != getAgentCourant()) {
@@ -272,7 +295,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// obligatoire
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
+		String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getLibTypeDocument();
 		if (nomType.toUpperCase().equals("CONTRAT")) {
 			if (multi.getParameter(getNOM_LB_CONTRAT()).equals("0")) {
 				// ERR002:La zone contrat est obligatoire.
@@ -331,7 +354,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// on recupere le contrat concerné par l'ajout
 		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String nomType = ((TypeDocument) getListeTypeDocument().get(indice)).getLibTypeDocument();
+		String nomType = ((TypeDocument) getListeTypeDocument().get(indice - 1)).getLibTypeDocument();
 		boolean ajoutContrat = false;
 		boolean ajoutAffectation = false;
 		boolean ajoutFichePoste = false;
@@ -495,7 +518,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// on recupère le type de document
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getCodTypeDocument();
+		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -529,7 +552,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(
-				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
+				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -773,12 +796,13 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
-						doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+						Integer.valueOf(doc.getIdTypeDocument()));
 
 				addZone(getNOM_ST_NOM_DOC(indiceActe),
 						doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;" : doc.getNomDocument());
-				addZone(getNOM_ST_NOM_ORI_DOC(indiceActe), doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
+				addZone(getNOM_ST_NOM_ORI_DOC(indiceActe),
+						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: td.getLibTypeDocument());
 				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
@@ -847,7 +871,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), d.getIdTypeDocument());
+		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+				Integer.valueOf(d.getIdTypeDocument()));
 		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
 				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
@@ -1124,7 +1149,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		int indiceTypeDoc = (Services.estNumerique(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) ? Integer
 				.parseInt(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) : -1);
 		if (indiceTypeDoc != -1 && indiceTypeDoc != 0) {
-			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
+			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getLibTypeDocument();
 			if (nomType.toUpperCase().equals("CONTRAT")) {
 				// on affiche une liste deroulante des différents contrats
 				// disponibles
@@ -1571,6 +1596,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 
 }

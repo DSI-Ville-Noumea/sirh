@@ -38,6 +38,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -121,6 +122,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	private MotifVisiteMedDao motifVisiteMedDao;
 
+	private TypeDocumentDao typeDocumentDao;
+
 	public SuiviMedicalDao getSuiviMedDao() {
 		return suiviMedDao;
 	}
@@ -186,9 +189,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		if (getSuiviMedDao() == null)
 			setSuiviMedDao(new SuiviMedicalDao((SirhDao) context.getBean("sirhDao")));
-		
+
 		if (getMotifVisiteMedDao() == null)
 			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
+
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -220,7 +227,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		// Si hashtable des motifs vide
 		if (getHashMotif().size() == 0) {
-			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao().listerMotifVisiteMed();
+			ArrayList<MotifVisiteMed> listeMotif = (ArrayList<MotifVisiteMed>) getMotifVisiteMedDao()
+					.listerMotifVisiteMed();
 			setListeMotif(listeMotif);
 
 			int[] tailles = { 40 };
@@ -2620,8 +2628,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
-						doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+						Integer.valueOf(doc.getIdTypeDocument()));
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
@@ -3096,7 +3104,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "VM";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -3114,7 +3122,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -3345,5 +3353,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }

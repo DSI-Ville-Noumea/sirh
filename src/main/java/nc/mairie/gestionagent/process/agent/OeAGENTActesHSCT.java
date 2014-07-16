@@ -31,6 +31,9 @@ import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -43,6 +46,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -83,6 +87,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesHSCT.class);
 
+	private TypeDocumentDao typeDocumentDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -111,6 +117,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
 				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
@@ -130,16 +138,31 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		initialiseListeDeroulante();
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	private void initialiseListeDeroulante() throws Exception {
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
-			ArrayList<TypeDocument> td = TypeDocument.listerTypeDocumentAvecModule(getTransaction(), "HSCT");
-			TypeDocument typeVide = new TypeDocument();
-			td.add(0, typeVide);
+			ArrayList<TypeDocument> td = getTypeDocumentDao().listerTypeDocumentAvecModule("HSCT");
 			setListeTypeDocument(td);
-			int[] tailles = { 25 };
-			String[] champs = { "libTypeDocument", "idTypeDocument" };
-			setLB_TYPE_DOCUMENT(new FormateListe(tailles, td, champs).getListeFormatee());
+			if (getListeTypeDocument().size() != 0) {
+				int[] tailles = { 25 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TypeDocument> list = getListeTypeDocument().listIterator(); list.hasNext();) {
+					TypeDocument de = (TypeDocument) list.next();
+					String ligne[] = { de.getLibTypeDocument(), de.getIdTypeDocument().toString() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE_DOCUMENT(aFormat.getListeFormatee(true));
+			} else {
+				setLB_TYPE_DOCUMENT(null);
+			}
 		}
 		if (getLB_VM() == LBVide) {
 			if (null != getAgentCourant()) {
@@ -249,7 +272,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// obligatoire
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
+		String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getLibTypeDocument();
 		if (nomType.toUpperCase().equals("ACCIDENT TRAVAIL")) {
 			if (multi.getParameter(getNOM_LB_AT()).equals("0")) {
 				// ERR002:La zone accident travail est obligatoire.
@@ -290,7 +313,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// on recupere le contrat concerné par l'ajout
 		int indice = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String nomType = ((TypeDocument) getListeTypeDocument().get(indice)).getLibTypeDocument();
+		String nomType = ((TypeDocument) getListeTypeDocument().get(indice - 1)).getLibTypeDocument();
 		boolean ajoutAT = false;
 		boolean ajoutVM = false;
 		boolean ajoutHandi = false;
@@ -351,6 +374,10 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				}
 			}
 			if (!creeDocument(request, ajoutAT, at, ajoutVM, vm, ajoutHandi, handi)) {
+				addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+				// "ERR092", "Vous ne pouvez ajouter de document pour ce type."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR092"));
 				return false;
 			}
 
@@ -393,6 +420,10 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				d.supprimerDocument(getTransaction());
 			}
 			if (!creeDocument(request, ajoutAT, at, ajoutVM, vm, ajoutHandi, handi)) {
+				addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
+				addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+				// "ERR092", "Vous ne pouvez ajouter de document pour ce type."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR092"));
 				return false;
 			}
 		}
@@ -416,7 +447,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// on recupère le type de document
 		int indiceTypeDoc = (Services.estNumerique(getVAL_LB_TYPE_DOCUMENT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_DOCUMENT_SELECT()) : -1);
-		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getCodTypeDocument();
+		String codTypeDoc = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getCodTypeDocument();
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -448,7 +479,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(
-				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getIdTypeDocument());
+				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -698,8 +729,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
-						doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+						Integer.valueOf(doc.getIdTypeDocument()));
 				String info = "&nbsp;";
 				if (td.getCodTypeDocument().equals("VM")) {
 					String nomDoc = doc.getNomDocument();
@@ -707,9 +738,6 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
 					VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicale(getTransaction(), id);
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
 					if (vm != null && vm.getDateDerniereVisite() != null
 							&& !vm.getDateDerniereVisite().equals(Const.DATE_NULL)) {
 						info = "VM du : " + vm.getDateDerniereVisite();
@@ -805,7 +833,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(), d.getIdTypeDocument());
+		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+				Integer.valueOf(d.getIdTypeDocument()));
 		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
 				.getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
@@ -1080,7 +1109,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		int indiceTypeDoc = (Services.estNumerique(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) ? Integer
 				.parseInt(multi.getParameter(getNOM_LB_TYPE_DOCUMENT())) : -1);
 		if (indiceTypeDoc != -1 && indiceTypeDoc != 0) {
-			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc)).getLibTypeDocument();
+			String nomType = ((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getLibTypeDocument();
 			if (nomType.toUpperCase().equals("ACCIDENT TRAVAIL")) {
 				// on affiche une liste deroulante des différents AT disponibles
 				addZone(getNOM_ST_CHOIX_TYPE_DOC(), "ACCIDENT TRAVAIL");
@@ -1442,6 +1471,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public String getVAL_ST_NOM_ORI_DOC(int i) {
 		return getZone(getNOM_ST_NOM_ORI_DOC(i));
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 
 }

@@ -28,6 +28,9 @@ import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -40,6 +43,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -84,6 +88,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
+	private TypeDocumentDao typeDocumentDao;
+
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
 	 * (30/06/11 13:56:32)
@@ -118,6 +124,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+
+		initialiseDao();
 
 		// Si hashtable des types d'accident de travail vide
 		// RG_AG_AT_C01
@@ -164,6 +172,14 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTypeDocumentDao() == null) {
+			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -895,8 +911,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) TypeDocument.chercherTypeDocument(getTransaction(),
-						doc.getIdTypeDocument());
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
+						Integer.valueOf(doc.getIdTypeDocument()));
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
@@ -1250,7 +1266,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// on recupère le type de document
 		String codTypeDoc = "AT";
-		TypeDocument td = TypeDocument.chercherTypeDocumentByCod(getTransaction(), codTypeDoc);
+		TypeDocument td = getTypeDocumentDao().chercherTypeDocumentByCod(codTypeDoc);
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
@@ -1269,7 +1285,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
 		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
@@ -1448,5 +1464,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public String getNOM_ST_NOM_ORI_DOC() {
 		return "NOM_ST_NOM_ORI_DOC";
+	}
+
+	public TypeDocumentDao getTypeDocumentDao() {
+		return typeDocumentDao;
+	}
+
+	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
+		this.typeDocumentDao = typeDocumentDao;
 	}
 }
