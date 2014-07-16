@@ -17,6 +17,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
+import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -62,6 +63,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private CodeRomeDao codeRomeDao;
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
 	private DomaineEmploiDao domaineEmploiDao;
+	private FamilleEmploiDao familleEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -99,7 +101,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		if (getListeFamille() == null) {
 			// Recherche des domaines d'activité
-			ArrayList<FamilleEmploi> liste = FamilleEmploi.listerFamilleEmploi(getTransaction());
+			ArrayList<FamilleEmploi> liste = getFamilleEmploiDao().listerFamilleEmploi();
 			setListeFamille(liste);
 			initialiseListeFamille(request);
 		}
@@ -139,6 +141,9 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		}
 		if (getDomaineEmploiDao() == null) {
 			setDomaineEmploiDao(new DomaineEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFamilleEmploiDao() == null) {
+			setFamilleEmploiDao(new FamilleEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -193,7 +198,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeFamille(HttpServletRequest request) throws Exception {
-		setListeFamille(FamilleEmploi.listerFamilleEmploi(getTransaction()));
+		setListeFamille(getFamilleEmploiDao().listerFamilleEmploi());
 		if (getListeFamille().size() != 0) {
 			int tailles[] = { 3, 70 };
 			String padding[] = { "C", "G" };
@@ -660,11 +665,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				setFamilleCourante(new FamilleEmploi());
 				getFamilleCourante().setLibFamilleEmploi(getVAL_EF_FAMILLE());
 				getFamilleCourante().setCodeFamilleEmploi(getVAL_EF_CODE_FAMILLE());
-				getFamilleCourante().creerFamilleEmploi(getTransaction());
+				getFamilleEmploiDao().creerFamilleEmploi(getFamilleCourante().getLibFamilleEmploi(),
+						getFamilleCourante().getCodeFamilleEmploi());
 				if (!getTransaction().isErreur())
 					getListeFamille().add(getFamilleCourante());
 			} else if (getVAL_ST_ACTION_FAMILLE().equals(ACTION_SUPPRESSION)) {
-				getFamilleCourante().supprimerFamilleEmploi(getTransaction());
+				getFamilleEmploiDao().supprimerFamilleEmploi(getFamilleCourante().getIdFamilleEmploi());
 				if (!getTransaction().isErreur())
 					getListeFamille().remove(getFamilleCourante());
 				setFamilleCourante(null);
@@ -1936,5 +1942,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setDomaineEmploiDao(DomaineEmploiDao domaineEmploiDao) {
 		this.domaineEmploiDao = domaineEmploiDao;
+	}
+
+	public FamilleEmploiDao getFamilleEmploiDao() {
+		return familleEmploiDao;
+	}
+
+	public void setFamilleEmploiDao(FamilleEmploiDao familleEmploiDao) {
+		this.familleEmploiDao = familleEmploiDao;
 	}
 }

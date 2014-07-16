@@ -13,6 +13,7 @@ import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
+import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -44,6 +45,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	private CodeRomeDao codeRomeDao;
 	private DomaineEmploiDao domaineEmploiDao;
+	private FamilleEmploiDao familleEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -68,6 +70,9 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		if (getDomaineEmploiDao() == null) {
 			setDomaineEmploiDao(new DomaineEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getFamilleEmploiDao() == null) {
+			setFamilleEmploiDao(new FamilleEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -78,13 +83,22 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste famille vide alors affectation
 		if (getLB_FAMILLE_EMPLOI() == LBVide) {
-			ArrayList<FamilleEmploi> fam = FamilleEmploi.listerFamilleEmploi(getTransaction());
+			ArrayList<FamilleEmploi> fam = getFamilleEmploiDao().listerFamilleEmploi();
 			setListeFamilleEmploi(fam);
-
-			int[] tailles = { 4, 100 };
-			String[] champs = { "codeFamilleEmploi", "libFamilleEmploi" };
-			setLB_FAMILLE_EMPLOI(new FormateListe(tailles, fam, champs).getListeFormatee(true));
+			if (getListeFamilleEmploi().size() != 0) {
+				int[] tailles = { 4, 100 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<FamilleEmploi> list = getListeFamilleEmploi().listIterator(); list.hasNext();) {
+					FamilleEmploi de = (FamilleEmploi) list.next();
+					String ligne[] = { de.getCodeFamilleEmploi(), de.getLibFamilleEmploi() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_FAMILLE_EMPLOI(aFormat.getListeFormatee(true));
+			} else {
+				setLB_FAMILLE_EMPLOI(null);
+			}
 		}
+
 		// Si liste domaine vide alors affectation
 		if (getLB_DOMAINE_EMPLOI() == LBVide) {
 			ArrayList<DomaineEmploi> dom = getDomaineEmploiDao().listerDomaineEmploi();
@@ -685,5 +699,13 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	public void setDomaineEmploiDao(DomaineEmploiDao domaineEmploiDao) {
 		this.domaineEmploiDao = domaineEmploiDao;
+	}
+
+	public FamilleEmploiDao getFamilleEmploiDao() {
+		return familleEmploiDao;
+	}
+
+	public void setFamilleEmploiDao(FamilleEmploiDao familleEmploiDao) {
+		this.familleEmploiDao = familleEmploiDao;
 	}
 }
