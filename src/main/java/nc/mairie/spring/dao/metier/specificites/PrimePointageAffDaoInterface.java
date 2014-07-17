@@ -9,6 +9,8 @@ public interface PrimePointageAffDaoInterface {
 	public void creerPrimePointageAff(Integer numRubrique, Integer idAffectation);
 
 	public void supprimerPrimePointageAff(Integer idAffectation, Integer numRubrique);
-	
-	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation) ;
+
+	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation);
+
+	public void supprimerToutesPrimePointageAff(String idAffectation);
 }

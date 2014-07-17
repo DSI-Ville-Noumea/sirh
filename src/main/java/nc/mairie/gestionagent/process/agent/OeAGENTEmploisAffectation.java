@@ -49,6 +49,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.AvantageNatureAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -163,6 +164,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
+	private AvantageNatureAffDao avantageNatureAffDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -3061,6 +3063,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAvantageNatureAffDao() == null) {
+			setAvantageNatureAffDao(new AvantageNatureAffDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -4129,9 +4134,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		for (int i = 0; i < getListeAvantageAAjouter().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageAAjouter().get(i);
 			avNat.creerAvantageNature(getTransaction());
-			AvantageNatureAFF avNatAFF = new AvantageNatureAFF(getAffectationCourant().getIdAffectation(),
-					avNat.getIdAvantage());
-			avNatAFF.creerAvantageNatureAFF(getTransaction());
+			AvantageNatureAFF avNatAFF = new AvantageNatureAFF(Integer.valueOf(getAffectationCourant()
+					.getIdAffectation()), Integer.valueOf(avNat.getIdAvantage()));
+			getAvantageNatureAffDao().creerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être créé.");
@@ -4141,9 +4146,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (int i = 0; i < getListeAvantageASupprimer().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageASupprimer().get(i);
-			AvantageNatureAFF avNatAFF = AvantageNatureAFF.chercherAvantageNatureAFF(getTransaction(),
-					getAffectationCourant().getIdAffectation(), avNat.getIdAvantage());
-			avNatAFF.supprimerAvantageNatureAFF(getTransaction());
+			AvantageNatureAFF avNatAFF = getAvantageNatureAffDao()
+					.chercherAvantageNatureAFF(Integer.valueOf(avNat.getIdAvantage()),
+							Integer.valueOf(getAffectationCourant().getIdAffectation()));
+			getAvantageNatureAffDao().supprimerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
 			avNat.supprimerAvantageNature(getTransaction());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -5196,6 +5202,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
 		this.typeRegIndemnDao = typeRegIndemnDao;
+	}
+
+	public AvantageNatureAffDao getAvantageNatureAffDao() {
+		return avantageNatureAffDao;
+	}
+
+	public void setAvantageNatureAffDao(AvantageNatureAffDao avantageNatureAffDao) {
+		this.avantageNatureAffDao = avantageNatureAffDao;
 	}
 
 }
