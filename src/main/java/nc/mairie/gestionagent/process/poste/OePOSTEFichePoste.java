@@ -66,6 +66,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -217,6 +218,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
+	private AvantageNatureDao avantageNatureDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -435,6 +437,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvantageNatureDao() == null) {
+			setAvantageNatureDao(new AvantageNatureDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -999,8 +1004,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setListeAvantageASupprimer((ArrayList<AvantageNature>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_AV_NATURE_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeAvantage(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste()));
+			setListeAvantage(getAvantageNatureDao().listerAvantageNatureAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 		if (getListeAvantage() != null) {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
@@ -1094,7 +1099,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_ST_AV_TYPE(indiceAvantage),
 						getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 								: getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
-				addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant());
+				addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant().toString());
 				addZone(getNOM_ST_AV_NATURE(indiceAvantage), aAvNat.getIdNatureAvantage() == null ? "&nbsp;"
 						: getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
 				indiceAvantage++;
@@ -2142,9 +2147,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Sauvegarde des nouveaux avantages nature et suppression des
 			// anciens
 			for (AvantageNature avNat : getListeAvantageAAjouter()) {
-				avNat.creerAvantageNature(getTransaction());
-				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(),
-						avNat.getIdAvantage());
+				getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(), avNat.getIdTypeAvantage(),
+						avNat.getIdNatureAvantage(), avNat.getMontant());
+				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(), avNat
+						.getIdAvantage().toString());
 				avNatFP.creerAvantageNatureFP(getTransaction());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -2153,10 +2159,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 			for (AvantageNature avNat : getListeAvantageASupprimer()) {
-				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(),
-						avNat.getIdAvantage());
+				AvantageNatureFP avNatFP = new AvantageNatureFP(getFichePosteCourante().getIdFichePoste(), avNat
+						.getIdAvantage().toString());
 				avNatFP.supprimerAvantageNatureFP(getTransaction());
-				avNat.supprimerAvantageNature(getTransaction());
+				getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(" Au moins un avantage en nature n'a pu être supprimé.");
@@ -6501,5 +6507,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
 		this.typeRegIndemnDao = typeRegIndemnDao;
+	}
+
+	public AvantageNatureDao getAvantageNatureDao() {
+		return avantageNatureDao;
+	}
+
+	public void setAvantageNatureDao(AvantageNatureDao avantageNatureDao) {
+		this.avantageNatureDao = avantageNatureDao;
 	}
 }

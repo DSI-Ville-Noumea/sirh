@@ -53,6 +53,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -132,6 +133,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
+	private AvantageNatureDao avantageNatureDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -238,6 +240,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvantageNatureDao() == null) {
+			setAvantageNatureDao(new AvantageNatureDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -346,8 +351,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		// Avantages en nature
 		if (getListeAvantage().size() == 0) {
-			setListeAvantage(AvantageNature.listerAvantageNatureAvecFP(getTransaction(), getFichePosteCourant()
-					.getIdFichePoste()));
+			setListeAvantage(getAvantageNatureDao().listerAvantageNatureAvecFP(
+					Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getTransaction().isErreur()) {
 				return;
 			}
@@ -365,7 +370,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 					addZone(getNOM_ST_AV_TYPE(indiceAvantage),
 							typAv.getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typAv
 									.getLibTypeAvantage());
-					addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant());
+					addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant().toString());
 					addZone(getNOM_ST_AV_NATURE(indiceAvantage),
 							natAv == null ? "&nbsp;" : natAv.getLibNatureAvantage());
 				}
@@ -2328,5 +2333,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
 		this.typeRegIndemnDao = typeRegIndemnDao;
+	}
+
+	public AvantageNatureDao getAvantageNatureDao() {
+		return avantageNatureDao;
+	}
+
+	public void setAvantageNatureDao(AvantageNatureDao avantageNatureDao) {
+		this.avantageNatureDao = avantageNatureDao;
 	}
 }

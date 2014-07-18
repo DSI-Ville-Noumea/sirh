@@ -1332,6 +1332,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
+
 	}
 
 	/**
@@ -1355,7 +1356,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 							Integer.valueOf(aAvNat.getIdTypeAvantage()));
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
-					String ligne[] = { typAv.libTypeAvantage, aAvNat.getMontant(),
+					String ligne[] = { typAv.getLibTypeAvantage(), aAvNat.getMontant().toString(),
 							natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
 				}
@@ -1799,20 +1800,19 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			// Alimentation de l'objet
 			AvantageNature avNat = new AvantageNature();
 
-			avNat.setMontant(getVAL_EF_MONTANT_AVANTAGE());
+			avNat.setMontant(Double.valueOf(getVAL_EF_MONTANT_AVANTAGE()));
 
 			int indiceTypeAvantage = (Services.estNumerique(getVAL_LB_TYPE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_AVANTAGE_SELECT()) : -1);
-			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage()
-					.toString());
+			avNat.setIdTypeAvantage(((TypeAvantage) getListeTypeAvantage().get(indiceTypeAvantage)).getIdTypeAvantage());
 			int indiceNatAvantage = (Services.estNumerique(getVAL_LB_NATURE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_NATURE_AVANTAGE_SELECT()) : -1);
 			avNat.setIdNatureAvantage(((NatureAvantage) getListeNatureAvantage().get(indiceNatAvantage))
-					.getIdNatureAvantage().toString());
+					.getIdNatureAvantage());
 			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
-			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(
-					indiceRubAvantage - 1)).getNumRubrique());
+			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(
+					indiceRubAvantage - 1)).getNumRubrique()));
 
 			if (getListeAvantage() == null)
 				setListeAvantage(new ArrayList<AvantageNature>());

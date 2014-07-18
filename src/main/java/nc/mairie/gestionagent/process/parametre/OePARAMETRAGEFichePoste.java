@@ -16,7 +16,6 @@ import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.TitrePoste;
-import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
@@ -24,6 +23,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -88,6 +88,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
+	private AvantageNatureDao avantageNatureDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -144,6 +145,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvantageNatureDao() == null) {
+			setAvantageNatureDao(new AvantageNatureDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1160,8 +1164,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'une nature d'avantage en nature
 		// utilisée sur un avantage en nature
 		if (getVAL_ST_ACTION_NATURE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& AvantageNature.listerAvantageNatureAvecNatureAvantage(getTransaction(), getNatureAvantageCourant())
-						.size() > 0) {
+				&& getAvantageNatureDao().listerAvantageNatureAvecNatureAvantage(
+						getNatureAvantageCourant().getIdNatureAvantage()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1359,8 +1363,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type d'avantage utilisé sur un
 		// avantage en nature
 		if (getVAL_ST_ACTION_TYPE_AVANTAGE().equals(ACTION_SUPPRESSION)
-				&& AvantageNature.listerAvantageNatureAvecTypeAvantage(getTransaction(), getTypeAvantageCourant())
-						.size() > 0) {
+				&& getAvantageNatureDao().listerAvantageNatureAvecTypeAvantage(
+						getTypeAvantageCourant().getIdTypeAvantage()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -3169,5 +3173,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
 		this.typeRegIndemnDao = typeRegIndemnDao;
+	}
+
+	public AvantageNatureDao getAvantageNatureDao() {
+		return avantageNatureDao;
+	}
+
+	public void setAvantageNatureDao(AvantageNatureDao avantageNatureDao) {
+		this.avantageNatureDao = avantageNatureDao;
 	}
 }
