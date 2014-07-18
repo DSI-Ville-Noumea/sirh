@@ -200,17 +200,17 @@
 					<div align="left">
 						<span class="sigp2-RadioBouton"> 
 						<INPUT tabindex=""	type="radio" checked
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_PP_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Prime pointage <span style="width: 5px"></span> 
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_PP())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Prime pointage <span style="width: 5px"></span> 
 					    <INPUT tabindex=""	type="radio" 
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_AN_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Avantage en nature <span style="width: 5px"></span> 
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_AN())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Avantage en nature <span style="width: 5px"></span> 
 						<INPUT tabindex=""	type="radio"
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_D_spec())%>	onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Délégation	<span style="width: 5px"></span> 
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_D())%>	onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Délégation	<span style="width: 5px"></span> 
 						<INPUT type="radio"
-						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE_spec(), process.getNOM_RB_SPECIFICITE_RI_spec())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>")'>Régime indemnitaire <span style="width: 5px"></span>  
-						<INPUT type="submit" style="visibility: hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE_spec()%>" value="OK">
+						<%=process.forRadioHTML(process.getNOM_RG_SPECIFICITE(), process.getNOM_RB_SPECIFICITE_RI())%> onclick='executeBouton("<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>")'>Régime indemnitaire <span style="width: 5px"></span>  
+						<INPUT type="submit" style="visibility: hidden;" name="<%=process.getNOM_PB_CHANGER_SPECIFICITE()%>" value="OK">
 					</div>
 					<%
-						if (process.getVAL_RG_SPECIFICITE_spec().equals(process.getNOM_RB_SPECIFICITE_AN_spec())) {
+						if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_AN())) {
 										out.println("<div align='left' style='float: left; width: 100%; display: block;'>");
 
 									} else {
@@ -226,7 +226,7 @@
 							<th class="sigp2-tabTitre"><INPUT type="image"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								src="images/ajout.gif" height="16px" width="16px"
-								name="<%=process.getNOM_PB_AJOUTER_AVANTAGE_spec()%>"></th>
+								name="<%=process.getNOM_PB_AJOUTER_AVANTAGE()%>"></th>
 							<%} %>
 							<th class="sigp2-tabTitre" style="width: 300px;">Type</th>
 							<th class="sigp2-tabTitre" style="width: 100px;">Montant</th>
@@ -240,10 +240,10 @@
 						%>
 						<tr>
 							<td class="sigp2-tabLigne">FP</td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE_spec(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat)%></td>
 						</tr>
 						<%
 							indiceAvNat++;
@@ -261,13 +261,13 @@
 								type="image" src="images/suppression.gif"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								height="16px" width="16px"
-								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE_spec(indiceAvNat)%>">
+								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE(indiceAvNat)%>">
 							</td>
 							<%} %>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE_spec(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat)%></td>
 						</tr>
 						<%
 							indiceAvNat++;
@@ -285,13 +285,13 @@
 								type="image" src="images/suppression.gif"
 								class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 								height="16px" width="16px"
-								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE_spec(indiceAvNat)%>">
+								name="<%=process.getNOM_PB_SUPPRIMER_AVANTAGE(indiceAvNat)%>">
 							</td>
 							<%} %>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE_spec(indiceAvNat)%></td>
-							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE_spec(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_TYPE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_MONTANT(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_NATURE(indiceAvNat)%></td>
+							<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_AVANTAGE_RUBRIQUE(indiceAvNat)%></td>
 						</tr>
 						<%
 							indiceAvNat++;
@@ -302,7 +302,7 @@
 					<BR />
 			</div>
 			<%
-				if (process.getVAL_RG_SPECIFICITE_spec().equals(process.getNOM_RB_SPECIFICITE_D_spec())) {
+				if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_D())) {
 								out.println("<div align='left' style='float: left; width: 100%; display: block;'>");
 							} else {
 								out.println("<div align='left' style='float: left; width: 100%; display: none;'>");
@@ -318,7 +318,7 @@
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_AJOUTER_DELEGATION_spec()%>"></th>
+						name="<%=process.getNOM_PB_AJOUTER_DELEGATION()%>"></th>
 					<%} %>
 					<th class="sigp2-tabTitre" width="150px">Type</th>
 					<th class="sigp2-tabTitre" width="700px">Commentaire</th>
@@ -330,8 +330,8 @@
 				%>
 				<tr>
 					<td class="sigp2-tabLigne">FP</td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE_spec(indiceDel)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT_spec(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT(indiceDel)%></td>
 				</tr>
 				<%
 					indiceDel++;
@@ -349,11 +349,11 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION_spec(indiceDel)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION(indiceDel)%>">
 					</td>
 					<%} %>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE_spec(indiceDel)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT_spec(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT(indiceDel)%></td>
 				</tr>
 				<%
 					indiceDel++;
@@ -371,11 +371,11 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION_spec(indiceDel)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_DELEGATION(indiceDel)%>">
 					</td>
 					<%} %>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE_spec(indiceDel)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT_spec(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_TYPE(indiceDel)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_DELEGATION_COMMENT(indiceDel)%></td>
 				</tr>
 				<%
 					indiceDel++;
@@ -386,7 +386,7 @@
 			<BR />
 			</div>
 			<%
-				if (process.getVAL_RG_SPECIFICITE_spec().equals(process.getNOM_RB_SPECIFICITE_RI_spec())) {
+				if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_RI())) {
 								out.println("<div align='left' style='float: left; width: 100%; display: block;'>");
 
 							} else {
@@ -403,7 +403,7 @@
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_AJOUTER_REGIME_spec()%>"></th>
+						name="<%=process.getNOM_PB_AJOUTER_REGIME()%>"></th>
 					<%} %>
 					<th class="sigp2-tabTitre" width="150px">Type</th>
 					<th class="sigp2-tabTitre" width="100px">Forfait</th>
@@ -417,10 +417,10 @@
 				%>
 				<tr>
 					<td class="sigp2-tabLigne">FP</td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE_spec(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE(indiceRegIndemn)%></td>
 				</tr>
 				<%
 					indiceRegIndemn++;
@@ -438,13 +438,13 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_REGIME_spec(indiceRegIndemn)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_REGIME(indiceRegIndemn)%>">
 					</td>
 					<%} %>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE_spec(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE(indiceRegIndemn)%></td>
 				</tr>
 				<%
 					indiceRegIndemn++;
@@ -462,13 +462,13 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_REGIME_spec(indiceRegIndemn)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_REGIME(indiceRegIndemn)%>">
 					</td>
 					<%} %>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS_spec(indiceRegIndemn)%></td>
-					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE_spec(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_TYPE(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_FORFAIT(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_NB_POINTS(indiceRegIndemn)%></td>
+					<td class="sigp2-tabLigne"><%=process.getVAL_ST_LST_REGINDEMN_RUBRIQUE(indiceRegIndemn)%></td>
 				</tr>
 				<%
 					indiceRegIndemn++;
@@ -479,7 +479,7 @@
 			<BR />
 			</div>
 			<%
-				if (process.getVAL_RG_SPECIFICITE_spec().equals(process.getNOM_RB_SPECIFICITE_PP_spec())) {
+				if (process.getVAL_RG_SPECIFICITE().equals(process.getNOM_RB_SPECIFICITE_PP())) {
 								out.println("<div align='left' style='float: left; width: 100%; display: block;'>");
 
 							} else {
@@ -500,7 +500,7 @@
 						src="images/ajout.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE_spec()%>">
+						name="<%=process.getNOM_PB_AJOUTER_PRIME_POINTAGE()%>">
 					<%
 						}
 					%>
@@ -524,15 +524,15 @@
 						if ((process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) ||
 											process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)) && process.isPrimeModifiable()) {
 					%>
-						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>")'  >
-						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE_spec(indicePrimePointage)%>" value="DATE">
+						<INPUT style="visibility: visible;"type="checkbox" onClick='executeBouton("<%=process.getNOM_PB_SET_PRIME_POINTAGE(indicePrimePointage)%>")'  >
+						<INPUT type="submit" style="visibility : hidden;width: 5px" name="<%=process.getNOM_PB_SET_PRIME_POINTAGE(indicePrimePointage)%>" value="DATE">
 											
 					<%
 																	}
 																%>
 					</td>
 					<td align="center"><%="FP " + process.getPosteCourantTitle()%></td>
-					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
 				</tr>
 				<%
 					}
@@ -553,13 +553,13 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE_spec(indicePrimePointage)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE(indicePrimePointage)%>">
 					<%
 						}
 					%>
 					</td>
 					<td align="center"><%="Affectation "%></td>
-					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
 				</tr>
 				<%
 					indicePrimePointage++;
@@ -579,13 +579,13 @@
 						type="image" src="images/suppression.gif"
 						class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>"
 						height="16px" width="16px"
-						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE_spec(indicePrimePointage)%>">
+						name="<%=process.getNOM_PB_SUPPRIMER_PRIME_POINTAGE(indicePrimePointage)%>">
 					<%
 						}
 					%>
 					</td>
 					<td align="center">En cours d'ajout</td>
-					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE_spec(indicePrimePointage)%></td>
+					<td><%=process.getVAL_ST_LST_PRIME_POINTAGE_RUBRIQUE(indicePrimePointage)%></td>
 				</tr>
 				<%
 									indicePrimePointage++;
@@ -623,22 +623,22 @@
 				<span class="sigp2Mandatory"
 					style="margin-left: 20px; position: relative; width: 150px;">Type
 					d'avantage : </span> <span> <SELECT class="sigp2-liste"
-					name="<%=process.getNOM_LB_TYPE_AVANTAGE_spec()%>"
+					name="<%=process.getNOM_LB_TYPE_AVANTAGE()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_AVANTAGE_spec(), process.getVAL_LB_TYPE_AVANTAGE_SELECT_spec())%>
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_AVANTAGE(), process.getVAL_LB_TYPE_AVANTAGE_SELECT())%>
 				</SELECT>
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 150px;">Nature
 					d'avantage : </span> <span> <SELECT class="sigp2-liste"
 					name="<%=process.getNOM_LB_NATURE_AVANTAGE()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_NATURE_AVANTAGE_spec(), process.getVAL_LB_NATURE_AVANTAGE_SELECT_spec())%>
+						<%=process.forComboHTML(process.getVAL_LB_NATURE_AVANTAGE(), process.getVAL_LB_NATURE_AVANTAGE_SELECT())%>
 				</SELECT>
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 150px;">Montant
 					: </span> <span> <INPUT class="sigp2-saisie" maxlength="8"
-					name="<%=process.getNOM_EF_MONTANT_AVANTAGE_spec()%>" size="10"
-					type="text" value="<%=process.getVAL_EF_MONTANT_AVANTAGE_spec()%>">
+					name="<%=process.getNOM_EF_MONTANT_AVANTAGE()%>" size="10"
+					type="text" value="<%=process.getVAL_EF_MONTANT_AVANTAGE()%>">
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 150px;">Rubrique
 					: </span> <span> <SELECT class="sigp2-liste"
@@ -653,16 +653,16 @@
 				<span class="sigp2Mandatory"
 					style="margin-left: 20px; position: relative; width: 120px;">Type
 					: </span> <span> <SELECT class="sigp2-liste"
-					name="<%=process.getNOM_LB_TYPE_DELEGATION_spec()%>"
+					name="<%=process.getNOM_LB_TYPE_DELEGATION()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_DELEGATION_spec(), process.getVAL_LB_TYPE_DELEGATION_SELECT_spec())%>
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_DELEGATION(), process.getVAL_LB_TYPE_DELEGATION_SELECT())%>
 				</SELECT>
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 120px;">Commentaire
 					: </span> <span> <INPUT class="sigp2-saisie" maxlength="100"
-					name="<%=process.getNOM_EF_COMMENT_DELEGATION_spec()%>" size="100"
+					name="<%=process.getNOM_EF_COMMENT_DELEGATION()%>" size="100"
 					type="text"
-					value="<%=process.getVAL_EF_COMMENT_DELEGATION_spec()%>">
+					value="<%=process.getVAL_EF_COMMENT_DELEGATION()%>">
 				</span>
 				<%
 					} else if (process.getVAL_ST_SPECIFICITE().equals(process.SPEC_PRIME_POINTAGE_SPEC)) {
@@ -681,20 +681,20 @@
 				<span class="sigp2Mandatory"
 					style="margin-left: 20px; position: relative; width: 70px;">Type
 					: </span> <span> <SELECT class="sigp2-liste"
-					name="<%=process.getNOM_LB_TYPE_REGIME_spec()%>"
+					name="<%=process.getNOM_LB_TYPE_REGIME()%>"
 					style="width: 350px;">
-						<%=process.forComboHTML(process.getVAL_LB_TYPE_REGIME_spec(), process.getVAL_LB_TYPE_REGIME_SELECT_spec())%>
+						<%=process.forComboHTML(process.getVAL_LB_TYPE_REGIME(), process.getVAL_LB_TYPE_REGIME_SELECT())%>
 				</SELECT>
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 70px;">Forfait
 					: </span> <span> <INPUT class="sigp2-saisie" maxlength="8"
-					name="<%=process.getNOM_EF_FORFAIT_REGIME_spec()%>" size="10"
-					type="text" value="<%=process.getVAL_EF_FORFAIT_REGIME_spec()%>">
+					name="<%=process.getNOM_EF_FORFAIT_REGIME()%>" size="10"
+					type="text" value="<%=process.getVAL_EF_FORFAIT_REGIME()%>">
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 70px;">Nb
 					points : </span> <span> <INPUT class="sigp2-saisie" maxlength="5"
-					name="<%=process.getNOM_EF_NB_POINTS_REGIME_spec()%>" size="10"
-					type="text" value="<%=process.getVAL_EF_NB_POINTS_REGIME_spec()%>">
+					name="<%=process.getNOM_EF_NB_POINTS_REGIME()%>" size="10"
+					type="text" value="<%=process.getVAL_EF_NB_POINTS_REGIME()%>">
 				</span> <BR /> <BR /> <span class="sigp2"
 					style="margin-left: 20px; position: relative; width: 70px;">Rubrique
 					: </span> <span> <SELECT class="sigp2-liste"
@@ -707,7 +707,7 @@
 					}
 				%>
 				<BR /> <BR /> <INPUT type="submit" class="sigp2-Bouton-100"
-					value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT_spec()%>">
+					value="Ajouter" name="<%=process.getNOM_PB_VALIDER_AJOUT()%>">
 				<%
 					}
 				%>
