@@ -68,6 +68,8 @@ import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureFPDao;
+import nc.mairie.spring.dao.metier.specificites.DelegationDao;
+import nc.mairie.spring.dao.metier.specificites.DelegationFPDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -221,6 +223,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private TypeRegIndemnDao typeRegIndemnDao;
 	private AvantageNatureDao avantageNatureDao;
 	private AvantageNatureFPDao avantageNatureFPDao;
+	private DelegationDao delegationDao;
+	private DelegationFPDao delegationFPDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -445,6 +449,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getAvantageNatureFPDao() == null) {
 			setAvantageNatureFPDao(new AvantageNatureFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDelegationDao() == null) {
+			setDelegationDao(new DelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDelegationFPDao() == null) {
+			setDelegationFPDao(new DelegationFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1035,8 +1045,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setListeDelegationASupprimer((ArrayList<Delegation>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_DELEGATION_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeDelegation(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste()));
+			setListeDelegation(getDelegationDao().listerDelegationAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 		if (getListeDelegation() != null) {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
@@ -1116,8 +1126,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeDelegation() != null) {
 			for (Delegation aDel : getListeDelegation()) {
 				addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
-						getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation()
-								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation())
+						getHashTypDel().get(aDel.getIdTypeDelegation().toString()).getLibTypeDelegation()
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation().toString())
 								.getLibTypeDelegation());
 				addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
 						aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
@@ -2177,10 +2187,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// Sauvegarde des nouvelles Delegation et suppression des anciennes
 			for (Delegation deleg : getListeDelegationAAjouter()) {
-				deleg.creerDelegation(getTransaction());
-				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(),
+				getDelegationDao().creerDelegation(deleg.getIdTypeDelegation(), deleg.getLibDelegation());
+				DelegationFP delFP = new DelegationFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
 						deleg.getIdDelegation());
-				delFP.creerDelegationFP(getTransaction());
+				getDelegationFPDao().creerDelegationFP(delFP.getIdDelegation(), delFP.getIdFichePoste());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(" Au moins une Delegation n'a pu être créée.");
@@ -2188,10 +2198,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 			for (Delegation deleg : getListeDelegationASupprimer()) {
-				DelegationFP delFP = new DelegationFP(getFichePosteCourante().getIdFichePoste(),
+				DelegationFP delFP = new DelegationFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
 						deleg.getIdDelegation());
-				delFP.supprimerDelegationFP(getTransaction());
-				deleg.supprimerDelegation(getTransaction());
+				getDelegationFPDao().supprimerDelegationFP(delFP.getIdDelegation(), delFP.getIdFichePoste());
+				getDelegationDao().supprimerDelegation(deleg.getIdDelegation());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(" Au moins une Delegation n'a pu être supprimée.");
@@ -6528,5 +6538,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setAvantageNatureFPDao(AvantageNatureFPDao avantageNatureFPDao) {
 		this.avantageNatureFPDao = avantageNatureFPDao;
+	}
+
+	public DelegationDao getDelegationDao() {
+		return delegationDao;
+	}
+
+	public void setDelegationDao(DelegationDao delegationDao) {
+		this.delegationDao = delegationDao;
+	}
+
+	public DelegationFPDao getDelegationFPDao() {
+		return delegationFPDao;
+	}
+
+	public void setDelegationFPDao(DelegationFPDao delegationFPDao) {
+		this.delegationFPDao = delegationFPDao;
 	}
 }

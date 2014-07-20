@@ -54,6 +54,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
+import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -134,6 +135,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
 	private AvantageNatureDao avantageNatureDao;
+	private DelegationDao delegationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -243,6 +245,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getAvantageNatureDao() == null) {
 			setAvantageNatureDao(new AvantageNatureDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDelegationDao() == null) {
+			setDelegationDao(new DelegationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -382,8 +387,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		setListeDelegation((ArrayList<Delegation>) VariablesActivite.recuperer(this,
 				VariablesActivite.ACTIVITE_LST_DELEGATION));
 		if (getListeDelegation().size() == 0) {
-			setListeDelegation(Delegation.listerDelegationAvecFP(getTransaction(), getFichePosteCourant()
-					.getIdFichePoste()));
+			setListeDelegation(getDelegationDao().listerDelegationAvecFP(
+					Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getTransaction().isErreur()) {
 				return;
 			}
@@ -2341,5 +2346,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setAvantageNatureDao(AvantageNatureDao avantageNatureDao) {
 		this.avantageNatureDao = avantageNatureDao;
+	}
+
+	public DelegationDao getDelegationDao() {
+		return delegationDao;
+	}
+
+	public void setDelegationDao(DelegationDao delegationDao) {
+		this.delegationDao = delegationDao;
 	}
 }

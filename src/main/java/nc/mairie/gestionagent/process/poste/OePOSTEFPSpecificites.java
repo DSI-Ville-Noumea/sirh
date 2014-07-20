@@ -1838,7 +1838,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			int indiceTypeDelegation = (Services.estNumerique(getVAL_LB_TYPE_DELEGATION_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_DELEGATION_SELECT()) : -1);
 			deleg.setIdTypeDelegation(((TypeDelegation) getListeTypeDelegation().get(indiceTypeDelegation))
-					.getIdTypeDelegation().toString());
+					.getIdTypeDelegation());
 
 			if (getListeDelegation() == null)
 				setListeDelegation(new ArrayList<Delegation>());
