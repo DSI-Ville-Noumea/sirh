@@ -36,6 +36,7 @@ import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
+import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -96,6 +97,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private HandicapDao handicapDao;
 	private MedecinDao medecinDao;
 	private NomHandicapDao nomHandicapDao;
+	private RecommandationDao recommandationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -164,6 +166,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getNomHandicapDao() == null) {
 			setNomHandicapDao(new NomHandicapDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRecommandationDao() == null) {
+			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -196,7 +201,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						Medecin medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
 						Recommandation recom = null;
 						if (vm != null && vm.getIdRecommandation() != null) {
-							recom = Recommandation.chercherRecommandation(getTransaction(), vm.getIdRecommandation());
+							recom = getRecommandationDao().chercherRecommandation(
+									Integer.valueOf(vm.getIdRecommandation()));
 						}
 						String ligne[] = { vm.getDateDerniereVisite(), medecin.getNomMedecin(),
 								recom == null ? Const.CHAINE_VIDE : recom.getDescRecommandation() };
@@ -1539,6 +1545,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setNomHandicapDao(NomHandicapDao nomHandicapDao) {
 		this.nomHandicapDao = nomHandicapDao;
+	}
+
+	public RecommandationDao getRecommandationDao() {
+		return recommandationDao;
+	}
+
+	public void setRecommandationDao(RecommandationDao recommandationDao) {
+		this.recommandationDao = recommandationDao;
 	}
 
 }

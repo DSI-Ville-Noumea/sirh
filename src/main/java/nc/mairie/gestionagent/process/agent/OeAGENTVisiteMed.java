@@ -39,6 +39,7 @@ import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -89,7 +90,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	private Hashtable<Integer, Medecin> hashMedecin;
 	private Hashtable<String, MotifVisiteMed> hashMotif;
-	private Hashtable<String, Recommandation> hashRecommandation;
+	private Hashtable<Integer, Recommandation> hashRecommandation;
 	private Hashtable<String, TypeInaptitude> hashTypeInaptitude;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche visite médicale.";
@@ -123,6 +124,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private TypeDocumentDao typeDocumentDao;
 	private MedecinDao medecinDao;
+	private RecommandationDao recommandationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -183,6 +185,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRecommandationDao() == null) {
+			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -220,7 +225,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 			int[] tailles = { 40 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<MotifVisiteMed> list = listeMotif.listIterator(); list.hasNext();) {
+			for (ListIterator<MotifVisiteMed> list = getListeMotif().listIterator(); list.hasNext();) {
 				MotifVisiteMed motif = (MotifVisiteMed) list.next();
 				String ligne[] = { motif.getLibMotifVm() };
 				aFormat.ajouteLigne(ligne);
@@ -236,12 +241,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Si hashtable des recommandations vide
 		if (getHashRecommandation().size() == 0) {
-			ArrayList<Recommandation> listeRecommandation = Recommandation.listerRecommandation(getTransaction());
+			ArrayList<Recommandation> listeRecommandation = getRecommandationDao().listerRecommandation();
 			setListeRecommandation(listeRecommandation);
 
 			int[] tailles = { 150 };
-			String[] champs = { "descRecommandation" };
-			setLB_RECOMMANDATION(new FormateListe(tailles, listeRecommandation, champs).getListeFormatee(true));
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<Recommandation> list = getListeRecommandation().listIterator(); list.hasNext();) {
+				Recommandation motif = (Recommandation) list.next();
+				String ligne[] = { motif.getDescRecommandation() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_RECOMMANDATION(aFormat.getListeFormatee(true));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < listeRecommandation.size(); i++) {
@@ -336,7 +346,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				Recommandation r = null;
 				if (vm.getIdRecommandation() != null) {
-					r = (Recommandation) getHashRecommandation().get(vm.getIdRecommandation());
+					r = (Recommandation) getHashRecommandation().get(Integer.valueOf(vm.getIdRecommandation()));
 				}
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
@@ -471,7 +481,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
-			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
+			recommandation = (Recommandation) getHashRecommandation().get(
+					Integer.valueOf(getVisiteCourante().getIdRecommandation()));
 			int ligneRecommandation = getListeRecommandation().indexOf(recommandation);
 			addZone(getNOM_LB_RECOMMANDATION_SELECT(), String.valueOf(ligneRecommandation + 1));
 		} else {
@@ -540,7 +551,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
-			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
+			recommandation = (Recommandation) getHashRecommandation().get(
+					Integer.valueOf(getVisiteCourante().getIdRecommandation()));
 		}
 		MotifVisiteMed motif = null;
 		if (getVisiteCourante().getIdMotif() != null) {
@@ -1032,7 +1044,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setIdMedecin(medecin.getIdMedecin().toString());
 				getVisiteCourante().setIdMotif(motif.getIdMotifVm().toString());
 				getVisiteCourante().setIdRecommandation(
-						recommandation != null ? recommandation.getIdRecommandation() : null);
+						recommandation != null ? recommandation.getIdRecommandation().toString() : null);
 
 				if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 					// si tranformation d'un suivi medical en VM
@@ -1374,9 +1386,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return hashMotif;
 	}
 
-	private Hashtable<String, Recommandation> getHashRecommandation() {
+	private Hashtable<Integer, Recommandation> getHashRecommandation() {
 		if (hashRecommandation == null) {
-			hashRecommandation = new Hashtable<String, Recommandation>();
+			hashRecommandation = new Hashtable<Integer, Recommandation>();
 		}
 		return hashRecommandation;
 	}
@@ -3371,5 +3383,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setMedecinDao(MedecinDao medecinDao) {
 		this.medecinDao = medecinDao;
+	}
+
+	public RecommandationDao getRecommandationDao() {
+		return recommandationDao;
+	}
+
+	public void setRecommandationDao(RecommandationDao recommandationDao) {
+		this.recommandationDao = recommandationDao;
 	}
 }

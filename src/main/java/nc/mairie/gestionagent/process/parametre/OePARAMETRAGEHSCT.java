@@ -21,6 +21,7 @@ import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -78,6 +79,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private HandicapDao handicapDao;
 	private MaladieProDao maladieProDao;
 	private MedecinDao medecinDao;
+	private RecommandationDao recommandationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -114,7 +116,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeRecommandation() == null) {
 			// Recherche des recommandations
-			ArrayList<Recommandation> listeRecommandation = Recommandation.listerRecommandation(getTransaction());
+			ArrayList<Recommandation> listeRecommandation = getRecommandationDao().listerRecommandation();
 			setListeRecommandation(listeRecommandation);
 			initialiseListeRecommandation(request);
 		}
@@ -173,6 +175,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRecommandationDao() == null) {
+			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -203,7 +208,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeRecommandation(HttpServletRequest request) throws Exception {
-		setListeRecommandation(Recommandation.listerRecommandation(getTransaction()));
+		setListeRecommandation(getRecommandationDao().listerRecommandation());
 		if (getListeRecommandation().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -1524,11 +1529,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			if (getVAL_ST_ACTION_RECOMMANDATION().equals(ACTION_CREATION)) {
 				setRecommandationCourante(new Recommandation());
 				getRecommandationCourante().setDescRecommandation(getVAL_EF_DESC_RECOMMANDATION());
-				getRecommandationCourante().creerRecommandation(getTransaction());
+				getRecommandationDao().creerRecommandation(getRecommandationCourante().getDescRecommandation());
 				if (!getTransaction().isErreur())
 					getListeRecommandation().add(getRecommandationCourante());
 			} else if (getVAL_ST_ACTION_RECOMMANDATION().equals(ACTION_SUPPRESSION)) {
-				getRecommandationCourante().supprimerRecommandation(getTransaction());
+				getRecommandationDao().supprimerRecommandation(getRecommandationCourante().getIdRecommandation());
 				if (!getTransaction().isErreur())
 					getListeRecommandation().remove(getRecommandationCourante());
 				setRecommandationCourante(null);
@@ -2682,5 +2687,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setMedecinDao(MedecinDao medecinDao) {
 		this.medecinDao = medecinDao;
+	}
+
+	public RecommandationDao getRecommandationDao() {
+		return recommandationDao;
+	}
+
+	public void setRecommandationDao(RecommandationDao recommandationDao) {
+		this.recommandationDao = recommandationDao;
 	}
 }
