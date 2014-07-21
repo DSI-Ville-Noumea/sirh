@@ -56,6 +56,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -136,6 +137,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TypeRegIndemnDao typeRegIndemnDao;
 	private AvantageNatureDao avantageNatureDao;
 	private DelegationDao delegationDao;
+	private RegIndemnDao regIndemnDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -248,6 +250,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getDelegationDao() == null) {
 			setDelegationDao(new DelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRegIndemnDao() == null) {
+			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -413,8 +418,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		// Régimes indemnitaires
 		if (getListeRegIndemn().size() == 0) {
-			setListeRegIndemn(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(),
-					getFichePosteCourant().getIdFichePoste()));
+			setListeRegIndemn(getRegIndemnDao().listerRegimeIndemnitaireAvecFP(
+					Integer.valueOf(getFichePosteCourant().getIdFichePoste())));
 			if (getTransaction().isErreur()) {
 				return;
 			}
@@ -430,8 +435,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 					addZone(getNOM_ST_REG_TYPE(indiceRegime),
 							typReg.getLibTypeRegIndemn().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typReg
 									.getLibTypeRegIndemn());
-					addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait());
-					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
+					addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait().toString());
+					addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints().toString());
 				}
 				indiceRegime++;
 			}
@@ -2354,5 +2359,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setDelegationDao(DelegationDao delegationDao) {
 		this.delegationDao = delegationDao;
+	}
+
+	public RegIndemnDao getRegIndemnDao() {
+		return regIndemnDao;
+	}
+
+	public void setRegIndemnDao(RegIndemnDao regIndemnDao) {
+		this.regIndemnDao = regIndemnDao;
 	}
 }

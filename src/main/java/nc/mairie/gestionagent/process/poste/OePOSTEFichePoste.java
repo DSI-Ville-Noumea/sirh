@@ -58,7 +58,6 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
-import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
@@ -72,6 +71,9 @@ import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationFPDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageAffDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
+import nc.mairie.spring.dao.metier.specificites.RegIndemnAffDao;
+import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.RegIndemnFPDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -225,6 +227,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private AvantageNatureFPDao avantageNatureFPDao;
 	private DelegationDao delegationDao;
 	private DelegationFPDao delegationFPDao;
+	private RegIndemnDao regIndemnDao;
+	private RegIndemnFPDao regIndemnFPDao;
+	private RegIndemnAffDao regIndemnAffDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -455,6 +460,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getDelegationFPDao() == null) {
 			setDelegationFPDao(new DelegationFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRegIndemnDao() == null) {
+			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRegIndemnFPDao() == null) {
+			setRegIndemnFPDao(new RegIndemnFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRegIndemnAffDao() == null) {
+			setRegIndemnAffDao(new RegIndemnAffDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1031,7 +1045,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? getNatureAvantageDao()
 							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage())) : null;
 					getHashtypAv().put(typAv.getIdTypeAvantage().toString(), typAv);
-					getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
+					if (natAv != null && natAv.getIdNatureAvantage() != null)
+						getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
 				}
 			}
 		}
@@ -1068,8 +1083,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			setListeRegimeASupprimer((ArrayList<RegimeIndemnitaire>) VariablesActivite.recuperer(this,
 					VariablesActivite.ACTIVITE_LST_REG_INDEMN_A_SUPPR));
 		} else if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
-			setListeRegime(RegimeIndemnitaire.listerRegimeIndemnitaireAvecFP(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste()));
+			setListeRegime(getRegIndemnDao().listerRegimeIndemnitaireAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 		}
 		if (getListeRegime() != null) {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
@@ -1112,11 +1127,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeAvantage() != null) {
 			for (AvantageNature aAvNat : getListeAvantage()) {
 				addZone(getNOM_ST_AV_TYPE(indiceAvantage),
-						getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-								: getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
+						getHashtypAv().get(aAvNat.getIdTypeAvantage().toString()).getLibTypeAvantage()
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashtypAv().get(
+								aAvNat.getIdTypeAvantage().toString()).getLibTypeAvantage());
 				addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant().toString());
 				addZone(getNOM_ST_AV_NATURE(indiceAvantage), aAvNat.getIdNatureAvantage() == null ? "&nbsp;"
-						: getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
+						: getHashNatAv().get(aAvNat.getIdNatureAvantage().toString()).getLibNatureAvantage());
 				indiceAvantage++;
 			}
 		}
@@ -1127,8 +1143,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (Delegation aDel : getListeDelegation()) {
 				addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
 						getHashTypDel().get(aDel.getIdTypeDelegation().toString()).getLibTypeDelegation()
-								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation().toString())
-								.getLibTypeDelegation());
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(
+								aDel.getIdTypeDelegation().toString()).getLibTypeDelegation());
 				addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
 						aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
 				indiceDelegation++;
@@ -1140,11 +1156,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeRegime() != null) {
 			for (RegimeIndemnitaire aReg : getListeRegime()) {
 				addZone(getNOM_ST_REG_TYPE(indiceRegime),
-						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn()
+						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn().toString()).getLibTypeRegIndemn()
 								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypRegIndemn().get(
-								aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn());
-				addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait());
-				addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints());
+								aReg.getIdTypeRegIndemn().toString()).getLibTypeRegIndemn());
+				addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait().toString());
+				addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints().toString());
 				indiceRegime++;
 			}
 		}
@@ -2162,10 +2178,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Sauvegarde des nouveaux avantages nature et suppression des
 			// anciens
 			for (AvantageNature avNat : getListeAvantageAAjouter()) {
-				getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(), avNat.getIdTypeAvantage(),
-						avNat.getIdNatureAvantage(), avNat.getMontant());
+				Integer idCreer = getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(),
+						avNat.getIdTypeAvantage(), avNat.getIdNatureAvantage(), avNat.getMontant());
 				AvantageNatureFP avNatFP = new AvantageNatureFP(Integer.valueOf(getFichePosteCourante()
-						.getIdFichePoste()), avNat.getIdAvantage());
+						.getIdFichePoste()), idCreer);
 				getAvantageNatureFPDao().creerAvantageNatureFP(avNatFP.getIdAvantage(), avNatFP.getIdFichePoste());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -2187,9 +2203,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// Sauvegarde des nouvelles Delegation et suppression des anciennes
 			for (Delegation deleg : getListeDelegationAAjouter()) {
-				getDelegationDao().creerDelegation(deleg.getIdTypeDelegation(), deleg.getLibDelegation());
+				Integer idCreer = getDelegationDao().creerDelegation(deleg.getIdTypeDelegation(),
+						deleg.getLibDelegation());
 				DelegationFP delFP = new DelegationFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
-						deleg.getIdDelegation());
+						idCreer);
 				getDelegationFPDao().creerDelegationFP(delFP.getIdDelegation(), delFP.getIdFichePoste());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -2212,9 +2229,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Sauvegarde des nouveaux RegimeIndemnitaire et suppression des
 			// anciens
 			for (RegimeIndemnitaire regIndemn : getListeRegimeAAjouter()) {
-				regIndemn.creerRegimeIndemnitaire(getTransaction());
-				RegIndemFP riFP = new RegIndemFP(getFichePosteCourante().getIdFichePoste(), regIndemn.getIdRegIndemn());
-				riFP.creerRegIndemFP(getTransaction());
+				Integer idCreer = getRegIndemnDao().creerRegimeIndemnitaire(regIndemn.getIdTypeRegIndemn(),
+						regIndemn.getNumRubrique(), regIndemn.getForfait(), regIndemn.getNombrePoints());
+				RegIndemFP riFP = new RegIndemFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()), idCreer);
+				getRegIndemnFPDao().creerRegIndemFP(riFP.getIdRegIndemn(), riFP.getIdFichePoste());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(" Au moins un RegimeIndemnitaire n'a pu être créé.");
@@ -2223,10 +2241,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 			for (int i = 0; i < getListeRegimeASupprimer().size(); i++) {
 				RegimeIndemnitaire ri = (RegimeIndemnitaire) getListeRegimeASupprimer().get(i);
-				RegIndemFP riFP = new RegIndemFP(getFichePosteCourante().getIdFichePoste(), ri.getIdRegIndemn());
-				riFP.supprimerRegIndemFP(getTransaction());
-				if (!(RegIndemnAFF.listerRegIndemnAFFAvecRI(getTransaction(), ri).size() > 0)) {
-					ri.supprimerRegimeIndemnitaire(getTransaction());
+				RegIndemFP riFP = new RegIndemFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
+						ri.getIdRegIndemn());
+				getRegIndemnFPDao().supprimerRegIndemFP(riFP.getIdRegIndemn(), riFP.getIdFichePoste());
+				if (!(getRegIndemnAffDao().listerRegIndemnAFFAvecRI(ri.getIdRegIndemn()).size() > 0)) {
+					getRegIndemnDao().supprimerRegimeIndemnitaire(ri.getIdRegIndemn());
 				}
 				if (getTransaction().isErreur()) {
 					getTransaction().declarerErreur("Au moins un RegimeIndemnitaire n'a pu être supprimé.");
@@ -6554,5 +6573,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setDelegationFPDao(DelegationFPDao delegationFPDao) {
 		this.delegationFPDao = delegationFPDao;
+	}
+
+	public RegIndemnDao getRegIndemnDao() {
+		return regIndemnDao;
+	}
+
+	public void setRegIndemnDao(RegIndemnDao regIndemnDao) {
+		this.regIndemnDao = regIndemnDao;
+	}
+
+	public RegIndemnFPDao getRegIndemnFPDao() {
+		return regIndemnFPDao;
+	}
+
+	public void setRegIndemnFPDao(RegIndemnFPDao regIndemnFPDao) {
+		this.regIndemnFPDao = regIndemnFPDao;
+	}
+
+	public RegIndemnAffDao getRegIndemnAffDao() {
+		return regIndemnAffDao;
+	}
+
+	public void setRegIndemnAffDao(RegIndemnAffDao regIndemnAffDao) {
+		this.regIndemnAffDao = regIndemnAffDao;
 	}
 }

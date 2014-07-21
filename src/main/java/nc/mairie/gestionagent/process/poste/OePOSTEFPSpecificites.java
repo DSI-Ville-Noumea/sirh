@@ -17,11 +17,13 @@ import nc.mairie.metier.specificites.Delegation;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -87,6 +89,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 	private TypeAvantageDao typeAvantageDao;
 	private TypeDelegationDao typeDelegationDao;
 	private TypeRegIndemnDao typeRegIndemnDao;
+	private RubriqueDao rubriqueDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -1332,6 +1335,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 		if (getTypeRegIndemnDao() == null) {
 			setTypeRegIndemnDao(new TypeRegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getRubriqueDao() == null) {
+			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
+		}
 
 	}
 
@@ -1399,7 +1405,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				if (aReg != null) {
 					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
 							Integer.valueOf(aReg.getIdTypeRegIndemn()));
-					String ligne[] = { typReg.libTypeRegIndemn, aReg.getForfait(), aReg.getNombrePoints() };
+					String ligne[] = { typReg.getLibTypeRegIndemn(), aReg.getForfait().toString(),
+							aReg.getNombrePoints().toString() };
 					aFormatReg.ajouteLigne(ligne);
 				}
 			}
@@ -1508,7 +1515,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 		// Si liste rubrique vide alors affectation
 		if (getLB_RUBRIQUE_AVANTAGE() == LBVide || getLB_RUBRIQUE_REGIME() == LBVide) {
-			ArrayList<Rubrique> rubrique = Rubrique.listerRubrique7000(getTransaction());
+			ArrayList<Rubrique> rubrique = getRubriqueDao().listerRubrique7000();
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(getTransaction().traiterErreur() + "Liste des rubriques non trouvée");
 			}
@@ -1520,7 +1527,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 				for (ListIterator<Rubrique> list = getListeRubrique().listIterator(); list.hasNext();) {
 					Rubrique aRub = (Rubrique) list.next();
 					if (aRub != null) {
-						String ligne[] = { aRub.getNumRubrique() + " - " + aRub.getLibRubrique() };
+						String ligne[] = { aRub.getNorubr() + " - " + aRub.getLirubr() };
 						aFormatRub.ajouteLigne(ligne);
 					}
 				}
@@ -1812,7 +1819,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
 			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(
-					indiceRubAvantage - 1)).getNumRubrique()));
+					indiceRubAvantage - 1)).getNorubr()));
 
 			if (getListeAvantage() == null)
 				setListeAvantage(new ArrayList<AvantageNature>());
@@ -1859,16 +1866,16 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			// Alimentation de l'objet
 			RegimeIndemnitaire regIndemn = new RegimeIndemnitaire();
 
-			regIndemn.setForfait(getVAL_EF_FORFAIT_REGIME());
-			regIndemn.setNombrePoints(getVAL_EF_NB_POINTS_REGIME());
+			regIndemn.setForfait(Double.valueOf(getVAL_EF_FORFAIT_REGIME()));
+			regIndemn.setNombrePoints(Integer.valueOf(getVAL_EF_NB_POINTS_REGIME()));
 
 			int indiceRegIndemn = (Services.estNumerique(getVAL_LB_TYPE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_TYPE_REGIME_SELECT()) : -1);
 			regIndemn.setIdTypeRegIndemn(((TypeRegIndemn) getListeTypeRegIndemn().get(indiceRegIndemn))
-					.getIdTypeRegIndemn().toString());
+					.getIdTypeRegIndemn());
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
-			regIndemn.setNumRubrique(indiceRub <= 0 ? null : getListeRubrique().get(indiceRub - 1).getNumRubrique());
+			regIndemn.setNumRubrique(indiceRub <= 0 ? null : getListeRubrique().get(indiceRub - 1).getNorubr());
 
 			if (getListeRegime() == null)
 				setListeRegime(new ArrayList<RegimeIndemnitaire>());
@@ -2220,5 +2227,13 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 
 	public void setTypeRegIndemnDao(TypeRegIndemnDao typeRegIndemnDao) {
 		this.typeRegIndemnDao = typeRegIndemnDao;
+	}
+
+	public RubriqueDao getRubriqueDao() {
+		return rubriqueDao;
+	}
+
+	public void setRubriqueDao(RubriqueDao rubriqueDao) {
+		this.rubriqueDao = rubriqueDao;
 	}
 }

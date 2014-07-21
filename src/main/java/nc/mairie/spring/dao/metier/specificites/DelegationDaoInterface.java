@@ -12,7 +12,7 @@ public interface DelegationDaoInterface {
 
 	public ArrayList<Delegation> listerDelegationAvecAFF(Integer idAffectation) throws Exception;
 
-	public void creerDelegation(Integer idTypeDelegation, String libDelegation);
+	public Integer creerDelegation(Integer idTypeDelegation, String libDelegation);
 
 	public void supprimerDelegation(Integer idDelegation) throws Exception;
 

@@ -8,7 +8,7 @@ public interface AvantageNatureDaoInterface {
 
 	public void supprimerAvantageNature(Integer idAvantage) throws Exception;
 
-	public void creerAvantageNature(Integer numRubrique, Integer idTypeAvantage, Integer idNatureAvantage,
+	public Integer creerAvantageNature(Integer numRubrique, Integer idTypeAvantage, Integer idNatureAvantage,
 			Double montant);
 
 	public ArrayList<AvantageNature> listerAvantageNatureAvecAFF(Integer idAffectation) throws Exception;

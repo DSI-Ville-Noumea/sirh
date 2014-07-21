@@ -13,8 +13,10 @@ import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.agent.PrimeAgentDao;
+import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -63,6 +65,7 @@ public class OeAGENTPrime extends BasicProcess {
 	private String calculPaye;
 
 	private PrimeAgentDao primeAgentDao;
+	private RubriqueDao rubriqueDao;
 
 	private void initialiseDao() {
 		// on initialise le dao
@@ -70,6 +73,9 @@ public class OeAGENTPrime extends BasicProcess {
 
 		if (getPrimeAgentDao() == null) {
 			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRubriqueDao() == null) {
+			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
 		}
 	}
 
@@ -111,17 +117,17 @@ public class OeAGENTPrime extends BasicProcess {
 		// RG_AG_PR_C02
 
 		if (getHashRubriques().size() == 0) {
-			ArrayList<Rubrique> listeRubTot = Rubrique.listerRubriqueAvecTypeRubrAvecInactives(getTransaction(), "P");
+			ArrayList<Rubrique> listeRubTot = getRubriqueDao().listerRubriqueAvecTypeRubrAvecInactives("P");
 			setListeRubriquesTotales(listeRubTot);
 
-			ArrayList<Rubrique> listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "P");
+			ArrayList<Rubrique> listeRubrique = getRubriqueDao().listerRubriqueAvecTypeRubr("P");
 			// remplissage de la hashTable
 			setListeRubriques(new ArrayList<Rubrique>());
 			for (Rubrique r : listeRubrique) {
 				// RG_AG_PR_C04
-				if (!r.typePrime.equals("I") && !r.typePrime.equals("J")) {
+				if (!r.getTyprim().equals("I") && !r.getTyprim().equals("J")) {
 					getListeRubriques().add(r);
-					getHashRubriques().put(r.getNumRubrique(), r);
+					getHashRubriques().put(r.getNorubr().toString(), r);
 				}
 			}
 		}
@@ -167,12 +173,12 @@ public class OeAGENTPrime extends BasicProcess {
 		if (getListePrimes() != null) {
 			for (int i = 0; i < getListePrimes().size(); i++) {
 				Prime p = (Prime) getListePrimes().get(i);
-				Rubrique r = Rubrique.chercherRubrique(getTransaction(), p.getNoRubr());
+				Rubrique r = getRubriqueDao().chercherRubrique(Integer.valueOf(p.getNoRubr()));
 
-				addZone(getNOM_ST_CODE_RUBR(indicePrime),
-						r == null || r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_CODE_RUBR(indicePrime), r == null || r.getNorubr() == null ? "&nbsp;" : r.getNorubr()
+						.toString());
 				addZone(getNOM_ST_LIB_RUBR(indicePrime),
-						r == null || r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+						r == null || r.getLirubr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLirubr());
 				addZone(getNOM_ST_REF_ARR(indicePrime),
 						p.getRefArr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getRefArr());
 				addZone(getNOM_ST_DATE_ARR(indicePrime),
@@ -280,11 +286,11 @@ public class OeAGENTPrime extends BasicProcess {
 	 * 
 	 */
 	private boolean initialisePrimeCourante(HttpServletRequest request) throws Exception {
-		Rubrique r = Rubrique.chercherRubrique(getTransaction(), getPrimeCourante().getNoRubr());
+		Rubrique r = getRubriqueDao().chercherRubrique(Integer.valueOf(getPrimeCourante().getNoRubr()));
 
 		// Alim zones
-		addZone(getNOM_ST_RUBRIQUE(), r.getLibRubrique());
-		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique() + " " + r.getLibRubrique());
+		addZone(getNOM_ST_RUBRIQUE(), r.getLirubr());
+		addZone(getNOM_EF_RUBRIQUE(), r.getNorubr() + " " + r.getLirubr());
 
 		addZone(getNOM_EF_REF_ARR(), getPrimeCourante().getRefArr());
 		addZone(getNOM_EF_MONTANT(), getPrimeCourante().getMtPri());
@@ -388,7 +394,7 @@ public class OeAGENTPrime extends BasicProcess {
 		for (int i = 0; i < listePrime.size(); i++) {
 			Prime p = (Prime) listePrime.get(i);
 
-			if (p != getPrimeCourante() && p.getNoRubr().equals(rubrique.getNumRubrique())) {
+			if (p != getPrimeCourante() && p.getNoRubr().equals(rubrique.getNorubr().toString())) {
 
 				if (Services.compareDates(p.getDatDeb(), getPrimeCourante().getDatDeb()) >= 0) {
 					// dateDebCur < dateDeb
@@ -417,7 +423,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 		// verification des date pour type de prime = 'M' ou 'E'
 		// RG_AG_PR_C05
-		if (rubrique.typePrime.equals("M") || rubrique.typePrime.equals("E")) {
+		if (rubrique.getTyprim().equals("M") || rubrique.getTyprim().equals("E")) {
 			if (!getPrimeCourante().getDatDeb().substring(0, 2).equals("01")) {
 				// Le jour de la date de début doit etre égal au premier jour du
 				// mois
@@ -512,7 +518,7 @@ public class OeAGENTPrime extends BasicProcess {
 			// Création de l'objet prime à créer/modifier
 			AgentNW agentCourant = getAgentCourant();
 			getPrimeCourante().setNoMatr(agentCourant.getNoMatricule());
-			getPrimeCourante().setNoRubr(r.getNumRubrique());
+			getPrimeCourante().setNoRubr(r.getNorubr().toString());
 			getPrimeCourante().setRefArr(refArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : refArr);
 			getPrimeCourante().setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : dateArr);
 			getPrimeCourante().setMtPri(montant);
@@ -813,30 +819,30 @@ public class OeAGENTPrime extends BasicProcess {
 	 */
 	private Rubrique getSelectedRubrique() throws Exception {
 		// récupération de la rubrique et vérification de son existence.
-		String idRubrique = Const.CHAINE_VIDE;
+		Integer idRubrique = null;
 		// pour les rubriques actives
 		for (int i = 0; i < getListeRubriques().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriques().get(i);
-			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
+			String textRubr = r.getNorubr() + " " + r.getLirubr();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
-				idRubrique = r.getNumRubrique();
+				idRubrique = r.getNorubr();
 				break;
 			}
 		}
 		// tests sur rubriques inactives
 		for (int i = 0; i < getListeRubriquesTotales().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriquesTotales().get(i);
-			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
+			String textRubr = r.getNorubr() + " " + r.getLirubr();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
-				idRubrique = r.getNumRubrique();
+				idRubrique = r.getNorubr();
 				break;
 			}
 		}
 
-		if (idRubrique.equals(Const.CHAINE_VIDE)) {
+		if (idRubrique == null) {
 			return null;
 		}
-		return Rubrique.chercherRubrique(getTransaction(), idRubrique);
+		return getRubriqueDao().chercherRubrique(idRubrique);
 	}
 
 	/**
@@ -1082,6 +1088,14 @@ public class OeAGENTPrime extends BasicProcess {
 
 	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
 		this.primeAgentDao = primeAgentDao;
+	}
+
+	public RubriqueDao getRubriqueDao() {
+		return rubriqueDao;
+	}
+
+	public void setRubriqueDao(RubriqueDao rubriqueDao) {
+		this.rubriqueDao = rubriqueDao;
 	}
 
 }

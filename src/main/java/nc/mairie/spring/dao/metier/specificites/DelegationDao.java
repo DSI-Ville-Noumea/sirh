@@ -78,11 +78,12 @@ public class DelegationDao extends SirhDao implements DelegationDaoInterface {
 	}
 
 	@Override
-	public void creerDelegation(Integer idTypeDelegation, String libDelegation) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_TYPE_DELEGATION + "," + CHAMP_LIB_DELEGATION + ") "
-				+ "VALUES (?,?)";
+	public Integer creerDelegation(Integer idTypeDelegation, String libDelegation) {
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " ("
+				+ CHAMP_ID_TYPE_DELEGATION + "," + CHAMP_LIB_DELEGATION + ") " + "VALUES (?,?))";
 
-		jdbcTemplate.update(sql, new Object[] { idTypeDelegation, libDelegation });
+		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { idTypeDelegation, libDelegation }, Integer.class);
+		return id;
 	}
 
 	@Override

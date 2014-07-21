@@ -18,6 +18,9 @@ import nc.mairie.metier.agent.CodeMutu;
 import nc.mairie.metier.agent.Creancier;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.MairieDao;
+import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -25,6 +28,8 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.CharacterDataArea;
@@ -84,6 +89,8 @@ public class OeAGENTCharge extends BasicProcess {
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
+	private RubriqueDao rubriqueDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -107,6 +114,8 @@ public class OeAGENTCharge extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
 		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
@@ -120,13 +129,13 @@ public class OeAGENTCharge extends BasicProcess {
 		// RG_AG_CG_C01
 		// RG_AG_CG_C02
 		if (getHashRubriques().size() == 0) {
-			ArrayList<Rubrique> listeRubrique = Rubrique.listerRubriqueAvecTypeRubr(getTransaction(), "C");
+			ArrayList<Rubrique> listeRubrique = getRubriqueDao().listerRubriqueAvecTypeRubr("C");
 			setListeRubriques(listeRubrique);
 
 			// remplissage de la hashTable
 			for (int i = 0; i < listeRubrique.size(); i++) {
 				Rubrique r = (Rubrique) listeRubrique.get(i);
-				getHashRubriques().put(r.getNumRubrique(), r);
+				getHashRubriques().put(r.getNorubr().toString(), r);
 			}
 		}
 
@@ -211,6 +220,14 @@ public class OeAGENTCharge extends BasicProcess {
 		}
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getRubriqueDao() == null) {
+			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
+		}
+	}
+
 	/**
 	 * fonction qui permet de savoir si une paye est en cours.
 	 * 
@@ -233,21 +250,21 @@ public class OeAGENTCharge extends BasicProcess {
 	 * @return String
 	 */
 	private String getLibCharge(Charge c, String code) throws Exception {
-		Rubrique r = Rubrique.chercherRubrique(getTransaction(), c.getNoRubr());
+		Rubrique r = getRubriqueDao().chercherRubrique(Integer.valueOf(c.getNoRubr()));
 
-		if (r.numRubrique.equals("2900") || r.numRubrique.equals("2850"))
+		if (r.getNorubr() == 2900 || r.getNorubr() == 2850)
 			// SPACCI accident du tavail
 			return CodeAcci.chercherCodeAcci(getTransaction(), code).getLibacc();
 
-		if (r.numRubrique.equals("3000"))
+		if (r.getNorubr() == 3000)
 			// SPMUTU code mutuelle
 			return CodeMutu.chercherCodeMutu(getTransaction(), code).getLimutu();
 
-		if (r.numRubrique.equals("4000"))
+		if (r.getNorubr() == 4000)
 			// SPCLOG code logement
 			return CodeLogt.chercherCodeLogt(getTransaction(), code).getLiblog();
 
-		if (r.numRubrique.equals("4001"))
+		if (r.getNorubr() == 4001)
 			// SPCCHG code charges logement
 			return CodeChargeLogt.chercherCodeChargeLogt(getTransaction(), code).getLiblog();
 
@@ -276,10 +293,9 @@ public class OeAGENTCharge extends BasicProcess {
 				Rubrique r = (Rubrique) getHashRubriques().get(c.getNoRubr());
 				String codeChge = c.getCdChar();
 
-				addZone(getNOM_ST_CODE_RUBR(indiceCharge),
-						r.getNumRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getNumRubrique());
+				addZone(getNOM_ST_CODE_RUBR(indiceCharge), r.getNorubr() == null ? "&nbsp;" : r.getNorubr().toString());
 				addZone(getNOM_ST_RUBRIQUE(indiceCharge),
-						r.getLibRubrique().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLibRubrique());
+						r.getLirubr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r.getLirubr());
 				addZone(getNOM_ST_MAT_CHARGE(indiceCharge),
 						c.getNoMate().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNoMate());
 				addZone(getNOM_ST_LIB_CHARGE(indiceCharge),
@@ -405,11 +421,11 @@ public class OeAGENTCharge extends BasicProcess {
 
 		initialiseChamp(r);
 
-		afficheListeCodeCharge(r.getNumRubrique(), getChargeCourante().getCdChar());
+		afficheListeCodeCharge(r.getNorubr(), getChargeCourante().getCdChar());
 
 		// Alim zones
-		addZone(getNOM_ST_RUBRIQUE(), r.getLibRubrique());
-		addZone(getNOM_EF_RUBRIQUE(), r.getNumRubrique() + " " + r.getLibRubrique());
+		addZone(getNOM_ST_RUBRIQUE(), r.getLirubr());
+		addZone(getNOM_EF_RUBRIQUE(), r.getNorubr() + " " + r.getLirubr());
 
 		if (c != null) {
 			int ligneCreancier = getListeCreancier().indexOf(c);
@@ -515,19 +531,19 @@ public class OeAGENTCharge extends BasicProcess {
 	 */
 	private Rubrique getSelectedRubrique() throws Exception {
 		// récupération de la rubrique et vérification de son existence.
-		String idRubrique = Const.CHAINE_VIDE;
+		Integer idRubrique = null;
 		for (int i = 0; i < getListeRubriques().size(); i++) {
 			Rubrique r = (Rubrique) getListeRubriques().get(i);
-			String textRubr = r.getNumRubrique() + " " + r.getLibRubrique();
+			String textRubr = r.getNorubr() + " " + r.getLirubr();
 			if (textRubr.equals(getVAL_EF_RUBRIQUE())) {
-				idRubrique = r.getNumRubrique();
+				idRubrique = r.getNorubr();
 				break;
 			}
 		}
-		if (idRubrique.length() == 0) {
+		if (idRubrique == null) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "rubriques"));
 		}
-		return Rubrique.chercherRubrique(getTransaction(), idRubrique);
+		return getRubriqueDao().chercherRubrique(idRubrique);
 	}
 
 	/**
@@ -559,7 +575,7 @@ public class OeAGENTCharge extends BasicProcess {
 		for (int i = 0; i < listeCharge.size(); i++) {
 			Charge c = (Charge) listeCharge.get(i);
 
-			if (!c.getNoRubr().equals(rubrique.getNumRubrique()))
+			if (!c.getNoRubr().equals(rubrique.getNorubr()))
 				continue;
 
 			if (c == getChargeCourante())
@@ -614,7 +630,7 @@ public class OeAGENTCharge extends BasicProcess {
 
 		if (r != null) {
 
-			if (r.getNumRubrique().equals("2850") || r.getNumRubrique().equals("2900")) {
+			if (r.getNorubr() == 2850 || r.getNorubr() == 2900) {
 				// SPACCI accident du tavail
 
 				if (numLigne < 0 || getListeCodesAcci().size() == 0 || numLigne > getListeCodesAcci().size()) {
@@ -624,7 +640,7 @@ public class OeAGENTCharge extends BasicProcess {
 				return getListeCodesAcci().get(numLigne).getCdacci();
 			}
 
-			if (r.getNumRubrique().equals("3000")) {
+			if (r.getNorubr() == 3000) {
 				// SPMUTU code mutuelle
 
 				if (numLigne < 0 || getListeCodesMutu().size() == 0 || numLigne > getListeCodesMutu().size()) {
@@ -634,7 +650,7 @@ public class OeAGENTCharge extends BasicProcess {
 				return getListeCodesMutu().get(numLigne).getCdmutu();
 			}
 
-			if (r.getNumRubrique().equals("4000")) {
+			if (r.getNorubr() == 4000) {
 				// SPCLOG code logement
 
 				if (numLigne < 0 || getListeCodesLogt().size() == 0 || numLigne > getListeCodesLogt().size()) {
@@ -644,7 +660,7 @@ public class OeAGENTCharge extends BasicProcess {
 				return getListeCodesLogt().get(numLigne).getCdlogt();
 			}
 
-			if (r.getNumRubrique().equals("4001")) {
+			if (r.getNorubr() == 4001) {
 				// SPCCHG code charges logement
 
 				if (numLigne < 0 || getListeCodesChargeLogt().size() == 0
@@ -723,7 +739,7 @@ public class OeAGENTCharge extends BasicProcess {
 			// Création de l'objet VisiteMedicale à créer/modifier
 			AgentNW agentCourant = getAgentCourant();
 			getChargeCourante().setNoMatr(agentCourant.getNoMatricule());
-			getChargeCourante().setNoRubr(r.getNumRubrique());
+			getChargeCourante().setNoRubr(r.getNorubr().toString());
 			getChargeCourante().setCdCrea(c != null ? c.getCdCrea() : Const.ZERO);
 			getChargeCourante().setMttreg(montant.equals(Const.CHAINE_VIDE) ? Const.ZERO : montant);
 			getChargeCourante().setTxSal(taux);
@@ -1090,14 +1106,14 @@ public class OeAGENTCharge extends BasicProcess {
 	 * @throws Exception
 	 *             RG_AG_CG_C05
 	 */
-	public void afficheListeCodeCharge(String codeRubr, String codeCharge) throws Exception {
+	public void afficheListeCodeCharge(Integer codeRubr, String codeCharge) throws Exception {
 		// RG_AG_CG_C05
 
 		int[] tailles = { 3, 40 };
 
 		showCodeCharge = true;
 
-		switch (Integer.parseInt(codeRubr)) {
+		switch (codeRubr) {
 			case 2850:
 			case 2900:
 				String[] champsAcci = { "cdacci", "libacc" };
@@ -1216,36 +1232,36 @@ public class OeAGENTCharge extends BasicProcess {
 		addZone(getNOM_EF_MAT_CHARGE(), Const.CHAINE_VIDE);
 		if (r != null) {
 
-			afficheListeCodeCharge(r.numRubrique, null);
+			afficheListeCodeCharge(r.getNorubr(), null);
 
-			if (r.getNumRubrique().equals("2400")) {
+			if (r.getNorubr() == 2400) {
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
 				return;
 			}
 
-			if (r.getNumRubrique().equals("2700")) {
+			if (r.getNorubr() == 2700) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumIrcafex());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
 				return;
 			}
 
-			if (r.getNumRubrique().equals("2800")) {
+			if (r.getNorubr() == 2800) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumCre());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
 				return;
 			}
 
-			if (r.getNumRubrique().equals("2850")) {
+			if (r.getNorubr() == 2850) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumRuamm());
 				showMatriculeCharge = true;
 				matriculeChargeEditable = true;
 				return;
 			}
 
-			if (r.getNumRubrique().equals("2900")) {
+			if (r.getNorubr() == 2900) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumCafat());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
@@ -1253,14 +1269,14 @@ public class OeAGENTCharge extends BasicProcess {
 				return;
 			}
 
-			if (r.getNumRubrique().equals("3000")) {
+			if (r.getNorubr().equals("3000")) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumMutuelle());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
 				return;
 			}
 
-			if (r.getNumRubrique().equals("6000")) {
+			if (r.getNorubr() == 6000) {
 				matriculeChargeEditable = true;
 				showMontant = true;
 				montantObligatoire = true;
@@ -1268,13 +1284,13 @@ public class OeAGENTCharge extends BasicProcess {
 				return;
 			}
 
-			if (r.getNumRubrique().equals("7900")) {
+			if (r.getNorubr() == 7900) {
 				showCreancier = true;
 				showMontant = true;
 				montantObligatoire = true;
 			}
 
-			if (r.getNumRubrique().equals("1050")) {
+			if (r.getNorubr() == 1050) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumClr());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
@@ -1282,11 +1298,9 @@ public class OeAGENTCharge extends BasicProcess {
 				return;
 			}
 
-			if (r.getNumRubrique().equals("2200") || r.getNumRubrique().equals("6000")
-					|| r.getNumRubrique().equals("8797") || r.getNumRubrique().equals("8798")
-					|| r.getNumRubrique().equals("8799") || r.getNumRubrique().equals("1030")
-					|| r.getNumRubrique().equals("1031") || r.getNumRubrique().equals("1035")
-					|| r.getNumRubrique().equals("1036")) {
+			if (r.getNorubr() == 2200 || r.getNorubr() == 6000 || r.getNorubr() == 8797 || r.getNorubr() == 8798
+					|| r.getNorubr() == 8799 || r.getNorubr() == 1030 || r.getNorubr() == 1031 || r.getNorubr() == 1035
+					|| r.getNorubr() == 1036) {
 				showMontant = true;
 				montantObligatoire = true;
 			}
@@ -1498,7 +1512,7 @@ public class OeAGENTCharge extends BasicProcess {
 		showDonneesMutu = false;
 		Rubrique r = getSelectedRubrique();
 		if (r != null) {
-			if (r.getNumRubrique().equals("3000")) {
+			if (r.getNorubr() == 3000) {
 				CodeMutu g = (CodeMutu) getListeCodesMutu().get(indiceCodeCharge);
 				String txSal = String.valueOf(Double.parseDouble(g.getTxsal()) * 100).length() > 4 ? String.valueOf(
 						Double.parseDouble(g.getTxsal()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g
@@ -1798,5 +1812,13 @@ public class OeAGENTCharge extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public RubriqueDao getRubriqueDao() {
+		return rubriqueDao;
+	}
+
+	public void setRubriqueDao(RubriqueDao rubriqueDao) {
+		this.rubriqueDao = rubriqueDao;
 	}
 }

@@ -16,7 +16,6 @@ import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.TitrePoste;
-import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
@@ -24,6 +23,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
+import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -90,6 +90,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private TypeRegIndemnDao typeRegIndemnDao;
 	private AvantageNatureDao avantageNatureDao;
 	private DelegationDao delegationDao;
+	private RegIndemnDao regIndemnDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -152,6 +153,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getDelegationDao() == null) {
 			setDelegationDao(new DelegationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRegIndemnDao() == null) {
+			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1567,8 +1571,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un type de régime idemnitaire utilisée
 		// sur un régime idemnitaire
 		if (getVAL_ST_ACTION_TYPE_REGIME().equals(ACTION_SUPPRESSION)
-				&& RegimeIndemnitaire.listerRegimeIndemnitaireAvecTypeRegime(getTransaction(), getTypeRegimeCourant())
-						.size() > 0) {
+				&& getRegIndemnDao()
+						.listerRegimeIndemnitaireAvecTypeRegime(getTypeRegimeCourant().getIdTypeRegIndemn()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -3194,5 +3198,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setDelegationDao(DelegationDao delegationDao) {
 		this.delegationDao = delegationDao;
+	}
+
+	public RegIndemnDao getRegIndemnDao() {
+		return regIndemnDao;
+	}
+
+	public void setRegIndemnDao(RegIndemnDao regIndemnDao) {
+		this.regIndemnDao = regIndemnDao;
 	}
 }

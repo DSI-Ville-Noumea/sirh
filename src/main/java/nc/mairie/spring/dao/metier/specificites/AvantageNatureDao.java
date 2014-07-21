@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.specificites;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +28,15 @@ public class AvantageNatureDao extends SirhDao implements AvantageNatureDaoInter
 	}
 
 	@Override
-	public void creerAvantageNature(Integer numRubrique, Integer idTypeAvantage, Integer idNatureAvantage,
+	public Integer creerAvantageNature(Integer numRubrique, Integer idTypeAvantage, Integer idNatureAvantage,
 			Double montant) {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_NUM_RUBRIQUE + "," + CHAMP_ID_TYPE_AVANTAGE + ","
-				+ CHAMP_ID_NATURE_AVANTAGE + "," + CHAMP_MONTANT + ") " + "VALUES (?,?,?,?)";
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_NUM_RUBRIQUE
+				+ "," + CHAMP_ID_TYPE_AVANTAGE + "," + CHAMP_ID_NATURE_AVANTAGE + "," + CHAMP_MONTANT + ") "
+				+ "VALUES (?,?,?,?))";
 
-		jdbcTemplate.update(sql, new Object[] { numRubrique, idTypeAvantage, idNatureAvantage, montant });
+		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { numRubrique, idTypeAvantage, idNatureAvantage,
+				montant }, Integer.class);
+		return id;
 	}
 
 	@Override
@@ -47,10 +51,12 @@ public class AvantageNatureDao extends SirhDao implements AvantageNatureDaoInter
 		for (Map<String, Object> row : rows) {
 			AvantageNature av = new AvantageNature();
 			av.setIdAvantage((Integer) row.get(CHAMP_ID));
-			av.setNumRubrique((Integer) row.get(CHAMP_NUM_RUBRIQUE));
+			BigDecimal norubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);
+			av.setNumRubrique(norubr.intValue());
 			av.setIdTypeAvantage((Integer) row.get(CHAMP_ID_TYPE_AVANTAGE));
 			av.setIdNatureAvantage((Integer) row.get(CHAMP_ID_NATURE_AVANTAGE));
-			av.setMontant((Double) row.get(CHAMP_MONTANT));
+			BigDecimal montant = (BigDecimal) row.get(CHAMP_MONTANT);
+			av.setMontant(montant.doubleValue());
 			liste.add(av);
 		}
 
@@ -69,10 +75,12 @@ public class AvantageNatureDao extends SirhDao implements AvantageNatureDaoInter
 		for (Map<String, Object> row : rows) {
 			AvantageNature av = new AvantageNature();
 			av.setIdAvantage((Integer) row.get(CHAMP_ID));
-			av.setNumRubrique((Integer) row.get(CHAMP_NUM_RUBRIQUE));
+			BigDecimal norubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);
+			av.setNumRubrique(norubr.intValue());
 			av.setIdTypeAvantage((Integer) row.get(CHAMP_ID_TYPE_AVANTAGE));
 			av.setIdNatureAvantage((Integer) row.get(CHAMP_ID_NATURE_AVANTAGE));
-			av.setMontant((Double) row.get(CHAMP_MONTANT));
+			BigDecimal montant = (BigDecimal) row.get(CHAMP_MONTANT);
+			av.setMontant(montant.doubleValue());
 			liste.add(av);
 		}
 
@@ -89,10 +97,12 @@ public class AvantageNatureDao extends SirhDao implements AvantageNatureDaoInter
 		for (Map<String, Object> row : rows) {
 			AvantageNature av = new AvantageNature();
 			av.setIdAvantage((Integer) row.get(CHAMP_ID));
-			av.setNumRubrique((Integer) row.get(CHAMP_NUM_RUBRIQUE));
+			BigDecimal norubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);
+			av.setNumRubrique(norubr.intValue());
 			av.setIdTypeAvantage((Integer) row.get(CHAMP_ID_TYPE_AVANTAGE));
 			av.setIdNatureAvantage((Integer) row.get(CHAMP_ID_NATURE_AVANTAGE));
-			av.setMontant((Double) row.get(CHAMP_MONTANT));
+			BigDecimal montant = (BigDecimal) row.get(CHAMP_MONTANT);
+			av.setMontant(montant.doubleValue());
 			liste.add(av);
 		}
 
@@ -109,10 +119,12 @@ public class AvantageNatureDao extends SirhDao implements AvantageNatureDaoInter
 		for (Map<String, Object> row : rows) {
 			AvantageNature av = new AvantageNature();
 			av.setIdAvantage((Integer) row.get(CHAMP_ID));
-			av.setNumRubrique((Integer) row.get(CHAMP_NUM_RUBRIQUE));
+			BigDecimal norubr = (BigDecimal) row.get(CHAMP_NUM_RUBRIQUE);
+			av.setNumRubrique(norubr.intValue());
 			av.setIdTypeAvantage((Integer) row.get(CHAMP_ID_TYPE_AVANTAGE));
 			av.setIdNatureAvantage((Integer) row.get(CHAMP_ID_NATURE_AVANTAGE));
-			av.setMontant((Double) row.get(CHAMP_MONTANT));
+			BigDecimal montant = (BigDecimal) row.get(CHAMP_MONTANT);
+			av.setMontant(montant.doubleValue());
 			liste.add(av);
 		}
 
