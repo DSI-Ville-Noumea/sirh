@@ -19,6 +19,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
+import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -74,6 +75,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
+	private MaladieProDao maladieProDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -138,7 +140,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeMaladie() == null) {
 			// Recherche des des maladies professionnelles
-			ArrayList<MaladiePro> listeMaladie = MaladiePro.listerMaladiePro(getTransaction());
+			ArrayList<MaladiePro> listeMaladie = getMaladieProDao().listerMaladiePro();
 			setListeMaladie(listeMaladie);
 			initialiseListeMaladie(request);
 		}
@@ -162,6 +164,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getHandicapDao() == null) {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getMaladieProDao() == null) {
+			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -283,7 +288,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeMaladie(HttpServletRequest request) throws Exception {
-		setListeMaladie(MaladiePro.listerMaladiePro(getTransaction()));
+		setListeMaladie(getMaladieProDao().listerMaladiePro());
 		if (getListeMaladie().size() != 0) {
 			int tailles[] = { 20, 50 };
 			String padding[] = { "G", "G" };
@@ -1284,11 +1289,12 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				setMaladieCourante(new MaladiePro());
 				getMaladieCourante().setCodeMaladiePro(getVAL_EF_CODE_MALADIE());
 				getMaladieCourante().setLibMaladiePro(getVAL_EF_LIBELLE_MALADIE());
-				getMaladieCourante().creerMaladiePro(getTransaction());
+				getMaladieProDao().creerMaladiePro(getMaladieCourante().getCodeMaladiePro(),
+						getMaladieCourante().getLibMaladiePro());
 				if (!getTransaction().isErreur())
 					getListeMaladie().add(getMaladieCourante());
 			} else if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)) {
-				getMaladieCourante().supprimerMaladiePro(getTransaction());
+				getMaladieProDao().supprimerMaladiePro(getMaladieCourante().getIdMaladiePro());
 				if (!getTransaction().isErreur())
 					getListeMaladie().remove(getMaladieCourante());
 				setMaladieCourante(null);
@@ -2654,5 +2660,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setHandicapDao(HandicapDao handicapDao) {
 		this.handicapDao = handicapDao;
+	}
+
+	public MaladieProDao getMaladieProDao() {
+		return maladieProDao;
+	}
+
+	public void setMaladieProDao(MaladieProDao maladieProDao) {
+		this.maladieProDao = maladieProDao;
 	}
 }

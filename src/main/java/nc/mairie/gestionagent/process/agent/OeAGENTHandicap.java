@@ -29,6 +29,7 @@ import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
+import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -93,6 +94,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	private TypeDocumentDao typeDocumentDao;
 	private HandicapDao handicapDao;
+	private MaladieProDao maladieProDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -140,17 +142,21 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Si hashtable des maladies pro vide
 		// RG_AG_HC_C05
 		if (getHashMaladiePro().size() == 0) {
-			ArrayList<MaladiePro> listeMaladiePro = MaladiePro.listerMaladiePro(getTransaction());
+			ArrayList<MaladiePro> listeMaladiePro = getMaladieProDao().listerMaladiePro();
 			setListeMaladiePro(listeMaladiePro);
 
-			int[] tailles = { 255 };
-			String[] champs = { "libMaladiePro" };
-			setLB_NOM_MP(new FormateListe(tailles, listeMaladiePro, champs).getListeFormatee(true));
-
-			// remplissage de la hashTable
-			for (int i = 0; i < listeMaladiePro.size(); i++) {
-				MaladiePro m = (MaladiePro) listeMaladiePro.get(i);
-				getHashMaladiePro().put(m.getIdMaladiePro(), m);
+			if (getListeMaladiePro().size() != 0) {
+				int[] tailles = { 255 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (int i = 0; i < getListeMaladiePro().size(); i++) {
+					MaladiePro m = (MaladiePro) listeMaladiePro.get(i);
+					getHashMaladiePro().put(m.getIdMaladiePro().toString(), m);
+					String ligne[] = { m.getLibMaladiePro() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NOM_MP(aFormat.getListeFormatee(true));
+			} else {
+				setLB_NOM_MP(null);
 			}
 		}
 
@@ -175,6 +181,9 @@ public class OeAGENTHandicap extends BasicProcess {
 		}
 		if (getHandicapDao() == null) {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getMaladieProDao() == null) {
+			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2513,6 +2522,14 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	public void setHandicapDao(HandicapDao handicapDao) {
 		this.handicapDao = handicapDao;
+	}
+
+	public MaladieProDao getMaladieProDao() {
+		return maladieProDao;
+	}
+
+	public void setMaladieProDao(MaladieProDao maladieProDao) {
+		this.maladieProDao = maladieProDao;
 	}
 
 }
