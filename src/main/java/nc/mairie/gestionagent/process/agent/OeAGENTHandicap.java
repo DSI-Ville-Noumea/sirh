@@ -28,6 +28,7 @@ import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.NomHandicap;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -91,6 +92,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	public File fichierUpload = null;
 
 	private TypeDocumentDao typeDocumentDao;
+	private HandicapDao handicapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -171,6 +173,9 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getHandicapDao() == null) {
+			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -179,18 +184,20 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeHandicap(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des handicaps de l'agent
-		ArrayList<Handicap> listeHandicap = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
+		ArrayList<Handicap> listeHandicap = getHandicapDao().listerHandicapAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeHandicap(listeHandicap);
 
 		int indiceHandi = 0;
 		if (getListeHandicap() != null) {
 			for (int i = 0; i < getListeHandicap().size(); i++) {
 				Handicap h = (Handicap) getListeHandicap().get(i);
-				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap());
+				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap().toString());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "HSCT", "HANDI", h.getIdHandicap());
+						getAgentCourant(), "HSCT", "HANDI", h.getIdHandicap().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -198,15 +205,15 @@ public class OeAGENTHandicap extends BasicProcess {
 
 				addZone(getNOM_ST_TYPE(indiceHandi),
 						n.getNomTypeHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : n.getNomTypeHandicap());
-				addZone(getNOM_ST_DEBUT(indiceHandi), h.getDateDebutHandicap());
-				addZone(getNOM_ST_FIN(indiceHandi), h.getDateFinHandicap().equals(Const.DATE_NULL)
-						|| h.getDateFinHandicap().equals(Const.CHAINE_VIDE) ? "&nbsp;" : h.getDateFinHandicap());
+				addZone(getNOM_ST_DEBUT(indiceHandi), sdf.format(h.getDateDebutHandicap()));
+				addZone(getNOM_ST_FIN(indiceHandi),
+						h.getDateFinHandicap() == null ? "&nbsp;" : sdf.format(h.getDateFinHandicap()));
 				addZone(getNOM_ST_INCAPACITE(indiceHandi),
 						h.getPourcentIncapacite().equals(Const.ZERO) ? "&nbsp;" : h.getPourcentIncapacite() + " %");
-				addZone(getNOM_ST_MALADIE_PROF(indiceHandi), h.isReconnaissanceMP() ? "OUI" : "NON");
+				addZone(getNOM_ST_MALADIE_PROF(indiceHandi), h.isReconnaissanceMp() ? "OUI" : "NON");
 				addZone(getNOM_ST_CRDHNC(indiceHandi), h.isHandicapCRDHNC() ? "OUI" : "NON");
-				addZone(getNOM_ST_NUM_CARTE(indiceHandi), h.getNumCarteCRDHNC().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: h.getNumCarteCRDHNC());
+				addZone(getNOM_ST_NUM_CARTE(indiceHandi), h.getNumCarteCrdhnc().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: h.getNumCarteCrdhnc());
 				addZone(getNOM_ST_RENOUVELLEMENT(indiceHandi), h.isRenouvellement() ? "OUI" : "NON");
 				addZone(getNOM_ST_AMENAGEMENT(indiceHandi), h.isAmenagementPoste() ? "OUI" : "NON");
 				addZone(getNOM_ST_NB_DOC(indiceHandi), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
@@ -317,27 +324,27 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 */
 	private boolean initialiseHandicapCourant(HttpServletRequest request) throws Exception {
-		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap().toString());
 		MaladiePro maladiePro = null;
-		if (getHandicapCourant().isReconnaissanceMP())
-			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro());
+		if (getHandicapCourant().isReconnaissanceMp())
+			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
 
 		// Alim zones
 		int ligneNom = getListeNomHandicap().indexOf(nom);
 		addZone(getNOM_LB_NOM_SELECT(), String.valueOf(ligneNom + 1));
 
-		addZone(getNOM_EF_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getHandicapCourant().getDateDebutHandicap()));
 		addZone(getNOM_EF_DATE_FIN(),
-				getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-						: getHandicapCourant().getDateFinHandicap());
-		addZone(getNOM_EF_INCAPACITE(),
-				getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE
-						: getHandicapCourant().getPourcentIncapacite());
+				getHandicapCourant().getDateFinHandicap() == null ? Const.CHAINE_VIDE : sdf.format(getHandicapCourant()
+						.getDateFinHandicap()));
+		addZone(getNOM_EF_INCAPACITE(), getHandicapCourant().getPourcentIncapacite() == 0 ? Const.CHAINE_VIDE
+				: getHandicapCourant().getPourcentIncapacite().toString());
 
-		showMaladiePro = getHandicapCourant().isReconnaissanceMP();
+		showMaladiePro = getHandicapCourant().isReconnaissanceMp();
 		showNumCarte = getHandicapCourant().isHandicapCRDHNC();
 
-		if (getHandicapCourant().isReconnaissanceMP()) {
+		if (getHandicapCourant().isReconnaissanceMp()) {
 			int ligneNomMP = getListeMaladiePro().indexOf(maladiePro);
 			addZone(getNOM_LB_NOM_MP_SELECT(), String.valueOf(ligneNomMP + 1));
 			addZone(getNOM_RG_RECO_MP(), getNOM_RB_RECO_MP_OUI());
@@ -347,7 +354,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		}
 
 		if (getHandicapCourant().isHandicapCRDHNC()) {
-			addZone(getNOM_EF_NUM_CRDHNC(), getHandicapCourant().getNumCarteCRDHNC());
+			addZone(getNOM_EF_NUM_CRDHNC(), getHandicapCourant().getNumCarteCrdhnc());
 			addZone(getNOM_RG_RECO_CRDHNC(), getNOM_RB_RECO_CRDHNC_OUI());
 		} else {
 			addZone(getNOM_EF_NUM_CRDHNC(), Const.CHAINE_VIDE);
@@ -377,27 +384,27 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * @throws Exception
 	 */
 	private boolean initialiseHandicapSuppression(HttpServletRequest request) throws Exception {
-		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap().toString());
 		MaladiePro maladiePro = null;
 
-		if (getHandicapCourant().isReconnaissanceMP())
-			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro());
+		if (getHandicapCourant().isReconnaissanceMp())
+			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
 
 		// Alim zones
 		addZone(getNOM_ST_NOM(), nom.getNomTypeHandicap());
-		addZone(getNOM_ST_DATE_DEBUT(), getHandicapCourant().getDateDebutHandicap());
+		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(getHandicapCourant().getDateDebutHandicap()));
 		addZone(getNOM_ST_DATE_FIN(),
-				getHandicapCourant().getDateFinHandicap().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-						: getHandicapCourant().getDateFinHandicap());
-		addZone(getNOM_ST_INCAPACITE(),
-				getHandicapCourant().getPourcentIncapacite().equals(Const.ZERO) ? Const.CHAINE_VIDE
-						: getHandicapCourant().getPourcentIncapacite());
+				getHandicapCourant().getDateFinHandicap() == null ? Const.CHAINE_VIDE : sdf.format(getHandicapCourant()
+						.getDateFinHandicap()));
+		addZone(getNOM_ST_INCAPACITE(), getHandicapCourant().getPourcentIncapacite() == 0 ? Const.CHAINE_VIDE
+				: getHandicapCourant().getPourcentIncapacite().toString());
 
-		addZone(getNOM_ST_RECO_MP(), getHandicapCourant().isReconnaissanceMP() ? "Oui" : "Non");
-		if (getHandicapCourant().isReconnaissanceMP())
+		addZone(getNOM_ST_RECO_MP(), getHandicapCourant().isReconnaissanceMp() ? "Oui" : "Non");
+		if (getHandicapCourant().isReconnaissanceMp())
 			addZone(getNOM_ST_NOM_MP(), maladiePro.getLibMaladiePro());
 		addZone(getNOM_ST_RECO_CRDHNC(), getHandicapCourant().isHandicapCRDHNC() ? "Oui" : "Non");
-		addZone(getNOM_ST_NUM_CRDHNC(), getHandicapCourant().getNumCarteCRDHNC());
+		addZone(getNOM_ST_NUM_CRDHNC(), getHandicapCourant().getNumCarteCrdhnc());
 		addZone(getNOM_ST_RENOUV_CRDHNC(), getHandicapCourant().isRenouvellement() ? "Oui" : "Non");
 		addZone(getNOM_ST_AMENAGEMENT(), getHandicapCourant().isAmenagementPoste() ? "Oui" : "Non");
 		addZone(getNOM_ST_COMMENTAIRE(), getHandicapCourant().getCommentaireHandicap());
@@ -433,7 +440,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 
 			// Suppression
-			getHandicapCourant().supprimerHandicap(getTransaction());
+			getHandicapDao().supprimerHandicap(getHandicapCourant().getIdHandicap());
 			if (getTransaction().isErreur())
 				return false;
 
@@ -490,18 +497,20 @@ public class OeAGENTHandicap extends BasicProcess {
 			String commentaire = getZone(getNOM_EF_COMMENTAIRE());
 
 			// Création de l'objet VisiteMedicale à créer/modifier
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			AgentNW agentCourant = getAgentCourant();
-			getHandicapCourant().setIdAgent(agentCourant.getIdAgent());
-			getHandicapCourant().setIdTypeHandicap(nom.getIdTypeHandicap());
-			getHandicapCourant().setDateDebutHandicap(dateDebut);
-			getHandicapCourant().setDateFinHandicap(dateFin);
-			getHandicapCourant().setPourcentIncapacite(incapacite);
-			getHandicapCourant().setReconnaissanceMP(recoMP);
+			getHandicapCourant().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
+			getHandicapCourant().setIdTypeHandicap(Integer.valueOf(nom.getIdTypeHandicap()));
+			getHandicapCourant().setDateDebutHandicap(sdf.parse(dateDebut));
+			getHandicapCourant().setDateFinHandicap(dateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateFin));
+			getHandicapCourant().setPourcentIncapacite(
+					incapacite.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(incapacite));
+			getHandicapCourant().setReconnaissanceMp(recoMP);
 			if (recoMP)
-				getHandicapCourant().setIdMaladiePro(maladiePro.getIdMaladiePro());
+				getHandicapCourant().setIdMaladiePro(Integer.valueOf(maladiePro.getIdMaladiePro()));
 			getHandicapCourant().setHandicapCRDHNC(recoCRDHNC);
 			if (recoCRDHNC) {
-				getHandicapCourant().setNumCarteCRDHNC(numCRDHNC);
+				getHandicapCourant().setNumCarteCrdhnc(numCRDHNC);
 				getHandicapCourant().setRenouvellement(renouvCRDHNC);
 			}
 			getHandicapCourant().setAmenagementPoste(amenagement);
@@ -509,10 +518,22 @@ public class OeAGENTHandicap extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getHandicapCourant().modifierHandicap(getTransaction());
+				getHandicapDao().modifierHandicap(getHandicapCourant().getIdHandicap(),
+						getHandicapCourant().getIdAgent(), getHandicapCourant().getIdTypeHandicap(),
+						getHandicapCourant().getIdMaladiePro(), getHandicapCourant().getPourcentIncapacite(),
+						getHandicapCourant().isReconnaissanceMp(), getHandicapCourant().getDateDebutHandicap(),
+						getHandicapCourant().getDateFinHandicap(), getHandicapCourant().isHandicapCRDHNC(),
+						getHandicapCourant().getNumCarteCrdhnc(), getHandicapCourant().isAmenagementPoste(),
+						getHandicapCourant().getCommentaireHandicap(), getHandicapCourant().isRenouvellement());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
-				getHandicapCourant().creerHandicap(getTransaction());
+				getHandicapDao().creerHandicap(getHandicapCourant().getIdAgent(),
+						getHandicapCourant().getIdTypeHandicap(), getHandicapCourant().getIdMaladiePro(),
+						getHandicapCourant().getPourcentIncapacite(), getHandicapCourant().isReconnaissanceMp(),
+						getHandicapCourant().getDateDebutHandicap(), getHandicapCourant().getDateFinHandicap(),
+						getHandicapCourant().isHandicapCRDHNC(), getHandicapCourant().getNumCarteCrdhnc(),
+						getHandicapCourant().isAmenagementPoste(), getHandicapCourant().getCommentaireHandicap(),
+						getHandicapCourant().isRenouvellement());
 			}
 			if (getTransaction().isErreur())
 				return false;
@@ -1799,7 +1820,7 @@ public class OeAGENTHandicap extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-				getAgentCourant(), "HSCT", "HANDI", getHandicapCourant().getIdHandicap());
+				getAgentCourant(), "HSCT", "HANDI", getHandicapCourant().getIdHandicap().toString());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -2484,6 +2505,14 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public HandicapDao getHandicapDao() {
+		return handicapDao;
+	}
+
+	public void setHandicapDao(HandicapDao handicapDao) {
+		this.handicapDao = handicapDao;
 	}
 
 }

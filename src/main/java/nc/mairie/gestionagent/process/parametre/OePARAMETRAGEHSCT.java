@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.hsct.Handicap;
 import nc.mairie.metier.hsct.Inaptitude;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.Medecin;
@@ -19,6 +18,7 @@ import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
+import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -73,6 +73,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
+	private HandicapDao handicapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -158,6 +159,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getAccidentTravailDao() == null) {
 			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHandicapDao() == null) {
+			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1333,7 +1337,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'une maladie professionnelle utilisé sur
 		// un handicap
 		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)
-				&& Handicap.listerHandicapAvecMaladiePro(getTransaction(), getMaladieCourante()).size() > 0) {
+				&& getHandicapDao().listerHandicapAvecMaladiePro(
+						Integer.valueOf(getMaladieCourante().getIdMaladiePro())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2641,5 +2646,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
 		this.accidentTravailDao = accidentTravailDao;
+	}
+
+	public HandicapDao getHandicapDao() {
+		return handicapDao;
+	}
+
+	public void setHandicapDao(HandicapDao handicapDao) {
+		this.handicapDao = handicapDao;
 	}
 }

@@ -33,6 +33,7 @@ import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
+import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -90,6 +91,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
+	private HandicapDao handicapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -149,6 +151,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getAccidentTravailDao() == null) {
 			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getHandicapDao() == null) {
+			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -194,15 +199,17 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getLB_HANDI() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<Handicap> c = Handicap.listerHandicapAgent(getTransaction(), getAgentCourant());
+				ArrayList<Handicap> c = getHandicapDao().listerHandicapAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()));
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<Handicap> list = c.listIterator(); list.hasNext();) {
 						Handicap handi = (Handicap) list.next();
-						NomHandicap nomHandi = NomHandicap.chercherNomHandicap(getTransaction(),
-								handi.getIdTypeHandicap());
-						String ligne[] = { handi.getDateDebutHandicap(), nomHandi.getNomTypeHandicap() };
+						NomHandicap nomHandi = NomHandicap.chercherNomHandicap(getTransaction(), handi
+								.getIdTypeHandicap().toString());
+						String ligne[] = { sdf.format(handi.getDateDebutHandicap()), nomHandi.getNomTypeHandicap() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_HANDI(aFormat.getListeFormatee(true));
@@ -763,10 +770,13 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
-					Handicap handi = Handicap.chercherHandicap(getTransaction(), id);
-					if (handi != null && handi.getDateDebutHandicap() != null
-							&& !handi.getDateDebutHandicap().equals(Const.DATE_NULL)) {
-						info = "Handicap du : " + handi.getDateDebutHandicap();
+					try {
+						Handicap handi = getHandicapDao().chercherHandicap(Integer.valueOf(id));
+						if (handi != null && handi.getDateDebutHandicap() != null) {
+							info = "Handicap du : " + sdf.format(handi.getDateDebutHandicap());
+						}
+					} catch (Exception e) {
+						info = "Handicap manquant";
 					}
 				}
 
@@ -1494,6 +1504,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
 		this.accidentTravailDao = accidentTravailDao;
+	}
+
+	public HandicapDao getHandicapDao() {
+		return handicapDao;
+	}
+
+	public void setHandicapDao(HandicapDao handicapDao) {
+		this.handicapDao = handicapDao;
 	}
 
 }
