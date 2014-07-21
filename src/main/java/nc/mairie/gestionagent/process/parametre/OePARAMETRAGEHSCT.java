@@ -24,6 +24,7 @@ import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.hsct.TypeATDao;
+import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -84,6 +85,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private RecommandationDao recommandationDao;
 	private SiegeLesionDao siegeLesionDao;
 	private TypeATDao typeATDao;
+	private TypeInaptitudeDao typeInaptitudeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -127,7 +129,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeInaptitude() == null) {
 			// Recherche des types d'inaptitude
-			ArrayList<TypeInaptitude> listeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
+			ArrayList<TypeInaptitude> listeInaptitude = getTypeInaptitudeDao().listerTypeInaptitude();
 			setListeInaptitude(listeInaptitude);
 			initialiseListeInaptitude(request);
 		}
@@ -188,6 +190,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getTypeATDao() == null) {
 			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeInaptitudeDao() == null) {
+			setTypeInaptitudeDao(new TypeInaptitudeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -240,7 +245,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeInaptitude(HttpServletRequest request) throws Exception {
-		setListeInaptitude(TypeInaptitude.listerTypeInaptitude(getTransaction()));
+		setListeInaptitude(getTypeInaptitudeDao().listerTypeInaptitude());
 		if (getListeInaptitude().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -1110,11 +1115,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			if (getVAL_ST_ACTION_INAPTITUDE().equals(ACTION_CREATION)) {
 				setInaptitudeCourante(new TypeInaptitude());
 				getInaptitudeCourante().setDescTypeInaptitude(getVAL_EF_DESC_INAPTITUDE());
-				getInaptitudeCourante().creerTypeInaptitude(getTransaction());
+				getTypeInaptitudeDao().creerTypeInaptitude(getInaptitudeCourante().getDescTypeInaptitude());
 				if (!getTransaction().isErreur())
 					getListeInaptitude().add(getInaptitudeCourante());
 			} else if (getVAL_ST_ACTION_INAPTITUDE().equals(ACTION_SUPPRESSION)) {
-				getInaptitudeCourante().supprimerTypeInaptitude(getTransaction());
+				getTypeInaptitudeDao().supprimerTypeInaptitude(getInaptitudeCourante().getIdTypeInaptitude());
 				if (!getTransaction().isErreur())
 					getListeInaptitude().remove(getInaptitudeCourante());
 				setInaptitudeCourante(null);
@@ -2721,5 +2726,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setTypeATDao(TypeATDao typeATDao) {
 		this.typeATDao = typeATDao;
+	}
+
+	public TypeInaptitudeDao getTypeInaptitudeDao() {
+		return typeInaptitudeDao;
+	}
+
+	public void setTypeInaptitudeDao(TypeInaptitudeDao typeInaptitudeDao) {
+		this.typeInaptitudeDao = typeInaptitudeDao;
 	}
 }

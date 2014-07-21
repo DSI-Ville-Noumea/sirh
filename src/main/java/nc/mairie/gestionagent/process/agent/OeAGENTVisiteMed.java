@@ -40,6 +40,7 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
+import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -91,7 +92,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private Hashtable<Integer, Medecin> hashMedecin;
 	private Hashtable<String, MotifVisiteMed> hashMotif;
 	private Hashtable<Integer, Recommandation> hashRecommandation;
-	private Hashtable<String, TypeInaptitude> hashTypeInaptitude;
+	private Hashtable<Integer, TypeInaptitude> hashTypeInaptitude;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche visite médicale.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche visite médicale.";
@@ -125,6 +126,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private MedecinDao medecinDao;
 	private RecommandationDao recommandationDao;
+	private TypeInaptitudeDao typeInaptitudeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -187,6 +189,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeInaptitudeDao() == null) {
+			setTypeInaptitudeDao(new TypeInaptitudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -262,12 +267,17 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Si hashtable des types d'inpatitude vide
 		if (getHashTypeInaptitude().size() == 0) {
-			ArrayList<TypeInaptitude> listeTypeInaptitude = TypeInaptitude.listerTypeInaptitude(getTransaction());
+			ArrayList<TypeInaptitude> listeTypeInaptitude = getTypeInaptitudeDao().listerTypeInaptitude();
 			setListeTypeInaptitude(listeTypeInaptitude);
 
 			int[] tailles = { 150 };
-			String[] champs = { "descTypeInaptitude" };
-			setLB_TYPE(new FormateListe(tailles, listeTypeInaptitude, champs).getListeFormatee(true));
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<TypeInaptitude> list = getListeTypeInaptitude().listIterator(); list.hasNext();) {
+				TypeInaptitude motif = (TypeInaptitude) list.next();
+				String ligne[] = { motif.getDescTypeInaptitude() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE(aFormat.getListeFormatee(true));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < listeTypeInaptitude.size(); i++) {
@@ -391,7 +401,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getListeInaptitude() != null) {
 			for (int i = 0; i < getListeInaptitude().size(); i++) {
 				Inaptitude inapt = (Inaptitude) getListeInaptitude().get(i);
-				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(inapt.getIdTypeInaptitude());
+				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(
+						Integer.valueOf(inapt.getIdTypeInaptitude()));
 
 				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
 						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
@@ -526,7 +537,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Récup de la visite médicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
 		setInaptitudeCourante(inaptitude);
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
+		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(
+				Integer.valueOf(inaptitude.getIdTypeInaptitude()));
 
 		// Alim zones
 		addZone(getNOM_EF_DEBUT_INAPTITUDE(), inaptitude.getDateDebutInaptitude());
@@ -587,7 +599,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Récup de la visite médicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
+		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(
+				Integer.valueOf(inaptitude.getIdTypeInaptitude()));
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1141,7 +1154,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						.parseInt(getZone(getNOM_LB_TYPE_SELECT())) : -1);
 
 				if (numLigneTypeInaptitude == -1 || getListeTypeInaptitude().size() == 0
-						|| numLigneTypeInaptitude >= getListeTypeInaptitude().size()) {
+						|| numLigneTypeInaptitude > getListeTypeInaptitude().size()) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types d'inaptitude"));
 					return false;
 				}
@@ -1173,7 +1186,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				VisiteMedicale visiteCourante = getVisiteCourante();
 				getInaptitudeCourante().setIdVisite(visiteCourante.getIdVisite());
 
-				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude());
+				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude().toString());
 				getInaptitudeCourante().setDateDebutInaptitude(debutInaptitude);
 
 				getInaptitudeCourante().setDureeAnnee(dureeAnnees);
@@ -1744,9 +1757,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return getZone(getNOM_LB_TYPE_SELECT());
 	}
 
-	private Hashtable<String, TypeInaptitude> getHashTypeInaptitude() {
+	private Hashtable<Integer, TypeInaptitude> getHashTypeInaptitude() {
 		if (hashTypeInaptitude == null) {
-			hashTypeInaptitude = new Hashtable<String, TypeInaptitude>();
+			hashTypeInaptitude = new Hashtable<Integer, TypeInaptitude>();
 		}
 
 		return hashTypeInaptitude;
@@ -3391,5 +3404,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setRecommandationDao(RecommandationDao recommandationDao) {
 		this.recommandationDao = recommandationDao;
+	}
+
+	public TypeInaptitudeDao getTypeInaptitudeDao() {
+		return typeInaptitudeDao;
+	}
+
+	public void setTypeInaptitudeDao(TypeInaptitudeDao typeInaptitudeDao) {
+		this.typeInaptitudeDao = typeInaptitudeDao;
 	}
 }
