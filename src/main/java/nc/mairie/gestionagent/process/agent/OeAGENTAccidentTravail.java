@@ -29,6 +29,7 @@ import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -89,6 +90,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	public File fichierUpload = null;
 
 	private TypeDocumentDao typeDocumentDao;
+	private AccidentTravailDao accidentTravailDao;
 
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
@@ -181,6 +183,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAccidentTravailDao() == null) {
+			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -188,30 +193,31 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 * Date de création : (30/06/11)
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des accidents du travail de l'agent
-		ArrayList<AccidentTravail> listeAT = AccidentTravail.listerAccidentTravailAgent(getTransaction(),
-				getAgentCourant());
+		ArrayList<AccidentTravail> listeAT = getAccidentTravailDao().listerAccidentTravailAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeAT(listeAT);
 
 		int indiceAcc = 0;
 		if (getListeAT() != null) {
 			for (int i = 0; i < getListeAT().size(); i++) {
 				AccidentTravail at = (AccidentTravail) getListeAT().get(i);
-				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAT());
-				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
+				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAt().toString());
+				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege().toString());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "HSCT", "AT", at.getIdAT());
+						getAgentCourant(), "HSCT", "AT", at.getIdAt().toString());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
 				}
 
-				addZone(getNOM_ST_DATE(indiceAcc), at.getDateAT() == null || at.getDateAT().equals(Const.DATE_NULL)
-						|| at.getDateAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at.getDateAT());
-				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc), at.getDateATInitial().equals(Const.DATE_NULL)
-						|| at.getDateATInitial().equals(Const.CHAINE_VIDE) ? "&nbsp;" : at.getDateATInitial());
-				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursITT() == null ? "&nbsp;" : at.getNbJoursITT());
+				addZone(getNOM_ST_DATE(indiceAcc), sdf.format(at.getDateAt()));
+				addZone(getNOM_ST_DATE_RECHUTE(indiceAcc),
+						at.getDateAtInitial() == null ? "&nbsp;" : sdf.format(at.getDateAtInitial()));
+				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursItt() == null ? "&nbsp;" : at.getNbJoursItt()
+						.toString());
 				addZone(getNOM_ST_TYPE(indiceAcc),
 						t.getDescTypeAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT());
 				addZone(getNOM_ST_SIEGE(indiceAcc),
@@ -278,16 +284,16 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 * de travail Date de création : 11/07/01
 	 */
 	private boolean initialiseATCourant(HttpServletRequest request) throws Exception {
-		TypeAT type = (TypeAT) getHashTypeAT().get(getAccidentTravailCourant().getIdTypeAT());
-		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		TypeAT type = (TypeAT) getHashTypeAT().get(getAccidentTravailCourant().getIdTypeAt().toString());
+		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege().toString());
 
 		// Alim zones
-		addZone(getNOM_EF_DATE(), getAccidentTravailCourant().getDateAT().equals(Const.DATE_NULL) ? "&nbsp;"
-				: getAccidentTravailCourant().getDateAT());
-		addZone(getNOM_EF_DATE_INITIALE(),
-				getAccidentTravailCourant().getDateATInitial().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE
-						: getAccidentTravailCourant().getDateATInitial());
-		addZone(getNOM_EF_NB_JOUR_IIT(), getAccidentTravailCourant().getNbJoursITT());
+		addZone(getNOM_EF_DATE(), sdf.format(getAccidentTravailCourant().getDateAt()));
+		addZone(getNOM_EF_DATE_INITIALE(), getAccidentTravailCourant().getDateAtInitial() == null ? Const.CHAINE_VIDE
+				: sdf.format(getAccidentTravailCourant().getDateAtInitial()));
+		addZone(getNOM_EF_NB_JOUR_IIT(), getAccidentTravailCourant().getNbJoursItt() == null ? Const.CHAINE_VIDE
+				: getAccidentTravailCourant().getNbJoursItt().toString());
 
 		int ligneType = getListeTypeAT().indexOf(type);
 		addZone(getNOM_LB_TYPE_SELECT(), String.valueOf(ligneType + 1));
@@ -319,7 +325,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 
 			// Suppression
-			getAccidentTravailCourant().supprimerAccidentTravail(getTransaction());
+			getAccidentTravailDao().supprimerAccidentTravail(getAccidentTravailCourant().getIdAt());
 			if (getTransaction().isErreur())
 				return false;
 
@@ -393,20 +399,28 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			}
 
 			// Création de l'objet VisiteMedicale à créer/modifier
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			AgentNW agentCourant = getAgentCourant();
-			getAccidentTravailCourant().setIdAgent(agentCourant.getIdAgent());
-			getAccidentTravailCourant().setDateAT(date);
-			getAccidentTravailCourant().setDateATInitial(dateInit);
-			getAccidentTravailCourant().setNbJoursITT(duree);
-			getAccidentTravailCourant().setIdTypeAT(type.getIdTypeAT());
-			getAccidentTravailCourant().setIdSiege(siege.getIdSiege());
+			getAccidentTravailCourant().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
+			getAccidentTravailCourant().setDateAt(sdf.parse(date));
+			getAccidentTravailCourant().setDateAtInitial(
+					dateInit.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateInit));
+			getAccidentTravailCourant().setNbJoursItt(duree.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(duree));
+			getAccidentTravailCourant().setIdTypeAt(Integer.valueOf(type.getIdTypeAT()));
+			getAccidentTravailCourant().setIdSiege(Integer.valueOf(siege.getIdSiege()));
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getAccidentTravailCourant().modifierAccidentTravail(getTransaction());
+				getAccidentTravailDao().modifierAccidentTravail(getAccidentTravailCourant().getIdAt(),
+						getAccidentTravailCourant().getIdTypeAt(), getAccidentTravailCourant().getIdSiege(),
+						getAccidentTravailCourant().getIdAgent(), getAccidentTravailCourant().getDateAt(),
+						getAccidentTravailCourant().getDateAtInitial(), getAccidentTravailCourant().getNbJoursItt());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
-				getAccidentTravailCourant().creerAccidentTravail(getTransaction());
+				getAccidentTravailDao().creerAccidentTravail(getAccidentTravailCourant().getIdTypeAt(),
+						getAccidentTravailCourant().getIdSiege(), getAccidentTravailCourant().getIdAgent(),
+						getAccidentTravailCourant().getDateAt(), getAccidentTravailCourant().getDateAtInitial(),
+						getAccidentTravailCourant().getNbJoursItt());
 			}
 			if (getTransaction().isErreur())
 				return false;
@@ -432,6 +446,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 *             RG_AG_AT_A01
 	 */
 	public boolean performControlerChamps(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// date de l'accident du travail
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE()))) {
@@ -448,20 +463,19 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			for (int i = 0; i < listeAT.size(); i++) {
 				AccidentTravail at = (AccidentTravail) listeAT.get(i);
 
-				if (Services.compareDates(getZone(getNOM_EF_DATE()), at.getDateAT()) == -1) {
+				if (Services.compareDates(getZone(getNOM_EF_DATE()), sdf.format(at.getDateAt())) == -1) {
 					int resultat = Services.compareDates(
 							Services.ajouteJours(Services.formateDate(getZone(getNOM_EF_DATE())),
-									Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), at.getDateAT());
+									Integer.parseInt(getZone(getNOM_EF_NB_JOUR_IIT()))), sdf.format(at.getDateAt()));
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
 						return false;
 					}
-				} else if (Services.compareDates(getZone(getNOM_EF_DATE()), at.getDateAT()) == 1) {
-					int resultat = Services
-							.compareDates(
-									Services.ajouteJours(Services.formateDate(at.getDateAT()),
-											Integer.parseInt(at.nbJoursITT)), getZone(getNOM_EF_DATE()));
+				} else if (Services.compareDates(getZone(getNOM_EF_DATE()), sdf.format(at.getDateAt())) == 1) {
+					int resultat = Services.compareDates(
+							Services.ajouteJours(Services.formateDate(sdf.format(at.getDateAt())), at.getNbJoursItt()),
+							getZone(getNOM_EF_DATE()));
 					if (resultat == 1) {
 						// erreur
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR050"));
@@ -904,7 +918,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-				getAgentCourant(), "HSCT", "AT", getAccidentTravailCourant().getIdAT());
+				getAgentCourant(), "HSCT", "AT", getAccidentTravailCourant().getIdAt().toString());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -1213,7 +1227,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 
 			// on controle si il y a dejà un fichier pour cet AT
-			if (!performControlerFichier(request, "AT_" + at.getIdAT() + "_" + dateJour)) {
+			if (!performControlerFichier(request, "AT_" + at.getIdAt() + "_" + dateJour)) {
 				// alors on affiche un message pour prevenir que l'on va ecraser
 				// le fichier precedent
 				addZone(getNOM_ST_WARNING(),
@@ -1227,7 +1241,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		} else {
 			// on supprime le document existant dans la base de données
-			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAT());
+			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAt());
 			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
 					.getIdAgent(), d.getIdDocument());
 
@@ -1270,7 +1284,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		String extension = fichierUpload.getName().substring(fichierUpload.getName().indexOf('.'),
 				fichierUpload.getName().length());
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
-		String nom = codTypeDoc.toUpperCase() + "_" + at.getIdAT() + "_" + dateJour + extension;
+		String nom = codTypeDoc.toUpperCase() + "_" + at.getIdAt() + "_" + dateJour + extension;
 
 		// on upload le fichier
 		boolean upload = false;
@@ -1472,5 +1486,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public AccidentTravailDao getAccidentTravailDao() {
+		return accidentTravailDao;
+	}
+
+	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
+		this.accidentTravailDao = accidentTravailDao;
 	}
 }

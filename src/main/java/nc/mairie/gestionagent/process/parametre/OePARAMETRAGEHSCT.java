@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.Handicap;
 import nc.mairie.metier.hsct.Inaptitude;
 import nc.mairie.metier.hsct.MaladiePro;
@@ -19,6 +18,7 @@ import nc.mairie.metier.hsct.TypeInaptitude;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -72,6 +72,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	public String ACTION_CREATION = "1";
 
 	private TypeDocumentDao typeDocumentDao;
+	private AccidentTravailDao accidentTravailDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -154,6 +155,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAccidentTravailDao() == null) {
+			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1023,7 +1027,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un type d'AT utilisé sur un accident du
 		// travail
 		if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)
-				&& AccidentTravail.listerAccidentTravailAvecTypeAT(getTransaction(), getAtCourant()).size() > 0) {
+				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(
+						Integer.valueOf(getAtCourant().getIdTypeAT())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1220,7 +1225,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un siège de lésion utilisé sur un
 		// accident du travail
 		if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)
-				&& AccidentTravail.listerAccidentTravailAvecSiegeLesion(getTransaction(), getLesionCourant()).size() > 0) {
+				&& getAccidentTravailDao().listerAccidentTravailAvecSiegeLesion(
+						Integer.valueOf(getLesionCourant().getIdSiege())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2627,5 +2633,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public AccidentTravailDao getAccidentTravailDao() {
+		return accidentTravailDao;
+	}
+
+	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
+		this.accidentTravailDao = accidentTravailDao;
 	}
 }

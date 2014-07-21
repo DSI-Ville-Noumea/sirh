@@ -32,6 +32,7 @@ import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -88,6 +89,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesHSCT.class);
 
 	private TypeDocumentDao typeDocumentDao;
+	private AccidentTravailDao accidentTravailDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -143,6 +145,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAccidentTravailDao() == null) {
+			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -209,15 +214,16 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getLB_AT() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<AccidentTravail> c = AccidentTravail.listerAccidentTravailAgent(getTransaction(),
-						getAgentCourant());
+				ArrayList<AccidentTravail> c = getAccidentTravailDao().listerAccidentTravailAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()));
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<AccidentTravail> list = c.listIterator(); list.hasNext();) {
 						AccidentTravail acci = (AccidentTravail) list.next();
-						TypeAT tAt = TypeAT.chercherTypeAT(getTransaction(), acci.getIdTypeAT());
-						String ligne[] = { acci.getDateAT(), tAt.getDescTypeAT() };
+						TypeAT tAt = TypeAT.chercherTypeAT(getTransaction(), acci.getIdTypeAt().toString());
+						String ligne[] = { sdf.format(acci.getDateAt()), tAt.getDescTypeAT() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_AT(aFormat.getListeFormatee(true));
@@ -349,7 +355,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 			// on controle si il y a dejà un fichier pour ce contrat
 			if (ajoutAT) {
-				if (!performControlerFichier(request, "AT_" + at.getIdAT() + "_" + dateJour)) {
+				if (!performControlerFichier(request, "AT_" + at.getIdAt() + "_" + dateJour)) {
 					// alors on affiche un message pour prevenir que l'on va
 					// ecraser le fichier precedent
 					addZone(getNOM_ST_WARNING(),
@@ -384,7 +390,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		} else {
 			if (ajoutAT) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAT());
+				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAt());
 				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
 						.getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -453,7 +459,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		String dateJour = new SimpleDateFormat("ddMMyyyy-hhmm").format(new Date()).toString();
 		String nom = Const.CHAINE_VIDE;
 		if (ajoutAT) {
-			nom = codTypeDoc.toUpperCase() + "_" + at.getIdAT() + "_" + dateJour + extension;
+			nom = codTypeDoc.toUpperCase() + "_" + at.getIdAt() + "_" + dateJour + extension;
 		} else if (ajoutVM) {
 			nom = codTypeDoc.toUpperCase() + "_" + vm.getIdVisite() + "_" + dateJour + extension;
 		} else if (ajoutHandi) {
@@ -720,6 +726,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	 */
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(),
 				getAgentCourant(), Const.CHAINE_VIDE, "HSCT");
@@ -747,9 +754,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
-					AccidentTravail at = AccidentTravail.chercherAccidentTravail(getTransaction(), id);
-					if (at != null && at.getDateAT() != null && !at.getDateAT().endsWith(Const.DATE_NULL)) {
-						info = "AT du : " + at.getDateAT();
+					AccidentTravail at = getAccidentTravailDao().chercherAccidentTravail(Integer.valueOf(id));
+					if (at != null && at.getDateAt() != null) {
+						info = "AT du : " + sdf.format(at.getDateAt());
 					}
 				} else if (td.getCodTypeDocument().equals("HANDI")) {
 					String nomDoc = doc.getNomDocument();
@@ -1479,6 +1486,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public AccidentTravailDao getAccidentTravailDao() {
+		return accidentTravailDao;
+	}
+
+	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
+		this.accidentTravailDao = accidentTravailDao;
 	}
 
 }

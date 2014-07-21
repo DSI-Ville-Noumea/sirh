@@ -48,7 +48,7 @@ public class CentreFormationDao extends SirhDao implements CentreFormationDaoInt
 
 	@Override
 	public void modifierCentreFormation(Integer idCentre, String libelleCentre) throws Exception {
-		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_CENTRE_FORMATION + "=?where " + CHAMP_ID + " =?";
+		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_LIB_CENTRE_FORMATION + "=? where " + CHAMP_ID + " =?";
 		jdbcTemplate.update(sql, new Object[] { libelleCentre, idCentre });
 	}
 
