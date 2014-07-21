@@ -22,6 +22,7 @@ import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
+import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -80,6 +81,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private MaladieProDao maladieProDao;
 	private MedecinDao medecinDao;
 	private RecommandationDao recommandationDao;
+	private SiegeLesionDao siegeLesionDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -137,7 +139,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeLesion() == null) {
 			// Recherche des des sièges de lésions
-			ArrayList<SiegeLesion> listeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
+			ArrayList<SiegeLesion> listeLesion = getSiegeLesionDao().listerSiegeLesion();
 			setListeLesion(listeLesion);
 			initialiseListeLesion(request);
 		}
@@ -177,6 +179,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getSiegeLesionDao() == null) {
+			setSiegeLesionDao(new SiegeLesionDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -275,7 +280,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeLesion(HttpServletRequest request) throws Exception {
-		setListeLesion(SiegeLesion.listerSiegeLesion(getTransaction()));
+		setListeLesion(getSiegeLesionDao().listerSiegeLesion());
 		if (getListeLesion().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -1198,11 +1203,11 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 			if (getVAL_ST_ACTION_LESION().equals(ACTION_CREATION)) {
 				setLesionCourant(new SiegeLesion());
 				getLesionCourant().setDescSiege(getVAL_EF_DESC_LESION());
-				getLesionCourant().creerSiegeLesion(getTransaction());
+				getSiegeLesionDao().creerSiegeLesion(getLesionCourant().getDescSiege());
 				if (!getTransaction().isErreur())
 					getListeLesion().add(getLesionCourant());
 			} else if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)) {
-				getLesionCourant().supprimerSiegeLesion(getTransaction());
+				getSiegeLesionDao().supprimerSiegeLesion(getLesionCourant().getIdSiege());
 				if (!getTransaction().isErreur())
 					getListeLesion().remove(getLesionCourant());
 				setLesionCourant(null);
@@ -2695,5 +2700,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setRecommandationDao(RecommandationDao recommandationDao) {
 		this.recommandationDao = recommandationDao;
+	}
+
+	public SiegeLesionDao getSiegeLesionDao() {
+		return siegeLesionDao;
+	}
+
+	public void setSiegeLesionDao(SiegeLesionDao siegeLesionDao) {
+		this.siegeLesionDao = siegeLesionDao;
 	}
 }

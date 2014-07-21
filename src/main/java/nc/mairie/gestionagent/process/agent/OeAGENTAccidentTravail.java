@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,6 +31,7 @@ import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
+import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -71,7 +73,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private ArrayList<SiegeLesion> listeSiegeLesion;
 
 	private Hashtable<String, TypeAT> hashTypeAT;
-	private Hashtable<String, SiegeLesion> hashSiegeLesion;
+	private Hashtable<Integer, SiegeLesion> hashSiegeLesion;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche AT.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche AT.";
@@ -91,6 +93,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
+	private SiegeLesionDao siegeLesionDao;
 
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
@@ -150,12 +153,23 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// RG_AG_AT_C02
 
 		if (getHashSiegeLesion().size() == 0) {
-			ArrayList<SiegeLesion> listeSiegeLesion = SiegeLesion.listerSiegeLesion(getTransaction());
+			ArrayList<SiegeLesion> listeSiegeLesion = getSiegeLesionDao().listerSiegeLesion();
 			setListeSiegeLesion(listeSiegeLesion);
 
-			int[] tailles = { 40 };
-			String[] champs = { "descSiege" };
-			setLB_SIEGE_LESION(new FormateListe(tailles, listeSiegeLesion, champs).getListeFormatee(true));
+			if (getListeSiegeLesion().size() != 0) {
+				int tailles[] = { 40 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<SiegeLesion> list = getListeSiegeLesion().listIterator(); list.hasNext();) {
+					SiegeLesion m = (SiegeLesion) list.next();
+					String ligne[] = { m.getDescSiege() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_SIEGE_LESION(aFormat.getListeFormatee(true));
+			} else {
+				setLB_SIEGE_LESION(null);
+			}
 
 			// remplissage de la hashTable
 			for (int i = 0; i < listeSiegeLesion.size(); i++) {
@@ -186,6 +200,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getAccidentTravailDao() == null) {
 			setAccidentTravailDao(new AccidentTravailDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getSiegeLesionDao() == null) {
+			setSiegeLesionDao(new SiegeLesionDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -204,7 +221,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			for (int i = 0; i < getListeAT().size(); i++) {
 				AccidentTravail at = (AccidentTravail) getListeAT().get(i);
 				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAt().toString());
-				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege().toString());
+				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
 						getAgentCourant(), "HSCT", "AT", at.getIdAt().toString());
@@ -286,7 +303,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private boolean initialiseATCourant(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		TypeAT type = (TypeAT) getHashTypeAT().get(getAccidentTravailCourant().getIdTypeAt().toString());
-		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege().toString());
+		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege());
 
 		// Alim zones
 		addZone(getNOM_EF_DATE(), sdf.format(getAccidentTravailCourant().getDateAt()));
@@ -642,9 +659,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		this.agentCourant = agentCourant;
 	}
 
-	private Hashtable<String, SiegeLesion> getHashSiegeLesion() {
+	private Hashtable<Integer, SiegeLesion> getHashSiegeLesion() {
 		if (hashSiegeLesion == null) {
-			hashSiegeLesion = new Hashtable<String, SiegeLesion>();
+			hashSiegeLesion = new Hashtable<Integer, SiegeLesion>();
 		}
 		return hashSiegeLesion;
 	}
@@ -1494,5 +1511,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setAccidentTravailDao(AccidentTravailDao accidentTravailDao) {
 		this.accidentTravailDao = accidentTravailDao;
+	}
+
+	public SiegeLesionDao getSiegeLesionDao() {
+		return siegeLesionDao;
+	}
+
+	public void setSiegeLesionDao(SiegeLesionDao siegeLesionDao) {
+		this.siegeLesionDao = siegeLesionDao;
 	}
 }
