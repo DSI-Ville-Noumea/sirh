@@ -23,6 +23,7 @@ import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
+import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -82,6 +83,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private MedecinDao medecinDao;
 	private RecommandationDao recommandationDao;
 	private SiegeLesionDao siegeLesionDao;
+	private TypeATDao typeATDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -132,7 +134,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeAT() == null) {
 			// Recherche des types d'AT
-			ArrayList<TypeAT> listeAT = TypeAT.listerTypeAT(getTransaction());
+			ArrayList<TypeAT> listeAT = getTypeATDao().listerTypeAT();
 			setListeAT(listeAT);
 			initialiseListeAT(request);
 		}
@@ -182,6 +184,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getSiegeLesionDao() == null) {
 			setSiegeLesionDao(new SiegeLesionDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeATDao() == null) {
+			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -257,14 +262,14 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeAT(HttpServletRequest request) throws Exception {
-		setListeAT(TypeAT.listerTypeAT(getTransaction()));
+		setListeAT(getTypeATDao().listerTypeAT());
 		if (getListeAT().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<TypeAT> list = getListeAT().listIterator(); list.hasNext();) {
 				TypeAT td = (TypeAT) list.next();
-				String ligne[] = { td.getDescTypeAT() };
+				String ligne[] = { td.getDescTypeAt() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -807,7 +812,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (indice != -1 && indice < getListeAT().size()) {
 			TypeAT at = getListeAT().get(indice);
 			setAtCourant(at);
-			addZone(getNOM_EF_DESC_AT(), at.getDescTypeAT());
+			addZone(getNOM_EF_DESC_AT(), at.getDescTypeAt());
 			addZone(getNOM_ST_ACTION_AT(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "types d'AT"));
@@ -1005,12 +1010,12 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getVAL_ST_ACTION_AT() != null && getVAL_ST_ACTION_AT() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_AT().equals(ACTION_CREATION)) {
 				setAtCourant(new TypeAT());
-				getAtCourant().setDescTypeAT(getVAL_EF_DESC_AT());
-				getAtCourant().creerTypeAT(getTransaction());
+				getAtCourant().setDescTypeAt(getVAL_EF_DESC_AT());
+				getTypeATDao().creerTypeAT(getAtCourant().getDescTypeAt());
 				if (!getTransaction().isErreur())
 					getListeAT().add(getAtCourant());
 			} else if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)) {
-				getAtCourant().supprimerTypeAT(getTransaction());
+				getTypeATDao().supprimerTypeAT(getAtCourant().getIdTypeAt());
 				if (!getTransaction().isErreur())
 					getListeAT().remove(getAtCourant());
 				setAtCourant(null);
@@ -1052,7 +1057,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// travail
 		if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)
 				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(
-						Integer.valueOf(getAtCourant().getIdTypeAT())).size() > 0) {
+						Integer.valueOf(getAtCourant().getIdTypeAt())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1065,7 +1070,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getVAL_ST_ACTION_AT().equals(ACTION_CREATION)) {
 
 			for (TypeAT at : getListeAT()) {
-				if (at.getDescTypeAT().equals(getVAL_EF_DESC_AT().toUpperCase())) {
+				if (at.getDescTypeAt().equals(getVAL_EF_DESC_AT().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
@@ -2708,5 +2713,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setSiegeLesionDao(SiegeLesionDao siegeLesionDao) {
 		this.siegeLesionDao = siegeLesionDao;
+	}
+
+	public TypeATDao getTypeATDao() {
+		return typeATDao;
+	}
+
+	public void setTypeATDao(TypeATDao typeATDao) {
+		this.typeATDao = typeATDao;
 	}
 }

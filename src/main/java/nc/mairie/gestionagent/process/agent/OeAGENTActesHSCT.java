@@ -37,6 +37,7 @@ import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
+import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -98,6 +99,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private MedecinDao medecinDao;
 	private NomHandicapDao nomHandicapDao;
 	private RecommandationDao recommandationDao;
+	private TypeATDao typeATDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -168,6 +170,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getRecommandationDao() == null) {
 			setRecommandationDao(new RecommandationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeATDao() == null) {
+			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -246,8 +251,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<AccidentTravail> list = c.listIterator(); list.hasNext();) {
 						AccidentTravail acci = (AccidentTravail) list.next();
-						TypeAT tAt = TypeAT.chercherTypeAT(getTransaction(), acci.getIdTypeAt().toString());
-						String ligne[] = { sdf.format(acci.getDateAt()), tAt.getDescTypeAT() };
+						TypeAT tAt = getTypeATDao().chercherTypeAT(acci.getIdTypeAt());
+						String ligne[] = { sdf.format(acci.getDateAt()), tAt.getDescTypeAt() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_AT(aFormat.getListeFormatee(true));
@@ -1553,6 +1558,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setRecommandationDao(RecommandationDao recommandationDao) {
 		this.recommandationDao = recommandationDao;
+	}
+
+	public TypeATDao getTypeATDao() {
+		return typeATDao;
+	}
+
+	public void setTypeATDao(TypeATDao typeATDao) {
+		this.typeATDao = typeATDao;
 	}
 
 }

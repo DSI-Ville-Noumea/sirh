@@ -32,6 +32,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
+import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -72,7 +73,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private ArrayList<TypeAT> listeTypeAT;
 	private ArrayList<SiegeLesion> listeSiegeLesion;
 
-	private Hashtable<String, TypeAT> hashTypeAT;
+	private Hashtable<Integer, TypeAT> hashTypeAT;
 	private Hashtable<Integer, SiegeLesion> hashSiegeLesion;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche AT.";
@@ -94,6 +95,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
 	private SiegeLesionDao siegeLesionDao;
+	private TypeATDao typeATDao;
 
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
@@ -135,17 +137,28 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// Si hashtable des types d'accident de travail vide
 		// RG_AG_AT_C01
 		if (getHashTypeAT().size() == 0) {
-			ArrayList<TypeAT> listeTypeAT = TypeAT.listerTypeAT(getTransaction());
+			ArrayList<TypeAT> listeTypeAT = getTypeATDao().listerTypeAT();
 			setListeTypeAT(listeTypeAT);
 
-			int[] tailles = { 40 };
-			String[] champs = { "descTypeAT" };
-			setLB_TYPE(new FormateListe(tailles, listeTypeAT, champs).getListeFormatee(true));
+			if (getListeTypeAT().size() != 0) {
+				int tailles[] = { 40 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<TypeAT> list = getListeTypeAT().listIterator(); list.hasNext();) {
+					TypeAT m = (TypeAT) list.next();
+					String ligne[] = { m.getDescTypeAt() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TYPE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_TYPE(null);
+			}
 
 			// remplissage de la hashTable
 			for (int i = 0; i < listeTypeAT.size(); i++) {
 				TypeAT t = (TypeAT) listeTypeAT.get(i);
-				getHashTypeAT().put(t.getIdTypeAT(), t);
+				getHashTypeAT().put(t.getIdTypeAt(), t);
 			}
 		}
 
@@ -203,6 +216,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getSiegeLesionDao() == null) {
 			setSiegeLesionDao(new SiegeLesionDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeATDao() == null) {
+			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -220,7 +236,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getListeAT() != null) {
 			for (int i = 0; i < getListeAT().size(); i++) {
 				AccidentTravail at = (AccidentTravail) getListeAT().get(i);
-				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAt().toString());
+				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAt());
 				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
@@ -236,7 +252,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				addZone(getNOM_ST_NB_JOURS(indiceAcc), at.getNbJoursItt() == null ? "&nbsp;" : at.getNbJoursItt()
 						.toString());
 				addZone(getNOM_ST_TYPE(indiceAcc),
-						t.getDescTypeAT().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAT());
+						t.getDescTypeAt().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getDescTypeAt());
 				addZone(getNOM_ST_SIEGE(indiceAcc),
 						s.getDescSiege().equals(Const.CHAINE_VIDE) ? "&nbsp;" : s.getDescSiege());
 				addZone(getNOM_ST_NB_DOC(indiceAcc), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
@@ -302,7 +318,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	 */
 	private boolean initialiseATCourant(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		TypeAT type = (TypeAT) getHashTypeAT().get(getAccidentTravailCourant().getIdTypeAt().toString());
+		TypeAT type = (TypeAT) getHashTypeAT().get(getAccidentTravailCourant().getIdTypeAt());
 		SiegeLesion siege = (SiegeLesion) getHashSiegeLesion().get(getAccidentTravailCourant().getIdSiege());
 
 		// Alim zones
@@ -314,7 +330,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		int ligneType = getListeTypeAT().indexOf(type);
 		addZone(getNOM_LB_TYPE_SELECT(), String.valueOf(ligneType + 1));
-		addZone(getNOM_ST_TYPE(), type.getDescTypeAT());
+		addZone(getNOM_ST_TYPE(), type.getDescTypeAt());
 
 		int ligneSiege = getListeSiegeLesion().indexOf(siege);
 		addZone(getNOM_LB_SIEGE_LESION_SELECT(), String.valueOf(ligneSiege + 1));
@@ -423,7 +439,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			getAccidentTravailCourant().setDateAtInitial(
 					dateInit.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateInit));
 			getAccidentTravailCourant().setNbJoursItt(duree.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(duree));
-			getAccidentTravailCourant().setIdTypeAt(Integer.valueOf(type.getIdTypeAT()));
+			getAccidentTravailCourant().setIdTypeAt(Integer.valueOf(type.getIdTypeAt()));
 			getAccidentTravailCourant().setIdSiege(Integer.valueOf(siege.getIdSiege()));
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
@@ -666,9 +682,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		return hashSiegeLesion;
 	}
 
-	private Hashtable<String, TypeAT> getHashTypeAT() {
+	private Hashtable<Integer, TypeAT> getHashTypeAT() {
 		if (hashTypeAT == null) {
-			hashTypeAT = new Hashtable<String, TypeAT>();
+			hashTypeAT = new Hashtable<Integer, TypeAT>();
 		}
 		return hashTypeAT;
 	}
@@ -1519,5 +1535,13 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setSiegeLesionDao(SiegeLesionDao siegeLesionDao) {
 		this.siegeLesionDao = siegeLesionDao;
+	}
+
+	public TypeATDao getTypeATDao() {
+		return typeATDao;
+	}
+
+	public void setTypeATDao(TypeATDao typeATDao) {
+		this.typeATDao = typeATDao;
 	}
 }
