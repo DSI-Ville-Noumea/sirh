@@ -34,6 +34,7 @@ import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -86,7 +87,7 @@ public class OeSMConvocation extends BasicProcess {
 	private ArrayList<String> listeDocuments;
 
 	private ArrayList<Medecin> listeMedecin;
-	private Hashtable<String, Medecin> hashMedecin;
+	private Hashtable<Integer, Medecin> hashMedecin;
 
 	private ArrayList<String> listeHeureRDV;
 
@@ -103,6 +104,7 @@ public class OeSMConvocation extends BasicProcess {
 	private SuiviMedicalDao suiviMedDao;
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private SPABSENDao spabsenDao;
+	private MedecinDao medecinDao;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private ArrayList<Service> listeServices;
@@ -111,35 +113,6 @@ public class OeSMConvocation extends BasicProcess {
 	private ArrayList<MotifVisiteMed> listeMotif;
 	private ArrayList<EnumEtatSuiviMed> listeEnumEtatSuiviMed;
 	public Hashtable<String, TreeHierarchy> hTree = null;
-
-	public SuiviMedicalDao getSuiviMedDao() {
-		return suiviMedDao;
-	}
-
-	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
-		this.suiviMedDao = suiviMedDao;
-	}
-
-	public MotifVisiteMedDao getMotifVisiteMedDao() {
-		return motifVisiteMedDao;
-	}
-
-	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
-		this.motifVisiteMedDao = motifVisiteMedDao;
-	}
-
-	public SPABSENDao getSpabsenDao() {
-		return spabsenDao;
-	}
-
-	public void setSpabsenDao(SPABSENDao spabsenDao) {
-		this.spabsenDao = spabsenDao;
-	}
-
-	@Override
-	public String getJSP() {
-		return "OeSMConvocation.jsp";
-	}
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -229,6 +202,9 @@ public class OeSMConvocation extends BasicProcess {
 		if (getSpabsenDao() == null)
 			setSpabsenDao(new SPABSENDao((MairieDao) context.getBean("mairieDao")));
 
+		if (getMedecinDao() == null) {
+			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void afficheListeDocuments() {
@@ -299,7 +275,7 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
 			addZone(getNOM_LB_MEDECIN_SELECT(i),
 					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(
-							getHashMedecin().get(sm.getIdMedecin().toString()))) : Const.ZERO);
+							getHashMedecin().get(sm.getIdMedecin()))) : Const.ZERO);
 			addZone(getNOM_ST_DATE_PROCHAIN_RDV(i),
 					sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm
 							.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
@@ -515,7 +491,7 @@ public class OeSMConvocation extends BasicProcess {
 
 		// Si liste medecins vide alors affectation
 		if (getListeMedecin() == null || getListeMedecin().size() == 0) {
-			setListeMedecin(Medecin.listerMedecin(getTransaction()));
+			setListeMedecin(getMedecinDao().listerMedecin());
 
 			int[] tailles = { 15 };
 			String padding[] = { "G" };
@@ -1318,10 +1294,10 @@ public class OeSMConvocation extends BasicProcess {
 	private void performCalculCas1(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°1 : A la demande de l'agent ou du service
 		// on liste toutes les visites medicales du type "a la demande..."
-		Medecin m = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
+		Medecin m = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
 		ArrayList<VisiteMedicale> listeSMCas1 = VisiteMedicale.listerVisiteMedicalePourSMCas1(getTransaction(),
-				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(),
-				m.getIdMedecin());
+				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(), m
+						.getIdMedecin().toString());
 		int nbCas1 = 0;
 		for (int i = 0; i < listeSMCas1.size(); i++) {
 			VisiteMedicale vm = listeSMCas1.get(i);
@@ -2404,9 +2380,9 @@ public class OeSMConvocation extends BasicProcess {
 		this.listeMedecin = listeMedecin;
 	}
 
-	private Hashtable<String, Medecin> getHashMedecin() {
+	private Hashtable<Integer, Medecin> getHashMedecin() {
 		if (hashMedecin == null)
-			hashMedecin = new Hashtable<String, Medecin>();
+			hashMedecin = new Hashtable<Integer, Medecin>();
 		return hashMedecin;
 	}
 
@@ -3382,6 +3358,43 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setListeStatut(ArrayList<String> listeStatut) {
 		this.listeStatut = listeStatut;
+	}
+
+	public SuiviMedicalDao getSuiviMedDao() {
+		return suiviMedDao;
+	}
+
+	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
+		this.suiviMedDao = suiviMedDao;
+	}
+
+	public MotifVisiteMedDao getMotifVisiteMedDao() {
+		return motifVisiteMedDao;
+	}
+
+	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
+		this.motifVisiteMedDao = motifVisiteMedDao;
+	}
+
+	public SPABSENDao getSpabsenDao() {
+		return spabsenDao;
+	}
+
+	public void setSpabsenDao(SPABSENDao spabsenDao) {
+		this.spabsenDao = spabsenDao;
+	}
+
+	@Override
+	public String getJSP() {
+		return "OeSMConvocation.jsp";
+	}
+
+	public MedecinDao getMedecinDao() {
+		return medecinDao;
+	}
+
+	public void setMedecinDao(MedecinDao medecinDao) {
+		this.medecinDao = medecinDao;
 	}
 
 }

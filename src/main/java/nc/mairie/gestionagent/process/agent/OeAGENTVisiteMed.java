@@ -38,6 +38,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -86,7 +87,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private ArrayList<Inaptitude> listeInaptitude;
 	private ArrayList<TypeInaptitude> listeTypeInaptitude;
 
-	private Hashtable<String, Medecin> hashMedecin;
+	private Hashtable<Integer, Medecin> hashMedecin;
 	private Hashtable<String, MotifVisiteMed> hashMotif;
 	private Hashtable<String, Recommandation> hashRecommandation;
 	private Hashtable<String, TypeInaptitude> hashTypeInaptitude;
@@ -119,26 +120,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	public boolean champMotifModifiable = true;
 
 	private SuiviMedicalDao suiviMedDao;
-
 	private MotifVisiteMedDao motifVisiteMedDao;
-
 	private TypeDocumentDao typeDocumentDao;
-
-	public SuiviMedicalDao getSuiviMedDao() {
-		return suiviMedDao;
-	}
-
-	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
-		this.suiviMedDao = suiviMedDao;
-	}
-
-	public MotifVisiteMedDao getMotifVisiteMedDao() {
-		return motifVisiteMedDao;
-	}
-
-	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
-		this.motifVisiteMedDao = motifVisiteMedDao;
-	}
+	private MedecinDao medecinDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -196,6 +180,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getMedecinDao() == null) {
+			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -205,7 +192,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si hashtable des medecins vide
 		if (getHashMedecin().size() == 0) {
-			ArrayList<Medecin> listeMedecin = Medecin.listerMedecin(getTransaction());
+			ArrayList<Medecin> listeMedecin = getMedecinDao().listerMedecin();
 			setListeMedecin(listeMedecin);
 
 			int[] tailles = { 40 };
@@ -341,7 +328,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				VisiteMedicale vm = (VisiteMedicale) getListeVisites().get(i);
 				Medecin m = null;
 				if (vm.getIdMedecin() != null) {
-					m = (Medecin) getHashMedecin().get(vm.getIdMedecin());
+					m = (Medecin) getHashMedecin().get(Integer.valueOf(vm.getIdMedecin()));
 				}
 				MotifVisiteMed motif = null;
 				if (vm.getIdMotif() != null) {
@@ -481,7 +468,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private boolean initialiseVisiteCourante() throws Exception {
 
 		// Récup de la visite médicale courante
-		Medecin medecin = (Medecin) getHashMedecin().get(getVisiteCourante().getIdMedecin());
+		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
 			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
@@ -550,7 +537,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 * @throws Exception
 	 */
 	private boolean initialiseVisiteSuppression(HttpServletRequest request) throws Exception {
-		Medecin medecin = (Medecin) getHashMedecin().get(getVisiteCourante().getIdMedecin());
+		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
 			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
@@ -1042,7 +1029,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getVisiteCourante().setDateDerniereVisite(dateVisite);
 				getVisiteCourante().setDureeValidite(duree);
 				getVisiteCourante().setApte(apteVM);
-				getVisiteCourante().setIdMedecin(medecin.getIdMedecin());
+				getVisiteCourante().setIdMedecin(medecin.getIdMedecin().toString());
 				getVisiteCourante().setIdMotif(motif.getIdMotifVm().toString());
 				getVisiteCourante().setIdRecommandation(
 						recommandation != null ? recommandation.getIdRecommandation() : null);
@@ -1071,13 +1058,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						// si le motif est : a la demande...
 						// alors il faut supprimer la visite medicale
 						// correspondante
-						Medecin med = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A",
-								"RENSEIGNER");
+						Medecin med = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
 						if (getVisiteCourante().getIdMotif().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode())
 								|| getVisiteCourante().getIdMotif().equals(
 										EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) {
 							VisiteMedicale vmASupp = VisiteMedicale.chercherVisiteMedicaleCriteres(getTransaction(),
-									getAgentCourant().getIdAgent(), med.getIdMedecin(), getVisiteCourante()
+									getAgentCourant().getIdAgent(), med.getIdMedecin().toString(), getVisiteCourante()
 											.getIdMotif());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
@@ -1374,9 +1360,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		this.listeRecommandation = listeRecommandation;
 	}
 
-	private Hashtable<String, Medecin> getHashMedecin() {
+	private Hashtable<Integer, Medecin> getHashMedecin() {
 		if (hashMedecin == null) {
-			hashMedecin = new Hashtable<String, Medecin>();
+			hashMedecin = new Hashtable<Integer, Medecin>();
 		}
 		return hashMedecin;
 	}
@@ -3312,9 +3298,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_LB_RECOMMANDATION_SELECT(), Const.ZERO);
 				addZone(getNOM_EF_DATE_VISITE(), Services.dateDuJour());
 				addZone(getNOM_EF_DUREE(), Const.ZERO);
-				Medecin medecin = Medecin.chercherMedecinByLib(getTransaction(), Const.CHAINE_VIDE, "A", "RENSEIGNER");
+				Medecin medecin = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
 				int ligneMedecin = getListeMedecin().indexOf(getHashMedecin().get(medecin.getIdMedecin()));
-				addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin + 1));
+				addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
 				addZone(getNOM_RG_AVIS(), Const.CHAINE_VIDE);
 			} else {
 				// si autre motif alors on cherche la derniere convocation
@@ -3361,5 +3347,29 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public SuiviMedicalDao getSuiviMedDao() {
+		return suiviMedDao;
+	}
+
+	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
+		this.suiviMedDao = suiviMedDao;
+	}
+
+	public MotifVisiteMedDao getMotifVisiteMedDao() {
+		return motifVisiteMedDao;
+	}
+
+	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
+		this.motifVisiteMedDao = motifVisiteMedDao;
+	}
+
+	public MedecinDao getMedecinDao() {
+		return medecinDao;
+	}
+
+	public void setMedecinDao(MedecinDao medecinDao) {
+		this.medecinDao = medecinDao;
 	}
 }

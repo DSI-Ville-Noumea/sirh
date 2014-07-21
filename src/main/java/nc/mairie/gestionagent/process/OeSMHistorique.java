@@ -15,6 +15,7 @@ import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -45,24 +46,8 @@ public class OeSMHistorique extends BasicProcess {
 	public String ACTION_RECHERCHE = "Recherche";
 
 	private SuiviMedicalDao suiviMedDao;
-
 	private MotifVisiteMedDao motifVisiteMedDao;
-
-	public SuiviMedicalDao getSuiviMedDao() {
-		return suiviMedDao;
-	}
-
-	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
-		this.suiviMedDao = suiviMedDao;
-	}
-
-	public MotifVisiteMedDao getMotifVisiteMedDao() {
-		return motifVisiteMedDao;
-	}
-
-	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
-		this.motifVisiteMedDao = motifVisiteMedDao;
-	}
+	private MedecinDao medecinDao;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -86,10 +71,13 @@ public class OeSMHistorique extends BasicProcess {
 
 		// Initialisation de la liste de suivi medicaux
 		if (getListeHistoSuiviMed() == null || getListeHistoSuiviMed().size() == 0) {
-			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
-			int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
-			setListeHistoSuiviMed(getSuiviMedDao().listerHistoriqueSuiviMedical(getAnneeSelectionne(indiceAnnee), getMoisSelectionne(indiceMois),
-					EnumEtatSuiviMed.CONVOQUE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode(), EnumEtatSuiviMed.EFFECTUE.getCode()));
+			int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+			int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer
+					.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+			setListeHistoSuiviMed(getSuiviMedDao().listerHistoriqueSuiviMedical(getAnneeSelectionne(indiceAnnee),
+					getMoisSelectionne(indiceMois), EnumEtatSuiviMed.CONVOQUE.getCode(),
+					EnumEtatSuiviMed.ACCOMP.getCode(), EnumEtatSuiviMed.EFFECTUE.getCode()));
 			afficheListeHistoSuiviMed();
 		}
 	}
@@ -100,9 +88,13 @@ public class OeSMHistorique extends BasicProcess {
 
 		if (getSuiviMedDao() == null)
 			setSuiviMedDao(new SuiviMedicalDao((SirhDao) context.getBean("sirhDao")));
-		
+
 		if (getMotifVisiteMedDao() == null)
 			setMotifVisiteMedDao(new MotifVisiteMedDao((SirhDao) context.getBean("sirhDao")));
+
+		if (getMedecinDao() == null) {
+			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void afficheListeHistoSuiviMed() throws ParseException, Exception {
@@ -112,45 +104,52 @@ public class OeSMHistorique extends BasicProcess {
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
-			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat().trim());
+			addZone(getNOM_ST_NUM_CAFAT(i), agent.getNumCafat() == null ? Const.CHAINE_VIDE : agent.getNumCafat()
+					.trim());
 			addZone(getNOM_ST_STATUT(i), sm.getStatut());
 			Service serv = Service.chercherService(getTransaction(), sm.getIdServi());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
-			addZone(getNOM_ST_SERVICE(i), serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
+			addZone(getNOM_ST_SERVICE(i),
+					serv == null || serv.getLibService() == null ? "&nbsp;" : serv.getLibService());
 
 			addZone(getNOM_ST_MOTIF(i), getMotifVisiteMedDao().chercherMotif(sm.getIdMotifVm()).getLibMotifVm());
 			// RG-SVM-15
 			// si SM effectué alors on prend les infos de la VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed().toString(), sm.getIdAgent()
-						.toString());
+				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed()
+						.toString(), sm.getIdAgent().toString());
 				Medecin medecin = null;
 				if (vm.getIdMedecin() != null) {
-					medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
+					medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
 				}
-				addZone(getNOM_ST_MEDECIN(i), medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
-						+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
-				addZone(getNOM_ST_DATE_RDV(i), vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : vm.getDateDerniereVisite());
-			} else {
-				Medecin medecin = Medecin.chercherMedecin(getTransaction(), sm.getIdMedecin().toString());
-				addZone(getNOM_ST_MEDECIN(i), sm.getIdMedecin() != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
-						+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
+				addZone(getNOM_ST_MEDECIN(i),
+						medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
+								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i),
-						sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm.getDateProchaineVisite().toString(),
-								"yyyy-MM-dd", "dd/MM/yyyy"));
+						vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : vm.getDateDerniereVisite());
+			} else {
+				Medecin medecin = getMedecinDao().chercherMedecin(sm.getIdMedecin());
+				addZone(getNOM_ST_MEDECIN(i),
+						sm.getIdMedecin() != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
+								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
+				addZone(getNOM_ST_DATE_RDV(i),
+						sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm
+								.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
 			}
-			addZone(getNOM_ST_HEURE_RDV(i), sm.getHeureProchaineVisite() != null ? sm.getHeureProchaineVisite() : Const.CHAINE_VIDE);
+			addZone(getNOM_ST_HEURE_RDV(i), sm.getHeureProchaineVisite() != null ? sm.getHeureProchaineVisite()
+					: Const.CHAINE_VIDE);
 			// on cherche si il y a une VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed().toString(), sm.getIdAgent()
-						.toString());
+				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed()
+						.toString(), sm.getIdAgent().toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
 				if (vm != null && vm.getIdVisite() != null) {
-					addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte" : "Inapte");
+					addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte"
+							: "Inapte");
 				} else {
 					addZone(getNOM_ST_AVIS(i), "&nbsp;");
 				}
@@ -263,14 +262,16 @@ public class OeSMHistorique extends BasicProcess {
 		// Mise à jour de l'action menée
 		addZone(getNOM_ST_ACTION(), ACTION_RECHERCHE);
 
-		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		int indiceAnnee = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer.parseInt(getVAL_LB_ANNEE_SELECT())
+				: -1);
 		if (indiceAnnee == -1) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "année"));
 			return false;
 		}
 
-		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT()) : -1);
+		int indiceMois = (Services.estNumerique(getVAL_LB_MOIS_SELECT()) ? Integer.parseInt(getVAL_LB_MOIS_SELECT())
+				: -1);
 		if (indiceMois == -1) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "mois"));
@@ -671,5 +672,29 @@ public class OeSMHistorique extends BasicProcess {
 	 */
 	public String getVAL_ST_EFFECTUE(int i) {
 		return getZone(getNOM_ST_EFFECTUE(i));
+	}
+
+	public SuiviMedicalDao getSuiviMedDao() {
+		return suiviMedDao;
+	}
+
+	public void setSuiviMedDao(SuiviMedicalDao suiviMedDao) {
+		this.suiviMedDao = suiviMedDao;
+	}
+
+	public MotifVisiteMedDao getMotifVisiteMedDao() {
+		return motifVisiteMedDao;
+	}
+
+	public void setMotifVisiteMedDao(MotifVisiteMedDao motifVisiteMedDao) {
+		this.motifVisiteMedDao = motifVisiteMedDao;
+	}
+
+	public MedecinDao getMedecinDao() {
+		return medecinDao;
+	}
+
+	public void setMedecinDao(MedecinDao medecinDao) {
+		this.medecinDao = medecinDao;
 	}
 }

@@ -34,6 +34,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
+import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -92,6 +93,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
+	private MedecinDao medecinDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -154,6 +156,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getHandicapDao() == null) {
 			setHandicapDao(new HandicapDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getMedecinDao() == null) {
+			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -183,7 +188,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					FormateListe aFormat = new FormateListe(tailles);
 					for (ListIterator<VisiteMedicale> list = c.listIterator(); list.hasNext();) {
 						VisiteMedicale vm = (VisiteMedicale) list.next();
-						Medecin medecin = Medecin.chercherMedecin(getTransaction(), vm.getIdMedecin());
+						Medecin medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
 						Recommandation recom = Recommandation.chercherRecommandation(getTransaction(),
 								vm.getIdRecommandation());
 						String ligne[] = { vm.getDateDerniereVisite(), medecin.getNomMedecin(),
@@ -1512,6 +1517,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setHandicapDao(HandicapDao handicapDao) {
 		this.handicapDao = handicapDao;
+	}
+
+	public MedecinDao getMedecinDao() {
+		return medecinDao;
+	}
+
+	public void setMedecinDao(MedecinDao medecinDao) {
+		this.medecinDao = medecinDao;
 	}
 
 }

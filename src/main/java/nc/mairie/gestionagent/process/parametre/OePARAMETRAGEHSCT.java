@@ -20,6 +20,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
+import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -76,6 +77,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
 	private MaladieProDao maladieProDao;
+	private MedecinDao medecinDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -105,7 +107,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 		if (getListeMedecin() == null) {
 			// Recherche des médecins
-			ArrayList<Medecin> listeMedecin = Medecin.listerMedecin(getTransaction());
+			ArrayList<Medecin> listeMedecin = getMedecinDao().listerMedecin();
 			setListeMedecin(listeMedecin);
 			initialiseListeMedecin(request);
 		}
@@ -168,6 +170,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		if (getMaladieProDao() == null) {
 			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getMedecinDao() == null) {
+			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -175,7 +180,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeMedecin(HttpServletRequest request) throws Exception {
-		setListeMedecin(Medecin.listerMedecin(getTransaction()));
+		setListeMedecin(getMedecinDao().listerMedecin());
 		if (getListeMedecin().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -1407,11 +1412,12 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				getMedecinCourant().setNomMedecin(getVAL_EF_NOM_MEDECIN());
 				getMedecinCourant().setPrenomMedecin(getVAL_EF_PRENOM_MEDECIN());
 				getMedecinCourant().setTitreMedecin(getVAL_EF_TITRE_MEDECIN());
-				getMedecinCourant().creerMedecin(getTransaction());
+				getMedecinDao().creerMedecin(getMedecinCourant().getTitreMedecin(),
+						getMedecinCourant().getPrenomMedecin(), getMedecinCourant().getNomMedecin());
 				if (!getTransaction().isErreur())
 					getListeMedecin().add(getMedecinCourant());
 			} else if (getVAL_ST_ACTION_MEDECIN().equals(ACTION_SUPPRESSION)) {
-				getMedecinCourant().supprimerMedecin(getTransaction());
+				getMedecinDao().supprimerMedecin(getMedecinCourant().getIdMedecin());
 				if (!getTransaction().isErreur())
 					getListeMedecin().remove(getMedecinCourant());
 				setMedecinCourant(null);
@@ -2668,5 +2674,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setMaladieProDao(MaladieProDao maladieProDao) {
 		this.maladieProDao = maladieProDao;
+	}
+
+	public MedecinDao getMedecinDao() {
+		return medecinDao;
+	}
+
+	public void setMedecinDao(MedecinDao medecinDao) {
+		this.medecinDao = medecinDao;
 	}
 }
