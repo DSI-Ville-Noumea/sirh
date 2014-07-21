@@ -35,6 +35,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -94,6 +95,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private AccidentTravailDao accidentTravailDao;
 	private HandicapDao handicapDao;
 	private MedecinDao medecinDao;
+	private NomHandicapDao nomHandicapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -159,6 +161,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getNomHandicapDao() == null) {
+			setNomHandicapDao(new NomHandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -189,10 +194,12 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					for (ListIterator<VisiteMedicale> list = c.listIterator(); list.hasNext();) {
 						VisiteMedicale vm = (VisiteMedicale) list.next();
 						Medecin medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
-						Recommandation recom = Recommandation.chercherRecommandation(getTransaction(),
-								vm.getIdRecommandation());
+						Recommandation recom = null;
+						if (vm != null && vm.getIdRecommandation() != null) {
+							recom = Recommandation.chercherRecommandation(getTransaction(), vm.getIdRecommandation());
+						}
 						String ligne[] = { vm.getDateDerniereVisite(), medecin.getNomMedecin(),
-								recom.getDescRecommandation() };
+								recom == null ? Const.CHAINE_VIDE : recom.getDescRecommandation() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_VM(aFormat.getListeFormatee(true));
@@ -212,8 +219,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<Handicap> list = c.listIterator(); list.hasNext();) {
 						Handicap handi = (Handicap) list.next();
-						NomHandicap nomHandi = NomHandicap.chercherNomHandicap(getTransaction(), handi
-								.getIdTypeHandicap().toString());
+						NomHandicap nomHandi = getNomHandicapDao().chercherNomHandicap(handi.getIdTypeHandicap());
 						String ligne[] = { sdf.format(handi.getDateDebutHandicap()), nomHandi.getNomTypeHandicap() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -1525,6 +1531,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setMedecinDao(MedecinDao medecinDao) {
 		this.medecinDao = medecinDao;
+	}
+
+	public NomHandicapDao getNomHandicapDao() {
+		return nomHandicapDao;
+	}
+
+	public void setNomHandicapDao(NomHandicapDao nomHandicapDao) {
+		this.nomHandicapDao = nomHandicapDao;
 	}
 
 }

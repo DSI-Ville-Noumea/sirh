@@ -30,6 +30,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
+import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -70,7 +71,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	private ArrayList<NomHandicap> listeNomHandicap;
 	private ArrayList<MaladiePro> listeMaladiePro;
 
-	private Hashtable<String, NomHandicap> hashNomHandicap;
+	private Hashtable<Integer, NomHandicap> hashNomHandicap;
 	private Hashtable<String, MaladiePro> hashMaladiePro;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche handicap.";
@@ -95,6 +96,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private HandicapDao handicapDao;
 	private MaladieProDao maladieProDao;
+	private NomHandicapDao nomHandicapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -125,17 +127,21 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Si hashtable des noms de handicap vide
 		// RG_AG_HC_C04
 		if (getHashNomHandicap().size() == 0) {
-			ArrayList<NomHandicap> listeNomHandicap = NomHandicap.listerNomHandicap(getTransaction());
+			ArrayList<NomHandicap> listeNomHandicap = getNomHandicapDao().listerNomHandicap();
 			setListeNomHandicap(listeNomHandicap);
 
-			int[] tailles = { 40 };
-			String[] champs = { "nomTypeHandicap" };
-			setLB_NOM(new FormateListe(tailles, listeNomHandicap, champs).getListeFormatee(true));
-
-			// remplissage de la hashTable
-			for (int i = 0; i < listeNomHandicap.size(); i++) {
-				NomHandicap n = (NomHandicap) listeNomHandicap.get(i);
-				getHashNomHandicap().put(n.getIdTypeHandicap(), n);
+			if (getListeNomHandicap().size() != 0) {
+				int[] tailles = { 40 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (int i = 0; i < getListeNomHandicap().size(); i++) {
+					NomHandicap m = (NomHandicap) getListeNomHandicap().get(i);
+					getHashNomHandicap().put(m.getIdTypeHandicap(), m);
+					String ligne[] = { m.getNomTypeHandicap() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NOM(aFormat.getListeFormatee(true));
+			} else {
+				setLB_NOM(null);
 			}
 		}
 
@@ -149,7 +155,7 @@ public class OeAGENTHandicap extends BasicProcess {
 				int[] tailles = { 255 };
 				FormateListe aFormat = new FormateListe(tailles);
 				for (int i = 0; i < getListeMaladiePro().size(); i++) {
-					MaladiePro m = (MaladiePro) listeMaladiePro.get(i);
+					MaladiePro m = (MaladiePro) getListeMaladiePro().get(i);
 					getHashMaladiePro().put(m.getIdMaladiePro().toString(), m);
 					String ligne[] = { m.getLibMaladiePro() };
 					aFormat.ajouteLigne(ligne);
@@ -185,6 +191,9 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getMaladieProDao() == null) {
 			setMaladieProDao(new MaladieProDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getNomHandicapDao() == null) {
+			setNomHandicapDao(new NomHandicapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -203,7 +212,7 @@ public class OeAGENTHandicap extends BasicProcess {
 		if (getListeHandicap() != null) {
 			for (int i = 0; i < getListeHandicap().size(); i++) {
 				Handicap h = (Handicap) getListeHandicap().get(i);
-				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap().toString());
+				NomHandicap n = (NomHandicap) getHashNomHandicap().get(h.getIdTypeHandicap());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
 						getAgentCourant(), "HSCT", "HANDI", h.getIdHandicap().toString());
@@ -334,7 +343,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	 */
 	private boolean initialiseHandicapCourant(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap().toString());
+		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
 		MaladiePro maladiePro = null;
 		if (getHandicapCourant().isReconnaissanceMp())
 			maladiePro = (MaladiePro) getHashMaladiePro().get(getHandicapCourant().getIdMaladiePro().toString());
@@ -394,7 +403,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	 */
 	private boolean initialiseHandicapSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap().toString());
+		NomHandicap nom = (NomHandicap) getHashNomHandicap().get(getHandicapCourant().getIdTypeHandicap());
 		MaladiePro maladiePro = null;
 
 		if (getHandicapCourant().isReconnaissanceMp())
@@ -1148,9 +1157,9 @@ public class OeAGENTHandicap extends BasicProcess {
 	 * 
 	 * @return Hashtable<String, NomHandicap>
 	 */
-	private Hashtable<String, NomHandicap> getHashNomHandicap() {
+	private Hashtable<Integer, NomHandicap> getHashNomHandicap() {
 		if (hashNomHandicap == null)
-			hashNomHandicap = new Hashtable<String, NomHandicap>();
+			hashNomHandicap = new Hashtable<Integer, NomHandicap>();
 		return hashNomHandicap;
 	}
 
@@ -2530,6 +2539,14 @@ public class OeAGENTHandicap extends BasicProcess {
 
 	public void setMaladieProDao(MaladieProDao maladieProDao) {
 		this.maladieProDao = maladieProDao;
+	}
+
+	public NomHandicapDao getNomHandicapDao() {
+		return nomHandicapDao;
+	}
+
+	public void setNomHandicapDao(NomHandicapDao nomHandicapDao) {
+		this.nomHandicapDao = nomHandicapDao;
 	}
 
 }
