@@ -65,6 +65,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureFPDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -230,6 +231,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private RegIndemnDao regIndemnDao;
 	private RegIndemnFPDao regIndemnFPDao;
 	private RegIndemnAffDao regIndemnAffDao;
+	private TypeCompetenceDao typeCompetenceDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -469,6 +471,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getRegIndemnAffDao() == null) {
 			setRegIndemnAffDao(new RegIndemnAffDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeCompetenceDao() == null) {
+			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -957,8 +962,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < getListeToutesComp().size(); i++) {
 			dejaCoche = false;
 			Competence competence = (Competence) getListeToutesComp().get(i);
-			TypeCompetence typeComp = TypeCompetence.chercherTypeCompetence(getTransaction(),
-					competence.getIdTypeCompetence());
+			TypeCompetence typeComp = getTypeCompetenceDao().chercherTypeCompetence(
+					Integer.valueOf(competence.getIdTypeCompetence()));
 			String origineComp = (String) getHashOrigineCompetence().get(competence.getIdCompetence());
 
 			if (competence != null) {
@@ -6594,5 +6599,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setRegIndemnAffDao(RegIndemnAffDao regIndemnAffDao) {
 		this.regIndemnAffDao = regIndemnAffDao;
+	}
+
+	public TypeCompetenceDao getTypeCompetenceDao() {
+		return typeCompetenceDao;
+	}
+
+	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
+		this.typeCompetenceDao = typeCompetenceDao;
 	}
 }

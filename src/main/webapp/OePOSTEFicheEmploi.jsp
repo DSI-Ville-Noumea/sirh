@@ -392,7 +392,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_TYPE()%>" value="OK">	
 			<br/><br/>
-			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode())){ %>
+			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR_FAIRE.getCode()){ %>
 				<div align="left">
 					<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR_FAIRE()%>">
 		            <BR/>
@@ -420,7 +420,7 @@ document.formu.elements[nom].focus();
 					<%} %>
 				</div>
 				<BR/>
-			<%}else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode())){ %>
+			<%}else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR.getCode()){ %>
 				<div align="left">
 					<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_SAVOIR()%>">
 					<BR/>
@@ -448,7 +448,7 @@ document.formu.elements[nom].focus();
 					<%} %>
 				</div>
 				<BR/>
-			<% }else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode())){ %>
+			<% }else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.COMPORTEMENT.getCode()){ %>
 			<div align="left">
 				<INPUT style="margin:5px;" type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_COMPETENCE_COMPORTEMENT()%>">
 				<BR/>
@@ -674,7 +674,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_TYPE()%>" value="OK">	
 			<br/><br/>
-			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode())){ %>
+			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR_FAIRE.getCode()){ %>
 				<div align="left">
 		            <%if(process.getListeSavoirFaireMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -697,7 +697,7 @@ document.formu.elements[nom].focus();
 					<%} %>
 				</div>
 				<BR/>
-			<%}else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode())){ %>
+			<%}else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR.getCode()){ %>
 				<div align="left">
 		            <%if(process.getListeSavoirMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -720,7 +720,7 @@ document.formu.elements[nom].focus();
 					<%} %>
 				</div>
 				<BR/>
-			<% }else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode())){ %>
+			<% }else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.COMPORTEMENT.getCode()){ %>
 			<div align="left">
 		            <%if(process.getListeComportementMulti().size()>0){ %>
 						<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">

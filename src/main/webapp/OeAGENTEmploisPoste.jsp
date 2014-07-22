@@ -260,7 +260,7 @@ document.formu.elements[nom].focus();
 			</span>
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_CHANGER_TYPE()%>" value="OK">	
 			<br/>
-			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode())){ %>			
+			<%if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR_FAIRE.getCode()){ %>			
 			<div align="left" style="float:left">
 				<br/>
 				<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -280,7 +280,7 @@ document.formu.elements[nom].focus();
 						</table>	
 				</div>
 			</div>
-			<%} else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode())){%>
+			<%} else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.SAVOIR.getCode()){%>
 			<div align="left" style="float:left">
 				<br/>
 				<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">
@@ -300,7 +300,7 @@ document.formu.elements[nom].focus();
 						</table>	
 				</div>
 			</div>
-			<%} else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode())){%>
+			<%} else if(process.getTypeCompetenceCourant()!=null && process.getTypeCompetenceCourant().getIdTypeCompetence()==EnumTypeCompetence.COMPORTEMENT.getCode()){%>
 			<div align="left" style="float:left">
 				<br/>
 				<div style="overflow: auto;height: 120px;width:1000px;margin-right: 0px;margin-left: 0px;">

@@ -53,6 +53,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.PrimePointageFPDao;
@@ -138,6 +139,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private AvantageNatureDao avantageNatureDao;
 	private DelegationDao delegationDao;
 	private RegIndemnDao regIndemnDao;
+	private TypeCompetenceDao typeCompetenceDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -176,17 +178,17 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		// Mise à jour de la liste des compétences
 		if (getTypeCompetenceCourant() == null || getTypeCompetenceCourant().getIdTypeCompetence() == null) {
-			setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetence(getTransaction(), "1"));
+			setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetence(1));
 			addZone(getNOM_RG_TYPE_COMPETENCE(), getNOM_RB_TYPE_COMPETENCE_S());
 		} else {
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_S()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.SAVOIR.getValue()));
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_SF()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.SAVOIR_FAIRE.getValue()));
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_C()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.COMPORTEMENT.getValue()));
 		}
 
@@ -253,6 +255,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getRegIndemnDao() == null) {
 			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeCompetenceDao() == null) {
+			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -468,21 +473,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 * @throws Exception
 	 */
 	private void initialiserCompetence() throws Exception {
-		TypeCompetence savoir = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence savoir = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.SAVOIR.getValue());
-		if (getTransaction().isErreur()) {
-			getTransaction().declarerErreur(getTransaction().traiterErreur());
-		}
-		TypeCompetence savoirFaire = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence savoirFaire = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.SAVOIR_FAIRE.getValue());
-		if (getTransaction().isErreur()) {
-			getTransaction().declarerErreur(getTransaction().traiterErreur());
-		}
-		TypeCompetence comportement = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence comportement = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.COMPORTEMENT.getValue());
-		if (getTransaction().isErreur()) {
-			getTransaction().declarerErreur(getTransaction().traiterErreur());
-		}
 
 		// Compétences
 		ArrayList<Competence> comp = Competence.listerCompetenceAvecFP(getTransaction(), getFichePosteCourant());
@@ -498,13 +494,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		for (int j = 0; j < getListeCompetence().size(); j++) {
 			Competence c = (Competence) getListeCompetence().get(j);
-			if (savoir.getIdTypeCompetence().equals(c.getIdTypeCompetence())) {
+			if (savoir.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
 				if (!getListeSavoir().contains(c))
 					getListeSavoir().add(c);
-			} else if (savoirFaire.getIdTypeCompetence().equals(c.getIdTypeCompetence())) {
+			} else if (savoirFaire.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
 				if (!getListeSavoirFaire().contains(c))
 					getListeSavoirFaire().add(c);
-			} else if (comportement.getIdTypeCompetence().equals(c.getIdTypeCompetence())) {
+			} else if (comportement.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
 				if (!getListeComportementPro().contains(c))
 					getListeComportementPro().add(c);
 			}
@@ -2363,5 +2359,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setRegIndemnDao(RegIndemnDao regIndemnDao) {
 		this.regIndemnDao = regIndemnDao;
+	}
+
+	public TypeCompetenceDao getTypeCompetenceDao() {
+		return typeCompetenceDao;
+	}
+
+	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
+		this.typeCompetenceDao = typeCompetenceDao;
 	}
 }

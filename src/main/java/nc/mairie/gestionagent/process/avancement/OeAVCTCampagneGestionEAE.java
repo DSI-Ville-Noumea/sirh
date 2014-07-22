@@ -80,6 +80,7 @@ import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
@@ -162,6 +163,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private String urlFichier;
 
 	private AutreAdministrationDao autreAdministrationDao;
+	private TypeCompetenceDao typeCompetenceDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -835,6 +837,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeCompetenceDao() == null) {
+			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1739,8 +1744,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpSecondaire);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = TypeCompetence
-					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
+			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(
+					Integer.valueOf(comp.getIdTypeCompetence()));
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
@@ -1756,8 +1761,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpPrincipale);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = TypeCompetence
-					.chercherTypeCompetence(getTransaction(), comp.getIdTypeCompetence());
+			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(
+					Integer.valueOf(comp.getIdTypeCompetence()));
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFichePoste(getIdCreerFichePostePrimaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
@@ -3998,5 +4003,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public TypeCompetenceDao getTypeCompetenceDao() {
+		return typeCompetenceDao;
+	}
+
+	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
+		this.typeCompetenceDao = typeCompetenceDao;
 	}
 }

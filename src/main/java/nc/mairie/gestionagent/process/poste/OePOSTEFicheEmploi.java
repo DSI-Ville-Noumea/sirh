@@ -32,6 +32,7 @@ import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -127,6 +128,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
 	private DomaineEmploiDao domaineEmploiDao;
 	private FamilleEmploiDao familleEmploiDao;
+	private TypeCompetenceDao typeCompetenceDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1276,17 +1278,17 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		// ---------------------------//
 		// Mise à jour de la liste des compétences
 		if (getTypeCompetenceCourant() == null || getTypeCompetenceCourant().getIdTypeCompetence() == null) {
-			setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetence(getTransaction(), "1"));
+			setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetence(1));
 			addZone(getNOM_RG_TYPE_COMPETENCE(), getNOM_RB_TYPE_COMPETENCE_S());
 		} else {
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_S()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.SAVOIR.getValue()));
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_SF()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.SAVOIR_FAIRE.getValue()));
 			if (getVAL_RG_TYPE_COMPETENCE().equals(getNOM_RB_TYPE_COMPETENCE_C()))
-				setTypeCompetenceCourant(TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.COMPORTEMENT.getValue()));
 		}
 
@@ -1336,6 +1338,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getFamilleEmploiDao() == null) {
 			setFamilleEmploiDao(new FamilleEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeCompetenceDao() == null) {
+			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1378,26 +1383,26 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private void initialiserCompetence() throws Exception {
 
 		// Recherche des types de compétence
-		TypeCompetence savoir = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence savoir = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.SAVOIR.getValue());
 
-		TypeCompetence savoirFaire = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence savoirFaire = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.SAVOIR_FAIRE.getValue());
 
-		TypeCompetence comportement = TypeCompetence.chercherTypeCompetenceAvecLibelle(getTransaction(),
+		TypeCompetence comportement = getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 				EnumTypeCompetence.COMPORTEMENT.getValue());
 
 		if (getListeSavoirMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-					EnumTypeCompetence.SAVOIR.getCode()));
+					EnumTypeCompetence.SAVOIR.getCode().toString()));
 		}
 		if (getListeSavoirFaireMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-					getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
+					getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString()));
 		}
 		if (getListeComportementMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-					getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode()));
+					getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
@@ -1407,7 +1412,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < listeCompSelect.size(); i++) {
 				Competence comp = (Competence) listeCompSelect.get(i);
 				if (comp != null) {
-					if (comp.getIdTypeCompetence().equals(savoir.getIdTypeCompetence())) {
+					if (comp.getIdTypeCompetence().equals(savoir.getIdTypeCompetence().toString())) {
 						// si c'est un savoir
 						if (getListeSavoirMulti() == null)
 							setListeSavoirMulti(new ArrayList<Competence>());
@@ -1420,7 +1425,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 							}
 						}
 
-					} else if (comp.getIdTypeCompetence().equals(savoirFaire.getIdTypeCompetence())) {
+					} else if (comp.getIdTypeCompetence().equals(savoirFaire.getIdTypeCompetence().toString())) {
 						// si c'est un savoir faire
 						if (getListeSavoirFaireMulti() == null)
 							setListeSavoirFaireMulti(new ArrayList<Competence>());
@@ -1433,7 +1438,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 							}
 						}
 
-					} else if (comp.getIdTypeCompetence().equals(comportement.getIdTypeCompetence())) {
+					} else if (comp.getIdTypeCompetence().equals(comportement.getIdTypeCompetence().toString())) {
 						// si c'est un comportement
 						if (getListeComportementMulti() == null)
 							setListeComportementMulti(new ArrayList<Competence>());
@@ -2688,11 +2693,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 						getTransaction(), getFicheEmploiCourant()));
 				setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
 				setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR.getCode()));
+						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR.getCode().toString()));
 				setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode()));
+						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString()));
 				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode()));
+						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
 				setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
 				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getTransaction(),
 						getFicheEmploiCourant()));
@@ -4144,5 +4149,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setFamilleEmploiDao(FamilleEmploiDao familleEmploiDao) {
 		this.familleEmploiDao = familleEmploiDao;
+	}
+
+	public TypeCompetenceDao getTypeCompetenceDao() {
+		return typeCompetenceDao;
+	}
+
+	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
+		this.typeCompetenceDao = typeCompetenceDao;
 	}
 }
