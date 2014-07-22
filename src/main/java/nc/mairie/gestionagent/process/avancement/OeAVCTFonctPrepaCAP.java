@@ -46,6 +46,7 @@ import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -122,6 +123,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private ArrayList<AvancementCapPrintJob> listeAvancementCapPrintJob;
 
 	private AutreAdministrationDao autreAdministrationDao;
+	private AvisCapDao avisCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -452,6 +454,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -472,33 +477,45 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
+			ArrayList<AvisCap> avis = getAvisCapDao().listerAvisCapMinMoyMax();
 			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 7 };
-			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAPMinMoyMax().listIterator(); list.hasNext();) {
+				AvisCap fili = (AvisCap) list.next();
+				String ligne[] = { fili.getLibLongAvisCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP_AD(aFormat.getListeFormatee());
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPMinMoyMax().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAPMinMoyMax().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+				getHashAvisCAP().put(ac.getIdAvisCap().toString(), ac);
 			}
 		}
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap.listerAvisCapFavDefav(getTransaction());
+			ArrayList<AvisCap> avis = getAvisCapDao().listerAvisCapFavDefav();
 			setListeAvisCAPFavDefav(avis);
 
 			int[] tailles = { 7 };
-			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAPFavDefav().listIterator(); list.hasNext();) {
+				AvisCap fili = (AvisCap) list.next();
+				String ligne[] = { fili.getLibLongAvisCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP_CLASSE(aFormat.getListeFormatee());
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPFavDefav().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAPFavDefav().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+				getHashAvisCAP().put(ac.getIdAvisCap().toString(), ac);
 			}
 
 		}
@@ -867,9 +884,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					int indiceAvisCapMinMoyMax = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
 							.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 					if (indiceAvisCapMinMoyMax != -1) {
-						String idAvisCap = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMax))
-								.getIdAvisCAP();
-						avct.setIdAvisCAP(idAvisCap);
+						Integer idAvisCap = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMax))
+								.getIdAvisCap();
+						avct.setIdAvisCAP(idAvisCap.toString());
 						// on traite l'odre de merite
 						// on test si "moyenne" choisi alors on remete à vide
 						// ordre du
@@ -892,9 +909,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					int indiceAvisCapFavDefav = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
 							.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
 					if (indiceAvisCapFavDefav != -1) {
-						String idAvisCap = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefav))
-								.getIdAvisCAP();
-						avct.setIdAvisCAP(idAvisCap);
+						Integer idAvisCap = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefav))
+								.getIdAvisCap();
+						avct.setIdAvisCAP(idAvisCap.toString());
 					}
 					avct.setOrdreMerite(null);
 				}
@@ -2168,5 +2185,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

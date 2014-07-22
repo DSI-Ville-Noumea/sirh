@@ -30,6 +30,7 @@ import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -102,6 +103,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	private MotifAvancementDao motifAvancementDao;
 	private AutreAdministrationDao autreAdministrationDao;
+	private AvisCapDao avisCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -157,6 +159,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -221,8 +226,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			String avisSHD = av.getAvisSHD() == null ? "&nbsp;" : av.getAvisSHD();
 
 			// avis VDN
-			String avisVDN = av.getIdAvisCAP() == null ? "&nbsp;" : AvisCap
-					.chercherAvisCap(getTransaction(), av.getIdAvisCAP()).getLibCourtAvisCAP().toUpperCase();
+			String avisVDN = av.getIdAvisCAP() == null ? "&nbsp;" : getAvisCapDao()
+					.chercherAvisCap(Integer.valueOf(av.getIdAvisCAP())).getLibCourtAvisCap().toUpperCase();
 			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCodeMotifAvct()) + " <br> "
 					+ avisSHD + " <br> " + avisVDN);
 
@@ -319,7 +324,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 							.parseInt(getVAL_LB_AVIS_EMP_AD_SELECT(i)) : -1);
 					if (indiceAvisCapMinMoyMaxEmp != -1) {
 						String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp))
-								.getLibCourtAvisCAP().toUpperCase();
+								.getLibCourtAvisCap().toUpperCase();
 						String dateAvctFinale = Const.CHAINE_VIDE;
 						if (idAvisEmp.equals("MIN")) {
 							dateAvctFinale = av.getDateAvctMini();
@@ -338,7 +343,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 							.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(i)) : -1);
 					if (indiceAvisCapFavDefavEmp != -1) {
 						String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
-								.getLibCourtAvisCAP().toUpperCase();
+								.getLibCourtAvisCap().toUpperCase();
 						String dateAvctFinale = Const.CHAINE_VIDE;
 						if (idAvisEmp.equals("FAV")) {
 							dateAvctFinale = av.getDateAvctMoy();
@@ -477,35 +482,45 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPMinMoyMax() == null || getListeAvisCAPMinMoyMax().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap.listerAvisCapMinMoyMax(getTransaction());
+			ArrayList<AvisCap> avis = getAvisCapDao().listerAvisCapMinMoyMax();
 			setListeAvisCAPMinMoyMax(avis);
 
 			int[] tailles = { 15 };
-			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
-			setLB_AVIS_EMP_AD(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAPMinMoyMax().listIterator(); list.hasNext();) {
+				AvisCap av = list.next();
+				String ligne[] = { av.getLibLongAvisCap() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP_AD(aFormat.getListeFormatee(false));
+			setLB_AVIS_EMP_AD(aFormat.getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPMinMoyMax().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAPMinMoyMax().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+				getHashAvisCAP().put(ac.getIdAvisCap().toString(), ac);
 			}
 		}
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAPFavDefav() == null || getListeAvisCAPFavDefav().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap.listerAvisCapFavDefav(getTransaction());
+			ArrayList<AvisCap> avis = getAvisCapDao().listerAvisCapFavDefav();
 			setListeAvisCAPFavDefav(avis);
 
 			int[] tailles = { 15 };
-			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP_CLASSE(new FormateListe(tailles, avis, champs).getListeFormatee(false));
-			setLB_AVIS_CAP_CLASSE_EMP(new FormateListe(tailles, avis, champs).getListeFormatee(false));
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAPFavDefav().listIterator(); list.hasNext();) {
+				AvisCap av = list.next();
+				String ligne[] = { av.getLibLongAvisCap() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP_CLASSE(aFormat.getListeFormatee(false));
+			setLB_AVIS_CAP_CLASSE_EMP(aFormat.getListeFormatee(false));
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAPFavDefav().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAPFavDefav().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+				getHashAvisCAP().put(ac.getIdAvisCap().toString(), ac);
 			}
 
 		}
@@ -1017,17 +1032,17 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				int indiceAvisCapMinMoyMaxCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_CAP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxCap != -1) {
-					String idAvisArr = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxCap))
-							.getIdAvisCAP();
-					avct.setIdAvisArr(idAvisArr);
+					Integer idAvisArr = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxCap))
+							.getIdAvisCap();
+					avct.setIdAvisArr(idAvisArr.toString());
 				}
 				// on traite l'avis Emp
 				int indiceAvisCapMinMoyMaxEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_AD_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_EMP_AD_SELECT(idAvct)) : -1);
 				if (indiceAvisCapMinMoyMaxEmp != -1) {
-					String idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp))
-							.getIdAvisCAP();
-					avct.setIdAvisEmp(idAvisEmp);
+					Integer idAvisEmp = ((AvisCap) getListeAvisCAPMinMoyMax().get(indiceAvisCapMinMoyMaxEmp))
+							.getIdAvisCap();
+					avct.setIdAvisEmp(idAvisEmp.toString());
 				}
 			} else if (avct.getIdMotifAvct().equals("6")) {
 				// on traite l'avis CAP
@@ -1040,17 +1055,17 @@ public class OeAVCTFonctArretes extends BasicProcess {
 				int indiceAvisCapFavDefavCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_CAP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavCap != -1) {
-					String idAvisArr = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavCap))
-							.getIdAvisCAP();
-					avct.setIdAvisArr(idAvisArr);
+					Integer idAvisArr = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavCap))
+							.getIdAvisCap();
+					avct.setIdAvisArr(idAvisArr.toString());
 				}
 				// on traite l'avis Emp
 				int indiceAvisCapFavDefavEmp = (Services.estNumerique(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) ? Integer
 						.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) : -1);
 				if (indiceAvisCapFavDefavEmp != -1) {
-					String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
-							.getIdAvisCAP();
-					avct.setIdAvisEmp(idAvisEmp);
+					Integer idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
+							.getIdAvisCap();
+					avct.setIdAvisEmp(idAvisEmp.toString());
 				}
 			}
 			avct.setObservationArr(getVAL_ST_OBSERVATION(idAvct));
@@ -1905,8 +1920,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			if (avct.getIdMotifAvct().equals("7")) {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
-					String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
-							.getLibCourtAvisCAP().toUpperCase();
+					String idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisEmp()))
+							.getLibCourtAvisCap().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
 					if (idAvisEmp.equals("MIN")) {
 						dateAvctFinale = avct.getDateAvctMini();
@@ -1922,8 +1937,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			} else {
 				// on récupere l'avis Emp
 				if (avct.getIdAvisEmp() != null) {
-					String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
-							.getLibCourtAvisCAP().toUpperCase();
+					String idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisEmp()))
+							.getLibCourtAvisCap().toUpperCase();
 					String dateAvctFinale = Const.CHAINE_VIDE;
 					if (idAvisEmp.equals("FAV")) {
 						dateAvctFinale = avct.getDateAvctMoy();
@@ -2088,7 +2103,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 					.parseInt(getVAL_LB_AVIS_EMP_CLASSE_SELECT(idAvct)) : -1);
 			if (indiceAvisCapFavDefavEmp != -1) {
 				String idAvisEmp = ((AvisCap) getListeAvisCAPFavDefav().get(indiceAvisCapFavDefavEmp))
-						.getLibCourtAvisCAP();
+						.getLibCourtAvisCap();
 				if (idAvisEmp.toUpperCase().equals("DEF")) {
 					return true;
 				} else {
@@ -2344,5 +2359,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

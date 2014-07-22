@@ -18,9 +18,9 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -58,6 +58,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private AutreAdministrationDao autreAdministrationDao;
+	private AvisCapDao avisCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -105,6 +106,9 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -369,8 +373,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
 
 			if (av.getIdAvisEmp() != null) {
-				String idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), av.getIdAvisEmp()).getLibCourtAvisCAP()
-						.toUpperCase();
+				String idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(av.getIdAvisEmp()))
+						.getLibCourtAvisCap().toUpperCase();
 				String dateAvctFinale = Const.CHAINE_VIDE;
 				if (idAvisEmp.equals("MIN")) {
 					dateAvctFinale = av.getDateAvctMini();
@@ -465,8 +469,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						String dateAvctFinale = Const.ZERO;
 						String idAvisEmp = null;
 						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
-									.getLibCourtAvisCAP().toUpperCase();
+							idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisEmp()))
+									.getLibCourtAvisCap().toUpperCase();
 							if (idAvisEmp.equals("MIN")) {
 								dateAvctFinale = avct.getDateAvctMini();
 							} else if (idAvisEmp.equals("MOY")) {
@@ -539,8 +543,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 						// on recalcul la date d'avancement
 						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
-									.getLibCourtAvisCAP().toUpperCase();
+							idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisEmp()))
+									.getLibCourtAvisCap().toUpperCase();
 							if (idAvisEmp.equals("MIN")) {
 								dateAvctFinale = avct.getDateAvctMini();
 							} else if (idAvisEmp.equals("MOY")) {
@@ -1464,8 +1468,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						String dateAvctFinale = Const.ZERO;
 						String idAvisEmp = null;
 						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisEmp())
-									.getLibCourtAvisCAP().toUpperCase();
+							idAvisEmp = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisEmp()))
+									.getLibCourtAvisCap().toUpperCase();
 
 							if (getTransaction().isErreur()) {
 								return false;
@@ -1574,5 +1578,13 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

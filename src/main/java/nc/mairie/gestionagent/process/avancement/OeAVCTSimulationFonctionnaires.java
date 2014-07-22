@@ -26,6 +26,7 @@ import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -61,6 +62,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private MotifAvancementDao motifAvancementDao;
+	private AvisCapDao avisCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -101,6 +103,9 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 		if (getMotifAvancementDao() == null) {
 			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -382,8 +387,8 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 						avct.setNouvACCJour(carr.getACCJour());
 
 						// par defaut avis CAP = "MOYENNE"
-						AvisCap avisCap = AvisCap.chercherAvisCapByLibCourt(getTransaction(), Const.AVIS_CAP_MOY);
-						avct.setIdAvisCAP(avisCap.getIdAvisCAP());
+						AvisCap avisCap = getAvisCapDao().chercherAvisCapByLibCourt(Const.AVIS_CAP_MOY);
+						avct.setIdAvisCAP(avisCap.getIdAvisCap().toString());
 
 						avct.setDureeStandard("12");
 
@@ -428,8 +433,8 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 						avct.setNouvACCJour(carr.getACCJour());
 
 						// par defaut avis CAP = "MOYENNE"
-						AvisCap avisCap = AvisCap.chercherAvisCapByLibCourt(getTransaction(), Const.AVIS_CAP_MOY);
-						avct.setIdAvisCAP(avisCap.getIdAvisCAP());
+						AvisCap avisCap = getAvisCapDao().chercherAvisCapByLibCourt(Const.AVIS_CAP_MOY);
+						avct.setIdAvisCAP(avisCap.getIdAvisCap().toString());
 
 						// calcul BM/ACC applicables
 						int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
@@ -918,5 +923,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
 		this.motifAvancementDao = motifAvancementDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }

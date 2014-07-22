@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +29,7 @@ import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -74,6 +76,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 	private MotifAvancementDao motifAvancementDao;
 	private AutreAdministrationDao autreAdministrationDao;
+	private AvisCapDao avisCapDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -116,6 +119,9 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvisCapDao() == null) {
+			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -180,17 +186,23 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 		// Si liste avisCAP vide alors affectation
 		if (getListeAvisCAP() == null || getListeAvisCAP().size() == 0) {
-			ArrayList<AvisCap> avis = AvisCap.listerAvisCap(getTransaction());
+			ArrayList<AvisCap> avis = (ArrayList<AvisCap>) getAvisCapDao().listerAvisCap();
 			setListeAvisCAP(avis);
 
 			int[] tailles = { 7 };
-			String[] champs = { "libLongAvisCAP" };
-			setLB_AVIS_CAP(new FormateListe(tailles, avis, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<AvisCap> list = getListeAvisCAP().listIterator(); list.hasNext();) {
+				AvisCap fili = (AvisCap) list.next();
+				String ligne[] = { fili.getLibLongAvisCap() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_AVIS_CAP(aFormat.getListeFormatee());
 
 			// remplissage de la hashTable
 			for (int i = 0; i < getListeAvisCAP().size(); i++) {
 				AvisCap ac = (AvisCap) getListeAvisCAP().get(i);
-				getHashAvisCAP().put(ac.getIdAvisCAP(), ac);
+				getHashAvisCAP().put(ac.getIdAvisCap().toString(), ac);
 			}
 		}
 
@@ -666,8 +678,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						avct.setNouvACCJour(carr.getACCJour());
 
 						// par defaut avis CAP = "MOYENNE"
-						AvisCap avisCap = AvisCap.chercherAvisCapByLibCourt(getTransaction(), Const.AVIS_CAP_MOY);
-						avct.setIdAvisCAP(avisCap.getIdAvisCAP());
+						AvisCap avisCap = getAvisCapDao().chercherAvisCapByLibCourt(Const.AVIS_CAP_MOY);
+						avct.setIdAvisCAP(avisCap.getIdAvisCap().toString());
 
 						avct.setDureeStandard("12");
 
@@ -713,8 +725,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						avct.setNouvACCJour(carr.getACCJour());
 
 						// par defaut avis CAP = "MOYENNE"
-						AvisCap avisCap = AvisCap.chercherAvisCapByLibCourt(getTransaction(), Const.AVIS_CAP_MOY);
-						avct.setIdAvisCAP(avisCap.getIdAvisCAP());
+						AvisCap avisCap = getAvisCapDao().chercherAvisCapByLibCourt(Const.AVIS_CAP_MOY);
+						avct.setIdAvisCAP(avisCap.getIdAvisCap().toString());
 
 						// calcul BM/ACC applicables
 						int nbJoursBM = AvancementFonctionnaires.calculJourBM(gradeActuel, carr);
@@ -1614,8 +1626,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 				int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_SELECT(i)) ? Integer
 						.parseInt(getVAL_LB_AVIS_CAP_SELECT(i)) : -1);
 				if (indiceAvisCap != -1) {
-					String idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCAP();
-					avct.setIdAvisCAP(idAvisCap);
+					Integer idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCap();
+					avct.setIdAvisCAP(idAvisCap.toString());
 				}
 				// on traite le numero et la date d'arreté
 				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
@@ -1673,8 +1685,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						int indiceAvisCap = (Services.estNumerique(getVAL_LB_AVIS_CAP_SELECT(i)) ? Integer
 								.parseInt(getVAL_LB_AVIS_CAP_SELECT(i)) : -1);
 						if (indiceAvisCap != -1) {
-							String idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCAP();
-							avct.setIdAvisCAP(idAvisCap);
+							Integer idAvisCap = ((AvisCap) getListeAvisCAP().get(indiceAvisCap)).getIdAvisCap();
+							avct.setIdAvisCAP(idAvisCap.toString());
 						}
 						// on traite le numero et la date d'arreté
 						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
@@ -1685,8 +1697,8 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 						// date de debut de carriere et la date de fin de la
 						// precedente
 
-						String libCourtAvisCap = AvisCap.chercherAvisCap(getTransaction(), avct.getIdAvisCAP())
-								.getLibCourtAvisCAP();
+						String libCourtAvisCap = getAvisCapDao().chercherAvisCap(Integer.valueOf(avct.getIdAvisCAP()))
+								.getLibCourtAvisCap();
 						String dateAvct = avct.getDateAvctMoy();
 						if (libCourtAvisCap.toUpperCase().equals("MIN")) {
 							dateAvct = avct.getDateAvctMini();
@@ -1953,5 +1965,13 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AvisCapDao getAvisCapDao() {
+		return avisCapDao;
+	}
+
+	public void setAvisCapDao(AvisCapDao avisCapDao) {
+		this.avisCapDao = avisCapDao;
 	}
 }
