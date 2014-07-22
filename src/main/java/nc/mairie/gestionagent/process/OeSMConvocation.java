@@ -36,6 +36,7 @@ import nc.mairie.spring.dao.MairieDao;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
+import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -105,6 +106,15 @@ public class OeSMConvocation extends BasicProcess {
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private SPABSENDao spabsenDao;
 	private MedecinDao medecinDao;
+	private VisiteMedicaleDao visiteMedicaleDao;
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
+	}
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private ArrayList<Service> listeServices;
@@ -204,6 +214,9 @@ public class OeSMConvocation extends BasicProcess {
 
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getVisiteMedicaleDao() == null) {
+			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1295,15 +1308,15 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°1 : A la demande de l'agent ou du service
 		// on liste toutes les visites medicales du type "a la demande..."
 		Medecin m = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
-		ArrayList<VisiteMedicale> listeSMCas1 = VisiteMedicale.listerVisiteMedicalePourSMCas1(getTransaction(),
-				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(), m
-						.getIdMedecin().toString());
+		ArrayList<VisiteMedicale> listeSMCas1 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas1(
+				EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode(), EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode(),
+				m.getIdMedecin());
 		int nbCas1 = 0;
 		for (int i = 0; i < listeSMCas1.size(); i++) {
 			VisiteMedicale vm = listeSMCas1.get(i);
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent().toString());
 			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
 					agent.getNoMatricule());
@@ -1343,7 +1356,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
 			sm.setDatePrevisionVisite(d);
-			sm.setIdMotifVm(Integer.valueOf(vm.getIdMotif()));
+			sm.setIdMotifVm(vm.getIdMotifVm());
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
@@ -1702,14 +1715,14 @@ public class OeSMConvocation extends BasicProcess {
 		// CAS N°2 : Visite Réguliere
 		// on liste toutes les visites medicales
 		// dont la dateVM + durée validitéVM = mois et année choisie du calcul
-		ArrayList<VisiteMedicale> listeVMCas2 = VisiteMedicale.listerVisiteMedicalePourSMCas2(getTransaction(),
-				moisChoisi, anneeChoisi);
+		ArrayList<VisiteMedicale> listeVMCas2 = getVisiteMedicaleDao().listerVisiteMedicalePourSMCas2(moisChoisi,
+				anneeChoisi);
 		int nbCas2 = 0;
 		for (int i = 0; i < listeVMCas2.size(); i++) {
 			VisiteMedicale vm = listeVMCas2.get(i);
 
 			SuiviMedical sm = new SuiviMedical();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent());
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent().toString());
 			// on regarde que la PA est active
 			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
 					agent.getNoMatricule());
@@ -1729,7 +1742,8 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), vm.getIdAgent());
+			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), vm.getIdAgent()
+					.toString());
 			if (getTransaction().isErreur())
 				getTransaction().traiterErreur();
 			FichePoste fp = null;
@@ -1744,10 +1758,9 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
-			Date d = new SimpleDateFormat("dd/MM/yyyy").parse(vm.getDateDerniereVisite());
-			sm.setDateDerniereVisite(d);
-			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(vm.getDateDerniereVisite(),
-					Integer.valueOf(vm.getDureeValidite())));
+			sm.setDateDerniereVisite(vm.getDateDerniereVisite());
+			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(
+					new SimpleDateFormat("dd/MM/yyyy").format(vm.getDateDerniereVisite()), vm.getDureeValidite()));
 			sm.setDatePrevisionVisite(d2);
 			sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_REGULIERE.getCode()));
 			sm.setNbVisitesRatees(0);

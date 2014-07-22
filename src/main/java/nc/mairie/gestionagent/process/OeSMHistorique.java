@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process;
 
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -16,6 +17,7 @@ import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
+import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -48,6 +50,7 @@ public class OeSMHistorique extends BasicProcess {
 	private SuiviMedicalDao suiviMedDao;
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private MedecinDao medecinDao;
+	private VisiteMedicaleDao visiteMedicaleDao;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -95,9 +98,21 @@ public class OeSMHistorique extends BasicProcess {
 		if (getMedecinDao() == null) {
 			setMedecinDao(new MedecinDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getVisiteMedicaleDao() == null) {
+			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
 	}
 
 	private void afficheListeHistoSuiviMed() throws ParseException, Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		for (int i = 0; i < getListeHistoSuiviMed().size(); i++) {
 			SuiviMedical sm = (SuiviMedical) getListeHistoSuiviMed().get(i);
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
@@ -118,8 +133,8 @@ public class OeSMHistorique extends BasicProcess {
 			// RG-SVM-15
 			// si SM effectué alors on prend les infos de la VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed()
-						.toString(), sm.getIdAgent().toString());
+				VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
+						sm.getIdAgent());
 				Medecin medecin = null;
 				if (vm.getIdMedecin() != null) {
 					medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
@@ -128,22 +143,22 @@ public class OeSMHistorique extends BasicProcess {
 						medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
 								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i),
-						vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : vm.getDateDerniereVisite());
+						vm.getDateDerniereVisite() == null ? Const.CHAINE_VIDE : sdf.format(vm.getDateDerniereVisite()));
 			} else {
 				Medecin medecin = getMedecinDao().chercherMedecin(sm.getIdMedecin());
 				addZone(getNOM_ST_MEDECIN(i),
 						sm.getIdMedecin() != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "
 								+ medecin.getNomMedecin() : Const.CHAINE_VIDE);
 				addZone(getNOM_ST_DATE_RDV(i),
-						sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : Services.convertitDate(sm
-								.getDateProchaineVisite().toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
+						sm.getDateProchaineVisite() == null ? Const.CHAINE_VIDE : sdf.format(sm
+								.getDateProchaineVisite()));
 			}
 			addZone(getNOM_ST_HEURE_RDV(i), sm.getHeureProchaineVisite() != null ? sm.getHeureProchaineVisite()
 					: Const.CHAINE_VIDE);
 			// on cherche si il y a une VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicaleLieeSM(getTransaction(), sm.getIdSuiviMed()
-						.toString(), sm.getIdAgent().toString());
+				VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
+						sm.getIdAgent());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}

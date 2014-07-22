@@ -38,6 +38,7 @@ import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.NomHandicapDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.TypeATDao;
+import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -100,6 +101,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private NomHandicapDao nomHandicapDao;
 	private RecommandationDao recommandationDao;
 	private TypeATDao typeATDao;
+	private VisiteMedicaleDao visiteMedicaleDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -174,9 +176,13 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getTypeATDao() == null) {
 			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getVisiteMedicaleDao() == null) {
+			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
 			ArrayList<TypeDocument> td = getTypeDocumentDao().listerTypeDocumentAvecModule("HSCT");
@@ -196,8 +202,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		}
 		if (getLB_VM() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<VisiteMedicale> c = VisiteMedicale.listerVisiteMedicaleAgent(getTransaction(),
-						getAgentCourant());
+				ArrayList<VisiteMedicale> c = getVisiteMedicaleDao().listerVisiteMedicaleAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()));
 				if (c.size() > 0) {
 					int[] tailles = { 14, 30, 30 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -209,7 +215,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 							recom = getRecommandationDao().chercherRecommandation(
 									Integer.valueOf(vm.getIdRecommandation()));
 						}
-						String ligne[] = { vm.getDateDerniereVisite(), medecin.getNomMedecin(),
+						String ligne[] = { sdf.format(vm.getDateDerniereVisite()), medecin.getNomMedecin(),
 								recom == null ? Const.CHAINE_VIDE : recom.getDescRecommandation() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -227,7 +233,6 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<Handicap> list = c.listIterator(); list.hasNext();) {
 						Handicap handi = (Handicap) list.next();
 						NomHandicap nomHandi = getNomHandicapDao().chercherNomHandicap(handi.getIdTypeHandicap());
@@ -248,7 +253,6 @@ public class OeAGENTActesHSCT extends BasicProcess {
 				if (c.size() > 0) {
 					int[] tailles = { 14, 60 };
 					FormateListe aFormat = new FormateListe(tailles);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					for (ListIterator<AccidentTravail> list = c.listIterator(); list.hasNext();) {
 						AccidentTravail acci = (AccidentTravail) list.next();
 						TypeAT tAt = getTypeATDao().chercherTypeAT(acci.getIdTypeAt());
@@ -773,10 +777,9 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					// on recupere l'id du document
 					nomDoc = nomDoc.substring(nomDoc.indexOf("_") + 1, nomDoc.length());
 					String id = nomDoc.substring(0, nomDoc.indexOf("_"));
-					VisiteMedicale vm = VisiteMedicale.chercherVisiteMedicale(getTransaction(), id);
-					if (vm != null && vm.getDateDerniereVisite() != null
-							&& !vm.getDateDerniereVisite().equals(Const.DATE_NULL)) {
-						info = "VM du : " + vm.getDateDerniereVisite();
+					VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicale(Integer.valueOf(id));
+					if (vm != null && vm.getDateDerniereVisite() != null) {
+						info = "VM du : " + sdf.format(vm.getDateDerniereVisite());
 					}
 				} else if (td.getCodTypeDocument().equals("AT")) {
 					String nomDoc = doc.getNomDocument();
@@ -1566,6 +1569,14 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setTypeATDao(TypeATDao typeATDao) {
 		this.typeATDao = typeATDao;
+	}
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
 	}
 
 }

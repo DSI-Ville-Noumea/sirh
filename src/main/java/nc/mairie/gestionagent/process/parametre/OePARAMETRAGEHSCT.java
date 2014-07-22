@@ -14,7 +14,6 @@ import nc.mairie.metier.hsct.Recommandation;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.TypeInaptitude;
-import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
@@ -25,6 +24,7 @@ import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.hsct.TypeATDao;
 import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
+import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -86,6 +86,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private SiegeLesionDao siegeLesionDao;
 	private TypeATDao typeATDao;
 	private TypeInaptitudeDao typeInaptitudeDao;
+	private VisiteMedicaleDao visiteMedicaleDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -192,6 +193,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getTypeInaptitudeDao() == null) {
 			setTypeInaptitudeDao(new TypeInaptitudeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getVisiteMedicaleDao() == null) {
+			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1491,7 +1495,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un medecin utilisé sur une visite
 		// médicale
 		if (getVAL_ST_ACTION_MEDECIN().equals(ACTION_SUPPRESSION)
-				&& VisiteMedicale.listerVisiteMedicaleAvecMedecin(getTransaction(), getMedecinCourant()).size() > 0) {
+				&& getVisiteMedicaleDao().listerVisiteMedicaleAvecMedecin(getMedecinCourant().getIdMedecin()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1590,8 +1594,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'une recommandation utilisé sur une
 		// visite médicale
 		if (getVAL_ST_ACTION_RECOMMANDATION().equals(ACTION_SUPPRESSION)
-				&& VisiteMedicale.listerVisiteMedicaleAvecRecommandation(getTransaction(), getRecommandationCourante())
-						.size() > 0) {
+				&& getVisiteMedicaleDao().listerVisiteMedicaleAvecRecommandation(
+						getRecommandationCourante().getIdRecommandation()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2734,5 +2738,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setTypeInaptitudeDao(TypeInaptitudeDao typeInaptitudeDao) {
 		this.typeInaptitudeDao = typeInaptitudeDao;
+	}
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
 	}
 }
