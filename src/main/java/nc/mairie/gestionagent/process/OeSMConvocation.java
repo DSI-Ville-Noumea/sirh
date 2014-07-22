@@ -1753,7 +1753,7 @@ public class OeSMConvocation extends BasicProcess {
 				if (getTransaction().isErreur())
 					getTransaction().traiterErreur();
 			}
-			sm.setIdAgent(Integer.valueOf(vm.getIdAgent()));
+			sm.setIdAgent(vm.getIdAgent());
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
@@ -1775,8 +1775,8 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas réecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(
-						Integer.valueOf(vm.getIdAgent()), moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(vm.getIdAgent(),
+						moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
