@@ -209,11 +209,11 @@ public class OeAGENTActesHSCT extends BasicProcess {
 					FormateListe aFormat = new FormateListe(tailles);
 					for (ListIterator<VisiteMedicale> list = c.listIterator(); list.hasNext();) {
 						VisiteMedicale vm = (VisiteMedicale) list.next();
-						Medecin medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
+						Medecin medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
 						Recommandation recom = null;
 						if (vm != null && vm.getIdRecommandation() != null) {
 							recom = getRecommandationDao().chercherRecommandation(
-									Integer.valueOf(vm.getIdRecommandation()));
+									vm.getIdRecommandation());
 						}
 						String ligne[] = { sdf.format(vm.getDateDerniereVisite()), medecin.getNomMedecin(),
 								recom == null ? Const.CHAINE_VIDE : recom.getDescRecommandation() };

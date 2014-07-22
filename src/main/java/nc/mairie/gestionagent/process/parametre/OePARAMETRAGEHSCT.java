@@ -1065,8 +1065,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un type d'AT utilisé sur un accident du
 		// travail
 		if (getVAL_ST_ACTION_AT().equals(ACTION_SUPPRESSION)
-				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(
-						Integer.valueOf(getAtCourant().getIdTypeAt())).size() > 0) {
+				&& getAccidentTravailDao().listerAccidentTravailAvecTypeAT(getAtCourant().getIdTypeAt()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1263,8 +1262,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un siège de lésion utilisé sur un
 		// accident du travail
 		if (getVAL_ST_ACTION_LESION().equals(ACTION_SUPPRESSION)
-				&& getAccidentTravailDao().listerAccidentTravailAvecSiegeLesion(
-						Integer.valueOf(getLesionCourant().getIdSiege())).size() > 0) {
+				&& getAccidentTravailDao().listerAccidentTravailAvecSiegeLesion(getLesionCourant().getIdSiege()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1372,8 +1370,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'une maladie professionnelle utilisé sur
 		// un handicap
 		if (getVAL_ST_ACTION_MALADIE().equals(ACTION_SUPPRESSION)
-				&& getHandicapDao().listerHandicapAvecMaladiePro(
-						Integer.valueOf(getMaladieCourante().getIdMaladiePro())).size() > 0) {
+				&& getHandicapDao().listerHandicapAvecMaladiePro(getMaladieCourante().getIdMaladiePro()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."

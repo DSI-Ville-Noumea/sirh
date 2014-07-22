@@ -351,7 +351,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				VisiteMedicale vm = (VisiteMedicale) getListeVisites().get(i);
 				Medecin m = null;
 				if (vm.getIdMedecin() != null) {
-					m = (Medecin) getHashMedecin().get(Integer.valueOf(vm.getIdMedecin()));
+					m = (Medecin) getHashMedecin().get(vm.getIdMedecin());
 				}
 				MotifVisiteMed motif = null;
 				if (vm.getIdMotifVm() != null) {
@@ -359,7 +359,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				Recommandation r = null;
 				if (vm.getIdRecommandation() != null) {
-					r = (Recommandation) getHashRecommandation().get(Integer.valueOf(vm.getIdRecommandation()));
+					r = (Recommandation) getHashRecommandation().get(vm.getIdRecommandation());
 				}
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
@@ -405,8 +405,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getListeInaptitude() != null) {
 			for (int i = 0; i < getListeInaptitude().size(); i++) {
 				Inaptitude inapt = (Inaptitude) getListeInaptitude().get(i);
-				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(
-						Integer.valueOf(inapt.getIdTypeInaptitude()));
+				TypeInaptitude ti = (TypeInaptitude) getHashTypeInaptitude().get(inapt.getIdTypeInaptitude());
 
 				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
 						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
@@ -493,11 +492,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private boolean initialiseVisiteCourante() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Récup de la visite médicale courante
-		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
+		Medecin medecin = (Medecin) getHashMedecin().get(getVisiteCourante().getIdMedecin());
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
-			recommandation = (Recommandation) getHashRecommandation().get(
-					Integer.valueOf(getVisiteCourante().getIdRecommandation()));
+			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
 			int ligneRecommandation = getListeRecommandation().indexOf(recommandation);
 			addZone(getNOM_LB_RECOMMANDATION_SELECT(), String.valueOf(ligneRecommandation + 1));
 		} else {
@@ -541,8 +539,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Récup de la visite médicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
 		setInaptitudeCourante(inaptitude);
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(
-				Integer.valueOf(inaptitude.getIdTypeInaptitude()));
+		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
 
 		// Alim zones
 		addZone(getNOM_EF_DEBUT_INAPTITUDE(), inaptitude.getDateDebutInaptitude());
@@ -565,11 +562,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	private boolean initialiseVisiteSuppression(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Medecin medecin = (Medecin) getHashMedecin().get(Integer.valueOf(getVisiteCourante().getIdMedecin()));
+		Medecin medecin = (Medecin) getHashMedecin().get(getVisiteCourante().getIdMedecin());
 		Recommandation recommandation = null;
 		if (getVisiteCourante().getIdRecommandation() != null) {
-			recommandation = (Recommandation) getHashRecommandation().get(
-					Integer.valueOf(getVisiteCourante().getIdRecommandation()));
+			recommandation = (Recommandation) getHashRecommandation().get(getVisiteCourante().getIdRecommandation());
 		}
 		MotifVisiteMed motif = null;
 		if (getVisiteCourante().getIdMotifVm() != null) {
@@ -603,8 +599,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Récup de la visite médicale courante
 		Inaptitude inaptitude = getInaptitudeCourante();
-		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(
-				Integer.valueOf(inaptitude.getIdTypeInaptitude()));
+		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -949,8 +944,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					// aussi la convocation
 					// RG-SVM-19
 					if (getVisiteCourante().getIdSuiviMed() != null) {
-						getSuiviMedDao()
-								.supprimerSuiviMedicalById(Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
+						getSuiviMedDao().supprimerSuiviMedicalById(getVisiteCourante().getIdSuiviMed());
 					}
 				} catch (Exception e) {
 					return false;
@@ -1070,8 +1064,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 					if (getVisiteCourante().getIdVisite() == null) {
 						// fermeture des lignes de convocations
 						try {
-							SuiviMedical sm = getSuiviMedDao().chercherSuiviMedical(
-									Integer.valueOf(getVisiteCourante().getIdSuiviMed()));
+							SuiviMedical sm = getSuiviMedDao()
+									.chercherSuiviMedical(getVisiteCourante().getIdSuiviMed());
 							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao()
 									.listerSuiviMedicalAgentAnterieurDate(
 											Integer.valueOf(getAgentCourant().getIdAgent()), sm.getMois(),

@@ -372,10 +372,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
-					NatureAvantage natAv = getNatureAvantageDao().chercherNatureAvantage(
-							Integer.valueOf(aAvNat.getIdNatureAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
+					NatureAvantage natAv = getNatureAvantageDao().chercherNatureAvantage(aAvNat.getIdNatureAvantage());
 
 					addZone(getNOM_ST_AV_TYPE(indiceAvantage),
 							typAv.getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typAv
@@ -403,8 +401,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 
 					addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
 							typDel.getLibTypeDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typDel
@@ -429,8 +426,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegIndemn().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 
 					addZone(getNOM_ST_REG_TYPE(indiceRegime),
 							typReg.getLibTypeRegIndemn().equals(Const.CHAINE_VIDE) ? "&nbsp;" : typReg

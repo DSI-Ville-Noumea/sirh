@@ -518,14 +518,14 @@ public class OeAGENTHandicap extends BasicProcess {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			AgentNW agentCourant = getAgentCourant();
 			getHandicapCourant().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
-			getHandicapCourant().setIdTypeHandicap(Integer.valueOf(nom.getIdTypeHandicap()));
+			getHandicapCourant().setIdTypeHandicap(nom.getIdTypeHandicap());
 			getHandicapCourant().setDateDebutHandicap(sdf.parse(dateDebut));
 			getHandicapCourant().setDateFinHandicap(dateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateFin));
 			getHandicapCourant().setPourcentIncapacite(
 					incapacite.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(incapacite));
 			getHandicapCourant().setReconnaissanceMp(recoMP);
 			if (recoMP)
-				getHandicapCourant().setIdMaladiePro(Integer.valueOf(maladiePro.getIdMaladiePro()));
+				getHandicapCourant().setIdMaladiePro(maladiePro.getIdMaladiePro());
 			getHandicapCourant().setHandicapCRDHNC(recoCRDHNC);
 			if (recoCRDHNC) {
 				getHandicapCourant().setNumCarteCrdhnc(numCRDHNC);

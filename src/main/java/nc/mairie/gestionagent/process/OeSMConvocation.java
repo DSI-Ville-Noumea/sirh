@@ -264,7 +264,7 @@ public class OeSMConvocation extends BasicProcess {
 	private void afficheListeSuiviMed() throws ParseException, Exception {
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
-			Integer i = Integer.valueOf(sm.getIdSuiviMed());
+			Integer i = sm.getIdSuiviMed();
 			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
@@ -831,7 +831,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setDateDerniereVisite(null);
 			Date d = new SimpleDateFormat("dd/MM/yyyy").parse("15/" + moisChoisi + "/" + anneeChoisi);
 			sm.setDatePrevisionVisite(d);
-			sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_AGENT_SANS_VM.getCode()));
+			sm.setIdMotifVm(EnumMotifVisiteMed.VM_AGENT_SANS_VM.getCode());
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
@@ -968,7 +968,7 @@ public class OeSMConvocation extends BasicProcess {
 							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
-					sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_CONGE_LONGUE_MALADIE.getCode()));
+					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CONGE_LONGUE_MALADIE.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
@@ -1110,7 +1110,7 @@ public class OeSMConvocation extends BasicProcess {
 							Services.convertitDate(dernierAM.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 2);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
-					sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_MA_1MOIS.getCode()));
+					sm.setIdMotifVm(EnumMotifVisiteMed.VM_MA_1MOIS.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
@@ -1251,7 +1251,7 @@ public class OeSMConvocation extends BasicProcess {
 							Services.convertitDate(dernierAT.getDatFin().toString(), "yyyyMMdd", "dd/MM/yyyy"), 1);
 					Date d = new SimpleDateFormat("dd/MM/yyyy").parse(datePrev);
 					sm.setDatePrevisionVisite(d);
-					sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_AT_ITT_15JOURS.getCode()));
+					sm.setIdMotifVm(EnumMotifVisiteMed.VM_AT_ITT_15JOURS.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
@@ -1459,8 +1459,9 @@ public class OeSMConvocation extends BasicProcess {
 				// ATTENTION : si mois de la date de prochainRDV < moisChoisi
 				// alors
 				// il faut incrémenter le compteur de 1 pour NbVisiteRatées
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				if (smAncien.getDateProchaineVisite() != null
-						&& Integer.valueOf(smAncien.getDateProchaineVisite().toString().substring(5, 7)) < moisChoisi) {
+						&& Integer.valueOf(sdf.format(smAncien.getDateProchaineVisite()).toString().substring(5, 7)) < moisChoisi) {
 					sm.setNbVisitesRatees(smAncien.getNbVisitesRatees() + 1);
 				} else {
 					sm.setNbVisitesRatees(smAncien.getNbVisitesRatees());
@@ -1564,7 +1565,7 @@ public class OeSMConvocation extends BasicProcess {
 					Date d2 = new SimpleDateFormat("dd/MM/yyyy")
 							.parse(Services.enleveJours(paSuivante.getDatdeb(), 15));
 					sm.setDatePrevisionVisite(d2);
-					sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_CHANGEMENT_PA.getCode()));
+					sm.setIdMotifVm(EnumMotifVisiteMed.VM_CHANGEMENT_PA.getCode());
 					sm.setNbVisitesRatees(0);
 					sm.setIdMedecin(null);
 					sm.setDateProchaineVisite(null);
@@ -1665,7 +1666,7 @@ public class OeSMConvocation extends BasicProcess {
 			sm.setDateDerniereVisite(null);
 			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(agent.getDateDerniereEmbauche());
 			sm.setDatePrevisionVisite(d2);
-			sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_NOUVEAU.getCode()));
+			sm.setIdMotifVm(EnumMotifVisiteMed.VM_NOUVEAU.getCode());
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
@@ -1762,7 +1763,7 @@ public class OeSMConvocation extends BasicProcess {
 			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(Services.ajouteMois(
 					new SimpleDateFormat("dd/MM/yyyy").format(vm.getDateDerniereVisite()), vm.getDureeValidite()));
 			sm.setDatePrevisionVisite(d2);
-			sm.setIdMotifVm(Integer.valueOf(EnumMotifVisiteMed.VM_REGULIERE.getCode()));
+			sm.setIdMotifVm(EnumMotifVisiteMed.VM_REGULIERE.getCode());
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
 			sm.setDateProchaineVisite(null);
@@ -2336,7 +2337,7 @@ public class OeSMConvocation extends BasicProcess {
 		// on controle les champs
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			SuiviMedical sm = getListeSuiviMed().get(j);
-			Integer i = Integer.valueOf(sm.getIdSuiviMed());
+			Integer i = sm.getIdSuiviMed();
 			// si la ligne n'est pas en etat travail
 			if (!getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				String dateRDV = getVAL_ST_DATE_PROCHAIN_RDV(i);
@@ -2552,7 +2553,7 @@ public class OeSMConvocation extends BasicProcess {
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
-			Integer i = Integer.valueOf(sm.getIdSuiviMed());
+			Integer i = sm.getIdSuiviMed();
 			// si l'etat de la ligne est 'convoque'
 			if (sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
 				if (getVAL_CK_A_IMPRIMER_ACCOMP(i).equals(getCHECKED_ON())) {
@@ -2679,7 +2680,7 @@ public class OeSMConvocation extends BasicProcess {
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
-			Integer i = Integer.valueOf(sm.getIdSuiviMed());
+			Integer i = sm.getIdSuiviMed();
 			// si l'etat de la ligne n'est pas deja 'imprimé' et que la colonne
 			// imprimée est cochée
 			if (!sm.getEtat().equals(EnumEtatSuiviMed.CONVOQUE.getCode())) {
@@ -2873,7 +2874,7 @@ public class OeSMConvocation extends BasicProcess {
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			// on recupère la ligne concernée
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
-			Integer i = Integer.valueOf(sm.getIdSuiviMed());
+			Integer i = sm.getIdSuiviMed();
 			sm.setEtat(getVAL_ST_ETAT(i));
 			if (getVAL_ST_ETAT(i).equals(EnumEtatSuiviMed.TRAVAIL.getCode())) {
 				sm.setHeureProchaineVisite(null);
@@ -2890,7 +2891,7 @@ public class OeSMConvocation extends BasicProcess {
 					sm.setDateProchaineVisite(null);
 				}
 				Medecin m = getListeMedecin().get(Integer.valueOf(getVAL_LB_MEDECIN_SELECT(i)));
-				sm.setIdMedecin(Integer.valueOf(m.getIdMedecin()));
+				sm.setIdMedecin(m.getIdMedecin());
 			}
 			getSuiviMedDao().modifierSuiviMedicalTravail(sm.getIdSuiviMed(), sm);
 

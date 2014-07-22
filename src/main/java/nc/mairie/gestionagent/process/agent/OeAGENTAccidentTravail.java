@@ -439,8 +439,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			getAccidentTravailCourant().setDateAtInitial(
 					dateInit.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateInit));
 			getAccidentTravailCourant().setNbJoursItt(duree.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(duree));
-			getAccidentTravailCourant().setIdTypeAt(Integer.valueOf(type.getIdTypeAt()));
-			getAccidentTravailCourant().setIdSiege(Integer.valueOf(siege.getIdSiege()));
+			getAccidentTravailCourant().setIdTypeAt(type.getIdTypeAt());
+			getAccidentTravailCourant().setIdSiege(siege.getIdSiege());
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification

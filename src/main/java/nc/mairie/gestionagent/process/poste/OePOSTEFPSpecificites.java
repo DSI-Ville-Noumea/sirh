@@ -1358,10 +1358,9 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
-							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
+							.chercherNatureAvantage(aAvNat.getIdNatureAvantage());
 					String ligne[] = { typAv.getLibTypeAvantage(), aAvNat.getMontant().toString(),
 							natAv == null ? Const.CHAINE_VIDE : natAv.getLibNatureAvantage() };
 					aFormat.ajouteLigne(ligne);
@@ -1382,8 +1381,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 					String ligne[] = { typDel.libTypeDelegation, aDel.getLibDelegation() };
 					aFormatDel.ajouteLigne(ligne);
 				}
@@ -1403,8 +1401,7 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 					String ligne[] = { typReg.getLibTypeRegIndemn(), aReg.getForfait().toString(),
 							aReg.getNombrePoints().toString() };
 					aFormatReg.ajouteLigne(ligne);
@@ -1818,8 +1815,8 @@ public class OePOSTEFPSpecificites extends BasicProcess {
 					.getIdNatureAvantage());
 			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
-			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : Integer.valueOf(((Rubrique) getListeRubrique().get(
-					indiceRubAvantage - 1)).getNorubr()));
+			avNat.setNumRubrique(indiceRubAvantage <= 0 ? null : ((Rubrique) getListeRubrique().get(
+					indiceRubAvantage - 1)).getNorubr());
 
 			if (getListeAvantage() == null)
 				setListeAvantage(new ArrayList<AvantageNature>());

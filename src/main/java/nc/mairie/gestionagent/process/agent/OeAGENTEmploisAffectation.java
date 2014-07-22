@@ -2306,10 +2306,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeAvantageFP().size(); i++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageFP().get(i);
 				if (aAvNat != null) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
-							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
+							.chercherNatureAvantage(aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aAvNat.getNumRubrique());
 
@@ -2327,10 +2326,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeAvantageAFF().size(); j++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAFF().get(j);
 				if (aAvNat != null && !getListeAvantageFP().contains(aAvNat)) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
-							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
+							.chercherNatureAvantage(aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aAvNat.getNumRubrique());
 					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
@@ -2348,10 +2346,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeAvantageAAjouter().size(); k++) {
 				AvantageNature aAvNat = (AvantageNature) getListeAvantageAAjouter().get(k);
 				if (aAvNat != null) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() == null ? null : getNatureAvantageDao()
-							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage()));
+							.chercherNatureAvantage(aAvNat.getIdNatureAvantage());
 					Rubrique rubr = aAvNat.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aAvNat.getNumRubrique());
 					addZone(getNOM_ST_LST_AVANTAGE_TYPE(indiceAvNat), typAv.getLibTypeAvantage());
@@ -2401,8 +2398,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeDelegationFP().size(); i++) {
 				Delegation aDel = (Delegation) getListeDelegationFP().get(i);
 				if (aDel != null) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2413,8 +2409,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeDelegationAFF().size(); j++) {
 				Delegation aDel = (Delegation) getListeDelegationAFF().get(j);
 				if (aDel != null && !getListeDelegationFP().contains(aDel)) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2425,8 +2420,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeDelegationAAjouter().size(); k++) {
 				Delegation aDel = (Delegation) getListeDelegationAAjouter().get(k);
 				if (aDel != null) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_TYPE(indiceDel), typDel.getLibTypeDelegation());
 					addZone(getNOM_ST_LST_DELEGATION_COMMENT(indiceDel), aDel.getLibDelegation());
 					indiceDel++;
@@ -2844,8 +2838,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeRegimeFP().size(); i++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeFP().get(i);
 				if (aReg != null) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE(indiceReg), typReg.getLibTypeRegIndemn());
@@ -2861,8 +2854,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int j = 0; j < getListeRegimeAFF().size(); j++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeAFF().get(j);
 				if (aReg != null && !getListeRegimeFP().contains(aReg)) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE(indiceReg), typReg.getLibTypeRegIndemn());
@@ -2878,8 +2870,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int k = 0; k < getListeRegimeAAjouter().size(); k++) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) getListeRegimeAAjouter().get(k);
 				if (aReg != null) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 					Rubrique rubr = aReg.getNumRubrique() == null ? null : getRubriqueDao().chercherRubrique(
 							aReg.getNumRubrique());
 					addZone(getNOM_ST_LST_REGINDEMN_TYPE(indiceReg), typReg.getLibTypeRegIndemn());
@@ -4162,8 +4153,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Sauvegarde des nouveaux avantages nature et suppression des anciens
 		for (int i = 0; i < getListeAvantageAAjouter().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageAAjouter().get(i);
-			Integer idCreer = getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(), avNat.getIdTypeAvantage(),
-					avNat.getIdNatureAvantage(), avNat.getMontant());
+			Integer idCreer = getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(),
+					avNat.getIdTypeAvantage(), avNat.getIdNatureAvantage(), avNat.getMontant());
 			AvantageNatureAFF avNatAFF = new AvantageNatureAFF(Integer.valueOf(getAffectationCourant()
 					.getIdAffectation()), idCreer);
 			getAvantageNatureAffDao().creerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
@@ -4176,9 +4167,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (int i = 0; i < getListeAvantageASupprimer().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageASupprimer().get(i);
-			AvantageNatureAFF avNatAFF = getAvantageNatureAffDao()
-					.chercherAvantageNatureAFF(Integer.valueOf(avNat.getIdAvantage()),
-							Integer.valueOf(getAffectationCourant().getIdAffectation()));
+			AvantageNatureAFF avNatAFF = getAvantageNatureAffDao().chercherAvantageNatureAFF(avNat.getIdAvantage(),
+					Integer.valueOf(getAffectationCourant().getIdAffectation()));
 			getAvantageNatureAffDao().supprimerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
 			getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
 			if (getTransaction().isErreur()) {
@@ -4220,10 +4210,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Sauvegarde des nouveaux RegimeIndemnitaire et suppression des anciens
 		for (int i = 0; i < getListeRegimeAAjouter().size(); i++) {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeAAjouter().get(i);
-			Integer idCreer = getRegIndemnDao().creerRegimeIndemnitaire(regIndemn.getIdTypeRegIndemn(), regIndemn.getNumRubrique(),
-					regIndemn.getForfait(), regIndemn.getNombrePoints());
-			RegIndemnAFF riAFF = new RegIndemnAFF(Integer.valueOf(getAffectationCourant().getIdAffectation()),
-					idCreer);
+			Integer idCreer = getRegIndemnDao().creerRegimeIndemnitaire(regIndemn.getIdTypeRegIndemn(),
+					regIndemn.getNumRubrique(), regIndemn.getForfait(), regIndemn.getNombrePoints());
+			RegIndemnAFF riAFF = new RegIndemnAFF(Integer.valueOf(getAffectationCourant().getIdAffectation()), idCreer);
 			getRegIndemnAffDao().creerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -4328,7 +4317,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			int indiceRubAvantage = (Services.estNumerique(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_AVANTAGE_SELECT()) : -1);
 			if (indiceRubAvantage > 0)
-				avNat.setNumRubrique(Integer.valueOf(getListeRubrique().get(indiceRubAvantage - 1).getNorubr()));
+				avNat.setNumRubrique(getListeRubrique().get(indiceRubAvantage - 1).getNorubr());
 
 			if (getListeAvantageAFF() == null)
 				setListeAvantageAFF(new ArrayList<AvantageNature>());
@@ -4391,7 +4380,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			int indiceRub = (Services.estNumerique(getVAL_LB_RUBRIQUE_REGIME_SELECT()) ? Integer
 					.parseInt(getVAL_LB_RUBRIQUE_REGIME_SELECT()) : -1);
 			if (indiceRub > 0)
-				regIndemn.setNumRubrique(Integer.valueOf(getListeRubrique().get(indiceRub - 1).getNorubr()));
+				regIndemn.setNumRubrique(getListeRubrique().get(indiceRub - 1).getNorubr());
 
 			if (getListeRegimeAFF() == null)
 				setListeRegimeAFF(new ArrayList<RegimeIndemnitaire>());

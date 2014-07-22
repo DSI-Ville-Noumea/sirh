@@ -137,7 +137,7 @@ public class OeSMHistorique extends BasicProcess {
 						sm.getIdAgent());
 				Medecin medecin = null;
 				if (vm.getIdMedecin() != null) {
-					medecin = getMedecinDao().chercherMedecin(Integer.valueOf(vm.getIdMedecin()));
+					medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
 				}
 				addZone(getNOM_ST_MEDECIN(i),
 						medecin != null ? medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " "

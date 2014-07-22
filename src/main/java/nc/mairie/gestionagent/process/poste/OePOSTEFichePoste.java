@@ -1040,10 +1040,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<AvantageNature> list = getListeAvantage().listIterator(); list.hasNext();) {
 				AvantageNature aAvNat = (AvantageNature) list.next();
 				if (aAvNat != null) {
-					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(
-							Integer.valueOf(aAvNat.getIdTypeAvantage()));
+					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? getNatureAvantageDao()
-							.chercherNatureAvantage(Integer.valueOf(aAvNat.getIdNatureAvantage())) : null;
+							.chercherNatureAvantage(aAvNat.getIdNatureAvantage()) : null;
 					getHashtypAv().put(typAv.getIdTypeAvantage().toString(), typAv);
 					if (natAv != null && natAv.getIdNatureAvantage() != null)
 						getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
@@ -1067,8 +1066,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<Delegation> list = getListeDelegation().listIterator(); list.hasNext();) {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
-					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(
-							Integer.valueOf(aDel.getIdTypeDelegation()));
+					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
 					getHashTypDel().put(typDel.getIdTypeDelegation().toString(), typDel);
 				}
 			}
@@ -1090,8 +1088,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			for (ListIterator<RegimeIndemnitaire> list = getListeRegime().listIterator(); list.hasNext();) {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
-					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(
-							Integer.valueOf(aReg.getIdTypeRegIndemn()));
+					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
 					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn().toString(), typReg);
 				}
 			}
