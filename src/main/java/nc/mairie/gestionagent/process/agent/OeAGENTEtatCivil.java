@@ -30,6 +30,7 @@ import nc.mairie.metier.referentiel.EtatServiceMilitaire;
 import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.referentiel.CollectiviteDao;
+import nc.mairie.spring.dao.metier.referentiel.EtatServiceMilitaireDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -99,6 +100,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	public boolean prioritaireModifiable = true;
 
 	private CollectiviteDao collectiviteDao;
+	private EtatServiceMilitaireDao etatServiceMilitaireDao;
 
 	// Fin gestion des contacts
 	public String getMessage() {
@@ -477,7 +479,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			getAgentCourant().setIdEtatService(null);
 		} else {
 			aEtatService = (EtatServiceMilitaire) getListeTypeServiceMilitaire().get(indiceEtatService - 1);
-			getAgentCourant().setIdEtatService(aEtatService.getIdEtatService());
+			getAgentCourant().setIdEtatService(aEtatService.getIdEtatService().toString());
 		}
 		getAgentCourant().setVcat(getVAL_RG_VCAT().equals(getNOM_RB_VCAT_OUI()) ? "O" : "N");
 		getAgentCourant().setDebutService(getVAL_EF_SERVICE_DEBUT());
@@ -2210,6 +2212,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getCollectiviteDao() == null) {
 			setCollectiviteDao(new CollectiviteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getEtatServiceMilitaireDao() == null) {
+			setEtatServiceMilitaireDao(new EtatServiceMilitaireDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -2485,8 +2490,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			addZone(getNOM_LB_TYPE_SERVICE_SELECT(), "0");
 		} else {
 			for (int i = 0; i < getListeTypeServiceMilitaire().size(); i++) {
-				if (((EtatServiceMilitaire) getListeTypeServiceMilitaire().get(i)).getIdEtatService().equals(
-						getAgentCourant().getIdEtatService())) {
+				if (((EtatServiceMilitaire) getListeTypeServiceMilitaire().get(i)).getIdEtatService().toString()
+						.equals(getAgentCourant().getIdEtatService())) {
 					addZone(getNOM_LB_TYPE_SERVICE_SELECT(), String.valueOf(i + 1));
 					break;
 				}
@@ -2642,12 +2647,20 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Si la liste des Types de Service vide alors
 		// RG_AG_EC_A06
 		if (getLB_TYPE_SERVICE() == LBVide) {
-			ArrayList<EtatServiceMilitaire> esm = EtatServiceMilitaire.listerEtatServiceMilitaire(getTransaction());
+			ArrayList<EtatServiceMilitaire> esm = (ArrayList<EtatServiceMilitaire>) getEtatServiceMilitaireDao()
+					.listerEtatServiceMilitaire();
 			setListeTypeServiceMilitaire(esm);
-			int tailles[] = { 20 };
-			String colonnes[] = { "libEtatService" };
-			FormateListe aListeFormatee = new FormateListe(tailles, esm, colonnes);
-			setLB_TYPE_SERVICE(aListeFormatee.getListeFormatee(true));
+
+			int[] tailles = { 20 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<EtatServiceMilitaire> list = getListeTypeServiceMilitaire().listIterator(); list
+					.hasNext();) {
+				EtatServiceMilitaire fili = (EtatServiceMilitaire) list.next();
+				String ligne[] = { fili.getLibEtatService() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_SERVICE(aFormat.getListeFormatee(true));
 		}
 
 		// Si aucune VCAT alors NON par défaut
@@ -4510,5 +4523,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	public void setCollectiviteDao(CollectiviteDao collectiviteDao) {
 		this.collectiviteDao = collectiviteDao;
+	}
+
+	public EtatServiceMilitaireDao getEtatServiceMilitaireDao() {
+		return etatServiceMilitaireDao;
+	}
+
+	public void setEtatServiceMilitaireDao(EtatServiceMilitaireDao etatServiceMilitaireDao) {
+		this.etatServiceMilitaireDao = etatServiceMilitaireDao;
 	}
 }
