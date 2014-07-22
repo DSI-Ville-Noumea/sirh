@@ -24,7 +24,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
@@ -60,6 +60,8 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
@@ -234,6 +236,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private RegIndemnAffDao regIndemnAffDao;
 	private TypeCompetenceDao typeCompetenceDao;
 	private TypeContratDao typeContratDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -479,6 +483,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeContratDao() == null) {
 			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2391,17 +2401,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Tout s'est bien passé
 			// on crée le document en base de données
 			Document d = new Document();
-			d.setIdTypeDocument("1");
+			d.setIdTypeDocument(1);
 			d.setLienDocument(destinationFDP);
 			d.setNomDocument("SauvFP_" + getFichePosteCourante().getIdFichePoste() + "_" + dateJour + ".doc");
-			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setDateDocument(new Date());
 			d.setCommentaire("Sauvegarde automatique lors modification FDP.");
-			d.creerDocument(getTransaction());
+			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
+					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
-			LienDocumentAgent lda = new LienDocumentAgent();
-			lda.setIdAgent(getAgentCourant().getIdAgent());
-			lda.setIdDocument(d.getIdDocument());
-			lda.creerLienDocumentAgent(getTransaction());
+			DocumentAgent lda = new DocumentAgent();
+			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdDocument(id);
+			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
 			if (getTransaction().isErreur()) {
 				return false;
@@ -6620,5 +6631,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeContratDao(TypeContratDao typeContratDao) {
 		this.typeContratDao = typeContratDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

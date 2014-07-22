@@ -23,13 +23,15 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.SiegeLesion;
 import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.SiegeLesionDao;
 import nc.mairie.spring.dao.metier.hsct.TypeATDao;
@@ -86,7 +88,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document d'une fiche AT.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
-	private LienDocumentAgent lienDocumentAgentCourant;
+	private DocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
@@ -96,6 +98,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private AccidentTravailDao accidentTravailDao;
 	private SiegeLesionDao siegeLesionDao;
 	private TypeATDao typeATDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Constructeur du process OeAGENTAccidentTravail. Date de création :
@@ -219,6 +223,12 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		if (getTypeATDao() == null) {
 			setTypeATDao(new TypeATDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -239,8 +249,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				TypeAT t = (TypeAT) getHashTypeAT().get(at.getIdTypeAt());
 				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "HSCT", "AT", at.getIdAt().toString());
+				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+						Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "AT", at.getIdAt());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -948,18 +958,17 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-				getAgentCourant(), "HSCT", "AT", getAccidentTravailCourant().getIdAt().toString());
+		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+				Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "AT", getAccidentTravailCourant().getIdAt());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
-						Integer.valueOf(doc.getIdTypeDocument()));
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(doc.getIdTypeDocument());
 
 				addZone(getNOM_ST_NOM_DOC(indiceActeVM), doc.getNomDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getNomDocument());
@@ -967,8 +976,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_TYPE_DOC(indiceActeVM), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: td.getLibTypeDocument());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument().equals(Const.DATE_NULL) ? "&nbsp;"
-						: doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM),
+						doc.getDateDocument() == null ? "&nbsp;" : sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -1121,22 +1130,18 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	}
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-				.getIdAgent(), getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
-
-		if (getTransaction().isErreur())
-			return false;
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
 		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
-		addZone(getNOM_ST_DATE_DOC(),
-				d.getDateDocument().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument() == null ? Const.CHAINE_VIDE : sdf.format(d.getDateDocument()));
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
@@ -1150,11 +1155,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		this.documentCourant = documentCourant;
 	}
 
-	private LienDocumentAgent getLienDocumentAgentCourant() {
+	private DocumentAgent getLienDocumentAgentCourant() {
 		return lienDocumentAgentCourant;
 	}
 
-	private void setLienDocumentAgentCourant(LienDocumentAgent lienDocumentAgentCourant) {
+	private void setLienDocumentAgentCourant(DocumentAgent lienDocumentAgentCourant) {
 		this.lienDocumentAgentCourant = lienDocumentAgentCourant;
 	}
 
@@ -1194,12 +1199,10 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			return false;
 		}
 		// suppression dans table DOCUMENT_AGENT
-		getLienDocumentAgentCourant().supprimerLienDocumentAgent(getTransaction());
+		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
+				getLienDocumentAgentCourant().getIdDocument());
 		// Suppression dans la table DOCUMENT_ASSOCIE
-		getDocumentCourant().supprimerDocument(getTransaction());
-
-		if (getTransaction().isErreur())
-			return false;
+		getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 		// on supprime le fichier physiquement sur le serveur
 		String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -1274,17 +1277,17 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		} else {
 			// on supprime le document existant dans la base de données
-			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAt());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-					.getIdAgent(), d.getIdDocument());
+			Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
-			l.supprimerLienDocumentAgent(getTransaction());
-			d.supprimerDocument(getTransaction());
+			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+			getDocumentDao().supprimerDocument(d.getIdDocument());
 
 			if (!creeDocument(request, at)) {
 				return false;
@@ -1332,17 +1335,21 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
-		setLienDocumentAgentCourant(new LienDocumentAgent());
-		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
-		getLienDocumentAgentCourant().setIdDocument(getDocumentCourant().getIdDocument());
-		getLienDocumentAgentCourant().creerLienDocumentAgent(getTransaction());
+		setLienDocumentAgentCourant(new DocumentAgent());
+		getLienDocumentAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocumentAgentCourant().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
+				getLienDocumentAgentCourant().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1543,5 +1550,21 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 	public void setTypeATDao(TypeATDao typeATDao) {
 		this.typeATDao = typeATDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

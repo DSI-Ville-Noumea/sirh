@@ -32,6 +32,7 @@ import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -95,6 +96,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	private ArrayList<AgentNW> listeDestinataireMulti;
 
 	private TypeDocumentDao typeDocumentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -158,6 +160,9 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		}
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -659,11 +664,11 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				EaeDocument lien = getEaeDocumentDao().chercherEaeDocument(Integer.valueOf(d.getIdDocument()));
+				EaeDocument lien = getEaeDocumentDao().chercherEaeDocument(d.getIdDocument());
 				// suppression dans table EAE_DOCUMENT
 				getEaeDocumentDao().supprimerEaeDocument(lien.getIdEaeDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				d.supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -1642,6 +1647,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Recherche des documents de la campagne
 
@@ -1650,7 +1656,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		setListeDocuments(new ArrayList<Document>());
 		for (int i = 0; i < listeDoc.size(); i++) {
 			EaeDocument lien = listeDoc.get(i);
-			Document d = Document.chercherDocumentById(getTransaction(), lien.getIdDocument().toString());
+			Document d = getDocumentDao().chercherDocumentById(lien.getIdDocument());
 			getListeDocuments().add(d);
 		}
 
@@ -1662,7 +1668,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 						: doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -1742,6 +1748,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	}
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
@@ -1753,7 +1760,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
 		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), sdf.format(d.getDateDocument()));
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
@@ -1798,7 +1805,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 				// suppression dans table EAE_DOCUMENT
 				getEaeDocumentDao().supprimerEaeDocument(getLienEaeDocument().getIdEaeDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentCourant().supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -1851,16 +1858,19 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
 		setLienEaeDocument(new EaeDocument());
 		getLienEaeDocument().setIdCampagneEae(camp.getIdCampagneEae());
-		getLienEaeDocument().setIdDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
+		getLienEaeDocument().setIdDocument(id);
 		getLienEaeDocument().setTypeDocument(codTypeDoc);
 		getLienEaeDocument().setIdCampagneAction(getActionCourante().getIdCampagneAction());
 		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(),
@@ -2036,5 +2046,13 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

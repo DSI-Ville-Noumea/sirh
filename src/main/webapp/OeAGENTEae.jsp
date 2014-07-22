@@ -853,7 +853,7 @@
 				if (process.getListeAncienEAE()!=null){
 					for (int i = 0;i<process.getListeAncienEAE().size();i++){
 						Document doc = (Document) process.getListeAncienEAE().get(i);	
-						Integer id = Integer.valueOf(doc.getIdDocument());
+						Integer id = doc.getIdDocument();
 				%>
 				<tr>
 					<td>

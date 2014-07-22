@@ -3,7 +3,6 @@ package nc.mairie.gestionagent.process.agent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ListIterator;
@@ -17,7 +16,7 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
@@ -46,6 +45,8 @@ import nc.mairie.metier.specificites.PrimePointageAff;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
@@ -140,6 +141,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private DelegationDao delegationDao;
 	private RegIndemnDao regIndemnDao;
 	private TypeCompetenceDao typeCompetenceDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -258,6 +261,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getTypeCompetenceDao() == null) {
 			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1473,9 +1482,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	private boolean verifieExistFichier(String idFichePoste) throws Exception {
 		// on regarde si le fichier existe
-		Document.chercherDocumentByContainsNom(getTransaction(), "FP_" + idFichePoste);
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
+		try {
+			getDocumentDao().chercherDocumentByContainsNom("FP_" + idFichePoste);
+		} catch (Exception e) {
 			return false;
 		}
 
@@ -1490,17 +1499,17 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		String destinationFDP = "FP/FP_" + getFichePosteCourant().getIdFichePoste() + ".doc";
 		// si le fichier existe alors on supprime l'entrée où il y a le fichier
 		if (verifieExistFichier(getFichePosteCourant().getIdFichePoste())) {
-			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "FP_"
-					+ getFichePosteCourant().getIdFichePoste());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-					.getIdAgent(), d.getIdDocument());
+			Document d = getDocumentDao().chercherDocumentByContainsNom(
+					"FP_" + getFichePosteCourant().getIdFichePoste());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
-			l.supprimerLienDocumentAgent(getTransaction());
-			d.supprimerDocument(getTransaction());
+			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+			getDocumentDao().supprimerDocument(d.getIdDocument());
 		}
 
 		try {
@@ -1516,17 +1525,18 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			// Tout s'est bien passé
 			// on crée le document en base de données
 			Document d = new Document();
-			d.setIdTypeDocument("1");
+			d.setIdTypeDocument(1);
 			d.setLienDocument(destinationFDP);
 			d.setNomDocument("FP_" + getFichePosteCourant().getIdFichePoste() + ".doc");
-			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setDateDocument(new Date());
 			d.setCommentaire("Document généré par l'application");
-			d.creerDocument(getTransaction());
+			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
+					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
-			LienDocumentAgent lda = new LienDocumentAgent();
-			lda.setIdAgent(getAgentCourant().getIdAgent());
-			lda.setIdDocument(d.getIdDocument());
-			lda.creerLienDocumentAgent(getTransaction());
+			DocumentAgent lda = new DocumentAgent();
+			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdDocument(id);
+			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
 			if (getTransaction().isErreur())
 				return false;
@@ -2367,5 +2377,21 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
 		this.typeCompetenceDao = typeCompetenceDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

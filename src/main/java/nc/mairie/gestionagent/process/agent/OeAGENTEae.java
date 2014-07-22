@@ -17,7 +17,7 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EAE;
 import nc.mairie.metier.eae.EaeCommentaire;
@@ -47,6 +47,8 @@ import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -135,6 +137,8 @@ public class OeAGENTEae extends BasicProcess {
 	private ArrayList<Document> listeAncienEAE;
 
 	private TypeDocumentDao typeDocumentDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -182,8 +186,8 @@ public class OeAGENTEae extends BasicProcess {
 	private void initialiseListeAncienEae(HttpServletRequest request) throws Exception {
 
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(),
-				getAgentCourant(), Const.CHAINE_VIDE, "EAE");
+		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgent(getLienDocumentAgentDao(),
+				Integer.valueOf(getAgentCourant().getIdAgent()), Const.CHAINE_VIDE, "EAE");
 		setListeAncienEAE(listeDocAgent);
 
 		if (getListeAncienEAE() != null) {
@@ -332,6 +336,12 @@ public class OeAGENTEae extends BasicProcess {
 		}
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4406,7 +4416,7 @@ public class OeAGENTEae extends BasicProcess {
 		logger.info("Rep stock : " + repertoireStockage);
 
 		// Récup du document courant
-		Document d = Document.chercherDocumentById(getTransaction(), String.valueOf(indiceEltAConsulter));
+		Document d = getDocumentDao().chercherDocumentById(indiceEltAConsulter);
 		// on affiche le document
 		logger.info("Lien doc : " + d.getLienDocument());
 		logger.info("Script : " + getScriptOuverture(repertoireStockage + d.getLienDocument()));
@@ -4578,17 +4588,19 @@ public class OeAGENTEae extends BasicProcess {
 		TypeDocument typeEAE = getTypeDocumentDao().chercherTypeDocumentByCod("EAE");
 		Document doc = new Document();
 		doc.setLienDocument("EAE/" + nom);
-		doc.setIdTypeDocument(typeEAE.getIdTypeDocument().toString());
+		doc.setIdTypeDocument(typeEAE.getIdTypeDocument());
 		doc.setNomOriginal(fichierUpload.getName());
 		doc.setNomDocument(nom);
-		doc.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		doc.setDateDocument(new Date());
 		doc.setCommentaire(getZone(getNOM_EF_COMMENTAIRE_ANCIEN_EAE()));
-		doc.creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(doc.getClasseDocument(), doc.getNomDocument(),
+				doc.getLienDocument(), doc.getDateDocument(), doc.getCommentaire(), doc.getIdTypeDocument(),
+				doc.getNomOriginal());
 
-		LienDocumentAgent lien = new LienDocumentAgent();
-		lien.setIdAgent(getAgentCourant().getIdAgent());
-		lien.setIdDocument(doc.getIdDocument());
-		lien.creerLienDocumentAgent(getTransaction());
+		DocumentAgent lien = new DocumentAgent();
+		lien.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		lien.setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -4675,5 +4687,21 @@ public class OeAGENTEae extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

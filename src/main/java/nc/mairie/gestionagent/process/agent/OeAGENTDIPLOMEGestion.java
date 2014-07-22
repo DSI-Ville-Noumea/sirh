@@ -23,7 +23,7 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.diplome.FormationAgent;
 import nc.mairie.metier.diplome.PermisAgent;
@@ -34,6 +34,8 @@ import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.parametrage.TitrePermis;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -96,7 +98,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	public String ACTION_DOCUMENT_CREATION = "Création d'un document.";
 	private ArrayList<Document> listeDocuments;
 	private Document documentCourant;
-	private LienDocumentAgent lienDocument;
+	private DocumentAgent lienDocument;
 	private String urlFichier;
 	public boolean isImporting = false;
 	public MultipartRequest multi = null;
@@ -134,6 +136,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
 	private TitreDiplomeDao titreDiplomeDao;
 	private TypeDocumentDao typeDocumentDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
@@ -492,8 +496,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceFormation), d.getAnneeFormation().toString());
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "DONNEES PERSONNELLES", "FORM", d.getIdFormation().toString());
+				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+						Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "FORM",
+						d.getIdFormation());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -530,8 +535,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						t.getNiveauEtude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getNiveauEtude());
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "DONNEES PERSONNELLES", "DIP", d.getIdDiplome());
+				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+						Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "DIP",
+						Integer.valueOf(d.getIdDiplome()));
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -752,6 +758,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -871,12 +883,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
-						getAgentCourant().getIdAgent(), d.getIdDocument());
+				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
-				lien.supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				d.supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -1024,9 +1036,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		} else {
 			if (getZone(getNOM_ST_ACTION_DOCUMENT()).equals(ACTION_DOCUMENT_SUPPRESSION)) {
 				// suppression dans table DOCUMENT_AGENT
-				getLienDocument().supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocument().getIdAgent(),
+						getLienDocument().getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentCourant().supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -1081,17 +1094,20 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
-		setLienDocument(new LienDocumentAgent());
-		getLienDocument().setIdAgent(getAgentCourant().getIdAgent());
-		getLienDocument().setIdDocument(getDocumentCourant().getIdDocument());
-		getLienDocument().creerLienDocumentAgent(getTransaction());
+		setLienDocument(new DocumentAgent());
+		getLienDocument().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocument().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocument().getIdAgent(), getLienDocument().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1137,17 +1153,20 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
-		setLienDocument(new LienDocumentAgent());
-		getLienDocument().setIdAgent(getAgentCourant().getIdAgent());
-		getLienDocument().setIdDocument(getDocumentCourant().getIdDocument());
-		getLienDocument().creerLienDocumentAgent(getTransaction());
+		setLienDocument(new DocumentAgent());
+		getLienDocument().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocument().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocument().getIdAgent(), getLienDocument().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1193,17 +1212,20 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
-		setLienDocument(new LienDocumentAgent());
-		getLienDocument().setIdAgent(getAgentCourant().getIdAgent());
-		getLienDocument().setIdDocument(getDocumentCourant().getIdDocument());
-		getLienDocument().creerLienDocumentAgent(getTransaction());
+		setLienDocument(new DocumentAgent());
+		getLienDocument().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocument().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocument().getIdAgent(), getLienDocument().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -2335,12 +2357,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
-						getAgentCourant().getIdAgent(), d.getIdDocument());
+				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
-				lien.supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				d.supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -2542,9 +2564,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		} else {
 			if (getZone(getNOM_ST_ACTION_DOCUMENT()).equals(ACTION_DOCUMENT_SUPPRESSION)) {
 				// suppression dans table DOCUMENT_AGENT
-				getLienDocument().supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocument().getIdAgent(),
+						getLienDocument().getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentCourant().supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -3070,12 +3093,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				LienDocumentAgent lien = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(),
-						getAgentCourant().getIdAgent(), d.getIdDocument());
+				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				// suppression dans table DOCUMENT_AGENT
-				lien.supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				d.supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -3269,8 +3292,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				addZone(getNOM_ST_LIMITE_PERMIS(indicePermis), dateLimite);
 
 				// calcul du nb de docs
-				ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-						getAgentCourant(), "DONNEES PERSONNELLES", "PERM", p.getIdPermisAgent().toString());
+				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+						Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "PERM",
+						p.getIdPermisAgent());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -3741,9 +3765,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDocumentsDiplome(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents du diplome
-		ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-				getAgentCourant(), "DONNEES PERSONNELLES", "DIP", getDiplomeAgentCourant().getIdDiplome());
+		ArrayList<Document> listeDoc = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+				Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "DIP",
+				Integer.valueOf(getDiplomeAgentCourant().getIdDiplome()));
 		setListeDocuments(listeDoc);
 
 		int indiceActeVM = 0;
@@ -3754,7 +3780,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						: doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -3769,11 +3795,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDocumentsFormation(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de la formation
 		if (getFormationAgentCourant().getIdFormation() != null) {
-			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-					getAgentCourant(), "DONNEES PERSONNELLES", "FORM", getFormationAgentCourant().getIdFormation()
-							.toString());
+			ArrayList<Document> listeDoc = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+					Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "FORM",
+					getFormationAgentCourant().getIdFormation());
 			setListeDocuments(listeDoc);
 		}
 
@@ -3785,7 +3812,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						: doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -3800,11 +3827,12 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDocumentsPermis(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents du permis
 		if (getPermisAgentCourant().getIdPermisAgent() != null) {
-			ArrayList<Document> listeDoc = LienDocumentAgent.listerLienDocumentAgentTYPE(getTransaction(),
-					getAgentCourant(), "DONNEES PERSONNELLES", "PERM", getPermisAgentCourant().getIdPermisAgent()
-							.toString());
+			ArrayList<Document> listeDoc = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
+					Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "PERM",
+					getPermisAgentCourant().getIdPermisAgent());
 			setListeDocuments(listeDoc);
 		}
 
@@ -3816,7 +3844,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 						: doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -3844,11 +3872,11 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		return getZone(getNOM_ST_ACTION_DOCUMENT());
 	}
 
-	public LienDocumentAgent getLienDocument() {
+	public DocumentAgent getLienDocument() {
 		return lienDocument;
 	}
 
-	public void setLienDocument(LienDocumentAgent lienDocument) {
+	public void setLienDocument(DocumentAgent lienDocument) {
 		this.lienDocument = lienDocument;
 	}
 
@@ -3926,18 +3954,18 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	}
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-				.getIdAgent(), getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
 		setLienDocument(lda);
 
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
 		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), sdf.format(d.getDateDocument()));
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
@@ -4035,9 +4063,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		} else {
 			if (getZone(getNOM_ST_ACTION_DOCUMENT()).equals(ACTION_DOCUMENT_SUPPRESSION)) {
 				// suppression dans table DOCUMENT_AGENT
-				getLienDocument().supprimerLienDocumentAgent(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocument().getIdAgent(),
+						getLienDocument().getIdDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentCourant().supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -4209,5 +4238,21 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

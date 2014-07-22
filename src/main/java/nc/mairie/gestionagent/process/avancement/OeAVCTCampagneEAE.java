@@ -33,6 +33,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvalueDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -91,6 +92,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	private EaeEvalueDao eaeEvalueDao;
 
 	private TypeDocumentDao typeDocumentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -156,6 +158,9 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		}
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1280,6 +1285,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	}
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
@@ -1291,7 +1297,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
 		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), sdf.format(d.getDateDocument()));
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
@@ -1397,7 +1403,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 				// suppression dans table EAE_DOCUMENT
 				getEaeDocumentDao().supprimerEaeDocument(getLienEaeDocument().getIdEaeDocument());
 				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentCourant().supprimerDocument(getTransaction());
+				getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -1452,16 +1458,19 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// on crée le document en base de données
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
-		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument().toString());
+		getDocumentCourant().setIdTypeDocument(td.getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
 		setLienEaeDocument(new EaeDocument());
 		getLienEaeDocument().setIdCampagneEae(camp.getIdCampagneEae());
-		getLienEaeDocument().setIdDocument(Integer.valueOf(getDocumentCourant().getIdDocument()));
+		getLienEaeDocument().setIdDocument(id);
 		getLienEaeDocument().setTypeDocument(codTypeDoc);
 		getEaeDocumentDao().creerEaeDocument(getLienEaeDocument().getIdCampagneEae(), null,
 				getLienEaeDocument().getIdDocument(), getLienEaeDocument().getTypeDocument());
@@ -1636,6 +1645,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeDocuments(HttpServletRequest request) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		// Recherche des documents de la campagne
 
@@ -1644,7 +1654,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		setListeDocuments(new ArrayList<Document>());
 		for (int i = 0; i < listeDoc.size(); i++) {
 			EaeDocument lien = listeDoc.get(i);
-			Document d = Document.chercherDocumentById(getTransaction(), lien.getIdDocument().toString());
+			Document d = getDocumentDao().chercherDocumentById(lien.getIdDocument());
 			getListeDocuments().add(d);
 		}
 
@@ -1656,7 +1666,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 						: doc.getNomDocument());
 				addZone(getNOM_ST_NOM_ORI_DOC(indiceActeVM),
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
-				addZone(getNOM_ST_DATE_DOC(indiceActeVM), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActeVM), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActeVM), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 
@@ -1752,5 +1762,13 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

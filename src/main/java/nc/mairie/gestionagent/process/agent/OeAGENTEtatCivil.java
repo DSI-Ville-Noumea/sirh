@@ -29,6 +29,7 @@ import nc.mairie.metier.referentiel.Collectivite;
 import nc.mairie.metier.referentiel.EtatServiceMilitaire;
 import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.CollectiviteDao;
 import nc.mairie.spring.dao.metier.referentiel.EtatServiceMilitaireDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -101,6 +102,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	private CollectiviteDao collectiviteDao;
 	private EtatServiceMilitaireDao etatServiceMilitaireDao;
+	private DocumentDao documentDao;
 
 	// Fin gestion des contacts
 	public String getMessage() {
@@ -2215,6 +2217,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getEtatServiceMilitaireDao() == null) {
 			setEtatServiceMilitaireDao(new EtatServiceMilitaireDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -2385,15 +2390,20 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// zones de l'agent directement
 		// //////////////////////////////////////////////////////////////////////////////////////
 		addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
-		Document doc = Document.chercherDocumentParTypeEtAgent(getTransaction(), "PHO", getAgentCourant().getIdAgent());
-		String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-		if (doc != null) {
-			if (new File(repPartage + doc.getLienDocument()).exists()) {
-				String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
-				addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
-			} else {
-				addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
+		try {
+			Document doc = getDocumentDao().chercherDocumentParTypeEtAgent("PHO",
+					Integer.valueOf(getAgentCourant().getIdAgent()));
+			String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+			if (doc != null) {
+				if (new File(repPartage + doc.getLienDocument()).exists()) {
+					String repPartageLecture = (String) ServletAgent.getMesParametres().get("REPERTOIRE_LECTURE");
+					addZone(getNOM_ST_PHOTO(), repPartageLecture + doc.getLienDocument());
+				} else {
+					addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
+				}
 			}
+		} catch (Exception e) {
+			addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
 		}
 
 		addZone(getNOM_LB_CIVILITE_SELECT(), getAgentCourant().getCivilite());
@@ -4531,5 +4541,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	public void setEtatServiceMilitaireDao(EtatServiceMilitaireDao etatServiceMilitaireDao) {
 		this.etatServiceMilitaireDao = etatServiceMilitaireDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.hsct.Inaptitude;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.Medecin;
@@ -16,6 +15,7 @@ import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.TypeInaptitude;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
@@ -87,6 +87,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private TypeATDao typeATDao;
 	private TypeInaptitudeDao typeInaptitudeDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -196,6 +197,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2568,7 +2572,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// document agent
 
 		if (getVAL_ST_ACTION_TYPE_DOCUMENT().equals(ACTION_SUPPRESSION)
-				&& Document.listerDocument(getTransaction(), getTypeDocumentCourant()).size() > 0) {
+				&& getDocumentDao().listerDocumentAvecType(getTypeDocumentCourant().getIdTypeDocument()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2743,5 +2747,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
 		this.visiteMedicaleDao = visiteMedicaleDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

@@ -18,10 +18,12 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.MotifDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -87,6 +89,8 @@ public class OeAGENTContrat extends BasicProcess {
 
 	private MotifDao motifDao;
 	private TypeContratDao typeContratDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -878,6 +882,12 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getTypeContratDao() == null) {
 			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1442,12 +1452,11 @@ public class OeAGENTContrat extends BasicProcess {
 
 	private boolean verifieExistFichier(String idContrat) throws Exception {
 		// on regarde si le fichier existe
-		Document.chercherDocumentByContainsNom(getTransaction(), "C_" + idContrat);
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
+		try {
+			getDocumentDao().chercherDocumentByContainsNom("C_" + idContrat);
+		} catch (Exception e) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -1479,17 +1488,16 @@ public class OeAGENTContrat extends BasicProcess {
 
 		// si le fichier existe alors on supprime l'entrée où il y a le fichier
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
-			Document d = Document.chercherDocumentByContainsNom(getTransaction(), "C_"
-					+ getContratCourant().getIdContrat());
-			LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-					.getIdAgent(), d.getIdDocument());
+			Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + getContratCourant().getIdContrat());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
 			}
-			l.supprimerLienDocumentAgent(getTransaction());
-			d.supprimerDocument(getTransaction());
+			getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+			getDocumentDao().supprimerDocument(d.getIdDocument());
 		}
 
 		if (!getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratCourant().getIdTypeContrat()))
@@ -1513,17 +1521,18 @@ public class OeAGENTContrat extends BasicProcess {
 			// Tout s'est bien passé
 			// on crée le document en base de données
 			Document d = new Document();
-			d.setIdTypeDocument("2");
+			d.setIdTypeDocument(2);
 			d.setLienDocument(destination);
 			d.setNomDocument("C_" + getContratCourant().getIdContrat() + ".doc");
-			d.setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+			d.setDateDocument(new Date());
 			d.setCommentaire("Document généré par l'application");
-			d.creerDocument(getTransaction());
+			Integer id = getDocumentDao().creerDocument(d.getClasseDocument(), d.getNomDocument(), d.getLienDocument(),
+					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
-			LienDocumentAgent lda = new LienDocumentAgent();
-			lda.setIdAgent(getAgentCourant().getIdAgent());
-			lda.setIdDocument(d.getIdDocument());
-			lda.creerLienDocumentAgent(getTransaction());
+			DocumentAgent lda = new DocumentAgent();
+			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdDocument(id);
+			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
 			if (getTransaction().isErreur())
 				return false;
@@ -2098,5 +2107,21 @@ public class OeAGENTContrat extends BasicProcess {
 
 	public void setTypeContratDao(TypeContratDao typeContratDao) {
 		this.typeContratDao = typeContratDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 }

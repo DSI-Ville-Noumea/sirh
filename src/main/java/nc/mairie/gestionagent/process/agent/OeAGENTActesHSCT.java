@@ -22,7 +22,7 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Document;
-import nc.mairie.metier.agent.LienDocumentAgent;
+import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.hsct.AccidentTravail;
 import nc.mairie.metier.hsct.Handicap;
 import nc.mairie.metier.hsct.Medecin;
@@ -32,6 +32,8 @@ import nc.mairie.metier.hsct.TypeAT;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
+import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
@@ -72,7 +74,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	public String focus = null;
 	private AgentNW agentCourant;
 	private Document documentCourant;
-	private LienDocumentAgent lienDocumentAgentCourant;
+	private DocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
 
 	private ArrayList<Document> listeDocuments;
@@ -102,6 +104,8 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	private RecommandationDao recommandationDao;
 	private TypeATDao typeATDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
+	private DocumentAgentDao lienDocumentAgentDao;
+	private DocumentDao documentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -179,6 +183,12 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getLienDocumentAgentDao() == null) {
+			setLienDocumentAgentDao(new DocumentAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDocumentDao() == null) {
+			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -212,8 +222,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						Medecin medecin = getMedecinDao().chercherMedecin(vm.getIdMedecin());
 						Recommandation recom = null;
 						if (vm != null && vm.getIdRecommandation() != null) {
-							recom = getRecommandationDao().chercherRecommandation(
-									vm.getIdRecommandation());
+							recom = getRecommandationDao().chercherRecommandation(vm.getIdRecommandation());
 						}
 						String ligne[] = { sdf.format(vm.getDateDerniereVisite()), medecin.getNomMedecin(),
 								recom == null ? Const.CHAINE_VIDE : recom.getDescRecommandation() };
@@ -423,40 +432,40 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		} else {
 			if (ajoutAT) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "AT_" + at.getIdAt());
-				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-						.getIdAgent(), d.getIdDocument());
+				Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
-				l.supprimerLienDocumentAgent(getTransaction());
-				d.supprimerDocument(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutVM) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "VM_" + vm.getIdVisite());
-				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-						.getIdAgent(), d.getIdDocument());
+				Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
-				l.supprimerLienDocumentAgent(getTransaction());
-				d.supprimerDocument(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 			} else if (ajoutHandi) {
 				// on supprime le document existant dans la base de données
-				Document d = Document.chercherDocumentByContainsNom(getTransaction(), "HANDI_" + handi.getIdHandicap());
-				LienDocumentAgent l = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-						.getIdAgent(), d.getIdDocument());
+				Document d = getDocumentDao().chercherDocumentByContainsNom("HANDI_" + handi.getIdHandicap());
+				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
 					f.delete();
 				}
-				l.supprimerLienDocumentAgent(getTransaction());
-				d.supprimerDocument(getTransaction());
+				getLienDocumentAgentDao().supprimerDocumentAgent(l.getIdAgent(), l.getIdDocument());
+				getDocumentDao().supprimerDocument(d.getIdDocument());
 			}
 			if (!creeDocument(request, ajoutAT, at, ajoutVM, vm, ajoutHandi, handi)) {
 				addZone(getNOM_ST_WARNING(), Const.CHAINE_VIDE);
@@ -518,17 +527,21 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		// ServletAgent.getMesParametres().get("REPERTOIRE_ACTES");
 		getDocumentCourant().setLienDocument(codTypeDoc + "/" + nom);
 		getDocumentCourant().setIdTypeDocument(
-				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument().toString());
+				((TypeDocument) getListeTypeDocument().get(indiceTypeDoc - 1)).getIdTypeDocument());
 		getDocumentCourant().setNomOriginal(fichierUpload.getName());
 		getDocumentCourant().setNomDocument(nom);
-		getDocumentCourant().setDateDocument(new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString());
+		getDocumentCourant().setDateDocument(new Date());
 		getDocumentCourant().setCommentaire(getZone(getNOM_EF_COMMENTAIRE()));
-		getDocumentCourant().creerDocument(getTransaction());
+		Integer id = getDocumentDao().creerDocument(getDocumentCourant().getClasseDocument(),
+				getDocumentCourant().getNomDocument(), getDocumentCourant().getLienDocument(),
+				getDocumentCourant().getDateDocument(), getDocumentCourant().getCommentaire(),
+				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
-		setLienDocumentAgentCourant(new LienDocumentAgent());
-		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
-		getLienDocumentAgentCourant().setIdDocument(getDocumentCourant().getIdDocument());
-		getLienDocumentAgentCourant().creerLienDocumentAgent(getTransaction());
+		setLienDocumentAgentCourant(new DocumentAgent());
+		getLienDocumentAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocumentAgentCourant().setIdDocument(id);
+		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
+				getLienDocumentAgentCourant().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -761,16 +774,15 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
-		ArrayList<Document> listeDocAgent = LienDocumentAgent.listerLienDocumentAgent(getTransaction(),
-				getAgentCourant(), Const.CHAINE_VIDE, "HSCT");
+		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgent(getLienDocumentAgentDao(),
+				Integer.valueOf(getAgentCourant().getIdAgent()), Const.CHAINE_VIDE, "HSCT");
 		setListeDocuments(listeDocAgent);
 
 		int indiceActe = 0;
 		if (getListeDocuments() != null) {
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document doc = (Document) getListeDocuments().get(i);
-				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
-						Integer.valueOf(doc.getIdTypeDocument()));
+				TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(doc.getIdTypeDocument());
 				String info = "&nbsp;";
 				if (td.getCodTypeDocument().equals("VM")) {
 					String nomDoc = doc.getNomDocument();
@@ -811,7 +823,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 						doc.getNomOriginal() == null ? "&nbsp;" : doc.getNomOriginal());
 				addZone(getNOM_ST_TYPE_DOC(indiceActe), td.getLibTypeDocument().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: td.getLibTypeDocument());
-				addZone(getNOM_ST_DATE_DOC(indiceActe), doc.getDateDocument());
+				addZone(getNOM_ST_DATE_DOC(indiceActe), sdf.format(doc.getDateDocument()));
 				addZone(getNOM_ST_COMMENTAIRE(indiceActe), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
 				addZone(getNOM_ST_INFO(indiceActe), info);
@@ -871,14 +883,13 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	}
 
 	private boolean initialiseDocumentSuppression(HttpServletRequest request) throws Exception {
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(
-				Integer.valueOf(d.getIdTypeDocument()));
-		LienDocumentAgent lda = LienDocumentAgent.chercherLienDocumentAgent(getTransaction(), getAgentCourant()
-				.getIdAgent(), getDocumentCourant().getIdDocument());
+		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(d.getIdTypeDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -888,13 +899,13 @@ public class OeAGENTActesHSCT extends BasicProcess {
 		addZone(getNOM_ST_NOM_DOC(), d.getNomDocument());
 		addZone(getNOM_ST_NOM_ORI_DOC(), d.getNomOriginal());
 		addZone(getNOM_ST_TYPE_DOC(), td.getLibTypeDocument());
-		addZone(getNOM_ST_DATE_DOC(), d.getDateDocument());
+		addZone(getNOM_ST_DATE_DOC(), sdf.format(d.getDateDocument()));
 		addZone(getNOM_ST_COMMENTAIRE_DOC(), d.getCommentaire());
 
 		return true;
 	}
 
-	private LienDocumentAgent getLienDocumentAgentCourant() {
+	private DocumentAgent getLienDocumentAgentCourant() {
 		return lienDocumentAgentCourant;
 	}
 
@@ -904,7 +915,7 @@ public class OeAGENTActesHSCT extends BasicProcess {
 	 * @param documentCourant
 	 *            Nouvelle document en cours
 	 */
-	private void setLienDocumentAgentCourant(LienDocumentAgent lienDocumentAgentCourant) {
+	private void setLienDocumentAgentCourant(DocumentAgent lienDocumentAgentCourant) {
 		this.lienDocumentAgentCourant = lienDocumentAgentCourant;
 	}
 
@@ -945,9 +956,10 @@ public class OeAGENTActesHSCT extends BasicProcess {
 			return false;
 		}
 		// suppression dans table DOCUMENT_AGENT
-		getLienDocumentAgentCourant().supprimerLienDocumentAgent(getTransaction());
+		getLienDocumentAgentDao().supprimerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
+				getLienDocumentAgentCourant().getIdDocument());
 		// Suppression dans la table DOCUMENT_ASSOCIE
-		getDocumentCourant().supprimerDocument(getTransaction());
+		getDocumentDao().supprimerDocument(getDocumentCourant().getIdDocument());
 
 		if (getTransaction().isErreur())
 			return false;
@@ -1577,6 +1589,22 @@ public class OeAGENTActesHSCT extends BasicProcess {
 
 	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
 		this.visiteMedicaleDao = visiteMedicaleDao;
+	}
+
+	public DocumentAgentDao getLienDocumentAgentDao() {
+		return lienDocumentAgentDao;
+	}
+
+	public void setLienDocumentAgentDao(DocumentAgentDao lienDocumentAgentDao) {
+		this.lienDocumentAgentDao = lienDocumentAgentDao;
+	}
+
+	public DocumentDao getDocumentDao() {
+		return documentDao;
+	}
+
+	public void setDocumentDao(DocumentDao documentDao) {
+		this.documentDao = documentDao;
 	}
 
 }
