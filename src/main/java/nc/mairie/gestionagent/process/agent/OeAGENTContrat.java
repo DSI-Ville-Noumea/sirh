@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +21,9 @@ import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.LienDocumentAgent;
 import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.TypeContrat;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.referentiel.MotifDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -34,6 +38,7 @@ import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 
 import com.sun.jersey.api.client.Client;
@@ -78,6 +83,8 @@ public class OeAGENTContrat extends BasicProcess {
 	private String urlFichier;
 
 	String messageInfo = null;
+
+	private MotifDao motifDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -249,7 +256,7 @@ public class OeAGENTContrat extends BasicProcess {
 			getContratCourant().setDateDebut(newDateDebut);
 			getContratCourant().setDateFinPeriodeEssai(newDateFinPeriodeEssai);
 			getContratCourant().setDateFin(newDateFin);
-			getContratCourant().setIdMotif(newMotif.getIdMotif());
+			getContratCourant().setIdMotif(newMotif.getIdMotif().toString());
 			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat());
 			getContratCourant().setJustification(newJustification);
 
@@ -860,6 +867,14 @@ public class OeAGENTContrat extends BasicProcess {
 		this.focus = focus;
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getMotifDao() == null) {
+			setMotifDao(new MotifDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -881,6 +896,8 @@ public class OeAGENTContrat extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+
+		initialiseDao();
 
 		// Motifs
 		initialiseListeMotif(request);
@@ -1031,12 +1048,18 @@ public class OeAGENTContrat extends BasicProcess {
 	private void initialiseListeMotif(HttpServletRequest request) throws Exception {
 		// Si liste des motifs vide
 		if (getLB_MOTIF() == LBVide) {
-			ArrayList<Motif> a = Motif.listerMotif(getTransaction());
+			ArrayList<Motif> a = (ArrayList<Motif>) getMotifDao().listerMotif();
 			setListeMotif(a);
 
 			int[] tailles = { 50 };
-			String[] champs = { "libMotif" };
-			setLB_MOTIF(new FormateListe(tailles, a, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<Motif> list = getListeMotif().listIterator(); list.hasNext();) {
+				Motif fili = (Motif) list.next();
+				String ligne[] = { fili.getLibMotif() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_MOTIF(aFormat.getListeFormatee());
 			addZone(getNOM_ST_MOTIF(), ((Motif) getListeMotif().get(0)).getLibMotif());
 
 			// Si hashtable des motifs vide
@@ -1044,7 +1067,7 @@ public class OeAGENTContrat extends BasicProcess {
 				// remplissage de la hashTable
 				for (int i = 0; i < a.size(); i++) {
 					Motif aMotif = (Motif) a.get(i);
-					getHashMotif().put(aMotif.getIdMotif(), aMotif);
+					getHashMotif().put(aMotif.getIdMotif().toString(), aMotif);
 				}
 			}
 			setMotifCourant(((Motif) getListeMotif().get(0)));
@@ -2048,5 +2071,13 @@ public class OeAGENTContrat extends BasicProcess {
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public MotifDao getMotifDao() {
+		return motifDao;
+	}
+
+	public void setMotifDao(MotifDao motifDao) {
+		this.motifDao = motifDao;
 	}
 }
