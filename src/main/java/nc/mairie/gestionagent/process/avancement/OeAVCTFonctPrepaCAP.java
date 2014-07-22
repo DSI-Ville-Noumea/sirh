@@ -34,7 +34,6 @@ import nc.mairie.metier.parametrage.Cap;
 import nc.mairie.metier.parametrage.CorpsCap;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.EaeDao;
 import nc.mairie.spring.dao.SirhDao;
@@ -46,6 +45,7 @@ import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.CorpsCapDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -121,6 +121,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	private ArrayList<AvancementCapPrintJob> listeAvancementCapPrintJob;
 
+	private AutreAdministrationDao autreAdministrationDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -189,9 +191,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
-					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
-							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
-							+ " <br> " + av.getSectionService());
+					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
+							.chercherAutreAdministration(Integer.valueOf(av.getDirectionService())).getLibAutreAdmin()
+							: av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
@@ -446,6 +448,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		if (getMotifAvancementDao() == null) {
 			setMotifAvancementDao(new MotifAvancementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2155,5 +2160,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public void setMotifAvancementDao(MotifAvancementDao motifAvancementDao) {
 		this.motifAvancementDao = motifAvancementDao;
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }

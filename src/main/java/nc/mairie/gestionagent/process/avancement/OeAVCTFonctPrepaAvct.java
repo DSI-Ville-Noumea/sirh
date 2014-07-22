@@ -22,10 +22,11 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.eae.CampagneEAE;
 import nc.mairie.metier.eae.EAE;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -70,22 +71,7 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	private EaeEAEDao eaeDao;
 	private CampagneEAEDao campagneEAEDao;
-
-	public EaeEAEDao getEAEDao() {
-		return eaeDao;
-	}
-
-	public void setEAEDao(EaeEAEDao eaeDao) {
-		this.eaeDao = eaeDao;
-	}
-
-	public CampagneEAEDao getCampagneEAEDao() {
-		return campagneEAEDao;
-	}
-
-	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
-		this.campagneEAEDao = campagneEAEDao;
-	}
+	private AutreAdministrationDao autreAdministrationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -176,9 +162,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
-					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
-							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
-							+ " <br> " + av.getSectionService());
+					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
+							.chercherAutreAdministration(Integer.valueOf(av.getDirectionService())).getLibAutreAdmin()
+							: av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
@@ -237,6 +223,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 		if (getCampagneEAEDao() == null) {
 			setCampagneEAEDao(new CampagneEAEDao((EaeDao) context.getBean("eaeDao")));
+		}
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1275,5 +1264,29 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	public String getVAL_ST_PA(int i) {
 		return getZone(getNOM_ST_PA(i));
+	}
+
+	public EaeEAEDao getEAEDao() {
+		return eaeDao;
+	}
+
+	public void setEAEDao(EaeEAEDao eaeDao) {
+		this.eaeDao = eaeDao;
+	}
+
+	public CampagneEAEDao getCampagneEAEDao() {
+		return campagneEAEDao;
+	}
+
+	public void setCampagneEAEDao(CampagneEAEDao campagneEAEDao) {
+		this.campagneEAEDao = campagneEAEDao;
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }

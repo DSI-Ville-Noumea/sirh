@@ -79,6 +79,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhKiosqueWSConsumer;
@@ -159,6 +160,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private String message;
 	private String urlFichier;
+
+	private AutreAdministrationDao autreAdministrationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -829,6 +832,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getTitreDiplomeDao() == null) {
 			setTitreDiplomeDao(new TitreDiplomeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2325,8 +2331,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				.listerAutreAdministrationAgentAvecAgent(getTransaction(), ag);
 		for (int i = 0; i < listAutreAdmin.size(); i++) {
 			AutreAdministrationAgent admAgent = listAutreAdmin.get(i);
-			AutreAdministration administration = AutreAdministration.chercherAutreAdministration(getTransaction(),
-					admAgent.getIdAutreAdmin());
+			AutreAdministration administration = getAutreAdministrationDao().chercherAutreAdministration(
+					Integer.valueOf(admAgent.getIdAutreAdmin()));
 			if (admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
 					|| admAgent.getDateSortie().equals(Const.DATE_NULL)) {
 				// on crée une ligne pour administration
@@ -3984,5 +3990,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setTitreDiplomeDao(TitreDiplomeDao titreDiplomeDao) {
 		this.titreDiplomeDao = titreDiplomeDao;
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }

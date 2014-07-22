@@ -11,12 +11,17 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.referentiel.AutreAdministration;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTCONTACTGestion Date de création : (11/02/03 14:20:31)
@@ -36,12 +41,14 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private String ACTION_CREATION = "Création d'une administration.";
 
 	private AgentNW AgentCourant;
-	private Hashtable<String, AutreAdministration> hashAdministration;
+	private Hashtable<Integer, AutreAdministration> hashAdministration;
 	private ArrayList<AutreAdministrationAgent> listeAgentAdministrations;
 	private ArrayList<AutreAdministration> listeAdministrations;
 	private AutreAdministrationAgent autreAdministrationAgentCourant;
 	private AutreAdministration autreAdministrationCourant;
 	public String focus = null;
+
+	private AutreAdministrationDao autreAdministrationDao;
 
 	/**
 	 * Constructeur du process OeAGENTCONTACTGestion. Date de création :
@@ -78,9 +85,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	 * 
 	 * @return Hashtable
 	 */
-	private Hashtable<String, AutreAdministration> getHashAdministration() {
+	private Hashtable<Integer, AutreAdministration> getHashAdministration() {
 		if (hashAdministration == null) {
-			hashAdministration = new Hashtable<String, AutreAdministration>();
+			hashAdministration = new Hashtable<Integer, AutreAdministration>();
 		}
 		return hashAdministration;
 	}
@@ -291,7 +298,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private void initialiseFenetre(HttpServletRequest request) throws Exception {
 
 		// Recherche des administrations de l'agent
-		ArrayList<AutreAdministrationAgent> a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<AutreAdministrationAgent> a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(
+				getTransaction(), getAgentCourant());
 		setListeAgentAdministrations(a);
 
 		// Init de la liste des administrations de l'agent
@@ -314,16 +322,20 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		int indiceAdministration = 0;
 		if (getListeAgentAdministrations() != null) {
 			for (int i = 0; i < getListeAgentAdministrations().size(); i++) {
-				AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) getListeAgentAdministrations().get(i);
-				AutreAdministration aAdministration = (AutreAdministration) AutreAdministration.chercherAutreAdministration(getTransaction(),
-						aAdministrationAgent.getIdAutreAdmin());
+				AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) getListeAgentAdministrations()
+						.get(i);
+				AutreAdministration aAdministration = getAutreAdministrationDao().chercherAutreAdministration(
+						Integer.valueOf(aAdministrationAgent.getIdAutreAdmin()));
 
-				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration), aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: aAdministration.getLibAutreAdmin());
-				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration), aAdministrationAgent.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
+				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration),
+						aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aAdministration
+								.getLibAutreAdmin());
+				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration),
+						aAdministrationAgent.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
 				addZone(getNOM_ST_DATE_ENTREE(indiceAdministration), aAdministrationAgent.getDateEntree());
 				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration), aAdministrationAgent.getDateSortie() == null
-						|| aAdministrationAgent.getDateSortie().equals(Const.DATE_NULL) ? "&nbsp;" : aAdministrationAgent.getDateSortie());
+						|| aAdministrationAgent.getDateSortie().equals(Const.DATE_NULL) ? "&nbsp;"
+						: aAdministrationAgent.getDateSortie());
 
 				indiceAdministration++;
 			}
@@ -351,14 +363,16 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " "
-						+ getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " "
+						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
+						+ getAgentCourant().getPrenomAgent());
 
 				// initialisation fenêtre si changement de l'agent
 				initialiseFenetre(request);
@@ -371,12 +385,21 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 		// Si liste des administrations vide ou si statut gestion admin
 		if (getLB_ADMINISTRATION() == LBVide) {
-			ArrayList<AutreAdministration> a = AutreAdministration.listerAutreAdministration(getTransaction());
+			ArrayList<AutreAdministration> a = getAutreAdministrationDao().listerAutreAdministration();
 			setListeAdministrations(a);
 
-			int[] tailles = { 50 };
-			String[] champs = { "libAutreAdmin" };
-			setLB_ADMINISTRATION(new FormateListe(tailles, a, champs).getListeFormatee());
+			if (getListeAdministrations().size() != 0) {
+				int[] tailles = { 50 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<AutreAdministration> list = getListeAdministrations().listIterator(); list.hasNext();) {
+					AutreAdministration de = (AutreAdministration) list.next();
+					String ligne[] = { de.getLibAutreAdmin() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_ADMINISTRATION(aFormat.getListeFormatee());
+			} else {
+				setLB_ADMINISTRATION(null);
+			}
 
 			// Remplissage de la hashtable des types de administrations.
 			for (ListIterator<AutreAdministration> list = a.listIterator(); list.hasNext();) {
@@ -385,6 +408,14 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			}
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -473,7 +504,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 			// Affectation des attributs
 			getAutreAdministrationAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
-			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin());
+			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin().toString());
 			getAutreAdministrationAgentCourant().setDateEntree(newDateDeb);
 			getAutreAdministrationAgentCourant().setDateSortie(newDateFin);
 
@@ -547,7 +578,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	 */
 	public boolean performControlerRG() throws Exception {
 
-		for (ListIterator<AutreAdministrationAgent> list = getListeAgentAdministrations().listIterator(); list.hasNext();) {
+		for (ListIterator<AutreAdministrationAgent> list = getListeAgentAdministrations().listIterator(); list
+				.hasNext();) {
 			AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) list.next();
 			if (!aAdministrationAgent.getIdAutreAdmin().equals(getAutreAdministrationAgentCourant().getIdAutreAdmin())) {
 				if (Services.compareDates(getVAL_EF_DATE_FIN(), aAdministrationAgent.getDateEntree()) >= 0
@@ -922,14 +954,15 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// Récup du administration courant
 		AutreAdministrationAgent c = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAModifier);
 		setAutreAdministrationAgentCourant(c);
-		AutreAdministration t = (AutreAdministration) getHashAdministration().get(c.getIdAutreAdmin());
+		AutreAdministration t = (AutreAdministration) getHashAdministration().get(Integer.valueOf(c.getIdAutreAdmin()));
 
 		// Alim zones
 		int ligneType = getListeAdministrations().indexOf(t);
 		addZone(getNOM_EF_DATE_DEBUT(), c.getDateEntree());
 		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(c.getDateSortie()) ? null : c.getDateSortie());
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), String.valueOf(ligneType));
-		addZone(getNOM_RG_FONCTIONNAIRE(), c.getFonctionnaire().equals(Const.ZERO) ? getNOM_RB_FONCTIONNAIRE_N() : getNOM_RB_FONCTIONNAIRE_O());
+		addZone(getNOM_RG_FONCTIONNAIRE(), c.getFonctionnaire().equals(Const.ZERO) ? getNOM_RB_FONCTIONNAIRE_N()
+				: getNOM_RB_FONCTIONNAIRE_O());
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -965,9 +998,11 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_CONSULTATION);
 
 		// Récup du administration courant
-		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAConsulter);
+		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations()
+				.get(indiceEltAConsulter);
 		setAutreAdministrationAgentCourant(ag);
-		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
+		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(
+				Integer.valueOf(ag.getIdAutreAdmin()));
 		setAutreAdministrationCourant(aa);
 
 		// Alim zones
@@ -1017,7 +1052,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// Récup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltASuprimer);
 		setAutreAdministrationAgentCourant(ag);
-		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
+		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(
+				Integer.valueOf(ag.getIdAutreAdmin()));
 		setAutreAdministrationCourant(aa);
 
 		// Alim zones
@@ -1032,5 +1068,13 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }

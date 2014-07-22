@@ -18,8 +18,10 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
@@ -29,6 +31,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTFonctionnaires Date de création : (21/11/11 09:55:36)
@@ -53,6 +57,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
+	private AutreAdministrationDao autreAdministrationDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -74,6 +80,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
@@ -88,6 +96,15 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		// Si liste avancements vide alors initialisation.
 		if (getListeAvct().size() == 0) {
 			agentEnErreur = Const.CHAINE_VIDE;
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -334,9 +351,9 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
-					Services.estNumerique(av.getDirectionService()) ? AutreAdministration.chercherAutreAdministration(
-							getTransaction(), av.getDirectionService()).getLibAutreAdmin() : av.getDirectionService()
-							+ " <br> " + av.getSectionService());
+					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
+							.chercherAutreAdministration(Integer.valueOf(av.getDirectionService())).getLibAutreAdmin()
+							: av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
 					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
 			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
@@ -1549,5 +1566,13 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 	public String getVAL_ST_MATRICULE(int i) {
 		return getZone(getNOM_ST_MATRICULE(i));
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }

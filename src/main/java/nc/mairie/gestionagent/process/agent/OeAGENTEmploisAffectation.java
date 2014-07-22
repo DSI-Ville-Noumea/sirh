@@ -2363,18 +2363,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 	}
 
-	private void initialiseDao_spec() {
-		// on initialise le dao
-		ApplicationContext context = ApplicationContextProvider.getContext();
-
-		if (getPrimePointageAffDao() == null) {
-			setPrimePointageAffDao(new PrimePointageAffDao((SirhDao) context.getBean("sirhDao")));
-		}
-		if (getPrimePointageFPDao() == null) {
-			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
-		}
-	}
-
 	private void initialiseDelegation_spec() throws Exception {
 		// Délégations
 		if (getListeDelegationFP() == null && getFichePosteCourant() != null
@@ -3014,7 +3002,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Init Motifs affectation et Tps de travail
 		initialiseListeDeroulante();
 
-		initialiseDao_spec();
 		initialiseListeDeroulante_spec();
 
 		initialiseListeSpecificites_spec();
@@ -3084,6 +3071,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getRegIndemnDao() == null) {
 			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getPrimePointageAffDao() == null) {
+			setPrimePointageAffDao(new PrimePointageAffDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getPrimePointageFPDao() == null) {
+			setPrimePointageFPDao(new PrimePointageFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 		if (getRubriqueDao() == null) {
 			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));

@@ -27,6 +27,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.parametrage.TitrePermisDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -87,6 +88,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private SpecialiteDiplomeDao specialiteDiplomeDao;
 	private TitreDiplomeDao titreDiplomeDao;
 	private TypeDocumentDao typeDocumentDao;
+	private AutreAdministrationDao autreAdministrationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -128,7 +130,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 		if (getListeAdmin() == null) {
 			// Recherche des qdministrations
-			ArrayList<AutreAdministration> listeAdmin = AutreAdministration.listerAutreAdministration(getTransaction());
+			ArrayList<AutreAdministration> listeAdmin = getAutreAdministrationDao().listerAutreAdministration();
 			setListeAdmin(listeAdmin);
 			initialiseListeAdmin(request);
 		}
@@ -189,6 +191,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationDao() == null) {
+			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -308,7 +313,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeAdmin(HttpServletRequest request) throws Exception {
-		setListeAdmin(AutreAdministration.listerAutreAdministration(getTransaction()));
+		setListeAdmin(getAutreAdministrationDao().listerAutreAdministration());
 		if (getListeAdmin().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -2179,13 +2184,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 			if (getVAL_ST_ACTION_ADMIN().equals(ACTION_CREATION)) {
 				setAdminCourante(new AutreAdministration());
 				getAdminCourante().setLibAutreAdmin(getVAL_EF_ADMIN());
-				getAdminCourante().creerAutreAdministration(getTransaction());
+				getAutreAdministrationDao().creerAutreAdministration(getAdminCourante().getLibAutreAdmin());
 				if (!getTransaction().isErreur())
 					getListeAdmin().add(getAdminCourante());
 				else
 					return false;
 			} else if (getVAL_ST_ACTION_ADMIN().equals(ACTION_SUPPRESSION)) {
-				getAdminCourante().supprimerAutreAdministration(getTransaction());
+				getAutreAdministrationDao().supprimerAutreAdministration(getAdminCourante().getIdAutreAdmin());
 				if (!getTransaction().isErreur())
 					getListeAdmin().remove(getAdminCourante());
 				else
@@ -2890,5 +2895,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public AutreAdministrationDao getAutreAdministrationDao() {
+		return autreAdministrationDao;
+	}
+
+	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
+		this.autreAdministrationDao = autreAdministrationDao;
 	}
 }
