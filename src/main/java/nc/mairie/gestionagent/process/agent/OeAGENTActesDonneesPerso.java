@@ -32,6 +32,7 @@ import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -89,6 +90,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private Logger logger = LoggerFactory.getLogger(OeAGENTActesDonneesPerso.class);
 
 	private TypeDocumentDao typeDocumentDao;
+	private TypeContratDao typeContratDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -151,6 +153,9 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getTypeDocumentDao() == null) {
 			setTypeDocumentDao(new TypeDocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeContratDao() == null) {
+			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -182,7 +187,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator<Contrat> list = c.listIterator(); list.hasNext();) {
 						Contrat contrat = (Contrat) list.next();
-						TypeContrat tc = TypeContrat.chercherTypeContrat(getTransaction(), contrat.getIdTypeContrat());
+						TypeContrat tc = getTypeContratDao().chercherTypeContrat(
+								Integer.valueOf(contrat.getIdTypeContrat()));
 						String ligne[] = { contrat.getNumContrat(), tc.getLibTypeContrat(), contrat.getDateDebut() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -1604,6 +1610,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public void setTypeDocumentDao(TypeDocumentDao typeDocumentDao) {
 		this.typeDocumentDao = typeDocumentDao;
+	}
+
+	public TypeContratDao getTypeContratDao() {
+		return typeContratDao;
+	}
+
+	public void setTypeContratDao(TypeContratDao typeContratDao) {
+		this.typeContratDao = typeContratDao;
 	}
 
 }

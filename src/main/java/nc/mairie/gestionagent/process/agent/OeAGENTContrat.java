@@ -23,6 +23,7 @@ import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.referentiel.MotifDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -85,6 +86,7 @@ public class OeAGENTContrat extends BasicProcess {
 	String messageInfo = null;
 
 	private MotifDao motifDao;
+	private TypeContratDao typeContratDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -150,7 +152,7 @@ public class OeAGENTContrat extends BasicProcess {
 				addZone(getNOM_EF_JUSTIFICATION(), getContratReference().getJustification());
 				// on met la date de debut du contrat si CDD à datefin
 				// contratRef +1
-				if (TypeContrat.chercherTypeContrat(getTransaction(), getContratReference().getIdTypeContrat())
+				if (getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratReference().getIdTypeContrat()))
 						.getLibTypeContrat().equals("CDD")) {
 					addZone(getNOM_EF_DATE_DEB(),
 							Services.ajouteJours(Services.formateDate(getContratReference().getDateFin()), 1));
@@ -257,7 +259,7 @@ public class OeAGENTContrat extends BasicProcess {
 			getContratCourant().setDateFinPeriodeEssai(newDateFinPeriodeEssai);
 			getContratCourant().setDateFin(newDateFin);
 			getContratCourant().setIdMotif(newMotif.getIdMotif().toString());
-			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat());
+			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat().toString());
 			getContratCourant().setJustification(newJustification);
 
 			if (!performControlerChamps(request)) {
@@ -381,7 +383,7 @@ public class OeAGENTContrat extends BasicProcess {
 			// ************************************************************
 			// RG_AG_CON_C11 : date de fin obligatoire dans le cas d'un CDD
 			// ************************************************************
-			if (tc.getIdTypeContrat().equals(EnumTypeContrat.CDD.getCode())) {
+			if (tc.getIdTypeContrat() == EnumTypeContrat.CDD.getCode()) {
 				// ERR033 : La date de fin est obligatoire dans le cas d'un CDD.
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR033"));
 				setFocus(getNOM_EF_DATE_FIN());
@@ -424,7 +426,7 @@ public class OeAGENTContrat extends BasicProcess {
 		 * Si le contrat est un avenant
 		 */
 		if (getContratCourant().isAvenant()) {
-			if (getContratReference().getIdTypeContrat().equals(EnumTypeContrat.CDI.getCode())) {
+			if (getContratReference().getIdTypeContrat().equals(EnumTypeContrat.CDI.getCode().toString())) {
 				// le contrat reference est un CDI
 
 				if (Services.compareDates(getContratCourant().getDateDebut(), getContratReference().getDateDebut()) <= 0) {
@@ -873,6 +875,9 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getMotifDao() == null) {
 			setMotifDao(new MotifDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTypeContratDao() == null) {
+			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1019,19 +1024,25 @@ public class OeAGENTContrat extends BasicProcess {
 	private void initialiseListeTypeContrat(HttpServletRequest request) throws Exception {
 		// Si liste des type de contrat vide
 		if (getLB_TYPE_CONTRAT() == LBVide) {
-			ArrayList<TypeContrat> a = TypeContrat.listerTypeContrat(getTransaction());
+			ArrayList<TypeContrat> a = (ArrayList<TypeContrat>) getTypeContratDao().listerTypeContrat();
 			setListeTypeContrat(a);
 
 			int[] tailles = { 5 };
-			String[] champs = { "libTypeContrat" };
-			setLB_TYPE_CONTRAT(new FormateListe(tailles, a, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<TypeContrat> list = getListeTypeContrat().listIterator(); list.hasNext();) {
+				TypeContrat fili = (TypeContrat) list.next();
+				String ligne[] = { fili.getLibTypeContrat() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_CONTRAT(aFormat.getListeFormatee());
 
 			// Si hashtable des types contrat vide
 			if (getHashTypeContrat().size() == 0) {
 				// remplissage de la hashTable
 				for (int i = 0; i < a.size(); i++) {
 					TypeContrat aTypeContrat = (TypeContrat) a.get(i);
-					getHashTypeContrat().put(aTypeContrat.getIdTypeContrat(), aTypeContrat);
+					getHashTypeContrat().put(aTypeContrat.getIdTypeContrat().toString(), aTypeContrat);
 				}
 			}
 			setTypeContratCourant(((TypeContrat) getListeTypeContrat().get(0)));
@@ -1481,7 +1492,7 @@ public class OeAGENTContrat extends BasicProcess {
 			d.supprimerDocument(getTransaction());
 		}
 
-		if (!TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant().getIdTypeContrat())
+		if (!getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratCourant().getIdTypeContrat()))
 				.getLibTypeContrat().equals("CDD")) {
 			// "ERR034", "Une impression ne peut se faire que sur un CDD."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR034"));
@@ -2079,5 +2090,13 @@ public class OeAGENTContrat extends BasicProcess {
 
 	public void setMotifDao(MotifDao motifDao) {
 		this.motifDao = motifDao;
+	}
+
+	public TypeContratDao getTypeContratDao() {
+		return typeContratDao;
+	}
+
+	public void setTypeContratDao(TypeContratDao typeContratDao) {
+		this.typeContratDao = typeContratDao;
 	}
 }

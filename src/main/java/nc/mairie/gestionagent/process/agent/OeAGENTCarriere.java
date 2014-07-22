@@ -31,6 +31,7 @@ import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -103,6 +104,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	private MotifAvancementDao motifAvancementDao;
 	private MotifCarriereDao motifCarriereDao;
+	private TypeContratDao typeContratDao;
 
 	/**
 	 * Constructeur du process OeAGENTCarriere. Date de création : (05/09/11
@@ -169,6 +171,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getMotifCarriereDao() == null) {
 			setMotifCarriereDao(new MotifCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeContratDao() == null) {
+			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -611,8 +616,8 @@ public class OeAGENTCarriere extends BasicProcess {
 					getTransaction().traiterErreur();
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
-					TypeContrat typeContrat = TypeContrat.chercherTypeContrat(getTransaction(),
-							contrat.getIdTypeContrat());
+					TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
+							Integer.valueOf(contrat.getIdTypeContrat()));
 					addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 				} else {
 					addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
@@ -886,7 +891,8 @@ public class OeAGENTCarriere extends BasicProcess {
 				getTransaction().traiterErreur();
 			}
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = TypeContrat.chercherTypeContrat(getTransaction(), contrat.getIdTypeContrat());
+				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
+						Integer.valueOf(contrat.getIdTypeContrat()));
 				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 			} else
 				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
@@ -3187,7 +3193,8 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = TypeContrat.chercherTypeContrat(getTransaction(), contrat.getIdTypeContrat());
+				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
+						Integer.valueOf(contrat.getIdTypeContrat()));
 				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 			} else
 				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
@@ -3225,5 +3232,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setMotifCarriereDao(MotifCarriereDao motifCarriereDao) {
 		this.motifCarriereDao = motifCarriereDao;
+	}
+
+	public TypeContratDao getTypeContratDao() {
+		return typeContratDao;
+	}
+
+	public void setTypeContratDao(TypeContratDao typeContratDao) {
+		this.typeContratDao = typeContratDao;
 	}
 }

@@ -66,6 +66,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureFPDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -232,6 +233,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private RegIndemnFPDao regIndemnFPDao;
 	private RegIndemnAffDao regIndemnAffDao;
 	private TypeCompetenceDao typeCompetenceDao;
+	private TypeContratDao typeContratDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -474,6 +476,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getTypeCompetenceDao() == null) {
 			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeContratDao() == null) {
+			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -3430,8 +3435,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				setContratCourant(c);
 				if (getContratCourant() != null && getContratCourant().getIdTypeContrat() != null) {
-					setTypeContratCourant(TypeContrat.chercherTypeContrat(getTransaction(), getContratCourant()
-							.getIdTypeContrat()));
+					setTypeContratCourant(getTypeContratDao().chercherTypeContrat(
+							Integer.valueOf(getContratCourant().getIdTypeContrat())));
 				}
 			}
 
@@ -6607,5 +6612,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
 		this.typeCompetenceDao = typeCompetenceDao;
+	}
+
+	public TypeContratDao getTypeContratDao() {
+		return typeContratDao;
+	}
+
+	public void setTypeContratDao(TypeContratDao typeContratDao) {
+		this.typeContratDao = typeContratDao;
 	}
 }
