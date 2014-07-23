@@ -33,6 +33,7 @@ import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
+import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -126,6 +127,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	public String ACTION_MODIFICATION = "Modification.";
 
 	private CadreEmploiDao cadreEmploiDao;
+	private CadreEmploiFEDao cadreEmploiFEDao;
 	private CodeRomeDao codeRomeDao;
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
 	private DomaineEmploiDao domaineEmploiDao;
@@ -990,9 +992,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouveaux cadres emploi et suppression des anciens
 			for (int i = 0; i < getListeCadresEmploiAAjouter().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiAAjouter().get(i);
-				CadreEmploiFE cadreFE = new CadreEmploiFE(getFicheEmploiCourant().getIdFicheEmploi(), cadre
-						.getIdCadreEmploi().toString());
-				cadreFE.creerCadreEmploiFE(getTransaction());
+				CadreEmploiFE cadreFE = new CadreEmploiFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						cadre.getIdCadreEmploi());
+				getCadreEmploiFEDao().creerCadreEmploiFE(cadreFE.getIdFicheEmploi(), cadreFE.getIdCadreEmploi());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
@@ -1003,9 +1005,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCadresEmploiASupprimer().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiASupprimer().get(i);
-				CadreEmploiFE cadreFE = CadreEmploiFE.chercherCadreEmploiFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), cadre.getIdCadreEmploi());
-				cadreFE.supprimerCadreEmploiFE(getTransaction());
+				CadreEmploiFE cadreFE = getCadreEmploiFEDao().chercherCadreEmploiFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cadre.getIdCadreEmploi());
+				getCadreEmploiFEDao().supprimerCadreEmploiFE(cadreFE.getIdFicheEmploi(), cadreFE.getIdCadreEmploi());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
@@ -1215,7 +1217,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		result = result & CategorieFE.supprimerCategorieFEAvecFE(aTransaction, ficheEmploiCourant);
 
 		// Suppression des CadreEmploi
-		result = result & CadreEmploiFE.supprimerCadreEmploiFEAvecFE(aTransaction, ficheEmploiCourant);
+		getCadreEmploiFEDao().supprimerCadreEmploiFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// Suppression des NiveauEtude
 		result = result & NiveauEtudeFE.supprimerNiveauEtudeFEAvecFE(aTransaction, ficheEmploiCourant);
@@ -1267,7 +1269,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			getFicheEmploiCourant().setIdFamilleEmploi(
 					((FamilleEmploi) getListeFamille().get(indiceFamille)).getIdFamilleEmploi().toString());
 		}
-		
+
 		return true;
 	}
 
@@ -1378,6 +1380,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getAutreAppellationEmploiDao() == null) {
 			setAutreAppellationEmploiDao(new AutreAppellationEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCadreEmploiFEDao() == null) {
+			setCadreEmploiFEDao(new CadreEmploiFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1733,8 +1738,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseCadresEmploiMulti() throws Exception {
 		if (getListeCadresEmploiMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getTransaction(),
-					getFicheEmploiCourant()));
+			setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getCadreEmploiFEDao(),
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 		}
 
 		int tailles[] = { 100 };
@@ -2737,8 +2742,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
 						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
 				setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getTransaction(),
-						getFicheEmploiCourant()));
+				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getCadreEmploiFEDao(),
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 				setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
 				setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(getTransaction(),
 						getFicheEmploiCourant()));
@@ -3420,9 +3425,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les CadreEmploi
 			for (int i = 0; i < getListeCadresEmploiMulti().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiMulti().get(i);
-				CadreEmploiFE newCadreFE = new CadreEmploiFE(ficheDupliquee.getIdFicheEmploi(), cadre
-						.getIdCadreEmploi().toString());
-				newCadreFE.creerCadreEmploiFE(getTransaction());
+				CadreEmploiFE newCadreFE = new CadreEmploiFE(Integer.valueOf(ficheDupliquee.getIdFicheEmploi()),
+						cadre.getIdCadreEmploi());
+				getCadreEmploiFEDao().creerCadreEmploiFE(newCadreFE.getIdFicheEmploi(), newCadreFE.getIdCadreEmploi());
 			}
 			// Duplique les NiveauEtude
 			for (int i = 0; i < getListeNiveauEtudeMulti().size(); i++) {
@@ -4204,5 +4209,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setAutreAppellationEmploiDao(AutreAppellationEmploiDao autreAppellationEmploiDao) {
 		this.autreAppellationEmploiDao = autreAppellationEmploiDao;
+	}
+
+	public CadreEmploiFEDao getCadreEmploiFEDao() {
+		return cadreEmploiFEDao;
+	}
+
+	public void setCadreEmploiFEDao(CadreEmploiFEDao cadreEmploiFEDao) {
+		this.cadreEmploiFEDao = cadreEmploiFEDao;
 	}
 }

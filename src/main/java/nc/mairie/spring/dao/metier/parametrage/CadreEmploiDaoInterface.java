@@ -3,8 +3,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 import java.util.ArrayList;
 
 import nc.mairie.metier.parametrage.CadreEmploi;
-import nc.mairie.metier.poste.FicheEmploi;
-import nc.mairie.technique.Transaction;
+import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 
 public interface CadreEmploiDaoInterface {
 
@@ -18,7 +17,7 @@ public interface CadreEmploiDaoInterface {
 
 	public CadreEmploi chercherCadreEmploiByLib(String libCadreEmploi) throws Exception;
 
-	public ArrayList<CadreEmploi> listerCadreEmploiAvecFicheEmploi(Transaction aTransaction, FicheEmploi ficheEmploi)
-			throws Exception;
+	public ArrayList<CadreEmploi> listerCadreEmploiAvecFicheEmploi(CadreEmploiFEDao cadreEmploiFEDao,
+			Integer idFicheEmploi) throws Exception;
 
 }

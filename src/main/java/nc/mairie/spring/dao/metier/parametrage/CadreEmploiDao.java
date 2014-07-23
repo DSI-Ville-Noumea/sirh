@@ -6,10 +6,8 @@ import java.util.Map;
 
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.poste.CadreEmploiFE;
-import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.SirhDao;
-import nc.mairie.technique.MairieMessages;
-import nc.mairie.technique.Transaction;
+import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
@@ -67,28 +65,22 @@ public class CadreEmploiDao extends SirhDao implements CadreEmploiDaoInterface {
 	}
 
 	@Override
-	public ArrayList<CadreEmploi> listerCadreEmploiAvecFicheEmploi(Transaction aTransaction, FicheEmploi ficheEmploi)
-			throws Exception {
-		// Test du paramètre FicheEmploi
-		if (ficheEmploi == null || ficheEmploi.getIdFicheEmploi() == null) {
-			aTransaction.declarerErreur(MairieMessages.getMessage("ERR003", "FicheEmploi"));
-			return new ArrayList<CadreEmploi>();
-		}
+	public ArrayList<CadreEmploi> listerCadreEmploiAvecFicheEmploi(CadreEmploiFEDao cadreEmploiFEDao,
+			Integer idFicheEmploi) throws Exception {
 
 		// Recherche de tous les liens FicheEmploi / Cadre emploi
-		ArrayList<CadreEmploiFE> liens = CadreEmploiFE.listerCadreEmploiFEAvecFicheEmploi(aTransaction,
-				ficheEmploi.getIdFicheEmploi());
-		if (aTransaction.isErreur())
-			return new ArrayList<CadreEmploi>();
+		ArrayList<CadreEmploiFE> liens = cadreEmploiFEDao.listerCadreEmploiFEAvecFicheEmploi(idFicheEmploi);
 
 		// Construction de la liste
 		ArrayList<CadreEmploi> result = new ArrayList<CadreEmploi>();
 		for (int i = 0; i < liens.size(); i++) {
 			CadreEmploiFE aLien = (CadreEmploiFE) liens.get(i);
-			CadreEmploi cadreE = chercherCadreEmploi(Integer.valueOf(aLien.getIdCadreEmploi()));
-			if (aTransaction.isErreur())
+			try {
+				CadreEmploi cadreE = chercherCadreEmploi(aLien.getIdCadreEmploi());
+				result.add(cadreE);
+			} catch (Exception e) {
 				return new ArrayList<CadreEmploi>();
-			result.add(cadreE);
+			}
 		}
 
 		return result;
