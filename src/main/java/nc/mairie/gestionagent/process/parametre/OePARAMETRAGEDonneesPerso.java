@@ -6,7 +6,6 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.diplome.FormationAgent;
 import nc.mairie.metier.diplome.PermisAgent;
 import nc.mairie.metier.parametrage.CentreFormation;
@@ -17,6 +16,7 @@ import nc.mairie.metier.parametrage.TitrePermis;
 import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
@@ -91,6 +91,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private DocumentDao documentDao;
 	private DiplomeAgentDao diplomeAgentDao;
+	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -202,6 +203,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getDiplomeAgentDao() == null) {
 			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationAgentDao() == null) {
+			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2265,8 +2269,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un titre de diplome utilisé sur un
 		// diplome d'agent
 		if (getVAL_ST_ACTION_ADMIN().equals(ACTION_SUPPRESSION)
-				&& AutreAdministrationAgent.listerAutreAdministrationAgentAvecAutreAdministration(getTransaction(),
-						getAdminCourante()).size() > 0) {
+				&& getAutreAdministrationAgentDao().listerAutreAdministrationAgentAvecAutreAdministration(
+						getAdminCourante().getIdAutreAdmin()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2928,5 +2932,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
 		this.diplomeAgentDao = diplomeAgentDao;
+	}
+
+	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
+		return autreAdministrationAgentDao;
+	}
+
+	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
+		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
 	}
 }

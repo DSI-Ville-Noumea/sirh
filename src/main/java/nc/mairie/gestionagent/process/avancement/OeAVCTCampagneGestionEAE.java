@@ -73,6 +73,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFichePosteDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
+import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -166,6 +167,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private TypeCompetenceDao typeCompetenceDao;
 	private DiplomeAgentDao diplomeAgentDao;
+	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -845,6 +847,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getDiplomeAgentDao() == null) {
 			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationAgentDao() == null) {
+			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2337,58 +2342,54 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 		// sur autre administration
-		ArrayList<AutreAdministrationAgent> listAutreAdmin = AutreAdministrationAgent
-				.listerAutreAdministrationAgentAvecAgent(getTransaction(), ag);
+		ArrayList<AutreAdministrationAgent> listAutreAdmin = getAutreAdministrationAgentDao()
+				.listerAutreAdministrationAgentAvecAgent(Integer.valueOf(ag.getIdAgent()));
 		for (int i = 0; i < listAutreAdmin.size(); i++) {
 			AutreAdministrationAgent admAgent = listAutreAdmin.get(i);
 			AutreAdministration administration = getAutreAdministrationDao().chercherAutreAdministration(
-					Integer.valueOf(admAgent.getIdAutreAdmin()));
-			if (admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
-					|| admAgent.getDateSortie().equals(Const.DATE_NULL)) {
+					admAgent.getIdAutreAdmin());
+			if (admAgent.getDateSortie() == null) {
 				// on crée une ligne pour administration
 				EaeParcoursPro parcours = new EaeParcoursPro();
 				parcours.setIdEAE(getEaeCourant().getIdEae());
-				parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
-				parcours.setDateFin(admAgent.getDateSortie() == null
-						|| admAgent.getDateSortie().equals(Const.CHAINE_VIDE)
-						|| admAgent.getDateSortie().equals(Const.DATE_NULL) ? null
-						: sdf.parse(admAgent.getDateSortie()));
+				parcours.setDateDebut(admAgent.getDateEntree());
+				parcours.setDateFin(admAgent.getDateSortie());
 				parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
 				getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
 						parcours.getDateFin(), parcours.getLibelleParcoursPro());
 			} else {
 				// on regarde si il y a des lignes suivantes
-				AutreAdministrationAgent admSuiv = AutreAdministrationAgent
-						.chercherAutreAdministrationAgentDateDebut(getTransaction(), ag.getIdAgent(),
-								Services.formateDateInternationale(admAgent.getDateSortie()));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					// on crée une ligne pour administration
-					EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
-					parcours.setDateFin(sdf.parse(admAgent.getDateSortie()));
-					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
-					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
-							parcours.getDateFin(), parcours.getLibelleParcoursPro());
-				} else {
+				try {
+					AutreAdministrationAgent admSuiv = getAutreAdministrationAgentDao()
+							.chercherAutreAdministrationAgentDateDebut(Integer.valueOf(ag.getIdAgent()),
+									admAgent.getDateSortie());
+
 					boolean fin = false;
-					String dateSortie = admSuiv.getDateSortie();
+					Date dateSortie = admSuiv.getDateSortie();
 					while (!fin) {
-						admSuiv = AutreAdministrationAgent.chercherAutreAdministrationAgentDateDebut(getTransaction(),
-								ag.getIdAgent(), dateSortie);
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							fin = true;
-						} else {
+						try {
+							admSuiv = getAutreAdministrationAgentDao().chercherAutreAdministrationAgentDateDebut(
+									Integer.valueOf(ag.getIdAgent()), dateSortie);
 							dateSortie = admSuiv.getDateSortie();
+						} catch (Exception e) {
+							fin = true;
 						}
 					}
 					// on crée la ligne
 					EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setIdEAE(getEaeCourant().getIdEae());
-					parcours.setDateDebut(sdf.parse(admAgent.getDateEntree()));
-					parcours.setDateFin(sdf.parse(dateSortie));
+					parcours.setDateDebut(admAgent.getDateEntree());
+					parcours.setDateFin(dateSortie);
+					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
+					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
+							parcours.getDateFin(), parcours.getLibelleParcoursPro());
+				} catch (Exception e) {
+
+					// on crée une ligne pour administration
+					EaeParcoursPro parcours = new EaeParcoursPro();
+					parcours.setIdEAE(getEaeCourant().getIdEae());
+					parcours.setDateDebut(admAgent.getDateEntree());
+					parcours.setDateFin(admAgent.getDateSortie());
 					parcours.setLibelleParcoursPro(administration.getLibAutreAdmin());
 					getEaeParcoursProDao().creerParcoursPro(parcours.getIdEAE(), parcours.getDateDebut(),
 							parcours.getDateFin(), parcours.getLibelleParcoursPro());
@@ -2489,14 +2490,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				dateCarriere = sdf.parse(carr.getDateDebut());
 			}
 			// idem dans la liste des autres administration
-			AutreAdministrationAgent autreAdmin = AutreAdministrationAgent
-					.chercherAutreAdministrationAgentFonctionnaireAncienne(getTransaction(), ag.getIdAgent());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			AutreAdministrationAgent autreAdmin = null;
+			try {
+				autreAdmin = getAutreAdministrationAgentDao().chercherAutreAdministrationAgentFonctionnaireAncienne(
+						Integer.valueOf(ag.getIdAgent()));
+			} catch (Exception e) {
+
 			}
 			Date dateAutreAdmin = null;
 			if (autreAdmin != null && autreAdmin.getIdAutreAdmin() != null) {
-				dateAutreAdmin = sdf.parse(autreAdmin.getDateEntree());
+				dateAutreAdmin = autreAdmin.getDateEntree();
 			}
 
 			if (dateAutreAdmin == null && dateCarriere != null) {
@@ -2546,14 +2549,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					dateSpadmnAncienne = sdf.parse(paAncienne.getDatdeb());
 				}
 				// idem dans la liste des autres administration
-				AutreAdministrationAgent autreAdminAncienne = AutreAdministrationAgent
-						.chercherAutreAdministrationAgentAncienne(getTransaction(), ag.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				AutreAdministrationAgent autreAdminAncienne = null;
+				try {
+					autreAdminAncienne = getAutreAdministrationAgentDao().chercherAutreAdministrationAgentAncienne(
+							Integer.valueOf(ag.getIdAgent()));
+				} catch (Exception e) {
+
 				}
 				Date dateAutreAdminAncienne = null;
 				if (autreAdminAncienne != null && autreAdminAncienne.getIdAutreAdmin() != null) {
-					dateAutreAdminAncienne = sdf.parse(autreAdminAncienne.getDateEntree());
+					dateAutreAdminAncienne = autreAdminAncienne.getDateEntree();
 				}
 
 				if (dateAutreAdminAncienne == null && dateSpadmnAncienne != null) {
@@ -4025,5 +4030,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
 		this.diplomeAgentDao = diplomeAgentDao;
+	}
+
+	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
+		return autreAdministrationAgentDao;
+	}
+
+	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
+		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
 	}
 }

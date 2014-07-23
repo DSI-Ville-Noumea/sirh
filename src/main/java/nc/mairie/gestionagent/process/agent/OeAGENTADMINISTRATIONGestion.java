@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.ListIterator;
@@ -12,6 +13,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -49,6 +51,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	public String focus = null;
 
 	private AutreAdministrationDao autreAdministrationDao;
+	private AutreAdministrationAgentDao autreAdministrationAgentDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Constructeur du process OeAGENTCONTACTGestion. Date de création :
@@ -298,8 +303,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private void initialiseFenetre(HttpServletRequest request) throws Exception {
 
 		// Recherche des administrations de l'agent
-		ArrayList<AutreAdministrationAgent> a = AutreAdministrationAgent.listerAutreAdministrationAgentAvecAgent(
-				getTransaction(), getAgentCourant());
+		ArrayList<AutreAdministrationAgent> a = getAutreAdministrationAgentDao()
+				.listerAutreAdministrationAgentAvecAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeAgentAdministrations(a);
 
 		// Init de la liste des administrations de l'agent
@@ -325,17 +330,17 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 				AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) getListeAgentAdministrations()
 						.get(i);
 				AutreAdministration aAdministration = getAutreAdministrationDao().chercherAutreAdministration(
-						Integer.valueOf(aAdministrationAgent.getIdAutreAdmin()));
+						aAdministrationAgent.getIdAutreAdmin());
 
 				addZone(getNOM_ST_ADMINISTRATION(indiceAdministration),
 						aAdministration.getLibAutreAdmin().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aAdministration
 								.getLibAutreAdmin());
 				addZone(getNOM_ST_FONCTIONNAIRE(indiceAdministration),
-						aAdministrationAgent.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
-				addZone(getNOM_ST_DATE_ENTREE(indiceAdministration), aAdministrationAgent.getDateEntree());
-				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration), aAdministrationAgent.getDateSortie() == null
-						|| aAdministrationAgent.getDateSortie().equals(Const.DATE_NULL) ? "&nbsp;"
-						: aAdministrationAgent.getDateSortie());
+						aAdministrationAgent.getFonctionnaire() == 0 ? "NON" : "OUI");
+				addZone(getNOM_ST_DATE_ENTREE(indiceAdministration), sdf.format(aAdministrationAgent.getDateEntree()));
+				addZone(getNOM_ST_DATE_SORTIE(indiceAdministration),
+						aAdministrationAgent.getDateSortie() == null ? "&nbsp;" : sdf.format(aAdministrationAgent
+								.getDateSortie()));
 
 				indiceAdministration++;
 			}
@@ -416,6 +421,9 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAutreAdministrationAgentDao() == null) {
+			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -477,19 +485,25 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			return false;
 		}
 
+		AutreAdministrationAgent adminAgentDepart = new AutreAdministrationAgent(getAutreAdministrationAgentCourant()
+				.getIdAutreAdmin(), getAutreAdministrationAgentCourant().getIdAgent(),
+				getAutreAdministrationAgentCourant().getDateEntree());
 		// Récup des zones saisies
 		String newDateDeb = getZone(getNOM_EF_DATE_DEBUT());
 		String newDateFin = getZone(getNOM_EF_DATE_FIN());
 		if (getVAL_RG_FONCTIONNAIRE().equals(getNOM_RB_FONCTIONNAIRE_N())) {
-			getAutreAdministrationAgentCourant().setFonctionnaire(Const.ZERO);
+			getAutreAdministrationAgentCourant().setFonctionnaire(0);
 		} else {
-			getAutreAdministrationAgentCourant().setFonctionnaire("1");
+			getAutreAdministrationAgentCourant().setFonctionnaire(1);
 		}
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 			// Suppression
-			getAutreAdministrationAgentCourant().supprimerAutreAdministrationAgent(getTransaction());
+			getAutreAdministrationAgentDao().supprimerAutreAdministrationAgent(
+					getAutreAdministrationAgentCourant().getIdAutreAdmin(),
+					getAutreAdministrationAgentCourant().getIdAgent(),
+					getAutreAdministrationAgentCourant().getDateEntree());
 			if (getTransaction().isErreur())
 				return false;
 
@@ -503,18 +517,31 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 					Integer.parseInt(getZone(getNOM_LB_ADMINISTRATION_SELECT())));
 
 			// Affectation des attributs
-			getAutreAdministrationAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
-			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin().toString());
-			getAutreAdministrationAgentCourant().setDateEntree(newDateDeb);
-			getAutreAdministrationAgentCourant().setDateSortie(newDateFin);
+			getAutreAdministrationAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin());
+			getAutreAdministrationAgentCourant().setDateEntree(sdf.parse(newDateDeb));
+			getAutreAdministrationAgentCourant().setDateSortie(
+					newDateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFin));
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getAutreAdministrationAgentCourant().modifierAutreAdministrationAgent(getTransaction());
+				getAutreAdministrationAgentDao().supprimerAutreAdministrationAgent(adminAgentDepart.getIdAutreAdmin(),
+						adminAgentDepart.getIdAgent(), adminAgentDepart.getDateEntree());
+				getAutreAdministrationAgentDao().creerAutreAdministrationAgent(
+						getAutreAdministrationAgentCourant().getIdAutreAdmin(),
+						getAutreAdministrationAgentCourant().getIdAgent(),
+						getAutreAdministrationAgentCourant().getDateEntree(),
+						getAutreAdministrationAgentCourant().getDateSortie(),
+						getAutreAdministrationAgentCourant().getFonctionnaire());
 
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
-				getAutreAdministrationAgentCourant().creerAutreAdministrationAgent(getTransaction());
+				getAutreAdministrationAgentDao().creerAutreAdministrationAgent(
+						getAutreAdministrationAgentCourant().getIdAutreAdmin(),
+						getAutreAdministrationAgentCourant().getIdAgent(),
+						getAutreAdministrationAgentCourant().getDateEntree(),
+						getAutreAdministrationAgentCourant().getDateSortie(),
+						getAutreAdministrationAgentCourant().getFonctionnaire());
 			}
 
 			if (getTransaction().isErreur())
@@ -581,9 +608,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		for (ListIterator<AutreAdministrationAgent> list = getListeAgentAdministrations().listIterator(); list
 				.hasNext();) {
 			AutreAdministrationAgent aAdministrationAgent = (AutreAdministrationAgent) list.next();
-			if (!aAdministrationAgent.getIdAutreAdmin().equals(getAutreAdministrationAgentCourant().getIdAutreAdmin())) {
-				if (Services.compareDates(getVAL_EF_DATE_FIN(), aAdministrationAgent.getDateEntree()) >= 0
-						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), aAdministrationAgent.getDateSortie()) <= 0) {
+			if (aAdministrationAgent.getIdAutreAdmin() != getAutreAdministrationAgentCourant().getIdAutreAdmin()) {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAdministrationAgent.getDateEntree())) >= 0
+						&& Services.compareDates(getVAL_EF_DATE_DEBUT(),
+								sdf.format(aAdministrationAgent.getDateSortie())) <= 0) {
 					// "ERR201",
 					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
 					// RG_AG_AA_A02
@@ -954,14 +982,14 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// Récup du administration courant
 		AutreAdministrationAgent c = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltAModifier);
 		setAutreAdministrationAgentCourant(c);
-		AutreAdministration t = (AutreAdministration) getHashAdministration().get(Integer.valueOf(c.getIdAutreAdmin()));
+		AutreAdministration t = (AutreAdministration) getHashAdministration().get(c.getIdAutreAdmin());
 
 		// Alim zones
 		int ligneType = getListeAdministrations().indexOf(t);
-		addZone(getNOM_EF_DATE_DEBUT(), c.getDateEntree());
-		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(c.getDateSortie()) ? null : c.getDateSortie());
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(c.getDateEntree()));
+		addZone(getNOM_EF_DATE_FIN(), c.getDateSortie() == null ? null : sdf.format(c.getDateSortie()));
 		addZone(getNOM_LB_ADMINISTRATION_SELECT(), String.valueOf(ligneType));
-		addZone(getNOM_RG_FONCTIONNAIRE(), c.getFonctionnaire().equals(Const.ZERO) ? getNOM_RB_FONCTIONNAIRE_N()
+		addZone(getNOM_RG_FONCTIONNAIRE(), c.getFonctionnaire() == 0 ? getNOM_RB_FONCTIONNAIRE_N()
 				: getNOM_RB_FONCTIONNAIRE_O());
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -1001,17 +1029,16 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations()
 				.get(indiceEltAConsulter);
 		setAutreAdministrationAgentCourant(ag);
-		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(
-				Integer.valueOf(ag.getIdAutreAdmin()));
+		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
 		setAutreAdministrationCourant(aa);
 
 		// Alim zones
 		// int ligneType =
 		// getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
-		addZone(getNOM_EF_DATE_DEBUT(), ag.getDateEntree());
-		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(ag.getDateSortie()) ? null : ag.getDateSortie());
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(ag.getDateEntree()));
+		addZone(getNOM_EF_DATE_FIN(), ag.getDateSortie() == null ? null : sdf.format(ag.getDateSortie()));
 		addZone(getNOM_ST_ADMINISTRATION(), aa.getLibAutreAdmin());
-		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
+		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire() == 0 ? "NON" : "OUI");
 
 		setFocus(getNOM_PB_VALIDER());
 
@@ -1052,17 +1079,16 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 		// Récup du administration courant
 		AutreAdministrationAgent ag = (AutreAdministrationAgent) getListeAgentAdministrations().get(indiceEltASuprimer);
 		setAutreAdministrationAgentCourant(ag);
-		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(
-				Integer.valueOf(ag.getIdAutreAdmin()));
+		AutreAdministration aa = (AutreAdministration) getHashAdministration().get(ag.getIdAutreAdmin());
 		setAutreAdministrationCourant(aa);
 
 		// Alim zones
 		// int ligneType =
 		// getListeAdministrations().indexOf(getHashAdministration().get(c.getCodAdministration()));
-		addZone(getNOM_EF_DATE_DEBUT(), ag.getDateEntree());
-		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(ag.getDateSortie()) ? null : ag.getDateSortie());
+		addZone(getNOM_EF_DATE_DEBUT(), sdf.format(ag.getDateEntree()));
+		addZone(getNOM_EF_DATE_FIN(), ag.getDateSortie() == null ? null : sdf.format(ag.getDateSortie()));
 		addZone(getNOM_ST_ADMINISTRATION(), aa.getLibAutreAdmin());
-		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire().equals(Const.ZERO) ? "NON" : "OUI");
+		addZone(getNOM_ST_FONCTIONNAIRE(), ag.getFonctionnaire() == 0 ? "NON" : "OUI");
 
 		setFocus(getNOM_PB_VALIDER());
 
@@ -1076,5 +1102,13 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
+		return autreAdministrationAgentDao;
+	}
+
+	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
+		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
 	}
 }

@@ -25,6 +25,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -63,6 +64,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 	private MotifAvancementDao motifAvancementDao;
 	private AvisCapDao avisCapDao;
+	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -106,6 +108,9 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		}
 		if (getAvisCapDao() == null) {
 			setAvisCapDao(new AvisCapDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAdministrationAgentDao() == null) {
+			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -552,14 +557,14 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 							avct.setSectionService(null);
 							// alors on va chercher l'autre administration de
 							// l'agent
-							AutreAdministrationAgent autreAdminAgent = AutreAdministrationAgent
-									.chercherAutreAdministrationAgentActive(getTransaction(), a.getIdAgent());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-							} else {
+							try {
+								AutreAdministrationAgent autreAdminAgent = getAutreAdministrationAgentDao()
+										.chercherAutreAdministrationAgentActive(Integer.valueOf(a.getIdAgent()));
 								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
-									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin());
+									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin().toString());
 								}
+							} catch (Exception e) {
+
 							}
 						}
 					}
@@ -931,5 +936,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 	public void setAvisCapDao(AvisCapDao avisCapDao) {
 		this.avisCapDao = avisCapDao;
+	}
+
+	public AutreAdministrationAgentDao getAutreAdministrationAgentDao() {
+		return autreAdministrationAgentDao;
+	}
+
+	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
+		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
 	}
 }
