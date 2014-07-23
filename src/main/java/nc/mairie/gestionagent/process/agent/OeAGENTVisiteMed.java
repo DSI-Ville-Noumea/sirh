@@ -1093,9 +1093,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 						// alors il faut supprimer la visite medicale
 						// correspondante
 						Medecin med = getMedecinDao().chercherMedecinARenseigner("A", "RENSEIGNER");
-						if (getVisiteCourante().getIdMotifVm().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode())
-								|| getVisiteCourante().getIdMotifVm().equals(
-										EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode())) {
+						if (getVisiteCourante().getIdMotifVm().toString()
+								.equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString())
+								|| getVisiteCourante().getIdMotifVm().toString()
+										.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString())) {
 							VisiteMedicale vmASupp = getVisiteMedicaleDao().chercherVisiteMedicaleCriteres(
 									Integer.valueOf(getAgentCourant().getIdAgent()), med.getIdMedecin(),
 									getVisiteCourante().getIdMotifVm());
@@ -2175,8 +2176,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getVisiteCourante().getIdVisite() != null) {
 			champMotifModifiable = false;
 			if (getVisiteCourante().getIdMotifVm() != null
-					&& (getVisiteCourante().getIdMotifVm().equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode()) || getVisiteCourante()
-							.getIdMotifVm().equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode()))
+					&& (getVisiteCourante().getIdMotifVm().toString()
+							.equals(EnumMotifVisiteMed.VM_DEMANDE_AGENT.getCode().toString()) || getVisiteCourante()
+							.getIdMotifVm().toString()
+							.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString()))
 					&& getVisiteCourante().getIdRecommandation() == null && getVisiteCourante().getApte() == null) {
 				elementModifibale = false;
 			} else {

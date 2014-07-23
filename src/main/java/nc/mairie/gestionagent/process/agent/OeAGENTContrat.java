@@ -447,7 +447,7 @@ public class OeAGENTContrat extends BasicProcess {
 		 * Si le contrat est un avenant
 		 */
 		if (getContratCourant().isAvenant()) {
-			if (getContratReference().getIdTypeContrat().equals(EnumTypeContrat.CDI.getCode().toString())) {
+			if (getContratReference().getIdTypeContrat().toString().equals(EnumTypeContrat.CDI.getCode().toString())) {
 				// le contrat reference est un CDI
 
 				if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),

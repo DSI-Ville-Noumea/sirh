@@ -3907,7 +3907,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompSavoir = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode())) {
+				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode().toString())) {
 					listeToutesCompSavoir.add(c);
 				}
 			}
@@ -3939,7 +3939,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompSavoirFaire = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode())) {
+				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString())) {
 					listeToutesCompSavoirFaire.add(c);
 				}
 			}
@@ -3971,7 +3971,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompComportement = new ArrayList<>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode())) {
+				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode().toString())) {
 					listeToutesCompComportement.add(c);
 				}
 			}

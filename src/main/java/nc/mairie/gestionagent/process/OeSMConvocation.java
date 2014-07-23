@@ -284,7 +284,7 @@ public class OeSMConvocation extends BasicProcess {
 			addZone(getNOM_ST_DATE_PREVISION_VISITE(i),
 					sm.getDatePrevisionVisite() == null ? "&nbsp;" : Services.convertitDate(sm.getDatePrevisionVisite()
 							.toString(), "yyyy-MM-dd", "dd/MM/yyyy"));
-			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm().toString()));
+			addZone(getNOM_ST_MOTIF(i), getLibMotifVM(sm.getIdMotifVm()));
 			addZone(getNOM_ST_NB_VISITES_RATEES(i), sm.getNbVisitesRatees().toString());
 			addZone(getNOM_LB_MEDECIN_SELECT(i),
 					sm.getIdMedecin() != null ? String.valueOf(getListeMedecin().indexOf(
@@ -311,9 +311,9 @@ public class OeSMConvocation extends BasicProcess {
 	 * 
 	 * @return String
 	 */
-	public String getLibMotifVM(String idMotif) {
+	public String getLibMotifVM(Integer idMotif) {
 		for (EnumMotifVisiteMed e : EnumMotifVisiteMed.values()) {
-			if (e.getCode().equals(idMotif)) {
+			if (e.getCode().toString().equals(idMotif.toString())) {
 				return e.getValue();
 			}
 		}
