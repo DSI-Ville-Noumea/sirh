@@ -31,6 +31,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
@@ -95,6 +96,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private TypeContratDao typeContratDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private ContratDao contratDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -166,9 +168,13 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getContratDao() == null) {
+			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		if (getLB_TYPE_DOCUMENT() == LBVide) {
 			ArrayList<TypeDocument> td = getTypeDocumentDao().listerTypeDocumentAvecModule("DONNEES PERSONNELLES");
@@ -189,7 +195,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (getLB_CONTRAT() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<Contrat> c = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+				ArrayList<Contrat> c = getContratDao().listerContratAvecAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()));
 				if (c.size() > 0) {
 					int[] tailles = { 14, 8, 12 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -199,7 +206,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 						Contrat contrat = (Contrat) list.next();
 						TypeContrat tc = getTypeContratDao().chercherTypeContrat(
 								Integer.valueOf(contrat.getIdTypeContrat()));
-						String ligne[] = { contrat.getNumContrat(), tc.getLibTypeContrat(), contrat.getDateDebut() };
+						String ligne[] = { contrat.getNumContrat(), tc.getLibTypeContrat(),
+								sdf.format(contrat.getDatdeb()) };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_CONTRAT(aFormat.getListeFormatee());
@@ -1644,6 +1652,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public ContratDao getContratDao() {
+		return contratDao;
+	}
+
+	public void setContratDao(ContratDao contratDao) {
+		this.contratDao = contratDao;
 	}
 
 }

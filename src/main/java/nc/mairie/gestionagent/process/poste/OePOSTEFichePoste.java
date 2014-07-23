@@ -60,6 +60,7 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
@@ -238,6 +239,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private TypeContratDao typeContratDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private ContratDao contratDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -490,6 +492,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getContratDao() == null) {
+			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -698,15 +703,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * Affiche infos affectation FichePoste.
 	 */
 	private void afficheInfosAffectationFP() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if (getFichePosteCourante() != null && getAgentCourant() != null && getAffectationCourante() != null) {
 			String chaine = "Cette fiche de poste est affectée à l'agent " + getAgentCourant().getNomAgent() + " "
 					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
 					+ getAffectationCourante().getDateDebutAff();
 			if (getContratCourant() != null && getContratCourant().getIdContrat() != null) {
 				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le "
-						+ getContratCourant().getDateDebut();
+						+ sdf.format(getContratCourant().getDatdeb());
 				if (getContratCourant().getDateFin() != null) {
-					chaine += " jusqu'au " + getContratCourant().getDateFin() + ")";
+					chaine += " jusqu'au " + sdf.format(getContratCourant().getDateFin()) + ")";
 				} else {
 					chaine += ")";
 				}
@@ -3439,12 +3445,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 				} else {
 					setAffectationCourante(aff);
 				}
-				Contrat c = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant().getIdAgent(),
-						Services.dateDuJour());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					Contrat c = getContratDao().chercherContratAgentDateComprise(
+							Integer.valueOf(getAgentCourant().getIdAgent()), new Date());
+					setContratCourant(c);
+				} catch (Exception e) {
+					setContratCourant(null);
 				}
-				setContratCourant(c);
 				if (getContratCourant() != null && getContratCourant().getIdTypeContrat() != null) {
 					setTypeContratCourant(getTypeContratDao().chercherTypeContrat(
 							Integer.valueOf(getContratCourant().getIdTypeContrat())));
@@ -6647,5 +6654,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public ContratDao getContratDao() {
+		return contratDao;
+	}
+
+	public void setContratDao(ContratDao contratDao) {
+		this.contratDao = contratDao;
 	}
 }

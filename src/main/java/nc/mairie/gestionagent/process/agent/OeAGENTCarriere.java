@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.ListIterator;
@@ -29,6 +30,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
@@ -105,6 +107,9 @@ public class OeAGENTCarriere extends BasicProcess {
 	private MotifAvancementDao motifAvancementDao;
 	private MotifCarriereDao motifCarriereDao;
 	private TypeContratDao typeContratDao;
+	private ContratDao contratDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Constructeur du process OeAGENTCarriere. Date de création : (05/09/11
@@ -174,6 +179,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getTypeContratDao() == null) {
 			setTypeContratDao(new TypeContratDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getContratDao() == null) {
+			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -610,10 +618,12 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
 			if (!getVAL_EF_DATE_DEBUT().equals(Const.CHAINE_VIDE) && Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
-				Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(), getAgentCourant()
-						.getIdAgent(), getVAL_EF_DATE_DEBUT());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				Contrat contrat = null;
+				try {
+					contrat = getContratDao().chercherContratAgentDateComprise(
+							Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(getVAL_EF_DATE_DEBUT()));
+				} catch (Exception e) {
+					// pas de contrat
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
 					TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
@@ -884,11 +894,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		getCarriereCourante().setIban(iban);
 
 		if (getCarriereCourante().getTypeContrat().equals(Const.CHAINE_VIDE)) {
-
-			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(),
-					getAgentCourant().getIdAgent(), dateDebut);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			Contrat contrat = null;
+			try {
+				contrat = getContratDao().chercherContratAgentDateComprise(
+						Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(dateDebut));
+			} catch (Exception e) {
+				// aucun contrat trouvé
 			}
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
 				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
@@ -3186,10 +3197,12 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 
 		if (!getVAL_EF_DATE_DEBUT().equals(Const.CHAINE_VIDE) && Services.estUneDate(getVAL_EF_DATE_DEBUT())) {
-			Contrat contrat = Contrat.chercherContratAgentDateComprise(getTransaction(),
-					getAgentCourant().getIdAgent(), getVAL_EF_DATE_DEBUT());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			Contrat contrat = null;
+			try {
+				contrat = getContratDao().chercherContratAgentDateComprise(
+						Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(getVAL_EF_DATE_DEBUT()));
+			} catch (Exception e) {
+				// pas de contrat
 			}
 
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
@@ -3240,5 +3253,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setTypeContratDao(TypeContratDao typeContratDao) {
 		this.typeContratDao = typeContratDao;
+	}
+
+	public ContratDao getContratDao() {
+		return contratDao;
+	}
+
+	public void setContratDao(ContratDao contratDao) {
+		this.contratDao = contratDao;
 	}
 }

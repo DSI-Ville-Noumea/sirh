@@ -22,6 +22,7 @@ import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.referentiel.Motif;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.MotifDao;
@@ -77,9 +78,9 @@ public class OeAGENTContrat extends BasicProcess {
 	private Motif motifCourant;
 	private ArrayList<Contrat> listeContrat;
 	private ArrayList<TypeContrat> listeTypeContrat;
-	private Hashtable<String, TypeContrat> hashTypeContrat;
+	private Hashtable<Integer, TypeContrat> hashTypeContrat;
 	private ArrayList<Motif> listeMotif;
-	private Hashtable<String, Motif> hashMotif;
+	private Hashtable<Integer, Motif> hashMotif;
 	private Contrat contratCourant;
 	private Contrat contratReference;
 	private String focus = null;
@@ -91,6 +92,9 @@ public class OeAGENTContrat extends BasicProcess {
 	private TypeContratDao typeContratDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private ContratDao contratDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
@@ -141,7 +145,7 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O())) {
 			// Contrat c = Contrat.chercherContratCourant(getTransaction(),
 			// getAgentCourant());
-			Contrat c = Contrat.chercherDernierContrat(getTransaction(), getAgentCourant());
+			Contrat c = getContratDao().chercherDernierContrat(Integer.valueOf(getAgentCourant().getIdAgent()));
 			setContratReference(c);
 
 			if (getContratReference() != null) {
@@ -159,7 +163,7 @@ public class OeAGENTContrat extends BasicProcess {
 				if (getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratReference().getIdTypeContrat()))
 						.getLibTypeContrat().equals("CDD")) {
 					addZone(getNOM_EF_DATE_DEB(),
-							Services.ajouteJours(Services.formateDate(getContratReference().getDateFin()), 1));
+							Services.ajouteJours(sdf.format(getContratReference().getDateFin()), 1));
 				}
 			}
 		}
@@ -237,7 +241,7 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 
 			// Suppression
-			getContratCourant().supprimerContrat(getTransaction());
+			getContratDao().supprimerContrat(getContratCourant().getIdContrat());
 			if (getTransaction().isErreur())
 				return false;
 
@@ -255,15 +259,16 @@ public class OeAGENTContrat extends BasicProcess {
 			String newJustification = getZone(getNOM_EF_JUSTIFICATION());
 
 			// Affectation des attributs
-			getContratCourant().setIdAgent(getAgentCourant().getIdAgent());
+			getContratCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 			getContratCourant().setAvenant(newAvenant);
 			if (newAvenant)
 				getContratCourant().setIdContratRef(getContratReference().getIdContrat());
-			getContratCourant().setDateDebut(newDateDebut);
-			getContratCourant().setDateFinPeriodeEssai(newDateFinPeriodeEssai);
-			getContratCourant().setDateFin(newDateFin);
-			getContratCourant().setIdMotif(newMotif.getIdMotif().toString());
-			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat().toString());
+			getContratCourant().setDatdeb(sdf.parse(newDateDebut));
+			getContratCourant().setDateFinPeriodeEss(
+					newDateFinPeriodeEssai.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFinPeriodeEssai));
+			getContratCourant().setDateFin(newDateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFin));
+			getContratCourant().setIdMotif(newMotif.getIdMotif());
+			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat());
 			getContratCourant().setJustification(newJustification);
 
 			if (!performControlerChamps(request)) {
@@ -273,15 +278,26 @@ public class OeAGENTContrat extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 
 				// Modification
-				getContratCourant().modifierContrat(getTransaction());
+				getContratDao().modifierContrat(getContratCourant().getIdContrat(),
+						getContratCourant().getIdTypeContrat(), getContratCourant().getIdMotif(),
+						getContratCourant().getIdAgent(), getContratCourant().getIdDocument(),
+						getContratCourant().getNumContrat(), getContratCourant().isAvenant(),
+						getContratCourant().getIdContratRef(), getContratCourant().getDatdeb(),
+						getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(),
+						getContratCourant().getJustification());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				// RG_AG_CON_C09
-				String numSeq = getContratCourant().getNumContratChrono(getTransaction());
+				String numSeq = getContratDao().getNumContratChrono();
 
 				getContratCourant().setNumContrat(
 						Services.dateDuJour().substring(6) + "/" + Services.lpad(numSeq, 5, "0"));
-				getContratCourant().creerContrat(getTransaction());
+				getContratDao().creerContrat(getContratCourant().getIdTypeContrat(), getContratCourant().getIdMotif(),
+						getContratCourant().getIdAgent(), getContratCourant().getIdDocument(),
+						getContratCourant().getNumContrat(), getContratCourant().isAvenant(),
+						getContratCourant().getIdContratRef(), getContratCourant().getDatdeb(),
+						getContratCourant().getDateFinPeriodeEss(), getContratCourant().getDateFin(),
+						getContratCourant().getJustification());
 			}
 			if (getTransaction().isErreur())
 				return false;
@@ -402,17 +418,18 @@ public class OeAGENTContrat extends BasicProcess {
 		if (!getContratCourant().isAvenant()) {
 
 			boolean rgOK = true;
-			ArrayList<Contrat> lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+			ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()));
 			for (int i = 0; i < lc.size(); i++) {
 				Contrat c = (Contrat) lc.get(i);
 				if (!c.getIdContrat().equals(getContratCourant().getIdContrat())) {
-					if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services
-									.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+					if (Services.compareDates(getZone(getNOM_EF_DATE_DEB()), sdf.format(c.getDatdeb())) >= 0
+							&& ((c.getDateFin() == null || Services.compareDates(sdf.format(c.getDateFin()),
+									getZone(getNOM_EF_DATE_DEB())) >= 0))) {
 						rgOK = false;
-					} else if (Services.compareDates(getZone(getNOM_EF_DATE_FIN()), c.getDateDebut()) >= 0
-							&& ((c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL)) || Services
-									.compareDates(c.getDateFin(), getZone(getNOM_EF_DATE_DEB())) >= 0)) {
+					} else if (Services.compareDates(getZone(getNOM_EF_DATE_FIN()), sdf.format(c.getDatdeb())) >= 0
+							&& ((c.getDateFin() == null || Services.compareDates(sdf.format(c.getDateFin()),
+									getZone(getNOM_EF_DATE_DEB())) >= 0))) {
 						rgOK = false;
 					}
 				}
@@ -433,7 +450,8 @@ public class OeAGENTContrat extends BasicProcess {
 			if (getContratReference().getIdTypeContrat().equals(EnumTypeContrat.CDI.getCode().toString())) {
 				// le contrat reference est un CDI
 
-				if (Services.compareDates(getContratCourant().getDateDebut(), getContratReference().getDateDebut()) <= 0) {
+				if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
+						sdf.format(getContratReference().getDatdeb())) <= 0) {
 					// "ERR205", "La date @ doit être supérieure à la date @."
 					getTransaction().declarerErreur(
 							MessageUtils
@@ -444,12 +462,13 @@ public class OeAGENTContrat extends BasicProcess {
 			} else {
 				// le contrat reference est un CDD
 
-				ArrayList<Contrat> listeAvenant = Contrat.listerContratAvenantAvecContratReference(getTransaction(),
-						getContratReference());
+				ArrayList<Contrat> listeAvenant = getContratDao().listerContratAvenantAvecContratReference(
+						getContratReference().getIdContrat());
 				if (listeAvenant.size() == 0) {
 					// 1er Avenant pour ce CDD : on vérifie la date de début
 					// avec la date de fin du contrat reference
-					if (Services.compareDates(getContratCourant().getDateDebut(), getContratReference().getDateFin()) <= 0) {
+					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
+							sdf.format(getContratReference().getDateFin())) <= 0) {
 						// "ERR205",
 						// "La date @ doit être supérieure à la date @."
 						getTransaction().declarerErreur(
@@ -461,8 +480,8 @@ public class OeAGENTContrat extends BasicProcess {
 					// Un ou des evenants pour ce contrat exite déjà : on
 					// verifie la date du debut avec la date de fin du dernier
 					// avenant
-					if (Services.compareDates(getContratCourant().getDateDebut(),
-							listeAvenant.get(listeAvenant.size() - 1).getDateFin()) <= 0) {
+					if (Services.compareDates(sdf.format(getContratCourant().getDatdeb()),
+							sdf.format(listeAvenant.get(listeAvenant.size() - 1).getDateFin())) <= 0) {
 						// "ERR205",
 						// "La date @ doit être supérieure à la date @."
 						getTransaction().declarerErreur(
@@ -888,6 +907,9 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getContratDao() == null) {
+			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -941,7 +963,7 @@ public class OeAGENTContrat extends BasicProcess {
 	private void initialiseListeContratsAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des contrats de l'agent
-		ArrayList<Contrat> lc = Contrat.listerContratAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeContrat(lc);
 
 		int indiceContrat = 0;
@@ -956,11 +978,11 @@ public class OeAGENTContrat extends BasicProcess {
 				addZone(getNOM_ST_TYPE(indiceContrat),
 						t.getLibTypeContrat().equals(Const.CHAINE_VIDE) ? "&nbsp;" : t.getLibTypeContrat());
 				addZone(getNOM_ST_AVENANT(indiceContrat), c.isAvenant() ? "Oui" : "Non");
-				addZone(getNOM_ST_DATE_DEBUT(indiceContrat), c.getDateDebut());
-				addZone(getNOM_ST_DATE_ESSAI(indiceContrat), c.getDateFinPeriodeEssai() == null
-						|| c.getDateFinPeriodeEssai().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateFinPeriodeEssai());
+				addZone(getNOM_ST_DATE_DEBUT(indiceContrat), sdf.format(c.getDatdeb()));
+				addZone(getNOM_ST_DATE_ESSAI(indiceContrat),
+						c.getDateFinPeriodeEss() == null ? "&nbsp;" : sdf.format(c.getDateFinPeriodeEss()));
 				addZone(getNOM_ST_DATE_FIN(indiceContrat),
-						c.getDateFin() == null || c.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateFin());
+						c.getDateFin() == null ? "&nbsp;" : sdf.format(c.getDateFin()));
 				addZone(getNOM_ST_MOTIF(indiceContrat),
 						m.getLibMotif().equals(Const.CHAINE_VIDE) ? "&nbsp;" : m.getLibMotif());
 				addZone(getNOM_ST_JUSTIFICATION(indiceContrat),
@@ -998,7 +1020,7 @@ public class OeAGENTContrat extends BasicProcess {
 		Contrat c = getContratCourant();
 		Contrat reference = null;
 		if (c.getIdContratRef() != null)
-			reference = Contrat.chercherContrat(getTransaction(), c.getIdContratRef());
+			reference = getContratDao().chercherContrat(c.getIdContratRef());
 		setContratReference(reference);
 
 		TypeContrat t = (TypeContrat) getHashTypeContrat().get(c.getIdTypeContrat());
@@ -1013,10 +1035,10 @@ public class OeAGENTContrat extends BasicProcess {
 		addZone(getNOM_LB_TYPE_CONTRAT_SELECT(), String.valueOf(ligneTypeContrat));
 		addZone(getNOM_ST_TYPE_CONTRAT(), t.getLibTypeContrat());
 		addZone(getNOM_RG_AVENANT(), c.isAvenant() ? getNOM_RB_AVENANT_O() : getNOM_RB_AVENANT_N());
-		addZone(getNOM_EF_DATE_DEB(), Const.DATE_NULL.equals(c.getDateDebut()) ? null : c.getDateDebut());
+		addZone(getNOM_EF_DATE_DEB(), c.getDatdeb() == null ? null : sdf.format(c.getDatdeb()));
 		addZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI(),
-				Const.DATE_NULL.equals(c.getDateFinPeriodeEssai()) ? null : c.getDateFinPeriodeEssai());
-		addZone(getNOM_EF_DATE_FIN(), Const.DATE_NULL.equals(c.getDateFin()) ? null : c.getDateFin());
+				c.getDateFinPeriodeEss() == null ? null : sdf.format(c.getDateFinPeriodeEss()));
+		addZone(getNOM_EF_DATE_FIN(), c.getDateFin() == null ? null : sdf.format(c.getDateFin()));
 		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif));
 		addZone(getNOM_ST_MOTIF(), m.getLibMotif());
 		addZone(getNOM_EF_JUSTIFICATION(), c.getJustification());
@@ -1052,7 +1074,7 @@ public class OeAGENTContrat extends BasicProcess {
 				// remplissage de la hashTable
 				for (int i = 0; i < a.size(); i++) {
 					TypeContrat aTypeContrat = (TypeContrat) a.get(i);
-					getHashTypeContrat().put(aTypeContrat.getIdTypeContrat().toString(), aTypeContrat);
+					getHashTypeContrat().put(aTypeContrat.getIdTypeContrat(), aTypeContrat);
 				}
 			}
 			setTypeContratCourant(((TypeContrat) getListeTypeContrat().get(0)));
@@ -1088,7 +1110,7 @@ public class OeAGENTContrat extends BasicProcess {
 				// remplissage de la hashTable
 				for (int i = 0; i < a.size(); i++) {
 					Motif aMotif = (Motif) a.get(i);
-					getHashMotif().put(aMotif.getIdMotif().toString(), aMotif);
+					getHashMotif().put(aMotif.getIdMotif(), aMotif);
 				}
 			}
 			setMotifCourant(((Motif) getListeMotif().get(0)));
@@ -1229,9 +1251,9 @@ public class OeAGENTContrat extends BasicProcess {
 	 * 
 	 * @return Hashtable<String, TypeContrat>
 	 */
-	private Hashtable<String, TypeContrat> getHashTypeContrat() {
+	private Hashtable<Integer, TypeContrat> getHashTypeContrat() {
 		if (hashTypeContrat == null) {
-			hashTypeContrat = new Hashtable<String, TypeContrat>();
+			hashTypeContrat = new Hashtable<Integer, TypeContrat>();
 		}
 
 		return hashTypeContrat;
@@ -1242,9 +1264,9 @@ public class OeAGENTContrat extends BasicProcess {
 	 * 
 	 * @return Hashtable<String, Motif>
 	 */
-	private Hashtable<String, Motif> getHashMotif() {
+	private Hashtable<Integer, Motif> getHashMotif() {
 		if (hashMotif == null) {
-			hashMotif = new Hashtable<String, Motif>();
+			hashMotif = new Hashtable<Integer, Motif>();
 		}
 
 		return hashMotif;
@@ -1450,7 +1472,7 @@ public class OeAGENTContrat extends BasicProcess {
 		return "ECR-AG-DP-CONTRAT";
 	}
 
-	private boolean verifieExistFichier(String idContrat) throws Exception {
+	private boolean verifieExistFichier(Integer idContrat) throws Exception {
 		// on regarde si le fichier existe
 		try {
 			getDocumentDao().chercherDocumentByContainsNom("C_" + idContrat);
@@ -1584,14 +1606,14 @@ public class OeAGENTContrat extends BasicProcess {
 		return true;
 	}
 
-	private byte[] getContratReportAsByteArray(String idAgent, String idContrat) throws Exception {
+	private byte[] getContratReportAsByteArray(String idAgent, Integer idContrat) throws Exception {
 
 		ClientResponse response = createAndFireRequestContrat(idAgent, idContrat);
 
 		return readResponseAsByteArray(response);
 	}
 
-	private ClientResponse createAndFireRequestContrat(String idAgent, String idContrat) {
+	private ClientResponse createAndFireRequestContrat(String idAgent, Integer idContrat) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONTRAT_SIRH") + "?idAgent=" + idAgent
 				+ "&idContrat=" + idContrat;
 
@@ -2123,5 +2145,13 @@ public class OeAGENTContrat extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public ContratDao getContratDao() {
+		return contratDao;
+	}
+
+	public void setContratDao(ContratDao contratDao) {
+		this.contratDao = contratDao;
 	}
 }

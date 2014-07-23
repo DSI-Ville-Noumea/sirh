@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.metier.agent.Contrat"%>
@@ -62,6 +63,7 @@
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<%
+							SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 							int indiceContrat = 0;
 							if (process.getListeContrat()!=null){
 								for (int i = 0;i<process.getListeContrat().size();i++){
@@ -72,7 +74,7 @@
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceContrat)%>">
 										<%if(c.getIdTypeContrat().equals("2") && c.getDateFin()==null){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
-										<%}else if(c.getIdTypeContrat().equals("1") && Services.compareDates(c.getDateDebut(),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),c.getDateFin())<0 : true)) { %>
+										<%}else if(c.getIdTypeContrat().equals("1") && Services.compareDates(sdf.format(c.getDateDebut()),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),sdf.format(c.getDateFin()))<0 : true)) { %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
 										<%}else{ %>
 											<span style="width: 22px;"></span>
