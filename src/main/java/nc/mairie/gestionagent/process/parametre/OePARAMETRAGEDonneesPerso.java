@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
-import nc.mairie.metier.diplome.DiplomeAgent;
 import nc.mairie.metier.diplome.FormationAgent;
 import nc.mairie.metier.diplome.PermisAgent;
 import nc.mairie.metier.parametrage.CentreFormation;
@@ -19,6 +18,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
+import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -90,6 +90,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private AutreAdministrationDao autreAdministrationDao;
 	private DocumentDao documentDao;
+	private DiplomeAgentDao diplomeAgentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -198,6 +199,9 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDiplomeAgentDao() == null) {
+			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1199,7 +1203,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'un titre de diplome utilisé sur un
 		// diplome d'agent
 		if (getVAL_ST_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)
-				&& DiplomeAgent.listerDiplomeAgentAvecTitreDiplome(getTransaction(), getDiplomeCourant()).size() > 0) {
+				&& getDiplomeAgentDao().listerDiplomeAgentAvecTitreDiplome(getDiplomeCourant().getIdTitreDiplome())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1312,8 +1317,8 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		// Verification si suppression d'une spécialité utilisée sur un diplome
 		// d'agent
 		if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_SUPPRESSION)
-				&& DiplomeAgent.listerDiplomeAgentAvecSpecialiteDiplome(getTransaction(), getSpecialiteCourante())
-						.size() > 0) {
+				&& getDiplomeAgentDao().listerDiplomeAgentAvecSpecialiteDiplome(
+						getSpecialiteCourante().getIdSpecialiteDiplome()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2915,5 +2920,13 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public DiplomeAgentDao getDiplomeAgentDao() {
+		return diplomeAgentDao;
+	}
+
+	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
+		this.diplomeAgentDao = diplomeAgentDao;
 	}
 }

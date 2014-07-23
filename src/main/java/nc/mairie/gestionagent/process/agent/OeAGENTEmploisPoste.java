@@ -47,6 +47,7 @@ import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
+import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
@@ -143,6 +144,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TypeCompetenceDao typeCompetenceDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private DiplomeAgentDao diplomeAgentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -268,6 +270,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getDiplomeAgentDao() == null) {
+			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
@@ -303,14 +308,15 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 			setGradeFP(gradeAffichage);
 
 			// Diplome Agent
-			DiplomeAgent dipl = DiplomeAgent.chercherDernierDiplomeAgentAvecAgent(getTransaction(), getAgentCourant());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
-				TitreDiplome t = getTitreDiplomeDao().chercherTitreDiplome(Integer.valueOf(dipl.getIdTitreDiplome()));
-				SpecialiteDiplome s = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
-						Integer.valueOf(dipl.getIdSpecialiteDiplome()));
+			try {
+				DiplomeAgent dipl = getDiplomeAgentDao().chercherDernierDiplomeAgentAvecAgent(
+						Integer.valueOf(getAgentCourant().getIdAgent()));
+				TitreDiplome t = getTitreDiplomeDao().chercherTitreDiplome(dipl.getIdTitreDiplome());
+				SpecialiteDiplome s = getSpecialiteDiplomeDao()
+						.chercherSpecialiteDiplome(dipl.getIdSpecialiteDiplome());
 				setDiplomeAgt(t.getLibTitreDiplome() + " - " + s.getLibSpecialiteDiplome());
+			} catch (Exception e) {
+				// aucun diplome
 			}
 
 			// Carriere
@@ -2393,5 +2399,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public DiplomeAgentDao getDiplomeAgentDao() {
+		return diplomeAgentDao;
+	}
+
+	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
+		this.diplomeAgentDao = diplomeAgentDao;
 	}
 }

@@ -36,6 +36,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
+import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.diplome.PermisAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -105,8 +106,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	public File fichierUpload = null;
 
 	private AgentNW AgentCourant;
-	private Hashtable<String, TitreDiplome> hashTitreDiplome;
-	private Hashtable<String, SpecialiteDiplome> hashSpeDiplome;
+	private Hashtable<Integer, TitreDiplome> hashTitreDiplome;
+	private Hashtable<Integer, SpecialiteDiplome> hashSpeDiplome;
 	private ArrayList<DiplomeAgent> listeDiplomesAgent;
 	private ArrayList<TitreDiplome> listeTitreDiplome;
 	private ArrayList<SpecialiteDiplome> listeSpeDiplome;
@@ -138,6 +139,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private DiplomeAgentDao diplomeAgentDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (11/02/2003
@@ -165,9 +169,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * 
 	 * @return Hashtable
 	 */
-	private Hashtable<String, TitreDiplome> getHashTitreDiplome() {
+	private Hashtable<Integer, TitreDiplome> getHashTitreDiplome() {
 		if (hashTitreDiplome == null) {
-			hashTitreDiplome = new Hashtable<String, TitreDiplome>();
+			hashTitreDiplome = new Hashtable<Integer, TitreDiplome>();
 		}
 		return hashTitreDiplome;
 	}
@@ -444,7 +448,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		addZone(getNOM_ST_SPECIALITE_DIPLOME(), s.getLibSpecialiteDiplome());
 
 		// Last addZone
-		addZone(getNOM_EF_DATE_OBTENTION_DIPLOME(), d.getDateObtention());
+		addZone(getNOM_EF_DATE_OBTENTION_DIPLOME(), sdf.format(d.getDateObtention()));
 		addZone(getNOM_EF_NOM_ECOLE(), d.getNomEcole());
 
 		return true;
@@ -468,7 +472,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		addZone(getNOM_ST_SPECIALITE_DIPLOME(), s.getLibSpecialiteDiplome());
 
 		// Last addZone
-		addZone(getNOM_EF_DATE_OBTENTION_DIPLOME(), d.getDateObtention());
+		addZone(getNOM_EF_DATE_OBTENTION_DIPLOME(), sdf.format(d.getDateObtention()));
 		addZone(getNOM_ST_TITRE(), t.getLibTitreDiplome());
 		addZone(getNOM_EF_NOM_ECOLE(), d.getNomEcole());
 
@@ -517,7 +521,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private void initialiseListeDiplomesAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des diplomes de l'agent
-		ArrayList<DiplomeAgent> a = DiplomeAgent.listerDiplomeAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<DiplomeAgent> a = getDiplomeAgentDao().listerDiplomeAgentAvecAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeDiplomesAgent(a);
 
 		int indiceDiplome = 0;
@@ -526,8 +531,8 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				DiplomeAgent d = (DiplomeAgent) getListeDiplomesAgent().get(i);
 				TitreDiplome t = (TitreDiplome) getHashTitreDiplome().get(d.getIdTitreDiplome());
 				String titre = t.getLibTitreDiplome();
-				SpecialiteDiplome spec = getSpecialiteDiplomeDao().chercherSpecialiteDiplome(
-						Integer.valueOf(d.getIdSpecialiteDiplome()));
+				SpecialiteDiplome spec = getSpecialiteDiplomeDao()
+						.chercherSpecialiteDiplome(d.getIdSpecialiteDiplome());
 
 				addZone(getNOM_ST_TITRE_DIPLOME(indiceDiplome), titre);
 				addZone(getNOM_ST_SPE_DIPLOME(indiceDiplome), spec.getLibSpecialiteDiplome());
@@ -537,7 +542,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
 						Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "DIP",
-						Integer.valueOf(d.getIdDiplome()));
+						d.getIdDiplome());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -603,7 +608,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// liste des ecoles
 		if (getListeEcoles().size() == 0) {
-			ArrayList<DiplomeAgent> listeEcole = DiplomeAgent.listerEcolesDiplomeAgent(getTransaction());
+			ArrayList<DiplomeAgent> listeEcole = getDiplomeAgentDao().listerEcolesDiplomeAgent();
 			setListeEcoles(listeEcole);
 		}
 
@@ -652,7 +657,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// remplissage de la hashTable
 			for (int i = 0; i < a.size(); i++) {
 				TitreDiplome aTitreDiplome = (TitreDiplome) a.get(i);
-				getHashTitreDiplome().put(aTitreDiplome.getIdTitreDiplome().toString(), aTitreDiplome);
+				getHashTitreDiplome().put(aTitreDiplome.getIdTitreDiplome(), aTitreDiplome);
 			}
 		}
 
@@ -663,7 +668,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// remplissage de la hashTable
 			for (int i = 0; i < a.size(); i++) {
 				SpecialiteDiplome aSpeDiplome = (SpecialiteDiplome) a.get(i);
-				getHashSpeDiplome().put(aSpeDiplome.getIdSpecialiteDiplome().toString(), aSpeDiplome);
+				getHashSpeDiplome().put(aSpeDiplome.getIdSpecialiteDiplome(), aSpeDiplome);
 			}
 		}
 
@@ -763,6 +768,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDiplomeAgentDao() == null) {
+			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -876,7 +884,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_SUPPRESSION_DIPLOME)) {
 			// Suppression
-			getDiplomeAgentCourant().supprimerDiplomeAgent(getTransaction());
+			getDiplomeAgentDao().supprimerDiplomeAgent(getDiplomeAgentCourant().getIdDiplome());
 			if (getTransaction().isErreur())
 				return false;
 
@@ -933,17 +941,23 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					.get(numligneSpe - 1) : null);
 
 			// Affectation des attributs
-			getDiplomeAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
-			getDiplomeAgentCourant().setDateObtention(newDateObt);
-			getDiplomeAgentCourant().setIdSpecialiteDiplome(newSpec.getIdSpecialiteDiplome().toString());
+			getDiplomeAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getDiplomeAgentCourant().setDateObtention(sdf.parse(newDateObt));
+			getDiplomeAgentCourant().setIdSpecialiteDiplome(newSpec.getIdSpecialiteDiplome());
 			getDiplomeAgentCourant().setNomEcole(newNomEcole.toUpperCase());
-			getDiplomeAgentCourant().setIdTitreDiplome(newTitre.getIdTitreDiplome().toString());
+			getDiplomeAgentCourant().setIdTitreDiplome(newTitre.getIdTitreDiplome());
 			if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_MODIFICATION_DIPLOME)) {
 				// Modification
-				getDiplomeAgentCourant().modifierDiplomeAgent(getTransaction());
+				getDiplomeAgentDao().modifierDiplomeAgent(getDiplomeAgentCourant().getIdDiplome(),
+						getDiplomeAgentCourant().getIdTitreDiplome(), getDiplomeAgentCourant().getIdAgent(),
+						getDiplomeAgentCourant().getIdDocument(), getDiplomeAgentCourant().getIdSpecialiteDiplome(),
+						getDiplomeAgentCourant().getDateObtention(), getDiplomeAgentCourant().getNomEcole());
 			} else if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_CREATION_DIPLOME)) {
 				// Création
-				getDiplomeAgentCourant().creerDiplomeAgent(getTransaction());
+				getDiplomeAgentDao().creerDiplomeAgent(getDiplomeAgentCourant().getIdTitreDiplome(),
+						getDiplomeAgentCourant().getIdAgent(), getDiplomeAgentCourant().getIdDocument(),
+						getDiplomeAgentCourant().getIdSpecialiteDiplome(), getDiplomeAgentCourant().getDateObtention(),
+						getDiplomeAgentCourant().getNomEcole());
 			}
 
 			// pour le nom des ecoles
@@ -953,8 +967,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 				return false;
 
 			// on fait la gestion des documents
-			performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(request,
-					Integer.valueOf(getDiplomeAgentCourant().getIdDiplome()));
+			performPB_VALIDER_DOCUMENT_DIPLOME_CREATION(request, getDiplomeAgentCourant().getIdDiplome());
 		}
 
 		// Tout s'est bien passé
@@ -992,10 +1005,10 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 					.get(numligneSpe - 1) : null);
 
 			for (DiplomeAgent diplome : getListeDiplomesAgent()) {
-				if (diplome.getIdAgent().equals(getAgentCourant().getIdAgent())
-						&& diplome.getIdSpecialiteDiplome().equals(newSpec.getIdSpecialiteDiplome())
+				if (diplome.getIdAgent().toString().equals(getAgentCourant().getIdAgent())
+						&& diplome.getIdSpecialiteDiplome() == newSpec.getIdSpecialiteDiplome()
 						&& diplome.getNomEcole().equals(getVAL_EF_NOM_ECOLE().toUpperCase())
-						&& diplome.getIdTitreDiplome().equals(newTitre.getIdTitreDiplome())) {
+						&& diplome.getIdTitreDiplome() == newTitre.getIdTitreDiplome()) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "un diplôme", "ces valeurs"));
@@ -1495,9 +1508,9 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 	 * 
 	 * @return Hashtable
 	 */
-	private Hashtable<String, SpecialiteDiplome> getHashSpeDiplome() {
+	private Hashtable<Integer, SpecialiteDiplome> getHashSpeDiplome() {
 		if (hashSpeDiplome == null) {
-			hashSpeDiplome = new Hashtable<String, SpecialiteDiplome>();
+			hashSpeDiplome = new Hashtable<Integer, SpecialiteDiplome>();
 		}
 		return hashSpeDiplome;
 	}
@@ -3769,7 +3782,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// Recherche des documents du diplome
 		ArrayList<Document> listeDoc = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
 				Integer.valueOf(getAgentCourant().getIdAgent()), "DONNEES PERSONNELLES", "DIP",
-				Integer.valueOf(getDiplomeAgentCourant().getIdDiplome()));
+				getDiplomeAgentCourant().getIdDiplome());
 		setListeDocuments(listeDoc);
 
 		int indiceActeVM = 0;
@@ -4254,5 +4267,13 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public DiplomeAgentDao getDiplomeAgentDao() {
+		return diplomeAgentDao;
+	}
+
+	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
+		this.diplomeAgentDao = diplomeAgentDao;
 	}
 }
