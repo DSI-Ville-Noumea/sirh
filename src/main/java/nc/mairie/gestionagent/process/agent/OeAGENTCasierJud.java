@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,11 +9,16 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.CasierJudiciaire;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.CasierJudiciaireDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTCasierJud Date de création : (12/05/11 15:48:38)
@@ -36,6 +42,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 	private CasierJudiciaire casierJudiciaireCourant;
 	public String focus = null;
 
+	private CasierJudiciaireDao casierJudiciaireDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -58,13 +68,17 @@ public class OeAGENTCasierJud extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Si agentCourant vide ou si etat recherche
-		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
+		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
+				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getLibCivilite() + " "
-						+ getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " "
+						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
+						+ getAgentCourant().getPrenomAgent());
 
 				// initialisation fenêtre si changement de l'agent
 				initialiseListeCasierJudAgent(request);
@@ -76,6 +90,14 @@ public class OeAGENTCasierJud extends BasicProcess {
 		}
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getCasierJudiciaireDao() == null) {
+			setCasierJudiciaireDao(new CasierJudiciaireDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	/**
 	 * Initialisation de la liste des extraits de casier judiciaire
 	 * 
@@ -83,7 +105,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 	private void initialiseListeCasierJudAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des extraits de casier judiciaire de l'agent
-		ArrayList<CasierJudiciaire> a = CasierJudiciaire.listerCasierJudiciaireAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<CasierJudiciaire> a = getCasierJudiciaireDao().listerCasierJudiciaireAvecAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeCasierJud(a);
 
 		int indiceCasierJud = 0;
@@ -91,10 +114,13 @@ public class OeAGENTCasierJud extends BasicProcess {
 			for (int i = 0; i < getListeCasierJud().size(); i++) {
 				CasierJudiciaire c = (CasierJudiciaire) getListeCasierJud().get(i);
 
-				addZone(getNOM_ST_DATE(indiceCasierJud), c.getDateExtrait().equals(Const.DATE_NULL) ? "&nbsp;" : c.getDateExtrait());
-				addZone(getNOM_ST_NUM(indiceCasierJud), c.getNumExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumExtrait());
+				addZone(getNOM_ST_DATE(indiceCasierJud),
+						c.getDateExtrait() == null ? "&nbsp;" : sdf.format(c.getDateExtrait()));
+				addZone(getNOM_ST_NUM(indiceCasierJud),
+						c.getNumExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getNumExtrait());
 				addZone(getNOM_ST_PRIVATION(indiceCasierJud), c.isPrivationDroitsCiv() ? "Oui" : "Non");
-				addZone(getNOM_ST_COMMENTAIRE(indiceCasierJud), c.getCommExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCommExtrait());
+				addZone(getNOM_ST_COMMENTAIRE(indiceCasierJud), c.getCommExtrait().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: c.getCommExtrait());
 
 				indiceCasierJud++;
 			}
@@ -115,9 +141,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 		CasierJudiciaire c = getCasierJudiciaireCourant();
 
 		// Alim zones
-		addZone(getNOM_EF_DATE_EXTRAIT(), Const.DATE_NULL.equals(c.getDateExtrait()) ? null : c.getDateExtrait());
+		addZone(getNOM_EF_DATE_EXTRAIT(), c.getDateExtrait() == null ? null : sdf.format(c.getDateExtrait()));
 		addZone(getNOM_EF_NUM_EXTRAIT(), c.getNumExtrait());
-		addZone(getNOM_RG_PRIV_DROITS_CIVIQUE(), c.isPrivationDroitsCiv() ? getNOM_RB_PRIV_DROITS_CIVIQUE_O() : getNOM_RB_PRIV_DROITS_CIVIQUE_N());
+		addZone(getNOM_RG_PRIV_DROITS_CIVIQUE(), c.isPrivationDroitsCiv() ? getNOM_RB_PRIV_DROITS_CIVIQUE_O()
+				: getNOM_RB_PRIV_DROITS_CIVIQUE_N());
 		addZone(getNOM_EF_COMMENTAIRE_EXTRAIT(), c.getCommExtrait());
 
 		return true;
@@ -221,14 +248,14 @@ public class OeAGENTCasierJud extends BasicProcess {
 		String newDateExtrait = getZone(getNOM_EF_DATE_EXTRAIT());
 		String newNumExtrait = getZone(getNOM_EF_NUM_EXTRAIT());
 		String newCommentaire = getZone(getNOM_EF_COMMENTAIRE_EXTRAIT());
-		boolean newPrivDroitsCiv = getVAL_RG_PRIV_DROITS_CIVIQUE().equals(getNOM_RB_PRIV_DROITS_CIVIQUE_O()) ? true : false;
+		boolean newPrivDroitsCiv = getVAL_RG_PRIV_DROITS_CIVIQUE().equals(getNOM_RB_PRIV_DROITS_CIVIQUE_O()) ? true
+				: false;
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 			// Test si un des champs a été modifié
-			if (!newDateExtrait.equals(getCasierJudiciaireCourant().getDateExtrait() == null
-					|| getCasierJudiciaireCourant().getDateExtrait().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : getCasierJudiciaireCourant()
-					.getDateExtrait())
+			if (!newDateExtrait.equals(getCasierJudiciaireCourant().getDateExtrait() == null ? Const.CHAINE_VIDE : sdf
+					.format(getCasierJudiciaireCourant().getDateExtrait()))
 					|| !newNumExtrait.equals(getCasierJudiciaireCourant().getNumExtrait())
 					|| !newCommentaire.equals(getCasierJudiciaireCourant().getCommExtrait())
 					|| !newPrivDroitsCiv == getCasierJudiciaireCourant().isPrivationDroitsCiv()) {
@@ -238,14 +265,14 @@ public class OeAGENTCasierJud extends BasicProcess {
 			}
 
 			// Suppression
-			getCasierJudiciaireCourant().supprimerCasierJudiciaire(getTransaction());
+			getCasierJudiciaireDao().supprimerCasierJudiciaire(getCasierJudiciaireCourant().getIdCasierJud());
 			if (getTransaction().isErreur())
 				return false;
 
 		} else {
 			// Affectation des attributs
-			getCasierJudiciaireCourant().setIdAgent(getAgentCourant().getIdAgent());
-			getCasierJudiciaireCourant().setDateExtrait(newDateExtrait);
+			getCasierJudiciaireCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getCasierJudiciaireCourant().setDateExtrait(sdf.parse(newDateExtrait));
 			getCasierJudiciaireCourant().setNumExtrait(newNumExtrait);
 			getCasierJudiciaireCourant().setPrivationDroitsCiv(newPrivDroitsCiv);
 			getCasierJudiciaireCourant().setCommExtrait(newCommentaire);
@@ -256,10 +283,18 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
-				getCasierJudiciaireCourant().modifierCasierJudiciaire(getTransaction());
+				getCasierJudiciaireDao().modifierCasierJudiciaire(getCasierJudiciaireCourant().getIdCasierJud(),
+						getCasierJudiciaireCourant().getIdAgent(), getCasierJudiciaireCourant().getIdDocument(),
+						getCasierJudiciaireCourant().getNumExtrait(), getCasierJudiciaireCourant().getDateExtrait(),
+						getCasierJudiciaireCourant().isPrivationDroitsCiv(),
+						getCasierJudiciaireCourant().getCommExtrait());
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
-				getCasierJudiciaireCourant().creerCasierJudiciaire(getTransaction());
+				getCasierJudiciaireDao().creerCasierJudiciaire(getCasierJudiciaireCourant().getIdAgent(),
+						getCasierJudiciaireCourant().getIdDocument(), getCasierJudiciaireCourant().getNumExtrait(),
+						getCasierJudiciaireCourant().getDateExtrait(),
+						getCasierJudiciaireCourant().isPrivationDroitsCiv(),
+						getCasierJudiciaireCourant().getCommExtrait());
 			}
 			if (getTransaction().isErreur())
 				return false;
@@ -284,13 +319,15 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		// date de l'extrait obligatoire
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_EXTRAIT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de l'extrait de casier judiciaire"));
+			getTransaction()
+					.declarerErreur(MessageUtils.getMessage("ERR002", "date de l'extrait de casier judiciaire"));
 			setFocus(getNOM_EF_DATE_EXTRAIT());
 			return false;
 		} else
 		// date de l'extrait doit être bien formatée
 		if (!Services.estUneDate(getZone(getNOM_EF_DATE_EXTRAIT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "date de l'extrait de casier judiciaire"));
+			getTransaction()
+					.declarerErreur(MessageUtils.getMessage("ERR007", "date de l'extrait de casier judiciaire"));
 			setFocus(getNOM_EF_DATE_EXTRAIT());
 			return false;
 		} else {
@@ -298,7 +335,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 			// RG_AG_CJ_C01
 			if (Services.compareDates(getZone(getNOM_EF_DATE_EXTRAIT()), Services.dateDuJour()) >= 0) {
 				// ERR204 : La date @ doit être inférieure à la date @.
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "d'extrait de casier judiciaire", "du jour"));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("ERR204", "d'extrait de casier judiciaire", "du jour"));
 				setFocus(getNOM_EF_DATE_EXTRAIT());
 				return false;
 			}
@@ -306,7 +344,8 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		// numéro de l'extrait obligatoire
 		if ((Const.CHAINE_VIDE).equals(getZone(getNOM_EF_NUM_EXTRAIT()))) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "numéro de l'extrait de casier judiciaire"));
+			getTransaction().declarerErreur(
+					MessageUtils.getMessage("ERR002", "numéro de l'extrait de casier judiciaire"));
 			setFocus(getNOM_EF_NUM_EXTRAIT());
 			return false;
 		}
@@ -818,5 +857,13 @@ public class OeAGENTCasierJud extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public CasierJudiciaireDao getCasierJudiciaireDao() {
+		return casierJudiciaireDao;
+	}
+
+	public void setCasierJudiciaireDao(CasierJudiciaireDao casierJudiciaireDao) {
+		this.casierJudiciaireDao = casierJudiciaireDao;
 	}
 }
