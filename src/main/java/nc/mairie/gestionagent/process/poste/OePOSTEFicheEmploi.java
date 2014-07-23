@@ -32,11 +32,13 @@ import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
+import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
+import nc.mairie.technique.Transaction;
 import nc.mairie.technique.VariableActivite;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -129,6 +131,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private DomaineEmploiDao domaineEmploiDao;
 	private FamilleEmploiDao familleEmploiDao;
 	private TypeCompetenceDao typeCompetenceDao;
+	private AutreAppellationEmploiDao autreAppellationEmploiDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -776,8 +779,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		if (getListeAutreAppellationMulti() == null)
 			setListeAutreAppellationMulti(new ArrayList<AutreAppellationEmploi>());
-		AutreAppellationEmploi aae = new AutreAppellationEmploi(getFicheEmploiCourant().getIdFicheEmploi(),
-				getVAL_EF_AUTRE_APPELLATION());
+		AutreAppellationEmploi aae = new AutreAppellationEmploi(Integer.valueOf(getFicheEmploiCourant()
+				.getIdFicheEmploi()), getVAL_EF_AUTRE_APPELLATION());
 		if (!getListeAutreAppellationMulti().contains(aae)) {
 			getListeAutreAppellationMulti().add(aae);
 
@@ -868,7 +871,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 					feFp.supprimerFEFP(getTransaction());
 				}
 			}
-			if (getFicheEmploiCourant().supprimerFicheEmploi(getTransaction())) {
+			if (suppressionFicheEmploiEtLien(getFicheEmploiCourant(), getTransaction())) {
 				messageInf = MessageUtils
 						.getMessage("INF101", "Fiche emploi " + getFicheEmploiCourant().getRefMairie());
 				setFicheEmploiCourant(null);
@@ -934,8 +937,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciennes
 			for (int i = 0; i < getListeAutreAppellationAAjouter().size(); i++) {
 				AutreAppellationEmploi aae = (AutreAppellationEmploi) getListeAutreAppellationAAjouter().get(i);
-				aae.setIdFicheEmploi(getFicheEmploiCourant().getIdFicheEmploi());
-				aae.creerAutreAppellationEmploi(getTransaction());
+				aae.setIdFicheEmploi(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+				getAutreAppellationEmploiDao().creerAutreAppellationEmploi(aae.getIdFicheEmploi(),
+						aae.getLibAutreAppellationEmploi());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "AutreAppellation '" + aae.getLibAutreAppellationEmploi()
@@ -947,7 +951,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeAutreAppellationASupprimer().size(); i++) {
 				AutreAppellationEmploi aae = (AutreAppellationEmploi) getListeAutreAppellationASupprimer().get(i);
-				aae.supprimerAutreAppellationEmploi(getTransaction());
+				getAutreAppellationEmploiDao().supprimerAutreAppellationEmploi(aae.getIdAutreAppellationEmploi());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "AutreAppellation '" + aae.getLibAutreAppellationEmploi()
@@ -1197,6 +1201,33 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		return true;
 	}
 
+	private boolean suppressionFicheEmploiEtLien(FicheEmploi ficheEmploiCourant, Transaction aTransaction)
+			throws Exception {
+		boolean result = true;
+		// Suppression des Activite
+		result = result & ActiviteFE.supprimerActiviteFEAvecFE(aTransaction, ficheEmploiCourant);
+
+		// Suppression des Autres appellations
+		getAutreAppellationEmploiDao().supprimerAutreAppellationEmploiAvecFE(
+				Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
+
+		// Suppression des Categorie
+		result = result & CategorieFE.supprimerCategorieFEAvecFE(aTransaction, ficheEmploiCourant);
+
+		// Suppression des CadreEmploi
+		result = result & CadreEmploiFE.supprimerCadreEmploiFEAvecFE(aTransaction, ficheEmploiCourant);
+
+		// Suppression des NiveauEtude
+		result = result & NiveauEtudeFE.supprimerNiveauEtudeFEAvecFE(aTransaction, ficheEmploiCourant);
+
+		// Suppression des Diplome
+		result = result & DiplomeFE.supprimerDiplomeFEAvecFE(aTransaction, ficheEmploiCourant);
+
+		// suppression de la FicheEmploi
+		result = result & ficheEmploiCourant.supprimerFicheEmploi(getTransaction());
+		return result;
+	}
+
 	/**
 	 * Alimente l'objet FicheEmploi avec les champs de saisie du formulaire.
 	 * Retourne true ou false Date de création : (27/06/11 15:34:00)
@@ -1223,16 +1254,20 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		getFicheEmploiCourant().setLienHierarchique(Const.CHAINE_VIDE);
 		getFicheEmploiCourant().setDefinitionEmploi(getVAL_EF_DEFINITION_EMPLOI());
 
-		int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer
-				.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
-		getFicheEmploiCourant().setIdDomaineFE(
-				((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi().toString());
+		if (getFicheEmploiCourant().getIdFicheEmploi() == null) {
+			int indiceDomaine = (Services.estNumerique(getVAL_LB_DOMAINE_SELECT()) ? Integer
+					.parseInt(getVAL_LB_DOMAINE_SELECT()) : -1);
+			getFicheEmploiCourant().setIdDomaineFE(
+					((DomaineEmploi) getListeDomaine().get(indiceDomaine)).getIdDomaineEmploi().toString());
+		}
 
-		int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
-				.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
-		getFicheEmploiCourant().setIdFamilleEmploi(
-				((FamilleEmploi) getListeFamille().get(indiceFamille)).getIdFamilleEmploi().toString());
-
+		if (getFicheEmploiCourant().getIdFicheEmploi() == null) {
+			int indiceFamille = (Services.estNumerique(getVAL_LB_FAMILLE_EMPLOI_SELECT()) ? Integer
+					.parseInt(getVAL_LB_FAMILLE_EMPLOI_SELECT()) : -1);
+			getFicheEmploiCourant().setIdFamilleEmploi(
+					((FamilleEmploi) getListeFamille().get(indiceFamille)).getIdFamilleEmploi().toString());
+		}
+		
 		return true;
 	}
 
@@ -1340,6 +1375,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getTypeCompetenceDao() == null) {
 			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAutreAppellationEmploiDao() == null) {
+			setAutreAppellationEmploiDao(new AutreAppellationEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1649,8 +1687,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseAutreAppellationMulti() throws Exception {
 		if (getListeAutreAppellationMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(getTransaction(),
-					getFicheEmploiCourant()));
+			setListeAutreAppellationMulti(getAutreAppellationEmploiDao().listerAutreAppellationEmploiAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 		}
 
 		if (getListeAutreAppellationMulti() != null) {
@@ -2689,8 +2727,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			if (fiche != null && !fiche.getRefMairie().equals(getFicheEmploiCourant().getRefMairie())) {
 				viderFicheEmploi();
 				setFicheEmploiCourant(fiche);
-				setListeAutreAppellationMulti(AutreAppellationEmploi.listerAutreAppellationEmploiAvecFE(
-						getTransaction(), getFicheEmploiCourant()));
+				setListeAutreAppellationMulti(getAutreAppellationEmploiDao().listerAutreAppellationEmploiAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 				setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
 				setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
 						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR.getCode().toString()));
@@ -3341,9 +3379,10 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les AutreAppellation
 			for (int i = 0; i < getListeAutreAppellationMulti().size(); i++) {
 				AutreAppellationEmploi aa = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(i);
-				AutreAppellationEmploi newAA = new AutreAppellationEmploi(ficheDupliquee.getIdFicheEmploi(),
-						aa.getLibAutreAppellationEmploi());
-				newAA.creerAutreAppellationEmploi(getTransaction());
+				AutreAppellationEmploi newAA = new AutreAppellationEmploi(Integer.valueOf(ficheDupliquee
+						.getIdFicheEmploi()), aa.getLibAutreAppellationEmploi());
+				getAutreAppellationEmploiDao().creerAutreAppellationEmploi(newAA.getIdFicheEmploi(),
+						newAA.getLibAutreAppellationEmploi());
 			}
 			// Duplique les Activites principales
 			for (int i = 0; i < getListeActiPrincMulti().size(); i++) {
@@ -4157,5 +4196,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
 		this.typeCompetenceDao = typeCompetenceDao;
+	}
+
+	public AutreAppellationEmploiDao getAutreAppellationEmploiDao() {
+		return autreAppellationEmploiDao;
+	}
+
+	public void setAutreAppellationEmploiDao(AutreAppellationEmploiDao autreAppellationEmploiDao) {
+		this.autreAppellationEmploiDao = autreAppellationEmploiDao;
 	}
 }
