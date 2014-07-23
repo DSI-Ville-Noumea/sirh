@@ -16,7 +16,7 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.agent.ContactNW;
+import nc.mairie.metier.agent.Contact;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.commun.BanqueGuichet;
 import nc.mairie.metier.commun.Commune;
@@ -29,9 +29,11 @@ import nc.mairie.metier.referentiel.Collectivite;
 import nc.mairie.metier.referentiel.EtatServiceMilitaire;
 import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.ContactDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.CollectiviteDao;
 import nc.mairie.spring.dao.metier.referentiel.EtatServiceMilitaireDao;
+import nc.mairie.spring.dao.metier.referentiel.TypeContactDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -86,12 +88,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	public String message = Const.CHAINE_VIDE;
 	public String focus = null;
 	// Pour la gestion des contacts
-	private ContactNW contactCourant;
-	private ArrayList<ContactNW> listeContact;
-	private ArrayList<ContactNW> listeContactAAjouter;
-	private ArrayList<ContactNW> listeContactAModifier;
-	private ArrayList<ContactNW> listeContactASupprimer;
-	private Hashtable<String, TypeContact> hashTypeContact;
+	private Contact contactCourant;
+	private ArrayList<Contact> listeContact;
+	private ArrayList<Contact> listeContactAAjouter;
+	private ArrayList<Contact> listeContactAModifier;
+	private ArrayList<Contact> listeContactASupprimer;
+	private Hashtable<Integer, TypeContact> hashTypeContact;
 	public String ACTION_SUPPRESSION = "Suppression d'un contact.<FONT color='red'><div align='right'> Veuillez valider votre choix.</div></FONT>";
 	private String ACTION_MODIFICATION = "Modification.";
 	private String ACTION_CREATION = "Création.";
@@ -103,6 +105,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private CollectiviteDao collectiviteDao;
 	private EtatServiceMilitaireDao etatServiceMilitaireDao;
 	private DocumentDao documentDao;
+	private ContactDao contactDao;
+	private TypeContactDao typeContactDao;
 
 	// Fin gestion des contacts
 	public String getMessage() {
@@ -294,24 +298,28 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// Création de l'agent
-		getAgentCourant().creerAgentNW(getTransaction());
+		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
+		getAgentCourant().creerAgentNW(getTransaction(), lContact);
 		if (getTransaction().isErreur()) {
 			return false;
 		}
 
 		VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 
-		for (ContactNW contact : getListeContactAAjouter()) {
-			contact.setIdAgent(getAgentCourant().getIdAgent());
-			contact.creerContactNW(getTransaction());
+		for (Contact contact : getListeContactAAjouter()) {
+			contact.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getContactDao().creerContact(contact.getIdAgent(), contact.getIdTypeContact(), contact.getDescription(),
+					contact.isDiffusable(), contact.isPrioritaire());
 		}
 
-		for (ContactNW contact : getListeContactAModifier()) {
-			contact.modifierContactNW(getTransaction());
+		for (Contact contact : getListeContactAModifier()) {
+			getContactDao().modifierContact(contact.getIdContact(), contact.getIdAgent(), contact.getIdTypeContact(),
+					contact.getDescription(), contact.isDiffusable(), contact.isPrioritaire());
 		}
 
-		for (ContactNW contact : getListeContactASupprimer()) {
-			contact.supprimerContactNW(getTransaction());
+		for (Contact contact : getListeContactASupprimer()) {
+			getContactDao().supprimerContact(contact.getIdContact());
 		}
 
 		getListeContactAAjouter().clear();
@@ -945,33 +953,40 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			}
 			if (indiceTypeContact >= 0) {
 				TypeContact tc = (TypeContact) getListeTypeContact().get(indiceTypeContact);
-				if (!EnumTypeContact.EMAIL.getCode().equals(tc.getCodTypeContact())
+				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString()))
 						&& getVAL_EF_LIBELLE_CONTACT().length() > 6) {
 					// "ERR018",
 					// "Les contacts Tel, Fax, Mobile, Mobile pro et ligne directe ne doivent pas dépasser 6 caractères. Seul l'Email peut faire jusqu'à 50 caractères."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR018"));
 					return false;
 				}
-				if (!EnumTypeContact.EMAIL.getCode().equals(tc.getCodTypeContact())
+				if (EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString())
+						&& Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "contact"));
+					return false;
+				}
+				if ((!EnumTypeContact.EMAIL.getCode().toString().equals(tc.getIdTypeContact().toString()))
 						&& !Services.estNumerique(getVAL_EF_LIBELLE_CONTACT())) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "contact"));
 					return false;
 				}
-				if (EnumTypeContact.LIGNE_DIRECTE.getCode().equals(tc.getCodTypeContact())) {
+				if (EnumTypeContact.LIGNE_DIRECTE.getCode().toString().equals(tc.getIdTypeContact().toString())) {
 					// une seule entrée possible pour ligne directe
 					boolean dejaLigneDirecte = false;
 					if (getListeContactAAjouter() != null) {
 						for (int i = 0; i < getListeContactAAjouter().size(); i++) {
-							ContactNW contactAAjouter = getListeContactAAjouter().get(i);
-							if (contactAAjouter.getIdTypeContact().equals(EnumTypeContact.LIGNE_DIRECTE.getCode())) {
+							Contact contactAAjouter = getListeContactAAjouter().get(i);
+							if (contactAAjouter.getIdTypeContact().toString()
+									.equals(EnumTypeContact.LIGNE_DIRECTE.getCode().toString())) {
 								dejaLigneDirecte = true;
 								break;
 							}
 						}
 					}
 					if (!dejaLigneDirecte) {
-						ArrayList<ContactNW> contactExist = ContactNW.listerContactAgentAvecTypeContact(
-								getTransaction(), getAgentCourant(), EnumTypeContact.LIGNE_DIRECTE.getCode());
+						ArrayList<Contact> contactExist = getContactDao().listerContactAgentAvecTypeContact(
+								Integer.valueOf(getAgentCourant().getIdAgent()),
+								EnumTypeContact.LIGNE_DIRECTE.getCode());
 						if (contactExist != null && contactExist.size() > 0) {
 							dejaLigneDirecte = true;
 						}
@@ -1127,7 +1142,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			if (performControlerSaisieContact(request)) {
 				// Affectation des attributs
 				getContactCourant().setDescription(newLibContact);
-				getContactCourant().setIdTypeContact(newType.getCodTypeContact());
+				getContactCourant().setIdTypeContact(newType.getIdTypeContact());
 				getContactCourant().setDiffusable(diffusable);
 				getContactCourant().setPrioritaire(prioritaire);
 
@@ -1148,11 +1163,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 					: false;
 
 			if (performControlerSaisieContact(request)) {
-				setContactCourant(new ContactNW());
+				setContactCourant(new Contact());
 
 				// Affectation des attributs
 				getContactCourant().setDescription(newLibContact);
-				getContactCourant().setIdTypeContact(newType.getCodTypeContact());
+				getContactCourant().setIdTypeContact(newType.getIdTypeContact());
 				getContactCourant().setDiffusable(diffusable);
 				getContactCourant().setPrioritaire(prioritaire);
 
@@ -2220,6 +2235,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getContactDao() == null) {
+			setContactDao(new ContactDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTypeContactDao() == null) {
+			setTypeContactDao(new TypeContactDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -2708,17 +2729,23 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Si liste des type de contact vide
 		// RG_AG_EC_A07
 		if (getLB_TCONTACT() == LBVide) {
-			ArrayList<TypeContact> a = TypeContact.listerTypeContact(getTransaction());
+			ArrayList<TypeContact> a = getTypeContactDao().listerTypeContact();
 			setListeTypeContact(a);
 
 			int[] tailles = { 50 };
-			String[] champs = { "libTypeContact" };
-			setLB_TCONTACT(new FormateListe(tailles, a, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<TypeContact> list = getListeTypeContact().listIterator(); list.hasNext();) {
+				TypeContact fili = (TypeContact) list.next();
+				String ligne[] = { fili.getLibelle() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TCONTACT(aFormat.getListeFormatee());
 
 			// Remplissage de la hashtable des types de contacts.
 			for (ListIterator<TypeContact> list = a.listIterator(); list.hasNext();) {
 				TypeContact aTypeContact = (TypeContact) list.next();
-				getHashTypeContact().put(aTypeContact.getCodTypeContact(), aTypeContact);
+				getHashTypeContact().put(aTypeContact.getIdTypeContact(), aTypeContact);
 			}
 		}
 	}
@@ -2728,7 +2755,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 */
 	private void initialiseListeContact(HttpServletRequest request) throws Exception {
 
-		ArrayList<ContactNW> a = ContactNW.listerContactAgent(getTransaction(), getAgentCourant());
+		ArrayList<Contact> a = getContactDao().listerContactAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeContact(a);
 
 		afficheListeContact();
@@ -2742,11 +2769,11 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int indiceContact = 0;
 		if (getListeContact() != null) {
 			for (int i = 0; i < getListeContact().size(); i++) {
-				ContactNW aContact = (ContactNW) getListeContact().get(i);
-				TypeContact aType = TypeContact.chercherTypeContact(getTransaction(), aContact.getIdTypeContact());
+				Contact aContact = (Contact) getListeContact().get(i);
+				TypeContact aType = getTypeContactDao().chercherTypeContact(aContact.getIdTypeContact());
 
-				addZone(getNOM_ST_TYPE_CONTACT(indiceContact),
-						aType.getLibTypeContact().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aType.getLibTypeContact());
+				addZone(getNOM_ST_TYPE_CONTACT(indiceContact), aType.getLibelle().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: aType.getLibelle());
 				addZone(getNOM_ST_DIFFUSABLE_CONTACT(indiceContact), aContact.isDiffusable() ? "Diffusable"
 						: "Non diffusable");
 				addZone(getNOM_ST_DESCRIPTION_CONTACT(indiceContact),
@@ -3469,21 +3496,21 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		return getZone(getNOM_EF_NUM_RUAMM());
 	}
 
-	private void setContactCourant(ContactNW newContact) {
+	private void setContactCourant(Contact newContact) {
 		contactCourant = newContact;
 	}
 
-	private ContactNW getContactCourant() {
+	private Contact getContactCourant() {
 		return contactCourant;
 	}
 
-	private void setListeContact(ArrayList<ContactNW> newListeContact) {
+	private void setListeContact(ArrayList<Contact> newListeContact) {
 		listeContact = newListeContact;
 	}
 
-	public ArrayList<ContactNW> getListeContact() {
+	public ArrayList<Contact> getListeContact() {
 		if (listeContact == null) {
-			listeContact = new ArrayList<ContactNW>();
+			listeContact = new ArrayList<Contact>();
 		}
 		return listeContact;
 	}
@@ -3499,9 +3526,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		listeTypeContact = newListeTypeContact;
 	}
 
-	private Hashtable<String, TypeContact> getHashTypeContact() {
+	private Hashtable<Integer, TypeContact> getHashTypeContact() {
 		if (hashTypeContact == null) {
-			hashTypeContact = new Hashtable<String, TypeContact>();
+			hashTypeContact = new Hashtable<Integer, TypeContact>();
 		}
 		return hashTypeContact;
 	}
@@ -3609,7 +3636,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		alimenterAgent(request);
 
 		// Création/Modification de l'agent
-		getAgentCourant().creerAgentNW(getTransaction());
+		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
+		getAgentCourant().creerAgentNW(getTransaction(), lContact);
 		if (!getTransaction().isErreur()) {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 			commitTransaction();
@@ -4258,23 +4287,23 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		this.paysNaissanceCourant = paysNaissanceCourant;
 	}
 
-	private ArrayList<ContactNW> getListeContactAAjouter() {
+	private ArrayList<Contact> getListeContactAAjouter() {
 		if (listeContactAAjouter == null) {
-			listeContactAAjouter = new ArrayList<ContactNW>();
+			listeContactAAjouter = new ArrayList<Contact>();
 		}
 		return listeContactAAjouter;
 	}
 
-	private ArrayList<ContactNW> getListeContactAModifier() {
+	private ArrayList<Contact> getListeContactAModifier() {
 		if (listeContactAModifier == null) {
-			listeContactAModifier = new ArrayList<ContactNW>();
+			listeContactAModifier = new ArrayList<Contact>();
 		}
 		return listeContactAModifier;
 	}
 
-	private ArrayList<ContactNW> getListeContactASupprimer() {
+	private ArrayList<Contact> getListeContactASupprimer() {
 		if (listeContactASupprimer == null) {
-			listeContactASupprimer = new ArrayList<ContactNW>();
+			listeContactASupprimer = new ArrayList<Contact>();
 		}
 		return listeContactASupprimer;
 	}
@@ -4305,7 +4334,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		TypeContact newType = (TypeContact) getListeTypeContact().get(
 				Integer.parseInt(getZone(getNOM_LB_TCONTACT_SELECT())));
 		setFocus(getNOM_PB_VALIDER_CONTACT());
-		if (newType.getCodTypeContact().equals("6")) {
+		if (newType.getIdTypeContact() == 6) {
 			addZone(getNOM_RG_CONTACT_DIFF(), getNOM_RB_CONTACT_DIFF_OUI());
 			diffusableModifiable = false;
 		} else {
@@ -4322,8 +4351,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// on regarde si il y a dejà pour ce type un contact prioritaire
 		boolean unEstDejaPrioritaire = false;
 		for (int i = 0; i < getListeContact().size(); i++) {
-			ContactNW c = (ContactNW) getListeContact().get(i);
-			if (c.isPrioritaire() && c.getIdTypeContact().equals(newType.getCodTypeContact())) {
+			Contact c = (Contact) getListeContact().get(i);
+			if (c.isPrioritaire() && c.getIdTypeContact() == newType.getIdTypeContact()) {
 				unEstDejaPrioritaire = true;
 				break;
 			}
@@ -4443,7 +4472,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_ST_ACTION_CONTACT(), ACTION_MODIFICATION);
 
 		// Récup du contact courant
-		ContactNW c = (ContactNW) getListeContact().get(elemAModifier);
+		Contact c = (Contact) getListeContact().get(elemAModifier);
 		setContactCourant(c);
 		TypeContact t = (TypeContact) getHashTypeContact().get(c.getIdTypeContact());
 
@@ -4474,13 +4503,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_ST_ACTION_CONTACT(), ACTION_SUPPRESSION);
 
 		// Récup du contact courant
-		ContactNW c = (ContactNW) getListeContact().get(elemASupprimer);
+		Contact c = (Contact) getListeContact().get(elemASupprimer);
 		setContactCourant(c);
 		TypeContact t = (TypeContact) getHashTypeContact().get(c.getIdTypeContact());
 
 		// Alim zones
 		addZone(getNOM_ST_LIBELLE_CONTACT(), c.getDescription());
-		addZone(getNOM_ST_TCONTACT(), t.getLibTypeContact());
+		addZone(getNOM_ST_TCONTACT(), t.getLibelle());
 		addZone(getNOM_RG_CONTACT_DIFF(), (c != null && c.isDiffusable()) ? getNOM_RB_CONTACT_DIFF_OUI()
 				: getNOM_RB_CONTACT_DIFF_NON());
 		addZone(getNOM_RG_CONTACT_PRIORITAIRE(), (c != null && c.isPrioritaire()) ? getNOM_RB_CONTACT_PRIORITAIRE_OUI()
@@ -4549,5 +4578,21 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public ContactDao getContactDao() {
+		return contactDao;
+	}
+
+	public void setContactDao(ContactDao contactDao) {
+		this.contactDao = contactDao;
+	}
+
+	public TypeContactDao getTypeContactDao() {
+		return typeContactDao;
+	}
+
+	public void setTypeContactDao(TypeContactDao typeContactDao) {
+		this.typeContactDao = typeContactDao;
 	}
 }
