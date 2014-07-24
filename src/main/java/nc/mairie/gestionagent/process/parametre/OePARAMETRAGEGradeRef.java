@@ -17,6 +17,7 @@ import nc.mairie.metier.carriere.GradeGenerique;
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.parametrage.Deliberation;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.DeliberationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -83,6 +84,8 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	public String ACTION_MODIFICATION = "1";
 	public String ACTION_SUPPRESSION = "2";
 
+	private CategorieDao categorieDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -148,6 +151,10 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 		if (getCadreEmploiDao() == null) {
 			setCadreEmploiDao(new CadreEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+
+		if (getCategorieDao() == null) {
+			setCategorieDao(new CategorieDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -296,16 +303,25 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeCategorie(HttpServletRequest request) throws Exception {
-		ArrayList<Categorie> liste = Categorie.listerCategorie(getTransaction());
+		ArrayList<Categorie> liste = getCategorieDao().listerCategorie();
 		setListeCategorie(liste);
+		if (getListeCategorie().size() != 0) {
+			int tailles[] = { 2 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<Categorie> list = getListeCategorie().listIterator(); list.hasNext();) {
+				Categorie cat = (Categorie) list.next();
+				String ligne[] = { cat.getLibCategorieStatut() };
 
-		int[] tailles = { 2 };
-		String[] champs = { "libCategorie" };
-		setLB_CATEGORIE(new FormateListe(tailles, liste, champs).getListeFormatee(true));
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_CATEGORIE(aFormat.getListeFormatee(true));
+		} else {
+			setLB_CATEGORIE(null);
+		}
 
 		// remplissage de la hashTable
 		for (Categorie categorie : liste)
-			getHashCategorie().put(categorie.getLibCategorie(), categorie);
+			getHashCategorie().put(categorie.getLibCategorieStatut(), categorie);
 	}
 
 	private void initialiseListeFiliere(HttpServletRequest request) throws Exception {
@@ -998,7 +1014,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 				setGradeGeneriqueCourant(new GradeGenerique());
 				getGradeGeneriqueCourant().setCdgeng(getVAL_EF_CODE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodCadre(
-						categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
+						categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
@@ -1016,7 +1032,7 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 			} else if (getVAL_ST_ACTION_GRADE_GENERIQUE().equals(ACTION_MODIFICATION)) {
 				Boolean inactif = getZone(getNOM_RG_INACTIF()).equals(getNOM_RB_OUI());
 				getGradeGeneriqueCourant().setCodCadre(
-						categorie != null ? categorie.getLibCategorie() : Const.CHAINE_VIDE);
+						categorie != null ? categorie.getLibCategorieStatut() : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setLibGradeGenerique(getVAL_EF_LIBELLE_GRADE_GENERIQUE());
 				getGradeGeneriqueCourant().setCodeInactif(inactif ? "I" : Const.CHAINE_VIDE);
 				getGradeGeneriqueCourant().setNbPointsAvct(getVAL_EF_NB_PTS_CATEGORIE());
@@ -2765,5 +2781,13 @@ public class OePARAMETRAGEGradeRef extends BasicProcess {
 
 	public void setCadreEmploiDao(CadreEmploiDao cadreEmploiDao) {
 		this.cadreEmploiDao = cadreEmploiDao;
+	}
+
+	public CategorieDao getCategorieDao() {
+		return categorieDao;
+	}
+
+	public void setCategorieDao(CategorieDao categorieDao) {
+		this.categorieDao = categorieDao;
 	}
 }

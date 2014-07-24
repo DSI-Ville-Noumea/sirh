@@ -11,13 +11,14 @@ import nc.mairie.metier.parametrage.CodeRome;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
-import nc.mairie.metier.poste.CategorieFE;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
+import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -64,6 +65,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private DiplomeGeneriqueDao diplomeGeneriqueDao;
 	private DomaineEmploiDao domaineEmploiDao;
 	private FamilleEmploiDao familleEmploiDao;
+	private CategorieFEDao categorieFEDao;
+	private CategorieDao categorieDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -115,7 +118,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		if (getListeCategorie() == null) {
 			// Recherche des categories d'emploi
-			ArrayList<Categorie> liste = Categorie.listerCategorie(getTransaction());
+			ArrayList<Categorie> liste = getCategorieDao().listerCategorie();
 			setListeCategorie(liste);
 			initialiseListeCategorie(request);
 		}
@@ -144,6 +147,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		}
 		if (getFamilleEmploiDao() == null) {
 			setFamilleEmploiDao(new FamilleEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCategorieDao() == null) {
+			setCategorieDao(new CategorieDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCategorieFEDao() == null) {
+			setCategorieFEDao(new CategorieFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -243,14 +252,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	 * (09/09/11)
 	 */
 	private void initialiseListeCategorie(HttpServletRequest request) throws Exception {
-		setListeCategorie(Categorie.listerCategorie(getTransaction()));
+		setListeCategorie(getCategorieDao().listerCategorie());
 		if (getListeCategorie().size() != 0) {
 			int tailles[] = { 20 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<Categorie> list = getListeCategorie().listIterator(); list.hasNext();) {
 				Categorie cat = (Categorie) list.next();
-				String ligne[] = { cat.getLibCategorie() };
+				String ligne[] = { cat.getLibCategorieStatut() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -1180,7 +1189,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (indice != -1 && indice < getListeCategorie().size()) {
 			Categorie cat = getListeCategorie().get(indice);
 			setCategorieCourante(cat);
-			addZone(getNOM_EF_LIB_CATEGORIE(), cat.getLibCategorie());
+			addZone(getNOM_EF_LIB_CATEGORIE(), cat.getLibCategorieStatut());
 			addZone(getNOM_ST_ACTION_CATEGORIE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "catégorie"));
@@ -1215,12 +1224,12 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (getVAL_ST_ACTION_CATEGORIE() != null && getVAL_ST_ACTION_CATEGORIE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_CREATION)) {
 				setCategorieCourante(new Categorie());
-				getCategorieCourante().setLibCategorie(getVAL_EF_LIB_CATEGORIE());
-				getCategorieCourante().creerCategorie(getTransaction());
+				getCategorieCourante().setLibCategorieStatut(getVAL_EF_LIB_CATEGORIE());
+				getCategorieDao().creerCategorie(getCategorieCourante().getLibCategorieStatut());
 				if (!getTransaction().isErreur())
 					getListeCategorie().add(getCategorieCourante());
 			} else if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_SUPPRESSION)) {
-				getCategorieCourante().supprimerCategorie(getTransaction());
+				getCategorieDao().supprimerCategorie(getCategorieCourante().getIdCategorieStatut());
 				if (!getTransaction().isErreur())
 					getListeCategorie().remove(getCategorieCourante());
 				setCategorieCourante(null);
@@ -1261,7 +1270,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// Verification si suppression d'une categorie utilisée sur une fiche
 		// emploi
 		if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_SUPPRESSION)
-				&& CategorieFE.listerCategorieFEAvecCategorie(getTransaction(), getCategorieCourante()).size() > 0) {
+				&& getCategorieFEDao().listerCategorieFEAvecCategorie(getCategorieCourante().getIdCategorieStatut())
+						.size() > 0) {
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR989", "une fiche emploi", "cette catégorie"));
@@ -1271,7 +1281,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// Vérification des contraintes d'unicité de la categorie d'emploi
 		if (getVAL_ST_ACTION_CATEGORIE().equals(ACTION_CREATION)) {
 			for (Categorie categorie : getListeCategorie()) {
-				if (categorie.getLibCategorie().equals(getVAL_EF_LIB_CATEGORIE().toUpperCase())) {
+				if (categorie.getLibCategorieStatut().equals(getVAL_EF_LIB_CATEGORIE().toUpperCase())) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR974", "une catégorie", "ce libellé"));
 					return false;
 				}
@@ -1950,5 +1960,21 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setFamilleEmploiDao(FamilleEmploiDao familleEmploiDao) {
 		this.familleEmploiDao = familleEmploiDao;
+	}
+
+	public CategorieFEDao getCategorieFEDao() {
+		return categorieFEDao;
+	}
+
+	public void setCategorieFEDao(CategorieFEDao categorieFEDao) {
+		this.categorieFEDao = categorieFEDao;
+	}
+
+	public CategorieDao getCategorieDao() {
+		return categorieDao;
+	}
+
+	public void setCategorieDao(CategorieDao categorieDao) {
+		this.categorieDao = categorieDao;
 	}
 }

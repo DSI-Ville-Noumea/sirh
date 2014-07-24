@@ -27,6 +27,7 @@ import nc.mairie.metier.poste.NiveauEtudeFE;
 import nc.mairie.metier.referentiel.NiveauEtude;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
@@ -34,6 +35,7 @@ import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
+import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -134,6 +136,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private FamilleEmploiDao familleEmploiDao;
 	private TypeCompetenceDao typeCompetenceDao;
 	private AutreAppellationEmploiDao autreAppellationEmploiDao;
+	private CategorieDao categorieDao;
+	private CategorieFEDao categorieFEDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -966,11 +970,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouvelles catégories et suppression des anciennes
 			for (int i = 0; i < getListeCategorieAAjouter().size(); i++) {
 				Categorie cat = (Categorie) getListeCategorieAAjouter().get(i);
-				CategorieFE catFE = new CategorieFE(getFicheEmploiCourant().getIdFicheEmploi(), cat.getIdCategorie());
-				catFE.creerCategorieFE(getTransaction());
+				CategorieFE catFE = new CategorieFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						cat.getIdCategorieStatut());
+				getCategorieFEDao().creerCategorieFE(catFE.getIdFicheEmploi(), catFE.getIdCategorieStatut());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR976", "Categorie '" + cat.getLibCategorie() + "'"));
+							MessageUtils.getMessage("ERR976", "Categorie '" + cat.getLibCategorieStatut() + "'"));
 					return false;
 				}
 			}
@@ -978,12 +983,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCategorieASupprimer().size(); i++) {
 				Categorie cat = (Categorie) getListeCategorieASupprimer().get(i);
-				CategorieFE catFE = CategorieFE.chercherCategorieFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), cat.getIdCategorie());
-				catFE.supprimerCategorieFE(getTransaction());
+				CategorieFE catFE = getCategorieFEDao().chercherCategorieFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cat.getIdCategorieStatut());
+				getCategorieFEDao().supprimerCategorieFE(catFE.getIdFicheEmploi(), catFE.getIdCategorieStatut());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR975", "Categorie '" + cat.getLibCategorie() + "'"));
+							MessageUtils.getMessage("ERR975", "Categorie '" + cat.getLibCategorieStatut() + "'"));
 					return false;
 				}
 			}
@@ -1214,7 +1219,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// Suppression des Categorie
-		result = result & CategorieFE.supprimerCategorieFEAvecFE(aTransaction, ficheEmploiCourant);
+		getCategorieFEDao().supprimerCategorieFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// Suppression des CadreEmploi
 		getCadreEmploiFEDao().supprimerCadreEmploiFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
@@ -1383,6 +1388,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getCadreEmploiFEDao() == null) {
 			setCadreEmploiFEDao(new CadreEmploiFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCategorieDao() == null) {
+			setCategorieDao(new CategorieDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCategorieFEDao() == null) {
+			setCategorieFEDao(new CategorieFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1622,12 +1633,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Si liste categorie vide alors affectation
 		if (getLB_CATEGORIE() == LBVide) {
-			ArrayList<Categorie> cat = Categorie.listerCategorie(getTransaction());
+			ArrayList<Categorie> cat = getCategorieDao().listerCategorie();
 			setListeCategorie(cat);
 
-			int[] tailles = { 2 };
-			String[] champs = { "libCategorie" };
-			setLB_CATEGORIE(new FormateListe(tailles, cat, champs).getListeFormatee(true));
+			if (getListeCategorie().size() != 0) {
+				int[] tailles = { 2 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<Categorie> list = getListeCategorie().listIterator(); list.hasNext();) {
+					Categorie de = (Categorie) list.next();
+					String ligne[] = { de.getLibCategorieStatut() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_CATEGORIE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_CATEGORIE(null);
+			}
 		}
 
 		// Si liste cadres emploi vide alors affectation
@@ -1717,14 +1737,15 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseCategorieMulti() throws Exception {
 		if (getListeCategorieMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
+			setListeCategorieMulti(getCategorieDao().listerCategorieAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), getCategorieFEDao()));
 		}
 
 		String catMulti = Const.CHAINE_VIDE;
 		if (getListeCategorieMulti() != null) {
 			for (int i = 0; i < getListeCategorieMulti().size(); i++) {
 				Categorie categorie = (Categorie) getListeCategorieMulti().get(i);
-				catMulti += categorie.getLibCategorie() + ", ";
+				catMulti += categorie.getLibCategorieStatut() + ", ";
 			}
 		}
 		addZone(getNOM_EF_CATEGORIE_MULTI(), catMulti.length() > 0 ? catMulti.substring(0, catMulti.length() - 2)
@@ -2741,7 +2762,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString()));
 				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
 						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
-				setListeCategorieMulti(Categorie.listerCategorieAvecFE(getTransaction(), getFicheEmploiCourant()));
+				setListeCategorieMulti(getCategorieDao().listerCategorieAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), getCategorieFEDao()));
 				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getCadreEmploiFEDao(),
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 				setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
@@ -3419,8 +3441,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les Categorie
 			for (int i = 0; i < getListeCategorieMulti().size(); i++) {
 				Categorie cat = (Categorie) getListeCategorieMulti().get(i);
-				CategorieFE newCatFE = new CategorieFE(ficheDupliquee.getIdFicheEmploi(), cat.getIdCategorie());
-				newCatFE.creerCategorieFE(getTransaction());
+				CategorieFE newCatFE = new CategorieFE(Integer.valueOf(ficheDupliquee.getIdFicheEmploi()),
+						cat.getIdCategorieStatut());
+				getCategorieFEDao().creerCategorieFE(newCatFE.getIdFicheEmploi(), newCatFE.getIdCategorieStatut());
 			}
 			// Duplique les CadreEmploi
 			for (int i = 0; i < getListeCadresEmploiMulti().size(); i++) {
@@ -4217,5 +4240,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setCadreEmploiFEDao(CadreEmploiFEDao cadreEmploiFEDao) {
 		this.cadreEmploiFEDao = cadreEmploiFEDao;
+	}
+
+	public CategorieDao getCategorieDao() {
+		return categorieDao;
+	}
+
+	public void setCategorieDao(CategorieDao categorieDao) {
+		this.categorieDao = categorieDao;
+	}
+
+	public CategorieFEDao getCategorieFEDao() {
+		return categorieFEDao;
+	}
+
+	public void setCategorieFEDao(CategorieFEDao categorieFEDao) {
+		this.categorieFEDao = categorieFEDao;
 	}
 }
