@@ -15,6 +15,9 @@ import nc.mairie.metier.droits.GroupeUtilisateur;
 import nc.mairie.metier.droits.Utilisateur;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.droits.UtilisateurDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -23,6 +26,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeDROITSUtilisateurs Date de création : (12/10/11 11:52:50)
@@ -53,6 +58,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<Service> listeServices;
 
+	private UtilisateurDao utilisateurDao;
+
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
@@ -64,11 +71,12 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 		initialiseListeService();
 
 		// Initialisation des utilisateurs
 		if (getListeUtilisateur() == null || getListeUtilisateur().size() == 0) {
-			setListeUtilisateur(Utilisateur.listerUtilisateur(getTransaction()));
+			setListeUtilisateur(getUtilisateurDao().listerUtilisateur());
 			initialiseListeUtilisateur(request);
 		}
 
@@ -88,6 +96,14 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		setLB_GROUPES_AUTRES(new FormateListe(taillesGroupe, getListeGroupesAutres(), champs).getListeFormatee());
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getUtilisateurDao() == null) {
+			setUtilisateurDao(new UtilisateurDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	/**
 	 * @param request
 	 *            HttpServletRequest
@@ -100,8 +116,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			for (int i = 0; i < getListeUtilisateur().size(); i++) {
 				Utilisateur u = (Utilisateur) getListeUtilisateur().get(i);
 				String listeGroupes = Const.CHAINE_VIDE;
-				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(),
-						u.getIdUtilisateur());
+				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(), u
+						.getIdUtilisateur().toString());
 				for (int j = 0; j < groupesUtilisateur.size(); j++) {
 					listeGroupes += j == 0 ? ((Groupe) groupesUtilisateur.get(j)).getLibGroupe() : ", "
 							+ ((Groupe) groupesUtilisateur.get(j)).getLibGroupe();
@@ -341,7 +357,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 		setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
 		setListeGroupesUtilisateur(Groupe.listerGroupeAvecUtilisateur(getTransaction(), getUtilisateurCourant()
-				.getIdUtilisateur()));
+				.getIdUtilisateur().toString()));
 
 		return true;
 	}
@@ -355,10 +371,10 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			for (int i = 0; i < getListeGroupesUtilisateur().size(); i++) {
 				Groupe g = (Groupe) getListeGroupesUtilisateur().get(i);
 				GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
-						getUtilisateurCourant().getIdUtilisateur(), g.getIdGroupe());
+						getUtilisateurCourant().getIdUtilisateur().toString(), g.getIdGroupe());
 				gu.supprimerGroupeUtilisateur(getTransaction());
 			}
-			getUtilisateurCourant().supprimerUtilisateur(getTransaction());
+			getUtilisateurDao().supprimerUtilisateur(getUtilisateurCourant().getIdUtilisateur());
 		} else {
 			// Contrôle des champs
 			if (!performControlerSaisie())
@@ -366,19 +382,20 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 			getUtilisateurCourant().setLoginUtilisateur(getVAL_EF_NOM_UTILISATEUR());
 			if (getUtilisateurCourant().getIdUtilisateur() == null) {
-				getUtilisateurCourant().creerUtilisateur(getTransaction());
+				getUtilisateurDao().creerUtilisateur(getUtilisateurCourant().getLoginUtilisateur());
 			} else {
-				getUtilisateurCourant().modifierUtilisateur(getTransaction());
+				getUtilisateurDao().modifierUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
+						getUtilisateurCourant().getLoginUtilisateur());
 				for (int i = 0; i < getListeGroupesARetirer().size(); i++) {
 					Groupe grp = (Groupe) getListeGroupesARetirer().get(i);
 					GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
-							getUtilisateurCourant().getIdUtilisateur(), grp.getIdGroupe());
+							getUtilisateurCourant().getIdUtilisateur().toString(), grp.getIdGroupe());
 					gu.supprimerGroupeUtilisateur(getTransaction());
 				}
 			}
 			for (int i = 0; i < getListeGroupesAAjouter().size(); i++) {
 				Groupe grp = (Groupe) getListeGroupesAAjouter().get(i);
-				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
+				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur().toString(),
 						grp.getIdGroupe());
 				gu.creerGroupeUtilisateur(getTransaction());
 			}
@@ -731,5 +748,13 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public Hashtable<String, TreeHierarchy> getHTree() {
 		return hTree;
+	}
+
+	public UtilisateurDao getUtilisateurDao() {
+		return utilisateurDao;
+	}
+
+	public void setUtilisateurDao(UtilisateurDao utilisateurDao) {
+		this.utilisateurDao = utilisateurDao;
 	}
 }

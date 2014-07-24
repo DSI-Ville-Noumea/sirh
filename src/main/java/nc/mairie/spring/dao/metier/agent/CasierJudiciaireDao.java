@@ -60,7 +60,6 @@ public class CasierJudiciaireDao extends SirhDao implements CasierJudiciaireDaoI
 	@Override
 	public void modifierCasierJudiciaire(Integer idCasierJud, Integer idAgent, Integer idDocument, String numExtrait,
 			Date dateExtrait, boolean privationDroitsCiv, String commExtrait) throws Exception {
-
 		String sql = "UPDATE " + NOM_TABLE + " set " + CHAMP_ID_AGENT + "=?," + CHAMP_ID_DOCUMENT + "=?,"
 				+ CHAMP_NUM_EXTRAIT + "=?," + CHAMP_DATE_EXTRAIT + "=?," + CHAMP_PRIVATION_DROITS_CIV + "=?,"
 				+ CHAMP_COMM_EXTRAIT + "=? where " + CHAMP_ID + " =?";
