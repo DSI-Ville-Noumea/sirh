@@ -2,6 +2,7 @@ package nc.mairie.gestionagent.process;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,14 +12,16 @@ import nc.mairie.enums.EnumSexe;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.agent.EnfantNW;
-import nc.mairie.metier.agent.LienEnfantNWAgentNW;
+import nc.mairie.metier.agent.Enfant;
+import nc.mairie.metier.agent.LienEnfantAgent;
 import nc.mairie.metier.agent.Scolarite;
 import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Departement;
 import nc.mairie.metier.commun.Pays;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.agent.EnfantDao;
+import nc.mairie.spring.dao.metier.agent.LienEnfantAgentDao;
 import nc.mairie.spring.dao.metier.agent.ScolariteDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -54,31 +57,39 @@ public class OeENFANTGestion extends BasicProcess {
 	public String ACTION_CREATION = "Création d'une fiche enfant.";
 
 	private AgentNW agentCourant;
-	private LienEnfantNWAgentNW lienEnfantAgentCourant;
-	private ArrayList<EnfantNW> listeEnfants;
+	private LienEnfantAgent lienEnfantAgentCourant;
+	private ArrayList<Enfant> listeEnfants;
 	private List<Scolarite> listeScolarites;
-	private EnfantNW enfantCourant;
+	private Enfant enfantCourant;
 	private Scolarite scolariteCourant;
 	private Pays paysNaissance;
 	private Object communeNaissance;
 	private AgentNW autreParentCourant;
-	private LienEnfantNWAgentNW lienEnfantAutreParent;
+	private LienEnfantAgent lienEnfantAutreParent;
 
 	private ScolariteDao scolariteDao;
+	private LienEnfantAgentDao lienEnfantAgentDao;
+	private EnfantDao enfantDao;
 
 	public String focus = null;
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		
+
 		if (getScolariteDao() == null) {
 			setScolariteDao(new ScolariteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getLienEnfantAgentDao() == null) {
+			setLienEnfantAgentDao(new LienEnfantAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getEnfantDao() == null) {
+			setEnfantDao(new EnfantDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
-	
+
 	/**
 	 * Alimente l'enfant courant.
 	 * 
@@ -90,25 +101,27 @@ public class OeENFANTGestion extends BasicProcess {
 		// Affectation des zones
 		getEnfantCourant().setNom(getVAL_EF_NOM());
 		getEnfantCourant().setPrenom(getVAL_EF_PRENOM());
-		getEnfantCourant().setDateNaissance(getVAL_EF_DATE_NAISS());
-		getEnfantCourant().setDateDeces(getVAL_EF_DATE_DECES());
+		getEnfantCourant().setDateNaissance(sdf.parse(getVAL_EF_DATE_NAISS()));
+		getEnfantCourant().setDateDeces(
+				getVAL_EF_DATE_DECES().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_DECES()));
 		getEnfantCourant().setCommentaire(getVAL_EF_COMMENTAIRE());
 
 		// Nationalite
-		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
+		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
 		getEnfantCourant().setNationalite(getLB_NATIONALITE()[indiceNation].substring(0, 1));
 
 		// Lieu de naissance
 		if (getPaysNaissance() != null) {
 			CommuneEtrangere comm = (CommuneEtrangere) getCommuneNaissance();
-			getEnfantCourant().setCodePaysNaissEt(comm.getCodPays());
-			getEnfantCourant().setCodeCommuneNaissEt(comm.getCodCommuneEtrangere());
+			getEnfantCourant().setCodePaysNaissEt(Integer.valueOf(comm.getCodPays()));
+			getEnfantCourant().setCodeCommuneNaissEt(Integer.valueOf(comm.getCodCommuneEtrangere()));
 			getEnfantCourant().setCodeCommuneNaissFr(null);
 		} else {
 			Commune comm = (Commune) getCommuneNaissance();
 			if (comm != null) {
 				getEnfantCourant().setCodePaysNaissEt(null);
-				getEnfantCourant().setCodeCommuneNaissFr(comm.getCodCommune());
+				getEnfantCourant().setCodeCommuneNaissFr(Integer.valueOf(comm.getCodCommune()));
 			} else {
 				getEnfantCourant().setCodePaysNaissEt(null);
 				getEnfantCourant().setCodeCommuneNaissFr(null);
@@ -132,7 +145,8 @@ public class OeENFANTGestion extends BasicProcess {
 		if (getAutreParentCourant() == null) {
 			addZone(getNOM_ST_AUTRE_PARENT(), Const.CHAINE_VIDE);
 		} else {
-			addZone(getNOM_ST_AUTRE_PARENT(), getAutreParentCourant().getNomAgent() + " " + getAutreParentCourant().getPrenomAgent());
+			addZone(getNOM_ST_AUTRE_PARENT(), getAutreParentCourant().getNomAgent() + " "
+					+ getAutreParentCourant().getPrenomAgent());
 		}
 	}
 
@@ -140,8 +154,8 @@ public class OeENFANTGestion extends BasicProcess {
 	 * Affiche la liste des scolarites de l'enfant
 	 */
 	private void afficheListeScolarite(HttpServletRequest request) throws Exception {
-		
-		setListeScolarites(getScolariteDao().listerScolariteEnfant(new Integer(getEnfantCourant().getId_enfant())));
+
+		setListeScolarites(getScolariteDao().listerScolariteEnfant(getEnfantCourant().getIdEnfant()));
 		rafraichirListeScolarite(request);
 	}
 
@@ -155,7 +169,8 @@ public class OeENFANTGestion extends BasicProcess {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
 
 				addZone(getNOM_ST_DATE_DEBUT(indiceScol), sdf.format(scol.getDateDebutScolarite()));
-				addZone(getNOM_ST_DATE_FIN(indiceScol), scol.getDateFinScolarite() == null ? "&nbsp;" : sdf.format(scol.getDateFinScolarite()));
+				addZone(getNOM_ST_DATE_FIN(indiceScol),
+						scol.getDateFinScolarite() == null ? "&nbsp;" : sdf.format(scol.getDateFinScolarite()));
 
 				indiceScol++;
 			}
@@ -168,7 +183,7 @@ public class OeENFANTGestion extends BasicProcess {
 	private void afficheEnfantCourant(HttpServletRequest request) throws Exception {
 
 		// Récup du Enfant courant
-		EnfantNW aEnfant = getEnfantCourant();
+		Enfant aEnfant = getEnfantCourant();
 
 		// Si vide, on vide tout
 		if (aEnfant == null) {
@@ -177,27 +192,28 @@ public class OeENFANTGestion extends BasicProcess {
 		}
 
 		// Récup des lien parent
-		ArrayList<LienEnfantNWAgentNW> liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
+		ArrayList<LienEnfantAgent> liens = getLienEnfantAgentDao().listerLienEnfantAgentAvecEnfant(
+				aEnfant.getIdEnfant());
 		setAutreParentCourant(null);
+		setLienEnfantAutreParent(null);
 
 		if (liens.size() > 2) {
 			String listeMatriculesParents = Const.CHAINE_VIDE;
 			for (int i = 0; i < liens.size(); i++) {
-				LienEnfantNWAgentNW aLien = (LienEnfantNWAgentNW) liens.get(i);
-				listeMatriculesParents += aLien.getIdAgent().substring(2) + " ";
+				LienEnfantAgent aLien = (LienEnfantAgent) liens.get(i);
+				listeMatriculesParents += aLien.getIdAgent().toString().substring(2) + " ";
 			}
 			// ERR020 : Données erronées. Un enfant ne peut avoir plus de 2
 			// parents et celui-ci est lié aux agents suivants : @.
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR020", listeMatriculesParents));
 		} else {
 			for (int i = 0; i < liens.size(); i++) {
-				LienEnfantNWAgentNW aLien = (LienEnfantNWAgentNW) liens.get(i);
-				if (aLien.getIdAgent().equals(getAgentCourant().getIdAgent())) {
+				LienEnfantAgent aLien = (LienEnfantAgent) liens.get(i);
+				if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent())) {
 					setLienEnfantAgentCourant(aLien);
-					setLienEnfantAutreParent(null);
 				} else {
 					setLienEnfantAutreParent(aLien);
-					AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent());
+					AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent().toString());
 					setAutreParentCourant(a);
 				}
 			}
@@ -206,13 +222,17 @@ public class OeENFANTGestion extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_EF_NOM(), aEnfant.getNom());
 		addZone(getNOM_EF_PRENOM(), aEnfant.getPrenom());
-		addZone(getNOM_EF_DATE_NAISS(), aEnfant.getDateNaissance());
-		addZone(getNOM_EF_DATE_DECES(), aEnfant.getDateDeces());
+		addZone(getNOM_EF_DATE_NAISS(), sdf.format(aEnfant.getDateNaissance()));
+		addZone(getNOM_EF_DATE_DECES(),
+				aEnfant.getDateDeces() == null ? Const.CHAINE_VIDE : sdf.format(aEnfant.getDateDeces()));
 		String posNationF = (LB_NATIONALITE[0].startsWith("F") ? "0" : "1");
 		String posNationE = (posNationF.equals("0") ? "1" : "0");
-		addZone(getNOM_LB_NATIONALITE_SELECT(), EnumNationalite.FRANCAISE.getCode().equals(aEnfant.getNationalite()) ? posNationF : posNationE);
-		addZone(getNOM_RG_SEXE(), EnumSexe.MASCULIN.getCode().equals(aEnfant.getSexe()) ? getNOM_RB_SEXE_M() : getNOM_RB_SEXE_F());
-		addZone(getNOM_RG_CHARGE(), getLienEnfantAgentCourant().isEnfantACharge() ? getNOM_RB_CHARGE_O() : getNOM_RB_CHARGE_N());
+		addZone(getNOM_LB_NATIONALITE_SELECT(),
+				EnumNationalite.FRANCAISE.getCode().equals(aEnfant.getNationalite()) ? posNationF : posNationE);
+		addZone(getNOM_RG_SEXE(), EnumSexe.MASCULIN.getCode().equals(aEnfant.getSexe()) ? getNOM_RB_SEXE_M()
+				: getNOM_RB_SEXE_F());
+		addZone(getNOM_RG_CHARGE(), getLienEnfantAgentCourant().isEnfantACharge() ? getNOM_RB_CHARGE_O()
+				: getNOM_RB_CHARGE_N());
 		addZone(getNOM_EF_COMMENTAIRE(), aEnfant.getCommentaire());
 
 		// Affichage de autre parent
@@ -228,7 +248,7 @@ public class OeENFANTGestion extends BasicProcess {
 	private void afficheEnfantSuppression(HttpServletRequest request) throws Exception {
 
 		// Récup du Enfant courant
-		EnfantNW aEnfant = getEnfantCourant();
+		Enfant aEnfant = getEnfantCourant();
 
 		// Si vide, on vide tout
 		if (aEnfant == null) {
@@ -237,18 +257,19 @@ public class OeENFANTGestion extends BasicProcess {
 		}
 
 		// Récup des lien parent
-		ArrayList<LienEnfantNWAgentNW> liens = LienEnfantNWAgentNW.listerLienEnfantNWAgentNWAvecEnfant(getTransaction(), aEnfant);
+		ArrayList<LienEnfantAgent> liens = getLienEnfantAgentDao().listerLienEnfantAgentAvecEnfant(
+				aEnfant.getIdEnfant());
 		boolean estACharge = false;
 		setAutreParentCourant(null);
 
 		for (int i = 0; i < liens.size(); i++) {
-			LienEnfantNWAgentNW aLien = (LienEnfantNWAgentNW) liens.get(i);
-			if (aLien.getIdAgent().equals(getAgentCourant().getIdAgent())) {
+			LienEnfantAgent aLien = (LienEnfantAgent) liens.get(i);
+			if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent())) {
 				setLienEnfantAgentCourant(aLien);
 				estACharge = aLien.isEnfantACharge();
 			} else {
 				setLienEnfantAutreParent(aLien);
-				AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent());
+				AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent().toString());
 				setAutreParentCourant(a);
 			}
 		}
@@ -256,14 +277,16 @@ public class OeENFANTGestion extends BasicProcess {
 		// Alim zones
 		addZone(getNOM_ST_NOM(), aEnfant.getNom());
 		addZone(getNOM_ST_PRENOM(), aEnfant.getPrenom());
-		addZone(getNOM_ST_DATENAISS(), aEnfant.getDateNaissance());
-		addZone(getNOM_ST_DATEDECES(), aEnfant.getDateDeces());
+		addZone(getNOM_ST_DATENAISS(), sdf.format(aEnfant.getDateNaissance()));
+		addZone(getNOM_ST_DATEDECES(),
+				aEnfant.getDateDeces() == null ? Const.CHAINE_VIDE : sdf.format(aEnfant.getDateDeces()));
 		if (aEnfant.getNationalite().equals(EnumNationalite.FRANCAISE.getCode())) {
 			addZone(getNOM_ST_NATIONALITE(), EnumNationalite.FRANCAISE.getValue());
 		} else {
 			addZone(getNOM_ST_NATIONALITE(), EnumNationalite.ETRANGERE.getValue());
 		}
-		addZone(getNOM_ST_SEXE(), aEnfant.getSexe().equals(EnumSexe.MASCULIN.getCode()) ? EnumSexe.MASCULIN.getCode() : EnumSexe.FEMININ.getCode());
+		addZone(getNOM_ST_SEXE(), aEnfant.getSexe().equals(EnumSexe.MASCULIN.getCode()) ? EnumSexe.MASCULIN.getCode()
+				: EnumSexe.FEMININ.getCode());
 		addZone(getNOM_ST_ACHARGE(), estACharge ? "Oui" : "Non");
 		addZone(getNOM_ST_COMMENTAIRE(), aEnfant.getCommentaire());
 
@@ -296,10 +319,13 @@ public class OeENFANTGestion extends BasicProcess {
 			if (commNaiss == null) {
 				if (getEnfantCourant() != null) {
 					if (getEnfantCourant().getCodePaysNaissEt() != null) {
-						commNaiss = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), getEnfantCourant().getCodePaysNaissEt(),
-								getEnfantCourant().getCodeCommuneNaissEt());
-					} else if (getEnfantCourant().getCodeCommuneNaissFr() != null && !getEnfantCourant().getCodeCommuneNaissFr().equals("0")) {
-						commNaiss = Commune.chercherCommune(getTransaction(), getEnfantCourant().getCodeCommuneNaissFr());
+						commNaiss = CommuneEtrangere
+								.chercherCommuneEtrangere(getTransaction(), getEnfantCourant().getCodePaysNaissEt()
+										.toString(), getEnfantCourant().getCodeCommuneNaissEt().toString());
+					} else if (getEnfantCourant().getCodeCommuneNaissFr() != null
+							&& getEnfantCourant().getCodeCommuneNaissFr() != 0) {
+						commNaiss = Commune.chercherCommune(getTransaction(), getEnfantCourant()
+								.getCodeCommuneNaissFr().toString());
 					}
 				}
 			}
@@ -372,7 +398,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.EnfantNW
 	 */
-	private EnfantNW getEnfantCourant() {
+	private Enfant getEnfantCourant() {
 		return enfantCourant;
 	}
 
@@ -393,9 +419,9 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList<EnfantNW> getListeEnfants() {
+	public ArrayList<Enfant> getListeEnfants() {
 		if (listeEnfants == null) {
-			listeEnfants = new ArrayList<EnfantNW>();
+			listeEnfants = new ArrayList<Enfant>();
 		}
 		return listeEnfants;
 	}
@@ -794,28 +820,32 @@ public class OeENFANTGestion extends BasicProcess {
 	private void initialiseListeEnfants(HttpServletRequest request) throws Exception {
 
 		// Recherche des enfants de l'agent
-		ArrayList<EnfantNW> a = EnfantNW.listerEnfantAgent(getTransaction(), getAgentCourant());
+		ArrayList<Enfant> a = getEnfantDao().listerEnfantAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
+				getLienEnfantAgentDao());
 		setListeEnfants(a);
 
 		int indiceEnfant = 0;
 		if (getListeEnfants() != null) {
 			for (int i = 0; i < getListeEnfants().size(); i++) {
-				EnfantNW aEnfant = (EnfantNW) getListeEnfants().get(i);
+				Enfant aEnfant = (Enfant) getListeEnfants().get(i);
 				String nomCommune = null;
 				// si commune renseignée
-				if (aEnfant.getCodeCommuneNaissEt() != null && !aEnfant.getCodeCommuneNaissEt().equals("0")) {
-					CommuneEtrangere c = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), aEnfant.getCodePaysNaissEt(),
-							aEnfant.getCodeCommuneNaissEt());
+				if (aEnfant.getCodeCommuneNaissEt() != null && aEnfant.getCodeCommuneNaissEt() != 0) {
+					CommuneEtrangere c = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), aEnfant
+							.getCodePaysNaissEt().toString(), aEnfant.getCodeCommuneNaissEt().toString());
 					nomCommune = c.getLibCommuneEtrangere();
-				} else if (aEnfant.getCodeCommuneNaissFr() != null && !aEnfant.getCodeCommuneNaissFr().equals("0")) {
-					Commune c = Commune.chercherCommune(getTransaction(), aEnfant.getCodeCommuneNaissFr());
+				} else if (aEnfant.getCodeCommuneNaissFr() != null && aEnfant.getCodeCommuneNaissFr() != 0) {
+					Commune c = Commune.chercherCommune(getTransaction(), aEnfant.getCodeCommuneNaissFr().toString());
 					nomCommune = c.getLibCommune();
 				}
 
-				addZone(getNOM_ST_NOM(indiceEnfant), aEnfant.getNom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getNom());
-				addZone(getNOM_ST_PRENOM(indiceEnfant), aEnfant.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getPrenom());
-				addZone(getNOM_ST_SEXE(indiceEnfant), aEnfant.getSexe().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getSexe());
-				addZone(getNOM_ST_DATE_NAISS(indiceEnfant), aEnfant.getDateNaissance());
+				addZone(getNOM_ST_NOM(indiceEnfant),
+						aEnfant.getNom().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getNom());
+				addZone(getNOM_ST_PRENOM(indiceEnfant), aEnfant.getPrenom().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: aEnfant.getPrenom());
+				addZone(getNOM_ST_SEXE(indiceEnfant),
+						aEnfant.getSexe().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aEnfant.getSexe());
+				addZone(getNOM_ST_DATE_NAISS(indiceEnfant), sdf.format(aEnfant.getDateNaissance()));
 				addZone(getNOM_ST_LIEU_NAISS(indiceEnfant), nomCommune == null ? "&nbsp;" : nomCommune);
 
 				indiceEnfant++;
@@ -854,7 +884,8 @@ public class OeENFANTGestion extends BasicProcess {
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide ou si etat recherche
-		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
+		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
+				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
@@ -868,7 +899,7 @@ public class OeENFANTGestion extends BasicProcess {
 
 		// Si enfantCourant vide
 		if (getEnfantCourant() == null) {
-			EnfantNW aEnfant = (EnfantNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_ENFANT_COURANT);
+			Enfant aEnfant = (Enfant) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_ENFANT_COURANT);
 			if (aEnfant != null) {
 				setEnfantCourant(aEnfant);
 				VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_ENFANT_COURANT);
@@ -990,12 +1021,14 @@ public class OeENFANTGestion extends BasicProcess {
 			// RG_AG_EN_C04
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
-				if (Services.compareDates(getVAL_EF_DATE_NAISS(), Services.ajouteAnnee(Services.formateDate(sdf.format(scol.getDateDebutScolarite())), -2)) >= 0) {
+				if (Services.compareDates(getVAL_EF_DATE_NAISS(),
+						Services.ajouteAnnee(Services.formateDate(sdf.format(scol.getDateDebutScolarite())), -2)) >= 0) {
 					// Si date de début inférieure à date de naissance + 2 ans
 					if (Services.compareDates(sdf.format(scol.getDateDebutScolarite()),
 							Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
 						// "ERR205","La date @ doit être supérieure à la date @"
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
+						getTransaction().declarerErreur(
+								MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
 						return false;
 					}
 				}
@@ -1039,7 +1072,8 @@ public class OeENFANTGestion extends BasicProcess {
 	 * Contrôle les scolarites saisies Date de création : (05/05/11)
 	 * RG_AG_EN_C06 RG_AG_EN_C05 RG_AG_EN_C04
 	 */
-	private boolean performControlerSaisieScolarite(HttpServletRequest request, String dateDebutScol, String dateFinScol) throws Exception {
+	private boolean performControlerSaisieScolarite(HttpServletRequest request, String dateDebutScol, String dateFinScol)
+			throws Exception {
 		if (!performControlerSaisie(request))
 			return false;
 		else {
@@ -1058,9 +1092,11 @@ public class OeENFANTGestion extends BasicProcess {
 			} else {
 				// Si date de début inférieure à date de naissance + 2 ans
 				// RG_AG_EN_C04
-				if (Services.compareDates(dateDebutScol, Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
+				if (Services.compareDates(dateDebutScol,
+						Services.ajouteAnnee(Services.formateDate(getZone(getNOM_EF_DATE_NAISS())), 2)) < 0) {
 					// "ERR205","La date @ doit être supérieure à la date @"
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR205", "début scolarité", "de naissance + 2 ans"));
 					return false;
 				}
 			}
@@ -1080,7 +1116,8 @@ public class OeENFANTGestion extends BasicProcess {
 				// RG_AG_EN_C05
 				if (Services.compareDates(dateDebutScol, dateFinScol) >= 0) {
 					// "ERR204","La date @ doit être inférieure à la date @"
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR204", "début scolarité", "fin scolarité"));
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR204", "début scolarité", "fin scolarité"));
 					return false;
 				}
 			}
@@ -1242,7 +1279,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 */
 	private boolean performPB_VALIDER_Creer(HttpServletRequest request) throws Exception {
 
-		setEnfantCourant(new EnfantNW());
+		setEnfantCourant(new Enfant());
 
 		// Controle des saisies
 		if (!performControlerSaisie(request))
@@ -1252,8 +1289,9 @@ public class OeENFANTGestion extends BasicProcess {
 		alimenterEnfantCourant(request);
 
 		// Verif enfant pas déjà existant (même nom, prénom, date de Naissance)
-		String dateNaiss = Services.formateDateInternationale(Services.formateDate(getVAL_EF_DATE_NAISS()));
-		ArrayList<EnfantNW> listEnfant = EnfantNW.listerEnfantHomonyme(getTransaction(), getVAL_EF_NOM(), getVAL_EF_PRENOM(), dateNaiss);
+		Date dateNaiss = sdf.parse(Services.formateDate(getVAL_EF_DATE_NAISS()));
+		ArrayList<Enfant> listEnfant = getEnfantDao().listerEnfantHomonyme(getVAL_EF_NOM(), getVAL_EF_PRENOM(),
+				dateNaiss);
 		if (getTransaction().isErreur()) {
 			getTransaction().declarerErreur(getTransaction().traiterErreur());
 			return false;
@@ -1266,18 +1304,22 @@ public class OeENFANTGestion extends BasicProcess {
 		} else {
 
 			// Creation enfant
-			getEnfantCourant().creerEnfantNW(getTransaction());
-			if (getTransaction().isErreur())
-				return false;
+			Integer id = getEnfantDao().creerEnfant(getEnfantCourant().getIdDocument(), getEnfantCourant().getNom(),
+					getEnfantCourant().getPrenom(), getEnfantCourant().getSexe(),
+					getEnfantCourant().getDateNaissance(), getEnfantCourant().getCodePaysNaissEt(),
+					getEnfantCourant().getCodeCommuneNaissEt(), getEnfantCourant().getCodeCommuneNaissFr(),
+					getEnfantCourant().getDateDeces(), getEnfantCourant().getNationalite(),
+					getEnfantCourant().getCommentaire());
 
 			// Mise à jour du lien enfant parent
 			boolean estACharge = getVAL_RG_CHARGE().equals(getNOM_RB_CHARGE_O());
 			if (getAgentCourant() != null) {
-				LienEnfantNWAgentNW newLien = new LienEnfantNWAgentNW();
-				newLien.setIdAgent(getAgentCourant().getIdAgent());
-				newLien.setIdEnfant(getEnfantCourant().getId_enfant());
+				LienEnfantAgent newLien = new LienEnfantAgent();
+				newLien.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+				newLien.setIdEnfant(id);
 				newLien.setEnfantACharge(estACharge);
-				newLien.creerLienEnfantNWAgentNW(getTransaction());
+				getLienEnfantAgentDao().creerLienEnfantAgent(newLien.getIdAgent(), newLien.getIdEnfant(),
+						newLien.isEnfantACharge());
 				if (getTransaction().isErreur())
 					return false;
 			}
@@ -1285,11 +1327,12 @@ public class OeENFANTGestion extends BasicProcess {
 			// Mise à jour du lien enfant autreParent
 			// RG_AG_EN_C01
 			if (getAutreParentCourant() != null) {
-				setLienEnfantAutreParent(new LienEnfantNWAgentNW());
-				getLienEnfantAutreParent().setIdAgent(getAutreParentCourant().getIdAgent());
-				getLienEnfantAutreParent().setIdEnfant(getEnfantCourant().getId_enfant());
+				setLienEnfantAutreParent(new LienEnfantAgent());
+				getLienEnfantAutreParent().setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
+				getLienEnfantAutreParent().setIdEnfant(id);
 				getLienEnfantAutreParent().setEnfantACharge(false);
-				getLienEnfantAutreParent().creerLienEnfantNWAgentNW(getTransaction());
+				getLienEnfantAgentDao().creerLienEnfantAgent(getLienEnfantAutreParent().getIdAgent(),
+						getLienEnfantAutreParent().getIdEnfant(), getLienEnfantAutreParent().isEnfantACharge());
 				if (getTransaction().isErreur())
 					return false;
 			}
@@ -1297,10 +1340,11 @@ public class OeENFANTGestion extends BasicProcess {
 			// Liste des scolarites
 			for (int i = 0; i < getListeScolarites().size(); i++) {
 				Scolarite scol = (Scolarite) getListeScolarites().get(i);
-				scol.setIdEnfant(new Integer(getEnfantCourant().getId_enfant()));
-				
-				getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(), scol.getDateFinScolarite());
-				
+				scol.setIdEnfant(getEnfantCourant().getIdEnfant());
+
+				getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(),
+						scol.getDateFinScolarite());
+
 				if (getTransaction().isErreur())
 					return false;
 			}
@@ -1326,39 +1370,44 @@ public class OeENFANTGestion extends BasicProcess {
 
 		// Modification de l'enfant courant
 		alimenterEnfantCourant(request);
-		getEnfantCourant().modifierEnfantNW(getTransaction());
-		if (getTransaction().isErreur())
-			return false;
+		getEnfantDao().modifierEnfant(getEnfantCourant().getIdEnfant(), getEnfantCourant().getIdDocument(),
+				getEnfantCourant().getNom(), getEnfantCourant().getPrenom(), getEnfantCourant().getSexe(),
+				getEnfantCourant().getDateNaissance(), getEnfantCourant().getCodePaysNaissEt(),
+				getEnfantCourant().getCodeCommuneNaissEt(), getEnfantCourant().getCodeCommuneNaissFr(),
+				getEnfantCourant().getDateDeces(), getEnfantCourant().getNationalite(),
+				getEnfantCourant().getCommentaire());
 
 		// Mise à jour du lien enfant parent
 		getLienEnfantAgentCourant().setEnfantACharge(getVAL_RG_CHARGE().equals(getNOM_RB_CHARGE_O()));
-		getLienEnfantAgentCourant().modifierLienEnfantNWAgentNW(getTransaction());
-		if (getTransaction().isErreur())
-			return false;
+		getLienEnfantAgentDao().modifierLienEnfantAgent(getLienEnfantAgentCourant().getIdAgent(),
+				getLienEnfantAgentCourant().getIdEnfant(), getLienEnfantAgentCourant().isEnfantACharge());
 
 		// Mise à jour du lien enfant autreParent
 		// RG_AG_EN_C01
 		if (getLienEnfantAutreParent() == null && getAutreParentCourant() != null) {
-			LienEnfantNWAgentNW newLien = new LienEnfantNWAgentNW();
-			newLien.setIdAgent(getAutreParentCourant().getIdAgent());
-			newLien.setIdEnfant(getEnfantCourant().getId_enfant());
+			LienEnfantAgent newLien = new LienEnfantAgent();
+			newLien.setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
+			newLien.setIdEnfant(getEnfantCourant().getIdEnfant());
 			newLien.setEnfantACharge(false);
-			newLien.creerLienEnfantNWAgentNW(getTransaction());
+			getLienEnfantAgentDao().creerLienEnfantAgent(newLien.getIdAgent(), newLien.getIdEnfant(),
+					newLien.isEnfantACharge());
 		}
 		if (getLienEnfantAutreParent() != null) {
 			if (getAutreParentCourant() != null) {
-				getLienEnfantAutreParent().setIdAgent(getAutreParentCourant().getIdAgent());
+				getLienEnfantAutreParent().setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
 				getLienEnfantAutreParent().setEnfantACharge(false);
-				getLienEnfantAutreParent().modifierLienEnfantNWAgentNW(getTransaction());
+				getLienEnfantAgentDao().modifierLienEnfantAgent(getLienEnfantAutreParent().getIdAgent(),
+						getLienEnfantAutreParent().getIdEnfant(), getLienEnfantAutreParent().isEnfantACharge());
 			} else {
-				getLienEnfantAutreParent().supprimerLienEnfantNWAgentNW(getTransaction());
+				getLienEnfantAgentDao().supprimerLienEnfantAgent(getLienEnfantAutreParent().getIdAgent(),
+						getLienEnfantAutreParent().getIdEnfant());
 			}
 		}
 		if (getTransaction().isErreur())
 			return false;
 
 		// Liste des scolarites
-		List<Scolarite> scolaritesActuelles = getScolariteDao().listerScolariteEnfant(new Integer(getEnfantCourant().getId_enfant()));
+		List<Scolarite> scolaritesActuelles = getScolariteDao().listerScolariteEnfant(getEnfantCourant().getIdEnfant());
 		for (int i = 0; i < scolaritesActuelles.size(); i++) {
 			Scolarite scol = (Scolarite) scolaritesActuelles.get(i);
 			if (!getListeScolarites().contains(scol)) {
@@ -1368,7 +1417,8 @@ public class OeENFANTGestion extends BasicProcess {
 		}
 		for (int j = 0; j < getListeScolarites().size(); j++) {
 			Scolarite scol = (Scolarite) getListeScolarites().get(j);
-			getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(), scol.getDateFinScolarite());
+			getScolariteDao().creerScolarite(scol.getIdEnfant(), scol.getDateDebutScolarite(),
+					scol.getDateFinScolarite());
 		}
 
 		commitTransaction();
@@ -1386,7 +1436,8 @@ public class OeENFANTGestion extends BasicProcess {
 	private boolean performPB_VALIDER_Supprimer(HttpServletRequest request) throws Exception {
 
 		// Suppression du lien enfant parent
-		getLienEnfantAgentCourant().supprimerLienEnfantNWAgentNW(getTransaction());
+		getLienEnfantAgentDao().supprimerLienEnfantAgent(getLienEnfantAgentCourant().getIdAgent(),
+				getLienEnfantAgentCourant().getIdEnfant());
 		if (getTransaction().isErreur())
 			return false;
 
@@ -1402,7 +1453,7 @@ public class OeENFANTGestion extends BasicProcess {
 				return false;
 
 			// Suppression de l'enfant
-			getEnfantCourant().supprimerEnfantNW(getTransaction());
+			getEnfantDao().supprimerEnfant(getEnfantCourant().getIdEnfant(), getLienEnfantAgentDao());
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -1451,7 +1502,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * @param newEnfantCourant
 	 *            nc.mairie.metier.agent.EnfantNW
 	 */
-	private void setEnfantCourant(EnfantNW newEnfantCourant) {
+	private void setEnfantCourant(Enfant newEnfantCourant) {
 		enfantCourant = newEnfantCourant;
 	}
 
@@ -1470,7 +1521,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * @param newListeEnfants
 	 *            ArrayList
 	 */
-	private void setListeEnfants(ArrayList<EnfantNW> newListeEnfants) {
+	private void setListeEnfants(ArrayList<Enfant> newListeEnfants) {
 		listeEnfants = newListeEnfants;
 	}
 
@@ -1782,13 +1833,15 @@ public class OeENFANTGestion extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_SCOLARITE(HttpServletRequest request) throws Exception {
 		// Récup des zones saisies
-		String dateDebutScolarite = getZone(getNOM_EF_DATE_DEBUT_SCOLARITE()).length() == 0 ? null : getZone(getNOM_EF_DATE_DEBUT_SCOLARITE());
-		String dateFinScolarite = getZone(getNOM_EF_DATE_FIN_SCOLARITE()).length() == 0 ? null : getZone(getNOM_EF_DATE_FIN_SCOLARITE());
+		String dateDebutScolarite = getZone(getNOM_EF_DATE_DEBUT_SCOLARITE()).length() == 0 ? null
+				: getZone(getNOM_EF_DATE_DEBUT_SCOLARITE());
+		String dateFinScolarite = getZone(getNOM_EF_DATE_FIN_SCOLARITE()).length() == 0 ? null
+				: getZone(getNOM_EF_DATE_FIN_SCOLARITE());
 
 		if (performControlerSaisieScolarite(request, dateDebutScolarite, dateFinScolarite)) {
 			// Affectation des attributs
 			setScolariteCourant(new Scolarite());
-			getScolariteCourant().setIdEnfant(getEnfantCourant() == null ? null : new Integer(getEnfantCourant().getId_enfant()));
+			getScolariteCourant().setIdEnfant(getEnfantCourant() == null ? null : getEnfantCourant().getIdEnfant());
 			getScolariteCourant().setDateDebutScolarite(sdf.parse(dateDebutScolarite));
 			getScolariteCourant().setDateFinScolarite(sdf.parse(dateFinScolarite));
 
@@ -1843,7 +1896,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return LienEnfantNWAgentNW
 	 */
-	private LienEnfantNWAgentNW getLienEnfantAgentCourant() {
+	private LienEnfantAgent getLienEnfantAgentCourant() {
 		return lienEnfantAgentCourant;
 	}
 
@@ -1852,7 +1905,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @param lienEnfantAgentCourant
 	 */
-	private void setLienEnfantAgentCourant(LienEnfantNWAgentNW lienEnfantAgentCourant) {
+	private void setLienEnfantAgentCourant(LienEnfantAgent lienEnfantAgentCourant) {
 		this.lienEnfantAgentCourant = lienEnfantAgentCourant;
 	}
 
@@ -1861,7 +1914,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return LienEnfantNWAgentNW
 	 */
-	private LienEnfantNWAgentNW getLienEnfantAutreParent() {
+	private LienEnfantAgent getLienEnfantAutreParent() {
 		return lienEnfantAutreParent;
 	}
 
@@ -1870,7 +1923,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @param lienEnfantAgentCourant
 	 */
-	private void setLienEnfantAutreParent(LienEnfantNWAgentNW lienEnfantAutreParent) {
+	private void setLienEnfantAutreParent(LienEnfantAgent lienEnfantAutreParent) {
 		this.lienEnfantAutreParent = lienEnfantAutreParent;
 	}
 
@@ -2115,7 +2168,7 @@ public class OeENFANTGestion extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 
 		// Récup de l'enfant courant
-		EnfantNW aEnfant = (EnfantNW) getListeEnfants().get(indiceEltAModifier);
+		Enfant aEnfant = (Enfant) getListeEnfants().get(indiceEltAModifier);
 		setEnfantCourant(aEnfant);
 
 		// Affichage de l'enfant courant
@@ -2156,7 +2209,7 @@ public class OeENFANTGestion extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_CONSULTATION);
 
 		// Récup de l'enfant courant
-		EnfantNW aEnfant = (EnfantNW) getListeEnfants().get(indiceEltAConsulter);
+		Enfant aEnfant = (Enfant) getListeEnfants().get(indiceEltAConsulter);
 		setEnfantCourant(aEnfant);
 
 		// Affichage de l'enfant courant
@@ -2198,7 +2251,7 @@ public class OeENFANTGestion extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
 
 		// Récup de l'enfant courant
-		EnfantNW aEnfant = (EnfantNW) getListeEnfants().get(indiceEltASuprimer);
+		Enfant aEnfant = (Enfant) getListeEnfants().get(indiceEltASuprimer);
 		setEnfantCourant(aEnfant);
 
 		// Affichage de l'enfant courant
@@ -2278,7 +2331,20 @@ public class OeENFANTGestion extends BasicProcess {
 		this.scolariteDao = scolariteDao;
 	}
 
-	
-	
-	
+	public LienEnfantAgentDao getLienEnfantAgentDao() {
+		return lienEnfantAgentDao;
+	}
+
+	public void setLienEnfantAgentDao(LienEnfantAgentDao lienEnfantAgentDao) {
+		this.lienEnfantAgentDao = lienEnfantAgentDao;
+	}
+
+	public EnfantDao getEnfantDao() {
+		return enfantDao;
+	}
+
+	public void setEnfantDao(EnfantDao enfantDao) {
+		this.enfantDao = enfantDao;
+	}
+
 }
