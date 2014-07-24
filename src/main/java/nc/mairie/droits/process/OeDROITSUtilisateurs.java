@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,8 @@ import nc.mairie.metier.droits.Utilisateur;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.droits.GroupeDao;
+import nc.mairie.spring.dao.metier.droits.GroupeUtilisateurDao;
 import nc.mairie.spring.dao.metier.droits.UtilisateurDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -59,6 +62,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	private ArrayList<Service> listeServices;
 
 	private UtilisateurDao utilisateurDao;
+	private GroupeDao groupeDao;
+	private GroupeUtilisateurDao groupeUtilisateurDao;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -81,19 +86,38 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		}
 
 		// Initialisation des groupes
-		int[] taillesGroupe = { 50 };
-		String[] champs = { "libGroupe" };
 
-		setLB_GROUPES_UTILISATEUR(new FormateListe(taillesGroupe, getListeGroupesUtilisateur(), champs)
-				.getListeFormatee());
+		if (getListeGroupesUtilisateur().size() != 0) {
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<Groupe> list = getListeGroupesUtilisateur().listIterator(); list.hasNext();) {
+				Groupe de = (Groupe) list.next();
+				String ligne[] = { de.getLibGroupe() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_GROUPES_UTILISATEUR(aFormat.getListeFormatee());
+		} else {
+			setLB_GROUPES_UTILISATEUR(null);
+		}
 
 		if (getListeGroupesAutres() == null) {
-			setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
+			setListeGroupesAutres(getGroupeDao().listerGroupe());
 		}
 
 		getListeGroupesAutres().removeAll(getListeGroupesUtilisateur());
 
-		setLB_GROUPES_AUTRES(new FormateListe(taillesGroupe, getListeGroupesAutres(), champs).getListeFormatee());
+		if (getListeGroupesAutres().size() != 0) {
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<Groupe> list = getListeGroupesAutres().listIterator(); list.hasNext();) {
+				Groupe de = (Groupe) list.next();
+				String ligne[] = { de.getLibGroupe() };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_GROUPES_AUTRES(aFormat.getListeFormatee());
+		} else {
+			setLB_GROUPES_AUTRES(null);
+		}
 	}
 
 	private void initialiseDao() {
@@ -101,6 +125,12 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getUtilisateurDao() == null) {
 			setUtilisateurDao(new UtilisateurDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getGroupeDao() == null) {
+			setGroupeDao(new GroupeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getGroupeUtilisateurDao() == null) {
+			setGroupeUtilisateurDao(new GroupeUtilisateurDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -116,8 +146,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			for (int i = 0; i < getListeUtilisateur().size(); i++) {
 				Utilisateur u = (Utilisateur) getListeUtilisateur().get(i);
 				String listeGroupes = Const.CHAINE_VIDE;
-				ArrayList<Groupe> groupesUtilisateur = Groupe.listerGroupeAvecUtilisateur(getTransaction(), u
-						.getIdUtilisateur().toString());
+				ArrayList<Groupe> groupesUtilisateur = getGroupeDao().listerGroupeAvecUtilisateur(u.getIdUtilisateur());
 				for (int j = 0; j < groupesUtilisateur.size(); j++) {
 					listeGroupes += j == 0 ? ((Groupe) groupesUtilisateur.get(j)).getLibGroupe() : ", "
 							+ ((Groupe) groupesUtilisateur.get(j)).getLibGroupe();
@@ -166,7 +195,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 		// Init de l'utilisateur courant
 		setUtilisateurCourant(new Utilisateur());
-		setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
+		setListeGroupesAutres(getGroupeDao().listerGroupe());
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -355,9 +384,9 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		viderFormulaire();
 		addZone(getNOM_EF_NOM_UTILISATEUR(), getUtilisateurCourant().getLoginUtilisateur());
 
-		setListeGroupesAutres(Groupe.listerGroupe(getTransaction()));
-		setListeGroupesUtilisateur(Groupe.listerGroupeAvecUtilisateur(getTransaction(), getUtilisateurCourant()
-				.getIdUtilisateur().toString()));
+		setListeGroupesAutres(getGroupeDao().listerGroupe());
+		setListeGroupesUtilisateur(getGroupeDao().listerGroupeAvecUtilisateur(
+				getUtilisateurCourant().getIdUtilisateur()));
 
 		return true;
 	}
@@ -370,9 +399,9 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
 			for (int i = 0; i < getListeGroupesUtilisateur().size(); i++) {
 				Groupe g = (Groupe) getListeGroupesUtilisateur().get(i);
-				GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
-						getUtilisateurCourant().getIdUtilisateur().toString(), g.getIdGroupe());
-				gu.supprimerGroupeUtilisateur(getTransaction());
+				GroupeUtilisateur gu = getGroupeUtilisateurDao().chercherGroupeUtilisateur(
+						getUtilisateurCourant().getIdUtilisateur(), g.getIdGroupe());
+				getGroupeUtilisateurDao().supprimerGroupeUtilisateurAvecGroupe(gu.getIdGroupe());
 			}
 			getUtilisateurDao().supprimerUtilisateur(getUtilisateurCourant().getIdUtilisateur());
 		} else {
@@ -388,16 +417,16 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 						getUtilisateurCourant().getLoginUtilisateur());
 				for (int i = 0; i < getListeGroupesARetirer().size(); i++) {
 					Groupe grp = (Groupe) getListeGroupesARetirer().get(i);
-					GroupeUtilisateur gu = GroupeUtilisateur.chercherGroupeUtilisateur(getTransaction(),
-							getUtilisateurCourant().getIdUtilisateur().toString(), grp.getIdGroupe());
-					gu.supprimerGroupeUtilisateur(getTransaction());
+					GroupeUtilisateur gu = getGroupeUtilisateurDao().chercherGroupeUtilisateur(
+							getUtilisateurCourant().getIdUtilisateur(), grp.getIdGroupe());
+					getGroupeUtilisateurDao().supprimerGroupeUtilisateurAvecGroupe(gu.getIdGroupe());
 				}
 			}
 			for (int i = 0; i < getListeGroupesAAjouter().size(); i++) {
 				Groupe grp = (Groupe) getListeGroupesAAjouter().get(i);
-				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur().toString(),
+				GroupeUtilisateur gu = new GroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
 						grp.getIdGroupe());
-				gu.creerGroupeUtilisateur(getTransaction());
+				getGroupeUtilisateurDao().creerGroupeUtilisateur(gu.getIdUtilisateur(), gu.getIdGroupe());
 			}
 		}
 
@@ -756,5 +785,21 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public void setUtilisateurDao(UtilisateurDao utilisateurDao) {
 		this.utilisateurDao = utilisateurDao;
+	}
+
+	public GroupeDao getGroupeDao() {
+		return groupeDao;
+	}
+
+	public void setGroupeDao(GroupeDao groupeDao) {
+		this.groupeDao = groupeDao;
+	}
+
+	public GroupeUtilisateurDao getGroupeUtilisateurDao() {
+		return groupeUtilisateurDao;
+	}
+
+	public void setGroupeUtilisateurDao(GroupeUtilisateurDao groupeUtilisateurDao) {
+		this.groupeUtilisateurDao = groupeUtilisateurDao;
 	}
 }
