@@ -2198,16 +2198,10 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 				setAdminCourante(new AutreAdministration());
 				getAdminCourante().setLibAutreAdmin(getVAL_EF_ADMIN());
 				getAutreAdministrationDao().creerAutreAdministration(getAdminCourante().getLibAutreAdmin());
-				if (!getTransaction().isErreur())
-					getListeAdmin().add(getAdminCourante());
-				else
-					return false;
+				getListeAdmin().add(getAdminCourante());
 			} else if (getVAL_ST_ACTION_ADMIN().equals(ACTION_SUPPRESSION)) {
 				getAutreAdministrationDao().supprimerAutreAdministration(getAdminCourante().getIdAutreAdmin());
-				if (!getTransaction().isErreur())
-					getListeAdmin().remove(getAdminCourante());
-				else
-					return false;
+				getListeAdmin().remove(getAdminCourante());
 				setAdminCourante(null);
 			}
 

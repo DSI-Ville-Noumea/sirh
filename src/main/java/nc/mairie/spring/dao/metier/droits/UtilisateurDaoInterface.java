@@ -12,6 +12,6 @@ public interface UtilisateurDaoInterface {
 
 	public void modifierUtilisateur(Integer idUtilisateur, String login) throws Exception;
 
-	public void creerUtilisateur(String login) throws Exception;
+	public Integer creerUtilisateur(String login) throws Exception;
 
 }

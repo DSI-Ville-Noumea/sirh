@@ -47,8 +47,11 @@ public class UtilisateurDao extends SirhDao implements UtilisateurDaoInterface {
 	}
 
 	@Override
-	public void creerUtilisateur(String login) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_LOGIN_UTILISATEUR + ") " + "VALUES (?)";
-		jdbcTemplate.update(sql, new Object[] { login });
+	public Integer creerUtilisateur(String login) throws Exception {
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " ("
+				+ CHAMP_LOGIN_UTILISATEUR + ") " + "VALUES (?))";
+
+		Integer id = jdbcTemplate.queryForObject(sql, new Object[] { login }, Integer.class);
+		return id;
 	}
 }

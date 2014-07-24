@@ -411,7 +411,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 			getUtilisateurCourant().setLoginUtilisateur(getVAL_EF_NOM_UTILISATEUR());
 			if (getUtilisateurCourant().getIdUtilisateur() == null) {
-				getUtilisateurDao().creerUtilisateur(getUtilisateurCourant().getLoginUtilisateur());
+				Integer id = getUtilisateurDao().creerUtilisateur(getUtilisateurCourant().getLoginUtilisateur());
+				getUtilisateurCourant().setIdUtilisateur(id);
 			} else {
 				getUtilisateurDao().modifierUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
 						getUtilisateurCourant().getLoginUtilisateur());
