@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +20,9 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
@@ -26,6 +30,8 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAVCTSimulation Date de création : (21/11/11 11:11:24)
@@ -48,6 +54,9 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	public String focus = null;
 	public String ACTION_CALCUL = "Calcul";
 
+	private AvancementConvColDao avancementConvColDao;
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -68,6 +77,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		initialiseListeDeroulante();
 		initialiseListeService();
@@ -77,6 +87,14 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
 			performPB_LANCER(request);
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAvancementConvColDao() == null) {
+			setAvancementConvColDao(new AvancementConvColDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -219,7 +237,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
 		// et de l'année
-		AvancementConvCol.supprimerAvancementConvColTravailAvecAnnee(getTransaction(), an);
+		getAvancementConvColDao().supprimerAvancementConvColTravailAvecAnnee(Integer.valueOf(an));
 
 		// recuperation agent
 		AgentNW agent = null;
@@ -333,22 +351,24 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 								Services.ajouteAnnee(Services.formateDate(plusAnciennCarrConvColl.getDateDebut()), 30),
 								"30/06/" + annee) > 0) {
 					// Récupération de l'avancement
-					AvancementConvCol avct = AvancementConvCol.chercherAvancementConvColAvecAnneeEtAgent(
-							getTransaction(), annee, a.getIdAgent());
-					if (getTransaction().isErreur()) {
+					try {
+						@SuppressWarnings("unused")
+						AvancementConvCol avct = getAvancementConvColDao().chercherAvancementConvColAvecAnneeEtAgent(
+								Integer.valueOf(annee), Integer.valueOf(a.getIdAgent()));
+					} catch (Exception e) {
 						getTransaction().traiterErreur();
 						// Création de l'avancement
-						avct = new AvancementConvCol();
-						avct.setIdAgent(a.getIdAgent());
-						avct.setAnnee(annee);
+						AvancementConvCol avct = new AvancementConvCol();
+						avct.setIdAgent(Integer.valueOf(a.getIdAgent()));
+						avct.setAnnee(Integer.valueOf(annee));
 						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 
 						// PA
-						avct.setCodePA(paAgent.getCdpadm());
+						avct.setCodePa(paAgent.getCdpadm());
 
-						avct.setDateArrete("01/01/" + annee);
+						avct.setDateArrete(sdf.parse("01/01/" + annee));
 						avct.setNumArrete(annee);
-						avct.setDateEmbauche(a.getDateDerniereEmbauche());
+						avct.setDateEmbauche(sdf.parse(a.getDateDerniereEmbauche()));
 
 						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
 								a.getIdAgent());
@@ -365,7 +385,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 							if (carr.getCodeGrade() != null && carr.getCodeGrade().length() != 0) {
 								Grade grd = Grade.chercherGrade(getTransaction(), carr.getCodeGrade());
 								avct.setGrade(grd.getCodeGrade());
-								avct.setLibelleGrade(grd.getLibGrade());
+								avct.setLibGrade(grd.getLibGrade());
 							}
 						}
 						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
@@ -396,7 +416,11 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 							}
 						}
 
-						avct.creerAvancementConvCol(getTransaction());
+						getAvancementConvColDao().creerAvancementConvCol(avct.getIdAgent(), avct.getAnnee(),
+								avct.getEtat(), avct.getNumArrete(), avct.getDateArrete(), avct.getDateEmbauche(),
+								avct.getGrade(), avct.getLibGrade(), avct.getDirectionService(),
+								avct.getSectionService(), avct.getCarriereSimu(), avct.getMontantPrime1200(),
+								avct.getCodePa());
 					}
 				}
 			}
@@ -686,5 +710,13 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		addZone(getNOM_ST_CODE_SERVICE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_SERVICE(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	public AvancementConvColDao getAvancementConvColDao() {
+		return avancementConvColDao;
+	}
+
+	public void setAvancementConvColDao(AvancementConvColDao avancementConvColDao) {
+		this.avancementConvColDao = avancementConvColDao;
 	}
 }

@@ -477,21 +477,21 @@ public class OeAGENTPrime extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 
 			// Suppression du lien
-			PrimeAgent primeAgent = getPrimeAgentDao().chercherPrimeAgent(
-					new Integer(getAgentCourant().idAgent),
-					new Integer(getAgentCourant().getNoMatricule()),
-					new Integer(getPrimeCourante().getNoRubr()),
-					new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? Services.convertitDate(
-							Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") : "0"));
-			getPrimeAgentDao().supprimerPrimeAgent(primeAgent);
-			if (getTransaction().isErreur())
+			try {
+				PrimeAgent primeAgent = getPrimeAgentDao().chercherPrimeAgent(
+						new Integer(getAgentCourant().getIdAgent()),
+						new Integer(getAgentCourant().getNoMatricule()),
+						new Integer(getPrimeCourante().getNoRubr()),
+						new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? Services.convertitDate(
+								Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") : "0"));
+				getPrimeAgentDao().supprimerPrimeAgent(primeAgent);
+			} catch (Exception e) {
 				return false;
+			}
 
 			// suppression
 			UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			getPrimeCourante().supprimerPrime(getTransaction(), user);
-			if (getTransaction().isErreur())
-				return false;
 
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setStatut(STATUT_MEME_PROCESS);

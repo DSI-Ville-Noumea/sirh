@@ -44,7 +44,7 @@ document.formu.elements[nom].focus();
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementConvCol avct = process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];  		
 	  		if(document.formu.elements['CHECK_ALL_DRH'].checked ){
@@ -64,7 +64,7 @@ document.formu.elements[nom].focus();
 		<%
 		for (int j = 0;j<process.getListeAvct().size();j++){
 			AvancementConvCol avct = process.getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 		%>
 		var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>]; 
   		var boxDRH = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];   		
@@ -85,7 +85,7 @@ document.formu.elements[nom].focus();
 		<%
 		for (int j = 0;j<process.getListeAvct().size();j++){
 			AvancementConvCol avct = process.getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 		%>
 		var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  
   		var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>];  		
@@ -149,7 +149,7 @@ document.formu.elements[nom].focus();
 				<%
 					for (int i = 0;i<process.getListeAvct().size();i++){
 						AvancementConvCol avct = process.getListeAvct().get(i);
-						Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+						Integer indiceAvct = avct.getIdAvct();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -163,7 +163,7 @@ document.formu.elements[nom].focus();
 							<td><%=process.getVAL_ST_GRADE(indiceAvct)%></td>
 							<td><%=process.getVAL_ST_GRADE_LIB(indiceAvct)%></td>
 							<% if (process.getVAL_CK_AFFECTER(indiceAvct).equals(process.getCHECKED_ON())){ %>
-									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
+									<td><INPUT type="checkbox" disabled="disabled" checked="checked" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
 									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
@@ -180,7 +180,7 @@ document.formu.elements[nom].focus();
 										<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_AFFECTER(indiceAvct),process.getVAL_CK_AFFECTER(indiceAvct))%> onClick='validAffecter("<%=indiceAvct %>")'></td>																
 									<%} %>															
 								<%}else if(process.getVAL_CK_PROJET_ARRETE(indiceAvct).equals(process.getCHECKED_ON())){ %>
-									<td><INPUT type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
+									<td><INPUT type="checkbox" disabled="disabled" checked="checked" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_DRH(indiceAvct),process.getVAL_CK_VALID_DRH(indiceAvct))%> onClick='validDRH("<%=indiceAvct %>")'></td>								
 									<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 									<td><INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_PROJET_ARRETE(indiceAvct),process.getVAL_CK_PROJET_ARRETE(indiceAvct))%> onClick='validProjet("<%=indiceAvct %>")'></td>
 									<td>
