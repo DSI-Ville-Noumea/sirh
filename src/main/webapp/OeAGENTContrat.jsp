@@ -74,7 +74,7 @@
 											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_CONSULTER(indiceContrat)%>">
 										<%if(c.getIdTypeContrat().equals("2") && c.getDateFin()==null){ %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
-										<%}else if(c.getIdTypeContrat().equals("1") && Services.compareDates(sdf.format(c.getDateDebut()),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),sdf.format(c.getDateFin()))<0 : true)) { %>
+										<%}else if(c.getIdTypeContrat().equals("1") && Services.compareDates(sdf.format(c.getDatdeb()),Services.dateDuJour())<0 && (c.getDateFin()!=null ? Services.compareDates(Services.dateDuJour(),sdf.format(c.getDateFin()))<0 : true)) { %>
 											<INPUT title="modifier" type="image" src="images/modifier.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER(indiceContrat)%>">
 										<%}else{ %>
 											<span style="width: 22px;"></span>

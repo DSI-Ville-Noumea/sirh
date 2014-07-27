@@ -65,7 +65,7 @@ function reduireHierarchy() {
 				<%
 				for (int j = 0;j<process.getListeAvct().size();j++){
 					AvancementContractuels avct = process.getListeAvct().get(j);
-					Integer i = Integer.valueOf(avct.getIdAvct());
+					Integer i = avct.getIdAvct();
 				%>
 				var box = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];  		
 		  		if(document.formu.elements['CHECK_ALL_DRH'].checked ){
@@ -85,7 +85,7 @@ function reduireHierarchy() {
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementContractuels avct = process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>]; 
 				var boxDRH = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];   		
@@ -106,7 +106,7 @@ function reduireHierarchy() {
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementContractuels avct = process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  
 				var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>];  		
@@ -193,7 +193,7 @@ function reduireHierarchy() {
 							<th>PA</th>
 							<th>Cat.</th>
 							<th>Carr Simu</th>
-							<th>Date début IBA <br> Ancien <br>Nouveau</th>
+							<th>Date début <br> Ancien <br>Nouveau</th>
 							<th>IBA <br> Ancien <br> Nouveau</th>
 							<th>INM <br> Ancien <br> Nouveau</th>
 							<th>INA <br> Ancien <br> Nouveau</th>
@@ -215,7 +215,7 @@ function reduireHierarchy() {
 					<%
 						for (int i = 0;i<process.getListeAvct().size();i++){
 							AvancementContractuels avct = process.getListeAvct().get(i);
-							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+							Integer indiceAvct = avct.getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -227,7 +227,7 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_PA(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CATEGORIE(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_CARRIERE_SIMU(indiceAvct)%></td>
-								<td><%=process.getVAL_ST_DATE_DEBUT_IBA(indiceAvct)%></td>					
+								<td><%=process.getVAL_ST_DATE_DEBUT(indiceAvct)%></td>					
 								<td><%=process.getVAL_ST_IBA(indiceAvct)%></td>							
 								<td><%=process.getVAL_ST_INM(indiceAvct)%></td>						
 								<td><%=process.getVAL_ST_INA(indiceAvct)%></td>	
