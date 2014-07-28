@@ -74,6 +74,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
 import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -168,6 +169,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private TypeCompetenceDao typeCompetenceDao;
 	private DiplomeAgentDao diplomeAgentDao;
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
+	private AvancementDetachesDao avancementDetachesDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -850,6 +852,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getAutreAdministrationAgentDao() == null) {
 			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvancementDetachesDao() == null) {
+			setAvancementDetachesDao(new AvancementDetachesDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2676,20 +2681,16 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				// sinon, on cherche dans les détachés
-				AvancementDetaches avctDetache = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(
-						getTransaction(), getCampagneCourante().getAnnee().toString(), ag.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
+				try {
+					AvancementDetaches avctDetache = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
+							getCampagneCourante().getAnnee(), Integer.valueOf(ag.getIdAgent()));
 
 					if (!avctDetache.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
 						// attention dans le cas des categorie 4 on a pas de
 						// date
 						// moyenne avct
-						evalAModif.setDateEffetAvct(avctDetache.getDateAvctMoy() == null
-								|| avctDetache.getDateAvctMoy().equals(Const.DATE_NULL)
-								|| avctDetache.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf
-								.parse(avctDetache.getDateAvctMoy()));
+						evalAModif.setDateEffetAvct(avctDetache.getDateAvctMoy() == null ? null : avctDetache
+								.getDateAvctMoy());
 					}
 					Grade gradeSuivAvct = Grade.chercherGrade(getTransaction(), avctDetache.getIdNouvGrade());
 					Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctDetache.getGrade());
@@ -2728,6 +2729,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							evalAModif.setNouvEchelon(echAvct.getLibEchelon());
 						}
 					}
+				} catch (Exception e) {
+					// on ne fait rien
 				}
 			} else {
 				if (!avctFonct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
@@ -4038,5 +4041,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
 		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
+	}
+
+	public AvancementDetachesDao getAvancementDetachesDao() {
+		return avancementDetachesDao;
+	}
+
+	public void setAvancementDetachesDao(AvancementDetachesDao avancementDetachesDao) {
+		this.avancementDetachesDao = avancementDetachesDao;
 	}
 }

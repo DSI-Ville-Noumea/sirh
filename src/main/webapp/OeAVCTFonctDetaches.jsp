@@ -46,7 +46,7 @@ function activeImpr() {
 	<%
 	for (int j = 0;j<process.getListeAvct().size();j++){
 		AvancementDetaches avct = (AvancementDetaches) process.getListeAvct().get(j);
-		Integer i = Integer.valueOf(avct.getIdAvct());
+		Integer i = avct.getIdAvct();
 	%>
 	var box = document.formu.elements['NOM_CK_VALID_ARR_IMPR_' + <%=i%>];
 	if (document.formu.elements['CHECK_ALL_IMPR'].checked) {
@@ -64,7 +64,7 @@ function activeRegul() {
 	<%
 	for (int j = 0;j<process.getListeAvct().size();j++){
 		AvancementDetaches avct = (AvancementDetaches) process.getListeAvct().get(j);
-		Integer i = Integer.valueOf(avct.getIdAvct());
+		Integer i = avct.getIdAvct();
 	%>
 	var box = document.formu.elements['NOM_CK_REGUL_ARR_IMPR_' + <%=i%>];
 	if (document.formu.elements['CHECK_ALL_REGUL'].checked) {
@@ -140,7 +140,7 @@ function activeRegul() {
 					<%
 					if (process.getListeAvct()!=null){
 						for (int j = 0;j<process.getListeAvct().size();j++){
-							Integer indiceAvct = Integer.valueOf(process.getListeAvct().get(j).getIdAvct());
+							Integer indiceAvct = process.getListeAvct().get(j).getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>

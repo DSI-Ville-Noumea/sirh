@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.avancement;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -72,6 +74,9 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 	private MotifAvancementDao motifAvancementDao;
 	private AutreAdministrationDao autreAdministrationDao;
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
+	private AvancementDetachesDao avancementDetachesDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -117,6 +122,9 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		}
 		if (getAutreAdministrationAgentDao() == null) {
 			setAutreAdministrationAgentDao(new AutreAdministrationAgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvancementDetachesDao() == null) {
+			setAvancementDetachesDao(new AvancementDetachesDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -354,8 +362,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 	private void afficherListeAvct(HttpServletRequest request) throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementDetaches av = (AvancementDetaches) getListeAvct().get(j);
-			Integer i = Integer.valueOf(av.getIdAvct());
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Integer i = av.getIdAvct();
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
@@ -366,16 +374,16 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 							.chercherAutreAdministration(Integer.valueOf(av.getDirectionService())).getLibAutreAdmin()
 							: av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
-					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
-			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+					(av.getCdcadr() == null ? "&nbsp;" : av.getCdcadr()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePa());
 			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
-			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
-			addZone(getNOM_ST_BM_A(i), av.getBMAnnee() + " <br> " + av.getNouvBMAnnee());
-			addZone(getNOM_ST_BM_M(i), av.getBMMois() + " <br> " + av.getNouvBMMois());
-			addZone(getNOM_ST_BM_J(i), av.getBMJour() + " <br> " + av.getNouvBMJour());
-			addZone(getNOM_ST_ACC_A(i), av.getACCAnnee() + " <br> " + av.getNouvACCAnnee());
-			addZone(getNOM_ST_ACC_M(i), av.getACCMois() + " <br> " + av.getNouvACCMois());
-			addZone(getNOM_ST_ACC_J(i), av.getACCJour() + " <br> " + av.getNouvACCJour());
+			addZone(getNOM_ST_DATE_DEBUT(i), sdf.format(av.getDateGrade()));
+			addZone(getNOM_ST_BM_A(i), av.getBmAnnee() + " <br> " + av.getNouvBmAnnee());
+			addZone(getNOM_ST_BM_M(i), av.getBmMois() + " <br> " + av.getNouvBmMois());
+			addZone(getNOM_ST_BM_J(i), av.getBmJour() + " <br> " + av.getNouvBmJour());
+			addZone(getNOM_ST_ACC_A(i), av.getAccAnnee() + " <br> " + av.getNouvAccAnnee());
+			addZone(getNOM_ST_ACC_M(i), av.getAccMois() + " <br> " + av.getNouvAccMois());
+			addZone(getNOM_ST_ACC_J(i), av.getAccJour() + " <br> " + av.getNouvAccJour());
 			addZone(getNOM_ST_GRADE_ANCIEN(i), av.getGrade());
 			addZone(getNOM_ST_GRADE_NOUVEAU(i),
 					(av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
@@ -383,19 +391,20 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
-			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
-			addZone(getNOM_ST_PERIODE_STD(i), av.getDureeStandard());
-			addZone(getNOM_ST_DATE_AVCT(i), av.getDateAvctMoy());
+			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
+			addZone(getNOM_ST_PERIODE_STD(i), av.getPeriodeStandard().toString());
+			addZone(getNOM_ST_DATE_AVCT(i), sdf.format(av.getDateAvctMoy()));
 
 			addZone(getNOM_CK_VALID_DRH(i),
 					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
-			addZone(getNOM_ST_MOTIF_AVCT(i), av.getIdMotifAvct().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: getHashMotifAvancement().get(av.getIdMotifAvct()).getLibMotifAvct());
+			addZone(getNOM_ST_MOTIF_AVCT(i),
+					av.getIdMotifAvct() == null ? "&nbsp;" : getHashMotifAvancement().get(
+							av.getIdMotifAvct().toString()).getLibMotifAvct());
 			addZone(getNOM_CK_PROJET_ARRETE(i), av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())
 					|| av.getEtat().equals(EnumEtatAvancement.SGC.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 			addZone(getNOM_EF_NUM_ARRETE(i), av.getNumArrete());
 			addZone(getNOM_EF_DATE_ARRETE(i),
-					av.getDateArrete().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : av.getDateArrete());
+					av.getDateArrete() == null ? Const.CHAINE_VIDE : sdf.format(av.getDateArrete()));
 
 			addZone(getNOM_CK_AFFECTER(i), av.getEtat().equals(EnumEtatAvancement.VALIDE.getValue())
 					|| av.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue()) ? getCHECKED_ON() : getCHECKED_OFF());
@@ -870,7 +879,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementDetaches avct = (AvancementDetaches) getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 			// on fait les modifications
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				// on traite l'etat
@@ -884,10 +893,24 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 				}
 				// on traite le numero et la date d'arreté
-				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
+				avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
+						.parse(getVAL_EF_DATE_ARRETE(i)));
 				avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 			}
-			avct.modifierAvancement(getTransaction());
+
+			getAvancementDetachesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAgent(), avct.getIdMotifAvct(),
+					avct.getDirectionService(), avct.getSectionService(), avct.getFiliere(), avct.getGrade(),
+					avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(),
+					avct.getBmJour(), avct.getAccAnnee(), avct.getAccMois(), avct.getAccJour(), avct.getNouvBmAnnee(),
+					avct.getNouvBmMois(), avct.getNouvBmJour(), avct.getNouvAccAnnee(), avct.getNouvAccMois(),
+					avct.getNouvAccJour(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(),
+					avct.getNouvInm(), avct.getNouvIna(), avct.getDateGrade(), avct.getPeriodeStandard(),
+					avct.getDateAvctMoy(), avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(),
+					avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(),
+					avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+					avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getObservationArr(),
+					avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(),
+					avct.isRegularisation(), avct.isAgentVdn(), avct.getCodePa());
 			if (getTransaction().isErreur())
 				return false;
 		}
@@ -920,16 +943,16 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementDetaches avct = (AvancementDetaches) getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
-					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent());
+					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
 					// on recupere la derniere carrière dans l'année
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
-							Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee());
+							Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee().toString());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -937,7 +960,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						addZone(getNOM_ST_ETAT(i), avct.getEtat());
 
 						// on traite le numero et la date d'arreté
-						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i));
+						avct.setDateArrete(getVAL_EF_DATE_ARRETE(i).equals(Const.CHAINE_VIDE) ? null : sdf
+								.parse(getVAL_EF_DATE_ARRETE(i)));
 						avct.setNumArrete(getVAL_EF_NUM_ARRETE(i));
 						// avct.modifierAvancement(getTransaction());
 
@@ -945,7 +969,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						// date de debut de carriere et la date de fin de la
 						// precedente
 
-						String dateAvct = avct.getDateAvctMoy();
+						String dateAvct = sdf.format(avct.getDateAvctMoy());
 
 						// on ferme cette carriere
 						carr.setDateFin(dateAvct);
@@ -956,7 +980,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
 								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete());
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct
+								.getDateArrete()));
 						nouvelleCarriere.setDateDebut(dateAvct);
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						// on calcul Grade - ACC/BM en fonction de l'avis CAP
@@ -981,7 +1006,22 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
 
-						avct.modifierAvancement(getTransaction());
+						getAvancementDetachesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAgent(),
+								avct.getIdMotifAvct(), avct.getDirectionService(), avct.getSectionService(),
+								avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(), avct.getAnnee(),
+								avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(),
+								avct.getAccAnnee(), avct.getAccMois(), avct.getAccJour(), avct.getNouvBmAnnee(),
+								avct.getNouvBmMois(), avct.getNouvBmJour(), avct.getNouvAccAnnee(),
+								avct.getNouvAccMois(), avct.getNouvAccJour(), avct.getIban(), avct.getInm(),
+								avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(),
+								avct.getDateGrade(), avct.getPeriodeStandard(), avct.getDateAvctMoy(),
+								avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(), avct.getCodeCategorie(),
+								avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(),
+								avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(),
+								avct.getHeureVerifSef(), avct.getUserVerifArr(), avct.getDateVerifArr(),
+								avct.getHeureVerifArr(), avct.getObservationArr(), avct.getUserVerifArrImpr(),
+								avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(), avct.isRegularisation(),
+								avct.isAgentVdn(), avct.getCodePa());
 
 						// on enregistre
 
@@ -1021,9 +1061,10 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 		// Calcul date avancement au Grade actuel
 		if (libCourtAvisCap.equals("Moy")) {
-			avct.setDureeStandard(gradeActuel.getDureeMoy());
+			avct.setPeriodeStandard(Integer.valueOf(gradeActuel.getDureeMoy()));
 			if (nbJoursBonus > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
-				avct.setDateAvctMoy(ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee());
+				String dateAvct = ancienneCarriere.getDateDebut().substring(0, 6) + avct.getAnnee();
+				avct.setDateAvctMoy(sdf.parse(dateAvct));
 				nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 			} else {
 				avct.setDateAvctMoy(AvancementDetaches.calculDateAvctMoy(gradeActuel, ancienneCarriere));
@@ -1048,13 +1089,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 		int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
 
 		// on met à jour les champs de l'avancement pour affichage tableau
-		avct.setNouvBMAnnee(String.valueOf(nbJoursRestantsBM / 365));
-		avct.setNouvBMMois(String.valueOf((nbJoursRestantsBM % 365) / 30));
-		avct.setNouvBMJour(String.valueOf((nbJoursRestantsBM % 365) % 30));
+		avct.setNouvBmAnnee(nbJoursRestantsBM / 365);
+		avct.setNouvBmMois((nbJoursRestantsBM % 365) / 30);
+		avct.setNouvBmJour((nbJoursRestantsBM % 365) % 30);
 
-		avct.setNouvACCAnnee(String.valueOf(nbJoursRestantsACC / 365));
-		avct.setNouvACCMois(String.valueOf((nbJoursRestantsACC % 365) / 30));
-		avct.setNouvACCJour(String.valueOf((nbJoursRestantsACC % 365) % 30));
+		avct.setNouvAccAnnee(nbJoursRestantsACC / 365);
+		avct.setNouvAccMois((nbJoursRestantsACC % 365) / 30);
+		avct.setNouvAccJour((nbJoursRestantsACC % 365) % 30);
 
 		avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null || gradeSuivant.getCodeGrade().length() == 0 ? null
 				: gradeSuivant.getCodeGrade());
@@ -1064,12 +1105,12 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 		// on met à jour les champs pour la creation de la carriere
 		nouvelleCarriere.setCodeGrade(avct.getIdNouvGrade());
-		nouvelleCarriere.setACCAnnee(avct.getNouvACCAnnee());
-		nouvelleCarriere.setACCMois(avct.getNouvACCMois());
-		nouvelleCarriere.setACCJour(avct.getNouvACCJour());
-		nouvelleCarriere.setBMAnnee(avct.getNouvBMAnnee());
-		nouvelleCarriere.setBMMois(avct.getNouvBMMois());
-		nouvelleCarriere.setBMJour(avct.getNouvBMJour());
+		nouvelleCarriere.setACCAnnee(avct.getNouvAccAnnee().toString());
+		nouvelleCarriere.setACCMois(avct.getNouvAccMois().toString());
+		nouvelleCarriere.setACCJour(avct.getNouvAccJour().toString());
+		nouvelleCarriere.setBMAnnee(avct.getNouvBmAnnee().toString());
+		nouvelleCarriere.setBMMois(avct.getNouvBmMois().toString());
+		nouvelleCarriere.setBMJour(avct.getNouvBmJour().toString());
 	}
 
 	/**
@@ -1128,8 +1169,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 		}
 
-		setListeAvct(AvancementDetaches.listerAvancementAvecAnneeEtat(getTransaction(), annee, null, null, agent,
-				listeSousService, null));
+		setListeAvct(getAvancementDetachesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), null, null,
+				agent == null ? null : Integer.valueOf(agent.getIdAgent()), listeSousService, null));
 		afficherListeAvct(request);
 
 		return true;
@@ -1323,7 +1364,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 		// Suppression des avancements à l'état 'Travail' de la catégorie donnée
 		// et de l'année
-		AvancementDetaches.supprimerAvancementTravailAvecCategorie(getTransaction(), an);
+		getAvancementDetachesDao().supprimerAvancementTravailAvecCategorie(Integer.valueOf(an));
 
 		// recuperation agent
 		AgentNW agent = null;
@@ -1402,11 +1443,10 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 			}
 
 			// Récupération de l'avancement
-			AvancementDetaches avct = AvancementDetaches.chercherAvancementAvecAnneeEtAgent(getTransaction(), annee,
-					a.getIdAgent());
-			if (getTransaction().isErreur() || avct.getIdAvct() == null) {
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+			try {
+				AvancementDetaches avct = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
+						Integer.valueOf(annee), Integer.valueOf(a.getIdAgent()));
+			} catch (Exception e) {
 				// on regarde si il y a d'autre carrieres avec le meme grade
 				// si oui on prend la carriere plus lointaine
 				ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(),
@@ -1422,29 +1462,29 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 				// Si pas de grade suivant, agent non éligible
 				if (gradeActuel.getCodeGradeSuivant() != null && gradeActuel.getCodeGradeSuivant().length() != 0) {
 					// Création de l'avancement
-					avct = new AvancementDetaches();
-					avct.setIdAgent(a.getIdAgent());
-					avct.setCodeCategorie(carr.getCodeCategorie());
-					avct.setAnnee(annee);
+					AvancementDetaches avct = new AvancementDetaches();
+					avct.setIdAgent(Integer.valueOf(a.getIdAgent()));
+					avct.setCodeCategorie(Integer.valueOf(carr.getCodeCategorie()));
+					avct.setAnnee(Integer.valueOf(annee));
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 
 					// PA
-					avct.setCodePA(paAgent.getCdpadm());
+					avct.setCodePa(paAgent.getCdpadm());
 
 					// on traite si l'agent est detaché ou non
 					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
 							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
-						avct.setAgentVDN(false);
+						avct.setAgentVdn(false);
 					} else {
-						avct.setAgentVDN(true);
+						avct.setAgentVdn(true);
 					}
 					// BM/ACC
-					avct.setNouvBMAnnee(carr.getBMAnnee());
-					avct.setNouvBMMois(carr.getBMMois());
-					avct.setNouvBMJour(carr.getBMJour());
-					avct.setNouvACCAnnee(carr.getACCAnnee());
-					avct.setNouvACCMois(carr.getACCMois());
-					avct.setNouvACCJour(carr.getACCJour());
+					avct.setNouvBmAnnee(Integer.valueOf(carr.getBMAnnee()));
+					avct.setNouvBmMois(Integer.valueOf(carr.getBMMois()));
+					avct.setNouvBmJour(Integer.valueOf(carr.getBMJour()));
+					avct.setNouvAccAnnee(Integer.valueOf(carr.getACCAnnee()));
+					avct.setNouvAccMois(Integer.valueOf(carr.getACCMois()));
+					avct.setNouvAccJour(Integer.valueOf(carr.getACCJour()));
 
 					// calcul BM/ACC applicables
 					int nbJoursBM = AvancementDetaches.calculJourBM(gradeActuel, carr);
@@ -1454,9 +1494,10 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 					int nbJoursBonus = nbJoursBM + nbJoursACC;
 					// Calcul date avancement au Grade actuel
 					if (gradeActuel.getDureeMoy() != null && gradeActuel.getDureeMoy().length() != 0) {
-						avct.setDureeStandard(gradeActuel.getDureeMoy());
+						avct.setPeriodeStandard(Integer.valueOf(gradeActuel.getDureeMoy()));
 						if (nbJoursBonusDepart > Integer.parseInt(gradeActuel.getDureeMoy()) * 30) {
-							avct.setDateAvctMoy(carr.getDateDebut().substring(0, 6) + annee);
+							String dateAvct = carr.getDateDebut().substring(0, 6) + avct.getAnnee();
+							avct.setDateAvctMoy(sdf.parse(dateAvct));
 							nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 						} else {
 							avct.setDateAvctMoy(AvancementDetaches.calculDateAvctMoy(gradeActuel, carr));
@@ -1465,9 +1506,9 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 					}
 					// si la date avct moy (année ) sup à l'année choisie pour
 					// la simu alors on sort l'agent du calcul
-					Integer anneeNumerique = Integer.valueOf(avct.getAnnee());
-					Integer anneeDateAvctMoyNumerique = Integer.valueOf(avct.getDateAvctMoy().substring(6,
-							avct.getDateAvctMoy().length()));
+					Integer anneeNumerique = avct.getAnnee();
+					Integer anneeDateAvctMoyNumerique = Integer.valueOf(sdf.format(avct.getDateAvctMoy()).substring(6,
+							sdf.format(avct.getDateAvctMoy()).length()));
 					if (anneeDateAvctMoyNumerique > anneeNumerique) {
 						continue;
 					}
@@ -1490,18 +1531,18 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 							.parseInt(Const.ZERO);
 					int nbJoursRestantsACC = nbJoursBonus - nbJoursRestantsBM;
 
-					avct.setNouvBMAnnee(String.valueOf(nbJoursRestantsBM / 365));
-					avct.setNouvBMMois(String.valueOf((nbJoursRestantsBM % 365) / 30));
-					avct.setNouvBMJour(String.valueOf((nbJoursRestantsBM % 365) % 30));
+					avct.setNouvBmAnnee(nbJoursRestantsBM / 365);
+					avct.setNouvBmMois((nbJoursRestantsBM % 365) / 30);
+					avct.setNouvBmJour((nbJoursRestantsBM % 365) % 30);
 
-					avct.setNouvACCAnnee(String.valueOf(nbJoursRestantsACC / 365));
-					avct.setNouvACCMois(String.valueOf((nbJoursRestantsACC % 365) / 30));
-					avct.setNouvACCJour(String.valueOf((nbJoursRestantsACC % 365) % 30));
+					avct.setNouvAccAnnee(nbJoursRestantsACC / 365);
+					avct.setNouvAccMois((nbJoursRestantsACC % 365) / 30);
+					avct.setNouvAccJour((nbJoursRestantsACC % 365) % 30);
 
 					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null
 							|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
 					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
-					avct.setCodeCadre(gradeActuel.getCodeCadre());
+					avct.setCdcadr(gradeActuel.getCodeCadre());
 
 					// avct.setDateArrete("01/01/" + annee);
 					// avct.setNumArrete(annee);
@@ -1512,16 +1553,16 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						getTransaction().traiterErreur();
 					}
 					avct.setIban(carr.getIban());
-					avct.setInm(bareme.getInm());
-					avct.setIna(bareme.getIna());
+					avct.setInm(Integer.valueOf(bareme.getInm()));
+					avct.setIna(Integer.valueOf(bareme.getIna()));
 
 					// on cherche le nouveau bareme
 					if (gradeSuivant != null && gradeSuivant.getIban() != null) {
 						Bareme nouvBareme = Bareme.chercherBareme(getTransaction(), gradeSuivant.getIban());
 						// on rempli les champs
-						avct.setNouvIBAN(nouvBareme.getIban());
-						avct.setNouvINM(nouvBareme.getInm());
-						avct.setNouvINA(nouvBareme.getIna());
+						avct.setNouvIban(nouvBareme.getIban());
+						avct.setNouvInm(Integer.valueOf(nouvBareme.getInm()));
+						avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
 					}
 
 					// on recupere le grade du poste
@@ -1548,8 +1589,8 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
 									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin().toString());
 								}
-							} catch (Exception e) {
-
+							} catch (Exception e2) {
+								// pas d'autre administration
 							}
 						}
 					}
@@ -1565,7 +1606,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 							// calcul les 3 dates sinon on calcul juste la date
 							// moyenne
 							if (grd.getCodeTava() != null && !grd.getCodeTava().equals(Const.CHAINE_VIDE)) {
-								avct.setIdMotifAvct(grd.getCodeTava());
+								avct.setIdMotifAvct(Integer.valueOf(grd.getCodeTava()));
 							} else {
 								avct.setIdMotifAvct(null);
 							}
@@ -1586,13 +1627,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 							}
 						}
 					}
-					avct.setDateGrade(carr.getDateDebut());
-					avct.setBMAnnee(carr.getBMAnnee());
-					avct.setBMMois(carr.getBMMois());
-					avct.setBMJour(carr.getBMJour());
-					avct.setACCAnnee(carr.getACCAnnee());
-					avct.setACCMois(carr.getACCMois());
-					avct.setACCJour(carr.getACCJour());
+					avct.setDateGrade(sdf.parse(carr.getDateDebut()));
+					avct.setBmAnnee(Integer.valueOf(carr.getBMAnnee()));
+					avct.setBmMois(Integer.valueOf(carr.getBMMois()));
+					avct.setBmJour(Integer.valueOf(carr.getBMJour()));
+					avct.setAccAnnee(Integer.valueOf(carr.getACCAnnee()));
+					avct.setAccMois(Integer.valueOf(carr.getACCMois()));
+					avct.setAccJour(Integer.valueOf(carr.getACCJour()));
 
 					// on regarde si l'agent a une carriere de simulation dejà
 					// saisie
@@ -1603,9 +1644,22 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						avct.setCarriereSimu("S");
 					}
 
-					avct.setDateVerifSEF(Const.DATE_NULL);
-					avct.setDateVerifSGC(Const.DATE_NULL);
-					avct.creerAvancement(getTransaction());
+					avct.setDateVerifSef(null);
+					avct.setDateVerifSgc(null);
+					getAvancementDetachesDao().creerAvancement(avct.getIdAgent(), avct.getIdMotifAvct(),
+							avct.getDirectionService(), avct.getSectionService(), avct.getFiliere(), avct.getGrade(),
+							avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(),
+							avct.getBmMois(), avct.getBmJour(), avct.getAccAnnee(), avct.getAccMois(),
+							avct.getAccJour(), avct.getNouvBmAnnee(), avct.getNouvBmMois(), avct.getNouvBmJour(),
+							avct.getNouvAccAnnee(), avct.getNouvAccMois(), avct.getNouvAccJour(), avct.getIban(),
+							avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(),
+							avct.getDateGrade(), avct.getPeriodeStandard(), avct.getDateAvctMoy(), avct.getNumArrete(),
+							avct.getDateArrete(), avct.getEtat(), avct.getCodeCategorie(), avct.getCarriereSimu(),
+							avct.getUserVerifSgc(), avct.getDateVerifSgc(), avct.getHeureVerifSgc(),
+							avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+							avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(),
+							avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
+							avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getCodePa());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
@@ -1673,5 +1727,13 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 	public void setAutreAdministrationAgentDao(AutreAdministrationAgentDao autreAdministrationAgentDao) {
 		this.autreAdministrationAgentDao = autreAdministrationAgentDao;
+	}
+
+	public AvancementDetachesDao getAvancementDetachesDao() {
+		return avancementDetachesDao;
+	}
+
+	public void setAvancementDetachesDao(AvancementDetachesDao avancementDetachesDao) {
+		this.avancementDetachesDao = avancementDetachesDao;
 	}
 }

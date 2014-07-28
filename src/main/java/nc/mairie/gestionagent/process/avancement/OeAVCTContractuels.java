@@ -328,7 +328,7 @@ public class OeAVCTContractuels extends BasicProcess {
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
 								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(sdf.format(avct.getDateArrete()));
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct.getDateArrete()));
 						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						nouvelleCarriere.setIban(avct.getNouvIban());

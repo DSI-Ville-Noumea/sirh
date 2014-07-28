@@ -581,8 +581,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete() == null ? Const.ZERO : avct
 								.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null
-								|| avct.getDateArrete().equals(Const.DATE_NULL) ? Const.ZERO : avct.getDateArrete());
+						nouvelleCarriere
+								.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : avct.getDateArrete());
 						nouvelleCarriere.setDateDebut(dateAvctFinale);
 						nouvelleCarriere.setDateFin(Const.ZERO);
 
