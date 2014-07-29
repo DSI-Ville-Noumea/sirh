@@ -67,6 +67,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
@@ -240,6 +241,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private ContratDao contratDao;
+	private NiveauEtudeDao niveauEtudeDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -494,6 +496,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNiveauEtudeDao() == null) {
+			setNiveauEtudeDao(new NiveauEtudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -838,12 +843,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Si liste niveau etude vide alors affectation
 		if (getLB_NIVEAU_ETUDE() == LBVide) {
-			ArrayList<NiveauEtude> niveau = NiveauEtude.listerNiveauEtude(getTransaction());
+			ArrayList<NiveauEtude> niveau = (ArrayList<NiveauEtude>) getNiveauEtudeDao().listerNiveauEtude();
 			setListeNiveauEtude(niveau);
+			if (getListeNiveauEtude().size() != 0) {
+				int tailles[] = { 15 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<NiveauEtude> list = getListeNiveauEtude().listIterator(); list.hasNext();) {
+					NiveauEtude nature = (NiveauEtude) list.next();
+					String ligne[] = { nature.getCodeNiveauEtude() };
 
-			int[] tailles = { 15 };
-			String[] champs = { "libNiveauEtude" };
-			setLB_NIVEAU_ETUDE(new FormateListe(tailles, niveau, champs).getListeFormatee(true));
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NIVEAU_ETUDE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_NIVEAU_ETUDE(null);
+			}
 		}
 
 		// Si liste diplomes vide alors affectation
@@ -1898,8 +1912,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		// on ajoute le niveau etude dela FDP
 		NiveauEtude niveauAAjouter = (NiveauEtude) getListeTousNiveau().get(0);
-		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(),
-				niveauAAjouter.getIdNiveauEtude());
+		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(), niveauAAjouter
+				.getIdNiveauEtude().toString());
 		niveauFP.creerNiveauEtudeFP(getTransaction());
 
 		// nouvelle gestion des activites
@@ -3110,7 +3124,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				if (getListeTousNiveau() != null) {
 					for (int i = 0; i < getListeTousNiveau().size(); i++) {
 						NiveauEtude nivEt = (NiveauEtude) getListeTousNiveau().get(i);
-						nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
+						nivEtMulti += nivEt.getCodeNiveauEtude() + ", ";
 					}
 				}
 				addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
@@ -3151,7 +3165,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getListeTousNiveau() != null) {
 				for (int i = 0; i < getListeTousNiveau().size(); i++) {
 					NiveauEtude nivEt = (NiveauEtude) getListeTousNiveau().get(i);
-					nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
+					nivEtMulti += nivEt.getCodeNiveauEtude() + ", ";
 				}
 			}
 			addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
@@ -3617,7 +3631,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// on recupere les niveau etude de la FDP
 			setListeNiveauFP(NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante()));
 			for (NiveauEtudeFP niveauFP : getListeNiveauFP()) {
-				NiveauEtude niveau = NiveauEtude.chercherNiveauEtude(getTransaction(), niveauFP.getIdNiveauEtude());
+				NiveauEtude niveau = getNiveauEtudeDao().chercherNiveauEtude(
+						Integer.valueOf(niveauFP.getIdNiveauEtude()));
 				getListeTousNiveau().add(niveau);
 			}
 		} else {
@@ -3626,7 +3641,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		String nivEtMulti = Const.CHAINE_VIDE;
 		for (NiveauEtude nivEt : getListeTousNiveau()) {
-			nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
+			nivEtMulti += nivEt.getCodeNiveauEtude() + ", ";
 		}
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
 				nivEtMulti.length() > 0 ? nivEtMulti.substring(0, nivEtMulti.length() - 2) : nivEtMulti);
@@ -6651,5 +6666,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setContratDao(ContratDao contratDao) {
 		this.contratDao = contratDao;
+	}
+
+	public NiveauEtudeDao getNiveauEtudeDao() {
+		return niveauEtudeDao;
+	}
+
+	public void setNiveauEtudeDao(NiveauEtudeDao niveauEtudeDao) {
+		this.niveauEtudeDao = niveauEtudeDao;
 	}
 }

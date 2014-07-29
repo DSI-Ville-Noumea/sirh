@@ -35,6 +35,7 @@ import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
+import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -138,6 +139,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private AutreAppellationEmploiDao autreAppellationEmploiDao;
 	private CategorieDao categorieDao;
 	private CategorieFEDao categorieFEDao;
+	private NiveauEtudeDao niveauEtudeDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1025,12 +1027,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciens
 			for (int i = 0; i < getListeNiveauEtudeAAjouter().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeAAjouter().get(i);
-				NiveauEtudeFE nivEtudeFE = new NiveauEtudeFE(getFicheEmploiCourant().getIdFicheEmploi(),
-						niv.getIdNiveauEtude());
+				NiveauEtudeFE nivEtudeFE = new NiveauEtudeFE(getFicheEmploiCourant().getIdFicheEmploi(), niv
+						.getIdNiveauEtude().toString());
 				nivEtudeFE.creerNiveauEtudeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR976", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
+							MessageUtils.getMessage("ERR976", "NiveauEtude '" + niv.getCodeNiveauEtude() + "'"));
 					return false;
 				}
 			}
@@ -1038,12 +1040,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeNiveauEtudeASupprimer().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeASupprimer().get(i);
-				NiveauEtudeFE nivEtudeFE = NiveauEtudeFE.chercherNiveauEtudeFE(getTransaction(),
-						niv.getIdNiveauEtude(), getFicheEmploiCourant().getIdFicheEmploi());
+				NiveauEtudeFE nivEtudeFE = NiveauEtudeFE.chercherNiveauEtudeFE(getTransaction(), niv.getIdNiveauEtude()
+						.toString(), getFicheEmploiCourant().getIdFicheEmploi());
 				nivEtudeFE.supprimerNiveauEtudeFE(getTransaction());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
-							MessageUtils.getMessage("ERR975", "NiveauEtude '" + niv.getLibNiveauEtude() + "'"));
+							MessageUtils.getMessage("ERR975", "NiveauEtude '" + niv.getCodeNiveauEtude() + "'"));
 					return false;
 				}
 			}
@@ -1395,6 +1397,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getCategorieFEDao() == null) {
 			setCategorieFEDao(new CategorieFEDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getNiveauEtudeDao() == null) {
+			setNiveauEtudeDao(new NiveauEtudeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1671,12 +1676,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 		// Si liste diplomes vide alors affectation
 		if (getLB_NIVEAU_ETUDE() == LBVide) {
-			ArrayList<NiveauEtude> niveau = NiveauEtude.listerNiveauEtude(getTransaction());
+			ArrayList<NiveauEtude> niveau = (ArrayList<NiveauEtude>) getNiveauEtudeDao().listerNiveauEtude();
 			setListeNiveauEtude(niveau);
-
 			int[] tailles = { 10 };
-			String[] champs = { "libNiveauEtude" };
-			setLB_NIVEAU_ETUDE(new FormateListe(tailles, niveau, champs).getListeFormatee(true));
+			if (getListeNiveauEtude().size() != 0) {
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<NiveauEtude> list = getListeNiveauEtude().listIterator(); list.hasNext();) {
+					NiveauEtude cadre = (NiveauEtude) list.next();
+					String ligne[] = { cadre.getCodeNiveauEtude() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_NIVEAU_ETUDE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_NIVEAU_ETUDE(null);
+			}
+
 		}
 
 		// Si liste diplomes vide alors affectation
@@ -1782,14 +1796,18 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseNiveauEtudeMulti() throws Exception {
 		if (getListeNiveauEtudeMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
+
+			// Recherche de tous les liens FicheEmploi / NiveauEtude
+			ArrayList<NiveauEtudeFE> liens = NiveauEtudeFE.listerNiveauEtudeFEAvecFE(getTransaction(),
+					getFicheEmploiCourant());
+			setListeNiveauEtudeMulti(getNiveauEtudeDao().listerNiveauEtudeAvecFE(liens));
 		}
 
 		String nivEtMulti = Const.CHAINE_VIDE;
 		if (getListeNiveauEtudeMulti() != null) {
 			for (int i = 0; i < getListeNiveauEtudeMulti().size(); i++) {
 				NiveauEtude nivEt = (NiveauEtude) getListeNiveauEtudeMulti().get(i);
-				nivEtMulti += nivEt.getLibNiveauEtude() + ", ";
+				nivEtMulti += nivEt.getCodeNiveauEtude() + ", ";
 			}
 		}
 		addZone(getNOM_EF_NIVEAU_ETUDE_MULTI(),
@@ -2766,7 +2784,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), getCategorieFEDao()));
 				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getCadreEmploiFEDao(),
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
-				setListeNiveauEtudeMulti(NiveauEtude.listerNiveauEtudeAvecFE(getTransaction(), getFicheEmploiCourant()));
+
+				// Recherche de tous les liens FicheEmploi / NiveauEtude
+				ArrayList<NiveauEtudeFE> liens = NiveauEtudeFE.listerNiveauEtudeFEAvecFE(getTransaction(),
+						getFicheEmploiCourant());
+				setListeNiveauEtudeMulti(getNiveauEtudeDao().listerNiveauEtudeAvecFE(liens));
+
 				setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(getTransaction(),
 						getFicheEmploiCourant()));
 			}
@@ -3455,7 +3478,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les NiveauEtude
 			for (int i = 0; i < getListeNiveauEtudeMulti().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeMulti().get(i);
-				NiveauEtudeFE newNivFE = new NiveauEtudeFE(ficheDupliquee.getIdFicheEmploi(), niv.getIdNiveauEtude());
+				NiveauEtudeFE newNivFE = new NiveauEtudeFE(ficheDupliquee.getIdFicheEmploi(), niv.getIdNiveauEtude()
+						.toString());
 				newNivFE.creerNiveauEtudeFE(getTransaction());
 			}
 			// Duplique les Diplome
@@ -4256,5 +4280,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setCategorieFEDao(CategorieFEDao categorieFEDao) {
 		this.categorieFEDao = categorieFEDao;
+	}
+
+	public NiveauEtudeDao getNiveauEtudeDao() {
+		return niveauEtudeDao;
+	}
+
+	public void setNiveauEtudeDao(NiveauEtudeDao niveauEtudeDao) {
+		this.niveauEtudeDao = niveauEtudeDao;
 	}
 }
