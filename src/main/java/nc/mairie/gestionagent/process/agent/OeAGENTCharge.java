@@ -10,7 +10,6 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Charge;
-import nc.mairie.metier.agent.ChargeAgent;
 import nc.mairie.metier.agent.CodeAcci;
 import nc.mairie.metier.agent.CodeChargeLogt;
 import nc.mairie.metier.agent.CodeLogt;
@@ -698,13 +697,6 @@ public class OeAGENTCharge extends BasicProcess {
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
-
-			// Suppression du lien
-			ChargeAgent chargeAgent = ChargeAgent.chercherChargeAgent(getTransaction(), getAgentCourant().idAgent,
-					getAgentCourant().getNoMatricule(), getChargeCourante().getNoRubr(), getChargeCourante()
-							.getDatDeb());
-			chargeAgent.supprimerChargeAgent(getTransaction());
-
 			// suppression
 			getChargeCourante().supprimerCharge(getTransaction(), user);
 			if (getTransaction().isErreur())
@@ -758,10 +750,6 @@ public class OeAGENTCharge extends BasicProcess {
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				getChargeCourante().creerCharge(getTransaction(), user);
-
-				ChargeAgent chargeAgent = new ChargeAgent(getAgentCourant().getIdAgent(), getAgentCourant()
-						.getNoMatricule(), getChargeCourante().getNoRubr(), getChargeCourante().getDatDeb());
-				chargeAgent.creerChargeAgent(getTransaction());
 			}
 			// RG_AG_CG_A04
 			Matricule.updateMatricule(getTransaction(), getAgentCourant(), getChargeCourante().getDatDeb());
