@@ -1387,6 +1387,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		if (getActionCourante() != null) {
 			// Sauvegarde des nouveaux acteurs
 			try {
+				@SuppressWarnings("unused")
 				CampagneActeur campAct = getCampagneActeurDao().chercherCampagneActeur(
 						getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
 			} catch (Exception e) {

@@ -2696,7 +2696,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (agentCourant != null) {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCourant);
 			try {
-				primes = t.getPrimes(carr.getStatutCarriere(carr.getCodeCategorie()));
+				primes = t.getPrimes(Carriere.getStatutCarriere(carr.getCodeCategorie()));
 			} catch (Exception e) {
 				// TODO a supprimer quand les pointages seront en prod
 			}

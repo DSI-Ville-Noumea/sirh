@@ -1083,13 +1083,6 @@ public class OeAGENTCarriere extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR135"));
 				return false;
 			}
-
-			/*
-			 * if (dernierePA == null) { getTransaction().traiterErreur(); //
-			 * "ERR132", "L'agent n'a pas de PA en cours."
-			 * getTransaction().declarerErreur
-			 * (MessageUtils.getMessage("ERR132")); return false; }
-			 */
 		}
 
 		return true;

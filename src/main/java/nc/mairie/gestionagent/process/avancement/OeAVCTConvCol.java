@@ -288,6 +288,7 @@ public class OeAVCTConvCol extends BasicProcess {
 					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
 
 					// on regarde si la prime existe dejà ou pas
+					@SuppressWarnings("unused")
 					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNoMatricule(),
 							avct.getAnnee() + "0101");
 					if (getTransaction().isErreur()) {

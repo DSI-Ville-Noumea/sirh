@@ -602,6 +602,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
 
 						// On regarde si il y a deja une prime de saisie
+						@SuppressWarnings("unused")
 						Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(),
 								annee + "0101");
 						if (getTransaction().isErreur()) {

@@ -2302,7 +2302,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
-			// setListeAjoutActiFP(null);
 			getListeAjoutActiFP().clear();
 			initialiseActivites();
 
@@ -3540,9 +3539,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (listeActiSelect != null && !listeActiSelect.isEmpty()) {
 			if (getListeAjoutActiFP() != null) {
 				getListeAjoutActiFP().addAll(listeActiSelect);
-			}// else {
-				// setListeAjoutActiFP(listeActiSelect);
-				// }
+			}
 		}
 		for (Activite a : getListeAjoutActiFP()) {
 			if (a != null) {
@@ -3555,10 +3552,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 		}
-
-		// else {
-		// setListeAjoutActiFP(new ArrayList<Activite>());
-		// }
 
 		// Si liste activites vide alors initialisation.
 		boolean dejaCoche = false;
@@ -5821,10 +5814,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	private ArrayList<Activite> getListeAjoutActiFP() {
 		return listeAjoutActiFP;
-	}
-
-	private void setListeAjoutActiFP(ArrayList<Activite> listeAjoutActiFP) {
-		this.listeAjoutActiFP = listeAjoutActiFP;
 	}
 
 	private HashMap<String, String> getHashOrigineActivite() {

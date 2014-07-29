@@ -507,6 +507,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 						// il faut faire attention qu'il n'y a pas de carriere
 						// de simu deja en cours
+						@SuppressWarnings("unused")
 						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr,
 								Services.convertitDate(sdfFormatDate.format(dateAvctFinale), "dd/MM/yyyy", "yyyyMMdd"));
 						if (getTransaction().isErreur()) {
@@ -1609,6 +1610,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 						// il faut faire attention qu'il n'y a pas de carriere
 						// de simu deja en cours
+						@SuppressWarnings("unused")
 						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr,
 								Services.convertitDate(sdfFormatDate.format(dateAvctFinale), "dd/MM/yyyy", "yyyyMMdd"));
 						if (getTransaction().isErreur()) {
