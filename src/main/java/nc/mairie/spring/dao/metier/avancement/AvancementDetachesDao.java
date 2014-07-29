@@ -79,16 +79,16 @@ public class AvancementDetachesDao extends SirhDao implements AvancementDetaches
 
 		String reqWhere = Const.CHAINE_VIDE;
 		if (libFiliere != null) {
-			reqWhere = " and avct." + CHAMP_FILIERE + " = '" + libFiliere + "' ";
+			reqWhere = " and " + CHAMP_FILIERE + " = '" + libFiliere + "' ";
 		}
 		if (categorie != null) {
-			reqWhere = " and avct." + CHAMP_CDCADR + " = '" + categorie + "' ";
+			reqWhere = " and " + CHAMP_CDCADR + " = '" + categorie + "' ";
 		}
 		if (etat != null) {
 			reqWhere += etat;
 		}
 		if (idAgent != null) {
-			reqWhere += " and avct." + CHAMP_ID_AGENT + "=" + idAgent + " ";
+			reqWhere += " and " + CHAMP_ID_AGENT + "=" + idAgent + " ";
 		}
 
 		if (listeSousService != null) {

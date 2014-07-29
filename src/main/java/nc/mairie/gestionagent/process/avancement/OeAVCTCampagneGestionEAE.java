@@ -75,6 +75,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFormationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeParcoursProDao;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.diplome.DiplomeAgentDao;
 import nc.mairie.spring.dao.metier.diplome.FormationAgentDao;
 import nc.mairie.spring.dao.metier.parametrage.CentreFormationDao;
@@ -170,6 +171,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private DiplomeAgentDao diplomeAgentDao;
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 	private AvancementDetachesDao avancementDetachesDao;
+	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -498,11 +500,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// pour le CAP
 		// on cherche si il y a une ligne dans les avancements
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
-				getTransaction(), anneeCampagne.toString(), a.getIdAgent());
-		if (getTransaction().isErreur())
-			getTransaction().traiterErreur();
-		if (avct != null && avct.getIdAvct() != null) {
+		try {
+			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
+					.chercherAvancementFonctionnaireAvecAnneeEtAgent(anneeCampagne, Integer.valueOf(a.getIdAgent()));
 			// on a trouvé une ligne dans avancement
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
@@ -511,7 +511,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			} else {
 				eae.setCap(false);
 			}
-		} else {
+		} catch (Exception e) {
 			eae.setCap(false);
 		}
 
@@ -545,11 +545,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// pour le CAP
 		// on cherche si il y a une ligne dans les avancements
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
-				getTransaction(), anneeCampagne.toString(), a.getIdAgent());
-		if (getTransaction().isErreur())
-			getTransaction().traiterErreur();
-		if (avct != null && avct.getIdAvct() != null) {
+		try {
+			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
+					.chercherAvancementFonctionnaireAvecAnneeEtAgent(anneeCampagne, Integer.valueOf(a.getIdAgent()));
 			// on a trouvé une ligne dans avancement
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
@@ -558,7 +556,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			} else {
 				eae.setCap(false);
 			}
-		} else {
+		} catch (Exception e) {
 			eae.setCap(false);
 		}
 
@@ -855,6 +853,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getAvancementDetachesDao() == null) {
 			setAvancementDetachesDao(new AvancementDetachesDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvancementFonctionnairesDao() == null) {
+			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2676,10 +2677,53 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on regarde dans l'avancement pour le nouveau grade, le nouvel
 			// echelon
 			// et la date d'avancement
-			AvancementFonctionnaires avctFonct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
-					getTransaction(), getCampagneCourante().getAnnee().toString(), ag.getIdAgent());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			try {
+				AvancementFonctionnaires avctFonct = getAvancementFonctionnairesDao()
+						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getCampagneCourante().getAnnee(),
+								Integer.valueOf(ag.getIdAgent()));
+				if (!avctFonct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
+					// attention dans le cas des categorie 4 on a pas de date
+					// moyenne avct
+					evalAModif.setDateEffetAvct(avctFonct.getDateAvctMoy() == null ? null : avctFonct.getDateAvctMoy());
+				}
+				Grade gradeSuivAvct = Grade.chercherGrade(getTransaction(), avctFonct.getIdNouvGrade());
+				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctFonct.getGrade());
+				if (getTransaction().isErreur()) {
+					getTransaction().traiterErreur();
+				} else {
+					// on cherche la classe si elle existe
+					String classeString = Const.CHAINE_VIDE;
+					if (gradeSuivAvct.getCodeClasse() != null
+							&& !gradeSuivAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
+						Classe classe = Classe.chercherClasse(getTransaction(), gradeSuivAvct.getCodeClasse());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						}
+						if (classe != null && classe.getLibClasse() != null) {
+							classeString = classe.getLibClasse();
+						}
+					}
+					evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
+					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
+						MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(
+								Integer.valueOf(gradeAvct.getCodeTava()));
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						}
+						if (motif != null && motif.getCode() != null) {
+							evalAModif.setTypeAvct(motif.getCode());
+						}
+					}
+				}
+				if (gradeSuivAvct != null && gradeSuivAvct.getCodeEchelon() != null) {
+					Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeSuivAvct.getCodeEchelon());
+					if (getTransaction().isErreur()) {
+						getTransaction().traiterErreur();
+					} else {
+						evalAModif.setNouvEchelon(echAvct.getLibEchelon());
+					}
+				}
+			} catch (Exception e) {
 				// sinon, on cherche dans les détachés
 				try {
 					AvancementDetaches avctDetache = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
@@ -2716,8 +2760,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 							}
-							if (motif != null && motif.getCodeMotifAvct() != null) {
-								evalAModif.setTypeAvct(motif.getCodeMotifAvct());
+							if (motif != null && motif.getCode() != null) {
+								evalAModif.setTypeAvct(motif.getCode());
 							}
 						}
 					}
@@ -2729,54 +2773,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							evalAModif.setNouvEchelon(echAvct.getLibEchelon());
 						}
 					}
-				} catch (Exception e) {
+				} catch (Exception e2) {
 					// on ne fait rien
-				}
-			} else {
-				if (!avctFonct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
-					// attention dans le cas des categorie 4 on a pas de date
-					// moyenne avct
-					evalAModif.setDateEffetAvct(avctFonct.getDateAvctMoy() == null
-							|| avctFonct.getDateAvctMoy().equals(Const.DATE_NULL)
-							|| avctFonct.getDateAvctMoy().equals(Const.CHAINE_VIDE) ? null : sdf.parse(avctFonct
-							.getDateAvctMoy()));
-				}
-				Grade gradeSuivAvct = Grade.chercherGrade(getTransaction(), avctFonct.getIdNouvGrade());
-				Grade gradeAvct = Grade.chercherGrade(getTransaction(), avctFonct.getGrade());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					// on cherche la classe si elle existe
-					String classeString = Const.CHAINE_VIDE;
-					if (gradeSuivAvct.getCodeClasse() != null
-							&& !gradeSuivAvct.getCodeClasse().equals(Const.CHAINE_VIDE)) {
-						Classe classe = Classe.chercherClasse(getTransaction(), gradeSuivAvct.getCodeClasse());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						}
-						if (classe != null && classe.getLibClasse() != null) {
-							classeString = classe.getLibClasse();
-						}
-					}
-					evalAModif.setNouvGrade(gradeSuivAvct.getGrade() + " " + classeString);
-					if (gradeAvct.getCodeTava() != null && !gradeAvct.getCodeTava().equals(Const.CHAINE_VIDE)) {
-						MotifAvancement motif = getMotifAvancementDao().chercherMotifAvancement(
-								Integer.valueOf(gradeAvct.getCodeTava()));
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						}
-						if (motif != null && motif.getCodeMotifAvct() != null) {
-							evalAModif.setTypeAvct(motif.getCodeMotifAvct());
-						}
-					}
-				}
-				if (gradeSuivAvct != null && gradeSuivAvct.getCodeEchelon() != null) {
-					Echelon echAvct = Echelon.chercherEchelon(getTransaction(), gradeSuivAvct.getCodeEchelon());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
-						evalAModif.setNouvEchelon(echAvct.getLibEchelon());
-					}
 				}
 			}
 
@@ -3312,21 +3310,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			MotifAvancement motifAD = getMotifAvancementDao().chercherMotifAvancementByLib("AVANCEMENT DIFFERENCIE");
 			MotifAvancement motifPromo = getMotifAvancementDao().chercherMotifAvancementByLib("PROMOTION");
 			MotifAvancement motifTitu = getMotifAvancementDao().chercherMotifAvancementByLib("TITULARISATION");
-			AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(
-					getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "INF500",
-				// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD n'ont pu être mis à jour.");
-				setMessage(MessageUtils.getMessage("INF500"));
-			}
-			if (avct != null && avct.getIdAvct() != null) {
+
+			try {
+				AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
+						.chercherAvancementFonctionnaireAvecAnneeEtAgent(getCampagneCourante().getAnnee(),
+								evalue.getIdAgent());
 				if (avct.getGrade() != null) {
 					Grade gradeAgent = Grade.chercherGrade(getTransaction(), avct.getGrade());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						avct.setIdMotifAvct(null);
-						avct.setAvisSHD(null);
+						avct.setAvisShd(null);
 					} else {
 						String typeAvct = gradeAgent.getCodeTava();
 						if (!typeAvct.equals(Const.CHAINE_VIDE)) {
@@ -3336,40 +3330,58 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								avct.setIdMotifAvct(null);
-								avct.setAvisSHD(null);
+								avct.setAvisShd(null);
 							} else {
-								avct.setIdMotifAvct(motif.getIdMotifAvct().toString());
+								avct.setIdMotifAvct(motif.getIdMotifAvct());
 								EaeEvaluation eval = getEaeEvaluationDao().chercherEaeEvaluation(
 										getEaeCourant().getIdEae());
 								if (typeAvct.equals(motifRevalo.getIdMotifAvct())) {
-									avct.setAvisSHD(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
+									avct.setAvisShd(eval.getAvisRevalorisation() == 1 ? "Favorable" : "Défavorable");
 								} else if (typeAvct.equals(motifAD.getIdMotifAvct())) {
-									avct.setAvisSHD(eval.getPropositionAvancement());
+									avct.setAvisShd(eval.getPropositionAvancement());
 								} else if (typeAvct.equals(motifTitu.getIdMotifAvct())) {
-									avct.setAvisSHD("MOY");
+									avct.setAvisShd("MOY");
 								} else if (typeAvct.equals(motifPromo.getIdMotifAvct())) {
-									avct.setAvisSHD(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
+									avct.setAvisShd(eval.getAvisChangementClasse() == 1 ? "Favorable" : "Défavorable");
 								} else {
-									avct.setAvisSHD(null);
+									avct.setAvisShd(null);
 								}
 							}
 						} else {
 							avct.setIdMotifAvct(null);
-							avct.setAvisSHD(null);
+							avct.setAvisShd(null);
 						}
 					}
 				} else {
 					avct.setIdMotifAvct(null);
-					avct.setAvisSHD(null);
+					avct.setAvisShd(null);
 				}
-				avct.modifierAvancement(getTransaction());
+				getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
+						avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(), avct.getSectionService(),
+						avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(),
+						avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(), avct.getAccAnnee(), avct.getAccMois(),
+						avct.getAccJour(), avct.getNouvBmAnnee(), avct.getNouvBmMois(), avct.getNouvBmJour(),
+						avct.getNouvAccAnnee(), avct.getNouvAccMois(), avct.getNouvAccJour(), avct.getIban(),
+						avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(),
+						avct.getDateGrade(), avct.getPeriodeStandard(), avct.getDateAvctMini(), avct.getDateAvctMoy(),
+						avct.getDateAvctMaxi(), avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(),
+						avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(),
+						avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+						avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(),
+						avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
+						avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
+						avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
+						avct.getCodePa());
 
 				if (getTransaction().isErreur())
 					return false;
 
 				// tout s'est bien passé
 				commitTransaction();
-
+			} catch (Exception e) {
+				// "INF500",
+				// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD n'ont pu être mis à jour.");
+				setMessage(MessageUtils.getMessage("INF500"));
 			}
 
 			// on met à jour le statut de l'EAE
@@ -3444,23 +3456,36 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 		}
 
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementAvecAnneeEtAgent(getTransaction(),
-				getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-			// "INF500",
-			// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
-			setMessage(MessageUtils.getMessage("INF500"));
-		}
-
-		if (avct != null && avct.getIdAvct() != null) {
+		try {
+			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
+					.chercherAvancementFonctionnaireAvecAnneeEtAgent(getCampagneCourante().getAnnee(),
+							evalue.getIdAgent());
 			avct.setIdMotifAvct(null);
-			avct.setAvisSHD(null);
+			avct.setAvisShd(null);
 
-			avct.modifierAvancement(getTransaction());
+			getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
+					avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(), avct.getSectionService(),
+					avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(), avct.getAnnee(), avct.getCdcadr(),
+					avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(), avct.getAccAnnee(), avct.getAccMois(),
+					avct.getAccJour(), avct.getNouvBmAnnee(), avct.getNouvBmMois(), avct.getNouvBmJour(),
+					avct.getNouvAccAnnee(), avct.getNouvAccMois(), avct.getNouvAccJour(), avct.getIban(),
+					avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(),
+					avct.getDateGrade(), avct.getPeriodeStandard(), avct.getDateAvctMini(), avct.getDateAvctMoy(),
+					avct.getDateAvctMaxi(), avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(),
+					avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(),
+					avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+					avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(),
+					avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
+					avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
+					avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
+					avct.getCodePa());
 
 			// tout s'est bien passé
 			commitTransaction();
+		} catch (Exception e) {
+			// "INF500",
+			// "Aucun avancement n'a été trouvé pour cet EAE. Le motif et l'avis SHD 'nont pu être mis à jour.");
+			setMessage(MessageUtils.getMessage("INF500"));
 		}
 
 		// on met à jour le statut de l'EAE
@@ -3543,12 +3568,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// on met à jour le champ CAP
 		// on cherche si il y a une ligne dans les avancements
-		AvancementFonctionnaires avct = AvancementFonctionnaires.chercherAvancementFonctionnaireAvecAnneeEtAgent(
-				getTransaction(), getCampagneCourante().getAnnee().toString(), evalue.getIdAgent().toString());
-		if (getTransaction().isErreur())
-			getTransaction().traiterErreur();
 		EAE eae = getEaeCourant();
-		if (avct != null && avct.getIdAvct() != null) {
+		try {
+			AvancementFonctionnaires avct = getAvancementFonctionnairesDao()
+					.chercherAvancementFonctionnaireAvecAnneeEtAgent(getCampagneCourante().getAnnee(),
+							evalue.getIdAgent());
 			// on a trouvé une ligne dans avancement
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
@@ -3557,7 +3581,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			} else {
 				eae.setCap(false);
 			}
-		} else {
+		} catch (Exception e) {
+
 			eae.setCap(false);
 		}
 		getEaeDao().modifierCAP(getEaeCourant().getIdEae(), eae.isCap());
@@ -4049,5 +4074,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setAvancementDetachesDao(AvancementDetachesDao avancementDetachesDao) {
 		this.avancementDetachesDao = avancementDetachesDao;
+	}
+
+	public AvancementFonctionnairesDao getAvancementFonctionnairesDao() {
+		return avancementFonctionnairesDao;
+	}
+
+	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
+		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
 	}
 }

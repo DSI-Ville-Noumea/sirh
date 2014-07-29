@@ -69,7 +69,7 @@ function reduireHierarchy() {
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_VALID_SEF_' + <%=i%>];
 			if (document.formu.elements['CHECK_ALL_SEF'].checked) {
@@ -169,7 +169,7 @@ function reduireHierarchy() {
 					<%
 						for (int i = 0;i<process.getListeAvct().size();i++){
 							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(i);
-							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+							Integer indiceAvct = avct.getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -186,15 +186,15 @@ function reduireHierarchy() {
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>
 								<% if (process.getVAL_CK_VALID_SEF(indiceAvct).equals(process.getCHECKED_ON())){ %>
 								<td>								
-									<%if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>
+									<%if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if( avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
+									<%}else if( avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==6){ %>
 										<SELECT disabled="disabled"  name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -202,8 +202,8 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
-										<%if(avct.getIdMotifAvct().equals("7") && avct.getIdAvisCAP().equals("1")){%>
+									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null){%>
+										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
 										<INPUT disabled="disabled" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										&nbsp;
@@ -214,15 +214,15 @@ function reduireHierarchy() {
 								</td>								
 								<%}else{%>
 								<td>								
-									<%if( avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
+									<%if( avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==4){%>										
 										<SELECT name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
+									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==7){ %>
 										<SELECT onchange='activeOrdreMerite("<%=indiceAvct %>")' name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 										<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(avct.getAvisSHD()!=null &&!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+									<%}else if(avct.getAvisShd()!=null &&avct.getIdMotifAvct()!=null && avct.getIdMotifAvct()==6){ %>
 										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -230,8 +230,8 @@ function reduireHierarchy() {
 									<%} %>
 								</td>
 								<td>
-									<%if(avct.getAvisSHD()!=null && !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){%>
-										<%if(avct.getIdMotifAvct().equals("7") && avct.getIdAvisCAP().equals("1")){%>
+									<%if(avct.getAvisShd()!=null && avct.getIdMotifAvct()!=null){%>
+										<%if(avct.getIdMotifAvct()==7 && avct.getIdAvisCap()==1){%>
 										<INPUT class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
 										<%}else{%>
 										<INPUT style="visibility: hidden;" class="sigp2-saisie" maxlength="2" name="<%= process.getNOM_EF_ORDRE_MERITE(indiceAvct) %>" size="2" type="text" value="<%= process.getVAL_EF_ORDRE_MERITE(indiceAvct) %>">
@@ -243,7 +243,7 @@ function reduireHierarchy() {
 								<%} %>
 								
 								<td>
-								<%if(avct.getIdMotifAvct().equals("7") || avct.getIdMotifAvct().equals("4")|| avct.getIdMotifAvct().equals("6")|| avct.getIdMotifAvct().equals("3")){ %>
+								<%if(avct.getIdMotifAvct()!=null && (avct.getIdMotifAvct()==7 || avct.getIdMotifAvct()==4|| avct.getIdMotifAvct()==6|| avct.getIdMotifAvct()==3)){ %>
 								<INPUT type="checkbox" onClick='validSEF("<%=indiceAvct %>")'  <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_SEF(indiceAvct),process.getVAL_CK_VALID_SEF(indiceAvct))%>></td>
 								<%} %>
 								<td><%=process.getVAL_ST_USER_VALID_SEF(indiceAvct)%></td>

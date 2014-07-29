@@ -193,7 +193,7 @@ public class OeAGENTEae extends BasicProcess {
 		if (getListeAncienEAE() != null) {
 			for (int i = 0; i < getListeAncienEAE().size(); i++) {
 				Document doc = (Document) getListeAncienEAE().get(i);
-				Integer id = Integer.valueOf(doc.getIdDocument());
+				Integer id = doc.getIdDocument();
 
 				addZone(getNOM_ST_COMMENTAIRE_ANCIEN_EAE(id), doc.getCommentaire().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: doc.getCommentaire());
@@ -552,7 +552,7 @@ public class OeAGENTEae extends BasicProcess {
 			// Si clic sur le bouton PB_CONSULTER_ANCIEN_EAE
 			for (int i = 0; i < getListeAncienEAE().size(); i++) {
 				Document d = getListeAncienEAE().get(i);
-				Integer id = Integer.valueOf(d.getIdDocument());
+				Integer id = d.getIdDocument();
 				if (testerParametre(request, getNOM_PB_CONSULTER_ANCIEN_EAE(id))) {
 					return performPB_CONSULTER_ANCIEN_EAE(request, id);
 				}

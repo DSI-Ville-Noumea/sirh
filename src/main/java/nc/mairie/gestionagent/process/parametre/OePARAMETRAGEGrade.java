@@ -997,7 +997,7 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			motifAvct = (MotifAvancement) getListeMotifAvct().get(Integer.parseInt(motifAvctString) - 1);
 		}
 
-		if (motifAvct != null && motifAvct.getCodeMotifAvct().equals("AD")) {
+		if (motifAvct != null && motifAvct.getCode().equals("AD")) {
 			// durée : min <= moy <= max
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > Integer.parseInt(getVAL_EF_DUREE_MOY())) {
 				// "ERR968", "La zone @ ne peut être supérieure à la zone @."
@@ -1011,20 +1011,20 @@ public class OePARAMETRAGEGrade extends BasicProcess {
 			}
 
 		} else if (motifAvct != null
-				&& (motifAvct.getCodeMotifAvct().equals("AUTO") || motifAvct.getCodeMotifAvct().equals("PROMO")
-						|| motifAvct.getCodeMotifAvct().equals("REVA") || motifAvct.getCodeMotifAvct().equals("TITU"))) {
+				&& (motifAvct.getCode().equals("AUTO") || motifAvct.getCode().equals("PROMO")
+						|| motifAvct.getCode().equals("REVA") || motifAvct.getCode().equals("TITU"))) {
 			if (Integer.parseInt(getVAL_EF_DUREE_MIN()) > 0) {
 				// "ERR187",
 				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
 				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCodeMotifAvct(), "durée minimum"));
+						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée minimum"));
 				return false;
 			}
 			if (Integer.parseInt(getVAL_EF_DUREE_MAX()) > 0) {
 				// "ERR187",
 				// "Si le motif d'avancement est @. Alors @ doit être égal à 0."
 				getTransaction().declarerErreur(
-						MessageUtils.getMessage("ERR187", motifAvct.getCodeMotifAvct(), "durée maximum"));
+						MessageUtils.getMessage("ERR187", motifAvct.getCode(), "durée maximum"));
 				return false;
 			}
 		} else if (motifAvct != null) {

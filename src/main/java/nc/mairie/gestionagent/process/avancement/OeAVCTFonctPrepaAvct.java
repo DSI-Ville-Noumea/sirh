@@ -26,6 +26,7 @@ import nc.mairie.spring.dao.EaeDao;
 import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
+import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -72,6 +73,8 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private EaeEAEDao eaeDao;
 	private CampagneEAEDao campagneEAEDao;
 	private AutreAdministrationDao autreAdministrationDao;
+	private AvancementFonctionnairesDao avancementFonctionnairesDao;
+	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -154,8 +157,8 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 	private void afficheListeAvancement() throws Exception {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
-			Integer i = Integer.valueOf(av.getIdAvct());
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent());
+			Integer i = av.getIdAvct();
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
@@ -166,22 +169,22 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 							.chercherAutreAdministration(Integer.valueOf(av.getDirectionService())).getLibAutreAdmin()
 							: av.getDirectionService() + " <br> " + av.getSectionService());
 			addZone(getNOM_ST_CATEGORIE(i),
-					(av.getCodeCadre() == null ? "&nbsp;" : av.getCodeCadre()) + " <br> " + av.getFiliere());
-			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePA());
+					(av.getCdcadr() == null ? "&nbsp;" : av.getCdcadr()) + " <br> " + av.getFiliere());
+			PositionAdm pa = PositionAdm.chercherPositionAdm(getTransaction(), av.getCodePa());
 			addZone(getNOM_ST_PA(i), pa.getLiPAdm());
-			addZone(getNOM_ST_DATE_DEBUT(i), av.getDateGrade());
+			addZone(getNOM_ST_DATE_DEBUT(i), sdfFormatDate.format(av.getDateGrade()));
 			addZone(getNOM_ST_IBA(i), (av.getIban() == null ? "&nbsp;" : av.getIban()) + " <br> "
-					+ (av.getNouvIBAN() == null ? "&nbsp;" : av.getNouvIBAN()));
+					+ (av.getNouvIban() == null ? "&nbsp;" : av.getNouvIban()));
 			addZone(getNOM_ST_INM(i), (av.getInm() == null ? "&nbsp;" : av.getInm()) + " <br> "
-					+ (av.getNouvINM() == null ? "&nbsp;" : av.getNouvINM()));
+					+ (av.getNouvInm() == null ? "&nbsp;" : av.getNouvInm()));
 			addZone(getNOM_ST_INA(i), (av.getIna() == null ? "&nbsp;" : av.getIna()) + " <br> "
-					+ (av.getNouvINA() == null ? "&nbsp;" : av.getNouvINA()));
-			addZone(getNOM_ST_BM_A(i), av.getBMAnnee() + " <br> " + av.getNouvBMAnnee());
-			addZone(getNOM_ST_BM_M(i), av.getBMMois() + " <br> " + av.getNouvBMMois());
-			addZone(getNOM_ST_BM_J(i), av.getBMJour() + " <br> " + av.getNouvBMJour());
-			addZone(getNOM_ST_ACC_A(i), av.getACCAnnee() + " <br> " + av.getNouvACCAnnee());
-			addZone(getNOM_ST_ACC_M(i), av.getACCMois() + " <br> " + av.getNouvACCMois());
-			addZone(getNOM_ST_ACC_J(i), av.getACCJour() + " <br> " + av.getNouvACCJour());
+					+ (av.getNouvIna() == null ? "&nbsp;" : av.getNouvIna()));
+			addZone(getNOM_ST_BM_A(i), av.getBmAnnee() + " <br> " + av.getNouvBmAnnee());
+			addZone(getNOM_ST_BM_M(i), av.getBmMois() + " <br> " + av.getNouvBmMois());
+			addZone(getNOM_ST_BM_J(i), av.getBmJour() + " <br> " + av.getNouvBmJour());
+			addZone(getNOM_ST_ACC_A(i), av.getAccAnnee() + " <br> " + av.getNouvAccAnnee());
+			addZone(getNOM_ST_ACC_M(i), av.getAccMois() + " <br> " + av.getNouvAccMois());
+			addZone(getNOM_ST_ACC_J(i), av.getAccJour() + " <br> " + av.getNouvAccJour());
 			addZone(getNOM_ST_GRADE_ANCIEN(i), av.getGrade());
 			addZone(getNOM_ST_GRADE_NOUVEAU(i),
 					(av.getIdNouvGrade() != null && av.getIdNouvGrade().length() != 0 ? av.getIdNouvGrade() : "&nbsp;"));
@@ -189,26 +192,21 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 			String libNouvGrade = gradeSuivantAgent == null ? "&nbsp;" : gradeSuivantAgent.getLibGrade();
 			addZone(getNOM_ST_GRADE_LIB(i), libGrade + " <br> " + libNouvGrade);
 
-			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct());
-			addZone(getNOM_ST_PERIODE_STD(i), av.getDureeStandard());
+			addZone(getNOM_ST_NUM_AVCT(i), av.getIdAvct().toString());
+			addZone(getNOM_ST_PERIODE_STD(i), av.getPeriodeStandard().toString());
 			addZone(getNOM_ST_DATE_AVCT(i),
-					(av.getDateAvctMini() == null || av.getDateAvctMini().equals(Const.DATE_NULL) ? "&nbsp;" : av
-							.getDateAvctMini())
-							+ " <br> "
-							+ av.getDateAvctMoy()
-							+ " <br> "
-							+ (av.getDateAvctMaxi() == null || av.getDateAvctMaxi().equals(Const.DATE_NULL) ? "&nbsp;"
-									: av.getDateAvctMaxi()));
+					(av.getDateAvctMini() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMini())) + " <br> "
+							+ sdfFormatDate.format(av.getDateAvctMoy()) + " <br> "
+							+ (av.getDateAvctMaxi() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateAvctMaxi())));
 
 			addZone(getNOM_CK_VALID_SGC(i),
 					av.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue()) ? getCHECKED_OFF() : getCHECKED_ON());
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_CARRIERE_SIMU(i), av.getCarriereSimu() == null ? "&nbsp;" : av.getCarriereSimu());
-			String user = av.getUserVerifSGC() == null ? "&nbsp;" : av.getUserVerifSGC();
-			String heure = av.getHeureVerifSGC() == null ? "&nbsp;" : av.getHeureVerifSGC();
-			String date = av.getDateVerifSGC() == null || av.getDateVerifSGC().equals(Const.DATE_NULL) ? "&nbsp;" : av
-					.getDateVerifSGC();
+			String user = av.getUserVerifSgc() == null ? "&nbsp;" : av.getUserVerifSgc();
+			String heure = av.getHeureVerifSgc() == null ? "&nbsp;" : av.getHeureVerifSgc();
+			String date = av.getDateVerifSgc() == null ? "&nbsp;" : sdfFormatDate.format(av.getDateVerifSgc());
 			addZone(getNOM_ST_USER_VALID_SGC(i), user + " <br> " + date + " <br> " + heure);
 
 		}
@@ -226,6 +224,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		}
 		if (getAutreAdministrationDao() == null) {
 			setAutreAdministrationDao(new AutreAdministrationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAvancementFonctionnairesDao() == null) {
+			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -396,8 +397,9 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.TRAVAIL.getValue() + "' or ETAT='"
 				+ EnumEtatAvancement.SGC.getValue() + "')";
-		setListeAvct(AvancementFonctionnaires.listerAvancementAvecAnneeEtat(getTransaction(), annee, reqEtat, filiere,
-				agent, listeSousService, null, null));
+		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
+				filiere == null ? null : filiere.getLibFiliere(),
+				agent == null ? null : Integer.valueOf(agent.getIdAgent()), listeSousService, null, null));
 
 		afficheListeAvancement();
 
@@ -444,12 +446,11 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String heureAction = sdf.format(new Date());
-		String dateJour = Services.dateDuJour();
 		// on sauvegarde l'état du tableau
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			// on recupère la ligne concernée
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) getListeAvct().get(j);
-			Integer idAvct = Integer.valueOf(avct.getIdAvct());
+			Integer idAvct = avct.getIdAvct();
 			// on fait les modifications
 			// on traite l'etat
 			if (getVAL_CK_VALID_SGC(idAvct).equals(getCHECKED_ON())) {
@@ -459,22 +460,36 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// --> non on passe l'etat à SGC et on met à jour le user
 				if (avct.getEtat().equals(EnumEtatAvancement.TRAVAIL.getValue())) {
 					// on sauvegarde qui a fait l'action
-					avct.setUserVerifSGC(user.getUserName());
-					avct.setDateVerifSGC(dateJour);
-					avct.setHeureVerifSGC(heureAction);
+					avct.setUserVerifSgc(user.getUserName());
+					avct.setDateVerifSgc(new Date());
+					avct.setHeureVerifSgc(heureAction);
 					avct.setEtat(EnumEtatAvancement.SGC.getValue());
-					avct.modifierAvancement(getTransaction());
+					getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
+							avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(),
+							avct.getSectionService(), avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(),
+							avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(),
+							avct.getAccAnnee(), avct.getAccMois(), avct.getAccJour(), avct.getNouvBmAnnee(),
+							avct.getNouvBmMois(), avct.getNouvBmJour(), avct.getNouvAccAnnee(), avct.getNouvAccMois(),
+							avct.getNouvAccJour(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(),
+							avct.getNouvInm(), avct.getNouvIna(), avct.getDateGrade(), avct.getPeriodeStandard(),
+							avct.getDateAvctMini(), avct.getDateAvctMoy(), avct.getDateAvctMaxi(), avct.getNumArrete(),
+							avct.getDateArrete(), avct.getEtat(), avct.getCodeCategorie(), avct.getCarriereSimu(),
+							avct.getUserVerifSgc(), avct.getDateVerifSgc(), avct.getHeureVerifSgc(),
+							avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+							avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(),
+							avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
+							avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
+							avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
+							avct.getCodePa());
 				}
 				// RG-EAE-25
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(
-							Integer.valueOf(avct.getAnnee()));
+					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(avct.getAnnee());
 					// on regarde si il y a une ligne dans EAE
 					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
-								campagne.getIdCampagneEae());
+						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(avct.getIdAgent(), campagne.getIdCampagneEae());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à true;
 							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), true);
@@ -493,22 +508,36 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 				// --> si SGC alors on met à jour le user
 				if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
 					// on sauvegarde qui a fait l'action
-					avct.setUserVerifSGC(user.getUserName());
-					avct.setDateVerifSGC(dateJour);
-					avct.setHeureVerifSGC(heureAction);
+					avct.setUserVerifSgc(user.getUserName());
+					avct.setDateVerifSgc(new Date());
+					avct.setHeureVerifSgc(heureAction);
 					avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
-					avct.modifierAvancement(getTransaction());
+					getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
+							avct.getIdAgent(), avct.getIdMotifAvct(), avct.getDirectionService(),
+							avct.getSectionService(), avct.getFiliere(), avct.getGrade(), avct.getIdNouvGrade(),
+							avct.getAnnee(), avct.getCdcadr(), avct.getBmAnnee(), avct.getBmMois(), avct.getBmJour(),
+							avct.getAccAnnee(), avct.getAccMois(), avct.getAccJour(), avct.getNouvBmAnnee(),
+							avct.getNouvBmMois(), avct.getNouvBmJour(), avct.getNouvAccAnnee(), avct.getNouvAccMois(),
+							avct.getNouvAccJour(), avct.getIban(), avct.getInm(), avct.getIna(), avct.getNouvIban(),
+							avct.getNouvInm(), avct.getNouvIna(), avct.getDateGrade(), avct.getPeriodeStandard(),
+							avct.getDateAvctMini(), avct.getDateAvctMoy(), avct.getDateAvctMaxi(), avct.getNumArrete(),
+							avct.getDateArrete(), avct.getEtat(), avct.getCodeCategorie(), avct.getCarriereSimu(),
+							avct.getUserVerifSgc(), avct.getDateVerifSgc(), avct.getHeureVerifSgc(),
+							avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
+							avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(),
+							avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
+							avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
+							avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
+							avct.getCodePa());
 				}
 				// RG-EAE-25
 				// on regarde si il y a une campagne pour l'année en cours de
 				// l'avancement
 				try {
-					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(
-							Integer.valueOf(avct.getAnnee()));
+					CampagneEAE campagne = getCampagneEAEDao().chercherCampagneEAEAnnee(avct.getAnnee());
 					// on regarde si il y a une ligne dans EAE
 					try {
-						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(Integer.valueOf(avct.getIdAgent()),
-								campagne.getIdCampagneEae());
+						EAE eaeAgentAnne = getEAEDao().chercherEAEAgent(avct.getIdAgent(), campagne.getIdCampagneEae());
 						if (!eaeAgentAnne.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())) {
 							// si oui alors on flag CAP à false;
 							getEAEDao().modifierCAP(eaeAgentAnne.getIdEae(), false);
@@ -1288,5 +1317,13 @@ public class OeAVCTFonctPrepaAvct extends BasicProcess {
 
 	public void setAutreAdministrationDao(AutreAdministrationDao autreAdministrationDao) {
 		this.autreAdministrationDao = autreAdministrationDao;
+	}
+
+	public AvancementFonctionnairesDao getAvancementFonctionnairesDao() {
+		return avancementFonctionnairesDao;
+	}
+
+	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
+		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
 	}
 }

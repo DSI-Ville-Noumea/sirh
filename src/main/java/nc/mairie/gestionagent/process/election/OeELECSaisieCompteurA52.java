@@ -423,7 +423,7 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		String dateFin = getVAL_ST_DATE_FIN() + " 23:59:59";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		CompteurDto compteurDto = new CompteurDto();
-		compteurDto.setIdOrganisationSyndicale(Integer.valueOf(os.getIdOrganisation()));
+		compteurDto.setIdOrganisationSyndicale(os.getIdOrganisation());
 		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 		compteurDto.setDureeAAjouter(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60);
 		compteurDto.setDateDebut(sdf.parse(dateDeb));

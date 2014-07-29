@@ -328,6 +328,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 							"31/12/" + annee) <= 0) {
 				// Récupération de l'avancement
 				try {
+					@SuppressWarnings("unused")
 					AvancementContractuels avct = getAvancementContractuelsDao()
 							.chercherAvancementContractuelsAvecAnneeEtAgent(Integer.valueOf(annee),
 									Integer.valueOf(a.getIdAgent()));

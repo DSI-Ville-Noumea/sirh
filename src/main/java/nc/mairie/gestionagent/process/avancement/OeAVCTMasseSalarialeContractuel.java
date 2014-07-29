@@ -61,7 +61,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	private AvancementContractuelsDao avancementContractuelsDao;
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -1218,7 +1218,8 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
 								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct.getDateArrete()));
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct
+								.getDateArrete()));
 						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						nouvelleCarriere.setIban(avct.getNouvIban());

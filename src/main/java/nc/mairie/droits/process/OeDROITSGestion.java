@@ -283,8 +283,6 @@ public class OeDROITSGestion extends BasicProcess {
 		// Sauvegarde de la matrice
 		for (int i = 0; i < getListeDroits().size(); i++) {
 			Droit d = (Droit) getListeDroits().get(i);
-			System.out.println("ici " + i);
-			System.out.println(d.getIdGroupe());
 			String newIdTypeDroit = (String) getHashDroit().get(d.getIdElement() + "-" + d.getIdGroupe());
 			d.setIdTypeDroit(newIdTypeDroit.equals("0") ? null : Integer.valueOf(newIdTypeDroit));
 			Droit droitExistant = getDroitDao().chercherDroit(d.getIdElement(), d.getIdGroupe());

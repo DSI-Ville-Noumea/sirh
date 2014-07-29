@@ -160,7 +160,7 @@ public class OeAGENTContrat extends BasicProcess {
 				addZone(getNOM_EF_JUSTIFICATION(), getContratReference().getJustification());
 				// on met la date de debut du contrat si CDD à datefin
 				// contratRef +1
-				if (getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratReference().getIdTypeContrat()))
+				if (getTypeContratDao().chercherTypeContrat(getContratReference().getIdTypeContrat())
 						.getLibTypeContrat().equals("CDD")) {
 					addZone(getNOM_EF_DATE_DEB(),
 							Services.ajouteJours(sdf.format(getContratReference().getDateFin()), 1));
@@ -1522,8 +1522,8 @@ public class OeAGENTContrat extends BasicProcess {
 			getDocumentDao().supprimerDocument(d.getIdDocument());
 		}
 
-		if (!getTypeContratDao().chercherTypeContrat(Integer.valueOf(getContratCourant().getIdTypeContrat()))
-				.getLibTypeContrat().equals("CDD")) {
+		if (!getTypeContratDao().chercherTypeContrat(getContratCourant().getIdTypeContrat()).getLibTypeContrat()
+				.equals("CDD")) {
 			// "ERR034", "Une impression ne peut se faire que sur un CDD."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR034"));
 			return false;

@@ -626,8 +626,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					// pas de contrat
 				}
 				if (contrat != null && contrat.getIdTypeContrat() != null) {
-					TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
-							Integer.valueOf(contrat.getIdTypeContrat()));
+					TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
 					addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 				} else {
 					addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
@@ -2640,7 +2639,9 @@ public class OeAGENTCarriere extends BasicProcess {
 					addZone(getNOM_EF_DATE_DEBUT(), carr.getDateDebut().substring(0, 6) + annee);
 					nbJoursBonus -= Integer.parseInt(gradeActuel.getDureeMoy()) * 30;
 				} else {
-					addZone(getNOM_EF_DATE_DEBUT(), AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr));
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					addZone(getNOM_EF_DATE_DEBUT(),
+							sdf.format(AvancementFonctionnaires.calculDateAvctMoy(gradeActuel, carr)));
 					nbJoursBonus = 0;
 				}
 			}
@@ -3206,8 +3207,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
-						Integer.valueOf(contrat.getIdTypeContrat()));
+				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
 				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 			} else
 				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);

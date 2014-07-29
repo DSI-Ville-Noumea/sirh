@@ -77,7 +77,7 @@ function SelectLigne(id,tailleTableau)
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_REGUL_ARR_IMPR_' + <%=i%>];
 			if (document.formu.elements['CHECK_ALL_REGUL'].checked) {
@@ -95,7 +95,7 @@ function SelectLigne(id,tailleTableau)
 		<%
 		for (int j = 0;j<process.getListeAvct().size();j++){
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 		%>
 		var box = document.formu.elements['NOM_CK_VALID_ARR_IMPR_' + <%=i%>];
 		if (document.formu.elements['CHECK_ALL_IMPR'].checked) {
@@ -113,7 +113,7 @@ function SelectLigne(id,tailleTableau)
 		<%
 		for (int j = 0;j<process.getListeAvct().size();j++){
 			AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-			Integer i = Integer.valueOf(avct.getIdAvct());
+			Integer i = avct.getIdAvct();
 		%>
 		var box = document.formu.elements['NOM_CK_VALID_ARR_' + <%=i%>];
 		if (document.formu.elements['CHECK_ALL_SGC'].checked) {
@@ -232,7 +232,7 @@ function SelectLigne(id,tailleTableau)
 					<%
 						for (int i = 0;i<process.getListeAvct().size();i++){
 							AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(i);
-							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+							Integer indiceAvct = avct.getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>
@@ -247,30 +247,30 @@ function SelectLigne(id,tailleTableau)
 								<td><%=process.getVAL_ST_DATE_AVCT(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_MOTIF_AVCT(indiceAvct)%></td>							
 								<td>								
-									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
+									<%if( avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==4){%>										
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_CAP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==6){ %>
 										<SELECT disabled='disabled'name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>									
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)&& avct.getIdMotifAvct().equals("7")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==7){ %>
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_CAP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_CAP_AD(indiceAvct), process.getVAL_LB_AVIS_CAP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
 									<%}else{%>&nbsp;
 									<%} %>	
 									<br/>							
-									<%if( !avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("4")){%>										
+									<%if( avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==4){%>										
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_CLASSE(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_CLASSE(indiceAvct), process.getVAL_LB_AVIS_EMP_CLASSE_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("6")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==6){ %>
 										<SELECT disabled="disabled" name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
-									<%}else if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE) && avct.getIdMotifAvct().equals("7")){ %>
+									<%}else if(avct.getIdMotifAvct()!=null &&avct.getIdMotifAvct()==7){ %>
 										<SELECT <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "disabled='disabled'" : "" %> name="<%= process.getNOM_LB_AVIS_EMP_AD(indiceAvct) %>" class="sigp2-liste" >
 												<%=process.forComboHTML(process.getVAL_LB_AVIS_EMP_AD(indiceAvct), process.getVAL_LB_AVIS_EMP_AD_SELECT(indiceAvct)) %>
 										</SELECT>
@@ -278,26 +278,26 @@ function SelectLigne(id,tailleTableau)
 									<%} %>
 								</td>
 								<td>
-								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+								<%if(avct.getIdMotifAvct()!=null){ %>
 									<textarea <%= process.getVAL_CK_VALID_ARR(indiceAvct).equals(process.getCHECKED_ON()) ? "readonly='readonly'" : "" %> rows="3" cols="30" class="sigp2-saisie" name="<%= process.getNOM_ST_OBSERVATION(indiceAvct)%>" ><%= process.getVAL_ST_OBSERVATION(indiceAvct) %></textarea>
 								<%} %>
 								</td>									
 								<td>
-								<%if(!avct.getIdMotifAvct().equals(Const.CHAINE_VIDE)){ %>
+								<%if(avct.getIdMotifAvct()!=null){ %>
 									<INPUT style="visibility: visible;"type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR(indiceAvct),process.getVAL_CK_VALID_ARR(indiceAvct))%>>
 								<%} %>
 								</td>
 								<td><%=process.getVAL_ST_DATE_CAP(indiceAvct)%></td>
 								<td><%=process.getVAL_ST_DATE_AVCT_FINALE(indiceAvct)%></td>
 								<td>
-								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && avct.getDateCap()!=null && !process.isDefavorable(indiceAvct)){ %>
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox" disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_REGUL_ARR_IMPR(indiceAvct),process.getVAL_CK_REGUL_ARR_IMPR(indiceAvct))%>>
 								<%} %>
 								</td>
 								<td>	
-								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && (avct.getDateCap()!=null  || !avct.getDateCap().equals(Const.CHAINE_VIDE))&& !process.isDefavorable(indiceAvct)){ %>							
+								<%if((avct.getEtat().equals(EnumEtatAvancement.ARRETE.getValue())) && avct.getDateCap()!=null  && !process.isDefavorable(indiceAvct)){ %>							
 									<INPUT style="visibility: visible;" type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									
 								<%}else{ %>
 									<INPUT style="visibility: hidden;" type="checkbox"  disabled="disabled" <%= process.forCheckBoxHTML(process.getNOM_CK_VALID_ARR_IMPR(indiceAvct),process.getVAL_CK_VALID_ARR_IMPR(indiceAvct))%>>									

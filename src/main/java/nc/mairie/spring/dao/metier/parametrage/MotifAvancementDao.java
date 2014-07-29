@@ -32,7 +32,7 @@ public class MotifAvancementDao extends SirhDao implements MotifAvancementDaoInt
 			MotifAvancement motif = new MotifAvancement();
 			motif.setIdMotifAvct((Integer) row.get(CHAMP_ID));
 			motif.setLibMotifAvct((String) row.get(CHAMP_LIB_MOTIF_AVCT));
-			motif.setCodeMotifAvct((String) row.get(CHAMP_CODE));
+			motif.setCode((String) row.get(CHAMP_CODE));
 
 			listeMotif.add(motif);
 		}
@@ -65,7 +65,7 @@ public class MotifAvancementDao extends SirhDao implements MotifAvancementDaoInt
 			MotifAvancement motif = new MotifAvancement();
 			motif.setIdMotifAvct((Integer) row.get(CHAMP_ID));
 			motif.setLibMotifAvct((String) row.get(CHAMP_LIB_MOTIF_AVCT));
-			motif.setCodeMotifAvct((String) row.get(CHAMP_CODE));
+			motif.setCode((String) row.get(CHAMP_CODE));
 
 			listeMotif.add(motif);
 		}

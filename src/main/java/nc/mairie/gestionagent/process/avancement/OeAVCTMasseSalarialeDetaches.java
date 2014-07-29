@@ -1444,6 +1444,7 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 
 			// Récupération de l'avancement
 			try {
+				@SuppressWarnings("unused")
 				AvancementDetaches avct = getAvancementDetachesDao().chercherAvancementAvecAnneeEtAgent(
 						Integer.valueOf(annee), Integer.valueOf(a.getIdAgent()));
 			} catch (Exception e) {

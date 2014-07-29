@@ -67,7 +67,7 @@ function activeMajDateAvct() {
 	<%
 	for (int j = 0;j<process.getListeAvct().size();j++){
 		AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-		Integer i = Integer.valueOf(avct.getIdAvct());
+		Integer i = avct.getIdAvct();
 	%>
 	var box = document.formu.elements['NOM_CK_MAJ_DATE_AVCT_'+<%=i%>];  		
 		if(document.formu.elements['CHECK_ALL_MAJ_DATE_AVCT'].checked){
@@ -85,7 +85,7 @@ function activeAffecter() {
 	<%
 	for (int j = 0;j<process.getListeAvct().size();j++){
 		AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-		Integer i = Integer.valueOf(avct.getIdAvct());
+		Integer i = avct.getIdAvct();
 	%>
 	var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  		
 		if(document.formu.elements['CHECK_ALL_AFFECTER'].checked){
@@ -212,7 +212,7 @@ function activeAffecter() {
 					<%
 						for (int i = 0;i<process.getListeAvct().size();i++){
 							AvancementFonctionnaires avct = process.getListeAvct().get(i);
-							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+							Integer indiceAvct = avct.getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>

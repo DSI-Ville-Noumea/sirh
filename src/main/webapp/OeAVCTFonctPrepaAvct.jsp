@@ -67,7 +67,7 @@ function reduireHierarchy() {
 			<%
 			for (int j = 0;j<process.getListeAvct().size();j++){
 				AvancementFonctionnaires avct = (AvancementFonctionnaires) process.getListeAvct().get(j);
-				Integer i = Integer.valueOf(avct.getIdAvct());
+				Integer i = avct.getIdAvct();
 			%>
 			var box = document.formu.elements['NOM_CK_VALID_SGC_'+<%=i%>];  		
 	  		if(document.formu.elements['CHECK_ALL_SGC'].checked ){
@@ -177,7 +177,7 @@ function reduireHierarchy() {
 					<%
 						for (int i = 0;i<process.getListeAvct().size();i++){
 							AvancementFonctionnaires avct = process.getListeAvct().get(i);
-							Integer indiceAvct = Integer.valueOf(avct.getIdAvct());
+							Integer indiceAvct = avct.getIdAvct();
 					%>
 							<tr>
 								<td><%=process.getVAL_ST_NUM_AVCT(indiceAvct)%></td>

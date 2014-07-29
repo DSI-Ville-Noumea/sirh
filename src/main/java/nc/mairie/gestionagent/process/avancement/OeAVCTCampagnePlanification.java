@@ -1753,8 +1753,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(
-				Integer.valueOf(getDocumentCourant().getIdDocument()));
+		EaeDocument ldoc = getEaeDocumentDao().chercherEaeDocument(getDocumentCourant().getIdDocument());
 		setLienEaeDocument(ldoc);
 
 		// Alim zones
