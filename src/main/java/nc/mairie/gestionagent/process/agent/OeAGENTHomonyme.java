@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.robot.PersonnelMain;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Contact;
+import nc.mairie.metier.referentiel.SituationFamiliale;
 import nc.mairie.spring.dao.metier.agent.ContactDao;
+import nc.mairie.spring.dao.metier.referentiel.SituationFamilialeDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -34,6 +36,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	private AgentNW agentCourant;
 	private boolean creation;
 	private ContactDao contactDao;
+	private SituationFamilialeDao situationFamilialeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -77,6 +80,9 @@ public class OeAGENTHomonyme extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getContactDao() == null) {
 			setContactDao(new ContactDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getSituationFamilialeDao() == null) {
+			setSituationFamilialeDao(new SituationFamilialeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -122,7 +128,9 @@ public class OeAGENTHomonyme extends BasicProcess {
 		// Création de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
 				Integer.valueOf(getAgentCourant().getIdAgent()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact);
+		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
+				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
+		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
 		if (!getTransaction().isErreur()) {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 			commitTransaction();
@@ -344,5 +352,13 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	public void setContactDao(ContactDao contactDao) {
 		this.contactDao = contactDao;
+	}
+
+	public SituationFamilialeDao getSituationFamilialeDao() {
+		return situationFamilialeDao;
+	}
+
+	public void setSituationFamilialeDao(SituationFamilialeDao situationFamilialeDao) {
+		this.situationFamilialeDao = situationFamilialeDao;
 	}
 }

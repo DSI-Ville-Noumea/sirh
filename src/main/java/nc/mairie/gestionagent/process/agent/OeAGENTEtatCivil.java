@@ -32,6 +32,7 @@ import nc.mairie.spring.dao.metier.agent.ContactDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.CollectiviteDao;
 import nc.mairie.spring.dao.metier.referentiel.EtatServiceMilitaireDao;
+import nc.mairie.spring.dao.metier.referentiel.SituationFamilialeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContactDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -107,6 +108,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private DocumentDao documentDao;
 	private ContactDao contactDao;
 	private TypeContactDao typeContactDao;
+	private SituationFamilialeDao situationFamilialeDao;
 
 	// Fin gestion des contacts
 	public String getMessage() {
@@ -300,7 +302,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Création de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
 				Integer.valueOf(getAgentCourant().getIdAgent()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact);
+		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
+				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
+		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
 		if (getTransaction().isErreur()) {
 			return false;
 		}
@@ -395,7 +399,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int indiceSitu = (Services.estNumerique(getVAL_LB_SITUATION_SELECT()) ? Integer
 				.parseInt(getVAL_LB_SITUATION_SELECT()) : -1);
 		getAgentCourant().setIdSituationFamiliale(
-				((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation());
+				((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation().toString());
 
 		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
@@ -2241,6 +2245,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		if (getTypeContactDao() == null) {
 			setTypeContactDao(new TypeContactDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getSituationFamilialeDao() == null) {
+			setSituationFamilialeDao(new SituationFamilialeDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
@@ -2339,12 +2346,19 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Si liste situation vide alors affectation
 		// RG_AG_EC_A03
 		if (getLB_SITUATION() == LBVide) {
-			ArrayList<SituationFamiliale> sf = SituationFamiliale.listerSituationFamiliale(getTransaction());
+			ArrayList<SituationFamiliale> sf = (ArrayList<SituationFamiliale>) getSituationFamilialeDao()
+					.listerSituationFamiliale();
 			setListeSituation(sf);
 
 			int[] tailles = { 12 };
-			String[] champs = { "libSituation" };
-			setLB_SITUATION(new FormateListe(tailles, sf, champs).getListeFormatee());
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<SituationFamiliale> list = getListeSituation().listIterator(); list.hasNext();) {
+				SituationFamiliale fili = (SituationFamiliale) list.next();
+				String ligne[] = { fili.getLibSituation() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_SITUATION(aFormat.getListeFormatee());
 		}
 
 		// Si liste nationalité vide alors affectation
@@ -2443,8 +2457,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Situation familiale
 		int indiceSitu = 0;
 		for (int i = 0; i < getListeSituation().size(); i++) {
-			if (((SituationFamiliale) getListeSituation().get(i)).getIdSituation().equals(
-					getAgentCourant().getIdSituationFamiliale())) {
+			if (((SituationFamiliale) getListeSituation().get(i)).getIdSituation().toString()
+					.equals(getAgentCourant().getIdSituationFamiliale())) {
 				indiceSitu = i;
 				break;
 			}
@@ -3638,7 +3652,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// Création/Modification de l'agent
 		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
 				Integer.valueOf(getAgentCourant().getIdAgent()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact);
+		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
+				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
+		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
 		if (!getTransaction().isErreur()) {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 			commitTransaction();
@@ -4594,5 +4610,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	public void setTypeContactDao(TypeContactDao typeContactDao) {
 		this.typeContactDao = typeContactDao;
+	}
+
+	public SituationFamilialeDao getSituationFamilialeDao() {
+		return situationFamilialeDao;
+	}
+
+	public void setSituationFamilialeDao(SituationFamilialeDao situationFamilialeDao) {
+		this.situationFamilialeDao = situationFamilialeDao;
 	}
 }
