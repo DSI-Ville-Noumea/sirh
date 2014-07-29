@@ -10,12 +10,9 @@ import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.Prime;
-import nc.mairie.metier.agent.PrimeAgent;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
 import nc.mairie.spring.dao.MairieDao;
-import nc.mairie.spring.dao.SirhDao;
-import nc.mairie.spring.dao.metier.agent.PrimeAgentDao;
 import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -64,16 +61,12 @@ public class OeAGENTPrime extends BasicProcess {
 			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
-	private PrimeAgentDao primeAgentDao;
 	private RubriqueDao rubriqueDao;
 
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
 
-		if (getPrimeAgentDao() == null) {
-			setPrimeAgentDao(new PrimeAgentDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getRubriqueDao() == null) {
 			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
 		}
@@ -475,20 +468,6 @@ public class OeAGENTPrime extends BasicProcess {
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
-
-			// Suppression du lien
-			try {
-				PrimeAgent primeAgent = getPrimeAgentDao().chercherPrimeAgent(
-						new Integer(getAgentCourant().getIdAgent()),
-						new Integer(getAgentCourant().getNoMatricule()),
-						new Integer(getPrimeCourante().getNoRubr()),
-						new Integer(Services.estUneDate(getPrimeCourante().getDatDeb()) ? Services.convertitDate(
-								Services.formateDate(getPrimeCourante().getDatDeb()), "dd/MM/yy", "yyyyMMdd") : "0"));
-				getPrimeAgentDao().supprimerPrimeAgent(primeAgent);
-			} catch (Exception e) {
-				return false;
-			}
-
 			// suppression
 			UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			getPrimeCourante().supprimerPrime(getTransaction(), user);
@@ -532,17 +511,12 @@ public class OeAGENTPrime extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-				getPrimeCourante().modifierPrime(getTransaction(), getPrimeAgentDao(), getAgentCourant(), user);
+				getPrimeCourante().modifierPrime(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 
 				getPrimeCourante().creerPrime(getTransaction(), user);
-
-				PrimeAgent primeAgent = new PrimeAgent(new Integer(getAgentCourant().getIdAgent()), new Integer(
-						getAgentCourant().getNoMatricule()), new Integer(getPrimeCourante().getNoRubr()),
-						getPrimeCourante().getDatDeb());
-				getPrimeAgentDao().creerPrimeAgent(primeAgent);
 			}
 			// RG_AG_PR_A01
 			Matricule.updateMatricule(getTransaction(), getAgentCourant(), getPrimeCourante().getDatDeb());
@@ -1080,14 +1054,6 @@ public class OeAGENTPrime extends BasicProcess {
 
 	public void setListeRubriquesTotales(ArrayList<Rubrique> listeRubriquesTotales) {
 		this.listeRubriquesTotales = listeRubriquesTotales;
-	}
-
-	public PrimeAgentDao getPrimeAgentDao() {
-		return primeAgentDao;
-	}
-
-	public void setPrimeAgentDao(PrimeAgentDao primeAgentDao) {
-		this.primeAgentDao = primeAgentDao;
 	}
 
 	public RubriqueDao getRubriqueDao() {
