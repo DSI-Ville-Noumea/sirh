@@ -67,6 +67,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -248,6 +249,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
 	private NiveauEtudeFPDao niveauEtudeFPDao;
+	private BudgetDao budgetDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -515,6 +517,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getNiveauEtudeFPDao() == null) {
 			setNiveauEtudeFPDao(new NiveauEtudeFPDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getBudgetDao() == null) {
+			setBudgetDao(new BudgetDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -603,7 +608,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getListeBudget() != null) {
 				for (int i = 0; i < getListeBudget().size(); i++) {
 					Budget b = (Budget) getListeBudget().get(i);
-					if (b.getIdBudget().equals(getFichePosteCourante().getIdBudget())) {
+					if (b.getIdBudget().toString().equals(getFichePosteCourante().getIdBudget())) {
 						addZone(getNOM_LB_BUDGET_SELECT(), String.valueOf(i));
 						break;
 					}
@@ -808,12 +813,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void initialiseListeDeroulante() throws Exception {
 		// Si liste type budget vide alors affectation
 		if (getLB_BUDGET() == LBVide) {
-			ArrayList<Budget> budget = Budget.listerBudget(getTransaction());
+			ArrayList<Budget> budget = (ArrayList<Budget>) getBudgetDao().listerBudget();
 			setListeBudget(budget);
 
-			int[] tailles = { 20 };
-			String[] champs = { "libBudget" };
-			setLB_BUDGET(new FormateListe(tailles, budget, champs).getListeFormatee());
+			if (getListeBudget().size() != 0) {
+				int[] tailles = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<Budget> list = getListeBudget().listIterator(); list.hasNext();) {
+					Budget de = (Budget) list.next();
+					String ligne[] = { de.getLibBudget() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_BUDGET(aFormat.getListeFormatee());
+			} else {
+				setLB_BUDGET(null);
+			}
 		}
 
 		// Si liste statut vide alors affectation
@@ -1846,7 +1860,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setObservation(_observation);
 		getFichePosteCourante().setMissions(missions);
 		getFichePosteCourante().setIdStatutFP(statut.getIdStatutFp().toString());
-		getFichePosteCourante().setIdBudget(budget.getIdBudget());
+		getFichePosteCourante().setIdBudget(budget.getIdBudget().toString());
 		getFichePosteCourante().setOPI(opi);
 		getFichePosteCourante().setNumDeliberation(numDeliberation);
 		getFichePosteCourante().setNFA(nfa);
@@ -6725,5 +6739,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setNiveauEtudeFPDao(NiveauEtudeFPDao niveauEtudeFPDao) {
 		this.niveauEtudeFPDao = niveauEtudeFPDao;
+	}
+
+	public BudgetDao getBudgetDao() {
+		return budgetDao;
+	}
+
+	public void setBudgetDao(BudgetDao budgetDao) {
+		this.budgetDao = budgetDao;
 	}
 }

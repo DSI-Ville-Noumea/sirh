@@ -30,7 +30,6 @@ import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
-import nc.mairie.metier.poste.Budget;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
@@ -53,6 +52,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -148,6 +148,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private DiplomeAgentDao diplomeAgentDao;
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
+	private BudgetDao budgetDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -281,6 +282,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getStatutFPDao() == null) {
 			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getBudgetDao() == null) {
+			setBudgetDao(new BudgetDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -582,8 +586,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	}
 
 	public void alimenterZones() throws Exception {
-		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE : Budget
-				.chercherBudget(getTransaction(), getFichePosteCourant().getIdBudget()).getLibBudget());
+		addZone(getNOM_ST_BUDGET(), getFichePosteCourant().getIdBudget() == null ? Const.CHAINE_VIDE : getBudgetDao()
+				.chercherBudget(Integer.valueOf(getFichePosteCourant().getIdBudget())).getLibBudget());
 		addZone(getNOM_ST_ANNEE(), getFichePosteCourant().getAnneeCreation());
 		addZone(getNOM_ST_NUMERO(), getFichePosteCourant().getNumFP());
 		addZone(getNOM_ST_NFA(), getFichePosteCourant().getNFA());
@@ -2433,5 +2437,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setStatutFPDao(StatutFPDao statutFPDao) {
 		this.statutFPDao = statutFPDao;
+	}
+
+	public BudgetDao getBudgetDao() {
+		return budgetDao;
+	}
+
+	public void setBudgetDao(BudgetDao budgetDao) {
+		this.budgetDao = budgetDao;
 	}
 }
