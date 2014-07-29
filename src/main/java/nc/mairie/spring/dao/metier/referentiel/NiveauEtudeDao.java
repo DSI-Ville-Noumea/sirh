@@ -30,7 +30,7 @@ public class NiveauEtudeDao extends SirhDao implements NiveauEtudeDaoInterface {
 		for (int i = 0; i < liens.size(); i++) {
 			NiveauEtudeFE aLien = (NiveauEtudeFE) liens.get(i);
 			try {
-				NiveauEtude niveau = chercherNiveauEtude(Integer.valueOf(aLien.getIdNiveauEtude()));
+				NiveauEtude niveau = chercherNiveauEtude(aLien.getIdNiveauEtude());
 				result.add(niveau);
 			} catch (Exception e) {
 				return new ArrayList<NiveauEtude>();

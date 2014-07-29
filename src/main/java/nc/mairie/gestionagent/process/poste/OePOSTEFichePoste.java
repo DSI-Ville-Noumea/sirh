@@ -67,6 +67,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
@@ -246,6 +247,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NiveauEtudeDao niveauEtudeDao;
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
+	private NiveauEtudeFPDao niveauEtudeFPDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -509,6 +511,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getStatutFPDao() == null) {
 			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNiveauEtudeFPDao() == null) {
+			setNiveauEtudeFPDao(new NiveauEtudeFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1924,19 +1929,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 
 		// on supprime tous les niveau etude de la FDP
-		ArrayList<NiveauEtudeFP> niveauFPExistant = NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(),
-				getFichePosteCourante());
+		ArrayList<NiveauEtudeFP> niveauFPExistant = getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(
+				Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 		if (niveauFPExistant != null && niveauFPExistant.size() > 0) {
 			for (int i = 0; i < niveauFPExistant.size(); i++) {
 				NiveauEtudeFP niveauFP = (NiveauEtudeFP) niveauFPExistant.get(i);
-				niveauFP.supprimerNiveauEtudeFP(getTransaction());
+				getNiveauEtudeFPDao().supprimerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
 			}
 		}
 		// on ajoute le niveau etude dela FDP
 		NiveauEtude niveauAAjouter = (NiveauEtude) getListeTousNiveau().get(0);
-		NiveauEtudeFP niveauFP = new NiveauEtudeFP(getFichePosteCourante().getIdFichePoste(), niveauAAjouter
-				.getIdNiveauEtude().toString());
-		niveauFP.creerNiveauEtudeFP(getTransaction());
+		NiveauEtudeFP niveauFP = new NiveauEtudeFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
+				niveauAAjouter.getIdNiveauEtude());
+		getNiveauEtudeFPDao().creerNiveauEtudeFP(niveauFP.getIdNiveauEtude(), niveauFP.getIdFichePoste());
 
 		// nouvelle gestion des activites
 		boolean auMoinsUneligneSelect = false;
@@ -3651,10 +3656,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// niveau etude
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les niveau etude de la FDP
-			setListeNiveauFP(NiveauEtudeFP.listerNiveauEtudeFPAvecFP(getTransaction(), getFichePosteCourante()));
+			setListeNiveauFP(getNiveauEtudeFPDao().listerNiveauEtudeFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 			for (NiveauEtudeFP niveauFP : getListeNiveauFP()) {
-				NiveauEtude niveau = getNiveauEtudeDao().chercherNiveauEtude(
-						Integer.valueOf(niveauFP.getIdNiveauEtude()));
+				NiveauEtude niveau = getNiveauEtudeDao().chercherNiveauEtude(niveauFP.getIdNiveauEtude());
 				getListeTousNiveau().add(niveau);
 			}
 		} else {
@@ -6712,5 +6717,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setStatutFPDao(StatutFPDao statutFPDao) {
 		this.statutFPDao = statutFPDao;
+	}
+
+	public NiveauEtudeFPDao getNiveauEtudeFPDao() {
+		return niveauEtudeFPDao;
+	}
+
+	public void setNiveauEtudeFPDao(NiveauEtudeFPDao niveauEtudeFPDao) {
+		this.niveauEtudeFPDao = niveauEtudeFPDao;
 	}
 }
