@@ -20,6 +20,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
@@ -91,6 +92,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private AvantageNatureDao avantageNatureDao;
 	private DelegationDao delegationDao;
 	private RegIndemnDao regIndemnDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -157,6 +159,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (getRegIndemnDao() == null) {
 			setRegIndemnDao(new RegIndemnDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -222,7 +227,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeTitre(HttpServletRequest request) throws Exception {
-		setListeTitrePoste(TitrePoste.listerTitrePoste(getTransaction()));
+		setListeTitrePoste(getTitrePosteDao().listerTitrePoste());
 		if (getListeTitrePoste().size() != 0) {
 			int tailles[] = { 70 };
 			String padding[] = { "G" };
@@ -388,7 +393,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeTitrePoste() == null) {
 			// Recherche des titres de poste
-			setListeTitrePoste(TitrePoste.listerTitrePoste(getTransaction()));
+			setListeTitrePoste(getTitrePosteDao().listerTitrePoste());
 			initialiseListeTitre(request);
 		}
 
@@ -1226,11 +1231,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			if (getVAL_ST_ACTION_TITRE().equals(ACTION_CREATION)) {
 				setTitrePosteCourante(new TitrePoste());
 				getTitrePosteCourante().setLibTitrePoste(getVAL_EF_TITRE());
-				getTitrePosteCourante().creerTitrePoste(getTransaction());
+				getTitrePosteDao().creerTitrePoste(getTitrePosteCourante().getLibTitrePoste());
 				if (!getTransaction().isErreur())
 					getListeTitrePoste().add(getTitrePosteCourante());
 			} else if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)) {
-				getTitrePosteCourante().supprimerTitrePoste(getTransaction());
+				getTitrePosteDao().supprimerTitrePoste(getTitrePosteCourante().getIdTitrePoste());
 				if (!getTransaction().isErreur())
 					getListeTitrePoste().remove(getTitrePosteCourante());
 				setTitrePosteCourante(null);
@@ -3206,5 +3211,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setRegIndemnDao(RegIndemnDao regIndemnDao) {
 		this.regIndemnDao = regIndemnDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

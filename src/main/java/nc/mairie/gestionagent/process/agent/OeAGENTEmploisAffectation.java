@@ -33,7 +33,6 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.specificites.AvantageNature;
 import nc.mairie.metier.specificites.AvantageNatureAFF;
 import nc.mairie.metier.specificites.Delegation;
@@ -50,6 +49,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureAffDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationAffDao;
@@ -182,6 +182,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private RubriqueDao rubriqueDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2463,8 +2464,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				Service direction = null;
 				Service service = null;
 				if (hfp != null) {
-					titreFichePoste = hfp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(
-							getTransaction(), hfp.getIdTitrePoste()).getLibTitrePoste();
+					titreFichePoste = hfp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao().chercherTitrePoste(
+							Integer.valueOf(hfp.getIdTitrePoste())).getLibTitrePoste();
 					// Service
 					direction = Service.getDirection(getTransaction(), hfp.getIdServi());
 					service = Service.getSection(getTransaction(), hfp.getIdServi());
@@ -2480,8 +2481,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						numFP = hfp.getNumFp() + " *";
 
 				} else {
-					titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(
-							getTransaction(), fp.getIdTitrePoste()).getLibTitrePoste();
+					titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao().chercherTitrePoste(
+							Integer.valueOf(fp.getIdTitrePoste())).getLibTitrePoste();
 					// Service
 					direction = Service.getDirection(getTransaction(), fp.getIdServi());
 					service = Service.getSection(getTransaction(), fp.getIdServi());
@@ -2885,8 +2886,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 */
 	private void initialiserFichePoste() throws Exception {
 		// Titre
-		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste
-				.chercherTitrePoste(getTransaction(), getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste();
+		String titreFichePoste = getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE
+				: getTitrePosteDao().chercherTitrePoste(Integer.valueOf(getFichePosteCourant().getIdTitrePoste()))
+						.getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteCourant().getIdServi());
 		String direction = Const.CHAINE_VIDE;
@@ -2931,8 +2933,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private void initialiserFichePosteSecondaire() throws Exception {
 		// Titre
 		String titreFichePoste = getFichePosteSecondaireCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE
-				: TitrePoste.chercherTitrePoste(getTransaction(), getFichePosteSecondaireCourant().getIdTitrePoste())
-						.getLibTitrePoste();
+				: getTitrePosteDao().chercherTitrePoste(
+						Integer.valueOf(getFichePosteSecondaireCourant().getIdTitrePoste())).getLibTitrePoste();
 		// Service
 		Service srv = Service.chercherService(getTransaction(), getFichePosteSecondaireCourant().getIdServi());
 		String direction = Const.CHAINE_VIDE;
@@ -3092,6 +3094,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -5298,6 +5303,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 
 }

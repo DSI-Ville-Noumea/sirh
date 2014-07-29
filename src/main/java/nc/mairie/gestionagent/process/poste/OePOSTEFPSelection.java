@@ -10,10 +10,14 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
-import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFPSelection Date de création : (22/07/11 16:01:21)
@@ -33,6 +37,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 	private Service service = null;
 	private AgentNW agentCourant = null;
 
+	private TitrePosteDao titrePosteDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -41,6 +47,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 
 		FichePoste fp = (FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
 		if (fp != null) {
@@ -84,6 +91,14 @@ public class OePOSTEFPSelection extends BasicProcess {
 			// rechercheParAgent(request);
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -137,8 +152,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 		if (getListeFichePoste() != null) {
 			for (int i = 0; i < getListeFichePoste().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFichePoste().get(i);
-				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(
-						getTransaction(), fp.getIdTitrePoste()).getLibTitrePoste();
+				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
+						.chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste())).getLibTitrePoste();
 				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste());
 				if (agent == null)
 					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste());
@@ -676,5 +691,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		setStatut(STATUT_PROCESS_APPELANT);
 		return true;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

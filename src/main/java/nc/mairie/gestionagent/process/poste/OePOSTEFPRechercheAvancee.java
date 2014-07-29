@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,12 +15,17 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFPRechercheAvancee Date de création : (13/09/11 08:45:29)
@@ -43,6 +49,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	public String focus = null;
 
+	private TitrePosteDao titrePosteDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -51,6 +59,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 		initialiseListeDeroulante();
 		initialiseListeService();
 
@@ -62,6 +71,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		}
 
 		// fillList();
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -83,12 +100,21 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		// Si liste localisation vide alors affectation
 		if (getLB_TITRE_POSTE() == LBVide) {
-			ArrayList<TitrePoste> titre = TitrePoste.listerTitrePoste(getTransaction());
+			ArrayList<TitrePoste> titre = getTitrePosteDao().listerTitrePoste();
 			setListeTitre(titre);
 
-			int[] tailles = { 100 };
-			String[] champs = { "libTitrePoste" };
-			setLB_TITRE_POSTE(new FormateListe(tailles, titre, champs).getListeFormatee());
+			if (getListeTitre().size() != 0) {
+				int[] tailles = { 100 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TitrePoste> list = getListeTitre().listIterator(); list.hasNext();) {
+					TitrePoste de = (TitrePoste) list.next();
+					String ligne[] = { de.getLibTitrePoste() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TITRE_POSTE(aFormat.getListeFormatee());
+			} else {
+				setLB_TITRE_POSTE(null);
+			}
 		}
 	}
 
@@ -153,14 +179,14 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 			for (int i = 0; i < getListeFP().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFP().get(i);
-				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : TitrePoste.chercherTitrePoste(
-						getTransaction(), fp.getIdTitrePoste()).getLibTitrePoste();
+				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
+						.chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste())).getLibTitrePoste();
 				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste());
 				if (agent == null)
 					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste());
 
 				Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
-				
+
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFP());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
 				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
@@ -238,7 +264,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		for (int i = 0; i < getListeTitre().size(); i++) {
 			TitrePoste titre = (TitrePoste) getListeTitre().get(i);
 			if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE_POSTE())) {
-				idTitre = titre.getIdTitrePoste();
+				idTitre = titre.getIdTitrePoste().toString();
 				break;
 			}
 		}
@@ -884,7 +910,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			Affectation a = (Affectation) getListeAffectation().get(i);
 			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
 			// Titre du poste
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 			// Service
 			Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 			Service service = Service.getSection(getTransaction(), fp.getIdServi());
@@ -1044,5 +1070,13 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public String getVAL_ST_SERVICE(int i) {
 		return getZone(getNOM_ST_SERVICE(i));
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

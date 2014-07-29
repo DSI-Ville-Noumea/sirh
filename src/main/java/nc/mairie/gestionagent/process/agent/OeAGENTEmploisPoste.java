@@ -54,6 +54,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -145,6 +146,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private DiplomeAgentDao diplomeAgentDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -273,13 +275,16 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (getDiplomeAgentDao() == null) {
 			setDiplomeAgentDao(new DiplomeAgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void alimenterFicheDePoste() throws Exception {
 		if (getFichePosteCourant() != null) {
 			// Recherche des informations à afficher
-			setTitrePoste(getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : TitrePoste
-					.chercherTitrePoste(getTransaction(), getFichePosteCourant().getIdTitrePoste()).getLibTitrePoste());
+			setTitrePoste(getFichePosteCourant().getIdTitrePoste() == null ? Const.CHAINE_VIDE : getTitrePosteDao()
+					.chercherTitrePoste(Integer.valueOf(getFichePosteCourant().getIdTitrePoste())).getLibTitrePoste());
 
 			setDirection(Service.getDirection(getTransaction(), getFichePosteCourant().getIdServi()));
 			Service serv = Service.getDivision(getTransaction(), getFichePosteCourant().getIdServi());
@@ -1682,8 +1687,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (superieurHierarchique != null) {
 			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getSuperieurHierarchique()
 					.getIdFichePoste()));
-			setTitrePosteResponsable(TitrePoste.chercherTitrePoste(getTransaction(), getSuperieurHierarchique()
-					.getIdTitrePoste()));
+			setTitrePosteResponsable(getTitrePosteDao().chercherTitrePoste(
+					Integer.valueOf(getSuperieurHierarchique().getIdTitrePoste())));
 		} else {
 			setAgtResponsable(null);
 			setTitrePosteResponsable(null);
@@ -2148,8 +2153,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		if (remp != null) {
 			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement()
 					.getIdFichePoste()));
-			setTitrePosteRemplacement(TitrePoste.chercherTitrePoste(getTransaction(), getRemplacement()
-					.getIdTitrePoste()));
+			setTitrePosteRemplacement(getTitrePosteDao().chercherTitrePoste(
+					Integer.valueOf(getRemplacement().getIdTitrePoste())));
 		} else {
 			setAgtRemplacement(null);
 			setTitrePosteRemplacement(null);
@@ -2407,5 +2412,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setDiplomeAgentDao(DiplomeAgentDao diplomeAgentDao) {
 		this.diplomeAgentDao = diplomeAgentDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

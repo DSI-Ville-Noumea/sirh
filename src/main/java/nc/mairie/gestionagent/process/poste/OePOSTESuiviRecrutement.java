@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.parametrage.MotifNonRecrutementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifRecrutementDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -49,6 +50,7 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 
 	private MotifNonRecrutementDao motifNonRecrutementDao;
 	private MotifRecrutementDao motifRecrutementDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_RECHERCHER_AGENT Date de
@@ -785,7 +787,7 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 			addZone(getNOM_ST_SERVICE(), "TODO");
 			addZone(getNOM_ST_SECTION(), "TODO");
 			addZone(getNOM_ST_SUBDIVISION(), "TODO");
-			TitrePoste titreP = TitrePoste.chercherTitrePoste(getTransaction(), ficheP.getIdTitrePoste());
+			TitrePoste titreP = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(ficheP.getIdTitrePoste()));
 			addZone(getNOM_ST_TITRE_POSTE(), titreP == null ? Const.CHAINE_VIDE : titreP.getLibTitrePoste());
 			Grade grade = Grade.chercherGrade(getTransaction(), ficheP.getCodeGrade());
 			addZone(getNOM_ST_GRADE(), grade == null ? Const.CHAINE_VIDE : grade.getGrade());
@@ -802,6 +804,9 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 		}
 		if (getMotifRecrutementDao() == null) {
 			setMotifRecrutementDao(new MotifRecrutementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1017,5 +1022,13 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 
 	public void setMotifRecrutementDao(MotifRecrutementDao motifRecrutementDao) {
 		this.motifRecrutementDao = motifRecrutementDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

@@ -14,6 +14,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -45,6 +46,7 @@ public class OeAVCTContractuels extends BasicProcess {
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private AvancementContractuelsDao avancementContractuelsDao;
+	private TitrePosteDao titrePosteDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
 
 	/**
@@ -88,9 +90,11 @@ public class OeAVCTContractuels extends BasicProcess {
 				FichePoste fp = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), av.getNumFp());
 				TitrePoste tp = null;
 				if (fp != null && fp.getIdTitrePoste() != null) {
-					tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					try {
+						tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+					} catch (Exception e) {
+
+					}
 				}
 
 				addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
@@ -131,6 +135,9 @@ public class OeAVCTContractuels extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAvancementContractuelsDao() == null) {
 			setAvancementContractuelsDao(new AvancementContractuelsDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -328,7 +335,8 @@ public class OeAVCTContractuels extends BasicProcess {
 						nouvelleCarriere.setCodeCategorie(carr.getCodeCategorie());
 						nouvelleCarriere.setReferenceArrete(avct.getNumArrete().equals(Const.CHAINE_VIDE) ? Const.ZERO
 								: avct.getNumArrete());
-						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct.getDateArrete()));
+						nouvelleCarriere.setDateArrete(avct.getDateArrete() == null ? Const.ZERO : sdf.format(avct
+								.getDateArrete()));
 						nouvelleCarriere.setDateDebut(sdf.format(avct.getDateProchainGrade()));
 						nouvelleCarriere.setDateFin(Const.ZERO);
 						nouvelleCarriere.setIban(avct.getNouvIban());
@@ -902,5 +910,13 @@ public class OeAVCTContractuels extends BasicProcess {
 
 	public void setAvancementContractuelsDao(AvancementContractuelsDao avancementContractuelsDao) {
 		this.avancementContractuelsDao = avancementContractuelsDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

@@ -67,6 +67,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
@@ -242,6 +243,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private DocumentDao documentDao;
 	private ContratDao contratDao;
 	private NiveauEtudeDao niveauEtudeDao;
+	private TitrePosteDao titrePosteDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -500,6 +502,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getNiveauEtudeDao() == null) {
 			setNiveauEtudeDao(new NiveauEtudeDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -619,7 +624,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			if (getListeTitre() != null) {
 				for (TitrePoste tp : getListeTitre()) {
-					if (tp.getIdTitrePoste().equals(getFichePosteCourante().getIdTitrePoste())) {
+					if (tp.getIdTitrePoste().toString().equals(getFichePosteCourante().getIdTitrePoste())) {
 						addZone(getNOM_EF_TITRE_POSTE(), tp.getLibTitrePoste());
 						break;
 					}
@@ -823,12 +828,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Si liste titre poste vide alors affectation
 		if (getLB_TITRE_POSTE() == LBVide) {
-			ArrayList<TitrePoste> titre = TitrePoste.listerTitrePoste(getTransaction());
+			ArrayList<TitrePoste> titre = getTitrePosteDao().listerTitrePoste();
 			setListeTitre(titre);
 
-			int[] tailles = { 100 };
-			String[] champs = { "libTitrePoste" };
-			setLB_TITRE_POSTE(new FormateListe(tailles, titre, champs).getListeFormatee());
+			if (getListeTitre().size() != 0) {
+				int[] tailles = { 100 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<TitrePoste> list = getListeTitre().listIterator(); list.hasNext();) {
+					TitrePoste de = (TitrePoste) list.next();
+					String ligne[] = { de.getLibTitrePoste() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_TITRE_POSTE(aFormat.getListeFormatee());
+			} else {
+				setLB_TITRE_POSTE(null);
+			}
 		}
 
 		// Si liste grade vide alors affectation
@@ -1738,7 +1752,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < getListeTitre().size(); i++) {
 			TitrePoste titre = (TitrePoste) getListeTitre().get(i);
 			if (titre.getLibTitrePoste().equals(getVAL_EF_TITRE_POSTE())) {
-				idTitre = titre.getIdTitrePoste();
+				idTitre = titre.getIdTitrePoste().toString();
 				break;
 			}
 		}
@@ -4194,8 +4208,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (resp != null) {
 			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getResponsable()
 					.getIdFichePoste()));
-			setTitrePosteResponsable(TitrePoste
-					.chercherTitrePoste(getTransaction(), getResponsable().getIdTitrePoste()));
+			setTitrePosteResponsable(getTitrePosteDao().chercherTitrePoste(
+					Integer.valueOf(getResponsable().getIdTitrePoste())));
 		} else {
 			setAgtResponsable(null);
 			setTitrePosteResponsable(null);
@@ -4949,8 +4963,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (remp != null) {
 			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement()
 					.getIdFichePoste()));
-			setTitrePosteRemplacement(TitrePoste.chercherTitrePoste(getTransaction(), getRemplacement()
-					.getIdTitrePoste()));
+			setTitrePosteRemplacement(getTitrePosteDao().chercherTitrePoste(
+					Integer.valueOf(getRemplacement().getIdTitrePoste())));
 		} else {
 			setAgtRemplacement(null);
 			setTitrePosteRemplacement(null);
@@ -6674,5 +6688,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setNiveauEtudeDao(NiveauEtudeDao niveauEtudeDao) {
 		this.niveauEtudeDao = niveauEtudeDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

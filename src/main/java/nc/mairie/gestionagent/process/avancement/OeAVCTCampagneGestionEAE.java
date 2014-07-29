@@ -81,6 +81,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.utils.EaeDao;
@@ -172,6 +173,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 	private AvancementDetachesDao avancementDetachesDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -326,7 +328,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 						if (aff != null && aff.getIdFichePoste() != null) {
 							FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-							TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+							TitrePoste tp = getTitrePosteDao()
+									.chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
@@ -588,7 +591,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					}
 					if (affSuperieur.getIdFichePoste() != null) {
 						fpResponsable = FichePoste.chercherFichePoste(getTransaction(), affSuperieur.getIdFichePoste());
-						tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResponsable.getIdTitrePoste());
+						tpResp = getTitrePosteDao()
+								.chercherTitrePoste(Integer.valueOf(fpResponsable.getIdTitrePoste()));
 					}
 				}
 			}
@@ -856,6 +860,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getAvancementFonctionnairesDao() == null) {
 			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1880,11 +1887,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			}
 			// pour la fonction
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fpSecondaire.getIdTitrePoste());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
+			try {
+				TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fpSecondaire.getIdTitrePoste()));
 				fichePosteEae.setFonction(tp.getLibTitrePoste());
+			} catch (Exception e) {
+
 			}
 			// on cherche toutes les affectations sur la FDP
 			// on prend la date la plus ancienne
@@ -1914,11 +1921,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
-					TitrePoste tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResp.getIdTitrePoste());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
+					try {
+						TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(
+								Integer.valueOf(fpResp.getIdTitrePoste()));
 						fichePosteEae.setFonctionResp(tpResp.getLibTitrePoste());
+					} catch (Exception e) {
+
 					}
 					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
 							fpResp.getIdFichePoste());
@@ -2093,11 +2101,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					fpModif.setEmploi(fe.getNomMetierEmploi());
 				}
 				// pour la fonction
-				TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fpPrincipale.getIdTitrePoste());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
+				try {
+					TitrePoste tp = getTitrePosteDao().chercherTitrePoste(
+							Integer.valueOf(fpPrincipale.getIdTitrePoste()));
 					fpModif.setFonction(tp.getLibTitrePoste());
+				} catch (Exception e) {
+
 				}
 				if (modifDateFonction && evalue != null) {
 					// on cherche toutes les affectations sur la FDP
@@ -2131,11 +2140,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
-						TitrePoste tpResp = TitrePoste.chercherTitrePoste(getTransaction(), fpResp.getIdTitrePoste());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						} else {
+						try {
+							TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(
+									Integer.valueOf(fpResp.getIdTitrePoste()));
 							fpModif.setFonctionResp(tpResp.getLibTitrePoste());
+						} catch (Exception e) {
+
 						}
 						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
 								fpResp.getIdFichePoste());
@@ -3365,13 +3375,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						avct.getInm(), avct.getIna(), avct.getNouvIban(), avct.getNouvInm(), avct.getNouvIna(),
 						avct.getDateGrade(), avct.getPeriodeStandard(), avct.getDateAvctMini(), avct.getDateAvctMoy(),
 						avct.getDateAvctMaxi(), avct.getNumArrete(), avct.getDateArrete(), avct.getEtat(),
-						avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(), avct.getDateVerifSgc(),
-						avct.getHeureVerifSgc(), avct.getUserVerifSef(), avct.getDateVerifSef(), avct.getHeureVerifSef(),
-						avct.getOrdreMerite(), avct.getAvisShd(), avct.getIdAvisArr(), avct.getIdAvisEmp(),
-						avct.getUserVerifArr(), avct.getDateVerifArr(), avct.getHeureVerifArr(), avct.getDateCap(),
-						avct.getObservationArr(), avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(),
-						avct.getHeureVerifArrImpr(), avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(),
-						avct.getCodePa());
+						avct.getCodeCategorie(), avct.getCarriereSimu(), avct.getUserVerifSgc(),
+						avct.getDateVerifSgc(), avct.getHeureVerifSgc(), avct.getUserVerifSef(),
+						avct.getDateVerifSef(), avct.getHeureVerifSef(), avct.getOrdreMerite(), avct.getAvisShd(),
+						avct.getIdAvisArr(), avct.getIdAvisEmp(), avct.getUserVerifArr(), avct.getDateVerifArr(),
+						avct.getHeureVerifArr(), avct.getDateCap(), avct.getObservationArr(),
+						avct.getUserVerifArrImpr(), avct.getDateVerifArrImpr(), avct.getHeureVerifArrImpr(),
+						avct.isRegularisation(), avct.isAgentVdn(), avct.getIdCap(), avct.getCodePa());
 
 				if (getTransaction().isErreur())
 					return false;
@@ -4082,5 +4092,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
 		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

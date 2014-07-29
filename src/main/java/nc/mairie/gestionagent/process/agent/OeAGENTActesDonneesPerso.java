@@ -34,6 +34,7 @@ import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -97,6 +98,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
 	private ContratDao contratDao;
+	private TitrePosteDao titrePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -171,6 +173,9 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -231,7 +236,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					for (ListIterator<Affectation> list = aff.listIterator(); list.hasNext();) {
 						Affectation a = (Affectation) list.next();
 						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
-						TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 						String ligne[] = { a.getDateDebutAff(), tp.getLibTitrePoste() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -256,7 +261,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					for (ListIterator<FichePoste> list = listeFp.listIterator(); list.hasNext();) {
 						FichePoste fiche = (FichePoste) list.next();
 						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), fiche.getIdFichePoste());
-						TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 						String ligne[] = { "FP: " + fp.getNumFP(), tp.getLibTitrePoste() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -1660,6 +1665,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public void setContratDao(ContratDao contratDao) {
 		this.contratDao = contratDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 
 }

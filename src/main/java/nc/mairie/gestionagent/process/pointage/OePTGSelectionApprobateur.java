@@ -14,11 +14,16 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 public class OePTGSelectionApprobateur extends BasicProcess {
 
@@ -33,6 +38,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
+	private TitrePosteDao titrePosteDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -41,11 +48,20 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 
 		// Initialise la liste des services
 		initialiseListeService();
 
 		addZone(getNOM_RG_RECHERCHE(), getNOM_RB_RECH_NOM());
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeService() throws Exception {
@@ -95,7 +111,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
 			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 			addZone(getNOM_ST_LIB_POSTE_AGENT(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 		}
@@ -237,7 +253,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
+			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent
+					.listerPositionAdmAgentEnActivite(getTransaction());
 			String liste = Const.CHAINE_VIDE;
 			for (PositionAdmAgent pa : listeNomatrActif) {
 				// on regarde si il y a une affectation active
@@ -280,7 +297,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
 			// on parcours cette liste pour ne mettre que les agents en activite
 			for (AgentNW ag : listeAgentWithNom) {
-				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						ag.getNoMatricule());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
@@ -289,7 +307,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
 					@SuppressWarnings("unused")
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
+					Affectation aff = Affectation
+							.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						continue;
@@ -305,7 +324,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
 			// on parcours cette liste pour ne mettre que les agents en activite
 			for (AgentNW ag : listeAgentWithPrenom) {
-				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						ag.getNoMatricule());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
@@ -314,7 +334,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
 					@SuppressWarnings("unused")
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
+					Affectation aff = Affectation
+							.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 						continue;
@@ -327,8 +348,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
 			String prefixe = service.getCodService().substring(
 					0,
-					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2 : Service.isDivision(service
-							.getCodService()) ? 3 : Service.isSection(service.getCodService()) ? 4 : 0);
+					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
+							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
+									.getCodService()) ? 4 : 0);
 			ArrayList<AgentNW> listeAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
 			for (AgentNW agt : listeAgent) {
@@ -361,7 +383,6 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		};
 
 		Collections.sort(aListe, comp);
-		
 
 		setListeApprobateursPossible(null);
 		setListeApprobateursPossible(aListe);
@@ -381,7 +402,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
 			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			TitrePoste tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
+			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
 			addZone(getNOM_ST_LIB_POSTE_AGENT_POSSIBLE(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
 		}
@@ -720,5 +741,13 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	 */
 	public String getNOM_RB_RECH_SERVICE() {
 		return "NOM_RB_RECH_SERVICE";
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }

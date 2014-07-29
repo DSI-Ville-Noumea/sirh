@@ -24,6 +24,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
+import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -61,6 +62,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	private AvancementContractuelsDao avancementContractuelsDao;
+	private TitrePosteDao titrePosteDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -100,6 +102,9 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAvancementContractuelsDao() == null) {
 			setAvancementContractuelsDao(new AvancementContractuelsDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getTitrePosteDao() == null) {
+			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -736,9 +741,11 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 			FichePoste fp = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), av.getNumFp());
 			TitrePoste tp = null;
 			if (fp != null && fp.getIdTitrePoste() != null) {
-				tp = TitrePoste.chercherTitrePoste(getTransaction(), fp.getIdTitrePoste());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				try {
+					tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+				} catch (Exception e) {
+
+				}
 			}
 
 			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
@@ -1304,5 +1311,13 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 	public void setAvancementContractuelsDao(AvancementContractuelsDao avancementContractuelsDao) {
 		this.avancementContractuelsDao = avancementContractuelsDao;
+	}
+
+	public TitrePosteDao getTitrePosteDao() {
+		return titrePosteDao;
+	}
+
+	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
+		this.titrePosteDao = titrePosteDao;
 	}
 }
