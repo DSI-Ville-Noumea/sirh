@@ -9,7 +9,6 @@ import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
-import nc.mairie.metier.agent.PAAgent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.paye.Matricule;
@@ -52,11 +51,11 @@ public class OeAGENTPosAdm extends BasicProcess {
 	private String messageInf = Const.CHAINE_VIDE;
 	public boolean DateDebutEditable = true;
 
-	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get("DTAARA_SCHEMA"),
-			(String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
-	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent.getMesParametres().get("HOST_SGBD_PAYE"),
-			(String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")),
-			CALC_PATH.getPath());
+	private static QSYSObjectPathName CALC_PATH = new QSYSObjectPathName((String) ServletAgent.getMesParametres().get(
+			"DTAARA_SCHEMA"), (String) ServletAgent.getMesParametres().get("DTAARA_NAME"), "DTAARA");
+	public static CharacterDataArea DTAARA_CALC = new CharacterDataArea(new AS400((String) ServletAgent
+			.getMesParametres().get("HOST_SGBD_PAYE"), (String) ServletAgent.getMesParametres().get("HOST_SGBD_ADMIN"),
+			(String) ServletAgent.getMesParametres().get("HOST_SGBD_PWD")), CALC_PATH.getPath());
 	private String calculPaye;
 
 	/**
@@ -136,7 +135,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 	 */
 	private void initialiseListePA(HttpServletRequest request) throws Exception {
 		// Recherche des accidents du travail de l'agent
-		ArrayList<PositionAdmAgent> listePAAgent = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<PositionAdmAgent> listePAAgent = PositionAdmAgent.listerPositionAdmAgentAvecAgent(getTransaction(),
+				getAgentCourant());
 		setListePAAgent(listePAAgent);
 
 		int indicePaAgent = 0;
@@ -145,11 +145,15 @@ public class OeAGENTPosAdm extends BasicProcess {
 				PositionAdmAgent paa = (PositionAdmAgent) getListePAAgent().get(i);
 				PositionAdm pa = (PositionAdm) getHashPA().get(paa.getCdpadm());
 
-				addZone(getNOM_ST_POSA(indicePaAgent), pa.getCdpadm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getCdpadm());
-				addZone(getNOM_ST_LIB_POSA(indicePaAgent), pa.getLiPAdm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getLiPAdm());
-				addZone(getNOM_ST_REF_ARR(indicePaAgent), paa.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : paa.getRefarr());
-				addZone(getNOM_ST_DATE_ARR(indicePaAgent), paa.getDateArrete() == null || paa.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;"
-						: paa.getDateArrete());
+				addZone(getNOM_ST_POSA(indicePaAgent),
+						pa.getCdpadm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getCdpadm());
+				addZone(getNOM_ST_LIB_POSA(indicePaAgent),
+						pa.getLiPAdm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : pa.getLiPAdm());
+				addZone(getNOM_ST_REF_ARR(indicePaAgent),
+						paa.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : paa.getRefarr());
+				addZone(getNOM_ST_DATE_ARR(indicePaAgent),
+						paa.getDateArrete() == null || paa.getDateArrete().equals(Const.DATE_NULL) ? "&nbsp;" : paa
+								.getDateArrete());
 				addZone(getNOM_ST_DATE_DEBUT(indicePaAgent),
 						paa.getDatdeb() == null || paa.getDatdeb().equals(Const.DATE_NULL) ? "&nbsp;" : paa.getDatdeb());
 				addZone(getNOM_ST_DATE_FIN(indicePaAgent),
@@ -206,7 +210,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 		}
 		if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION) && getListePAAgent().size() > 1) {
 			PositionAdmAgent paBase = (PositionAdmAgent) getPaCourante().getBasicMetierBase();
-			PositionAdmAgent posAdmPrec = PositionAdmAgent.chercherPositionAdmAgentPrec(getTransaction(), getAgentCourant().getNoMatricule(),
+			PositionAdmAgent posAdmPrec = PositionAdmAgent.chercherPositionAdmAgentPrec(getTransaction(),
+					getAgentCourant().getNoMatricule(),
 					Services.convertitDate(Services.formateDate(paBase.getDatdeb()), "dd/MM/yyyy", "yyyyMMdd"));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -233,8 +238,9 @@ public class OeAGENTPosAdm extends BasicProcess {
 		addZone(getNOM_EF_DATE_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_DATE_DEBUT(),
-				getLastPA() != null && getLastPA().getDatfin() != null && !getLastPA().getDatfin().equals(Const.DATE_NULL) ? Services.ajouteJours(Services.formateDate(getLastPA().getDatfin()), 1)
-						: Const.CHAINE_VIDE);
+				getLastPA() != null && getLastPA().getDatfin() != null
+						&& !getLastPA().getDatfin().equals(Const.DATE_NULL) ? Services.ajouteJours(
+						Services.formateDate(getLastPA().getDatfin()), 1) : Const.CHAINE_VIDE);
 		addZone(getNOM_EF_REF_ARR(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_POSA(), Const.CHAINE_VIDE);
 	}
@@ -275,13 +281,15 @@ public class OeAGENTPosAdm extends BasicProcess {
 		}
 
 		// reference arrete
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_REF_ARR())) && !Services.estNumerique(getZone(getNOM_EF_REF_ARR()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_REF_ARR()))
+				&& !Services.estNumerique(getZone(getNOM_EF_REF_ARR()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "Ref. arrêté"));
 			return false;
 		}
 
 		// date de l'arrêté
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_ARR())) && !Services.estUneDate(getZone(getNOM_EF_DATE_ARR()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_ARR()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_ARR()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de l'arrêté"));
 			return false;
 		}
@@ -299,7 +307,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 		}
 
 		// date de fin
-		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN())) && !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
+		if (!(Const.CHAINE_VIDE).equals(getZone(getNOM_EF_DATE_FIN()))
+				&& !Services.estUneDate(getZone(getNOM_EF_DATE_FIN()))) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR007", "de fin"));
 			return false;
 		}
@@ -335,7 +344,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 			}
 		} else {
 			if (lastPA != null) {
-				if (lastPA.getDatfin() != null &&!lastPA.getDatfin().equals(Const.DATE_NULL)&& Services.compareDates(lastPA.getDatfin(), getPaCourante().getDatdeb()) > 0) {
+				if (lastPA.getDatfin() != null && !lastPA.getDatfin().equals(Const.DATE_NULL)
+						&& Services.compareDates(lastPA.getDatfin(), getPaCourante().getDatdeb()) > 0) {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR070"));
 					return false;
 				} else if (Services.compareDates(lastPA.getDatdeb(), getPaCourante().getDatdeb()) >= 0) {
@@ -369,12 +379,6 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
-
-			// Suppression du lien
-			PAAgent paAgent = PAAgent.chercherPAAgent(getTransaction(), getAgentCourant().idAgent, getAgentCourant().getNoMatricule(),
-					getPaCourante().getDatdeb());
-			paAgent.supprimerPAAgent(getTransaction());
-
 			PositionAdmAgent prev = getPrevPA();
 			// RG_AG_PA_A07
 			// RG_AG_PA_A08
@@ -425,7 +429,9 @@ public class OeAGENTPosAdm extends BasicProcess {
 			PositionAdmAgent prevPA = getPrevPA();
 			// RG_AG_PA_A03
 			// RG_AG_PA_A06
-			if (prevPA != null && (prevPA.getDatfin() == null || prevPA.getDatfin().equals(Const.DATE_NULL)|| Services.compareDates(prevPA.getDatfin(), getPaCourante().getDatdeb()) != 0)) {
+			if (prevPA != null
+					&& (prevPA.getDatfin() == null || prevPA.getDatfin().equals(Const.DATE_NULL) || Services
+							.compareDates(prevPA.getDatfin(), getPaCourante().getDatdeb()) != 0)) {
 				prevPA.setDatfin(getPaCourante().getDatdeb());
 				if (!prevPA.modifierPositionAdmAgent(getTransaction(), getAgentCourant(), user)) {
 					// "ERR009",
@@ -478,14 +484,6 @@ public class OeAGENTPosAdm extends BasicProcess {
 				 */
 
 				if (!getPaCourante().creerPositionAdmAgent(getTransaction(), user)) {
-					// "ERR009",
-					// "Une erreur s'est produite sur la base de données.");
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR009"));
-					return false;
-				}
-
-				PAAgent paAgent = new PAAgent(getAgentCourant().getIdAgent(), getAgentCourant().getNoMatricule(), getPaCourante().getDatdeb());
-				if (!paAgent.creerPAAgent(getTransaction())) {
 					// "ERR009",
 					// "Une erreur s'est produite sur la base de données.");
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR009"));
