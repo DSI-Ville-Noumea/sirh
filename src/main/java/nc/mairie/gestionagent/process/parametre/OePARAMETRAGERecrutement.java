@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.parametrage.MotifNonRecrutement;
 import nc.mairie.metier.parametrage.MotifRecrutement;
-import nc.mairie.metier.poste.Recrutement;
 import nc.mairie.spring.dao.metier.parametrage.MotifNonRecrutementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifRecrutementDao;
+import nc.mairie.spring.dao.metier.poste.RecrutementDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -45,6 +45,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	private MotifNonRecrutementDao motifNonRecrutementDao;
 	private MotifRecrutementDao motifRecrutementDao;
+	private RecrutementDao recrutementDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -92,6 +93,9 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		}
 		if (getMotifRecrutementDao() == null) {
 			setMotifRecrutementDao(new MotifRecrutementDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getRecrutementDao() == null) {
+			setRecrutementDao(new RecrutementDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -303,7 +307,7 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		// Verification si suppression d'une entité géographique utilisée sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_MOTIF().equals(ACTION_SUPPRESSION)
-				&& Recrutement.listerRecrutementAvecMotif(getTransaction(), getMotifCourant()).size() > 0) {
+				&& getRecrutementDao().listerRecrutementAvecMotifRec(getMotifCourant().getIdMotifRecrut()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -663,7 +667,8 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 		// Verification si suppression d'une entité géographique utilisée sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_NON_REC().equals(ACTION_SUPPRESSION)
-				&& Recrutement.listerRecrutementAvecMotifNonRec(getTransaction(), getNonRecCourant()).size() > 0) {
+				&& getRecrutementDao().listerRecrutementAvecMotifNonRec(getNonRecCourant().getIdMotifNonRecrut())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -810,5 +815,13 @@ public class OePARAMETRAGERecrutement extends BasicProcess {
 
 	public void setMotifRecrutementDao(MotifRecrutementDao motifRecrutementDao) {
 		this.motifRecrutementDao = motifRecrutementDao;
+	}
+
+	public RecrutementDao getRecrutementDao() {
+		return recrutementDao;
+	}
+
+	public void setRecrutementDao(RecrutementDao recrutementDao) {
+		this.recrutementDao = recrutementDao;
 	}
 }
