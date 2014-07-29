@@ -186,16 +186,11 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 				addZone(getNOM_ST_ANNEE(indiceCamp), campagne.getAnnee().toString());
 				addZone(getNOM_ST_DATE_DEBUT(indiceCamp), sdf.format(campagne.getDateDebut()));
 				addZone(getNOM_ST_DATE_FIN(indiceCamp),
-						campagne.getDateFin() == null || campagne.getDateFin().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
-								.format(campagne.getDateFin()));
-				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp),
-						campagne.getDateOuvertureKiosque() == null
-								|| campagne.getDateOuvertureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
-								.format(campagne.getDateOuvertureKiosque()));
-				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp),
-						campagne.getDateFermetureKiosque() == null
-								|| campagne.getDateFermetureKiosque().equals(Const.DATE_NULL) ? "&nbsp;" : sdf
-								.format(campagne.getDateFermetureKiosque()));
+						campagne.getDateFin() == null ? "&nbsp;" : sdf.format(campagne.getDateFin()));
+				addZone(getNOM_ST_DATE_DEBUT_KIOSQUE(indiceCamp), campagne.getDateOuvertureKiosque() == null ? "&nbsp;"
+						: sdf.format(campagne.getDateOuvertureKiosque()));
+				addZone(getNOM_ST_DATE_FIN_KIOSQUE(indiceCamp), campagne.getDateFermetureKiosque() == null ? "&nbsp;"
+						: sdf.format(campagne.getDateFermetureKiosque()));
 				addZone(getNOM_ST_NB_DOC(indiceCamp), nbDoc == 0 ? "&nbsp;" : String.valueOf(nbDoc));
 
 				indiceCamp++;
@@ -480,9 +475,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// fin campagne vide et date ouverture kiosque vide
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& campagneCourante.getDateFermetureKiosque() != null
-				&& !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
+				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() != null) {
 			return true;
 		} else {
 			if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
@@ -501,10 +494,8 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		// ET QUE DATE FERMETURE_KIOSQUE n’est pas saisie
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if ((Services.compareDates(sdf.format(campagneCourante.getDateDebut()).toString(), Services.dateDuJour()) < 0)
-				&& (campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& (campagneCourante.getDateFermetureKiosque() == null || campagneCourante.getDateFermetureKiosque()
-						.equals(Const.DATE_NULL)) && campagneCourante.getDateOuvertureKiosque() != null
-				&& !campagneCourante.getDateOuvertureKiosque().equals(Const.DATE_NULL)) {
+				&& campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() == null
+				&& campagneCourante.getDateOuvertureKiosque() != null) {
 			return true;
 		} else {
 			return false;
@@ -515,9 +506,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		CampagneEAE campagneCourante = (CampagneEAE) getListeCampagne().get(element);
 		// RG-EAE-6
 		// si DATE FERMETURE_KIOSQUE est saisie
-		if ((campagneCourante.getDateFin() == null || campagneCourante.getDateFin().equals(Const.DATE_NULL))
-				&& campagneCourante.getDateFermetureKiosque() != null
-				&& !campagneCourante.getDateFermetureKiosque().equals(Const.DATE_NULL)) {
+		if (campagneCourante.getDateFin() == null && campagneCourante.getDateFermetureKiosque() != null) {
 			return true;
 		} else {
 			return false;
@@ -598,9 +587,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		addZone(getNOM_ST_ANNEE(), camp.getAnnee().toString());
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(camp.getDateDebut()));
-		addZone(getNOM_ST_DATE_FIN(),
-				camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL) ? Const.CHAINE_VIDE : sdf
-						.format(camp.getDateFin()));
+		addZone(getNOM_ST_DATE_FIN(), camp.getDateFin() == null ? Const.CHAINE_VIDE : sdf.format(camp.getDateFin()));
 		addZone(getNOM_ST_COMMENTAIRE(), camp.getCommentaire());
 
 		return true;
@@ -740,8 +727,7 @@ public class OeAVCTCampagneEAE extends BasicProcess {
 
 		// RG-EAE-2 : on regarde si toutes les campagnes sont cloturées
 		for (CampagneEAE camp : getListeCampagne()) {
-			if (camp.getDateFin() == null || camp.getDateFin().equals(Const.DATE_NULL)
-					|| camp.getDateFin().equals(Const.CHAINE_VIDE)) {
+			if (camp.getDateFin() == null) {
 				// "ERR210",
 				// "Toutes les campgnes ne sont pas cloturées. Vous ne pouvez pas en créer une nouvelle."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR210"));
