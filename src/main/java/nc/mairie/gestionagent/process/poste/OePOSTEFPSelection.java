@@ -9,7 +9,7 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.poste.StatutFP;
+import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -38,6 +38,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	private AgentNW agentCourant = null;
 
 	private TitrePosteDao titrePosteDao;
+	private StatutFPDao statutFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -98,6 +99,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getStatutFPDao() == null) {
+			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -181,9 +185,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 							MessageUtils.getMessage("ERR125", "la FDP " + getVAL_EF_NUM_FICHE_POSTE()));
 					return false;
 				} else {
-					if (!StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP()).getLibStatutFP()
+					if (!getStatutFPDao().chercherStatutFP(Integer.valueOf(fp.getIdStatutFP())).getLibStatutFp()
 							.equals(EnumStatutFichePoste.VALIDEE.getLibLong())
-							|| !StatutFP.chercherStatutFP(getTransaction(), fp.getIdStatutFP()).getLibStatutFP()
+							|| !getStatutFPDao().chercherStatutFP(Integer.valueOf(fp.getIdStatutFP())).getLibStatutFp()
 									.equals(EnumStatutFichePoste.GELEE.getLibLong())) {
 						// "ERR087",
 						// "Cette fiche de poste n'est pas 'Validée'  ou 'Gelée'. Elle ne peut pas être affectée à un agent."
@@ -699,5 +703,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public StatutFPDao getStatutFPDao() {
+		return statutFPDao;
+	}
+
+	public void setStatutFPDao(StatutFPDao statutFPDao) {
+		this.statutFPDao = statutFPDao;
 	}
 }

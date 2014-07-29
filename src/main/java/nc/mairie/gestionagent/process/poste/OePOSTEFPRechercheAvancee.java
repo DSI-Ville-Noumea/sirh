@@ -15,6 +15,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -50,6 +51,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	public String focus = null;
 
 	private TitrePosteDao titrePosteDao;
+	private StatutFPDao statutFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -79,6 +81,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getStatutFPDao() == null) {
+			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -90,12 +95,21 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
-			ArrayList<StatutFP> statut = StatutFP.listerStatutFP(getTransaction());
+			ArrayList<StatutFP> statut = (ArrayList<StatutFP>) getStatutFPDao().listerStatutFP();
 			setListeStatut(statut);
 
-			int[] tailles = { 20 };
-			String[] champs = { "libStatutFP" };
-			setLB_STATUT(new FormateListe(tailles, statut, champs).getListeFormatee(true));
+			if (getListeStatut().size() != 0) {
+				int[] tailles = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<StatutFP> list = getListeStatut().listIterator(); list.hasNext();) {
+					StatutFP de = (StatutFP) list.next();
+					String ligne[] = { de.getLibStatutFp() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_STATUT(aFormat.getListeFormatee(true));
+			} else {
+				setLB_STATUT(null);
+			}
 		}
 
 		// Si liste localisation vide alors affectation
@@ -1078,5 +1092,13 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public StatutFPDao getStatutFPDao() {
+		return statutFPDao;
+	}
+
+	public void setStatutFPDao(StatutFPDao statutFPDao) {
+		this.statutFPDao = statutFPDao;
 	}
 }

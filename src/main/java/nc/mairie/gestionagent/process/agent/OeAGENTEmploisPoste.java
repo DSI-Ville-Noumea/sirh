@@ -36,7 +36,6 @@ import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.Service;
-import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.metier.referentiel.TypeCompetence;
 import nc.mairie.metier.specificites.AvantageNature;
@@ -54,6 +53,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
@@ -147,6 +147,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private DocumentDao documentDao;
 	private DiplomeAgentDao diplomeAgentDao;
 	private TitrePosteDao titrePosteDao;
+	private StatutFPDao statutFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -277,6 +278,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getStatutFPDao() == null) {
+			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -588,8 +592,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				Horaire.chercherHoraire(getTransaction(), getFichePosteCourant().getIdCdthorReg()).getLibHor());
 		addZone(getNOM_ST_POURCENT_BUDGETE(),
 				Horaire.chercherHoraire(getTransaction(), getFichePosteCourant().getIdCdthorBud()).getLibHor());
-		addZone(getNOM_ST_ACT_INACT(), getFichePosteCourant().getIdStatutFP() == null ? Const.CHAINE_VIDE : StatutFP
-				.chercherStatutFP(getTransaction(), getFichePosteCourant().getIdStatutFP()).getLibStatutFP());
+		addZone(getNOM_ST_ACT_INACT(), getFichePosteCourant().getIdStatutFP() == null ? Const.CHAINE_VIDE
+				: getStatutFPDao().chercherStatutFP(Integer.valueOf(getFichePosteCourant().getIdStatutFP()))
+						.getLibStatutFp());
 
 		addZone(getNOM_ST_TITRE(), getTitrePoste());
 		addZone(getNOM_ST_DIRECTION(), getDirection() == null ? Const.CHAINE_VIDE : getDirection().getLibService());
@@ -2420,5 +2425,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public StatutFPDao getStatutFPDao() {
+		return statutFPDao;
+	}
+
+	public void setStatutFPDao(StatutFPDao statutFPDao) {
+		this.statutFPDao = statutFPDao;
 	}
 }

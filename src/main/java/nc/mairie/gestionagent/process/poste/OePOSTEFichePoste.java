@@ -67,6 +67,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -244,6 +245,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ContratDao contratDao;
 	private NiveauEtudeDao niveauEtudeDao;
 	private TitrePosteDao titrePosteDao;
+	private StatutFPDao statutFPDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -505,6 +507,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getStatutFPDao() == null) {
+			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -517,8 +522,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// FICHE POSTE
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// si FDP inactive alors on rend les champs disabled
-			StatutFP statut = StatutFP.chercherStatutFP(getTransaction(), getFichePosteCourante().getIdStatutFP());
-			if (statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
+			StatutFP statut = getStatutFPDao().chercherStatutFP(
+					Integer.valueOf(getFichePosteCourante().getIdStatutFP()));
+			if (statut.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
 				estFDPInactive = true;
 			} else {
 				estFDPInactive = false;
@@ -581,7 +587,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getListeStatut() != null) {
 				for (int i = 0; i < getListeStatut().size(); i++) {
 					StatutFP s = (StatutFP) getListeStatut().get(i);
-					if (s.getIdStatutFP().equals(getFichePosteCourante().getIdStatutFP())) {
+					if (s.getIdStatutFp().toString().equals(getFichePosteCourante().getIdStatutFP())) {
 						addZone(getNOM_LB_STATUT_SELECT(), String.valueOf(i));
 						initialiseChampObligatoire(s);
 						break;
@@ -807,12 +813,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Si liste statut vide alors affectation
 		if (getLB_STATUT() == LBVide) {
-			ArrayList<StatutFP> statut = StatutFP.listerStatutFP(getTransaction());
+			ArrayList<StatutFP> statut = (ArrayList<StatutFP>) getStatutFPDao().listerStatutFP();
 			setListeStatut(statut);
 
-			int[] tailles = { 20 };
-			String[] champs = { "libStatutFP" };
-			setLB_STATUT(new FormateListe(tailles, statut, champs).getListeFormatee());
+			if (getListeStatut().size() != 0) {
+				int[] tailles = { 20 };
+				FormateListe aFormat = new FormateListe(tailles);
+				for (ListIterator<StatutFP> list = getListeStatut().listIterator(); list.hasNext();) {
+					StatutFP de = (StatutFP) list.next();
+					String ligne[] = { de.getLibStatutFp() };
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_STATUT(aFormat.getListeFormatee());
+			} else {
+				setLB_STATUT(null);
+			}
 			addZone(getNOM_LB_STATUT_SELECT(), Const.ZERO);
 		}
 
@@ -1562,39 +1577,32 @@ public class OePOSTEFichePoste extends BasicProcess {
 			StatutFP statutPrecedant = null;
 
 			if (getFichePosteCourante().getIdStatutFP() != null) {
-				statutPrecedant = StatutFP.chercherStatutFP(getTransaction(), getFichePosteCourante().getIdStatutFP());
-				if (!statutCourant.getIdStatutFP().equals(statutPrecedant.getIdStatutFP())) {
+				statutPrecedant = getStatutFPDao().chercherStatutFP(
+						Integer.valueOf(getFichePosteCourante().getIdStatutFP()));
+				if (statutCourant.getIdStatutFp() != statutPrecedant.getIdStatutFp()) {
 
 					// Passage au statut inactif impossible si la fiche est
 					// affectée ou est utilisée comme responsable hiérarchique.
-					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFP())) {
+					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFp())) {
 						if (estFpCouranteAffectee()) {
 							// "ERR114",
 							// "Cette fiche de poste ne peut être inactive car elle est affectée à un agent."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR114"));
 							return false;
 						}
-						// SUPPRESSION DE CETTE REGLE SUITE JIRA SIRH-122
-						/*
-						 * if (getFichePosteCourante().estRespHierarchique(
-						 * getTransaction())) { // "ERR115", //
-						 * "Cette fiche de poste ne peut être inactive car elle est utilisée comme responsable hiérarchique."
-						 * getTransaction().declarerErreur(
-						 * MessageUtils.getMessage("ERR115")); return false; }
-						 */
 					}
 
-					if (EnumStatutFichePoste.EN_CREATION.getLibLong().equals(statutCourant.getLibStatutFP())) {
+					if (EnumStatutFichePoste.EN_CREATION.getLibLong().equals(statutCourant.getLibStatutFp())) {
 						// "ERR123", "Le statut ne peut repasser à @."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR123", "'En création'"));
 						return false;
 					}
 
-					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFP())
-							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP())
+					if (EnumStatutFichePoste.INACTIVE.getLibLong().equals(statutCourant.getLibStatutFp())
+							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFp())
 									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(
-											statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.GELEE
-									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
+											statutPrecedant.getLibStatutFp()) || EnumStatutFichePoste.GELEE
+									.getLibLong().equals(statutPrecedant.getLibStatutFp()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
 						getTransaction().declarerErreur(
@@ -1605,11 +1613,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 						return false;
 					}
 
-					if (EnumStatutFichePoste.EN_MODIFICATION.getLibLong().equals(statutCourant.getLibStatutFP())
-							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFP())
+					if (EnumStatutFichePoste.EN_MODIFICATION.getLibLong().equals(statutCourant.getLibStatutFp())
+							&& !(EnumStatutFichePoste.VALIDEE.getLibLong().equals(statutPrecedant.getLibStatutFp())
 									|| EnumStatutFichePoste.TRANSITOIRE.getLibLong().equals(
-											statutPrecedant.getLibStatutFP()) || EnumStatutFichePoste.GELEE
-									.getLibLong().equals(statutPrecedant.getLibStatutFP()))) {
+											statutPrecedant.getLibStatutFp()) || EnumStatutFichePoste.GELEE
+									.getLibLong().equals(statutPrecedant.getLibStatutFp()))) {
 						// "ERR124",
 						// "Le statut ne peut passer à @ s'il n'est pas @."
 						getTransaction().declarerErreur(
@@ -1832,7 +1840,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setDateDebutValiditeFP(dateDebutValidite);
 		getFichePosteCourante().setObservation(_observation);
 		getFichePosteCourante().setMissions(missions);
-		getFichePosteCourante().setIdStatutFP(statut.getIdStatutFP());
+		getFichePosteCourante().setIdStatutFP(statut.getIdStatutFp().toString());
 		getFichePosteCourante().setIdBudget(budget.getIdBudget());
 		getFichePosteCourante().setOPI(opi);
 		getFichePosteCourante().setNumDeliberation(numDeliberation);
@@ -4916,7 +4924,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			int numLigneStatut = (Services.estNumerique(getZone(getNOM_LB_STATUT_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 			StatutFP sfp = (StatutFP) getListeStatut().get(numLigneStatut);
-			return (!getFichePosteCourante().estAffectee(getTransaction()) && !sfp.getLibStatutFP().equals(
+			return (!getFichePosteCourante().estAffectee(getTransaction()) && !sfp.getLibStatutFp().equals(
 					EnumStatutFichePoste.INACTIVE.getLibLong()));
 		} else {
 			return false;
@@ -5070,7 +5078,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void initialiseChampObligatoire(StatutFP statut) {
 		responsableObligatoire = true;
 		estFDPInactive = false;
-		if (statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
+		if (statut.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())) {
 			responsableObligatoire = false;
 			estFDPInactive = true;
 		}
@@ -5396,9 +5404,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
 		setChangementFEAutorise(!estFpCouranteAffectee()
-				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.INACTIVE.getLibLong())
-				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.VALIDEE.getLibLong())
-				&& !statut.getLibStatutFP().equals(EnumStatutFichePoste.GELEE.getLibLong()));
+				&& !statut.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong())
+				&& !statut.getLibStatutFp().equals(EnumStatutFichePoste.VALIDEE.getLibLong())
+				&& !statut.getLibStatutFp().equals(EnumStatutFichePoste.GELEE.getLibLong()));
 	}
 
 	/**
@@ -6548,7 +6556,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		StatutFP statut = (StatutFP) getListeStatut().get(numLigneStatut);
 
-		if (statut.getIdStatutFP().equals(EnumStatutFichePoste.GELEE.getId())) {
+		if (statut.getIdStatutFp().toString().equals(EnumStatutFichePoste.GELEE.getId())) {
 			return true;
 		}
 		return false;
@@ -6696,5 +6704,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public StatutFPDao getStatutFPDao() {
+		return statutFPDao;
+	}
+
+	public void setStatutFPDao(StatutFPDao statutFPDao) {
+		this.statutFPDao = statutFPDao;
 	}
 }
