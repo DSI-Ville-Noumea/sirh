@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.parametrage.SpecialiteDiplome;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class SpecialiteDiplomeDao extends SirhDao implements SpecialiteDiplomeDaoInterface {
 

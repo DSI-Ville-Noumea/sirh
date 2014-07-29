@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.hsct.SPABSEN;
-import nc.mairie.spring.dao.MairieDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 
 public class SPABSENDao extends MairieDao implements SPABSENDaoInterface {
 

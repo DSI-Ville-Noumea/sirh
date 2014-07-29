@@ -1,6 +1,6 @@
 package nc.mairie.spring.dao.metier.specificites;
 
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class DelegationFPDao extends SirhDao implements DelegationFPDaoInterface {
 

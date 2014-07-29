@@ -7,7 +7,7 @@ import java.util.Map;
 
 import nc.mairie.metier.agent.Enfant;
 import nc.mairie.metier.agent.LienEnfantAgent;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class EnfantDao extends SirhDao implements EnfantDaoInterface {
 

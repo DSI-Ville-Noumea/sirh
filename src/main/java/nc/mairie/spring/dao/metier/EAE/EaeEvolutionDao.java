@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import java.util.Date;
 
 import nc.mairie.metier.eae.EaeEvolution;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

@@ -1,7 +1,7 @@
 package nc.mairie.spring.dao.metier.referentiel;
 
 import nc.mairie.metier.referentiel.TypeCompetence;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

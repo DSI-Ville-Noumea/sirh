@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.eae.EaeEvaluateur;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 public class EaeEvaluateurDao extends EaeDao implements EaeEvaluateurDaoInterface {
 

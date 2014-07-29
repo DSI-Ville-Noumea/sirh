@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.parametrage.RepresentantCap;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class RepresentantCapDao extends SirhDao implements RepresentantCapDaoInterface {
 

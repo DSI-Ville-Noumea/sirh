@@ -8,7 +8,7 @@ import java.util.Map;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.avancement.AvancementDetaches;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

@@ -1,7 +1,7 @@
 package nc.mairie.spring.dao.metier.EAE;
 
 import nc.mairie.metier.eae.EaeCommentaire;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 public class EaeCommentaireDao extends EaeDao implements EaeCommentaireDaoInterface {
 

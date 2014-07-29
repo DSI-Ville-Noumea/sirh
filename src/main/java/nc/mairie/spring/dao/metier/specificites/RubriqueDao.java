@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.specificites.Rubrique;
-import nc.mairie.spring.dao.MairieDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 
 public class RubriqueDao extends MairieDao implements RubriqueDaoInterface {
 

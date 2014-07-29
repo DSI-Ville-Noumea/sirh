@@ -8,7 +8,7 @@ import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.eae.EAE;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

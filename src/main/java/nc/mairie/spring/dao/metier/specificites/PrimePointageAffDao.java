@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.specificites.PrimePointageAff;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class PrimePointageAffDao extends SirhDao implements PrimePointageAffDaoInterface {
 

@@ -6,8 +6,8 @@ import java.util.Map;
 
 import nc.mairie.metier.parametrage.CadreEmploi;
 import nc.mairie.metier.poste.CadreEmploiFE;
-import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

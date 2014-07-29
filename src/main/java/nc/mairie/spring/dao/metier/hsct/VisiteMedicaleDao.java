@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.hsct.VisiteMedicale;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

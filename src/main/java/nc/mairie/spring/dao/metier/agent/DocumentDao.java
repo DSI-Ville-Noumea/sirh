@@ -7,7 +7,7 @@ import java.util.Map;
 
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.parametrage.SPBASE;
-import nc.mairie.spring.dao.MairieDao;
+import nc.mairie.spring.dao.utils.MairieDao;
 
 public class SPBASEDao extends MairieDao implements SPBASEDaoInterface {
 

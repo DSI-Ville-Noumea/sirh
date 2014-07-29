@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.referentiel;
 import java.util.List;
 
 import nc.mairie.metier.referentiel.TypeContrat;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class TypeContratDao extends SirhDao implements TypeContratDaoInterface {
 

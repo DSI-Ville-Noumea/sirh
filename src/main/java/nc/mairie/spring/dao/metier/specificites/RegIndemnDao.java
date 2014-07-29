@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class RegIndemnDao extends SirhDao implements RegIndemnDaoInterface {
 

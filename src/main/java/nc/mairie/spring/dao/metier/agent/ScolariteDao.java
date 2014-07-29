@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import nc.mairie.metier.agent.Scolarite;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

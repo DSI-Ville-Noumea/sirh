@@ -2,7 +2,7 @@ package nc.mairie.spring.dao.metier.EAE;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.eae.EaeEvaluation;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

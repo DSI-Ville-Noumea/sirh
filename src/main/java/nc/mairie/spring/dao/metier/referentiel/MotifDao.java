@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.referentiel;
 import java.util.List;
 
 import nc.mairie.metier.referentiel.Motif;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class MotifDao extends SirhDao implements MotifDaoInterface {
 

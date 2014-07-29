@@ -7,7 +7,7 @@ import java.util.Map;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.poste.DiplomeFE;
 import nc.mairie.metier.poste.FicheEmploi;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.technique.MairieMessages;
 import nc.mairie.technique.Transaction;
 

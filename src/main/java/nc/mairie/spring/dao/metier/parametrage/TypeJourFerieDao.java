@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 import java.util.List;
 
 import nc.mairie.metier.parametrage.TypeJourFerie;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 

@@ -10,7 +10,7 @@ import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

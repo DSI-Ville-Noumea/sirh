@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.eae.EaePlanAction;
-import nc.mairie.spring.dao.EaeDao;
+import nc.mairie.spring.dao.utils.EaeDao;
 
 public class EaePlanActionDao extends EaeDao implements EaePlanActionDaoInterface {
 

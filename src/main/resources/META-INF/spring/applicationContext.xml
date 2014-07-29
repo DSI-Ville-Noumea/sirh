@@ -24,17 +24,17 @@
 	<jee:jndi-lookup id="dataSourceEae" jndi-name="jdbc/SIRH_DS3" />
 
 	<!-- DAO SIRH -->
-	<bean id="sirhDao" class="nc.mairie.spring.dao.DefaultSirhDao">
+	<bean id="sirhDao" class="nc.mairie.spring.dao.utils.DefaultSirhDao">
 		<property name="dataSource" ref="dataSourceSIRH" />
 	</bean>
 
 	<!-- DAO Mairie -->
-	<bean id="mairieDao" class="nc.mairie.spring.dao.DefaultMairieDao">
+	<bean id="mairieDao" class="nc.mairie.spring.dao.utils.DefaultMairieDao">
 		<property name="dataSource" ref="dataSourceMairie" />
 	</bean>
 
 	<!-- DAO EAE -->
-	<bean id="eaeDao" class="nc.mairie.spring.dao.DefaultEaeDao">
+	<bean id="eaeDao" class="nc.mairie.spring.dao.utils.DefaultEaeDao">
 		<property name="dataSource" ref="dataSourceEae" />
 	</bean>
 	<bean id="eaeNumIncrementDocumentDao" class="nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao">

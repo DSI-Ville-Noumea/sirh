@@ -6,8 +6,8 @@ import java.util.Map;
 
 import nc.mairie.metier.carriere.Categorie;
 import nc.mairie.metier.poste.CategorieFE;
-import nc.mairie.spring.dao.SirhDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class CategorieDao extends SirhDao implements CategorieDaoInterface {
 

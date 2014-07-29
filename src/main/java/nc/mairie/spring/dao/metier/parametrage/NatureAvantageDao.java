@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.parametrage.NatureAvantage;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class NatureAvantageDao extends SirhDao implements NatureAvantageDaoInterface {
 

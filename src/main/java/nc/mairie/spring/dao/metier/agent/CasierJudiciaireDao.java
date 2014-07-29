@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.agent.CasierJudiciaire;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class CasierJudiciaireDao extends SirhDao implements CasierJudiciaireDaoInterface {
 

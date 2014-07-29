@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.mairie.metier.referentiel.AutreAdministration;
-import nc.mairie.spring.dao.SirhDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 
 public class AutreAdministrationDao extends SirhDao implements AutreAdministrationDaoInterface {
 
