@@ -3,8 +3,7 @@ package nc.mairie.spring.dao.metier.parametrage;
 import java.util.ArrayList;
 
 import nc.mairie.metier.parametrage.DiplomeGenerique;
-import nc.mairie.metier.poste.FicheEmploi;
-import nc.mairie.technique.Transaction;
+import nc.mairie.metier.poste.DiplomeFE;
 
 public interface DiplomeGeneriqueDaoInterface {
 
@@ -16,7 +15,7 @@ public interface DiplomeGeneriqueDaoInterface {
 
 	public DiplomeGenerique chercherDiplomeGenerique(Integer idDiplomeGenerique) throws Exception;
 
-	public ArrayList<DiplomeGenerique> listerDiplomeGeneriqueAvecFE(Transaction aTransaction, FicheEmploi ficheEmploi)
+	public ArrayList<DiplomeGenerique> listerDiplomeGeneriqueAvecFE(Integer idFicheEmploi, ArrayList<DiplomeFE> liens)
 			throws Exception;
 
 }

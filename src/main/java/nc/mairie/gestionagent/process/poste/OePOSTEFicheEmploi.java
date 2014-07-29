@@ -35,6 +35,7 @@ import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
+import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFEDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -142,6 +143,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private CategorieFEDao categorieFEDao;
 	private NiveauEtudeDao niveauEtudeDao;
 	private NiveauEtudeFEDao niveauEtudeFEDao;
+	private DiplomeFEDao diplomeFEDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1057,9 +1059,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Sauvegarde des nouveaux diplômes et suppression des anciens
 			for (int i = 0; i < getListeDiplomeAAjouter().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeAAjouter().get(i);
-				DiplomeFE diplFE = new DiplomeFE(getFicheEmploiCourant().getIdFicheEmploi(), dipl
-						.getIdDiplomeGenerique().toString());
-				diplFE.creerDiplomeFE(getTransaction());
+				DiplomeFE diplFE = new DiplomeFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						dipl.getIdDiplomeGenerique());
+				getDiplomeFEDao().creerDiplomeFE(diplFE.getIdFicheEmploi(), diplFE.getIdDiplomeGenerique());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
@@ -1070,9 +1072,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeDiplomeASupprimer().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeASupprimer().get(i);
-				DiplomeFE diplFE = DiplomeFE.chercherDiplomeFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), dipl.getIdDiplomeGenerique().toString());
-				diplFE.supprimerDiplomeFE(getTransaction());
+				DiplomeFE diplFE = getDiplomeFEDao().chercherDiplomeFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), dipl.getIdDiplomeGenerique());
+				getDiplomeFEDao().supprimerDiplomeFE(diplFE.getIdFicheEmploi(), diplFE.getIdDiplomeGenerique());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
@@ -1233,7 +1235,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		getNiveauEtudeFEDao().supprimerNiveauEtudeFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// Suppression des Diplome
-		result = result & DiplomeFE.supprimerDiplomeFEAvecFE(aTransaction, ficheEmploiCourant);
+		getDiplomeFEDao().supprimerDiplomeFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// suppression de la FicheEmploi
 		result = result & ficheEmploiCourant.supprimerFicheEmploi(getTransaction());
@@ -1405,6 +1407,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getNiveauEtudeFEDao() == null) {
 			setNiveauEtudeFEDao(new NiveauEtudeFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDiplomeFEDao() == null) {
+			setDiplomeFEDao(new DiplomeFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1827,8 +1832,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseDiplomeMulti() throws Exception {
 		if (getListeDiplomeMulti() == null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(getTransaction(),
-					getFicheEmploiCourant()));
+			// Recherche de tous les liens FicheEmploi / DiplomeGenerique
+			ArrayList<DiplomeFE> liensDip = getDiplomeFEDao().listerDiplomeFEAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+			setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), liensDip));
 		}
 
 		int tailles[] = { 100 };
@@ -2792,12 +2800,15 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 
 				// Recherche de tous les liens FicheEmploi / NiveauEtude
-				ArrayList<NiveauEtudeFE> liens = getNiveauEtudeFEDao().listerNiveauEtudeFEAvecFE(
+				ArrayList<NiveauEtudeFE> liensNiv = getNiveauEtudeFEDao().listerNiveauEtudeFEAvecFE(
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
-				setListeNiveauEtudeMulti(getNiveauEtudeDao().listerNiveauEtudeAvecFE(liens));
+				setListeNiveauEtudeMulti(getNiveauEtudeDao().listerNiveauEtudeAvecFE(liensNiv));
 
-				setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(getTransaction(),
-						getFicheEmploiCourant()));
+				// Recherche de tous les liens FicheEmploi / DiplomeGenerique
+				ArrayList<DiplomeFE> liensDip = getDiplomeFEDao().listerDiplomeFEAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+				setListeDiplomeMulti(getDiplomeGeneriqueDao().listerDiplomeGeneriqueAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), liensDip));
 			}
 		} else {
 			setStatut(STATUT_MEME_PROCESS, true, MessageUtils.getMessage("ERR982"));
@@ -3491,9 +3502,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les Diplome
 			for (int i = 0; i < getListeDiplomeMulti().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeMulti().get(i);
-				DiplomeFE newDiplFE = new DiplomeFE(ficheDupliquee.getIdFicheEmploi(), dipl.getIdDiplomeGenerique()
-						.toString());
-				newDiplFE.creerDiplomeFE(getTransaction());
+				DiplomeFE newDiplFE = new DiplomeFE(Integer.valueOf(ficheDupliquee.getIdFicheEmploi()),
+						dipl.getIdDiplomeGenerique());
+				getDiplomeFEDao().creerDiplomeFE(newDiplFE.getIdFicheEmploi(), newDiplFE.getIdDiplomeGenerique());
 			}
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -4302,5 +4313,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setNiveauEtudeFEDao(NiveauEtudeFEDao niveauEtudeFEDao) {
 		this.niveauEtudeFEDao = niveauEtudeFEDao;
+	}
+
+	public DiplomeFEDao getDiplomeFEDao() {
+		return diplomeFEDao;
+	}
+
+	public void setDiplomeFEDao(DiplomeFEDao diplomeFEDao) {
+		this.diplomeFEDao = diplomeFEDao;
 	}
 }

@@ -11,6 +11,7 @@ import nc.mairie.metier.parametrage.CodeRome;
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
+import nc.mairie.metier.poste.DiplomeFE;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
@@ -18,6 +19,7 @@ import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
+import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -67,6 +69,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private FamilleEmploiDao familleEmploiDao;
 	private CategorieFEDao categorieFEDao;
 	private CategorieDao categorieDao;
+	private DiplomeFEDao diplomeFEDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -153,6 +156,9 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		}
 		if (getCategorieFEDao() == null) {
 			setCategorieFEDao(new CategorieFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getDiplomeFEDao() == null) {
+			setDiplomeFEDao(new DiplomeFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1004,8 +1010,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		// Verification si suppression d'un diplome utilisée sur une fiche
 		// emploi
+
+		// Recherche de tous les liens FicheEmploi / Diplome
+		ArrayList<DiplomeFE> liens = getDiplomeFEDao().listerDiplomeFEAvecDiplome(
+				getDiplomeCourant().getIdDiplomeGenerique());
+
 		if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecDiplome(getTransaction(), getDiplomeCourant()).size() > 0) {
+				&& FicheEmploi.listerFicheEmploiAvecDiplome(getTransaction(), getDiplomeCourant(), liens).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1976,5 +1987,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setCategorieDao(CategorieDao categorieDao) {
 		this.categorieDao = categorieDao;
+	}
+
+	public DiplomeFEDao getDiplomeFEDao() {
+		return diplomeFEDao;
+	}
+
+	public void setDiplomeFEDao(DiplomeFEDao diplomeFEDao) {
+		this.diplomeFEDao = diplomeFEDao;
 	}
 }

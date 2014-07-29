@@ -6,10 +6,7 @@ import java.util.Map;
 
 import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.poste.DiplomeFE;
-import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.utils.SirhDao;
-import nc.mairie.technique.MairieMessages;
-import nc.mairie.technique.Transaction;
 
 public class DiplomeGeneriqueDao extends SirhDao implements DiplomeGeneriqueDaoInterface {
 
@@ -59,29 +56,20 @@ public class DiplomeGeneriqueDao extends SirhDao implements DiplomeGeneriqueDaoI
 	}
 
 	@Override
-	public ArrayList<DiplomeGenerique> listerDiplomeGeneriqueAvecFE(Transaction aTransaction, FicheEmploi ficheEmploi)
+	public ArrayList<DiplomeGenerique> listerDiplomeGeneriqueAvecFE(Integer idFicheEmploi, ArrayList<DiplomeFE> liens)
 			throws Exception {
-		// Test du paramètre FicheEmploi
-		if (ficheEmploi == null || ficheEmploi.getIdFicheEmploi() == null) {
-			aTransaction.declarerErreur(MairieMessages.getMessage("ERR003", "FicheEmploi"));
-			return new ArrayList<DiplomeGenerique>();
-		}
-
-		// Recherche de tous les liens FicheEmploi / DiplomeGenerique
-		ArrayList<DiplomeFE> liens = DiplomeFE.listerDiplomeFEAvecFE(aTransaction, ficheEmploi);
-		if (aTransaction.isErreur())
-			return new ArrayList<DiplomeGenerique>();
 
 		// Construction de la liste
 		ArrayList<DiplomeGenerique> result = new ArrayList<DiplomeGenerique>();
 		for (int i = 0; i < liens.size(); i++) {
 			DiplomeFE aLien = (DiplomeFE) liens.get(i);
-			DiplomeGenerique diplome = chercherDiplomeGenerique(Integer.valueOf(aLien.getIdDiplomeGenerique()));
-			if (aTransaction.isErreur())
+			try {
+				DiplomeGenerique diplome = chercherDiplomeGenerique(aLien.getIdDiplomeGenerique());
+				result.add(diplome);
+			} catch (Exception e) {
 				return new ArrayList<DiplomeGenerique>();
-			result.add(diplome);
+			}
 		}
-
 		return result;
 	}
 }
