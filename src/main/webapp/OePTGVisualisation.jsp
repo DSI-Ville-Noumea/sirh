@@ -98,7 +98,7 @@
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"}
                         ],
 						"aaSorting": [[ 10, "asc" ]],
-                        "sDom": '<"H"flip>t<"F"rip>',
+                        "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
                         "oLanguage": {
                             "oPaginate": {
