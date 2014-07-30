@@ -51,6 +51,7 @@ import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
+import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
@@ -82,6 +83,8 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
@@ -177,6 +180,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private TitrePosteDao titrePosteDao;
 	private FEFPDao fefpDao;
+	private CompetenceDao competenceDao;
+	private CompetenceFPDao competenceFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -869,6 +874,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFPDao() == null) {
+			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1770,11 +1781,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private void performCreerCompetencesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
-		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpSecondaire);
+		// Recherche de tous les liens FichePoste / Competence
+		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
+				Integer.valueOf(fpSecondaire.getIdFichePoste()));
+		ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(
-					Integer.valueOf(comp.getIdTypeCompetence()));
+			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
@@ -1787,11 +1800,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private void performCreerCompetencesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
 			throws Exception {
-		ArrayList<Competence> listCompFDP = Competence.listerCompetenceAvecFP(getTransaction(), fpPrincipale);
+		// Recherche de tous les liens FichePoste / Competence
+		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
+				Integer.valueOf(fpPrincipale.getIdFichePoste()));
+		ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(
-					Integer.valueOf(comp.getIdTypeCompetence()));
+			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(comp.getIdTypeCompetence());
 			EaeFDPCompetence compEAE = new EaeFDPCompetence();
 			compEAE.setIdEaeFichePoste(getIdCreerFichePostePrimaire());
 			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
@@ -1887,7 +1902,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// Recherche de tous les liens FicheEmploi / FichePoste
 			ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpSecondaire.getIdFichePoste()));
-			FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpSecondaire, false,liens);
+			FicheEmploi fe = FicheEmploi
+					.chercherFicheEmploiAvecFichePoste(getTransaction(), fpSecondaire, false, liens);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -2105,7 +2121,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				// Recherche de tous les liens FicheEmploi / FichePoste
 				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpPrincipale.getIdFichePoste()));
-				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true,liens);
+				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true,
+						liens);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -4120,5 +4137,21 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setFefpDao(FEFPDao fefpDao) {
 		this.fefpDao = fefpDao;
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
+	}
+
+	public CompetenceFPDao getCompetenceFPDao() {
+		return competenceFPDao;
+	}
+
+	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
+		this.competenceFPDao = competenceFPDao;
 	}
 }

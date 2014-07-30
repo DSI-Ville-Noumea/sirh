@@ -35,6 +35,8 @@ import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
 import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFEDao;
@@ -146,6 +148,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private NiveauEtudeFEDao niveauEtudeFEDao;
 	private DiplomeFEDao diplomeFEDao;
 	private FEFPDao fefpDao;
+	private CompetenceDao competenceDao;
+	private CompetenceFEDao competenceFEDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1117,9 +1121,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciennes
 			for (int i = 0; i < getListeSavoirAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeSavoirAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+				CompetenceFE compFE = new CompetenceFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
 						comp.getIdCompetence());
-				compFE.creerCompetenceFE(getTransaction());
+				getCompetenceFEDao().creerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
@@ -1130,10 +1134,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeSavoirASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeSavoirASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), comp.getIdCompetence());
-				compFE.supprimerCompetenceFE(getTransaction());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
+					getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
@@ -1145,9 +1150,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// des anciennes
 			for (int i = 0; i < getListeSavoirFaireAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeSavoirFaireAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+				CompetenceFE compFE = new CompetenceFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
 						comp.getIdCompetence());
-				compFE.creerCompetenceFE(getTransaction());
+				getCompetenceFEDao().creerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
@@ -1158,9 +1163,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeSavoirFaireASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeSavoirFaireASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), comp.getIdCompetence());
-				compFE.supprimerCompetenceFE(getTransaction());
+				CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
+				getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
@@ -1173,9 +1178,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// des anciennes
 			for (int i = 0; i < getListeComportementAAjouter().size(); i++) {
 				Competence comp = (Competence) getListeComportementAAjouter().get(i);
-				CompetenceFE compFE = new CompetenceFE(getFicheEmploiCourant().getIdFicheEmploi(),
+				CompetenceFE compFE = new CompetenceFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
 						comp.getIdCompetence());
-				compFE.creerCompetenceFE(getTransaction());
+				getCompetenceFEDao().creerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "compétence '" + comp.getNomCompetence() + "'"));
@@ -1186,9 +1191,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeComportementASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeComportementASupprimer().get(i);
-				CompetenceFE compFE = CompetenceFE.chercherCompetenceFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), comp.getIdCompetence());
-				compFE.supprimerCompetenceFE(getTransaction());
+				CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
+				getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
@@ -1417,6 +1422,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFEDao() == null) {
+			setCompetenceFEDao(new CompetenceFEDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -1469,16 +1480,27 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				EnumTypeCompetence.COMPORTEMENT.getValue());
 
 		if (getListeSavoirMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(), getFicheEmploiCourant(),
-					EnumTypeCompetence.SAVOIR.getCode().toString()));
+			// Recherche de tous les liens FicheEmploi / Competence
+			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), EnumTypeCompetence.SAVOIR.getCode());
+			setListeSavoirMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+					EnumTypeCompetence.SAVOIR.getCode(), liens));
 		}
 		if (getListeSavoirFaireMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-					getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString()));
+			// Recherche de tous les liens FicheEmploi / Competence
+			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+					EnumTypeCompetence.SAVOIR_FAIRE.getCode());
+			setListeSavoirFaireMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+					EnumTypeCompetence.SAVOIR_FAIRE.getCode(), liens));
 		}
 		if (getListeComportementMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-					getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
+			// Recherche de tous les liens FicheEmploi / Competence
+			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+					EnumTypeCompetence.COMPORTEMENT.getCode());
+			setListeComportementMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+					EnumTypeCompetence.COMPORTEMENT.getCode(), liens));
 		}
 
 		// on recupere les activites selectionnées dans l'ecran de selection
@@ -1488,7 +1510,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			for (int i = 0; i < listeCompSelect.size(); i++) {
 				Competence comp = (Competence) listeCompSelect.get(i);
 				if (comp != null) {
-					if (comp.getIdTypeCompetence().equals(savoir.getIdTypeCompetence().toString())) {
+					if (comp.getIdTypeCompetence().toString().equals(savoir.getIdTypeCompetence().toString())) {
 						// si c'est un savoir
 						if (getListeSavoirMulti() == null)
 							setListeSavoirMulti(new ArrayList<Competence>());
@@ -1501,7 +1523,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 							}
 						}
 
-					} else if (comp.getIdTypeCompetence().equals(savoirFaire.getIdTypeCompetence().toString())) {
+					} else if (comp.getIdTypeCompetence().toString()
+							.equals(savoirFaire.getIdTypeCompetence().toString())) {
 						// si c'est un savoir faire
 						if (getListeSavoirFaireMulti() == null)
 							setListeSavoirFaireMulti(new ArrayList<Competence>());
@@ -1514,7 +1537,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 							}
 						}
 
-					} else if (comp.getIdTypeCompetence().equals(comportement.getIdTypeCompetence().toString())) {
+					} else if (comp.getIdTypeCompetence().toString()
+							.equals(comportement.getIdTypeCompetence().toString())) {
 						// si c'est un comportement
 						if (getListeComportementMulti() == null)
 							setListeComportementMulti(new ArrayList<Competence>());
@@ -2794,12 +2818,25 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				setListeAutreAppellationMulti(getAutreAppellationEmploiDao().listerAutreAppellationEmploiAvecFE(
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
 				setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
-				setListeSavoirMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR.getCode().toString()));
-				setListeSavoirFaireMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString()));
-				setListeComportementMulti(Competence.listerCompetenceAvecFEEtTypeComp(getTransaction(),
-						getFicheEmploiCourant(), EnumTypeCompetence.COMPORTEMENT.getCode().toString()));
+
+				// Recherche de tous les liens FicheEmploi / Competence
+				ArrayList<CompetenceFE> liens1 = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						EnumTypeCompetence.SAVOIR.getCode());
+				setListeSavoirMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+						EnumTypeCompetence.SAVOIR.getCode(), liens1));
+				// Recherche de tous les liens FicheEmploi / Competence
+				ArrayList<CompetenceFE> liens2 = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						EnumTypeCompetence.SAVOIR_FAIRE.getCode());
+				setListeSavoirFaireMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+						EnumTypeCompetence.SAVOIR_FAIRE.getCode(), liens2));
+				// Recherche de tous les liens FicheEmploi / Competence
+				ArrayList<CompetenceFE> liens3 = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						EnumTypeCompetence.COMPORTEMENT.getCode());
+				setListeComportementMulti(getCompetenceDao().listerCompetenceAvecFEEtTypeComp(
+						EnumTypeCompetence.COMPORTEMENT.getCode(), liens3));
 				setListeCategorieMulti(getCategorieDao().listerCategorieAvecFE(
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), getCategorieFEDao()));
 				setListeCadresEmploiMulti(getCadreEmploiDao().listerCadreEmploiAvecFicheEmploi(getCadreEmploiFEDao(),
@@ -3466,23 +3503,26 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les Savoir
 			for (int i = 0; i < getListeSavoirMulti().size(); i++) {
 				Competence compSavoir = (Competence) getListeSavoirMulti().get(i);
-				CompetenceFE newCompSavoirFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
+				CompetenceFE newCompSavoirFE = new CompetenceFE(Integer.valueOf(ficheDupliquee.getIdFicheEmploi()),
 						compSavoir.getIdCompetence());
-				newCompSavoirFE.creerCompetenceFE(getTransaction());
+				getCompetenceFEDao().creerCompetenceFE(newCompSavoirFE.getIdFicheEmploi(),
+						newCompSavoirFE.getIdCompetence());
 			}
 			// Duplique les SavoirFaire
 			for (int i = 0; i < getListeSavoirFaireMulti().size(); i++) {
 				Competence compSavoirFaire = (Competence) getListeSavoirFaireMulti().get(i);
-				CompetenceFE newCompSavoirFaireFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
-						compSavoirFaire.getIdCompetence());
-				newCompSavoirFaireFE.creerCompetenceFE(getTransaction());
+				CompetenceFE newCompSavoirFaireFE = new CompetenceFE(
+						Integer.valueOf(ficheDupliquee.getIdFicheEmploi()), compSavoirFaire.getIdCompetence());
+				getCompetenceFEDao().creerCompetenceFE(newCompSavoirFaireFE.getIdFicheEmploi(),
+						newCompSavoirFaireFE.getIdCompetence());
 			}
 			// Duplique les Comportement
 			for (int i = 0; i < getListeComportementMulti().size(); i++) {
 				Competence compComportement = (Competence) getListeComportementMulti().get(i);
-				CompetenceFE newCompComportementFE = new CompetenceFE(ficheDupliquee.getIdFicheEmploi(),
-						compComportement.getIdCompetence());
-				newCompComportementFE.creerCompetenceFE(getTransaction());
+				CompetenceFE newCompComportementFE = new CompetenceFE(
+						Integer.valueOf(ficheDupliquee.getIdFicheEmploi()), compComportement.getIdCompetence());
+				getCompetenceFEDao().creerCompetenceFE(newCompComportementFE.getIdFicheEmploi(),
+						newCompComportementFE.getIdCompetence());
 			}
 			// Duplique les Categorie
 			for (int i = 0; i < getListeCategorieMulti().size(); i++) {
@@ -4336,5 +4376,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setFefpDao(FEFPDao fefpDao) {
 		this.fefpDao = fefpDao;
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
+	}
+
+	public CompetenceFEDao getCompetenceFEDao() {
+		return competenceFEDao;
+	}
+
+	public void setCompetenceFEDao(CompetenceFEDao competenceFEDao) {
+		this.competenceFEDao = competenceFEDao;
 	}
 }

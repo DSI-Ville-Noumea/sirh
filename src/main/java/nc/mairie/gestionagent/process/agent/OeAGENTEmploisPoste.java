@@ -31,6 +31,7 @@ import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
+import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
@@ -53,6 +54,8 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -149,6 +152,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
 	private BudgetDao budgetDao;
+	private CompetenceDao competenceDao;
+	private CompetenceFPDao competenceFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -285,6 +290,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getBudgetDao() == null) {
 			setBudgetDao(new BudgetDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFPDao() == null) {
+			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -509,7 +520,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				EnumTypeCompetence.COMPORTEMENT.getValue());
 
 		// Compétences
-		ArrayList<Competence> comp = Competence.listerCompetenceAvecFP(getTransaction(), getFichePosteCourant());
+		// Recherche de tous les liens FichePoste / Competence
+		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
+				Integer.valueOf(getFichePosteCourant().getIdFichePoste()));
+		ArrayList<Competence> comp = getCompetenceDao().listerCompetenceAvecFP(liens);
 		if (comp != null) {
 			setListeCompetence(comp);
 		} else {
@@ -522,13 +536,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		for (int j = 0; j < getListeCompetence().size(); j++) {
 			Competence c = (Competence) getListeCompetence().get(j);
-			if (savoir.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
+			if (savoir.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence().toString())) {
 				if (!getListeSavoir().contains(c))
 					getListeSavoir().add(c);
-			} else if (savoirFaire.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
+			} else if (savoirFaire.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence().toString())) {
 				if (!getListeSavoirFaire().contains(c))
 					getListeSavoirFaire().add(c);
-			} else if (comportement.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence())) {
+			} else if (comportement.getIdTypeCompetence().toString().equals(c.getIdTypeCompetence().toString())) {
 				if (!getListeComportementPro().contains(c))
 					getListeComportementPro().add(c);
 			}
@@ -2445,5 +2459,21 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setBudgetDao(BudgetDao budgetDao) {
 		this.budgetDao = budgetDao;
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
+	}
+
+	public CompetenceFPDao getCompetenceFPDao() {
+		return competenceFPDao;
+	}
+
+	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
+		this.competenceFPDao = competenceFPDao;
 	}
 }

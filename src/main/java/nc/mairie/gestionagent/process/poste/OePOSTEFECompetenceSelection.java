@@ -6,8 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.metier.poste.Competence;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
@@ -20,6 +25,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	private ArrayList<Competence> listeCompetences;
 	public String focus = null;
+	private CompetenceDao competenceDao;
 
 	/**
 	 * @return Returns the listeCompetences.
@@ -36,6 +42,14 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 		this.listeCompetences = listeCompetences;
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -45,7 +59,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	 */
 	@SuppressWarnings("unchecked")
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-
+		initialiseDao();
 		if (getListeCompetences() == null) {
 			ArrayList<Competence> xcludeListeSavoir = (ArrayList<Competence>) VariablesActivite.recuperer(this,
 					"LISTECOMPETENCESAVOIR");
@@ -56,16 +70,13 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 			ArrayList<Competence> aListe = new ArrayList<Competence>();
 
 			if (xcludeListeSavoir != null) {
-				aListe = Competence.listerCompetenceAvecType(getTransaction(), EnumTypeCompetence.SAVOIR.getCode()
-						.toString());
+				aListe = getCompetenceDao().listerCompetenceAvecType(EnumTypeCompetence.SAVOIR.getCode());
 				aListe = elim_doubure_competences(aListe, xcludeListeSavoir);
 			} else if (xcludeListeSavoirFaire != null) {
-				aListe = Competence.listerCompetenceAvecType(getTransaction(), EnumTypeCompetence.SAVOIR_FAIRE
-						.getCode().toString());
+				aListe = getCompetenceDao().listerCompetenceAvecType(EnumTypeCompetence.SAVOIR_FAIRE.getCode());
 				aListe = elim_doubure_competences(aListe, xcludeListeSavoirFaire);
 			} else if (xcludeListeComportement != null) {
-				aListe = Competence.listerCompetenceAvecType(getTransaction(), EnumTypeCompetence.COMPORTEMENT
-						.getCode().toString());
+				aListe = getCompetenceDao().listerCompetenceAvecType(EnumTypeCompetence.COMPORTEMENT.getCode());
 				aListe = elim_doubure_competences(aListe, xcludeListeComportement);
 			}
 
@@ -73,10 +84,10 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 			setListeCompetences(new ArrayList<Competence>());
 			for (int j = 0; j < aListe.size(); j++) {
 				Competence competence = (Competence) aListe.get(j);
-				Integer i = Integer.valueOf(competence.getIdCompetence());
+				Integer i = competence.getIdCompetence();
 				if (competence != null) {
 					getListeCompetences().add(competence);
-					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence());
+					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence().toString());
 					addZone(getNOM_ST_LIB_COMP(i), competence.getNomCompetence());
 				}
 			}
@@ -127,7 +138,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((Competence) l2.get(i)).getIdCompetence()).equals(((Competence) l1.get(j)).getIdCompetence()))
+					if ((((Competence) l2.get(i)).getIdCompetence().toString()).equals(((Competence) l1.get(j)).getIdCompetence().toString()))
 						l1.remove(j);
 				}
 			}
@@ -157,7 +168,7 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 		for (int j = 0; j < getListeCompetences().size(); j++) {
 			// on recupère la ligne concernée
 			Competence comp = (Competence) getListeCompetences().get(j);
-			Integer i = Integer.valueOf(comp.getIdCompetence());
+			Integer i = comp.getIdCompetence();
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listCompSelect.add(comp);
@@ -264,6 +275,14 @@ public class OePOSTEFECompetenceSelection extends BasicProcess {
 	 */
 	public String getVAL_CK_SELECT_LIGNE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE(i));
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
 	}
 
 }

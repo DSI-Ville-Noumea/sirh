@@ -38,6 +38,7 @@ import nc.mairie.metier.poste.ActiviteFP;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
 import nc.mairie.metier.poste.Competence;
+import nc.mairie.metier.poste.CompetenceFE;
 import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FEFP;
@@ -67,6 +68,9 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
@@ -201,12 +205,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private boolean afficherListeNivEt = false;
 	private boolean fpCouranteAffectee = false;
 	public HashMap<String, TreeHierarchy> hTree = null;
-	public HashMap<String, TypeAvantage> hashtypAv = null;
-	public HashMap<String, NatureAvantage> hashNatAv = null;
-	public HashMap<String, TypeDelegation> hashTypDel = null;
-	public HashMap<String, TypeRegIndemn> hashTypRegIndemn = null;
+	public HashMap<Integer, TypeAvantage> hashtypAv = null;
+	public HashMap<Integer, NatureAvantage> hashNatAv = null;
+	public HashMap<Integer, TypeDelegation> hashTypDel = null;
+	public HashMap<Integer, TypeRegIndemn> hashTypRegIndemn = null;
 	private HashMap<String, String> hashOrigineActivite;
-	private HashMap<String, String> hashOrigineCompetence;
+	private HashMap<Integer, String> hashOrigineCompetence;
 	private FichePoste fichePosteCourante;
 	private Affectation affectationCourante;
 	private AgentNW agentCourant;
@@ -253,6 +257,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private BudgetDao budgetDao;
 	private FEFPDao fefpDao;
 	private NFADao nfaDao;
+	private CompetenceDao competenceDao;
+	private CompetenceFPDao competenceFPDao;
+	private CompetenceFEDao competenceFEDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -532,6 +539,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getNfaDao() == null) {
 			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFPDao() == null) {
+			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFEDao() == null) {
+			setCompetenceFEDao(new CompetenceFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -972,13 +988,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les competences de la FDP
-			setListeCompFP(CompetenceFP.listerCompetenceFPAvecFP(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste()));
+			setListeCompFP(getCompetenceFPDao().listerCompetenceFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 			for (CompetenceFP compFP : getListeCompFP()) {
 				trouve = false;
-				Competence competence = Competence.chercherCompetence(getTransaction(), compFP.getIdCompetence());
+				Competence competence = getCompetenceDao().chercherCompetence(compFP.getIdCompetence());
 				for (Competence tteComp : getListeToutesComp()) {
-					if (tteComp.getIdCompetence().equals(competence.getIdCompetence())) {
+					if (tteComp.getIdCompetence() == competence.getIdCompetence()) {
 						trouve = true;
 						break;
 					}
@@ -995,11 +1011,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// on recupere les competences des differentes FE
 		trouve = false;
 		if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
-			setListeCompFEP(Competence.listerCompetenceAvecFE(getTransaction(), getEmploiPrimaire()));
+			// Recherche de tous les liens FicheEmploi / Competence
+			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFE(
+					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+			setListeCompFEP(getCompetenceDao().listerCompetenceAvecFE(liens));
 			for (Competence compFP : getListeCompFEP()) {
 				trouve = false;
 				for (Competence tteComp : getListeToutesComp()) {
-					if (tteComp.getIdCompetence().equals(compFP.getIdCompetence())) {
+					if (tteComp.getIdCompetence() == compFP.getIdCompetence()) {
 						trouve = true;
 						break;
 					}
@@ -1015,11 +1034,14 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
 			trouve = false;
-			setListeCompFES(Competence.listerCompetenceAvecFE(getTransaction(), getEmploiSecondaire()));
+			// Recherche de tous les liens FicheEmploi / Competence
+			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFE(
+					Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+			setListeCompFES(getCompetenceDao().listerCompetenceAvecFE(liens));
 			for (Competence compFP : getListeCompFES()) {
 				trouve = false;
 				for (Competence tteActi : getListeToutesComp()) {
-					if (tteActi.getIdCompetence().equals(compFP.getIdCompetence())) {
+					if (tteActi.getIdCompetence() == compFP.getIdCompetence()) {
 						trouve = true;
 						break;
 					}
@@ -1059,12 +1081,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		for (int i = 0; i < getListeToutesComp().size(); i++) {
 			dejaCoche = false;
 			Competence competence = (Competence) getListeToutesComp().get(i);
-			TypeCompetence typeComp = getTypeCompetenceDao().chercherTypeCompetence(
-					Integer.valueOf(competence.getIdTypeCompetence()));
+			TypeCompetence typeComp = getTypeCompetenceDao().chercherTypeCompetence(competence.getIdTypeCompetence());
 			String origineComp = (String) getHashOrigineCompetence().get(competence.getIdCompetence());
 
 			if (competence != null) {
-				addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence());
+				addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence().toString());
 				addZone(getNOM_ST_LIB_COMP(i), competence.getNomCompetence());
 				addZone(getNOM_ST_TYPE_COMP(i), typeComp.getLibTypeCompetence());
 				addZone(getNOM_ST_LIB_ORIGINE_COMP(i), origineComp);
@@ -1075,9 +1096,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// de la FDP
 					for (int j = 0; j < getListeCompFP().size(); j++) {
 						CompetenceFP compFP = (CompetenceFP) getListeCompFP().get(j);
-						Competence competenceFP = Competence.chercherCompetence(getTransaction(),
+						Competence competenceFP = getCompetenceDao().chercherCompetence(
 								compFP.getIdCompetence());
-						if (competenceFP.equals(competence)) {
+						if (competenceFP.getIdCompetence().toString().equals(competence.getIdCompetence().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_COMP(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -1095,7 +1116,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// ajoutées à la FDP
 					for (int j = 0; j < getListeAjoutCompFP().size(); j++) {
 						Competence competenceFP = (Competence) getListeAjoutCompFP().get(j);
-						if (competenceFP.equals(competence)) {
+						if (competenceFP.getIdCompetence().toString().equals(competence.getIdCompetence().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_COMP(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -1145,9 +1166,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 					TypeAvantage typAv = getTypeAvantageDao().chercherTypeAvantage(aAvNat.getIdTypeAvantage());
 					NatureAvantage natAv = aAvNat.getIdNatureAvantage() != null ? getNatureAvantageDao()
 							.chercherNatureAvantage(aAvNat.getIdNatureAvantage()) : null;
-					getHashtypAv().put(typAv.getIdTypeAvantage().toString(), typAv);
+					getHashtypAv().put(typAv.getIdTypeAvantage(), typAv);
 					if (natAv != null && natAv.getIdNatureAvantage() != null)
-						getHashNatAv().put(natAv.getIdNatureAvantage().toString(), natAv);
+						getHashNatAv().put(natAv.getIdNatureAvantage(), natAv);
 				}
 			}
 		}
@@ -1169,7 +1190,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				Delegation aDel = (Delegation) list.next();
 				if (aDel != null) {
 					TypeDelegation typDel = getTypeDelegationDao().chercherTypeDelegation(aDel.getIdTypeDelegation());
-					getHashTypDel().put(typDel.getIdTypeDelegation().toString(), typDel);
+					getHashTypDel().put(typDel.getIdTypeDelegation(), typDel);
 				}
 			}
 		}
@@ -1191,7 +1212,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				RegimeIndemnitaire aReg = (RegimeIndemnitaire) list.next();
 				if (aReg != null) {
 					TypeRegIndemn typReg = getTypeRegIndemnDao().chercherTypeRegIndemn(aReg.getIdTypeRegIndemn());
-					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn().toString(), typReg);
+					getHashTypRegIndemn().put(typReg.getIdTypeRegIndemn(), typReg);
 				}
 			}
 		}
@@ -1226,12 +1247,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeAvantage() != null) {
 			for (AvantageNature aAvNat : getListeAvantage()) {
 				addZone(getNOM_ST_AV_TYPE(indiceAvantage),
-						getHashtypAv().get(aAvNat.getIdTypeAvantage().toString()).getLibTypeAvantage()
-								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashtypAv().get(
-								aAvNat.getIdTypeAvantage().toString()).getLibTypeAvantage());
+						getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+								: getHashtypAv().get(aAvNat.getIdTypeAvantage()).getLibTypeAvantage());
 				addZone(getNOM_ST_AV_MNT(indiceAvantage), aAvNat.getMontant().toString());
 				addZone(getNOM_ST_AV_NATURE(indiceAvantage), aAvNat.getIdNatureAvantage() == null ? "&nbsp;"
-						: getHashNatAv().get(aAvNat.getIdNatureAvantage().toString()).getLibNatureAvantage());
+						: getHashNatAv().get(aAvNat.getIdNatureAvantage()).getLibNatureAvantage());
 				indiceAvantage++;
 			}
 		}
@@ -1241,9 +1261,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeDelegation() != null) {
 			for (Delegation aDel : getListeDelegation()) {
 				addZone(getNOM_ST_DEL_TYPE(indiceDelegation),
-						getHashTypDel().get(aDel.getIdTypeDelegation().toString()).getLibTypeDelegation()
-								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(
-								aDel.getIdTypeDelegation().toString()).getLibTypeDelegation());
+						getHashTypDel().get(aDel.getIdTypeDelegation()).getLibTypeDelegation()
+								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypDel().get(aDel.getIdTypeDelegation())
+								.getLibTypeDelegation());
 				addZone(getNOM_ST_DEL_COMMENTAIRE(indiceDelegation),
 						aDel.getLibDelegation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : aDel.getLibDelegation());
 				indiceDelegation++;
@@ -1255,9 +1275,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getListeRegime() != null) {
 			for (RegimeIndemnitaire aReg : getListeRegime()) {
 				addZone(getNOM_ST_REG_TYPE(indiceRegime),
-						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn().toString()).getLibTypeRegIndemn()
+						getHashTypRegIndemn().get(aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn()
 								.equals(Const.CHAINE_VIDE) ? "&nbsp;" : getHashTypRegIndemn().get(
-								aReg.getIdTypeRegIndemn().toString()).getLibTypeRegIndemn());
+								aReg.getIdTypeRegIndemn()).getLibTypeRegIndemn());
 				addZone(getNOM_ST_REG_FORFAIT(indiceRegime), aReg.getForfait().toString());
 				addZone(getNOM_ST_REG_NB_PTS(indiceRegime), aReg.getNombrePoints().toString());
 				indiceRegime++;
@@ -2120,13 +2140,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 			if (getVAL_CK_SELECT_LIGNE_COMP(i).equals(getCHECKED_ON())) {
 				// on regarde de quelle liste elle faisait partie
 				for (Competence compFP : getListeCompFEP()) {
-					if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
-								getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-							comFP.creerCompetenceFP(getTransaction());
+					if (comp.getIdCompetence().toString().equals(compFP.getIdCompetence().toString())) {
+						try {
+							CompetenceFP comFP = getCompetenceFPDao().chercherCompetenceFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), comp.getIdCompetence());
+							getCompetenceFPDao()
+									.supprimerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+							getCompetenceFPDao().creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+						} catch (Exception e) {
+							CompetenceFP comFP = new CompetenceFP(Integer.valueOf(getFichePosteCourante()
+									.getIdFichePoste()), comp.getIdCompetence());
+							getCompetenceFPDao().creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								getTransaction().declarerErreur(
@@ -2135,19 +2159,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 								return false;
 							}
 							break;
-						} else {
-							comFP.modifierCompetenceFP(getTransaction());
 						}
 					}
 				}
 				for (Competence compFP : getListeCompFES()) {
-					if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-						CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
-								getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-							comFP.creerCompetenceFP(getTransaction());
+					if (comp.getIdCompetence().toString().equals(compFP.getIdCompetence().toString())) {
+						try {
+							CompetenceFP comFP = getCompetenceFPDao().chercherCompetenceFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), comp.getIdCompetence());
+							getCompetenceFPDao()
+									.supprimerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+							getCompetenceFPDao().creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+						} catch (Exception e) {
+							CompetenceFP comFP = new CompetenceFP(Integer.valueOf(getFichePosteCourante()
+									.getIdFichePoste()), comp.getIdCompetence());
+							getCompetenceFPDao().creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								getTransaction().declarerErreur(
@@ -2156,21 +2182,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 								return false;
 							}
 							break;
-						} else {
-							comFP.modifierCompetenceFP(getTransaction());
 						}
 					}
 				}
 				if (getListeCompFP() != null) {
 					for (CompetenceFP compFP : getListeCompFP()) {
-						if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
-									getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(),
+						if (comp.getIdCompetence().toString().equals(compFP.getIdCompetence().toString())) {
+							try {
+								CompetenceFP comFP = getCompetenceFPDao().chercherCompetenceFP(
+										Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
 										comp.getIdCompetence());
-								comFP.creerCompetenceFP(getTransaction());
+								getCompetenceFPDao().supprimerCompetenceFP(comFP.getIdFichePoste(),
+										comFP.getIdCompetence());
+								getCompetenceFPDao()
+										.creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+							} catch (Exception e) {
+								CompetenceFP comFP = new CompetenceFP(Integer.valueOf(getFichePosteCourante()
+										.getIdFichePoste()), comp.getIdCompetence());
+								getCompetenceFPDao()
+										.creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
 									getTransaction().declarerErreur(
@@ -2179,8 +2209,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 									return false;
 								}
 								break;
-							} else {
-								comFP.modifierCompetenceFP(getTransaction());
 							}
 						}
 					}
@@ -2188,14 +2216,22 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				if (getListeAjoutCompFP() != null) {
 					for (Competence compFP : getListeAjoutCompFP()) {
-						if (comp.getIdCompetence().equals(compFP.getIdCompetence())) {
-							CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(),
-									getFichePosteCourante().getIdFichePoste(), comp.getIdCompetence());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-								comFP = new CompetenceFP(getFichePosteCourante().getIdFichePoste(),
+						if (comp.getIdCompetence().toString().equals(compFP.getIdCompetence().toString())) {
+							try {
+								CompetenceFP comFP = getCompetenceFPDao().chercherCompetenceFP(
+										Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
 										comp.getIdCompetence());
-								comFP.creerCompetenceFP(getTransaction());
+
+								getCompetenceFPDao().supprimerCompetenceFP(comFP.getIdFichePoste(),
+										comFP.getIdCompetence());
+								getCompetenceFPDao()
+										.creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+							} catch (Exception e) {
+
+								CompetenceFP comFP = new CompetenceFP(Integer.valueOf(getFichePosteCourante()
+										.getIdFichePoste()), comp.getIdCompetence());
+								getCompetenceFPDao()
+										.creerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
 									getTransaction().declarerErreur(
@@ -2204,8 +2240,6 @@ public class OePOSTEFichePoste extends BasicProcess {
 									return false;
 								}
 								break;
-							} else {
-								comFP.modifierCompetenceFP(getTransaction());
 							}
 						}
 					}
@@ -2213,12 +2247,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 
 			} else {
-				CompetenceFP comFP = CompetenceFP.chercherCompetenceFP(getTransaction(), getFichePosteCourante()
-						.getIdFichePoste(), comp.getIdCompetence());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					comFP.supprimerCompetenceFP(getTransaction());
+				try {
+					CompetenceFP comFP = getCompetenceFPDao().chercherCompetenceFP(
+							Integer.valueOf(getFichePosteCourante().getIdFichePoste()), comp.getIdCompetence());
+					getCompetenceFPDao().supprimerCompetenceFP(comFP.getIdFichePoste(), comFP.getIdCompetence());
+				} catch (Exception e) {
+
 				}
 
 			}
@@ -3669,7 +3703,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// FDP
 					for (ActiviteFP actiFP : getListeActiFP()) {
 						Activite activiteFP = Activite.chercherActivite(getTransaction(), actiFP.getIdActivite());
-						if (activiteFP.equals(activite)) {
+						if (activiteFP.getIdActivite().equals(activite.getIdActivite())) {
 							addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -3686,7 +3720,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// si l'activite fait partie de la liste des activites
 					// ajoutées à la FDP
 					for (Activite activiteFP : getListeAjoutActiFP()) {
-						if (activiteFP.equals(activite)) {
+						if (activiteFP.getIdActivite().equals(activite.getIdActivite())) {
 							addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -3999,7 +4033,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompSavoir = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR.getCode().toString())) {
+				if (c.getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR.getCode().toString())) {
 					listeToutesCompSavoir.add(c);
 				}
 			}
@@ -4031,7 +4065,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompSavoirFaire = new ArrayList<Competence>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString())) {
+				if (c.getIdTypeCompetence().toString().equals(EnumTypeCompetence.SAVOIR_FAIRE.getCode().toString())) {
 					listeToutesCompSavoirFaire.add(c);
 				}
 			}
@@ -4063,7 +4097,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<Competence> listeToutesCompComportement = new ArrayList<>();
 		if (getListeToutesComp() != null) {
 			for (Competence c : getListeToutesComp()) {
-				if (c.getIdTypeCompetence().equals(EnumTypeCompetence.COMPORTEMENT.getCode().toString())) {
+				if (c.getIdTypeCompetence().toString().equals(EnumTypeCompetence.COMPORTEMENT.getCode().toString())) {
 					listeToutesCompComportement.add(c);
 				}
 			}
@@ -5373,7 +5407,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return hashNatAv
 	 */
-	public HashMap<String, NatureAvantage> getHashNatAv() {
+	public HashMap<Integer, NatureAvantage> getHashNatAv() {
 		if (hashNatAv == null) {
 			hashNatAv = new HashMap<>();
 		}
@@ -5386,7 +5420,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * @param hashNatAv
 	 *            hashNatAv à définir
 	 */
-	public void setHashNatAv(HashMap<String, NatureAvantage> hashNatAv) {
+	public void setHashNatAv(HashMap<Integer, NatureAvantage> hashNatAv) {
 		this.hashNatAv = hashNatAv;
 	}
 
@@ -5395,7 +5429,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return hashtypAv
 	 */
-	public HashMap<String, TypeAvantage> getHashtypAv() {
+	public HashMap<Integer, TypeAvantage> getHashtypAv() {
 		if (hashtypAv == null) {
 			hashtypAv = new HashMap<>();
 		}
@@ -5407,7 +5441,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param hashtypAv
 	 */
-	public void setHashtypAv(HashMap<String, TypeAvantage> hashtypAv) {
+	public void setHashtypAv(HashMap<Integer, TypeAvantage> hashtypAv) {
 		this.hashtypAv = hashtypAv;
 	}
 
@@ -5416,7 +5450,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return hashTypDel
 	 */
-	public HashMap<String, TypeDelegation> getHashTypDel() {
+	public HashMap<Integer, TypeDelegation> getHashTypDel() {
 		if (hashTypDel == null) {
 			hashTypDel = new HashMap<>();
 		}
@@ -5428,7 +5462,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param hashTypDel
 	 */
-	public void setHashTypDel(HashMap<String, TypeDelegation> hashTypDel) {
+	public void setHashTypDel(HashMap<Integer, TypeDelegation> hashTypDel) {
 		this.hashTypDel = hashTypDel;
 	}
 
@@ -5437,7 +5471,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return hashTypRegIndemn
 	 */
-	public HashMap<String, TypeRegIndemn> getHashTypRegIndemn() {
+	public HashMap<Integer, TypeRegIndemn> getHashTypRegIndemn() {
 		if (hashTypRegIndemn == null) {
 			hashTypRegIndemn = new HashMap<>();
 		}
@@ -5449,7 +5483,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param hashTypRegIndemn
 	 */
-	public void setHashTypRegIndemn(HashMap<String, TypeRegIndemn> hashTypRegIndemn) {
+	public void setHashTypRegIndemn(HashMap<Integer, TypeRegIndemn> hashTypRegIndemn) {
 		this.hashTypRegIndemn = hashTypRegIndemn;
 	}
 
@@ -6097,7 +6131,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return getZone(getNOM_ST_LIB_ORIGINE_COMP(i));
 	}
 
-	private HashMap<String, String> getHashOrigineCompetence() {
+	private HashMap<Integer, String> getHashOrigineCompetence() {
 		if (hashOrigineCompetence == null) {
 			hashOrigineCompetence = new HashMap<>();
 		}
@@ -6806,5 +6840,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setNfaDao(NFADao nfaDao) {
 		this.nfaDao = nfaDao;
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
+	}
+
+	public CompetenceFPDao getCompetenceFPDao() {
+		return competenceFPDao;
+	}
+
+	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
+		this.competenceFPDao = competenceFPDao;
+	}
+
+	public CompetenceFEDao getCompetenceFEDao() {
+		return competenceFEDao;
+	}
+
+	public void setCompetenceFEDao(CompetenceFEDao competenceFEDao) {
+		this.competenceFEDao = competenceFEDao;
 	}
 }

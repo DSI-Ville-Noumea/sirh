@@ -49,7 +49,7 @@ document.formu.elements[nom].focus();
 				if (process.getListeCompetences()!=null){
 					for (int i = 0;i<process.getListeCompetences().size();i++){
 						Competence comp = process.getListeCompetences().get(i);
-						Integer indiceComp = Integer.valueOf(comp.getIdCompetence());
+						Integer indiceComp = comp.getIdCompetence();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_COMP(indiceComp)%></td>

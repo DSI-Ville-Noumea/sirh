@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.poste.Competence;
-import nc.mairie.metier.poste.CompetenceFE;
-import nc.mairie.metier.poste.CompetenceFP;
 import nc.mairie.metier.referentiel.TypeCompetence;
+import nc.mairie.spring.dao.metier.poste.CompetenceDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
+import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -40,6 +41,9 @@ public class OePOSTEFECompetence extends BasicProcess {
 	public String focus = null;
 
 	private TypeCompetenceDao typeCompetenceDao;
+	private CompetenceDao competenceDao;
+	private CompetenceFPDao competenceFPDao;
+	private CompetenceFEDao competenceFEDao;
 
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
@@ -85,7 +89,7 @@ public class OePOSTEFECompetence extends BasicProcess {
 		for (int j = 0; j < getListeCompetence().size(); j++) {
 			// on recupère la ligne concernée
 			comp = (Competence) getListeCompetence().get(j);
-			Integer i = Integer.valueOf(comp.getIdCompetence());
+			Integer i = comp.getIdCompetence();
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
@@ -126,7 +130,7 @@ public class OePOSTEFECompetence extends BasicProcess {
 		for (int j = 0; j < getListeCompetence().size(); j++) {
 			// on recupère la ligne concernée
 			comp = (Competence) getListeCompetence().get(j);
-			Integer i = Integer.valueOf(comp.getIdCompetence());
+			Integer i = comp.getIdCompetence();
 			// si l'etat de la ligne n'est pas deja 'affecte' et que la colonne
 			// affecté est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
@@ -215,6 +219,15 @@ public class OePOSTEFECompetence extends BasicProcess {
 		if (getTypeCompetenceDao() == null) {
 			setTypeCompetenceDao(new TypeCompetenceDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getCompetenceDao() == null) {
+			setCompetenceDao(new CompetenceDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFEDao() == null) {
+			setCompetenceFEDao(new CompetenceFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getCompetenceFPDao() == null) {
+			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -264,14 +277,14 @@ public class OePOSTEFECompetence extends BasicProcess {
 				setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetenceAvecLibelle(
 						EnumTypeCompetence.COMPORTEMENT.getValue()));
 
-			setListeCompetence(Competence.listerCompetenceAvecType(getTransaction(), getTypeCompetenceCourant()
-					.getIdTypeCompetence().toString()));
+			setListeCompetence(getCompetenceDao().listerCompetenceAvecType(
+					getTypeCompetenceCourant().getIdTypeCompetence()));
 
 			for (int j = 0; j < getListeCompetence().size(); j++) {
 				Competence competence = (Competence) getListeCompetence().get(j);
-				Integer i = Integer.valueOf(competence.getIdCompetence());
+				Integer i = competence.getIdCompetence();
 				if (competence != null) {
-					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence());
+					addZone(getNOM_ST_ID_COMP(i), competence.getIdCompetence().toString());
 					addZone(getNOM_ST_LIB_COMP(i), competence.getNomCompetence());
 				}
 			}
@@ -327,16 +340,18 @@ public class OePOSTEFECompetence extends BasicProcess {
 		String messageInf = Const.CHAINE_VIDE;
 		if (getVAL_ST_ACTION() != null && getVAL_ST_ACTION() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION().equals(ACTION_AJOUT)) {
-				setCompetenceCourant(new Competence(getTypeCompetenceCourant().getIdTypeCompetence().toString(),
+				setCompetenceCourant(new Competence(getTypeCompetenceCourant().getIdTypeCompetence(),
 						getVAL_EF_DESC_COMPETENCE()));
-				getCompetenceCourant().creerCompetence(getTransaction());
+				getCompetenceDao().creerCompetence(getCompetenceCourant().getIdTypeCompetence(),
+						getCompetenceCourant().getNomCompetence());
 				messageInf = MessageUtils.getMessage("INF109", "créée", getCompetenceCourant().getNomCompetence());
 			} else if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				getCompetenceCourant().setNomCompetence(getVAL_EF_DESC_COMPETENCE());
-				getCompetenceCourant().modifierCompetence(getTransaction());
+				getCompetenceDao().modifierCompetence(getCompetenceCourant().getIdCompetence(),
+						getCompetenceCourant().getIdTypeCompetence(), getCompetenceCourant().getNomCompetence());
 				messageInf = MessageUtils.getMessage("INF109", "modifiée", getCompetenceCourant().getNomCompetence());
 			} else if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
-				getCompetenceCourant().supprimerCompetence(getTransaction());
+				getCompetenceDao().supprimerCompetence(getCompetenceCourant().getIdCompetence());
 				messageInf = MessageUtils.getMessage("INF109", "supprimée", getCompetenceCourant().getNomCompetence());
 				setCompetenceCourant(null);
 			}
@@ -379,7 +394,8 @@ public class OePOSTEFECompetence extends BasicProcess {
 		// poste
 		// **********************************************************************
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)
-				&& CompetenceFE.listerCompetenceFEAvecCompetence(getTransaction(), getCompetenceCourant()).size() > 0) {
+				&& getCompetenceFEDao().listerCompetenceFEAvecCompetence(getCompetenceCourant().getIdCompetence())
+						.size() > 0) {
 			// "ERR120",
 			// "Impossible de supprimer @ actuellement utilisée par @."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR120", "cette compétence", "une fiche emploi"));
@@ -387,7 +403,8 @@ public class OePOSTEFECompetence extends BasicProcess {
 			return false;
 		}
 		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)
-				&& CompetenceFP.listerCompetenceFPAvecCompetence(getTransaction(), getCompetenceCourant()).size() > 0) {
+				&& getCompetenceFPDao().listerCompetenceFPAvecCompetence(getCompetenceCourant().getIdCompetence())
+						.size() > 0) {
 			// "ERR120",
 			// "Impossible de supprimer @ actuellement utilisée par @."
 			getTransaction()
@@ -647,5 +664,29 @@ public class OePOSTEFECompetence extends BasicProcess {
 
 	public void setTypeCompetenceDao(TypeCompetenceDao typeCompetenceDao) {
 		this.typeCompetenceDao = typeCompetenceDao;
+	}
+
+	public CompetenceDao getCompetenceDao() {
+		return competenceDao;
+	}
+
+	public void setCompetenceDao(CompetenceDao competenceDao) {
+		this.competenceDao = competenceDao;
+	}
+
+	public CompetenceFPDao getCompetenceFPDao() {
+		return competenceFPDao;
+	}
+
+	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
+		this.competenceFPDao = competenceFPDao;
+	}
+
+	public CompetenceFEDao getCompetenceFEDao() {
+		return competenceFEDao;
+	}
+
+	public void setCompetenceFEDao(CompetenceFEDao competenceFEDao) {
+		this.competenceFEDao = competenceFEDao;
 	}
 }
