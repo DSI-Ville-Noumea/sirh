@@ -68,6 +68,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
+import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -250,6 +251,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private StatutFPDao statutFPDao;
 	private NiveauEtudeFPDao niveauEtudeFPDao;
 	private BudgetDao budgetDao;
+	private FEFPDao fefpDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -424,8 +426,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 		} else {
 			if (getEmploiPrimaire() == null && getFichePosteCourante() != null
 					&& getFichePosteCourante().getIdFichePoste() != null) {
+
+				// Recherche de tous les liens FicheEmploi / FichePoste
+				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(
+						Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 				setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-						getFichePosteCourante(), true));
+						getFichePosteCourante(), true, liens));
 				afficheFEP();
 			}
 		}
@@ -519,6 +525,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getBudgetDao() == null) {
 			setBudgetDao(new BudgetDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFefpDao() == null) {
+			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1889,33 +1898,46 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	private boolean saveJoin(HttpServletRequest request) throws Exception {
+
+		// Recherche de tous les liens FicheEmploi / FichePoste
+		ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(
+				Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 		// Sauvegarde des fiche emploi primaire et secondaire
 		FicheEmploi emploiPrimaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-				getFichePosteCourante(), true);
+				getFichePosteCourante(), true, liens);
 		if (emploiPrimaireTest == null) {
-			FEFP fefpPrimaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiPrimaire()
-					.getIdFicheEmploi(), true);
-			fefpPrimaire.creerFEFP(getTransaction());
+			FEFP fefpPrimaire = new FEFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
+					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()), true);
+			getFefpDao().creerFEFP(fefpPrimaire.getIdFicheEmploi(), fefpPrimaire.getIdFichePoste(),
+					fefpPrimaire.isFePrimaire());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR976", "La liaison FicheEmploi-FichePoste"));
 				return false;
 			}
 		} else {
-			FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste(), true);
+			FEFP ancienLien = getFefpDao().chercherFEFPAvecNumFPPrimaire(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste()), true);
+			getFefpDao().supprimerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
+					ancienLien.isFePrimaire());
 			ancienLien.setFePrimaire(true);
-			ancienLien.setIdFicheEmploi(getEmploiPrimaire().getIdFicheEmploi());
-			ancienLien.modifierFEFP(getTransaction());
+			ancienLien.setIdFicheEmploi(Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+			getFefpDao().creerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
+					ancienLien.isFePrimaire());
 		}
 
 		if (getEmploiSecondaire() != null) {
+
+			// Recherche de tous les liens FicheEmploi / FichePoste
+			ArrayList<FEFP> liensA = getFefpDao().listerFEFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false);
+					getFichePosteCourante(), false, liensA);
 			if (emploiSecondaireTest == null) {
-				FEFP fefpSecondaire = new FEFP(getFichePosteCourante().getIdFichePoste(), getEmploiSecondaire()
-						.getIdFicheEmploi(), false);
-				fefpSecondaire.creerFEFP(getTransaction());
+				FEFP fefpSecondaire = new FEFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
+						Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()), false);
+				getFefpDao().creerFEFP(fefpSecondaire.getIdFicheEmploi(), fefpSecondaire.getIdFichePoste(),
+						fefpSecondaire.isFePrimaire());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					getTransaction().declarerErreur(
@@ -1924,21 +1946,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			} else {
 				// on modifie le lien avec le num FE secondaire
-				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
-						.getIdFichePoste(), false);
+				FEFP ancienLien = getFefpDao().chercherFEFPAvecNumFPPrimaire(
+						Integer.valueOf(getFichePosteCourante().getIdFichePoste()), false);
+				getFefpDao().supprimerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
+						ancienLien.isFePrimaire());
 				ancienLien.setFePrimaire(false);
-				ancienLien.setIdFicheEmploi(getEmploiSecondaire().getIdFicheEmploi());
-				ancienLien.modifierFEFP(getTransaction());
+				ancienLien.setIdFicheEmploi(Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+				getFefpDao().creerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
+						ancienLien.isFePrimaire());
 			}
 		} else {
+
+			// Recherche de tous les liens FicheEmploi / FichePoste
+			ArrayList<FEFP> liensB = getFefpDao().listerFEFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			// on supprime le lien eventuel
 			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false);
+					getFichePosteCourante(), false, liensB);
 			if (emploiSecondaireTest != null) {
 				// on modifie le lien avec le num FE secondaire
-				FEFP ancienLien = FEFP.chercherFEFPAvecNumFPPrimaire(getTransaction(), getFichePosteCourante()
-						.getIdFichePoste(), false);
-				ancienLien.supprimerFEFP(getTransaction());
+				FEFP ancienLien = getFefpDao().chercherFEFPAvecNumFPPrimaire(
+						Integer.valueOf(getFichePosteCourante().getIdFichePoste()), false);
+				getFefpDao().supprimerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
+						ancienLien.isFePrimaire());
 			}
 		}
 
@@ -3459,11 +3489,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (fichePosteCourante != null && fichePosteCourante.getIdFichePoste() != null) {
 			// Vérifie l'affectation
 			setFpCouranteAffectee(getFichePosteCourante().estAffectee(getTransaction()));
+
+			// Recherche de tous les liens FicheEmploi / FichePoste
+			ArrayList<FEFP> liens1 = getFefpDao().listerFEFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			// Init fiches emploi
 			setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(),
-					true));
+					true, liens1));
+
+			// Recherche de tous les liens FicheEmploi / FichePoste
+			ArrayList<FEFP> liens2 = getFefpDao().listerFEFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			setEmploiSecondaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false));
+					getFichePosteCourante(), false, liens2));
 
 			// Init Service
 			if (getFichePosteCourante().getIdServi() != null && getFichePosteCourante().getIdServi().length() != 0) {
@@ -6747,5 +6785,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setBudgetDao(BudgetDao budgetDao) {
 		this.budgetDao = budgetDao;
+	}
+
+	public FEFPDao getFefpDao() {
+		return fefpDao;
+	}
+
+	public void setFefpDao(FEFPDao fefpDao) {
+		this.fefpDao = fefpDao;
 	}
 }

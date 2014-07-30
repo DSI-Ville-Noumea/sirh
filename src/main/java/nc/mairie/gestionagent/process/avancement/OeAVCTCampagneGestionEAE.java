@@ -52,6 +52,7 @@ import nc.mairie.metier.poste.Activite;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.EntiteGeo;
+import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
@@ -81,6 +82,7 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
+import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -174,6 +176,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private AvancementDetachesDao avancementDetachesDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private TitrePosteDao titrePosteDao;
+	private FEFPDao fefpDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -863,6 +866,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFefpDao() == null) {
+			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1878,7 +1884,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			Service section = Service.getSection(getTransaction(), fpSecondaire.getIdServi());
 			fichePosteEae.setSectionService(section != null ? section.getLibService() : null);
 			// pour l'emploi
-			FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpSecondaire, false);
+
+			// Recherche de tous les liens FicheEmploi / FichePoste
+			ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpSecondaire.getIdFichePoste()));
+			FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpSecondaire, false,liens);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			}
@@ -2093,7 +2102,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				Service section = Service.getSection(getTransaction(), fpPrincipale.getIdServi());
 				fpModif.setSectionService(section != null ? section.getLibService() : null);
 				// pour l'emploi
-				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true);
+
+				// Recherche de tous les liens FicheEmploi / FichePoste
+				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpPrincipale.getIdFichePoste()));
+				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true,liens);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -4100,5 +4112,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public FEFPDao getFefpDao() {
+		return fefpDao;
+	}
+
+	public void setFefpDao(FEFPDao fefpDao) {
+		this.fefpDao = fefpDao;
 	}
 }

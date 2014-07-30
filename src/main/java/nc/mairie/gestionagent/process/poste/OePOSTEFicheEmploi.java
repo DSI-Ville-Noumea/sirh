@@ -36,6 +36,7 @@ import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
 import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
+import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFEDao;
 import nc.mairie.spring.dao.metier.referentiel.NiveauEtudeDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -144,6 +145,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private NiveauEtudeDao niveauEtudeDao;
 	private NiveauEtudeFEDao niveauEtudeFEDao;
 	private DiplomeFEDao diplomeFEDao;
+	private FEFPDao fefpDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -877,10 +879,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		// Si suppression
 		if (isSuppression()) {
 			if (isSuppressionLienFE_FP()) {
-				ArrayList<FEFP> lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
+				ArrayList<FEFP> lienFE_FP = getFefpDao().listerFEFPAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
 				for (int i = 0; i < lienFE_FP.size(); i++) {
 					FEFP feFp = (FEFP) lienFE_FP.get(i);
-					feFp.supprimerFEFP(getTransaction());
+					getFefpDao().supprimerFEFP(feFp.getIdFicheEmploi(), feFp.getIdFichePoste(), feFp.isFePrimaire());
 				}
 			}
 			if (suppressionFicheEmploiEtLien(getFicheEmploiCourant(), getTransaction())) {
@@ -1410,6 +1413,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getDiplomeFEDao() == null) {
 			setDiplomeFEDao(new DiplomeFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFefpDao() == null) {
+			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -3803,7 +3809,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		// RG_PE_FE_A03
 		if (getFicheEmploiCourant() != null && getFicheEmploiCourant().getIdFicheEmploi() != null) {
 			setSuppression(true);
-			ArrayList<FEFP> lienFE_FP = FEFP.listerFEFPAvecFE(getTransaction(), getFicheEmploiCourant());
+			ArrayList<FEFP> lienFE_FP = getFefpDao().listerFEFPAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
 			if (lienFE_FP.size() > 0) {
 				getTransaction().declarerErreur(
 						MessageUtils.getMessage("INF105", getFicheEmploiCourant().getRefMairie()));
@@ -4321,5 +4328,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setDiplomeFEDao(DiplomeFEDao diplomeFEDao) {
 		this.diplomeFEDao = diplomeFEDao;
+	}
+
+	public FEFPDao getFefpDao() {
+		return fefpDao;
+	}
+
+	public void setFefpDao(FEFPDao fefpDao) {
+		this.fefpDao = fefpDao;
 	}
 }
