@@ -58,10 +58,4 @@ public class ScolariteDao extends SirhDao implements ScolariteDaoInterface {
 		return super.getListe(Scolarite.class);
 	}
 
-	@Override
-	public Scolarite chercherScolarite(Integer idScolarite) throws Exception {
-
-		return super.chercherObject(Scolarite.class, idScolarite);
-	}
-
 }
