@@ -1437,10 +1437,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 				getMedecinCourant().setNomMedecin(getVAL_EF_NOM_MEDECIN());
 				getMedecinCourant().setPrenomMedecin(getVAL_EF_PRENOM_MEDECIN());
 				getMedecinCourant().setTitreMedecin(getVAL_EF_TITRE_MEDECIN());
-				getMedecinDao().creerMedecin(getMedecinCourant().getTitreMedecin(),
-						getMedecinCourant().getPrenomMedecin(), getMedecinCourant().getNomMedecin());
-				if (!getTransaction().isErreur())
+				try {
+					getMedecinDao().creerMedecin(getMedecinCourant().getTitreMedecin(),
+							getMedecinCourant().getPrenomMedecin(), getMedecinCourant().getNomMedecin());
 					getListeMedecin().add(getMedecinCourant());
+				} catch (Exception e) {
+
+				}
 			} else if (getVAL_ST_ACTION_MEDECIN().equals(ACTION_SUPPRESSION)) {
 				getMedecinDao().supprimerMedecin(getMedecinCourant().getIdMedecin());
 				if (!getTransaction().isErreur())

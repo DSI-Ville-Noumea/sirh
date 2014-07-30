@@ -891,24 +891,25 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
-				// suppression dans table DOCUMENT_AGENT
-				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
-				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentDao().supprimerDocument(d.getIdDocument());
-
-				if (getTransaction().isErreur())
-					return false;
-
-				// on supprime le fichier physiquement sur le serveur
-				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
-				String cheminDoc = d.getLienDocument().replace("/", "\\");
-				File fichierASupp = new File(repertoireStockage + cheminDoc);
 				try {
-					fichierASupp.delete();
+					DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+							Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+					// suppression dans table DOCUMENT_AGENT
+					getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
+					// Suppression dans la table DOCUMENT_ASSOCIE
+					getDocumentDao().supprimerDocument(d.getIdDocument());
+
+					// on supprime le fichier physiquement sur le serveur
+					String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
+					String cheminDoc = d.getLienDocument().replace("/", "\\");
+					File fichierASupp = new File(repertoireStockage + cheminDoc);
+					try {
+						fichierASupp.delete();
+					} catch (Exception e) {
+						logger.error("Erreur suppression physique du fichier : " + e.toString());
+					}
 				} catch (Exception e) {
-					logger.error("Erreur suppression physique du fichier : " + e.toString());
+					return false;
 				}
 			}
 
@@ -2370,15 +2371,16 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
-				// suppression dans table DOCUMENT_AGENT
-				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
-				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentDao().supprimerDocument(d.getIdDocument());
-
-				if (getTransaction().isErreur())
+				try {
+					DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+							Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+					// suppression dans table DOCUMENT_AGENT
+					getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
+					// Suppression dans la table DOCUMENT_ASSOCIE
+					getDocumentDao().supprimerDocument(d.getIdDocument());
+				} catch (Exception e) {
 					return false;
+				}
 
 				// on supprime le fichier physiquement sur le serveur
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
@@ -3106,15 +3108,17 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 			// il faut supprimer les documents
 			for (int i = 0; i < getListeDocuments().size(); i++) {
 				Document d = getListeDocuments().get(i);
-				DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
-				// suppression dans table DOCUMENT_AGENT
-				getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
-				// Suppression dans la table DOCUMENT_ASSOCIE
-				getDocumentDao().supprimerDocument(d.getIdDocument());
+				try {
+					DocumentAgent lien = getLienDocumentAgentDao().chercherDocumentAgent(
+							Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+					// suppression dans table DOCUMENT_AGENT
+					getLienDocumentAgentDao().supprimerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
+					// Suppression dans la table DOCUMENT_ASSOCIE
+					getDocumentDao().supprimerDocument(d.getIdDocument());
 
-				if (getTransaction().isErreur())
+				} catch (Exception e) {
 					return false;
+				}
 
 				// on supprime le fichier physiquement sur le serveur
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");

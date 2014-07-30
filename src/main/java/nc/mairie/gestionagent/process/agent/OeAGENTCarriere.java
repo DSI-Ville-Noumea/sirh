@@ -2732,9 +2732,9 @@ public class OeAGENTCarriere extends BasicProcess {
 			// motif de l'avancement
 			MotifAvancement motif = null;
 			if (gradeActuel.getCodeTava() != null && !gradeActuel.getCodeTava().equals(Const.CHAINE_VIDE)) {
-				motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(gradeActuel.getCodeTava()));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					motif = getMotifAvancementDao().chercherMotifAvancement(Integer.valueOf(gradeActuel.getCodeTava()));
+				} catch (Exception e) {
 				}
 			}
 			addZone(getNOM_ST_TYPE_AVCT(), motif == null ? Const.CHAINE_VIDE : motif.getLibMotifAvct());

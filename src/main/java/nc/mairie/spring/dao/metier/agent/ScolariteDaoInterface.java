@@ -8,21 +8,18 @@ import nc.mairie.metier.agent.Scolarite;
 public interface ScolariteDaoInterface {
 
 	/**
-	 * Methode creerObjetMetierBroker qui retourne
-	 * true ou false
+	 * Methode creerObjetMetierBroker qui retourne true ou false
 	 */
 	public void creerScolarite(Integer idEnfant, Date dateDebut, Date dateFin) throws Exception;
-	
+
 	/**
-	 * Methode modifierObjetMetierBroker qui retourne
-	 * true ou false
+	 * Methode modifierObjetMetierBroker qui retourne true ou false
 	 */
 	public void modifierScolarite(Integer idScolarite, Integer idEnfant, Date dateDebut, Date dateFin) throws Exception;
 
-	
-
 	/**
 	 * Retourne un ArrayList d'objet métier Scolarite d'un enfant.
+	 * 
 	 * @return ArrayList
 	 */
 	public List<Scolarite> listerScolariteEnfant(Integer idEnfant) throws Exception;
@@ -30,7 +27,5 @@ public interface ScolariteDaoInterface {
 	void supprimerScolarite(Integer id) throws Exception;
 
 	List<Scolarite> getListe() throws Exception;
-
-	Scolarite chercherObject(Integer idScolarite) throws Exception;
 
 }

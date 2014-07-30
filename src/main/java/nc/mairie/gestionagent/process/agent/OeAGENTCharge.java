@@ -249,27 +249,27 @@ public class OeAGENTCharge extends BasicProcess {
 	 * @return String
 	 */
 	private String getLibCharge(Charge c, String code) throws Exception {
-		Rubrique r = getRubriqueDao().chercherRubrique(Integer.valueOf(c.getNoRubr()));
+		try {
+			Rubrique r = getRubriqueDao().chercherRubrique(Integer.valueOf(c.getNoRubr()));
 
-		if (r.getNorubr() == 2900 || r.getNorubr() == 2850)
-			// SPACCI accident du tavail
-			return CodeAcci.chercherCodeAcci(getTransaction(), code).getLibacc();
+			if (r.getNorubr() == 2900 || r.getNorubr() == 2850)
+				// SPACCI accident du tavail
+				return CodeAcci.chercherCodeAcci(getTransaction(), code).getLibacc();
 
-		if (r.getNorubr() == 3000)
-			// SPMUTU code mutuelle
-			return CodeMutu.chercherCodeMutu(getTransaction(), code).getLimutu();
+			if (r.getNorubr() == 3000)
+				// SPMUTU code mutuelle
+				return CodeMutu.chercherCodeMutu(getTransaction(), code).getLimutu();
 
-		if (r.getNorubr() == 4000)
-			// SPCLOG code logement
-			return CodeLogt.chercherCodeLogt(getTransaction(), code).getLiblog();
+			if (r.getNorubr() == 4000)
+				// SPCLOG code logement
+				return CodeLogt.chercherCodeLogt(getTransaction(), code).getLiblog();
 
-		if (r.getNorubr() == 4001)
-			// SPCCHG code charges logement
-			return CodeChargeLogt.chercherCodeChargeLogt(getTransaction(), code).getLiblog();
+			if (r.getNorubr() == 4001)
+				// SPCCHG code charges logement
+				return CodeChargeLogt.chercherCodeChargeLogt(getTransaction(), code).getLiblog();
 
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-			return Const.CHAINE_VIDE;
+		} catch (Exception e) {
+
 		}
 
 		return Const.CHAINE_VIDE;

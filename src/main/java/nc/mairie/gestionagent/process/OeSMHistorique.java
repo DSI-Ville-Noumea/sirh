@@ -157,15 +157,16 @@ public class OeSMHistorique extends BasicProcess {
 					: Const.CHAINE_VIDE);
 			// on cherche si il y a une VM
 			if (sm.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
-				VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
-						sm.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				}
-				if (vm != null && vm.getIdVisite() != null) {
-					addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte"
-							: "Inapte");
-				} else {
+				try {
+					VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
+							sm.getIdAgent());
+					if (vm != null && vm.getIdVisite() != null) {
+						addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte"
+								: "Inapte");
+					} else {
+						addZone(getNOM_ST_AVIS(i), "&nbsp;");
+					}
+				} catch (Exception e) {
 					addZone(getNOM_ST_AVIS(i), "&nbsp;");
 				}
 			} else {

@@ -4177,11 +4177,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (int i = 0; i < getListeAvantageASupprimer().size(); i++) {
 			AvantageNature avNat = (AvantageNature) getListeAvantageASupprimer().get(i);
-			AvantageNatureAFF avNatAFF = getAvantageNatureAffDao().chercherAvantageNatureAFF(avNat.getIdAvantage(),
-					Integer.valueOf(getAffectationCourant().getIdAffectation()));
-			getAvantageNatureAffDao().supprimerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
-			getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
-			if (getTransaction().isErreur()) {
+			try {
+				AvantageNatureAFF avNatAFF = getAvantageNatureAffDao().chercherAvantageNatureAFF(avNat.getIdAvantage(),
+						Integer.valueOf(getAffectationCourant().getIdAffectation()));
+				getAvantageNatureAffDao().supprimerAvantageNatureAff(avNatAFF.getIdAvantage(),
+						avNatAFF.getIdAffectation());
+				getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
+			} catch (Exception e) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + " Au moins un avantage en nature n'a pu être supprimé.");
 				setFocus(getNOM_PB_AJOUTER());
@@ -4205,11 +4207,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (int i = 0; i < getListeDelegationASupprimer().size(); i++) {
 			Delegation deleg = (Delegation) getListeDelegationASupprimer().get(i);
-			DelegationAFF delAFF = getDelegationAffDao().chercherDelegationAFF(
-					Integer.valueOf(getAffectationCourant().getIdAffectation()), deleg.getIdDelegation());
-			getDelegationAffDao().supprimerDelegationAFF(delAFF.getIdDelegation(), delAFF.getIdAffectation());
-			getDelegationDao().supprimerDelegation(deleg.getIdDelegation());
-			if (getTransaction().isErreur()) {
+			try {
+				DelegationAFF delAFF = getDelegationAffDao().chercherDelegationAFF(
+						Integer.valueOf(getAffectationCourant().getIdAffectation()), deleg.getIdDelegation());
+				getDelegationAffDao().supprimerDelegationAFF(delAFF.getIdDelegation(), delAFF.getIdAffectation());
+				getDelegationDao().supprimerDelegation(deleg.getIdDelegation());
+			} catch (Exception e) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + " Au moins une Delegation n'a pu être supprimée.");
 				setFocus(getNOM_PB_AJOUTER());
@@ -4233,11 +4236,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (int i = 0; i < getListeRegimeASupprimer().size(); i++) {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeASupprimer().get(i);
-			RegIndemnAFF riAFF = getRegIndemnAffDao().chercherRegIndemnAFF(
-					Integer.valueOf(getAffectationCourant().getIdAffectation()), regIndemn.getIdRegIndemn());
-			getRegIndemnAffDao().supprimerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
-			getRegIndemnDao().supprimerRegimeIndemnitaire(regIndemn.getIdRegIndemn());
-			if (getTransaction().isErreur()) {
+			try {
+				RegIndemnAFF riAFF = getRegIndemnAffDao().chercherRegIndemnAFF(
+						Integer.valueOf(getAffectationCourant().getIdAffectation()), regIndemn.getIdRegIndemn());
+				getRegIndemnAffDao().supprimerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
+				getRegIndemnDao().supprimerRegimeIndemnitaire(regIndemn.getIdRegIndemn());
+			} catch (Exception e) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + " Au moins un RegimeIndemnitaire n'a pu être supprimé.");
 				setFocus(getNOM_PB_AJOUTER());

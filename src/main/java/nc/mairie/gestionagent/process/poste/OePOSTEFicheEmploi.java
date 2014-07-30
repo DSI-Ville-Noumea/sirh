@@ -1000,10 +1000,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCategorieASupprimer().size(); i++) {
 				Categorie cat = (Categorie) getListeCategorieASupprimer().get(i);
-				CategorieFE catFE = getCategorieFEDao().chercherCategorieFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cat.getIdCategorieStatut());
-				getCategorieFEDao().supprimerCategorieFE(catFE.getIdFicheEmploi(), catFE.getIdCategorieStatut());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					CategorieFE catFE = getCategorieFEDao().chercherCategorieFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cat.getIdCategorieStatut());
+					getCategorieFEDao().supprimerCategorieFE(catFE.getIdFicheEmploi(), catFE.getIdCategorieStatut());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "Categorie '" + cat.getLibCategorieStatut() + "'"));
 					return false;
@@ -1027,10 +1028,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeCadresEmploiASupprimer().size(); i++) {
 				CadreEmploi cadre = (CadreEmploi) getListeCadresEmploiASupprimer().get(i);
-				CadreEmploiFE cadreFE = getCadreEmploiFEDao().chercherCadreEmploiFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cadre.getIdCadreEmploi());
-				getCadreEmploiFEDao().supprimerCadreEmploiFE(cadreFE.getIdFicheEmploi(), cadreFE.getIdCadreEmploi());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					CadreEmploiFE cadreFE = getCadreEmploiFEDao().chercherCadreEmploiFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), cadre.getIdCadreEmploi());
+					getCadreEmploiFEDao()
+							.supprimerCadreEmploiFE(cadreFE.getIdFicheEmploi(), cadreFE.getIdCadreEmploi());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "CadreEmploi '" + cadre.getLibCadreEmploi() + "'"));
 					return false;
@@ -1055,11 +1058,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeNiveauEtudeASupprimer().size(); i++) {
 				NiveauEtude niv = (NiveauEtude) getListeNiveauEtudeASupprimer().get(i);
-				NiveauEtudeFE nivEtudeFE = getNiveauEtudeFEDao().chercherNiveauEtudeFE(niv.getIdNiveauEtude(),
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
-				getNiveauEtudeFEDao().supprimerNiveauEtudeFE(nivEtudeFE.getIdNiveauEtude(),
-						nivEtudeFE.getIdFicheEmploi());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					NiveauEtudeFE nivEtudeFE = getNiveauEtudeFEDao().chercherNiveauEtudeFE(niv.getIdNiveauEtude(),
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+					getNiveauEtudeFEDao().supprimerNiveauEtudeFE(nivEtudeFE.getIdNiveauEtude(),
+							nivEtudeFE.getIdFicheEmploi());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "NiveauEtude '" + niv.getCodeNiveauEtude() + "'"));
 					return false;
@@ -1083,10 +1087,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeDiplomeASupprimer().size(); i++) {
 				DiplomeGenerique dipl = (DiplomeGenerique) getListeDiplomeASupprimer().get(i);
-				DiplomeFE diplFE = getDiplomeFEDao().chercherDiplomeFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), dipl.getIdDiplomeGenerique());
-				getDiplomeFEDao().supprimerDiplomeFE(diplFE.getIdFicheEmploi(), diplFE.getIdDiplomeGenerique());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					DiplomeFE diplFE = getDiplomeFEDao().chercherDiplomeFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), dipl.getIdDiplomeGenerique());
+					getDiplomeFEDao().supprimerDiplomeFE(diplFE.getIdFicheEmploi(), diplFE.getIdDiplomeGenerique());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "Diplome '" + dipl.getLibDiplomeGenerique() + "'"));
 					return false;
@@ -1111,10 +1116,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeActiPrincASupprimer().size(); i++) {
 				Activite acti = (Activite) getListeActiPrincASupprimer().get(i);
-				ActiviteFE actiFE = getActiviteFEDao().chercherActiviteFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), acti.getIdActivite());
-				getActiviteFEDao().supprimerActiviteFE(actiFE.getIdFicheEmploi(), actiFE.getIdActivite());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					ActiviteFE actiFE = getActiviteFEDao().chercherActiviteFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), acti.getIdActivite());
+					getActiviteFEDao().supprimerActiviteFE(actiFE.getIdFicheEmploi(), actiFE.getIdActivite());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "Activité principale '" + acti.getNomActivite() + "'"));
 					return false;
@@ -1168,10 +1174,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeSavoirFaireASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeSavoirFaireASupprimer().get(i);
-				CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
-				getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
+					getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;
@@ -1196,10 +1203,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeComportementASupprimer().size(); i++) {
 				Competence comp = (Competence) getListeComportementASupprimer().get(i);
-				CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
-						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
-				getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
-				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
+				try {
+					CompetenceFE compFE = getCompetenceFEDao().chercherCompetenceFE(
+							Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), comp.getIdCompetence());
+					getCompetenceFEDao().supprimerCompetenceFE(compFE.getIdFicheEmploi(), compFE.getIdCompetence());
+				} catch (Exception e) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "compétence '" + comp.getNomCompetence() + "'"));
 					return false;

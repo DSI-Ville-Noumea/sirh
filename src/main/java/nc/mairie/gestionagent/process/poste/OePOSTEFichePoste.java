@@ -3608,7 +3608,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 				if (getContratCourant() != null && getContratCourant().getIdTypeContrat() != null) {
 					setTypeContratCourant(getTypeContratDao().chercherTypeContrat(
-							Integer.valueOf(getContratCourant().getIdTypeContrat())));
+							getContratCourant().getIdTypeContrat()));
 				}
 			}
 

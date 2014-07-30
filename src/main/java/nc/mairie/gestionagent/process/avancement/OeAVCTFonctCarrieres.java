@@ -1578,10 +1578,10 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						Date dateAvctFinale = null;
 						String idAvisEmp = null;
 						if (avct.getIdAvisEmp() != null) {
-							idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap()
-									.toUpperCase();
-
-							if (getTransaction().isErreur()) {
+							try {
+								idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap()
+										.toUpperCase();
+							} catch (Exception e) {
 								return false;
 							}
 							if (idAvisEmp.equals("MIN")) {

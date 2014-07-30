@@ -261,9 +261,6 @@ public class OePOSTEFECompetence extends BasicProcess {
 			setTypeCompetenceCourant(getTypeCompetenceDao().chercherTypeCompetence(1));
 			addZone(getNOM_RG_TYPE_COMPETENCE(), getNOM_RB_TYPE_COMPETENCE_S());
 		}
-		if (getTransaction().isErreur()) {
-			getTransaction().declarerErreur(getTransaction().traiterErreur());
-		}
 
 		// Si liste competences vide alors initialisation.
 		if (getListeCompetence() == null || getListeCompetence().size() == 0) {

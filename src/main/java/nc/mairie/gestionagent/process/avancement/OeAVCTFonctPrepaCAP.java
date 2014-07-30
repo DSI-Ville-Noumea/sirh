@@ -366,14 +366,14 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 						getTransaction().traiterErreur();
 					} else {
 						if (gradeWithCadreEmploi.getIdCadreEmploi() != null) {
-							CadreEmploi cadreEmp = getCadreEmploiDao().chercherCadreEmploi(
-									Integer.valueOf(gradeWithCadreEmploi.getIdCadreEmploi()));
-							if (getTransaction().isErreur())
-								getTransaction().traiterErreur();
-							else {
+							try {
+								CadreEmploi cadreEmp = getCadreEmploiDao().chercherCadreEmploi(
+										Integer.valueOf(gradeWithCadreEmploi.getIdCadreEmploi()));
 								if (!listeCadreEmploi.contains(cadreEmp)) {
 									listeCadreEmploi.add(cadreEmp);
 								}
+							} catch (Exception e) {
+
 							}
 						}
 					}
@@ -739,67 +739,68 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 		for (int i = 0; i < getListeImpression().size(); i++) {
 			if (getVAL_CK_TAB_SHD(i).equals(getCHECKED_ON())) {
-				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-				if (getTransaction().isErreur()) {
+				try {
+					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
+					// on crée l'entrée dans la table du job
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
+							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, true);
+				} catch (Exception e) {
 					getTransaction().traiterErreur();
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
-				// on crée l'entrée dans la table du job
-				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, true);
 
 			}
 			if (getVAL_CK_EAE_SHD(i).equals(getCHECKED_ON())) {
-				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
+					// on crée l'entrée dans la table du job
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
+							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true, true);
+				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
-				// on crée l'entrée dans la table du job
-				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true, true);
 
 			}
 			if (getVAL_CK_TAB_VDN(i).equals(getCHECKED_ON())) {
-				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
+					// on crée l'entrée dans la table du job
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
+							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, false);
+				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
-				// on crée l'entrée dans la table du job
-				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-						user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-						Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, false);
 
 			}
 			if (getVAL_CK_EAE_VDN(i).equals(getCHECKED_ON())) {
-				Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
-				CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
+					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
+					// on crée l'entrée dans la table du job
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
+							cadre.getLibCadreEmploi(), true, false);
+				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
 					return false;
 				}
-				// on crée l'entrée dans la table du job
-				getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-						user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
-						cadre.getLibCadreEmploi(), true, false);
 
 			}
 		}
@@ -1497,18 +1498,18 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
 		// on receupere la CAP et le cadre Emploi
-		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-			return false;
-		}
+		try {
+			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), false, "PDF");
-		if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+			byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), false, "PDF");
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR182",
+				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+				return false;
+			}
+		} catch (Exception e) {
 			// "ERR182",
 			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
@@ -2085,18 +2086,18 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		String destination = "Avancement/tabAvctCap_" + user.getUserName() + ".pdf";
 		// on receupere la CAP et le cadre Emploi
-		Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
-		CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-			// "ERR182",
-			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
-			return false;
-		}
+		try {
+			Cap cap = getCapDao().chercherCapByCodeCap(indiceCap);
+			CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(indiceCadreEmploi);
 
-		byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), true, "PDF");
-		if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+			byte[] fileAsBytes = getTabAvctCapReportAsByteArray(cap.getIdCap(), cadre.getIdCadreEmploi(), true, "PDF");
+			if (!saveFileToRemoteFileSystem(fileAsBytes, repPartage, destination)) {
+				// "ERR182",
+				// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
+				return false;
+			}
+		} catch (Exception e) {
 			// "ERR182",
 			// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR182"));
