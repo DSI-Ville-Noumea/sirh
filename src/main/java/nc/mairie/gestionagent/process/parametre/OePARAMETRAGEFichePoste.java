@@ -20,6 +20,7 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
 import nc.mairie.spring.dao.metier.specificites.DelegationDao;
@@ -93,6 +94,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private DelegationDao delegationDao;
 	private RegIndemnDao regIndemnDao;
 	private TitrePosteDao titrePosteDao;
+	private NFADao nfaDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -161,6 +163,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNfaDao() == null) {
+			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -341,7 +346,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private void initialiseListeNFA(HttpServletRequest request) throws Exception {
-		setListeNFA(NFA.listerNFA(getTransaction()));
+		setListeNFA((ArrayList<NFA>) getNfaDao().listerNFA());
 		if (getListeNFA().size() != 0) {
 			int tailles[] = { 6, 5 };
 			String padding[] = { "G", "G" };
@@ -423,7 +428,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 		if (getListeNFA() == null) {
 			// Recherche des NFAs
-			setListeNFA(NFA.listerNFA(getTransaction()));
+			setListeNFA((ArrayList<NFA>) getNfaDao().listerNFA());
 			initialiseListeNFA(request);
 		}
 
@@ -2895,11 +2900,11 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				setNFACourant(new NFA());
 				getNFACourant().setCodeService(getVAL_EF_NFA_CODE_SERVICE());
 				getNFACourant().setNFA(getVAL_EF_NFA());
-				getNFACourant().creerNFA(getTransaction());
+				getNfaDao().creerNFA(getNFACourant().getCodeService(), getNFACourant().getNFA());
 				if (!getTransaction().isErreur())
 					getListeNFA().add(getNFACourant());
 			} else if (getVAL_ST_ACTION_NFA().equals(ACTION_SUPPRESSION)) {
-				getNFACourant().supprimerNFA(getTransaction());
+				getNfaDao().supprimerNFA(getNFACourant().getCodeService(), getNFACourant().getNFA());
 				if (!getTransaction().isErreur())
 					getListeNFA().remove(getNFACourant());
 				setNFACourant(null);
@@ -3219,5 +3224,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public NFADao getNfaDao() {
+		return nfaDao;
+	}
+
+	public void setNfaDao(NFADao nfaDao) {
+		this.nfaDao = nfaDao;
 	}
 }

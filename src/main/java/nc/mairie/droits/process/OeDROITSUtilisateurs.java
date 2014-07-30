@@ -14,11 +14,11 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.metier.droits.GroupeUtilisateur;
 import nc.mairie.metier.droits.Utilisateur;
-import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.droits.GroupeDao;
 import nc.mairie.spring.dao.metier.droits.GroupeUtilisateurDao;
 import nc.mairie.spring.dao.metier.droits.UtilisateurDao;
+import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
@@ -64,6 +64,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	private UtilisateurDao utilisateurDao;
 	private GroupeDao groupeDao;
 	private GroupeUtilisateurDao groupeUtilisateurDao;
+	private NFADao nfaDao;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -131,6 +132,9 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		}
 		if (getGroupeUtilisateurDao() == null) {
 			setGroupeUtilisateurDao(new GroupeUtilisateurDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getNfaDao() == null) {
+			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -754,10 +758,11 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 				codeService = Services.rpad(codeService, 4, "A");
 
 				// recherche du nfa
-				String nfa = NFA.chercherNFAByCodeService(getTransaction(), codeService).getNFA();
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					nfa = null;
+				String nfa = null;
+				try {
+					nfa = getNfaDao().chercherNFAByCodeService(codeService).getNFA();
+				} catch (Exception e) {
+
 				}
 
 				parent = hTree.get(codeService);
@@ -802,5 +807,13 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public void setGroupeUtilisateurDao(GroupeUtilisateurDao groupeUtilisateurDao) {
 		this.groupeUtilisateurDao = groupeUtilisateurDao;
+	}
+
+	public NFADao getNfaDao() {
+		return nfaDao;
+	}
+
+	public void setNfaDao(NFADao nfaDao) {
+		this.nfaDao = nfaDao;
 	}
 }

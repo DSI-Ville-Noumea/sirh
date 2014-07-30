@@ -44,7 +44,6 @@ import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
-import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.NiveauEtudeFP;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
@@ -69,6 +68,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
+import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -252,6 +252,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private NiveauEtudeFPDao niveauEtudeFPDao;
 	private BudgetDao budgetDao;
 	private FEFPDao fefpDao;
+	private NFADao nfaDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -529,6 +530,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFefpDao() == null) {
 			setFefpDao(new FEFPDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getNfaDao() == null) {
+			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -792,10 +796,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 
 				// recherche du nfa
-				String nfa = NFA.chercherNFAByCodeService(getTransaction(), serv.getCodService()).getNFA();
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					nfa = null;
+				String nfa = null;
+				try {
+					nfa = getNfaDao().chercherNFAByCodeService(serv.getCodService()).getNFA();
+				} catch (Exception e) {
+
 				}
 
 				// recherche du supérieur
@@ -6793,5 +6798,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setFefpDao(FEFPDao fefpDao) {
 		this.fefpDao = fefpDao;
+	}
+
+	public NFADao getNfaDao() {
+		return nfaDao;
+	}
+
+	public void setNfaDao(NFADao nfaDao) {
+		this.nfaDao = nfaDao;
 	}
 }
