@@ -49,6 +49,7 @@ import nc.mairie.metier.parametrage.SpecialiteDiplome;
 import nc.mairie.metier.parametrage.TitreDiplome;
 import nc.mairie.metier.parametrage.TitreFormation;
 import nc.mairie.metier.poste.Activite;
+import nc.mairie.metier.poste.ActiviteFP;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFP;
@@ -83,6 +84,8 @@ import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.SpecialiteDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
@@ -182,6 +185,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private FEFPDao fefpDao;
 	private CompetenceDao competenceDao;
 	private CompetenceFPDao competenceFPDao;
+	private ActiviteDao activiteDao;
+	private ActiviteFPDao activiteFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -880,6 +885,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getCompetenceFPDao() == null) {
 			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteDao() == null) {
+			setActiviteDao(new ActiviteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteFPDao() == null) {
+			setActiviteFPDao(new ActiviteFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1820,7 +1831,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerActivitesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
 			throws Exception {
 		// gère les activites
-		ArrayList<Activite> listActFDP = Activite.listerActiviteAvecFP(getTransaction(), fpPrincipale);
+
+		// Recherche de tous les liens FicheEmploi / Activite
+		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(
+				Integer.valueOf(fpPrincipale.getIdFichePoste()));
+		ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
 			EaeFDPActivite acti = new EaeFDPActivite();
@@ -1834,7 +1849,11 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerActivitesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
 		// gère les activites
-		ArrayList<Activite> listActFDP = Activite.listerActiviteAvecFP(getTransaction(), fpSecondaire);
+
+		// Recherche de tous les liens FicheEmploi / Activite
+		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(
+				Integer.valueOf(fpSecondaire.getIdFichePoste()));
+		ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
 			EaeFDPActivite acti = new EaeFDPActivite();
@@ -4153,5 +4172,21 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
 		this.competenceFPDao = competenceFPDao;
+	}
+
+	public ActiviteDao getActiviteDao() {
+		return activiteDao;
+	}
+
+	public void setActiviteDao(ActiviteDao activiteDao) {
+		this.activiteDao = activiteDao;
+	}
+
+	public ActiviteFPDao getActiviteFPDao() {
+		return activiteFPDao;
+	}
+
+	public void setActiviteFPDao(ActiviteFPDao activiteFPDao) {
+		this.activiteFPDao = activiteFPDao;
 	}
 }

@@ -29,6 +29,7 @@ import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Activite;
+import nc.mairie.metier.poste.ActiviteFP;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Competence;
 import nc.mairie.metier.poste.CompetenceFP;
@@ -53,6 +54,8 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
@@ -154,6 +157,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private BudgetDao budgetDao;
 	private CompetenceDao competenceDao;
 	private CompetenceFPDao competenceFPDao;
+	private ActiviteDao activiteDao;
+	private ActiviteFPDao activiteFPDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -296,6 +301,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getCompetenceFPDao() == null) {
 			setCompetenceFPDao(new CompetenceFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteDao() == null) {
+			setActiviteDao(new ActiviteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteFPDao() == null) {
+			setActiviteFPDao(new ActiviteFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -587,7 +598,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	 */
 	private void initialiserActivite() throws Exception {
 		// Activités
-		setListeActivite(Activite.listerToutesActiviteAvecFP(getTransaction(), getFichePosteCourant()));
+		// Recherche de tous les liens FicheEmploi / Activite
+		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(
+				Integer.valueOf(getFichePosteCourant().getIdFichePoste()));
+		setListeActivite(getActiviteDao().listerToutesActiviteAvecFP(liens));
 		int indiceActi = 0;
 		if (getListeActivite() != null) {
 			for (int i = 0; i < getListeActivite().size(); i++) {
@@ -2475,5 +2489,21 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setCompetenceFPDao(CompetenceFPDao competenceFPDao) {
 		this.competenceFPDao = competenceFPDao;
+	}
+
+	public ActiviteDao getActiviteDao() {
+		return activiteDao;
+	}
+
+	public void setActiviteDao(ActiviteDao activiteDao) {
+		this.activiteDao = activiteDao;
+	}
+
+	public ActiviteFPDao getActiviteFPDao() {
+		return activiteFPDao;
+	}
+
+	public void setActiviteFPDao(ActiviteFPDao activiteFPDao) {
+		this.activiteFPDao = activiteFPDao;
 	}
 }

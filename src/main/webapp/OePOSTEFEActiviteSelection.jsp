@@ -50,7 +50,7 @@ document.formu.elements[nom].focus();
 				if (process.getListeActivites()!=null){
 					for (int i = 0;i<process.getListeActivites().size();i++){
 						Activite acti = process.getListeActivites().get(i);
-						Integer indiceActi = Integer.valueOf(acti.getIdActivite());
+						Integer indiceActi = acti.getIdActivite();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_ACTI(indiceActi)%></td>

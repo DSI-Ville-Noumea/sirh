@@ -34,6 +34,7 @@ import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Activite;
+import nc.mairie.metier.poste.ActiviteFE;
 import nc.mairie.metier.poste.ActiviteFP;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Budget;
@@ -67,6 +68,9 @@ import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteFEDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
@@ -209,7 +213,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public HashMap<Integer, NatureAvantage> hashNatAv = null;
 	public HashMap<Integer, TypeDelegation> hashTypDel = null;
 	public HashMap<Integer, TypeRegIndemn> hashTypRegIndemn = null;
-	private HashMap<String, String> hashOrigineActivite;
+	private HashMap<Integer, String> hashOrigineActivite;
 	private HashMap<Integer, String> hashOrigineCompetence;
 	private FichePoste fichePosteCourante;
 	private Affectation affectationCourante;
@@ -260,6 +264,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private CompetenceDao competenceDao;
 	private CompetenceFPDao competenceFPDao;
 	private CompetenceFEDao competenceFEDao;
+	private ActiviteDao activiteDao;
+	private ActiviteFEDao activiteFEDao;
+	private ActiviteFPDao activiteFPDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -548,6 +555,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getCompetenceFEDao() == null) {
 			setCompetenceFEDao(new CompetenceFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteDao() == null) {
+			setActiviteDao(new ActiviteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteFEDao() == null) {
+			setActiviteFEDao(new ActiviteFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteFPDao() == null) {
+			setActiviteFPDao(new ActiviteFPDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1096,8 +1112,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// de la FDP
 					for (int j = 0; j < getListeCompFP().size(); j++) {
 						CompetenceFP compFP = (CompetenceFP) getListeCompFP().get(j);
-						Competence competenceFP = getCompetenceDao().chercherCompetence(
-								compFP.getIdCompetence());
+						Competence competenceFP = getCompetenceDao().chercherCompetence(compFP.getIdCompetence());
 						if (competenceFP.getIdCompetence().toString().equals(competence.getIdCompetence().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_COMP(i), getCHECKED_ON());
 							dejaCoche = true;
@@ -2023,14 +2038,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 				auMoinsUneligneSelect = true;
 				// on regarde de quelle liste elle faisait partie
 				for (Activite actiFP : getListeActiFEP()) {
-					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
-								.getIdFichePoste(), acti.getIdActivite());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+					if (acti.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
+						try {
+							ActiviteFP actFP = getActiviteFPDao().chercherActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite());
+							actFP.setActivitePrincipale(true);
+							getActiviteFPDao().modifierActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
+						} catch (Exception e) {
+							ActiviteFP actFP = new ActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite(),
 									true);
-							actFP.creerActiviteFP(getTransaction());
+							getActiviteFPDao().creerActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								getTransaction().declarerErreur(
@@ -2038,21 +2058,23 @@ public class OePOSTEFichePoste extends BasicProcess {
 								return false;
 							}
 							break;
-						} else {
-							actFP.setActivitePrincipale(true);
-							actFP.modifierActiviteFP(getTransaction());
 						}
 					}
 				}
 				for (Activite actiFP : getListeActiFES()) {
-					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
-								.getIdFichePoste(), acti.getIdActivite());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+					if (acti.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
+						try {
+							ActiviteFP actFP = getActiviteFPDao().chercherActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite());
+							actFP.setActivitePrincipale(true);
+							getActiviteFPDao().modifierActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
+						} catch (Exception e) {
+							ActiviteFP actFP = new ActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite(),
 									true);
-							actFP.creerActiviteFP(getTransaction());
+							getActiviteFPDao().creerActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								getTransaction().declarerErreur(
@@ -2060,22 +2082,24 @@ public class OePOSTEFichePoste extends BasicProcess {
 								return false;
 							}
 							break;
-						} else {
-							actFP.setActivitePrincipale(true);
-							actFP.modifierActiviteFP(getTransaction());
 						}
 					}
 				}
 				if (getListeActiFP() != null) {
 					for (ActiviteFP actiFP : getListeActiFP()) {
-						if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-							ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
-									.getIdFichePoste(), acti.getIdActivite());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-								actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
-										false);
-								actFP.creerActiviteFP(getTransaction());
+						if (acti.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
+							try {
+								ActiviteFP actFP = getActiviteFPDao().chercherActiviteFP(
+										Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
+										acti.getIdActivite());
+								actFP.setActivitePrincipale(false);
+								getActiviteFPDao().modifierActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+										actFP.isActivitePrincipale());
+							} catch (Exception e) {
+								ActiviteFP actFP = new ActiviteFP(Integer.valueOf(getFichePosteCourante()
+										.getIdFichePoste()), acti.getIdActivite(), false);
+								getActiviteFPDao().creerActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+										actFP.isActivitePrincipale());
 								if (getTransaction().isErreur()) {
 									getTransaction().traiterErreur();
 									getTransaction().declarerErreur(
@@ -2084,23 +2108,25 @@ public class OePOSTEFichePoste extends BasicProcess {
 									return false;
 								}
 								break;
-							} else {
-								actFP.setActivitePrincipale(false);
-								actFP.modifierActiviteFP(getTransaction());
 							}
 						}
 					}
 
 				}
 				for (Activite actiFP : getListeAjoutActiFP()) {
-					if (acti.getIdActivite().equals(actiFP.getIdActivite())) {
-						ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
-								.getIdFichePoste(), acti.getIdActivite());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-							actFP = new ActiviteFP(getFichePosteCourante().getIdFichePoste(), acti.getIdActivite(),
+					if (acti.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
+						try {
+							ActiviteFP actFP = getActiviteFPDao().chercherActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite());
+							actFP.setActivitePrincipale(false);
+							getActiviteFPDao().modifierActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
+						} catch (Exception e) {
+							ActiviteFP actFP = new ActiviteFP(
+									Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite(),
 									false);
-							actFP.creerActiviteFP(getTransaction());
+							getActiviteFPDao().creerActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+									actFP.isActivitePrincipale());
 							if (getTransaction().isErreur()) {
 								getTransaction().traiterErreur();
 								getTransaction().declarerErreur(
@@ -2108,21 +2134,18 @@ public class OePOSTEFichePoste extends BasicProcess {
 								return false;
 							}
 							break;
-						} else {
-							actFP.setActivitePrincipale(false);
-							actFP.modifierActiviteFP(getTransaction());
 						}
 					}
 				}
 			} else {
-				ActiviteFP actFP = ActiviteFP.chercherActiviteFP(getTransaction(), getFichePosteCourante()
-						.getIdFichePoste(), acti.getIdActivite());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
-					actFP.supprimerActiviteFP(getTransaction());
-				}
+				try {
+					ActiviteFP actFP = getActiviteFPDao().chercherActiviteFP(
+							Integer.valueOf(getFichePosteCourante().getIdFichePoste()), acti.getIdActivite());
+					getActiviteFPDao().supprimerActiviteFP(actFP.getIdFichePoste(), actFP.getIdActivite(),
+							actFP.isActivitePrincipale());
+				} catch (Exception e) {
 
+				}
 			}
 		}
 		if (!auMoinsUneligneSelect) {
@@ -3601,13 +3624,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 		boolean trouve = false;
 		if (getFichePosteCourante() != null && getFichePosteCourante().getIdFichePoste() != null) {
 			// on recupere les activites de la FDP
-			setListeActiFP(ActiviteFP.listerActiviteFPAvecFP(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste()));
+			setListeActiFP(getActiviteFPDao().listerActiviteFPAvecFP(
+					Integer.valueOf(getFichePosteCourante().getIdFichePoste())));
 			for (ActiviteFP actiFP : getListeActiFP()) {
 				trouve = false;
-				Activite activite = Activite.chercherActivite(getTransaction(), actiFP.getIdActivite());
+				Activite activite = getActiviteDao().chercherActivite(actiFP.getIdActivite());
 				for (Activite tteActi : getListeToutesActi()) {
-					if (tteActi.getIdActivite().equals(activite.getIdActivite())) {
+					if (tteActi.getIdActivite().toString().equals(activite.getIdActivite().toString())) {
 						trouve = true;
 						break;
 					}
@@ -3624,13 +3647,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// on recupere les activites des differentes FE
 		trouve = false;
 		if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
-			setListeActiFEP(Activite.listerActiviteAvecFE(getTransaction(), getEmploiPrimaire()));
+
+			// Recherche de tous les liens FicheEmploi / Activite
+			ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
+					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+			setListeActiFEP(getActiviteDao().listerActiviteAvecFE(liens));
 			for (int i = 0; i < getListeActiFEP().size(); i++) {
 				trouve = false;
 				Activite actiFP = (Activite) getListeActiFEP().get(i);
 				for (int j = 0; j < getListeToutesActi().size(); j++) {
 					Activite tteActi = (Activite) getListeToutesActi().get(j);
-					if (tteActi.getIdActivite().equals(actiFP.getIdActivite())) {
+					if (tteActi.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
 						trouve = true;
 						break;
 					}
@@ -3646,11 +3673,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (getEmploiSecondaire() != null && getEmploiSecondaire().getIdFicheEmploi() != null) {
 			trouve = false;
-			setListeActiFES(Activite.listerActiviteAvecFE(getTransaction(), getEmploiSecondaire()));
+
+			// Recherche de tous les liens FicheEmploi / Activite
+			ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
+					Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+			setListeActiFES(getActiviteDao().listerActiviteAvecFE(liens));
 			for (Activite actiFP : getListeActiFES()) {
 				trouve = false;
 				for (Activite tteActi : getListeToutesActi()) {
-					if (tteActi.getIdActivite().equals(actiFP.getIdActivite())) {
+					if (tteActi.getIdActivite().toString().equals(actiFP.getIdActivite().toString())) {
 						trouve = true;
 						break;
 					}
@@ -3693,7 +3724,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			String origineActi = (String) getHashOrigineActivite().get(activite.getIdActivite());
 
 			if (activite != null) {
-				addZone(getNOM_ST_ID_ACTI(i), activite.getIdActivite());
+				addZone(getNOM_ST_ID_ACTI(i), activite.getIdActivite().toString());
 				addZone(getNOM_ST_LIB_ACTI(i), activite.getNomActivite());
 				addZone(getNOM_ST_LIB_ORIGINE_ACTI(i), origineActi);
 				addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_OFF());
@@ -3702,8 +3733,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// si l'activite fait partie de la liste des activites de la
 					// FDP
 					for (ActiviteFP actiFP : getListeActiFP()) {
-						Activite activiteFP = Activite.chercherActivite(getTransaction(), actiFP.getIdActivite());
-						if (activiteFP.getIdActivite().equals(activite.getIdActivite())) {
+						Activite activiteFP = getActiviteDao().chercherActivite(actiFP.getIdActivite());
+						if (activiteFP.getIdActivite().toString().equals(activite.getIdActivite().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -3720,7 +3751,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					// si l'activite fait partie de la liste des activites
 					// ajoutées à la FDP
 					for (Activite activiteFP : getListeAjoutActiFP()) {
-						if (activiteFP.getIdActivite().equals(activite.getIdActivite())) {
+						if (activiteFP.getIdActivite().toString().equals(activite.getIdActivite().toString())) {
 							addZone(getNOM_CK_SELECT_LIGNE_ACTI(i), getCHECKED_ON());
 							dejaCoche = true;
 							break;
@@ -3781,7 +3812,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((Activite) l2.get(i)).getIdActivite()).equals(((Activite) l1.get(j)).getIdActivite())) {
+					if ((((Activite) l2.get(i)).getIdActivite().toString()).equals(((Activite) l1.get(j))
+							.getIdActivite().toString())) {
 						l1.remove(j);
 					}
 				}
@@ -5949,7 +5981,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		return listeAjoutActiFP;
 	}
 
-	private HashMap<String, String> getHashOrigineActivite() {
+	private HashMap<Integer, String> getHashOrigineActivite() {
 		if (hashOrigineActivite == null) {
 			hashOrigineActivite = new HashMap<>();
 		}
@@ -6864,5 +6896,29 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setCompetenceFEDao(CompetenceFEDao competenceFEDao) {
 		this.competenceFEDao = competenceFEDao;
+	}
+
+	public ActiviteDao getActiviteDao() {
+		return activiteDao;
+	}
+
+	public void setActiviteDao(ActiviteDao activiteDao) {
+		this.activiteDao = activiteDao;
+	}
+
+	public ActiviteFEDao getActiviteFEDao() {
+		return activiteFEDao;
+	}
+
+	public void setActiviteFEDao(ActiviteFEDao activiteFEDao) {
+		this.activiteFEDao = activiteFEDao;
+	}
+
+	public ActiviteFPDao getActiviteFPDao() {
+		return activiteFPDao;
+	}
+
+	public void setActiviteFPDao(ActiviteFPDao activiteFPDao) {
+		this.activiteFPDao = activiteFPDao;
 	}
 }

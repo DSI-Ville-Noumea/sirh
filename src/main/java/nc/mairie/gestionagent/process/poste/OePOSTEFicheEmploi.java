@@ -32,6 +32,8 @@ import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteDao;
+import nc.mairie.spring.dao.metier.poste.ActiviteFEDao;
 import nc.mairie.spring.dao.metier.poste.AutreAppellationEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CadreEmploiFEDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
@@ -150,6 +152,8 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	private FEFPDao fefpDao;
 	private CompetenceDao competenceDao;
 	private CompetenceFEDao competenceFEDao;
+	private ActiviteDao activiteDao;
+	private ActiviteFEDao activiteFEDao;
 
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTIVITE_PRINCIPALE
@@ -1094,8 +1098,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// anciennes
 			for (int i = 0; i < getListeActiPrincAAjouter().size(); i++) {
 				Activite acti = (Activite) getListeActiPrincAAjouter().get(i);
-				ActiviteFE actiFE = new ActiviteFE(getFicheEmploiCourant().getIdFicheEmploi(), acti.getIdActivite());
-				actiFE.creerActiviteFE(getTransaction());
+				ActiviteFE actiFE = new ActiviteFE(Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()),
+						acti.getIdActivite());
+				getActiviteFEDao().creerActiviteFE(actiFE.getIdFicheEmploi(), actiFE.getIdActivite());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR976", "Activité principale '" + acti.getNomActivite() + "'"));
@@ -1106,9 +1111,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 			for (int i = 0; i < getListeActiPrincASupprimer().size(); i++) {
 				Activite acti = (Activite) getListeActiPrincASupprimer().get(i);
-				ActiviteFE actiFE = ActiviteFE.chercherActiviteFE(getTransaction(), getFicheEmploiCourant()
-						.getIdFicheEmploi(), acti.getIdActivite());
-				actiFE.supprimerActiviteFE(getTransaction());
+				ActiviteFE actiFE = getActiviteFEDao().chercherActiviteFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()), acti.getIdActivite());
+				getActiviteFEDao().supprimerActiviteFE(actiFE.getIdFicheEmploi(), actiFE.getIdActivite());
 				if (getTransaction().isErreur() && getTransaction().getMessageErreur().startsWith("ERR")) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR975", "Activité principale '" + acti.getNomActivite() + "'"));
@@ -1227,7 +1232,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			throws Exception {
 		boolean result = true;
 		// Suppression des Activite
-		result = result & ActiviteFE.supprimerActiviteFEAvecFE(aTransaction, ficheEmploiCourant);
+		getActiviteFEDao().supprimerActiviteFEAvecFE(Integer.valueOf(ficheEmploiCourant.getIdFicheEmploi()));
 
 		// Suppression des Autres appellations
 		getAutreAppellationEmploiDao().supprimerAutreAppellationEmploiAvecFE(
@@ -1427,6 +1432,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 		}
 		if (getCompetenceFEDao() == null) {
 			setCompetenceFEDao(new CompetenceFEDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteDao() == null) {
+			setActiviteDao(new ActiviteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getActiviteFEDao() == null) {
+			setActiviteFEDao(new ActiviteFEDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1889,7 +1900,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 	 */
 	private void initialiseActivitePrinc() throws Exception {
 		if (getListeActiPrincMulti().size() == 0 && getFicheEmploiCourant().getIdFicheEmploi() != null) {
-			setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
+
+			// Recherche de tous les liens FicheEmploi / Activite
+			ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
+					Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+			setListeActiPrincMulti(getActiviteDao().listerActiviteAvecFE(liens));
 		}
 		// on recupere les activites selectionnées dans l'ecran de selection
 		@SuppressWarnings("unchecked")
@@ -2817,7 +2832,11 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				setFicheEmploiCourant(fiche);
 				setListeAutreAppellationMulti(getAutreAppellationEmploiDao().listerAutreAppellationEmploiAvecFE(
 						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi())));
-				setListeActiPrincMulti(Activite.listerActiviteAvecFE(getTransaction(), getFicheEmploiCourant()));
+
+				// Recherche de tous les liens FicheEmploi / Activite
+				ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
+						Integer.valueOf(getFicheEmploiCourant().getIdFicheEmploi()));
+				setListeActiPrincMulti(getActiviteDao().listerActiviteAvecFE(liens));
 
 				// Recherche de tous les liens FicheEmploi / Competence
 				ArrayList<CompetenceFE> liens1 = getCompetenceFEDao().listerCompetenceFEAvecFEEtTypeComp(
@@ -3497,8 +3516,9 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 			// Duplique les Activites principales
 			for (int i = 0; i < getListeActiPrincMulti().size(); i++) {
 				Activite actiP = (Activite) getListeActiPrincMulti().get(i);
-				ActiviteFE newActiFEPrinc = new ActiviteFE(ficheDupliquee.getIdFicheEmploi(), actiP.getIdActivite());
-				newActiFEPrinc.creerActiviteFE(getTransaction());
+				ActiviteFE newActiFEPrinc = new ActiviteFE(Integer.valueOf(ficheDupliquee.getIdFicheEmploi()),
+						actiP.getIdActivite());
+				getActiviteFEDao().creerActiviteFE(newActiFEPrinc.getIdFicheEmploi(), newActiFEPrinc.getIdActivite());
 			}
 			// Duplique les Savoir
 			for (int i = 0; i < getListeSavoirMulti().size(); i++) {
@@ -4392,5 +4412,21 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 	public void setCompetenceFEDao(CompetenceFEDao competenceFEDao) {
 		this.competenceFEDao = competenceFEDao;
+	}
+
+	public ActiviteDao getActiviteDao() {
+		return activiteDao;
+	}
+
+	public void setActiviteDao(ActiviteDao activiteDao) {
+		this.activiteDao = activiteDao;
+	}
+
+	public ActiviteFEDao getActiviteFEDao() {
+		return activiteFEDao;
+	}
+
+	public void setActiviteFEDao(ActiviteFEDao activiteFEDao) {
+		this.activiteFEDao = activiteFEDao;
 	}
 }
