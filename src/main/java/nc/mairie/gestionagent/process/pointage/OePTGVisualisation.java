@@ -24,6 +24,7 @@ import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -1291,7 +1292,7 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 
 			if (testerParametre(request, getNOM_PB_CREATE())) {
-				// on verifie que l'agent exist
+				// on verifie que l'agent exist et qu'il est affecté
 				if (!performControlerSaisie(getVAL_ST_DATE_CREATE(), getVAL_ST_AGENT_CREATE())) {
 					return false;
 				}
@@ -1333,7 +1334,16 @@ public class OePTGVisualisation extends BasicProcess {
 			// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
 			return false;
+		}
 
+		// on cherche l'affectation en cours
+		Affectation affEnCours = Affectation.chercherAffectationAgentPourDate(getTransaction(), idAgent, dateCreation);
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR504",
+			// "L'agent @ n'est affecté à aucun poste le @. Aucun pointage ne peut être saisi pour cette date."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR504", idAgent, dateCreation));
+			return false;
 		}
 		return true;
 	}
