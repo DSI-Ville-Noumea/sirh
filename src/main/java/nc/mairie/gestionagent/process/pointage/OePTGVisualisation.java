@@ -1216,6 +1216,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+			setFocus(getDefaultFocus());
 
 			// Si clic sur le bouton PB_FILTRER
 			if (testerParametre(request, getNOM_PB_FILTRER())) {
@@ -1258,6 +1259,7 @@ public class OePTGVisualisation extends BasicProcess {
 				addZone(getNOM_ST_DATE_CREATE(), Const.CHAINE_VIDE);
 				addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
 				status = "CREATION";
+				setFocus(getNOM_PB_CREATE());
 				setStatut(STATUT_MEME_PROCESS);
 				return true;
 			}

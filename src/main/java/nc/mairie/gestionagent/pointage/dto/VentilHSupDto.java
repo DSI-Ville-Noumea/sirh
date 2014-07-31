@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.pointage.dto;
 
 import java.util.Date;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -12,8 +13,6 @@ public class VentilHSupDto extends VentilDto {
 	private int mSup25;
 	private int mSup50;
 	private int mDjf;
-	private int mDjf25;
-	private int mDjf50;
 	private int m1Mai;
 	private int mNuit;
 	private int mNormales;
@@ -24,8 +23,6 @@ public class VentilHSupDto extends VentilDto {
 	private int mSup25R;
 	private int mSup50R;
 	private int mDjfR;
-	private int mDjf25R;
-	private int mDjf_50R;
 	private int m1maiR;
 	private int mNuitR;
 	private int mNormalesR;
@@ -98,22 +95,6 @@ public class VentilHSupDto extends VentilDto {
 
 	public void setmDjf(int mDjf) {
 		this.mDjf = mDjf;
-	}
-
-	public int getmDjf25() {
-		return mDjf25;
-	}
-
-	public void setmDjf25(int mDjf25) {
-		this.mDjf25 = mDjf25;
-	}
-
-	public int getmDjf50() {
-		return mDjf50;
-	}
-
-	public void setmDjf50(int mDjf50) {
-		this.mDjf50 = mDjf50;
 	}
 
 	public int getM1Mai() {
@@ -194,22 +175,6 @@ public class VentilHSupDto extends VentilDto {
 
 	public void setmDjfR(int mDjfR) {
 		this.mDjfR = mDjfR;
-	}
-
-	public int getmDjf25R() {
-		return mDjf25R;
-	}
-
-	public void setmDjf25R(int mDjf25R) {
-		this.mDjf25R = mDjf25R;
-	}
-
-	public int getmDjf_50R() {
-		return mDjf_50R;
-	}
-
-	public void setmDjf_50R(int mDjf_50R) {
-		this.mDjf_50R = mDjf_50R;
 	}
 
 	public int getM1maiR() {
