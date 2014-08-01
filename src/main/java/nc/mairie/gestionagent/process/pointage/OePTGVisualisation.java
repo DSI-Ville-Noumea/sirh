@@ -1299,7 +1299,8 @@ public class OePTGVisualisation extends BasicProcess {
 
 				status = "EDIT";
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
-				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundiCreate());
+				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG,
+						getLundiCreate(getVAL_ST_DATE_CREATE()));
 				setStatut(STATUT_SAISIE_PTG, true);
 				return true;
 			}
@@ -1336,8 +1337,15 @@ public class OePTGVisualisation extends BasicProcess {
 			return false;
 		}
 
+		// on transforme la date
+		if (Services.estNumerique(dateCreation)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+			SimpleDateFormat sdfSortie = new SimpleDateFormat("dd/MM/yyyy");
+			dateCreation = sdfSortie.format(sdf.parse(dateCreation));
+		}
 		// on cherche l'affectation en cours
-		Affectation affEnCours = Affectation.chercherAffectationAgentPourDate(getTransaction(), idAgent, dateCreation);
+		Affectation affEnCours = Affectation.chercherAffectationAgentPourDate(getTransaction(), "900" + idAgent,
+				dateCreation);
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR504",
@@ -1476,10 +1484,17 @@ public class OePTGVisualisation extends BasicProcess {
 		return sdf.format(cal.getTime());
 	}
 
-	public String getLundiCreate() {
+	public String getLundiCreate(String dateCreation) throws ParseException {
+		// on transforme la date
+		if (Services.estNumerique(dateCreation)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+			SimpleDateFormat sdfSortie = new SimpleDateFormat("dd/MM/yyyy");
+			dateCreation = sdfSortie.format(sdf.parse(dateCreation));
+		}
+
 		GregorianCalendar cal = new GregorianCalendar();
 		try {
-			cal.setTimeInMillis(sdf.parse(getVAL_ST_DATE_CREATE()).getTime());
+			cal.setTimeInMillis(sdf.parse(dateCreation).getTime());
 		} catch (ParseException ex) {
 			cal.setTime(new Date());
 		}
