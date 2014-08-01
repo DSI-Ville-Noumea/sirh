@@ -744,8 +744,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, true);
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
+							cadre.getLibCadreEmploi(), false, true);
 				} catch (Exception e) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -761,8 +761,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), true, true);
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
+							cadre.getLibCadreEmploi(), true, true);
 				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -777,8 +777,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
 					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(),
-							Integer.valueOf(cadre.getIdCadreEmploi()), cadre.getLibCadreEmploi(), false, false);
+							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
+							cadre.getLibCadreEmploi(), false, false);
 				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."

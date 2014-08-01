@@ -209,8 +209,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator<Contrat> list = c.listIterator(); list.hasNext();) {
 						Contrat contrat = (Contrat) list.next();
-						TypeContrat tc = getTypeContratDao().chercherTypeContrat(
-								Integer.valueOf(contrat.getIdTypeContrat()));
+						TypeContrat tc = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
 						String ligne[] = { contrat.getNumContrat(), tc.getLibTypeContrat(),
 								sdf.format(contrat.getDatdeb()) };
 						aFormat.ajouteLigne(ligne);

@@ -901,8 +901,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				// aucun contrat trouvé
 			}
 			if (contrat != null && contrat.getIdTypeContrat() != null) {
-				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(
-						Integer.valueOf(contrat.getIdTypeContrat()));
+				TypeContrat typeContrat = getTypeContratDao().chercherTypeContrat(contrat.getIdTypeContrat());
 				addZone(getNOM_ST_CDICDD(), typeContrat.getLibTypeContrat());
 			} else
 				addZone(getNOM_ST_CDICDD(), Const.CHAINE_VIDE);
