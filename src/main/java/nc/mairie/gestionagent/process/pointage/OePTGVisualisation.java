@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
@@ -41,8 +42,6 @@ import nc.mairie.utils.VariablesActivite;
 import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -1119,14 +1118,15 @@ public class OePTGVisualisation extends BasicProcess {
 			Carriere carr;
 			try {
 				carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), loggedAgent);
-				ClientResponse cr = t.setPtgState(ids, state.ordinal(), getLoggedAgent().getIdAgent(),
+
+				ReturnMessageDto message = t.setPtgState(ids, state.ordinal(), loggedAgent.getIdAgent(),
 						Carriere.getStatutCarriere(carr.getCodeCategorie()));
-				if (cr.getStatus() != 200) {
-					String rep = cr.getEntity(String.class).toString();
-					logger.debug("changeState response :" + cr.toString() + "\n" + rep);
-					rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
-					rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
-					getTransaction().declarerErreur(rep);
+				if (message.getErrors().size() > 0) {
+					String err = Const.CHAINE_VIDE;
+					for (String erreur : message.getErrors()) {
+						err += " " + erreur;
+					}
+					getTransaction().declarerErreur(err);
 				}
 				performPB_FILTRER();
 			} catch (Exception e) {
@@ -1345,7 +1345,7 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 		// on cherche l'affectation en cours
 		Affectation affEnCours = Affectation.chercherAffectationAgentPourDate(getTransaction(), "900" + idAgent,
-				dateCreation);
+				sdf.parse(dateCreation));
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 			// "ERR504",

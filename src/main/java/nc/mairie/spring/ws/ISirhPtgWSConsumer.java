@@ -6,6 +6,7 @@ import java.util.List;
 
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
@@ -14,8 +15,6 @@ import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
-
-import com.sun.jersey.api.client.ClientResponse;
 
 public interface ISirhPtgWSConsumer {
 
@@ -33,7 +32,7 @@ public interface ISirhPtgWSConsumer {
 			Integer idAgent);
 
 	boolean isVentilAvailable(String agentStatus);
-	
+
 	boolean isVentilEnCours(String agentStatus);
 
 	VentilDateDto getVentilationEnCours(String statut);
@@ -42,7 +41,7 @@ public interface ISirhPtgWSConsumer {
 			String idRefTypePointage);
 
 	boolean isValidAvailable(String agentStatus);
-	
+
 	boolean isValidEnCours(String agentStatus);
 
 	boolean startDeversementPaie(String idAgent, String statut);
@@ -66,9 +65,9 @@ public interface ISirhPtgWSConsumer {
 	// Saisie
 	FichePointageDto getSaisiePointage(String idAgent, String monday);
 
-	ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize);
+	ReturnMessageDto setSaisiePointage(String idAgent, FichePointageDto toSerialize);
 
-	ClientResponse setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
+	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
 
 	// Filtres
 	List<RefEtatDto> getEtatsPointage();

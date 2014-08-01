@@ -10,6 +10,7 @@ import java.util.Map;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartVentilationDto;
 import nc.mairie.gestionagent.pointage.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
@@ -109,7 +110,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idAgent, String statutAgent) {
+	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idAgent, String statutAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVisualisationSetState;
 		HashMap<String, String> params = new HashMap<>();
@@ -124,7 +125,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			json.substring(0, json.length() - 1);
 		}
 		json.append("]");
-		return createAndPostRequest(params, url, json.toString());
+		ClientResponse res = createAndPostRequest(params, url, json.toString());
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
@@ -360,16 +362,17 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ClientResponse setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
+	public ReturnMessageDto setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgSaisie;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent);
-		return createAndPostRequest(
+		ClientResponse res = createAndPostRequest(
 				params,
 				url,
 				new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 						.deepSerialize(toSerialize));
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
@@ -619,5 +622,31 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		} else {
 			return false;
 		}
+	}
+
+	public <T> T readResponseWithReturnMessageDto(Class<T> targetClass, ClientResponse response, String url) {
+
+		T result = null;
+
+		try {
+			result = targetClass.newInstance();
+		} catch (Exception ex) {
+			throw new SirhAbsWSConsumerException(
+					"An error occured when instantiating return type when deserializing JSON from SIRH PTG WS request.",
+					ex);
+		}
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+			return null;
+		}
+
+		String output = response.getEntity(String.class);
+		logger.trace("json recu:" + output);
+		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
+		return result;
 	}
 }

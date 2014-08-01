@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.absence.dto.AbsenceDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
 import nc.mairie.gestionagent.pointage.dto.HeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.JourPointageDto;
@@ -36,8 +37,6 @@ import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  *
@@ -132,13 +131,13 @@ public class OePTGSaisie extends BasicProcess {
 			logger.debug("OePTGSaisie.Java : Objet Agent nul");
 		} else {
 			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			ClientResponse res = t.setSaisiePointage(loggedAgent.idAgent, listeFichePointage);
-			if (res.getStatus() != 200) {
-				String rep = res.getEntity(String.class).toString();
-				logger.debug("response :" + res.toString() + rep);
-				rep = (rep.indexOf("[") > -1) ? rep.substring(rep.indexOf("[") + 1) : rep;
-				rep = (rep.indexOf("]") > -1) ? rep.substring(0, rep.indexOf("]")) : rep;
-				getTransaction().declarerErreur(rep);
+			ReturnMessageDto message = t.setSaisiePointage(loggedAgent.getIdAgent(), listeFichePointage);
+			if (message.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : message.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur(err);
 				return false;
 			}
 		}
