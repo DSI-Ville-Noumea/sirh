@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -756,6 +757,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		GregorianCalendar greg = new GregorianCalendar();
+		greg.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		for (VentilAbsenceDto abs : data) {
 			greg.setTime(abs.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
@@ -871,6 +873,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		GregorianCalendar greg = new GregorianCalendar();
+		greg.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		for (VentilHSupDto hsup : data) {
 			greg.setTime(hsup.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));

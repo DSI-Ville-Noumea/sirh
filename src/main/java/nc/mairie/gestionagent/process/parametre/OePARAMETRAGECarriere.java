@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.ListIterator;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -132,6 +133,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 																		// date
 
 		GregorianCalendar deb = new GregorianCalendar();
+		deb.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		if (heureDeb > 11) // gestion AM PM
 			deb.set(GregorianCalendar.AM_PM, GregorianCalendar.PM);
 		else
@@ -140,6 +142,7 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		deb.set(GregorianCalendar.MINUTE, minuteDeb);
 
 		GregorianCalendar fin = (GregorianCalendar) deb.clone();
+		fin.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		fin.set(GregorianCalendar.MINUTE, diffFinDeb);
 
 		getListeHeure().add(formatDate.format(deb.getTime()));

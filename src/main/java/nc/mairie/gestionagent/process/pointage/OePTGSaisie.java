@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -438,7 +439,8 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public Date getDateLundi(int inc) {
-		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		calendar.setTime(dateLundi);
 		calendar.add(Calendar.DATE, inc);
 		return calendar.getTime();
@@ -449,7 +451,8 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public int getWeekYear() {
-		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		calendar.setTime(dateLundi);
 		return calendar.get(Calendar.WEEK_OF_YEAR);
 	}
@@ -468,7 +471,8 @@ public class OePTGSaisie extends BasicProcess {
 		if (h.equals("")) {
 			return ret;
 		}
-		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		calendar.setTime(ret);
 		calendar.add(GregorianCalendar.HOUR, Integer.parseInt(h.substring(0, h.indexOf(":"))));
 		calendar.add(GregorianCalendar.MINUTE, Integer.parseInt(h.substring(h.indexOf(":") + 1)));

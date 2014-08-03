@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -539,6 +540,7 @@ public class OeSMConvocation extends BasicProcess {
 																			// date
 
 			GregorianCalendar deb = new GregorianCalendar();
+			deb.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 			if (heureDeb > 11) // gestion AM PM
 				deb.set(GregorianCalendar.AM_PM, GregorianCalendar.PM);
 			else
@@ -547,6 +549,7 @@ public class OeSMConvocation extends BasicProcess {
 			deb.set(GregorianCalendar.MINUTE, minuteDeb);
 
 			GregorianCalendar fin = (GregorianCalendar) deb.clone();
+			fin.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 			fin.set(GregorianCalendar.MINUTE, diffFinDeb);
 
 			getListeHeureRDV().add(formatDate.format(deb.getTime()));

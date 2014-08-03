@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
@@ -103,6 +104,7 @@ public class OePTGVentilationUtils {
 
 	public static String getMondayFromWeekNumberAndYear(int week, int year) {
 		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		// cal.setTime(listePointage.get(idPtg).getDate());
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.WEEK_OF_YEAR, week); // back to previous week

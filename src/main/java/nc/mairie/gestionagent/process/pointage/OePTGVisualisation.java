@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,6 +77,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	private void afficheListePointages() {
 		GregorianCalendar greg = new GregorianCalendar();
+		greg.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			greg.setTime(ptg.getDate());
@@ -1478,6 +1480,7 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getLundi(int idPtg) {
 		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		cal.setTime(listePointage.get(idPtg).getDate());
 		cal.set(Calendar.DAY_OF_WEEK, -6); // back to previous week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // jump to next monday.
@@ -1493,6 +1496,7 @@ public class OePTGVisualisation extends BasicProcess {
 		}
 
 		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		try {
 			cal.setTimeInMillis(sdf.parse(dateCreation).getTime());
 		} catch (ParseException ex) {
