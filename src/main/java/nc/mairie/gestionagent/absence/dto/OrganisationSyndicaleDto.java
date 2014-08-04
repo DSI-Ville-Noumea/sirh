@@ -41,7 +41,7 @@ public class OrganisationSyndicaleDto {
 
 	@Override
 	public boolean equals(Object obj) {
-		return idOrganisation == ((OrganisationSyndicaleDto) obj).getIdOrganisation();
+		return idOrganisation.toString().equals(((OrganisationSyndicaleDto) obj).getIdOrganisation().toString());
 	}
 
 }

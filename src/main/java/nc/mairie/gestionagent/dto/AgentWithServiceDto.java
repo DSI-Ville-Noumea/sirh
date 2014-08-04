@@ -80,6 +80,6 @@ public class AgentWithServiceDto implements IJSONSerialize, IJSONDeserialize<Age
 
 	@Override
 	public boolean equals(Object obj) {
-		return idAgent.equals(((AgentWithServiceDto) obj).getIdAgent());
+		return idAgent.toString().equals(((AgentWithServiceDto) obj).getIdAgent().toString());
 	}
 }

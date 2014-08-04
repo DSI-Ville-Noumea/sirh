@@ -89,6 +89,7 @@ import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
+import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -187,6 +188,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private CompetenceFPDao competenceFPDao;
 	private ActiviteDao activiteDao;
 	private ActiviteFPDao activiteFPDao;
+	private FicheEmploiDao ficheEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -891,6 +893,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getActiviteFPDao() == null) {
 			setActiviteFPDao(new ActiviteFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFicheEmploiDao() == null) {
+			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1921,13 +1926,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 			// Recherche de tous les liens FicheEmploi / FichePoste
 			ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpSecondaire.getIdFichePoste()));
-			FicheEmploi fe = FicheEmploi
-					.chercherFicheEmploiAvecFichePoste(getTransaction(), fpSecondaire, false, liens);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (fe != null) {
-				fichePosteEae.setEmploi(fe.getNomMetierEmploi());
+			try {
+				FicheEmploi fe = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens);
+				if (fe != null) {
+					fichePosteEae.setEmploi(fe.getNomMetierEmploi());
+				}
+			} catch (Exception e) {
 
 			}
 			// pour la fonction
@@ -2140,14 +2144,15 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				// Recherche de tous les liens FicheEmploi / FichePoste
 				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpPrincipale.getIdFichePoste()));
-				FicheEmploi fe = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), fpPrincipale, true,
-						liens);
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					FicheEmploi fe = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens);
+					if (fe != null) {
+						fpModif.setEmploi(fe.getNomMetierEmploi());
+					}
+				} catch (Exception e) {
+
 				}
-				if (fe != null) {
-					fpModif.setEmploi(fe.getNomMetierEmploi());
-				}
+
 				// pour la fonction
 				try {
 					TitrePoste tp = getTitrePosteDao().chercherTitrePoste(
@@ -4187,5 +4192,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setActiviteFPDao(ActiviteFPDao activiteFPDao) {
 		this.activiteFPDao = activiteFPDao;
+	}
+
+	public FicheEmploiDao getFicheEmploiDao() {
+		return ficheEmploiDao;
+	}
+
+	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
+		this.ficheEmploiDao = ficheEmploiDao;
 	}
 }

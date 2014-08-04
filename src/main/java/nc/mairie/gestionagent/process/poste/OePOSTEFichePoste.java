@@ -76,6 +76,7 @@ import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
+import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
 import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.NiveauEtudeFPDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
@@ -267,6 +268,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ActiviteDao activiteDao;
 	private ActiviteFEDao activiteFEDao;
 	private ActiviteFPDao activiteFPDao;
+	private FicheEmploiDao ficheEmploiDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 
@@ -445,8 +447,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				// Recherche de tous les liens FicheEmploi / FichePoste
 				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(
 						Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
-				setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-						getFichePosteCourante(), true, liens));
+				setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens));
 				afficheFEP();
 			}
 		}
@@ -564,6 +565,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		}
 		if (getActiviteFPDao() == null) {
 			setActiviteFPDao(new ActiviteFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFicheEmploiDao() == null) {
+			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1029,7 +1033,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getEmploiPrimaire() != null && getEmploiPrimaire().getIdFicheEmploi() != null) {
 			// Recherche de tous les liens FicheEmploi / Competence
 			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFE(
-					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+					getEmploiPrimaire().getIdFicheEmploi());
 			setListeCompFEP(getCompetenceDao().listerCompetenceAvecFE(liens));
 			for (Competence compFP : getListeCompFEP()) {
 				trouve = false;
@@ -1052,7 +1056,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			trouve = false;
 			// Recherche de tous les liens FicheEmploi / Competence
 			ArrayList<CompetenceFE> liens = getCompetenceFEDao().listerCompetenceFEAvecFE(
-					Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+					getEmploiSecondaire().getIdFicheEmploi());
 			setListeCompFES(getCompetenceDao().listerCompetenceAvecFE(liens));
 			for (Competence compFP : getListeCompFES()) {
 				trouve = false;
@@ -1943,11 +1947,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 		ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(
 				Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 		// Sauvegarde des fiche emploi primaire et secondaire
-		FicheEmploi emploiPrimaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-				getFichePosteCourante(), true, liens);
+		FicheEmploi emploiPrimaireTest = null;
+		try {
+			emploiPrimaireTest = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens);
+		} catch (Exception e) {
+
+		}
 		if (emploiPrimaireTest == null) {
 			FEFP fefpPrimaire = new FEFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
-					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()), true);
+					getEmploiPrimaire().getIdFicheEmploi(), true);
 			getFefpDao().creerFEFP(fefpPrimaire.getIdFicheEmploi(), fefpPrimaire.getIdFichePoste(),
 					fefpPrimaire.isFePrimaire());
 			if (getTransaction().isErreur()) {
@@ -1961,7 +1969,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			getFefpDao().supprimerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
 					ancienLien.isFePrimaire());
 			ancienLien.setFePrimaire(true);
-			ancienLien.setIdFicheEmploi(Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+			ancienLien.setIdFicheEmploi(getEmploiPrimaire().getIdFicheEmploi());
 			getFefpDao().creerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
 					ancienLien.isFePrimaire());
 		}
@@ -1971,11 +1979,15 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// Recherche de tous les liens FicheEmploi / FichePoste
 			ArrayList<FEFP> liensA = getFefpDao().listerFEFPAvecFP(
 					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
-			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false, liensA);
+			FicheEmploi emploiSecondaireTest = null;
+			try {
+				emploiSecondaireTest = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liensA);
+			} catch (Exception e) {
+
+			}
 			if (emploiSecondaireTest == null) {
 				FEFP fefpSecondaire = new FEFP(Integer.valueOf(getFichePosteCourante().getIdFichePoste()),
-						Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()), false);
+						getEmploiSecondaire().getIdFicheEmploi(), false);
 				getFefpDao().creerFEFP(fefpSecondaire.getIdFicheEmploi(), fefpSecondaire.getIdFichePoste(),
 						fefpSecondaire.isFePrimaire());
 				if (getTransaction().isErreur()) {
@@ -1991,7 +2003,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getFefpDao().supprimerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
 						ancienLien.isFePrimaire());
 				ancienLien.setFePrimaire(false);
-				ancienLien.setIdFicheEmploi(Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+				ancienLien.setIdFicheEmploi(getEmploiSecondaire().getIdFicheEmploi());
 				getFefpDao().creerFEFP(ancienLien.getIdFicheEmploi(), ancienLien.getIdFichePoste(),
 						ancienLien.isFePrimaire());
 			}
@@ -2001,8 +2013,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			ArrayList<FEFP> liensB = getFefpDao().listerFEFPAvecFP(
 					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			// on supprime le lien eventuel
-			FicheEmploi emploiSecondaireTest = FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false, liensB);
+			FicheEmploi emploiSecondaireTest = null;
+			try {
+				emploiSecondaireTest = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liensB);
+			} catch (Exception e) {
+
+			}
 			if (emploiSecondaireTest != null) {
 				// on modifie le lien avec le num FE secondaire
 				FEFP ancienLien = getFefpDao().chercherFEFPAvecNumFPPrimaire(
@@ -3556,14 +3572,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			ArrayList<FEFP> liens1 = getFefpDao().listerFEFPAvecFP(
 					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
 			// Init fiches emploi
-			setEmploiPrimaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(), getFichePosteCourante(),
-					true, liens1));
+			setEmploiPrimaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens1));
 
 			// Recherche de tous les liens FicheEmploi / FichePoste
 			ArrayList<FEFP> liens2 = getFefpDao().listerFEFPAvecFP(
 					Integer.valueOf(getFichePosteCourante().getIdFichePoste()));
-			setEmploiSecondaire(FicheEmploi.chercherFicheEmploiAvecFichePoste(getTransaction(),
-					getFichePosteCourante(), false, liens2));
+			setEmploiSecondaire(getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens2));
 
 			// Init Service
 			if (getFichePosteCourante().getIdServi() != null && getFichePosteCourante().getIdServi().length() != 0) {
@@ -3650,7 +3664,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// Recherche de tous les liens FicheEmploi / Activite
 			ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
-					Integer.valueOf(getEmploiPrimaire().getIdFicheEmploi()));
+					getEmploiPrimaire().getIdFicheEmploi());
 			setListeActiFEP(getActiviteDao().listerActiviteAvecFE(liens));
 			for (int i = 0; i < getListeActiFEP().size(); i++) {
 				trouve = false;
@@ -3676,7 +3690,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			// Recherche de tous les liens FicheEmploi / Activite
 			ArrayList<ActiviteFE> liens = getActiviteFEDao().listerActiviteFEAvecFE(
-					Integer.valueOf(getEmploiSecondaire().getIdFicheEmploi()));
+					getEmploiSecondaire().getIdFicheEmploi());
 			setListeActiFES(getActiviteDao().listerActiviteAvecFE(liens));
 			for (Activite actiFP : getListeActiFES()) {
 				trouve = false;
@@ -6488,7 +6502,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_CONSULTER_FICHE_EMPLOI_PRIMAIRE(HttpServletRequest request) throws Exception {
 
-		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
+		FicheEmploi fiche = getFicheEmploiDao().chercherFicheEmploiAvecRefMairie(getVAL_ST_EMPLOI_PRIMAIRE());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
 		setStatut(STATUT_FICHE_EMPLOI, true);
 		return true;
@@ -6514,7 +6528,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 */
 	public boolean performPB_CONSULTER_FICHE_EMPLOI_SECONDAIRE(HttpServletRequest request) throws Exception {
 
-		FicheEmploi fiche = FicheEmploi.chercherFicheEmploiAvecRefMairie(getTransaction(), getVAL_ST_EMPLOI_PRIMAIRE());
+		FicheEmploi fiche = getFicheEmploiDao().chercherFicheEmploiAvecRefMairie(getVAL_ST_EMPLOI_PRIMAIRE());
 		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_FICHE_EMPLOI, fiche);
 		setStatut(STATUT_FICHE_EMPLOI, true);
 		return true;
@@ -6920,5 +6934,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setActiviteFPDao(ActiviteFPDao activiteFPDao) {
 		this.activiteFPDao = activiteFPDao;
+	}
+
+	public FicheEmploiDao getFicheEmploiDao() {
+		return ficheEmploiDao;
+	}
+
+	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
+		this.ficheEmploiDao = ficheEmploiDao;
 	}
 }

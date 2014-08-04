@@ -12,7 +12,6 @@ import nc.mairie.metier.parametrage.DiplomeGenerique;
 import nc.mairie.metier.parametrage.DomaineEmploi;
 import nc.mairie.metier.parametrage.FamilleEmploi;
 import nc.mairie.metier.poste.DiplomeFE;
-import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.metier.carriere.CategorieDao;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DiplomeGeneriqueDao;
@@ -20,6 +19,7 @@ import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
 import nc.mairie.spring.dao.metier.poste.CategorieFEDao;
 import nc.mairie.spring.dao.metier.poste.DiplomeFEDao;
+import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -70,6 +70,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 	private CategorieFEDao categorieFEDao;
 	private CategorieDao categorieDao;
 	private DiplomeFEDao diplomeFEDao;
+	private FicheEmploiDao ficheEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -160,6 +161,9 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (getDiplomeFEDao() == null) {
 			setDiplomeFEDao(new DiplomeFEDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getFicheEmploiDao() == null) {
+			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -197,7 +201,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<DomaineEmploi> list = getListeDomaine().listIterator(); list.hasNext();) {
 				DomaineEmploi de = (DomaineEmploi) list.next();
-				String ligne[] = { de.getCodeDomaineEmploi(), de.getLibDomaineEmploi() };
+				String ligne[] = { de.getCodeDomaineFe(), de.getLibDomaineFe() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -357,8 +361,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (indice != -1 && indice < getListeDomaine().size()) {
 			DomaineEmploi de = getListeDomaine().get(indice);
 			setDomaineEmploiCourant(de);
-			addZone(getNOM_EF_LIB_DOMAINE(), de.getLibDomaineEmploi());
-			addZone(getNOM_EF_CODE_DOMAINE(), de.getCodeDomaineEmploi());
+			addZone(getNOM_EF_LIB_DOMAINE(), de.getLibDomaineFe());
+			addZone(getNOM_EF_CODE_DOMAINE(), de.getCodeDomaineFe());
 			addZone(getNOM_ST_ACTION_DOMAINE(), ACTION_SUPPRESSION);
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "domaines d'activité"));
@@ -393,14 +397,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (getVAL_ST_ACTION_DOMAINE() != null && getVAL_ST_ACTION_DOMAINE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_CREATION)) {
 				setDomaineEmploiCourant(new DomaineEmploi());
-				getDomaineEmploiCourant().setCodeDomaineEmploi(getVAL_EF_CODE_DOMAINE());
-				getDomaineEmploiCourant().setLibDomaineEmploi(getVAL_EF_LIB_DOMAINE());
-				getDomaineEmploiDao().creerDomaineEmploi(getDomaineEmploiCourant().getLibDomaineEmploi(),
-						getDomaineEmploiCourant().getCodeDomaineEmploi());
+				getDomaineEmploiCourant().setCodeDomaineFe(getVAL_EF_CODE_DOMAINE());
+				getDomaineEmploiCourant().setLibDomaineFe(getVAL_EF_LIB_DOMAINE());
+				getDomaineEmploiDao().creerDomaineEmploi(getDomaineEmploiCourant().getLibDomaineFe(),
+						getDomaineEmploiCourant().getCodeDomaineFe());
 				if (!getTransaction().isErreur())
 					getListeDomaine().add(getDomaineEmploiCourant());
 			} else if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_SUPPRESSION)) {
-				getDomaineEmploiDao().supprimerDomaineEmploi(getDomaineEmploiCourant().getIdDomaineEmploi());
+				getDomaineEmploiDao().supprimerDomaineEmploi(getDomaineEmploiCourant().getIdDomaineFe());
 				if (!getTransaction().isErreur())
 					getListeDomaine().remove(getDomaineEmploiCourant());
 				setDomaineEmploiCourant(null);
@@ -447,7 +451,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 		// Verification si suppression d'un domaine utilisé sur une fiche emploi
 		if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecDomaineEmploi(getTransaction(), getDomaineEmploiCourant()).size() > 0) {
+				&& getFicheEmploiDao().listerFicheEmploiAvecDomaineEmploi(getDomaineEmploiCourant().getIdDomaineFe())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -459,14 +464,14 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		if (getVAL_ST_ACTION_DOMAINE().equals(ACTION_CREATION)) {
 
 			for (DomaineEmploi domaine : getListeDomaine()) {
-				if (domaine.getCodeDomaineEmploi().equals(getVAL_EF_CODE_DOMAINE().toUpperCase())) {
+				if (domaine.getCodeDomaineFe().equals(getVAL_EF_CODE_DOMAINE().toUpperCase())) {
 					// "ERR974",
 					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce code"));
 					return false;
 				}
-				if (domaine.getLibDomaineEmploi().equals(getVAL_EF_LIB_DOMAINE().toUpperCase())) {
+				if (domaine.getLibDomaineFe().equals(getVAL_EF_LIB_DOMAINE().toUpperCase())) {
 					getTransaction().declarerErreur(
 							MessageUtils.getMessage("ERR974", "un domaine d'activité", "ce libellé"));
 					return false;
@@ -734,7 +739,8 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// Verification si suppression d'une famille d'emploi utilisée sur une
 		// fiche emploi
 		if (getVAL_ST_ACTION_FAMILLE().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecFamilleEmploi(getTransaction(), getFamilleCourante()).size() > 0) {
+				&& getFicheEmploiDao().listerFicheEmploiAvecFamilleEmploi(getFamilleCourante().getIdFamilleEmploi())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1016,7 +1022,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 				getDiplomeCourant().getIdDiplomeGenerique());
 
 		if (getVAL_EF_ACTION_DIPLOME().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecDiplome(getTransaction(), getDiplomeCourant(), liens).size() > 0) {
+				&& getFicheEmploiDao().listerFicheEmploiAvecDiplome(liens).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1810,8 +1816,7 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 		// emploi
 		// **********************************************************************
 		if (getVAL_EF_ACTION_CODE_ROME().equals(ACTION_SUPPRESSION)
-				&& FicheEmploi.listerFicheEmploiAvecCodeRome(getTransaction(),
-						getCodeRomeCourant().getIdCodeRome().toString()).size() > 0) {
+				&& getFicheEmploiDao().listerFicheEmploiAvecCodeRome(getCodeRomeCourant().getIdCodeRome()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1995,5 +2000,13 @@ public class OePARAMETRAGEFicheEmploi extends BasicProcess {
 
 	public void setDiplomeFEDao(DiplomeFEDao diplomeFEDao) {
 		this.diplomeFEDao = diplomeFEDao;
+	}
+
+	public FicheEmploiDao getFicheEmploiDao() {
+		return ficheEmploiDao;
+	}
+
+	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
+		this.ficheEmploiDao = ficheEmploiDao;
 	}
 }

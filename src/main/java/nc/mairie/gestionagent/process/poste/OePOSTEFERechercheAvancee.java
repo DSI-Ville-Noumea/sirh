@@ -13,6 +13,7 @@ import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.spring.dao.metier.parametrage.CodeRomeDao;
 import nc.mairie.spring.dao.metier.parametrage.DomaineEmploiDao;
 import nc.mairie.spring.dao.metier.parametrage.FamilleEmploiDao;
+import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -46,6 +47,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 	private CodeRomeDao codeRomeDao;
 	private DomaineEmploiDao domaineEmploiDao;
 	private FamilleEmploiDao familleEmploiDao;
+	private FicheEmploiDao ficheEmploiDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -72,6 +74,9 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		}
 		if (getFamilleEmploiDao() == null) {
 			setFamilleEmploiDao(new FamilleEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFicheEmploiDao() == null) {
+			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -109,7 +114,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
 				for (ListIterator<DomaineEmploi> list = getListeDomaineEmploi().listIterator(); list.hasNext();) {
 					DomaineEmploi de = (DomaineEmploi) list.next();
-					String ligne[] = { de.getCodeDomaineEmploi(), de.getLibDomaineEmploi() };
+					String ligne[] = { de.getCodeDomaineFe(), de.getLibDomaineFe() };
 					aFormat.ajouteLigne(ligne);
 				}
 				setLB_DOMAINE_EMPLOI(aFormat.getListeFormatee(true));
@@ -126,7 +131,7 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 		// Si liste Nom Emploi vide alors affectation
 		if (getListeFormNomEmploi().size() == 0) {
-			ArrayList<FicheEmploi> listFicheEmploi = FicheEmploi.listerFicheEmploi(getTransaction());
+			ArrayList<FicheEmploi> listFicheEmploi = (ArrayList<FicheEmploi>) getFicheEmploiDao().listerFicheEmploi();
 			setListeFormNomEmploi(listFicheEmploi);
 		}
 	}
@@ -243,8 +248,12 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 		// Recuperation Nom mploi
 		String nomEmploi = getVAL_EF_NOM_EMPLOI();
 
-		ArrayList<FicheEmploi> fe = FicheEmploi.listerFicheEmploiAvecCriteresAvances(getTransaction(), domaineEmploi,
-				famEmploi, codeRome, refMairie, nomEmploi);
+		ArrayList<FicheEmploi> fe = getFicheEmploiDao().listerFicheEmploiAvecCriteresAvances(
+				domaineEmploi == null ? null : domaineEmploi.getIdDomaineFe(),
+				famEmploi == null ? null : famEmploi.getIdFamilleEmploi(),
+				codeRome.equals(Const.CHAINE_VIDE) ? null : codeRome,
+				refMairie.equals(Const.CHAINE_VIDE) ? null : refMairie,
+				nomEmploi.equals(Const.CHAINE_VIDE) ? null : nomEmploi);
 		setListeFE(fe);
 
 		return fillList();
@@ -707,5 +716,13 @@ public class OePOSTEFERechercheAvancee extends BasicProcess {
 
 	public void setFamilleEmploiDao(FamilleEmploiDao familleEmploiDao) {
 		this.familleEmploiDao = familleEmploiDao;
+	}
+
+	public FicheEmploiDao getFicheEmploiDao() {
+		return ficheEmploiDao;
+	}
+
+	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
+		this.ficheEmploiDao = ficheEmploiDao;
 	}
 }

@@ -42,9 +42,9 @@ public class DomaineEmploiDao extends SirhDao implements DomaineEmploiDaoInterfa
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
 		for (Map<String, Object> row : rows) {
 			DomaineEmploi dom = new DomaineEmploi();
-			dom.setIdDomaineEmploi((Integer) row.get(CHAMP_ID));
-			dom.setLibDomaineEmploi((String) row.get(CHAMP_LIB_DOMAINE_FE));
-			dom.setCodeDomaineEmploi((String) row.get(CHAMP_CODE_DOMAINE_FE));
+			dom.setIdDomaineFe((Integer) row.get(CHAMP_ID));
+			dom.setLibDomaineFe((String) row.get(CHAMP_LIB_DOMAINE_FE));
+			dom.setCodeDomaineFe((String) row.get(CHAMP_CODE_DOMAINE_FE));
 
 			listeDom.add(dom);
 		}
