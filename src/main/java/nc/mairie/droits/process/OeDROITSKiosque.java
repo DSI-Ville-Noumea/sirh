@@ -15,6 +15,9 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -22,6 +25,9 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
+
 import flexjson.JSONSerializer;
 
 /**
@@ -40,6 +46,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
 	private Hashtable<AgentWithServiceDto, ArrayList<String>> hashApprobateur;
+	private FichePosteDao fichePosteDao;
 
 	public String focus = null;
 	private boolean first = true;
@@ -71,8 +78,11 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
 	 * doivent avoir les Fields PUBLIC Utilisation de la méthode
 	 * addZone(getNOMxxx, String); Date de création : (10/10/11 16:15:05)
-	 * @param request HttpServletRequest
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws Exception
+	 *             Exception
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -85,6 +95,7 @@ public class OeDROITSKiosque extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		if (etatStatut() == STATUT_APPROBATEUR) {
 			ajouteApprobateurs(request);
@@ -97,6 +108,15 @@ public class OeDROITSKiosque extends BasicProcess {
 		// on recupere les approbateurs de ABS
 		afficheListeApprobateurs();
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeApprobateur() {
@@ -152,8 +172,8 @@ public class OeDROITSKiosque extends BasicProcess {
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", ag.getIdAgent()));
 						throw new Exception();
 					}
-					FichePoste fpCourante = FichePoste.chercherFichePoste(getTransaction(),
-							affCourante.getIdFichePoste());
+					FichePoste fpCourante = getFichePosteDao().chercherFichePoste(
+							Integer.valueOf(affCourante.getIdFichePoste()));
 					Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
 
 					agentDto.setNom(ag.getNomAgent());
@@ -190,6 +210,7 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	/**
 	 * Retourne le nom de l'ecran utilisé par la gestion des droits
+	 * 
 	 * @return String
 	 */
 	public String getNomEcran() {
@@ -199,8 +220,11 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Méthode appelée par la servlet qui aiguille le traitement : en fonction
 	 * du bouton de la JSP Date de création : (10/10/11 14:37:55)
-	 * @param request HttpServletRequest
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws Exception
+	 *             Exception
 	 * @return boolean
 	 * 
 	 */
@@ -255,6 +279,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom de la JSP du process Zone à utiliser dans un champ caché
 	 * dans chaque formulaire de la JSP. Date de création : (20/10/11 11:05:27)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -273,7 +298,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
-	 * @param i id
+	 * 
+	 * @param i
+	 *            id
 	 * @return String
 	 * 
 	 */
@@ -284,7 +311,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_AGENT Date de
 	 * création : (18/08/11 10:21:15)
-	 * @param i id
+	 * 
+	 * @param i
+	 *            id
 	 * @return String
 	 * 
 	 */
@@ -295,7 +324,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_SERVICE Date de
 	 * création : (18/08/11 10:21:15)
-	 * @param i id
+	 * 
+	 * @param i
+	 *            id
 	 * @return String
 	 * 
 	 */
@@ -306,7 +337,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_SERVICE Date
 	 * de création : (18/08/11 10:21:15)
-	 * @param i id
+	 * 
+	 * @param i
+	 *            id
 	 * @return String
 	 * 
 	 */
@@ -317,6 +350,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -327,6 +361,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne la valeur à afficher par la JSP pour la zone : ST_ACTION Date de
 	 * création : (05/09/11 11:39:24)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -337,6 +372,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_AJOUTER Date de création :
 	 * (05/09/11 11:31:37)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -349,8 +385,11 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * @param request HttpServletRequest
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws Exception
+	 *             Exception
 	 * @return boolean
 	 * 
 	 */
@@ -363,7 +402,9 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_SUPPRIMMER Date de création
 	 * : (05/09/11 11:31:37)
-	 * @param i id
+	 * 
+	 * @param i
+	 *            id
 	 * @return String
 	 * 
 	 */
@@ -376,9 +417,13 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * @param request HttpServletRequest
-	 * @param indiceEltASuprimer indice element
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @param indiceEltASuprimer
+	 *            indice element
+	 * @throws Exception
+	 *             Exception
 	 * @return boolean
 	 * 
 	 */
@@ -411,6 +456,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_VALIDER Date de création :
 	 * (05/09/11 11:31:37)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -423,8 +469,11 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * @param request HttpServletRequest
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws Exception
+	 *             Exception
 	 * @return boolean
 	 * 
 	 */
@@ -472,6 +521,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	/**
 	 * Retourne le nom d'un bouton pour la JSP : PB_ANNULER Date de création :
 	 * (05/09/11 11:31:37)
+	 * 
 	 * @return String
 	 * 
 	 */
@@ -484,8 +534,11 @@ public class OeDROITSKiosque extends BasicProcess {
 	 * règles de gestion du process - Positionne un statut en fonction de ces
 	 * règles : setStatut(STATUT, boolean veutRetour) ou
 	 * setStatut(STATUT,Message d'erreur) Date de création : (05/09/11 11:31:37)
-	 * @param request HttpServletRequest
-	 * @throws Exception Exception
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws Exception
+	 *             Exception
 	 * @return boolean
 	 * 
 	 */
@@ -573,5 +626,13 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public String getNOM_RB_TRI_SERVICE() {
 		return "NOM_RB_TRI_SERVICE";
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

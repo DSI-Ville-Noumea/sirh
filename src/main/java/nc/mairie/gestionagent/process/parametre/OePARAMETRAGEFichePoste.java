@@ -13,13 +13,13 @@ import nc.mairie.metier.parametrage.TypeDelegation;
 import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Ecole;
 import nc.mairie.metier.poste.EntiteGeo;
-import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.NFADao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureDao;
@@ -95,6 +95,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private RegIndemnDao regIndemnDao;
 	private TitrePosteDao titrePosteDao;
 	private NFADao nfaDao;
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -166,6 +167,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getNfaDao() == null) {
 			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1083,7 +1087,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'une entité géographique utilisée sur
 		// une fiche de poste
 		if (getVAL_ST_ACTION_ENTITE_GEO().equals(ACTION_SUPPRESSION)
-				&& FichePoste.listerFichePosteAvecEntiteGeo(getTransaction(), getEntiteGeoCourante()).size() > 0) {
+				&& getFichePosteDao().listerFichePosteAvecEntiteGeo(
+						Integer.valueOf(getEntiteGeoCourante().getIdEntiteGeo())).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -1282,7 +1287,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		// Verification si suppression d'un titre de poste utilisé sur une fiche
 		// de poste
 		if (getVAL_ST_ACTION_TITRE().equals(ACTION_SUPPRESSION)
-				&& FichePoste.listerFichePosteAvecTitrePoste(getTransaction(), getTitrePosteCourante()).size() > 0) {
+				&& getFichePosteDao().listerFichePosteAvecTitrePoste(getTitrePosteCourante().getIdTitrePoste()).size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -3232,5 +3237,13 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setNfaDao(NFADao nfaDao) {
 		this.nfaDao = nfaDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

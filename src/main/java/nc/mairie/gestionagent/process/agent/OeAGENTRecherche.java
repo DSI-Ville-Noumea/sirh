@@ -12,6 +12,9 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableActivite;
@@ -19,6 +22,8 @@ import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTRecherche Date de création : (01/01/03 09:35:10)
@@ -37,6 +42,8 @@ public class OeAGENTRecherche extends BasicProcess {
 	private AgentNW AgentActivite;
 	public String focus = null;
 	private boolean first = true;
+
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (28/03/2003
@@ -115,7 +122,7 @@ public class OeAGENTRecherche extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
+		initialiseDao();
 		// Récup de l'agent activité, s'il existe
 		AgentNW aAgent = (AgentNW) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 		if (aAgent != null) {
@@ -130,6 +137,15 @@ public class OeAGENTRecherche extends BasicProcess {
 
 		// Initialise la liste des services
 		initialiseListeService();
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -299,16 +315,16 @@ public class OeAGENTRecherche extends BasicProcess {
 					getTransaction().traiterErreur();
 				}
 				if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
-					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
+					try {
+						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 						Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
 							service = serv.getLibService();
 						}
+					} catch (Exception e) {
+
 					}
 				}
 
@@ -752,16 +768,16 @@ public class OeAGENTRecherche extends BasicProcess {
 				getTransaction().traiterErreur();
 			}
 			if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
-				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
+				try {
+					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 					Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {
 						service = serv.getLibService();
 					}
+				} catch (Exception e) {
+
 				}
 			}
 
@@ -786,5 +802,13 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	public String getVAL_ST_RUAMM(int i) {
 		return getZone(getNOM_ST_RUAMM(i));
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

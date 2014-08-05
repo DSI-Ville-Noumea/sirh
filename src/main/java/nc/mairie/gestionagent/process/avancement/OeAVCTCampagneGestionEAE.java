@@ -90,6 +90,7 @@ import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
 import nc.mairie.spring.dao.metier.poste.FicheEmploiDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeCompetenceDao;
@@ -189,6 +190,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private ActiviteDao activiteDao;
 	private ActiviteFPDao activiteFPDao;
 	private FicheEmploiDao ficheEmploiDao;
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -342,9 +344,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						}
 
 						if (aff != null && aff.getIdFichePoste() != null) {
-							FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-							TitrePoste tp = getTitrePosteDao()
-									.chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+							FichePoste fp = getFichePosteDao().chercherFichePoste(
+									Integer.valueOf(aff.getIdFichePoste()));
+							TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
@@ -593,26 +595,27 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 		} else {
-			fpPrincipale = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePoste());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			} else {
+			try {
+				fpPrincipale = getFichePosteDao().chercherFichePoste(Integer.valueOf(affAgent.getIdFichePoste()));
 				// on recupere le superieur hierarchique
 				if (fpPrincipale.getIdResponsable() != null) {
-					Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(),
-							fpPrincipale.getIdResponsable());
+					Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(), fpPrincipale
+							.getIdResponsable().toString());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
 					if (affSuperieur.getIdFichePoste() != null) {
-						fpResponsable = FichePoste.chercherFichePoste(getTransaction(), affSuperieur.getIdFichePoste());
-						tpResp = getTitrePosteDao()
-								.chercherTitrePoste(Integer.valueOf(fpResponsable.getIdTitrePoste()));
+						fpResponsable = getFichePosteDao().chercherFichePoste(
+								Integer.valueOf(affSuperieur.getIdFichePoste()));
+						tpResp = getTitrePosteDao().chercherTitrePoste(fpResponsable.getIdTitrePoste());
 					}
 				}
+			} catch (Exception e) {
+
 			}
 			if (affAgent.getIdFichePosteSecondaire() != null) {
-				fpSecondaire = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePosteSecondaire());
+				fpSecondaire = getFichePosteDao().chercherFichePoste(
+						Integer.valueOf(affAgent.getIdFichePosteSecondaire()));
 			}
 		}
 
@@ -896,6 +899,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getFicheEmploiDao() == null) {
 			setFicheEmploiDao(new FicheEmploiDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1798,8 +1804,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerCompetencesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
 		// Recherche de tous les liens FichePoste / Competence
-		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
-				Integer.valueOf(fpSecondaire.getIdFichePoste()));
+		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(fpSecondaire.getIdFichePoste());
 		ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
@@ -1817,8 +1822,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerCompetencesFichePostePrincipale(HttpServletRequest request, FichePoste fpPrincipale)
 			throws Exception {
 		// Recherche de tous les liens FichePoste / Competence
-		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
-				Integer.valueOf(fpPrincipale.getIdFichePoste()));
+		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(fpPrincipale.getIdFichePoste());
 		ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
 		for (int i = 0; i < listCompFDP.size(); i++) {
 			Competence comp = listCompFDP.get(i);
@@ -1838,8 +1842,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// gère les activites
 
 		// Recherche de tous les liens FicheEmploi / Activite
-		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(
-				Integer.valueOf(fpPrincipale.getIdFichePoste()));
+		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpPrincipale.getIdFichePoste());
 		ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
@@ -1856,8 +1859,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// gère les activites
 
 		// Recherche de tous les liens FicheEmploi / Activite
-		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(
-				Integer.valueOf(fpSecondaire.getIdFichePoste()));
+		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpSecondaire.getIdFichePoste());
 		ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
 		for (int i = 0; i < listActFDP.size(); i++) {
 			Activite act = listActFDP.get(i);
@@ -1903,10 +1905,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
 			EaeFichePoste fichePosteEae = new EaeFichePoste();
 			fichePosteEae.setIdEae(eae.getIdEae());
-			fichePosteEae.setIdSirhFichePoste(Integer.valueOf(fpSecondaire.getIdFichePoste()));
+			fichePosteEae.setIdSirhFichePoste(fpSecondaire.getIdFichePoste());
 			if (fpSecondaire.getIdResponsable() != null) {
-				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(),
-						fpSecondaire.getIdResponsable());
+				AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpSecondaire
+						.getIdResponsable().toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				}
@@ -1925,7 +1927,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// pour l'emploi
 
 			// Recherche de tous les liens FicheEmploi / FichePoste
-			ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpSecondaire.getIdFichePoste()));
+			ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(fpSecondaire.getIdFichePoste());
 			try {
 				FicheEmploi fe = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(false, liens);
 				if (fe != null) {
@@ -1936,7 +1938,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 			// pour la fonction
 			try {
-				TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fpSecondaire.getIdTitrePoste()));
+				TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fpSecondaire.getIdTitrePoste());
 				fichePosteEae.setFonction(tp.getLibTitrePoste());
 			} catch (Exception e) {
 
@@ -1957,7 +1959,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			} else {
 				fichePosteEae.setGradePoste(g.getGrade());
 			}
-			EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpSecondaire.getIdEntiteGeo());
+			EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpSecondaire.getIdEntiteGeo().toString());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 			} else {
@@ -1965,19 +1967,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 			fichePosteEae.setMissions(fpSecondaire.getMissions());
 			if (fpSecondaire.getIdResponsable() != null) {
-				FichePoste fpResp = FichePoste.chercherFichePoste(getTransaction(), fpSecondaire.getIdResponsable());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
+				try {
+					FichePoste fpResp = getFichePosteDao().chercherFichePoste(fpSecondaire.getIdResponsable());
+
 					try {
-						TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(
-								Integer.valueOf(fpResp.getIdTitrePoste()));
+						TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(fpResp.getIdTitrePoste());
 						fichePosteEae.setFonctionResp(tpResp.getLibTitrePoste());
 					} catch (Exception e) {
 
 					}
-					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
-							fpResp.getIdFichePoste());
+					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp
+							.getIdFichePoste().toString());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
@@ -2035,6 +2035,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 									|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
 						}
 					}
+				} catch (Exception e) {
+
 				}
 			}
 
@@ -2121,10 +2123,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					// ne sera pas renseignée.
 				}
 				fpModif.setIdEae(eae.getIdEae());
-				fpModif.setIdSirhFichePoste(Integer.valueOf(fpPrincipale.getIdFichePoste()));
+				fpModif.setIdSirhFichePoste(fpPrincipale.getIdFichePoste());
 				if (fpPrincipale.getIdResponsable() != null) {
-					AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(),
-							fpPrincipale.getIdResponsable());
+					AgentNW agentResp = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fpPrincipale
+							.getIdResponsable().toString());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					}
@@ -2143,7 +2145,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// pour l'emploi
 
 				// Recherche de tous les liens FicheEmploi / FichePoste
-				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(Integer.valueOf(fpPrincipale.getIdFichePoste()));
+				ArrayList<FEFP> liens = getFefpDao().listerFEFPAvecFP(fpPrincipale.getIdFichePoste());
 				try {
 					FicheEmploi fe = getFicheEmploiDao().chercherFicheEmploiAvecFichePoste(true, liens);
 					if (fe != null) {
@@ -2155,8 +2157,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 				// pour la fonction
 				try {
-					TitrePoste tp = getTitrePosteDao().chercherTitrePoste(
-							Integer.valueOf(fpPrincipale.getIdTitrePoste()));
+					TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fpPrincipale.getIdTitrePoste());
 					fpModif.setFonction(tp.getLibTitrePoste());
 				} catch (Exception e) {
 
@@ -2180,7 +2181,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				} else {
 					fpModif.setGradePoste(g.getGrade());
 				}
-				EntiteGeo lieu = EntiteGeo.chercherEntiteGeo(getTransaction(), fpPrincipale.getIdEntiteGeo());
+				EntiteGeo lieu = EntiteGeo
+						.chercherEntiteGeo(getTransaction(), fpPrincipale.getIdEntiteGeo().toString());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 				} else {
@@ -2188,20 +2190,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				}
 				fpModif.setMissions(fpPrincipale.getMissions());
 				if (fpPrincipale.getIdResponsable() != null) {
-					FichePoste fpResp = FichePoste
-							.chercherFichePoste(getTransaction(), fpPrincipale.getIdResponsable());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
+					try {
+						FichePoste fpResp = getFichePosteDao().chercherFichePoste(fpPrincipale.getIdResponsable());
+
 						try {
-							TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(
-									Integer.valueOf(fpResp.getIdTitrePoste()));
+							TitrePoste tpResp = getTitrePosteDao().chercherTitrePoste(fpResp.getIdTitrePoste());
 							fpModif.setFonctionResp(tpResp.getLibTitrePoste());
 						} catch (Exception e) {
 
 						}
-						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(),
-								fpResp.getIdFichePoste());
+						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp
+								.getIdFichePoste().toString());
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						}
@@ -2265,6 +2264,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 										.parse(dateDebutService));
 							}
 						}
+					} catch (Exception e) {
+
 					}
 
 				}
@@ -2512,7 +2513,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 
 			if (aff != null && aff.getIdFichePoste() != null) {
-				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+				FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 				// on cherche toutes les affectations sur le meme
 				// service et
 				// on prend la date la plus ancienne
@@ -3584,9 +3585,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		if (getTransaction().isErreur()) {
 			getTransaction().traiterErreur();
 		} else {
-			fpPrincipale = FichePoste.chercherFichePoste(getTransaction(), affCours.getIdFichePoste());
+			fpPrincipale = getFichePosteDao().chercherFichePoste(Integer.valueOf(affCours.getIdFichePoste()));
 			if (affCours.getIdFichePosteSecondaire() != null) {
-				fpSecondaire = FichePoste.chercherFichePoste(getTransaction(), affCours.getIdFichePosteSecondaire());
+				fpSecondaire = getFichePosteDao().chercherFichePoste(
+						Integer.valueOf(affCours.getIdFichePosteSecondaire()));
 			}
 		}
 		// on met les données dans EAE-evalué
@@ -4200,5 +4202,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setFicheEmploiDao(FicheEmploiDao ficheEmploiDao) {
 		this.ficheEmploiDao = ficheEmploiDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

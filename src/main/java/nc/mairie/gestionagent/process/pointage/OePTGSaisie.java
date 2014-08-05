@@ -27,6 +27,9 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -38,6 +41,7 @@ import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -58,6 +62,7 @@ public class OePTGSaisie extends BasicProcess {
 	private SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", new Locale("fr", "FR"));
 	private SimpleDateFormat wsdf = new SimpleDateFormat("yyyyMMdd", new Locale("fr", "FR"));
 	private Logger logger = LoggerFactory.getLogger(OePTGSaisie.class);
+	private FichePosteDao fichePosteDao;
 
 	@Override
 	public String getJSP() {
@@ -83,15 +88,24 @@ public class OePTGSaisie extends BasicProcess {
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		VariableGlobale.ajouter(request, "PROCESS_MEMORISE", this);
-		if (MairieUtils.estInterdit(request, getNomEcran())) { // "ERR190",
-																// "Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
+		if (MairieUtils.estInterdit(request, getNomEcran())) {
+			// "ERR190","Opération impossible. Vous ne disposez pas des droits d'accès à cette option."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 		setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
 		if (!getTransaction().isErreur()) {
 			initialiseDonnees();
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -425,12 +439,12 @@ public class OePTGSaisie extends BasicProcess {
 			getTransaction().traiterErreur();
 		} else {
 			if (affAgent.getIdFichePoste() != null) {
-				FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), affAgent.getIdFichePoste());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				} else {
+				try {
+					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(affAgent.getIdFichePoste()));
 					Service serviceAgent = Service.chercherService(getTransaction(), fp.getIdServi());
 					service = serviceAgent.getLibService();
+				} catch (Exception e) {
+
 				}
 			}
 		}
@@ -660,5 +674,13 @@ public class OePTGSaisie extends BasicProcess {
 			absences.put(sdf.format(jour.getDate()), jour.getAbsences());
 			hsups.put(sdf.format(jour.getDate()), jour.getHeuresSup());
 		}
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

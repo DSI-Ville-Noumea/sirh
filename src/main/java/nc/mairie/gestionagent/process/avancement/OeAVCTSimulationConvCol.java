@@ -21,6 +21,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -55,6 +56,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 	public String ACTION_CALCUL = "Calcul";
 
 	private AvancementConvColDao avancementConvColDao;
+	private FichePosteDao fichePosteDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -95,6 +97,9 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAvancementConvColDao() == null) {
 			setAvancementConvColDao(new AvancementConvColDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -378,7 +383,7 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 						if (aff == null || aff.getIdFichePoste() == null) {
 							continue;
 						}
-						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 						Service section = Service.getSection(getTransaction(), fp.getIdServi());
 						if (carr != null) {
@@ -719,5 +724,13 @@ public class OeAVCTSimulationConvCol extends BasicProcess {
 
 	public void setAvancementConvColDao(AvancementConvColDao avancementConvColDao) {
 		this.avancementConvColDao = avancementConvColDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

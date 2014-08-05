@@ -47,15 +47,17 @@ public class FicheEmploiDao extends SirhDao implements FicheEmploiDaoInterface {
 	}
 
 	@Override
-	public void creerFicheEmploi(Integer idDomaineFe, Integer idFamilleEmploi, String refMairie,
+	public Integer creerFicheEmploi(Integer idDomaineFe, Integer idFamilleEmploi, String refMairie,
 			String nomMetierEmploi, String precisionsDiplomes, String lienHierarchique, String definitionEmploi,
 			Integer idCodeRome) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_DOMAINE_FE + "," + CHAMP_ID_FAMILLE_EMPLOI + ","
-				+ CHAMP_REF_MAIRIE + "," + CHAMP_NOM_METIER_EMPLOI + "," + CHAMP_PRECISIONS_DIPLOMES + ","
-				+ CHAMP_LIEN_HIERARCHIQUE + "," + CHAMP_DEFINITION_EMPLOI + "," + CHAMP_ID_CODE_ROME + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql, new Object[] { idDomaineFe, idFamilleEmploi, refMairie.toUpperCase(), nomMetierEmploi,
-				precisionsDiplomes, lienHierarchique, definitionEmploi, idCodeRome });
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_DOMAINE_FE
+				+ "," + CHAMP_ID_FAMILLE_EMPLOI + "," + CHAMP_REF_MAIRIE + "," + CHAMP_NOM_METIER_EMPLOI + ","
+				+ CHAMP_PRECISIONS_DIPLOMES + "," + CHAMP_LIEN_HIERARCHIQUE + "," + CHAMP_DEFINITION_EMPLOI + ","
+				+ CHAMP_ID_CODE_ROME + ") " + "VALUES (?,?,?,?,?,?,?,?))";
+		Integer id = jdbcTemplate.queryForObject(sql,
+				new Object[] { idDomaineFe, idFamilleEmploi, refMairie.toUpperCase(), nomMetierEmploi,
+						precisionsDiplomes, lienHierarchique, definitionEmploi, idCodeRome }, Integer.class);
+		return id;
 	}
 
 	@Override

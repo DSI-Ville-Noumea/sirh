@@ -36,6 +36,7 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
 import nc.mairie.spring.dao.utils.MairieDao;
@@ -108,6 +109,7 @@ public class OeSMConvocation extends BasicProcess {
 	private SPABSENDao spabsenDao;
 	private MedecinDao medecinDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
+	private FichePosteDao fichePosteDao;
 
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
 		return visiteMedicaleDao;
@@ -218,6 +220,9 @@ public class OeSMConvocation extends BasicProcess {
 		}
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -821,9 +826,11 @@ public class OeSMConvocation extends BasicProcess {
 				getTransaction().traiterErreur();
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
-				fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				try {
+					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+				} catch (Exception e) {
+
+				}
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -956,9 +963,11 @@ public class OeSMConvocation extends BasicProcess {
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
-						fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-						if (getTransaction().isErreur())
-							getTransaction().traiterErreur();
+						try {
+							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						} catch (Exception e) {
+
+						}
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1098,9 +1107,11 @@ public class OeSMConvocation extends BasicProcess {
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
-						fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-						if (getTransaction().isErreur())
-							getTransaction().traiterErreur();
+						try {
+							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						} catch (Exception e) {
+
+						}
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1239,9 +1250,11 @@ public class OeSMConvocation extends BasicProcess {
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
-						fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-						if (getTransaction().isErreur())
-							getTransaction().traiterErreur();
+						try {
+							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						} catch (Exception e) {
+
+						}
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1346,9 +1359,11 @@ public class OeSMConvocation extends BasicProcess {
 				getTransaction().traiterErreur();
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
-				fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				try {
+					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+				} catch (Exception e) {
+
+				}
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1446,9 +1461,11 @@ public class OeSMConvocation extends BasicProcess {
 					getTransaction().traiterErreur();
 				FichePoste fp = null;
 				if (aff != null && aff.getIdFichePoste() != null) {
-					fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					try {
+						fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					} catch (Exception e) {
+
+					}
 				}
 				sm.setIdAgent(smAncien.getIdAgent());
 				sm.setNomatr(smAncien.getNomatr());
@@ -1554,9 +1571,11 @@ public class OeSMConvocation extends BasicProcess {
 						getTransaction().traiterErreur();
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
-						fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-						if (getTransaction().isErreur())
-							getTransaction().traiterErreur();
+						try {
+							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						} catch (Exception e) {
+
+						}
 					}
 					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1656,9 +1675,11 @@ public class OeSMConvocation extends BasicProcess {
 				getTransaction().traiterErreur();
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
-				fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				try {
+					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+				} catch (Exception e) {
+
+				}
 			}
 			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -1752,9 +1773,11 @@ public class OeSMConvocation extends BasicProcess {
 				getTransaction().traiterErreur();
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
-				fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				try {
+					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+				} catch (Exception e) {
+
+				}
 			}
 			sm.setIdAgent(vm.getIdAgent());
 			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
@@ -3412,6 +3435,14 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setMedecinDao(MedecinDao medecinDao) {
 		this.medecinDao = medecinDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 
 }

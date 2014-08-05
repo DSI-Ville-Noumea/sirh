@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -39,6 +40,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 
 	private TitrePosteDao titrePosteDao;
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -61,6 +63,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -110,8 +115,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+			FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			addZone(getNOM_ST_LIB_POSTE_AGENT(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 		}
@@ -401,8 +406,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+			FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			addZone(getNOM_ST_LIB_POSTE_AGENT_POSSIBLE(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
 		}
@@ -749,5 +754,13 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

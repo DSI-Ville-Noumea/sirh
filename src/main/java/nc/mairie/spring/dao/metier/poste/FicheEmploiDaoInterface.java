@@ -15,7 +15,7 @@ public interface FicheEmploiDaoInterface {
 			String refMairie, String nomMetierEmploi, String precisionsDiplomes, String lienHierarchique,
 			String definitionEmploi, Integer idCodeRome) throws Exception;
 
-	public void creerFicheEmploi(Integer idDomaineFe, Integer idFamilleEmploi, String refMairie,
+	public Integer creerFicheEmploi(Integer idDomaineFe, Integer idFamilleEmploi, String refMairie,
 			String nomMetierEmploi, String precisionsDiplomes, String lienHierarchique, String definitionEmploi,
 			Integer idCodeRome) throws Exception;
 
@@ -28,8 +28,7 @@ public interface FicheEmploiDaoInterface {
 	public FicheEmploi chercherFicheEmploiAvecFichePoste(boolean emploiPrimaire, ArrayList<FEFP> liens)
 			throws Exception;
 
-	public ArrayList<FicheEmploi> listerFicheEmploiAvecDiplome(ArrayList<DiplomeFE> liens)
-			throws Exception;
+	public ArrayList<FicheEmploi> listerFicheEmploiAvecDiplome(ArrayList<DiplomeFE> liens) throws Exception;
 
 	public ArrayList<FicheEmploi> listerFicheEmploiAvecFamilleEmploi(Integer idFamilleEmploi) throws Exception;
 

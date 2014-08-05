@@ -23,6 +23,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -57,6 +58,7 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 	public String ACTION_CALCUL = "Calcul";
 
 	private AvancementContractuelsDao avancementContractuelsDao;
+	private FichePosteDao fichePosteDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
 
 	/**
@@ -97,6 +99,9 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAvancementContractuelsDao() == null) {
 			setAvancementContractuelsDao(new AvancementContractuelsDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -351,8 +356,8 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 					if (aff.getIdFichePoste() == null) {
 						continue;
 					}
-					FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
-					avct.setNumFp(fp.getNumFP());
+					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					avct.setNumFp(fp.getNumFp());
 					// on cherche à quelle categorie appartient l'agent
 					// (A,B,A+..;)
 					Grade g = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
@@ -700,5 +705,13 @@ public class OeAVCTSimulationContractuels extends BasicProcess {
 
 	public void setAvancementContractuelsDao(AvancementContractuelsDao avancementContractuelsDao) {
 		this.avancementContractuelsDao = avancementContractuelsDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

@@ -34,6 +34,7 @@ import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -99,6 +100,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	private DocumentDao documentDao;
 	private ContratDao contratDao;
 	private TitrePosteDao titrePosteDao;
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -176,6 +178,9 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() throws Exception {
@@ -234,8 +239,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator<Affectation> list = aff.listIterator(); list.hasNext();) {
 						Affectation a = (Affectation) list.next();
-						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), a.getIdFichePoste());
-						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(a.getIdFichePoste()));
+						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 						String ligne[] = { a.getDateDebutAff(), tp.getLibTitrePoste() };
 						aFormat.ajouteLigne(ligne);
 					}
@@ -250,8 +255,10 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		}
 		if (getLB_FICHE_POSTE() == LBVide) {
 			if (null != getAgentCourant()) {
-				ArrayList<FichePoste> listeFp = FichePoste.listerFichePosteAvecAgent(getTransaction(),
+				// Recherche de tous les liens Agent / FichePoste
+				ArrayList<Affectation> liens = Affectation.listerAffectationActiveAvecAgent(getTransaction(),
 						getAgentCourant());
+				ArrayList<FichePoste> listeFp = getFichePosteDao().listerFichePosteAvecAgent(liens);
 				if (listeFp.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -259,9 +266,8 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 					aFormat.ajouteLigne(ligneVide);
 					for (ListIterator<FichePoste> list = listeFp.listIterator(); list.hasNext();) {
 						FichePoste fiche = (FichePoste) list.next();
-						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), fiche.getIdFichePoste());
-						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
-						String ligne[] = { "FP: " + fp.getNumFP(), tp.getLibTitrePoste() };
+						TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fiche.getIdTitrePoste());
+						String ligne[] = { "FP: " + fiche.getNumFp(), tp.getLibTitrePoste() };
 						aFormat.ajouteLigne(ligne);
 					}
 					setLB_FICHE_POSTE(aFormat.getListeFormatee());
@@ -1672,6 +1678,14 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 
 }

@@ -28,6 +28,7 @@ import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -68,6 +69,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 	private AvisCapDao avisCapDao;
 	private AutreAdministrationAgentDao autreAdministrationAgentDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
+	private FichePosteDao fichePosteDao;
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -118,6 +120,9 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 		}
 		if (getAvancementFonctionnairesDao() == null) {
 			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -555,7 +560,7 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 					if (aff.getIdFichePoste() == null) {
 						// on ne fait rien
 					} else {
-						FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 						Service section = Service.getSection(getTransaction(), fp.getIdServi());
 						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
@@ -979,5 +984,13 @@ public class OeAVCTSimulationFonctionnaires extends BasicProcess {
 
 	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
 		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

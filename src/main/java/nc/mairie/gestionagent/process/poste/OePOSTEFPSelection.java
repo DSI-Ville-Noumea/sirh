@@ -7,8 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -39,6 +41,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
+	private FichePosteDao fichePosteDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -52,7 +55,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 		FichePoste fp = (FichePoste) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_FICHE_POSTE);
 		if (fp != null) {
-			addZone(getNOM_EF_NUM_FICHE_POSTE(), fp.getNumFP());
+			addZone(getNOM_EF_NUM_FICHE_POSTE(), fp.getNumFp());
 		}
 
 		Boolean as = (Boolean) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_RECHERCHE_POSTE_AVANCEE);
@@ -102,6 +105,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 		}
 		if (getStatutFPDao() == null) {
 			setStatutFPDao(new StatutFPDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -157,12 +163,14 @@ public class OePOSTEFPSelection extends BasicProcess {
 			for (int i = 0; i < getListeFichePoste().size(); i++) {
 				FichePoste fp = (FichePoste) getListeFichePoste().get(i);
 				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
-						.chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste())).getLibTitrePoste();
-				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste());
+						.chercherTitrePoste(fp.getIdTitrePoste()).getLibTitrePoste();
+				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste()
+						.toString());
 				if (agent == null)
-					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste());
+					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste()
+							.toString());
 
-				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFP());
+				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
 				addZone(getNOM_ST_AGENT(indiceFp), agent == null ? "&nbsp;" : agent.getNomAgent().toUpperCase() + " "
 						+ agent.getPrenomAgent());
@@ -175,27 +183,24 @@ public class OePOSTEFPSelection extends BasicProcess {
 		if (aListe.size() == 0) {
 
 			if (isRechercheAffectation() && getVAL_EF_NUM_FICHE_POSTE().length() != 0) {
-				FichePoste fp = FichePoste
-						.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_NUM_FICHE_POSTE());
-
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					// "ERR125", "Impossible de trouver @."
-					setStatut(STATUT_MEME_PROCESS, false,
-							MessageUtils.getMessage("ERR125", "la FDP " + getVAL_EF_NUM_FICHE_POSTE()));
-					return false;
-				} else {
-					if (!getStatutFPDao().chercherStatutFP(Integer.valueOf(fp.getIdStatutFP())).getLibStatutFp()
+				try {
+					FichePoste fp = getFichePosteDao().chercherFichePosteAvecNumeroFP(getVAL_EF_NUM_FICHE_POSTE());
+					if (!getStatutFPDao().chercherStatutFP(fp.getIdStatutFp()).getLibStatutFp()
 							.equals(EnumStatutFichePoste.VALIDEE.getLibLong())
-							|| !getStatutFPDao().chercherStatutFP(Integer.valueOf(fp.getIdStatutFP())).getLibStatutFp()
+							|| !getStatutFPDao().chercherStatutFP(fp.getIdStatutFp()).getLibStatutFp()
 									.equals(EnumStatutFichePoste.GELEE.getLibLong())) {
 						// "ERR087",
 						// "Cette fiche de poste n'est pas 'Validée'  ou 'Gelée'. Elle ne peut pas être affectée à un agent."
 						setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR087"));
 						return false;
 					}
+				} catch (Exception e) {
+					// "ERR125", "Impossible de trouver @."
+					setStatut(STATUT_MEME_PROCESS, false,
+							MessageUtils.getMessage("ERR125", "la FDP " + getVAL_EF_NUM_FICHE_POSTE()));
+					return false;
 				}
-				aListe = FichePoste.listerFichePosteAvecNumPartiel(getTransaction(), getVAL_EF_NUM_FICHE_POSTE());
+				aListe = getFichePosteDao().listerFichePosteAvecNumPartiel(getVAL_EF_NUM_FICHE_POSTE());
 				if (aListe.size() != 0) {
 					setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR084"));
 					return false;
@@ -222,27 +227,27 @@ public class OePOSTEFPSelection extends BasicProcess {
 		if (isRechercheAffectation()) {
 			// Si la zone est vide alors on prend toutes les FP non affectées
 			if (getVAL_EF_NUM_FICHE_POSTE().length() == 0) {
-				aListe = FichePoste.listerFichePosteValideesouGeleeNonAffectees(getTransaction());
+				aListe = getFichePosteDao().listerFichePosteValideesouGeleeNonAffectees();
 			} else {
-				aListe = FichePoste.listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(getTransaction(),
+				aListe = getFichePosteDao().listerFichePosteValideesOuGeleesNonAffecteesAvecNumPartiel(
 						getVAL_EF_NUM_FICHE_POSTE());
 			}
 		} else {
 			// Si la zone est vide alors on prend toutes les FP
 			if (getVAL_EF_NUM_FICHE_POSTE().length() == 0) {
-				aListe = FichePoste.listerFichePoste(getTransaction());
+				aListe = (ArrayList<FichePoste>) getFichePosteDao().listerFichePoste();
 			} else {
 				// on regarde si 1 seule FDP correspondante sinon on affiche la
 				// liste avec numPartiel
-				FichePoste fp = FichePoste
-						.chercherFichePosteAvecNumeroFP(getTransaction(), getVAL_EF_NUM_FICHE_POSTE());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					aListe = FichePoste.listerFichePosteAvecNumPartiel(getTransaction(), getVAL_EF_NUM_FICHE_POSTE());
-				} else if (fp == null || fp.getIdFichePoste() == null) {
-					aListe = FichePoste.listerFichePosteAvecNumPartiel(getTransaction(), getVAL_EF_NUM_FICHE_POSTE());
-				} else {
-					aListe.add(fp);
+				try {
+					FichePoste fp = getFichePosteDao().chercherFichePosteAvecNumeroFP(getVAL_EF_NUM_FICHE_POSTE());
+					if (fp == null || fp.getIdFichePoste() == null) {
+						aListe = getFichePosteDao().listerFichePosteAvecNumPartiel(getVAL_EF_NUM_FICHE_POSTE());
+					} else {
+						aListe.add(fp);
+					}
+				} catch (Exception e) {
+					aListe = getFichePosteDao().listerFichePosteAvecNumPartiel(getVAL_EF_NUM_FICHE_POSTE());
 				}
 			}
 		}
@@ -269,7 +274,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 		if (!getVAL_ST_AGENT().equals(Const.CHAINE_VIDE)) {
 			AgentNW a = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
-			aListe = FichePoste.listerFichePosteAvecAgent(getTransaction(), a);
+			// Recherche de tous les liens Agent / FichePoste
+			ArrayList<Affectation> liens = Affectation.listerAffectationActiveAvecAgent(getTransaction(), a);
+			aListe = getFichePosteDao().listerFichePosteAvecAgent(liens);
 		}
 
 		return fillList(aListe);
@@ -288,7 +295,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 		// Si la zone est vide alors on prend tout
 		if (getVAL_ST_SERVICE().length() != 0) {
-			aListe = FichePoste.listerFichePosteAvecService(getTransaction(), getService());
+			aListe = getFichePosteDao().listerFichePosteAvecService(getService().getCodService());
 		} else {
 			getTransaction().declarerErreur("ERR113");
 			return false;
@@ -711,5 +718,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	public void setStatutFPDao(StatutFPDao statutFPDao) {
 		this.statutFPDao = statutFPDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

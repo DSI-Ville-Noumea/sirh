@@ -932,12 +932,13 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 
 				// Création de la fiche emploi
 				try {
-					getFicheEmploiDao().creerFicheEmploi(getFicheEmploiCourant().getIdDomaineFe(),
+					Integer idCree = getFicheEmploiDao().creerFicheEmploi(getFicheEmploiCourant().getIdDomaineFe(),
 							getFicheEmploiCourant().getIdFamilleEmploi(), getFicheEmploiCourant().getRefMairie(),
 							getFicheEmploiCourant().getNomMetierEmploi(),
 							getFicheEmploiCourant().getPrecisionsDiplomes(),
 							getFicheEmploiCourant().getLienHierarchique(),
 							getFicheEmploiCourant().getDefinitionEmploi(), getFicheEmploiCourant().getIdCodeRome());
+					getFicheEmploiCourant().setIdFicheEmploi(idCree);
 				} catch (Exception e) {
 					getTransaction()
 							.declarerErreur(
@@ -1680,7 +1681,7 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 				FormateListe aFormat = new FormateListe(tailles);
 				for (ListIterator<DomaineEmploi> list = getListeDomaine().listIterator(); list.hasNext();) {
 					DomaineEmploi de = (DomaineEmploi) list.next();
-					String ligne[] = { de.getCodeDomaineFe(), de.getLibDomaineFe()};
+					String ligne[] = { de.getCodeDomaineFe(), de.getLibDomaineFe() };
 					aFormat.ajouteLigne(ligne);
 				}
 				setLB_DOMAINE(aFormat.getListeFormatee());
@@ -3522,11 +3523,12 @@ public class OePOSTEFicheEmploi extends BasicProcess {
 					+ Services.lpad(
 							String.valueOf(getFicheEmploiDao().genererNumChrono(
 									ficheDupliquee.getRefMairie().substring(0, 5))), 3, "0"));
-			getFicheEmploiDao().creerFicheEmploi(ficheDupliquee.getIdDomaineFe(), ficheDupliquee.getIdFamilleEmploi(),
-					ficheDupliquee.getRefMairie(), ficheDupliquee.getNomMetierEmploi(),
-					ficheDupliquee.getPrecisionsDiplomes(), ficheDupliquee.getLienHierarchique(),
-					ficheDupliquee.getDefinitionEmploi(), ficheDupliquee.getIdCodeRome());
-
+			Integer idCree = getFicheEmploiDao().creerFicheEmploi(ficheDupliquee.getIdDomaineFe(),
+					ficheDupliquee.getIdFamilleEmploi(), ficheDupliquee.getRefMairie(),
+					ficheDupliquee.getNomMetierEmploi(), ficheDupliquee.getPrecisionsDiplomes(),
+					ficheDupliquee.getLienHierarchique(), ficheDupliquee.getDefinitionEmploi(),
+					ficheDupliquee.getIdCodeRome());
+			ficheDupliquee.setIdFicheEmploi(idCree);
 			// Duplique les AutreAppellation
 			for (int i = 0; i < getListeAutreAppellationMulti().size(); i++) {
 				AutreAppellationEmploi aa = (AutreAppellationEmploi) getListeAutreAppellationMulti().get(i);

@@ -32,6 +32,7 @@ import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -108,6 +109,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private MotifCarriereDao motifCarriereDao;
 	private TypeContratDao typeContratDao;
 	private ContratDao contratDao;
+	private FichePosteDao fichePosteDao;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -182,6 +184,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getContratDao() == null) {
 			setContratDao(new ContratDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2557,7 +2562,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		// on recupere le grade et la filiere du poste
 		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
 				.getIdAgent());
-		FichePoste fp = FichePoste.chercherFichePoste(getTransaction(), aff.getIdFichePoste());
+		FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
 		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
 		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
 		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
@@ -3253,5 +3258,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setContratDao(ContratDao contratDao) {
 		this.contratDao = contratDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

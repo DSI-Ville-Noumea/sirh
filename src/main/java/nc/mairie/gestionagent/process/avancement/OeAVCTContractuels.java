@@ -14,6 +14,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
+import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -47,6 +48,7 @@ public class OeAVCTContractuels extends BasicProcess {
 
 	private AvancementContractuelsDao avancementContractuelsDao;
 	private TitrePosteDao titrePosteDao;
+	private FichePosteDao fichePosteDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy");
 
 	/**
@@ -87,11 +89,11 @@ public class OeAVCTContractuels extends BasicProcess {
 				AvancementContractuels av = (AvancementContractuels) getListeAvct().get(j);
 				Integer i = av.getIdAvct();
 				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
-				FichePoste fp = FichePoste.chercherFichePosteAvecNumeroFP(getTransaction(), av.getNumFp());
+				FichePoste fp = getFichePosteDao().chercherFichePosteAvecNumeroFP(av.getNumFp());
 				TitrePoste tp = null;
 				if (fp != null && fp.getIdTitrePoste() != null) {
 					try {
-						tp = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(fp.getIdTitrePoste()));
+						tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 					} catch (Exception e) {
 
 					}
@@ -138,6 +140,9 @@ public class OeAVCTContractuels extends BasicProcess {
 		}
 		if (getTitrePosteDao() == null) {
 			setTitrePosteDao(new TitrePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getFichePosteDao() == null) {
+			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -918,5 +923,13 @@ public class OeAVCTContractuels extends BasicProcess {
 
 	public void setTitrePosteDao(TitrePosteDao titrePosteDao) {
 		this.titrePosteDao = titrePosteDao;
+	}
+
+	public FichePosteDao getFichePosteDao() {
+		return fichePosteDao;
+	}
+
+	public void setFichePosteDao(FichePosteDao fichePosteDao) {
+		this.fichePosteDao = fichePosteDao;
 	}
 }

@@ -787,7 +787,7 @@ public class OePOSTESuiviRecrutement extends BasicProcess {
 			addZone(getNOM_ST_SERVICE(), "TODO");
 			addZone(getNOM_ST_SECTION(), "TODO");
 			addZone(getNOM_ST_SUBDIVISION(), "TODO");
-			TitrePoste titreP = getTitrePosteDao().chercherTitrePoste(Integer.valueOf(ficheP.getIdTitrePoste()));
+			TitrePoste titreP = getTitrePosteDao().chercherTitrePoste(ficheP.getIdTitrePoste());
 			addZone(getNOM_ST_TITRE_POSTE(), titreP == null ? Const.CHAINE_VIDE : titreP.getLibTitrePoste());
 			Grade grade = Grade.chercherGrade(getTransaction(), ficheP.getCodeGrade());
 			addZone(getNOM_ST_GRADE(), grade == null ? Const.CHAINE_VIDE : grade.getGrade());
