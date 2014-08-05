@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -39,7 +40,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private String[] LB_TYPE_ABSENCE_NP;
 	private String[] LB_TYPE_ABSENCE_EC;
 	private String[] LB_TYPE_ABSENCE_TT;
-	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private String[] LB_ETAT_ABSENCE_NP;
 	private String[] LB_ETAT_ABSENCE_EC;
 	private String[] LB_ETAT_ABSENCE_TT;
@@ -96,14 +97,15 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			setListeTypeAbsence(EnumTypeAbsence.getValues());
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
 
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
-				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
-				String ligne[] = { type.getValue() };
+			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -184,8 +186,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeToutesDemandes().size(); i++) {
 			DemandeDto dto = getListeToutesDemandes().get(i);
-
-			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), EnumTypeAbsence.getValueEnumTypeAbsence(dto.getIdTypeDemande()));
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
+			addZone(getNOM_ST_TYPE_DEMANDE_TT(i),
+					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_TT(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_TT(i),
@@ -226,8 +230,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeEnCours().size(); i++) {
 			DemandeDto dto = getListeDemandeEnCours().get(i);
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 
-			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), EnumTypeAbsence.getValueEnumTypeAbsence(dto.getIdTypeDemande()));
+			addZone(getNOM_ST_TYPE_DEMANDE_EC(i),
+					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_EC(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_EC(i),
@@ -268,8 +275,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		for (int i = 0; i < getListeDemandeNonPrises().size(); i++) {
 			DemandeDto dto = getListeDemandeNonPrises().get(i);
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 
-			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), EnumTypeAbsence.getValueEnumTypeAbsence(dto.getIdTypeDemande()));
+			addZone(getNOM_ST_TYPE_DEMANDE_NP(i),
+					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_NP(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			addZone(getNOM_ST_HEURE_DEBUT_NP(i),
@@ -379,15 +389,16 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		return true;
 	}
-	
+
 	/**
 	 * Process incoming requests for information
 	 * 
-	 * @param request Object that encapsulates the request to the servlet 
+	 * @param request
+	 *            Object that encapsulates the request to the servlet
 	 */
-	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception{
-		
-		if(super.recupererOnglet(request)){
+	public boolean recupererOnglet(javax.servlet.http.HttpServletRequest request) throws Exception {
+
+		if (super.recupererOnglet(request)) {
 			performPB_RESET(request);
 			return true;
 		}
@@ -601,11 +612,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	public boolean performPB_FILTRER_EC(HttpServletRequest request) throws Exception {
 
 		// Recuperation type absence
-		EnumTypeAbsence typeAbsence = null;
+		TypeAbsenceDto typeAbsence = null;
 		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_EC_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_ABSENCE_EC_SELECT()) : -1);
 		if (indiceTypeAbsence > 0) {
-			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+			typeAbsence = (TypeAbsenceDto) getListeTypeAbsence().get(indiceTypeAbsence - 1);
 		}
 
 		// Recuperation etat absence
@@ -631,7 +642,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 
 		initialiseHistoAgentEnCours(request, dateDebut, dateFin, dateDemande,
-				etatAbsence == null ? null : etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
+				etatAbsence == null ? null : etatAbsence.getCode(),
+				typeAbsence == null ? null : typeAbsence.getIdRefTypeAbsence());
 		return true;
 	}
 
@@ -642,11 +654,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	public boolean performPB_FILTRER_NP(HttpServletRequest request) throws Exception {
 
 		// Recuperation type absence
-		EnumTypeAbsence typeAbsence = null;
+		TypeAbsenceDto typeAbsence = null;
 		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_NP_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_ABSENCE_NP_SELECT()) : -1);
 		if (indiceTypeAbsence > 0) {
-			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+			typeAbsence = (TypeAbsenceDto) getListeTypeAbsence().get(indiceTypeAbsence - 1);
 		}
 
 		// Recuperation etat absence
@@ -672,7 +684,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 
 		initialiseHistoAgentNonPrises(request, dateDebut, dateFin, dateDemande, etatAbsence == null ? null
-				: etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
+				: etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getIdRefTypeAbsence());
 		return true;
 	}
 
@@ -683,11 +695,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	public boolean performPB_FILTRER_TT(HttpServletRequest request) throws Exception {
 
 		// Recuperation type absence
-		EnumTypeAbsence typeAbsence = null;
+		TypeAbsenceDto typeAbsence = null;
 		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_TT_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_ABSENCE_TT_SELECT()) : -1);
 		if (indiceTypeAbsence > 0) {
-			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence - 1);
+			typeAbsence = (TypeAbsenceDto) getListeTypeAbsence().get(indiceTypeAbsence - 1);
 		}
 
 		// Recuperation etat absence
@@ -713,15 +725,16 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		}
 
 		initialiseHistoAgentToutes(request, dateDebut, dateFin, dateDemande,
-				etatAbsence == null ? null : etatAbsence.getCode(), typeAbsence == null ? null : typeAbsence.getCode());
+				etatAbsence == null ? null : etatAbsence.getCode(),
+				typeAbsence == null ? null : typeAbsence.getIdRefTypeAbsence());
 		return true;
 	}
 
-	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
+	public ArrayList<TypeAbsenceDto> getListeTypeAbsence() {
 		return listeTypeAbsence;
 	}
 
-	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
 	}
 

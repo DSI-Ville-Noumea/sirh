@@ -13,6 +13,7 @@ import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -59,6 +60,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
+	private static final String sirhAbsListeRefTypeAbs = "filtres/getTypesForSIRH";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -470,6 +472,15 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(CompteurAsaDto.class, res, url);
+	}
+
+	@Override
+	public List<TypeAbsenceDto> getListeRefTypeAbsenceDto() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsListeRefTypeAbs;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}
 
 }

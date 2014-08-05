@@ -192,18 +192,18 @@
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
                 <table>
                 	<tr>
-                		<td width="75px">
+                		<td width="70px">
                 			<span class="sigp2">Agent :</span>
                 		</td>
-                		<td width="100px">
+                		<td width="150px">
 			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_DEMANDE()%>" size="4" maxlength="4" type="text" value="<%= process.getVAL_ST_AGENT_DEMANDE()%>">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>');">
                 		</td>
-                		<td width="70px">
+                		<td width="45px">
                  			<span class="sigp2">Service :</span>
                 		</td>
-                		<td>
+                		<td width="150px">
 			                <INPUT id="service" class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_SERVICE()%>" size="8" type="text" value="<%= process.getVAL_EF_SERVICE()%>">
 			                <img border="0" src="images/loupe.gif" width="16" title="Cliquer pour afficher l'arborescence"	height="16" style="cursor : pointer;" onclick="agrandirHierarchy();">	
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
@@ -217,35 +217,39 @@
 			                    <%=process.forComboHTML(process.getVAL_LB_ETAT(), process.getVAL_LB_ETAT_SELECT())%>
 			                </SELECT>
                 		</td>
-                		<td width="100px">
+                		<td width="120px">&nbsp;</td>
+                		<td>&nbsp;</td>
+                	</tr>
+                	<tr>
+                		<td>
+               				<span class="sigp2">Date début : </span>
+                		</td>
+                		<td>
+			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
+			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
+                		</td>
+                		<td>
+               				<span class="sigp2">Date fin : </span>
+                		</td>
+                		<td>
+			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
+			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
+                		</td>
+                		<td>
                 			<span class="sigp2">Action faite par :</span>
                 		</td>
-                		<td width="100px">
+                		<td>
 			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_ACTION()%>" size="4" maxlength="4" type="text" value="<%= process.getVAL_ST_AGENT_ACTION()%>">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_ACTION()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION()%>');">
                 		</td>
                 	</tr>
                 	<tr>
-                		<td width="75px">
-               				<span class="sigp2">Date début : </span>
-                		</td>
-                		<td width="130px">
-			                <input id="<%=process.getNOM_ST_DATE_MIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MIN()%>" >
-			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MIN()%>', 'dd/mm/y');">
-                		</td>
-                		<td width="75px">
-               				<span class="sigp2">Date fin : </span>
-                		</td>
-                		<td width="130px">
-			                <input id="<%=process.getNOM_ST_DATE_MAX()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_MAX()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_MAX()%>" >
-			                <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_MAX()%>', 'dd/mm/y');">
-                		</td>
-                		<td width="35px">
+                		<td>
                 			<span class="sigp2">Famille : </span>
                 		</td>
-                		<td width="150px">
-			                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE()%>" style="width:240px;">
+                		<td colspan="4">
+			                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE()%>" >
 			                    <%=process.forComboHTML(process.getVAL_LB_FAMILLE(), process.getVAL_LB_FAMILLE_SELECT())%>
 			                </SELECT>
                 		</td>

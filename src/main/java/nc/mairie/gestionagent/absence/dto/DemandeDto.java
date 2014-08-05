@@ -12,6 +12,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private Integer idDemande;
 	private Integer idTypeDemande;
+	private RefGroupeAbsenceDto groupeAbsence;
 	private Date dateDemande;
 	private Date dateDebut;
 	private boolean isDateDebutAM;
@@ -42,6 +43,8 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isDepassementCompteur;
 
 	private OrganisationSyndicaleDto organisationSyndicale;
+	
+	private String commentaire;
 
 	public DemandeDto() {
 	}
@@ -257,6 +260,22 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setOrganisationSyndicale(OrganisationSyndicaleDto organisationSyndicale) {
 		this.organisationSyndicale = organisationSyndicale;
+	}
+
+	public RefGroupeAbsenceDto getGroupeAbsence() {
+		return groupeAbsence;
+	}
+
+	public void setGroupeAbsence(RefGroupeAbsenceDto groupeAbsence) {
+		this.groupeAbsence = groupeAbsence;
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
 	}
 
 }

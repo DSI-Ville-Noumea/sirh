@@ -47,7 +47,7 @@
 			<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>	
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_RECUP)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend">Compteur <%=process.getTypeAbsenceCourant().getValue() %> de l'agent</legend>
+					<legend class="sigp2Legend">Compteur <%=process.getTypeAbsenceCourant().getLibelle() %> de l'agent</legend>
 					<table bordercolor="black" border="1" cellpadding="5">
 						<tr>
 							<td>
@@ -96,7 +96,7 @@
 			<%} %>		
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_REPOS_COMP)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-					<legend class="sigp2Legend">Compteur <%=process.getTypeAbsenceCourant().getValue() %> de l'agent</legend>
+					<legend class="sigp2Legend">Compteur <%=process.getTypeAbsenceCourant().getLibelle() %> de l'agent</legend>
 					<table border="1" cellpadding="5">
 						<tr>
 							<td>

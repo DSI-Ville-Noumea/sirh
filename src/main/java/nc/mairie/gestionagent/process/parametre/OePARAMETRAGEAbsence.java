@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.metier.Const;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -35,7 +36,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 	private ArrayList<MotifDto> listeMotif;
 
 	private String[] LB_TYPE_ABSENCE_COMPTEUR;
-	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 
 	private String[] LB_MOTIF_COMPTEUR;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
@@ -64,16 +65,16 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			throw new Exception();
 		}
 
+		if (getListeTypeAbsence().size() == 0) {
+			initialiseListeTypeAbsence(request);
+		}
+
 		if (getListeMotif().size() == 0) {
 			initialiseListeMotif(request);
 		}
 
 		if (getListeMotifCompteur().size() == 0) {
 			initialiseListeMotifCompteur(request);
-		}
-
-		if (getListeTypeAbsence().size() == 0) {
-			initialiseListeTypeAbsence(request);
 		}
 
 	}
@@ -89,7 +90,9 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (MotifCompteurDto motif : getListeMotifCompteur()) {
-				String type = EnumTypeAbsence.getValueEnumTypeAbsence(motif.getIdRefTypeAbsence());
+				TypeAbsenceDto t = new TypeAbsenceDto();
+				t.setIdRefTypeAbsence(motif.getIdRefTypeAbsence());
+				String type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle();
 				String ligne[] = { motif.getLibelle(), type };
 
 				aFormat.ajouteLigne(ligne);
@@ -104,14 +107,15 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			setListeTypeAbsence(EnumTypeAbsence.getValues());
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
 
 			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
-				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
-				String ligne[] = { type.getValue() };
+			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -415,11 +419,11 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		return getZone(getNOM_ST_ACTION_MOTIF());
 	}
 
-	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
-		return listeTypeAbsence == null ? new ArrayList<EnumTypeAbsence>() : listeTypeAbsence;
+	public ArrayList<TypeAbsenceDto> getListeTypeAbsence() {
+		return listeTypeAbsence == null ? new ArrayList<TypeAbsenceDto>() : listeTypeAbsence;
 	}
 
-	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
 	}
 
@@ -497,8 +501,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		if (indice != -1 && indice < getListeMotifCompteur().size()) {
 			MotifCompteurDto motifCompteur = getListeMotifCompteur().get(indice);
 			addZone(getNOM_EF_LIB_MOTIF_COMPTEUR(), motifCompteur.getLibelle());
-			EnumTypeAbsence enumType = EnumTypeAbsence.getEnumTypeAbsence(motifCompteur.getIdRefTypeAbsence());
-			int ligneTypeAbsence = getListeTypeAbsence().indexOf(enumType);
+			int ligneTypeAbsence = getListeTypeAbsence().indexOf(motifCompteur.getIdRefTypeAbsence());
 			addZone(getNOM_LB_TYPE_ABSENCE_COMPTEUR_SELECT(), String.valueOf(ligneTypeAbsence));
 
 			addZone(getNOM_ST_ACTION_MOTIF_COMPTEUR(), ACTION_MODIFICATION);
@@ -537,10 +540,10 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 
 				int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
 						.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
-				EnumTypeAbsence typeAbsence = getListeTypeAbsence().get(indiceType);
+				TypeAbsenceDto typeAbsence = getListeTypeAbsence().get(indiceType);
 
 				motifCompteur.setLibelle(getVAL_EF_LIB_MOTIF_COMPTEUR());
-				motifCompteur.setIdRefTypeAbsence(typeAbsence.getCode());
+				motifCompteur.setIdRefTypeAbsence(typeAbsence.getIdRefTypeAbsence());
 
 				// on sauvegarde
 				SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
@@ -578,8 +581,9 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		// Verification si A50 ou A49 alors pas de motif saisissable
 		int indiceType = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_ABSENCE_COMPTEUR_SELECT()) : -1);
-		EnumTypeAbsence typeAbsence = getListeTypeAbsence().get(indiceType);
-		if (typeAbsence.equals(EnumTypeAbsence.ASA_A49) || typeAbsence.equals(EnumTypeAbsence.ASA_A50)) {
+		TypeAbsenceDto typeAbsence = getListeTypeAbsence().get(indiceType);
+		if (typeAbsence.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())
+				|| typeAbsence.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())) {
 			// "ERR147",
 			// "Cette famille ne se gère pas par compteur.Il est donc impossible de saisir un motif.");
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR147"));

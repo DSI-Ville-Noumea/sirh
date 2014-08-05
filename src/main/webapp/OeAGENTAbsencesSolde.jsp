@@ -69,7 +69,6 @@
 						</table>				    
 				    </FIELDSET>
 				    <BR/>
-				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">Récupérations</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:200px;">
@@ -85,6 +84,7 @@
 				    </FIELDSET>
 				    <BR/>
 				    
+				    <%if(process.isAgentReposComp()){ %>
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">Repos compensateurs</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:200px;">
@@ -101,6 +101,7 @@
 						</table>				    
 				    </FIELDSET>
 				    <BR/>
+				    <%} %>
 				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">* ASA - Réunion des membres du bureau directeur (A48)</legend>

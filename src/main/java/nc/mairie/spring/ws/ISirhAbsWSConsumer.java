@@ -9,6 +9,7 @@ import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 
@@ -23,6 +24,9 @@ public interface ISirhAbsWSConsumer {
 	List<OrganisationSyndicaleDto> getListeOrganisationSyndicale();
 
 	ReturnMessageDto saveOrganisationSyndicale(String json);
+
+	// Type d'absences
+	List<TypeAbsenceDto> getListeRefTypeAbsenceDto();
 
 	// Motifs
 	List<MotifDto> getListeMotif();

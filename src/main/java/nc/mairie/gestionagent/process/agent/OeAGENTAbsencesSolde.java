@@ -12,9 +12,11 @@ import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -41,7 +43,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	public String ACTION_VISUALISATION = "Consultation de l'historique d'un compteur";
 
 	private AgentNW agentCourant;
-	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
+	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
 
@@ -100,7 +102,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private void initialiseListeDeroulante() {
 		if (getListeTypeAbsence().size() == 0) {
-			setListeTypeAbsence(EnumTypeAbsence.getValues());
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
 		}
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {
@@ -204,7 +207,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			}
 			// Si clic sur le bouton PB_HISTORIQUE
 			for (int i = 0; i < getListeTypeAbsence().size(); i++) {
-				Integer code = getListeTypeAbsence().get(i).getCode();
+				Integer code = getListeTypeAbsence().get(i).getIdRefTypeAbsence();
 				if (testerParametre(request, getNOM_PB_HISTORIQUE(code))) {
 					return performPB_HISTORIQUE(request, code);
 				}
@@ -420,11 +423,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return getZone(getNOM_ST_OPERATION(i));
 	}
 
-	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
-		return listeTypeAbsence == null ? new ArrayList<EnumTypeAbsence>() : listeTypeAbsence;
+	public ArrayList<TypeAbsenceDto> getListeTypeAbsence() {
+		return listeTypeAbsence == null ? new ArrayList<TypeAbsenceDto>() : listeTypeAbsence;
 	}
 
-	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
 	}
 
@@ -493,5 +496,26 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public void setListeSoldeA55(ArrayList<SoldeMonthDto> listeSoldeA55) {
 		this.listeSoldeA55 = listeSoldeA55;
+	}
+
+	public boolean isAgentReposComp() throws Exception {
+		// si l'agent n'est pas contractuel ou convention collectives, alors il
+		// n'a pas le droit au repos compensateur
+		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR136", "Cet agent n'a aucune carrière active."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
+			return false;
+		}
+
+		if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
+			// "ERR802",
+			// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
+			return false;
+		}
+
+		return true;
 	}
 }

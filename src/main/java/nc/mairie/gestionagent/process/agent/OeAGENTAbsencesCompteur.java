@@ -12,6 +12,7 @@ import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
@@ -51,8 +52,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private String messageInfo = Const.CHAINE_VIDE;
 
 	private String[] LB_TYPE_ABSENCE;
-	private ArrayList<EnumTypeAbsence> listeTypeAbsence;
-	private EnumTypeAbsence typeAbsenceCourant;
+	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
+	private TypeAbsenceDto typeAbsenceCourant;
 
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
@@ -111,14 +112,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
-			setListeTypeAbsence(EnumTypeAbsence.getValues());
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
 
 			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<EnumTypeAbsence> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
-				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
-				String ligne[] = { type.getValue() };
+			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -210,11 +212,11 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return getZone(getNOM_LB_TYPE_ABSENCE_SELECT());
 	}
 
-	public ArrayList<EnumTypeAbsence> getListeTypeAbsence() {
+	public ArrayList<TypeAbsenceDto> getListeTypeAbsence() {
 		return listeTypeAbsence;
 	}
 
-	public void setListeTypeAbsence(ArrayList<EnumTypeAbsence> listeTypeAbsence) {
+	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
 		this.listeTypeAbsence = listeTypeAbsence;
 	}
 
@@ -227,11 +229,11 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		setTypeAbsenceCourant(null);
 
 		// Recuperation type absence
-		EnumTypeAbsence typeAbsence = null;
+		TypeAbsenceDto typeAbsence = null;
 		int indiceTypeAbsence = (Services.estNumerique(getVAL_LB_TYPE_ABSENCE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_TYPE_ABSENCE_SELECT()) : -1);
 		if (indiceTypeAbsence >= 0) {
-			typeAbsence = (EnumTypeAbsence) getListeTypeAbsence().get(indiceTypeAbsence);
+			typeAbsence = (TypeAbsenceDto) getListeTypeAbsence().get(indiceTypeAbsence);
 			setTypeAbsenceCourant(typeAbsence);
 		}
 
@@ -242,7 +244,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
-				.getListeMotifCompteur(getTypeAbsenceCourant().getCode());
+				.getListeMotifCompteur(getTypeAbsenceCourant().getIdRefTypeAbsence());
 		setListeMotifCompteur(listeMotifs);
 
 		int[] tailles = { 30 };
@@ -267,26 +269,27 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		afficheSolde(getTypeAbsenceCourant(), json);
 
 		// On nomme l'action
-		if (getTypeAbsenceCourant().equals(EnumTypeAbsence.RECUP)) {
+		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.RECUP.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_RECUP);
-		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
-		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A48)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A54)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A55)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A53)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A52)) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA.");
 
-		} else if (getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A50)
-				|| getTypeAbsenceCourant().equals(EnumTypeAbsence.ASA_A49)) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("Ce type d'ASA ne se gère pas par compteur.");
 
 		} else {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+			setMessageInfo("Ce type d'absence ne se gère pas par compteur.");
 		}
 		return true;
 	}
@@ -295,7 +298,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// si l'agent n'est pas contractuel ou convention collectives, alors il
 		// n'a pas le droit au repos compensateur
 
-		if (getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -314,19 +318,19 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return true;
 	}
 
-	private void afficheSolde(EnumTypeAbsence typeAbsenceCourant, String json) {
+	private void afficheSolde(TypeAbsenceDto typeAbsenceCourant, String json) {
 		viderZoneSaisie();
 
 		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
-		switch (typeAbsenceCourant) {
-			case CONGE:
+		switch (typeAbsenceCourant.getIdRefTypeAbsence()) {
+			case 1:
 				addZone(getNOM_ST_SOLDE(), soldeGlobal.getSoldeCongeAnnee().toString() + " j");
 				setSoldeCourantMinute((int) (soldeGlobal.getSoldeCongeAnnee() * 24));
 				break;
-			case REPOS_COMP:
+			case 2:
 				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
 				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? "" : soldeRecupAnnee / 60 + "h ";
 				String soldeRecupAnneeMinute = soldeRecupAnnee % 60 + "m";
@@ -340,26 +344,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				addZone(getNOM_ST_SOLDE(), soldeRecupAnneeHeure + soldeRecupAnneeMinute);
 				addZone(getNOM_ST_SOLDE_PREC(), soldeRecupAnneePrecHeure + soldeRecupAnneePrecMinute);
 				break;
-			case RECUP:
+			case 3:
 				int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
 				String soldeRecupHeure = (soldeRecup / 60) == 0 ? "" : soldeRecup / 60 + "h ";
 				String soldeRecupMinute = soldeRecup % 60 + "m";
 				addZone(getNOM_ST_SOLDE(), soldeRecupHeure + soldeRecupMinute);
 				setSoldeCourantMinute(soldeRecup);
-				break;
-			case ASA_A48:
-			case ASA_A54:
-			case ASA_A55:
-			case ASA_A53:
-			case ASA_A52:
-			case ASA_A50:
-			case ASA_A49:
-				break;
-			case AUTRE:
-
-				break;
-			case MALADIE:
-
 				break;
 		}
 
@@ -376,11 +366,11 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		addZone(getNOM_RG_COMPTEUR(), Const.CHAINE_VIDE);
 	}
 
-	public EnumTypeAbsence getTypeAbsenceCourant() {
+	public TypeAbsenceDto getTypeAbsenceCourant() {
 		return typeAbsenceCourant;
 	}
 
-	public void setTypeAbsenceCourant(EnumTypeAbsence typeAbsenceCourant) {
+	public void setTypeAbsenceCourant(TypeAbsenceDto typeAbsenceCourant) {
 		this.typeAbsenceCourant = typeAbsenceCourant;
 	}
 
@@ -407,7 +397,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		ReturnMessageDto message = new ReturnMessageDto();
 
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_RECUP)
-				&& getTypeAbsenceCourant().equals(EnumTypeAbsence.RECUP)) {
+				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.RECUP.getCode().toString())) {
 			// on recupere la saisie
 			String dureeHeure = null;
 			String dureeMin = null;
@@ -469,7 +460,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 					.serialize(compteurDto));
 
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_REPOS_COMP)
-				&& getTypeAbsenceCourant().equals(EnumTypeAbsence.REPOS_COMP)) {
+				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			// on recupere la saisie
 			String dureeHeure = null;
 			String dureeMin = null;
@@ -547,7 +539,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			getTransaction().declarerErreur(err);
 		} else {
 			// "INF010", "Le compteur @ a bien été mis à jour."
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getValue()));
+			setStatut(STATUT_MEME_PROCESS, false,
+					MessageUtils.getMessage("INF010", getTypeAbsenceCourant().getLibelle()));
 		}
 
 		// On nomme l'action

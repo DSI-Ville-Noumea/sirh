@@ -17,9 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAbsence;
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.DemandeEtatChangeDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
@@ -74,7 +77,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private ArrayList<Service> listeServices;
 	private ArrayList<EnumEtatAbsence> listeEtats;
-	private ArrayList<EnumTypeAbsence> listeFamilleAbsence;
+	private ArrayList<TypeAbsenceDto> listeFamilleAbsence;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
 	private ArrayList<String> listeHeure;
 
@@ -90,7 +93,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
 
-	private EnumTypeAbsence typeCreation;
+	private TypeAbsenceDto typeCreation;
 	private AgentNW agentCreation;
 
 	@Override
@@ -172,13 +175,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si liste famille absence vide alors affectation
 		if (getLB_FAMILLE() == LBVide || getLB_FAMILLE_CREATION() == LBVide) {
-			setListeFamilleAbsence(EnumTypeAbsence.getValues());
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
 
 			int[] tailles = { 100 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<EnumTypeAbsence> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
-				EnumTypeAbsence type = (EnumTypeAbsence) list.next();
-				String ligne[] = { type.getValue() };
+			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
+				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -588,9 +592,9 @@ public class OeABSVisualisation extends BasicProcess {
 		// famille
 		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
-		EnumTypeAbsence type = null;
+		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
-			type = (EnumTypeAbsence) getListeFamilleAbsence().get(numType - 1);
+			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
 		}
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
@@ -603,7 +607,8 @@ public class OeABSVisualisation extends BasicProcess {
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
-				type == null ? null : type.getCode(), idAgentDemande == null ? null : Integer.valueOf(idAgentDemande));
+				type == null ? null : type.getIdRefTypeAbsence(),
+				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande));
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
@@ -630,12 +635,14 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			String statut = carr == null ? "&nbsp;" : Carriere.getStatutCarriere(carr.getCodeCategorie());
 
-			String type = EnumTypeAbsence.getValueEnumTypeAbsence(abs.getIdTypeDemande());
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(abs.getIdTypeDemande());
+			TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t));
 
 			addZone(getNOM_ST_MATRICULE(i), ag.getNoMatricule());
 			addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_INFO_AGENT(i), "<br/>" + statut);
-			addZone(getNOM_ST_TYPE(i), type + "<br/>" + sdf.format(abs.getDateDemande()));
+			addZone(getNOM_ST_TYPE(i), type.getLibelle() + "<br/>" + sdf.format(abs.getDateDemande()));
 
 			String debutMAM = abs.isDateDebutAM() ? "M" : abs.isDateDebutPM() ? "AM" : Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DATE_DEB(i),
@@ -719,11 +726,11 @@ public class OeABSVisualisation extends BasicProcess {
 		this.listeEtats = listeEtats;
 	}
 
-	public ArrayList<EnumTypeAbsence> getListeFamilleAbsence() {
-		return listeFamilleAbsence == null ? new ArrayList<EnumTypeAbsence>() : listeFamilleAbsence;
+	public ArrayList<TypeAbsenceDto> getListeFamilleAbsence() {
+		return listeFamilleAbsence == null ? new ArrayList<TypeAbsenceDto>() : listeFamilleAbsence;
 	}
 
-	public void setListeFamilleAbsence(ArrayList<EnumTypeAbsence> listeFamilleAbsence) {
+	public void setListeFamilleAbsence(ArrayList<TypeAbsenceDto> listeFamilleAbsence) {
 		this.listeFamilleAbsence = listeFamilleAbsence;
 	}
 
@@ -802,9 +809,9 @@ public class OeABSVisualisation extends BasicProcess {
 		// famille
 		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
-		EnumTypeAbsence type = null;
+		TypeAbsenceDto type = null;
 		if (numType != -1) {
-			type = (EnumTypeAbsence) getListeFamilleAbsence().get(numType);
+			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType);
 			setTypeCreation(type);
 		}
 		String idAgent = "";
@@ -828,16 +835,21 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// On nomme l'action
 		if (type != null
-				&& (type.equals(EnumTypeAbsence.ASA_A48) || type.equals(EnumTypeAbsence.ASA_A54) || type
-						.equals(EnumTypeAbsence.ASA_A50))) {
+				&& (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
+						|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString()) || type
+						.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString()))) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54_A50);
-		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A55)) {
+		} else if (type != null
+				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A55);
-		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A53)) {
+		} else if (type != null
+				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A53);
-		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A52)) {
+		} else if (type != null
+				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A52);
-		} else if (type != null && type.equals(EnumTypeAbsence.ASA_A49)) {
+		} else if (type != null
+				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A49);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH");
@@ -931,7 +943,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_VALIDER_CREATION_A48_A54_A50(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
-		EnumTypeAbsence type = getTypeCreation();
+		TypeAbsenceDto type = getTypeCreation();
 
 		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -967,8 +979,10 @@ public class OeABSVisualisation extends BasicProcess {
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getCode());
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		dto.setGroupeAbsence(groupeDto);
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
@@ -1021,11 +1035,11 @@ public class OeABSVisualisation extends BasicProcess {
 		return agent;
 	}
 
-	public EnumTypeAbsence getTypeCreation() {
+	public TypeAbsenceDto getTypeCreation() {
 		return typeCreation;
 	}
 
-	public void setTypeCreation(EnumTypeAbsence typeCreation) {
+	public void setTypeCreation(TypeAbsenceDto typeCreation) {
 		this.typeCreation = typeCreation;
 	}
 
@@ -1208,7 +1222,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public boolean performPB_DUPLIQUER(HttpServletRequest request, int idDemande) throws Exception {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		EnumTypeAbsence type = EnumTypeAbsence.getEnumTypeAbsence(dem.getIdTypeDemande());
+		TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()));
 
 		// on recup l'organisation syndicale
 		OrganisationSyndicaleDto orga = null;
@@ -1313,8 +1327,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
 
-			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
-					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			String info = "Demande "
+					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
+							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
+					+ sdf.format(dem.getDateDemande()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), dem.getIdDemande().toString());
@@ -1454,8 +1470,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
-					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			String info = "Demande "
+					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
+							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
+					+ sdf.format(dem.getDateDemande()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
@@ -1466,8 +1484,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			String info = "Demande " + EnumTypeAbsence.getValueEnumTypeAbsence(dem.getIdTypeDemande()) + " de l'agent "
-					+ ag.getNoMatricule() + " du " + sdf.format(dem.getDateDemande()) + ".";
+			String info = "Demande "
+					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
+							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
+					+ sdf.format(dem.getDateDemande()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
@@ -1611,7 +1631,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_VALIDER_CREATION_A55(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
-		EnumTypeAbsence type = getTypeCreation();
+		TypeAbsenceDto type = getTypeCreation();
 
 		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -1648,7 +1668,9 @@ public class OeABSVisualisation extends BasicProcess {
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getCode());
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		dto.setGroupeAbsence(groupeDto);
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
@@ -1721,7 +1743,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_VALIDER_CREATION_A53(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
-		EnumTypeAbsence type = getTypeCreation();
+		TypeAbsenceDto type = getTypeCreation();
 
 		// on recup l'organisation syndicale
 		int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
@@ -1770,7 +1792,9 @@ public class OeABSVisualisation extends BasicProcess {
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getCode());
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		dto.setGroupeAbsence(groupeDto);
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
@@ -1799,7 +1823,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_VALIDER_CREATION_A52(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
-		EnumTypeAbsence type = getTypeCreation();
+		TypeAbsenceDto type = getTypeCreation();
 
 		// on recup l'organisation syndicale
 		int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
@@ -1849,7 +1873,9 @@ public class OeABSVisualisation extends BasicProcess {
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getCode());
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		dto.setGroupeAbsence(groupeDto);
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
@@ -1878,7 +1904,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_VALIDER_CREATION_A49(HttpServletRequest request) throws Exception {
 		AgentNW ag = getAgentCreation();
-		EnumTypeAbsence type = getTypeCreation();
+		TypeAbsenceDto type = getTypeCreation();
 
 		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -1910,8 +1936,10 @@ public class OeABSVisualisation extends BasicProcess {
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getCode());
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		dto.setGroupeAbsence(groupeDto);
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
 				.deepSerialize(dto);
