@@ -36,8 +36,6 @@
             }
             function executeBouton(nom)
             {
-            	alert("ici "+nom);
-            	alert("ici2 "+document.formu.elements[nom]);
                 document.formu.elements[nom].click();
             }
 
