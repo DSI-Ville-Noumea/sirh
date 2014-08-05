@@ -28,18 +28,37 @@
                 if (document.getElementById("NOM_time_" + id + "_F") !== null) {document.getElementById("NOM_time_" + id + "_F").value = '';}
                 if (document.getElementById("NOM_typeAbs_" + id ) !== null) {document.getElementById("NOM_typeAbs_" + id ).value = '';}
             }
+
+            function testClickEnrigistrer(){
+            	if(event.keyCode == 13){
+            		executeBouton('NOM_PB_VALIDATION');
+            	}
+            }
+            function executeBouton(nom)
+            {
+            	alert("ici "+nom);
+            	alert("ici2 "+document.formu.elements[nom]);
+                document.formu.elements[nom].click();
+            }
+
+            function setfocus(nom)
+            {
+                if (document.formu.elements[nom] != null)
+                    document.formu.elements[nom].focus();
+            }
         </SCRIPT>		
         <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     </HEAD>
-    <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple">
+    <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="return setfocus('<%=process.getFocus()%>')">
         <%@ include file="BanniereErreur.jsp" %>
-        <FORM name="formu" method="POST" class="sigp2-titre">		
+        <FORM onkeypress="testClickEnrigistrer();" name="formu" method="POST" class="sigp2-titre">		
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
                 <legend class="sigp2Legend" style="font-size: 11px;"> Saisie des pointages pour l'agent <%=process.getIdAgent()%> semaine <%=process.getWeekYear()%>
-                    <INPUT title="Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/annuler.png" height="16px" width="55px" name="<%=process.getNOM_PB_BACK()%>">
-                    <INPUT title="Enregister et Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/enregistrer.png" height="16px" width="68px" name="<%=process.getNOM_PB_VALIDATION()%>"></legend>
-                <BR/>
+                    <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner à l'écran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+               		<INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner à l'écran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+                 </legend>
+                 <BR/>
                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="SaisiePointageList"> 
                     <thead>
                     	<tr>
@@ -317,10 +336,12 @@
 		 <!-- ------------------------------------------- ABSENCES ----------------------------------------------------------------- -->
                     </tbody>
                 </table>
-                <BR/>	
-                <INPUT title="Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/annuler.png" height="16px" width="55px" name="<%=process.getNOM_PB_BACK()%>">
-                <INPUT title="Enregister et Retourner à l'écran de visualisation" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" src="images/enregistrer.png" height="16px" width="68px" name="<%=process.getNOM_PB_VALIDATION()%>">
-            </FIELDSET>
+                <BR/>
+               <img onkeydown="" onkeypress="" onkeyup="" src="images/annuler.png" height="16px" width="55px" title="Retourner à l'écran de visualisation" onClick="executeBouton('<%=process.getNOM_PB_BACK()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+               <INPUT height="16px" width="68px" type="submit" title="Enregister et Retourner à l'écran de visualisation"  value="Enregistrer" name="<%=process.getNOM_PB_VALIDATION()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">	
+                 	
+        	</FIELDSET>
+        	<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_BACK()%>" value="BACK">
         </FORM>
     </BODY>
 </HTML>

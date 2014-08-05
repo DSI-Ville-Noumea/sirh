@@ -63,6 +63,7 @@ public class OePTGSaisie extends BasicProcess {
 	private SimpleDateFormat wsdf = new SimpleDateFormat("yyyyMMdd", new Locale("fr", "FR"));
 	private Logger logger = LoggerFactory.getLogger(OePTGSaisie.class);
 	private FichePosteDao fichePosteDao;
+	public String focus = null;
 
 	@Override
 	public String getJSP() {
@@ -94,11 +95,27 @@ public class OePTGSaisie extends BasicProcess {
 			throw new Exception();
 		}
 		initialiseDao();
+		setFocus(getDefaultFocus());
 		setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
 		if (!getTransaction().isErreur()) {
 			initialiseDonnees();
 		}
+	}
+
+	public String getDefaultFocus() {
+		return getNOM_PB_VALIDATION();
+	}
+
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+
+	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
+		return focus;
 	}
 
 	private void initialiseDao() {
