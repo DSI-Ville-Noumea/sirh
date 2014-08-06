@@ -118,8 +118,9 @@ public class OeAVCTConvCol extends BasicProcess {
 						(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
 								+ " <br> "
 								+ (av.getMontantPrime1200() == null
-										|| av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : String
-										.valueOf(Integer.valueOf(av.getMontantPrime1200()) + 1)));
+										|| av.getMontantPrime1200().equals(Const.CHAINE_VIDE) ? "&nbsp;" : Integer
+										.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer
+										.valueOf(av.getMontantPrime1200()) + 1)));
 			}
 		}
 	}

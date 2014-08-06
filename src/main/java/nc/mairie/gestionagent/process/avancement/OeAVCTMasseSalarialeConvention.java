@@ -765,8 +765,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			addZone(getNOM_ST_MONTANT_PRIME(i),
 					(av.getMontantPrime1200() == null ? "&nbsp;" : av.getMontantPrime1200())
 							+ " <br> "
-							+ (av.getMontantPrime1200() == null ? "&nbsp;" : String.valueOf(Integer.valueOf(av
-									.getMontantPrime1200()) + 1)));
+							+ (av.getMontantPrime1200() == null ? "&nbsp;"
+									: Integer.valueOf(av.getMontantPrime1200()) == 30 ? "30" : String.valueOf(Integer
+											.valueOf(av.getMontantPrime1200()) + 1)));
 		}
 	}
 
@@ -882,7 +883,11 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 							Prime newPrime = new Prime();
 							newPrime.setNoMatr(agent.getNoMatricule());
-							newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
+							if ((Integer.valueOf(prime.getMtPri()) + 1) > 30) {
+								newPrime.setMtPri("30");
+							} else {
+								newPrime.setMtPri(String.valueOf(Integer.valueOf(prime.getMtPri()) + 1));
+							}
 							newPrime.setDatDeb("01/01/" + avct.getAnnee());
 							newPrime.setDatFin(Const.ZERO);
 							newPrime.setRefArr(avct.getNumArrete());
