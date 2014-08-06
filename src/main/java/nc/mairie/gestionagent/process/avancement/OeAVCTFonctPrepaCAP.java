@@ -361,7 +361,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				for (CorpsCap corps : listeCorps) {
 					// on cherche le cdgeng correspondant
 					GradeGenerique gradeWithCadreEmploi = GradeGenerique.chercherGradeGenerique(getTransaction(),
-							corps.getCodeSpgeng());
+							corps.getCdgeng());
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
 					} else {

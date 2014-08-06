@@ -1274,7 +1274,7 @@ public class OePARAMETRAGEDonneesPerso extends BasicProcess {
 		if (getVAL_ST_ACTION_SPECIALITE() != null && getVAL_ST_ACTION_SPECIALITE() != Const.CHAINE_VIDE) {
 			if (getVAL_ST_ACTION_SPECIALITE().equals(ACTION_CREATION)) {
 				setSpecialiteCourante(new SpecialiteDiplome());
-				getSpecialiteCourante().setLibSpeDiplome(getVAL_EF_SPECIALITE());
+				getSpecialiteCourante().setLibSpecialiteDiplome(getVAL_EF_SPECIALITE());
 				getSpecialiteDiplomeDao().creerSpecialiteDiplome(getSpecialiteCourante().getLibSpecialiteDiplome());
 				if (!getTransaction().isErreur())
 					getListeSpecialite().add(getSpecialiteCourante());

@@ -41,7 +41,7 @@ public class CorpsCapDao extends SirhDao implements CorpsCapDaoInterface {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idCap });
 		for (Map<String, Object> row : rows) {
 			CorpsCap corpsCap = new CorpsCap();
-			corpsCap.setCodeSpgeng((String) row.get(CHAMP_CDGENG));
+			corpsCap.setCdgeng((String) row.get(CHAMP_CDGENG));
 			corpsCap.setIdCap((Integer) row.get(CHAMP_ID_CAP));
 			listeCorpsCap.add(corpsCap);
 		}

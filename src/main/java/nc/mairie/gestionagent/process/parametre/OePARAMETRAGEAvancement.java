@@ -1942,7 +1942,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			ArrayList<GradeGenerique> listeTempCorps = new ArrayList<GradeGenerique>();
 			for (int i = 0; i < listeCorpsCap.size(); i++) {
 				CorpsCap corpsCap = listeCorpsCap.get(i);
-				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCodeSpgeng());
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCdgeng());
 				listeTempCorps.add(gg);
 			}
 			setListeCorpsCap(listeTempCorps);
@@ -2464,7 +2464,7 @@ public class OePARAMETRAGEAvancement extends BasicProcess {
 			ArrayList<GradeGenerique> listeTempCorps = new ArrayList<GradeGenerique>();
 			for (int i = 0; i < listeCorpsCap.size(); i++) {
 				CorpsCap corpsCap = listeCorpsCap.get(i);
-				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCodeSpgeng());
+				GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), corpsCap.getCdgeng());
 				listeTempCorps.add(gg);
 			}
 			setListeCorpsCap(listeTempCorps);
