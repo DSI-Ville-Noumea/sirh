@@ -1,4 +1,3 @@
-<%@page import="nc.mairie.metier.poste.Horaire"%>
 <%@page import="nc.mairie.metier.carriere.BaseHoraire"%>
 <%@page import="nc.mairie.metier.carriere.Carriere"%>
 <%@page import="nc.mairie.gestionagent.process.pointage.OePTGVentilationUtils"%>
@@ -68,9 +67,7 @@
 									affMois = moisAnnee.format(t.getDateLundi());
 									Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(process.getTransaction(), agent);
 									BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(process.getTransaction(), carr.getCodeBase());
-									Horaire tempsTravail = Horaire.chercherHoraire(process.getTransaction(), carr.getCodeBaseHoraire2());
-									weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."))
-											* Double.valueOf(tempsTravail.getCdTaux());
+									weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."));
 								}
 							%>
 								<tr id="hsup_<%=moisAnneeR+"_"+idAgent%>">
