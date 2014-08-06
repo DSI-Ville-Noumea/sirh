@@ -1974,6 +1974,62 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_VALIDER_CREATION_CONGES_EXCEP(HttpServletRequest request) throws Exception {
+		AgentNW ag = getAgentCreation();
+		TypeAbsenceDto type = getTypeCreation();
+
+		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+			return false;
+		}
+		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
+			return false;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT());
+		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
+		Boolean matinDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M());
+		Boolean apresMidiDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM());
+		Boolean matinFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M());
+		Boolean apresMidiFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM());
+
+		AgentNW agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			return false;
+		}
+
+		DemandeDto dto = new DemandeDto();
+		dto.setDateDebut(dateDeb);
+		dto.setDateDebutAM(matinDebut);
+		dto.setDateDebutPM(apresMidiDebut);
+		dto.setDateFin(dateFin);
+		dto.setDateFinAM(matinFin);
+		dto.setDateFinPM(apresMidiFin);
+		AgentWithServiceDto agDto = new AgentWithServiceDto();
+		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+		dto.setAgentWithServiceDto(agDto);
+		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
+		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.CONGES_EXCEP);
+		dto.setGroupeAbsence(groupeDto);
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
+
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
+
+		if (srm.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : srm.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur(err);
+			return false;
+		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		performPB_FILTRER(request);
