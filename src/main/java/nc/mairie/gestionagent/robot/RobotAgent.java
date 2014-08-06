@@ -63,6 +63,7 @@ import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA54;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceConges;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
@@ -305,8 +306,10 @@ public class RobotAgent extends Robot {
 		} else if (activite.equals("ParamJour")) {
 			return new OePARAMETRAGEJour();
 		} // Module PARAMETRAGE - ABSENCE
-		else if (activite.equals("ParamAbs")) {
+		else if (activite.equals("ParamAbsMotif")) {
 			return new OePARAMETRAGEAbsence();
+		} else if (activite.equals("ParamAbsConge")) {
+			return new OePARAMETRAGEAbsenceConges();
 		} // Module PARAMETRAGE - ELECTIONS
 		else if (activite.equals("ParamElec")) {
 			return new OePARAMETRAGEElection();

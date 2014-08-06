@@ -213,6 +213,11 @@ menuParametrageElemSal.ajouterFils(new Lien("ParamCarriere", "CARRIERE", "Gestio
 menuParametrageElemSal.ajouterFils(new Lien("ParamJour", "JOUR", "Gestion des paramètres des jours fériés", true, false,"JOURS FERIES"));
 document.write(menuParametrageElemSal.afficher());
 
+var menuParametrageElemAbs = new MenuHaut("Module_parametres_absence");
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMotif", "CARRIERE", "Gestion des paramètres des motifs pour le module absence", true, false,"MOTIFS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsConge", "JOUR", "Gestion des paramètres des type de congés exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
+document.write(menuParametrageElemAbs.afficher());
+
 </script>
 
 </FORM>

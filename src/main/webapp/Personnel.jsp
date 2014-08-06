@@ -136,7 +136,8 @@
 		listeDroits.add("ParamElemSalaire");	
 		listeDroits.add("ParamCarriere");		
 		listeDroits.add("ParamJour");		
-		listeDroits.add("ParamAbs");	
+		listeDroits.add("ParamAbsMotif");		
+		listeDroits.add("ParamAbsConge");	
 		listeDroits.add("ParamElec");	
 		
 		
