@@ -6,7 +6,6 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.hsct.Inaptitude;
 import nc.mairie.metier.hsct.MaladiePro;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.Recommandation;
@@ -17,6 +16,7 @@ import nc.mairie.metier.parametrage.TypeDocument;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.hsct.AccidentTravailDao;
 import nc.mairie.spring.dao.metier.hsct.HandicapDao;
+import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.MaladieProDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
@@ -88,6 +88,7 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 	private TypeInaptitudeDao typeInaptitudeDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
 	private DocumentDao documentDao;
+	private InaptitudeDao inaptitudeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -200,6 +201,9 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getInaptitudeDao() == null) {
+			setInaptitudeDao(new InaptitudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1168,7 +1172,8 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 		// Verification si suppression d'un type d'inaptitude utilisé sur une
 		// inaptitude
 		if (getVAL_ST_ACTION_INAPTITUDE().equals(ACTION_SUPPRESSION)
-				&& Inaptitude.listerInaptitudeAvecTypeInaptitude(getTransaction(), getInaptitudeCourante()).size() > 0) {
+				&& getInaptitudeDao().listerInaptitudeAvecTypeInaptitude(getInaptitudeCourante().getIdTypeInaptitude())
+						.size() > 0) {
 
 			// "ERR989",
 			// "Suppression impossible. Il existe au moins @ rattaché à @."
@@ -2758,5 +2763,13 @@ public class OePARAMETRAGEHSCT extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public InaptitudeDao getInaptitudeDao() {
+		return inaptitudeDao;
+	}
+
+	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
+		this.inaptitudeDao = inaptitudeDao;
 	}
 }

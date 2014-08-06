@@ -39,6 +39,7 @@ import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
+import nc.mairie.spring.dao.metier.hsct.InaptitudeDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.RecommandationDao;
 import nc.mairie.spring.dao.metier.hsct.TypeInaptitudeDao;
@@ -133,6 +134,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private VisiteMedicaleDao visiteMedicaleDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private InaptitudeDao inaptitudeDao;
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -207,6 +210,9 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		}
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getInaptitudeDao() == null) {
+			setInaptitudeDao(new InaptitudeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -408,8 +414,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	 */
 	private void initialiseListeInpatitude(HttpServletRequest request) throws Exception {
 		// Recherche des visites médicales de l'agent
-		ArrayList<Inaptitude> listeInaptitudes = Inaptitude.listerInaptitudeVisite(getTransaction(),
-				getVisiteCourante());
+		ArrayList<Inaptitude> listeInaptitudes = getInaptitudeDao().listerInaptitudeVisite(
+				getVisiteCourante().getIdVisite());
 		setListeInaptitude(listeInaptitudes);
 		int indiceInaptitude = 0;
 		if (getListeInaptitude() != null) {
@@ -419,13 +425,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				addZone(getNOM_ST_TYPE_INAPT(indiceInaptitude),
 						ti.getDescTypeInaptitude().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ti.getDescTypeInaptitude());
-				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), inapt.getDateDebutInaptitude());
+				addZone(getNOM_ST_DEBUT_INAPT(indiceInaptitude), sdf.format(inapt.getDateDebutInaptitude()));
 				addZone(getNOM_ST_ANNEES_INAPT(indiceInaptitude), inapt.getDureeAnnee() != null ? inapt.getDureeAnnee()
-						: Const.ZERO);
+						.toString() : Const.ZERO);
 				addZone(getNOM_ST_MOIS_INAPT(indiceInaptitude), inapt.getDureeMois() != null ? inapt.getDureeMois()
-						: Const.ZERO);
+						.toString() : Const.ZERO);
 				addZone(getNOM_ST_JOURS_INAPT(indiceInaptitude), inapt.getDureeJour() != null ? inapt.getDureeJour()
-						: Const.ZERO);
+						.toString() : Const.ZERO);
 
 				indiceInaptitude++;
 			}
@@ -552,10 +558,10 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		TypeInaptitude type = (TypeInaptitude) getHashTypeInaptitude().get(inaptitude.getIdTypeInaptitude());
 
 		// Alim zones
-		addZone(getNOM_EF_DEBUT_INAPTITUDE(), inaptitude.getDateDebutInaptitude());
-		addZone(getNOM_EF_DUREE_ANNEES(), inaptitude.getDureeAnnee());
-		addZone(getNOM_EF_DUREE_MOIS(), inaptitude.getDureeMois());
-		addZone(getNOM_EF_DUREE_JOURS(), inaptitude.getDureeJour());
+		addZone(getNOM_EF_DEBUT_INAPTITUDE(), sdf.format(inaptitude.getDateDebutInaptitude()));
+		addZone(getNOM_EF_DUREE_ANNEES(), inaptitude.getDureeAnnee().toString());
+		addZone(getNOM_EF_DUREE_MOIS(), inaptitude.getDureeMois().toString());
+		addZone(getNOM_EF_DUREE_JOURS(), inaptitude.getDureeJour().toString());
 
 		int ligneType = getListeTypeInaptitude().indexOf(type);
 		addZone(getNOM_LB_TYPE_SELECT(), String.valueOf(ligneType + 1));
@@ -614,11 +620,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		if (getTransaction().isErreur())
 			return false;
 
-		addZone(getNOM_ST_DEBUT_INAPTITUDE(), inaptitude.dateDebutInaptitude);
-		addZone(getNOM_ST_DUREE_ANNEES(), inaptitude.dureeAnnee);
-		addZone(getNOM_ST_DUREE_MOIS(), inaptitude.dureeMois);
-		addZone(getNOM_ST_DUREE_JOURS(), inaptitude.dureeJour);
-		addZone(getNOM_ST_TYPE(), type.descTypeInaptitude);
+		addZone(getNOM_ST_DEBUT_INAPTITUDE(), sdf.format(inaptitude.getDateDebutInaptitude()));
+		addZone(getNOM_ST_DUREE_ANNEES(), inaptitude.getDureeAnnee().toString());
+		addZone(getNOM_ST_DUREE_MOIS(), inaptitude.getDureeMois().toString());
+		addZone(getNOM_ST_DUREE_JOURS(), inaptitude.getDureeJour().toString());
+		addZone(getNOM_ST_TYPE(), type.getDescTypeInaptitude());
 
 		return true;
 	}
@@ -1146,9 +1152,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_SUPPRESSION)) {
 
 				// Suppression
-				getInaptitudeCourante().supprimerInaptitude(getTransaction());
-				if (getTransaction().isErreur())
-					return false;
+				getInaptitudeDao().supprimerInaptitude(getInaptitudeCourante().getIdInaptitude());
 
 				setVisiteCourante(null);
 				setInaptitudeCourante(null);
@@ -1186,13 +1190,15 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				if (listeInaptitudes != null) {
 					for (int i = 0; i < listeInaptitudes.size(); i++) {
 						Inaptitude inaptitude = (Inaptitude) listeInaptitudes.get(i);
-						if (!inaptitude.getIdInaptitude().equals(getInaptitudeCourante().getIdInaptitude())
-								&& inaptitude.getIdTypeInaptitude().equals(typeInaptitude.getIdTypeInaptitude())) {
-							if (!testDate(inaptitude.getDateDebutInaptitude(), debutInaptitude, dureeAnnees, dureeMois,
-									dureeJours)
-									|| !testDate(debutInaptitude, inaptitude.getDateDebutInaptitude(),
-											inaptitude.getDureeAnnee(), inaptitude.getDureeMois(),
-											inaptitude.getDureeJour())) {
+						if (!inaptitude.getIdInaptitude().toString()
+								.equals(getInaptitudeCourante().getIdInaptitude().toString())
+								&& inaptitude.getIdTypeInaptitude().toString()
+										.equals(typeInaptitude.getIdTypeInaptitude().toString())) {
+							if (!testDate(sdf.format(inaptitude.getDateDebutInaptitude()), debutInaptitude,
+									dureeAnnees, dureeMois, dureeJours)
+									|| !testDate(debutInaptitude, sdf.format(inaptitude.getDateDebutInaptitude()),
+											inaptitude.getDureeAnnee().toString(),
+											inaptitude.getDureeMois().toString(), inaptitude.getDureeJour().toString())) {
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR041"));
 								return false;
 							}
@@ -1202,21 +1208,30 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				// Création de l'objet VisiteMedicale à créer/modifier
 				VisiteMedicale visiteCourante = getVisiteCourante();
-				getInaptitudeCourante().setIdVisite(visiteCourante.getIdVisite().toString());
+				getInaptitudeCourante().setIdVisite(visiteCourante.getIdVisite());
 
-				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude().toString());
-				getInaptitudeCourante().setDateDebutInaptitude(debutInaptitude);
+				getInaptitudeCourante().setIdTypeInaptitude(typeInaptitude.getIdTypeInaptitude());
+				getInaptitudeCourante().setDateDebutInaptitude(sdf.parse(debutInaptitude));
 
-				getInaptitudeCourante().setDureeAnnee(dureeAnnees);
-				getInaptitudeCourante().setDureeMois(dureeMois);
-				getInaptitudeCourante().setDureeJour(dureeJours);
+				getInaptitudeCourante().setDureeAnnee(
+						dureeAnnees.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeAnnees));
+				getInaptitudeCourante().setDureeMois(
+						dureeMois.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeMois));
+				getInaptitudeCourante().setDureeJour(
+						dureeJours.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(dureeJours));
 
 				if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_MODIFICATION)) {
 					// Modification
-					getInaptitudeCourante().modifierInaptitude(getTransaction());
+					getInaptitudeDao().modifierInaptitude(getInaptitudeCourante().getIdInaptitude(),
+							getInaptitudeCourante().getIdVisite(), getInaptitudeCourante().getIdTypeInaptitude(),
+							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
+							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
 				} else if (getZone(getNOM_ST_ACTION_INAPTITUDE()).equals(ACTION_INAPTITUDE_CREATION)) {
 					// Création
-					getInaptitudeCourante().creerInaptitude(getTransaction());
+					getInaptitudeDao().creerInaptitude(getInaptitudeCourante().getIdVisite(),
+							getInaptitudeCourante().getIdTypeInaptitude(),
+							getInaptitudeCourante().getDateDebutInaptitude(), getInaptitudeCourante().getDureeAnnee(),
+							getInaptitudeCourante().getDureeMois(), getInaptitudeCourante().getDureeJour());
 				}
 				if (getTransaction().isErreur())
 					return false;
@@ -3461,5 +3476,13 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public InaptitudeDao getInaptitudeDao() {
+		return inaptitudeDao;
+	}
+
+	public void setInaptitudeDao(InaptitudeDao inaptitudeDao) {
+		this.inaptitudeDao = inaptitudeDao;
 	}
 }
