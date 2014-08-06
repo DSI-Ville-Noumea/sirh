@@ -60,7 +60,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
-	private static final String sirhAbsListeRefTypeAbs = "filtres/getTypesForSIRH";
+	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 

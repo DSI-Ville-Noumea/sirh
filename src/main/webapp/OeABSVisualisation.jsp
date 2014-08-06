@@ -94,7 +94,7 @@
                            {"bSearchable": false,"bSortable": false},
                            {"bSearchable": false,"bSortable": false}
                         ],
-                        "sDom": '<"H"flip>t<"F"rip>',
+                        "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
                         "oLanguage": {
                             "oPaginate": {
@@ -370,15 +370,17 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend">Création d'une absence</legend>
                 	<span class="sigp2Mandatory">Famille : </span>
-			        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>" style="width:340px;">
+			        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>">
 			        	<%=process.forComboHTML(process.getVAL_LB_FAMILLE_CREATION(), process.getVAL_LB_FAMILLE_CREATION_SELECT())%>
 			        </SELECT>
                     <span class="sigp2Mandatory" style="width:50px;margin-left: 20px;">Agent :</span>
                     <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_CREATION()%>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_CREATION()%>" style="margin-right:10px;">
                     <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
-                    <span class="sigp2Mandatory" style="width:80px"></span>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    <BR/><BR/>
+                    <div align="center">
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>
 	            </FIELDSET>
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_ANNULATION)){ %>
@@ -410,34 +412,7 @@
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48_A54_A50)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48_A54_A50 %></legend>
-	            	<table>
-	            		<tr>
-	            			<td width="80px">
-                        		<span class="sigp2Mandatory">Date début : </span>
-	            			</td>
-	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
-	            			</td>
-	            			<td>
-								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
-								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
-	            			</td>
-	            		</tr>
-	            		<tr>
-	            			<td>
-                        		<span class="sigp2Mandatory">Date fin : </span>
-	            			</td>
-	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN()%>" >
-		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
-	            			</td>
-	            			<td>
-								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
-								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
-	            			</td>
-	            		</tr>
-	            	</table>
+	            	<%@ include file="CreationAbsAmPm.jsp" %>
 	            	<BR/>
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A48_A54_A50()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
@@ -597,6 +572,18 @@
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A49()%>">	 
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>  
+	        <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_CONGES_EXCEP)){%>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_CONGES_EXCEP %></legend>
+		            <%if(process.getTypeCreation()!=null && process.getTypeCreation().getTypeSaisiDto()!=null ){%>
+			            <%if(process.getTypeCreation().getTypeSaisiDto().isChkDateDebut()){ %>
+			            	<%@ include file="CreationAbsAmPm.jsp" %>
+			            <%} %>
+		            	<BR/>
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_CONGES_EXCEP()%>">
+		            <%} %>	 
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+	            </FIELDSET>      
             <%} %>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">

@@ -92,6 +92,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public String ACTION_CREATION_A49 = "Création d'une participation à une réunion syndicale.";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
+	public String ACTION_CREATION_CONGES_EXCEP = "Création d'un congé exceptionnel.";
 
 	private TypeAbsenceDto typeCreation;
 	private AgentNW agentCreation;
@@ -355,6 +356,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_CREATION_A49
 			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A49())) {
 				return performPB_VALIDER_CREATION_A49(request);
+			}
+			// Si clic sur le bouton PB_VALIDER_CREATION_CONGES_EXCEP
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_CONGES_EXCEP())) {
+				return performPB_VALIDER_CREATION_CONGES_EXCEP(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -851,6 +856,9 @@ public class OeABSVisualisation extends BasicProcess {
 		} else if (type != null
 				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A49);
+		} else if (type != null && type.getGroupeAbsence() != null
+				&& type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_CONGES_EXCEP);
 		} else {
 			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH");
 		}
@@ -1955,6 +1963,17 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(err);
 			return false;
 		}
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		performPB_FILTRER(request);
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_CREATION_CONGES_EXCEP() {
+		return "NOM_PB_VALIDER_CREATION_CONGES_EXCEP";
+	}
+
+	public boolean performPB_VALIDER_CREATION_CONGES_EXCEP(HttpServletRequest request) throws Exception {
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		performPB_FILTRER(request);
