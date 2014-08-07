@@ -1,7 +1,13 @@
 package nc.mairie.gestionagent.process.parametre;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeGroupeAbsence;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.metier.Const;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
@@ -18,6 +24,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public String focus = null;
+	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -40,6 +47,35 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 			throw new Exception();
 		}
 
+		if (getListeTypeAbsence().size() == 0) {
+			initialiseListeTypeAbsence(request);
+		}
+
+	}
+
+	private void initialiseListeTypeAbsence(HttpServletRequest request) {
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+
+		for (TypeAbsenceDto abs : getListeTypeAbsence()) {
+			if (abs.getGroupeAbsence() == null
+					|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+				continue;
+			}
+			Integer i = abs.getIdRefTypeAbsence();
+			addZone(getNOM_ST_TYPE_CONGE(i), abs.getLibelle());
+			String unite = Const.CHAINE_VIDE;
+			if (abs.getTypeSaisiDto().isChkDateDebut()) {
+				unite = "0,5 j";
+			} else if (abs.getTypeSaisiDto().isCalendarHeureDebut()) {
+				unite = "1 h";
+			} else if (abs.getTypeSaisiDto().isCalendarDateDebut()) {
+				unite = "1 j";
+			}
+			addZone(getNOM_ST_UNITE(i), unite);
+			addZone(getNOM_ST_INFO(i), abs.getTypeSaisiDto().getMessageAlerte() == null ? Const.CHAINE_VIDE : abs
+					.getTypeSaisiDto().getMessageAlerte());
+		}
 	}
 
 	/**
@@ -61,6 +97,19 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// Si clic sur le bouton PB_AJOUTER_CONGES
+			if (testerParametre(request, getNOM_PB_AJOUTER_CONGES())) {
+				return performPB_AJOUTER_CONGES(request);
+			}
+
+			// Si clic sur les boutons du tableau
+			for (TypeAbsenceDto abs : getListeTypeAbsence()) {
+				int indiceAbs = abs.getIdRefTypeAbsence();
+				// Si clic sur le bouton PB_MODIFIER_CONGES
+				if (testerParametre(request, getNOM_PB_MODIFIER_CONGES(indiceAbs))) {
+					return performPB_MODIFIER_CONGES(request, indiceAbs);
+				}
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -104,5 +153,58 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	 */
 	public void setFocus(String focus) {
 		this.focus = focus;
+	}
+
+	public ArrayList<TypeAbsenceDto> getListeTypeAbsence() {
+		return listeTypeAbsence == null ? new ArrayList<TypeAbsenceDto>() : listeTypeAbsence;
+	}
+
+	public void setListeTypeAbsence(ArrayList<TypeAbsenceDto> listeTypeAbsence) {
+		this.listeTypeAbsence = listeTypeAbsence;
+	}
+
+	public String getNOM_ST_TYPE_CONGE(int i) {
+		return "NOM_ST_TYPE_CONGE_" + i;
+	}
+
+	public String getVAL_ST_TYPE_CONGE(int i) {
+		return getZone(getNOM_ST_TYPE_CONGE(i));
+	}
+
+	public String getNOM_ST_UNITE(int i) {
+		return "NOM_ST_UNITE_" + i;
+	}
+
+	public String getVAL_ST_UNITE(int i) {
+		return getZone(getNOM_ST_UNITE(i));
+	}
+
+	public String getNOM_ST_INFO(int i) {
+		return "NOM_ST_INFO_" + i;
+	}
+
+	public String getVAL_ST_INFO(int i) {
+		return getZone(getNOM_ST_INFO(i));
+	}
+
+	public String getNOM_PB_AJOUTER_CONGES() {
+		return "NOM_PB_AJOUTER_CONGES";
+	}
+
+	public boolean performPB_AJOUTER_CONGES(HttpServletRequest request) throws Exception {
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_CONGES(int i) {
+		return "NOM_PB_MODIFIER_CONGES_" + i;
+	}
+
+	public boolean performPB_MODIFIER_CONGES(HttpServletRequest request, int idDemande) throws Exception {
+
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
 	}
 }
