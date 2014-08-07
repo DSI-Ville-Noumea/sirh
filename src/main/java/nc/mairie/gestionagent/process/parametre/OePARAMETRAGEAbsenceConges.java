@@ -202,6 +202,11 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	}
 
 	public boolean performPB_MODIFIER_CONGES(HttpServletRequest request, int idDemande) throws Exception {
+		// on recupere la demande
+		TypeAbsenceDto aChercher = new TypeAbsenceDto();
+		aChercher.setIdRefTypeAbsence(idDemande);
+		TypeAbsenceDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
+		
 
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
