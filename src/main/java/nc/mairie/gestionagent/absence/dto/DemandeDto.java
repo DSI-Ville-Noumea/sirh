@@ -43,8 +43,10 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private boolean isDepassementCompteur;
 
 	private OrganisationSyndicaleDto organisationSyndicale;
-	
+
 	private String commentaire;
+
+	private RefTypeSaisiDto typeSaisi;
 
 	public DemandeDto() {
 	}
@@ -276,6 +278,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
+	}
+
+	public RefTypeSaisiDto getTypeSaisi() {
+		return typeSaisi;
+	}
+
+	public void setTypeSaisi(RefTypeSaisiDto typeSaisi) {
+		this.typeSaisi = typeSaisi;
 	}
 
 }

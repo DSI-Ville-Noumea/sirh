@@ -671,6 +671,19 @@ public class OeABSVisualisation extends BasicProcess {
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
 					|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()) {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+			} else if (abs.getGroupeAbsence() != null
+					&& abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+				// TODO rendre cela generique avec le type de saisie
+				if (abs.getTypeSaisi().isChkDateDebut()) {
+					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+				} else if (abs.getTypeSaisi().isCalendarHeureDebut()) {
+					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : getHeureMinute(abs.getDuree()
+							.intValue()));
+				} else if (abs.getTypeSaisi().isCalendarDateDebut()) {
+					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
+				} else {
+					addZone(getNOM_ST_DUREE(i), "&nbsp;");
+				}
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
 			}
