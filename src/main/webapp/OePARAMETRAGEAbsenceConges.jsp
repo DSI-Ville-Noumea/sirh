@@ -40,7 +40,7 @@
 							"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 							"aoColumns": [{"bSortable":false,"bSearchable":false},null,null,null],
 							"sDom": '<"H"fl>t<"F"i>',
-							"sScrollY": "575px",
+							"sScrollY": "375px",
 							"aaSorting": [[ 1, "asc" ]],
 							"bPaginate": false
 					    });
@@ -54,19 +54,16 @@
 	<%@ include file="BanniereErreur.jsp" %>
 		<FORM name="formu" method="POST" class="sigp2-titre">
 			<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
-			<table width="1030px;">
-				<tr>
-					<td>
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
 					    	<legend class="sigp2Legend">Gestion des congés exceptionnels</legend>
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="CongesExcep"> 
 			                    <thead>
 			                        <tr>
-			                            <th>
+			                            <th width="80px">
 			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CONGES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
 			            				</th>  
 			                            <th>Type</th>
-			                            <th>Unite de décompte</th>	
+			                            <th width="80px">Unite de décompte</th>	
 			                            <th>Info</th>	                            
 			                        </tr>
 			                    </thead>
@@ -80,19 +77,105 @@
 			                        %>
 			                        <tr>
 			                            <td align="center">
-			                            	<INPUT title="Modifiere" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_CONGES(indiceAbs)%>">
+			                            	<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.CONSULTATION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
+											<INPUT title="consulter" type="image" src="images/oeil.gif" height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VISUALISATION(indiceAbs)%>">
+											<INPUT title="Modifiere" type="image" src="images/modifier.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_MODIFIER_CONGES(indiceAbs)%>">
                            				</td>                            
 			                            <td><%=process.getVAL_ST_TYPE_CONGE(indiceAbs)%></td> 
-			                            <td><%=process.getVAL_ST_UNITE(indiceAbs)%></td>  
+			                            <td align="center"><%=process.getVAL_ST_UNITE(indiceAbs)%></td>  
 			                            <td><%=process.getVAL_ST_INFO(indiceAbs)%></td>  
 			                        </tr>
 			                        <%}%>
 			                    </tbody>
 			                </table>
 						</FIELDSET>	
-					</td>					
-				</tr>
-			</table>
+						
+            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><%=process.ACTION_VISUALISATION %> <%=process.getTypeCreation().getLibelle() %></legend>
+		            <table>
+		            	<tr>
+		            		<td width="500px">
+	                			<span class="sigp2Mandatory">Date debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DATE_DEBUT()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Date fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Heure debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_HEURE_DEBUT()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Heure fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_HEURE_FIN()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Demi journée debut : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DEBUT_MAM()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Demi journée fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_FIN_MAM()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Pièce jointe : </span><span class="sigp2-saisie"><%=process.getVAL_ST_PIECE_JOINTE()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Saisie Kiosque : </span><span class="sigp2-saisie"><%=process.getVAL_ST_SAISIE_KIOSQUE()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Statuts : </span><span class="sigp2-saisie"><%=process.getVAL_ST_STATUT()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Description : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DESCRIPTION()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Message alerte : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MESSAGE_ALERTE()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Quota : </span><span class="sigp2-saisie"><%=process.getVAL_ST_QUOTA()%></span>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Motif : </span><span class="sigp2-saisie"><%=process.getVAL_ST_MOTIF()%></span>
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Desc motif : </span><span class="sigp2-saisie"><%=process.getVAL_ST_INFO_COMPL()%></span>
+		            		</td>
+		            	</tr>
+		            </table>
+			        <BR/><BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>
+	            </FIELDSET>
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
+	            <legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
+		            <table>
+		            	<tr>
+		            		<td width="500px">
+	                			<span class="sigp2Mandatory">Date debut : </span>
+ 								<INPUT type="radio" checked="checked" disabled="disabled"><span class="sigp2-saisie">Oui</span>			
+		            		</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Date fin : </span><span class="sigp2-saisie"><%=process.getVAL_ST_DATE_FIN()%></span>
+		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_FIN(),process.getNOM_RB_DATE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
+		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_FIN(),process.getNOM_RB_DATE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            </table>            
+            	</FIELDSET>
+           
+            
+            <%} %>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">        
 		</FORM>
 	</BODY>

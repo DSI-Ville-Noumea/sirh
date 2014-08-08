@@ -25,6 +25,11 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 
 	public String focus = null;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
+	private TypeAbsenceDto typeCreation;
+
+	public String ACTION_CREATION = "Création d'un congé exceptionnel.";
+	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel.";
+	public String ACTION_VISUALISATION = "Visualisation d'un congé exceptionnel :";
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -102,12 +107,21 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				return performPB_AJOUTER_CONGES(request);
 			}
 
+			// Si clic sur le bouton PB_ANNULER
+			if (testerParametre(request, getNOM_PB_ANNULER())) {
+				return performPB_ANNULER(request);
+			}
+
 			// Si clic sur les boutons du tableau
 			for (TypeAbsenceDto abs : getListeTypeAbsence()) {
 				int indiceAbs = abs.getIdRefTypeAbsence();
 				// Si clic sur le bouton PB_MODIFIER_CONGES
 				if (testerParametre(request, getNOM_PB_MODIFIER_CONGES(indiceAbs))) {
 					return performPB_MODIFIER_CONGES(request, indiceAbs);
+				}
+				// Si clic sur le bouton PB_VISUALISATION
+				if (testerParametre(request, getNOM_PB_VISUALISATION(indiceAbs))) {
+					return performPB_VISUALISATION(request, indiceAbs);
 				}
 			}
 		}
@@ -192,6 +206,9 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_CONGES(HttpServletRequest request) throws Exception {
+		viderZoneSaisie(request);
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
@@ -202,14 +219,275 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	}
 
 	public boolean performPB_MODIFIER_CONGES(HttpServletRequest request, int idDemande) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
 		// on recupere la demande
 		TypeAbsenceDto aChercher = new TypeAbsenceDto();
 		aChercher.setIdRefTypeAbsence(idDemande);
 		TypeAbsenceDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
-		
+		setTypeCreation(type);
 
+		addZone(getNOM_RG_DATE_FIN(), type.getTypeSaisiDto().isCalendarDateFin() ? getNOM_RB_DATE_FIN_OUI()
+				: getNOM_RB_DATE_FIN_NON());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public String getNOM_ST_ACTION() {
+		return "NOM_ST_ACTION";
+	}
+
+	public String getVAL_ST_ACTION() {
+		return getZone(getNOM_ST_ACTION());
+	}
+
+	private void viderZoneSaisie(HttpServletRequest request) {
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DEBUT_MAM(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_FIN_MAM(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_HEURE_DEBUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_HEURE_FIN(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_PIECE_JOINTE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_STATUT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_SAISIE_KIOSQUE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DESCRIPTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MESSAGE_ALERTE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MOTIF(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_INFO_COMPL(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_QUOTA(), Const.CHAINE_VIDE);
+		setTypeCreation(null);
+	}
+
+	public TypeAbsenceDto getTypeCreation() {
+		return typeCreation;
+	}
+
+	public void setTypeCreation(TypeAbsenceDto typeCreation) {
+		this.typeCreation = typeCreation;
+	}
+
+	public String getNOM_PB_VISUALISATION(int i) {
+		return "NOM_PB_VISUALISATION" + i;
+	}
+
+	/**
+	 * - Traite et affecte les zones saisies dans la JSP. - Implémente les
+	 * règles de gestion du process - Positionne un statut en fonction de ces
+	 * règles : setStatut(STATUT, boolean veutRetour) ou
+	 * setStatut(STATUT,Message d'erreur) Date de création : (29/09/11 10:03:38)
+	 * 
+	 */
+	public boolean performPB_VISUALISATION(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
+
+		// on recupere la demande
+		TypeAbsenceDto aChercher = new TypeAbsenceDto();
+		aChercher.setIdRefTypeAbsence(indiceEltAConsulter);
+		TypeAbsenceDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
+		setTypeCreation(type);
+
+		addZone(getNOM_ST_DATE_DEBUT(), type.getTypeSaisiDto().isCalendarDateDebut() ? "oui" : "non");
+		addZone(getNOM_ST_DATE_FIN(), type.getTypeSaisiDto().isCalendarDateFin() ? "oui" : "non");
+		addZone(getNOM_ST_HEURE_DEBUT(), type.getTypeSaisiDto().isCalendarHeureDebut() ? "oui" : "non");
+		addZone(getNOM_ST_HEURE_FIN(), type.getTypeSaisiDto().isCalendarHeureFin() ? "oui" : "non");
+		addZone(getNOM_ST_DEBUT_MAM(), type.getTypeSaisiDto().isChkDateDebut() ? "oui" : "non");
+		addZone(getNOM_ST_FIN_MAM(), type.getTypeSaisiDto().isChkDateFin() ? "oui" : "non");
+		addZone(getNOM_ST_PIECE_JOINTE(), type.getTypeSaisiDto().isPieceJointe() ? "oui" : "non");
+		addZone(getNOM_ST_SAISIE_KIOSQUE(), type.getTypeSaisiDto().isSaisieKiosque() ? "oui" : "non");
+		addZone(getNOM_ST_STATUT(), getStatut(type));
+		addZone(getNOM_ST_DESCRIPTION(), type.getTypeSaisiDto().getDescription() == null ? Const.CHAINE_VIDE : type
+				.getTypeSaisiDto().getDescription());
+		addZone(getNOM_ST_MESSAGE_ALERTE(), type.getTypeSaisiDto().getMessageAlerte() == null ? Const.CHAINE_VIDE
+				: type.getTypeSaisiDto().getMessageAlerte());
+		addZone(getNOM_ST_MOTIF(), type.getTypeSaisiDto().isMotif() ? "oui" : "non");
+		addZone(getNOM_ST_INFO_COMPL(), type.getTypeSaisiDto().getInfosComplementaires() == null ? Const.CHAINE_VIDE
+				: type.getTypeSaisiDto().getInfosComplementaires());
+		addZone(getNOM_ST_QUOTA(), type.getTypeSaisiDto().getUnitePeriodeQuotaDto() == null ? Const.CHAINE_VIDE : type
+				.getTypeSaisiDto().getUnitePeriodeQuotaDto().getIdRefUnitePeriodeQuota().toString());
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private String getStatut(TypeAbsenceDto type) {
+		String statut = Const.CHAINE_VIDE;
+		boolean isFirst = true;
+		if (type.getTypeSaisiDto().isFonctionnaire()) {
+			if (isFirst) {
+				statut += "F";
+				isFirst = false;
+			} else {
+				statut += ", F";
+			}
+		}
+		if (type.getTypeSaisiDto().isContractuel()) {
+			if (isFirst) {
+				statut += "C";
+				isFirst = false;
+			} else {
+				statut += ", C";
+			}
+		}
+		if (type.getTypeSaisiDto().isConventionCollective()) {
+			if (isFirst) {
+				statut += "CC";
+				isFirst = false;
+			} else {
+				statut += ", CC";
+			}
+		}
+		return statut;
+	}
+
+	public String getNOM_ST_DATE_DEBUT() {
+		return "NOM_ST_DATE_DEBUT";
+	}
+
+	public String getVAL_ST_DATE_DEBUT() {
+		return getZone(getNOM_ST_DATE_DEBUT());
+	}
+
+	public String getNOM_ST_DATE_FIN() {
+		return "NOM_ST_DATE_FIN";
+	}
+
+	public String getVAL_ST_DATE_FIN() {
+		return getZone(getNOM_ST_DATE_FIN());
+	}
+
+	public String getNOM_ST_DEBUT_MAM() {
+		return "NOM_ST_DEBUT_MAM";
+	}
+
+	public String getVAL_ST_DEBUT_MAM() {
+		return getZone(getNOM_ST_DEBUT_MAM());
+	}
+
+	public String getNOM_ST_FIN_MAM() {
+		return "NOM_ST_FIN_MAM";
+	}
+
+	public String getVAL_ST_FIN_MAM() {
+		return getZone(getNOM_ST_FIN_MAM());
+	}
+
+	public String getNOM_ST_HEURE_DEBUT() {
+		return "NOM_ST_HEURE_DEBUT";
+	}
+
+	public String getVAL_ST_HEURE_DEBUT() {
+		return getZone(getNOM_ST_HEURE_DEBUT());
+	}
+
+	public String getNOM_ST_HEURE_FIN() {
+		return "NOM_ST_HEURE_FIN";
+	}
+
+	public String getVAL_ST_HEURE_FIN() {
+		return getZone(getNOM_ST_HEURE_FIN());
+	}
+
+	public String getNOM_ST_PIECE_JOINTE() {
+		return "NOM_ST_PIECE_JOINTE";
+	}
+
+	public String getVAL_ST_PIECE_JOINTE() {
+		return getZone(getNOM_ST_PIECE_JOINTE());
+	}
+
+	public String getNOM_ST_STATUT() {
+		return "NOM_ST_STATUT";
+	}
+
+	public String getVAL_ST_STATUT() {
+		return getZone(getNOM_ST_STATUT());
+	}
+
+	public String getNOM_ST_SAISIE_KIOSQUE() {
+		return "NOM_ST_SAISIE_KIOSQUE";
+	}
+
+	public String getVAL_ST_SAISIE_KIOSQUE() {
+		return getZone(getNOM_ST_SAISIE_KIOSQUE());
+	}
+
+	public String getNOM_ST_DESCRIPTION() {
+		return "NOM_ST_DESCRIPTION";
+	}
+
+	public String getVAL_ST_DESCRIPTION() {
+		return getZone(getNOM_ST_DESCRIPTION());
+	}
+
+	public String getNOM_ST_MESSAGE_ALERTE() {
+		return "NOM_ST_MESSAGE_ALERTE";
+	}
+
+	public String getVAL_ST_MESSAGE_ALERTE() {
+		return getZone(getNOM_ST_MESSAGE_ALERTE());
+	}
+
+	public String getNOM_ST_MOTIF() {
+		return "NOM_ST_MOTIF";
+	}
+
+	public String getVAL_ST_MOTIF() {
+		return getZone(getNOM_ST_MOTIF());
+	}
+
+	public String getNOM_ST_INFO_COMPL() {
+		return "NOM_ST_INFO_COMPL";
+	}
+
+	public String getVAL_ST_INFO_COMPL() {
+		return getZone(getNOM_ST_INFO_COMPL());
+	}
+
+	public String getNOM_ST_QUOTA() {
+		return "NOM_ST_QUOTA";
+	}
+
+	public String getVAL_ST_QUOTA() {
+		return getZone(getNOM_ST_QUOTA());
+	}
+
+	public String getNOM_PB_ANNULER() {
+		return "NOM_PB_ANNULER";
+	}
+
+	public boolean performPB_ANNULER(HttpServletRequest request) {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
+		return true;
+	}
+
+	public String getNOM_RG_DATE_FIN() {
+		return "NOM_RG_DATE_FIN";
+	}
+
+	public String getVAL_RG_DATE_FIN() {
+		return getZone(getNOM_RG_DATE_FIN());
+	}
+
+	public String getNOM_RB_DATE_FIN_OUI() {
+		return "NOM_RB_DATE_FIN_OUI";
+	}
+
+	public String getNOM_RB_DATE_FIN_NON() {
+		return "NOM_RB_DATE_FIN_NON";
 	}
 }
