@@ -161,6 +161,16 @@
 	            <legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
 		            <table>
 		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Unité de décompte : </span>
+								<span class="sigp2-saisie">
+									<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_UNITE_DECOMPTE() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DECOMPTE() %>">
+										<%=process.forComboHTML(process.getVAL_LB_UNITE_DECOMPTE(), process.getVAL_LB_UNITE_DECOMPTE_SELECT())%>
+									</SELECT>
+								</span>
+		            		</td>
+		            	</tr>
+		            	<tr>
 		            		<td width="500px">
 	                			<span class="sigp2Mandatory">Date debut : </span>
  								<INPUT type="radio" checked="checked" disabled="disabled"><span class="sigp2-saisie">Oui</span>			
@@ -171,12 +181,30 @@
 		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_DATE_FIN(),process.getNOM_RB_DATE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
 		            	</tr>
-		            </table>            
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Heure debut : </span>
+ 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
+		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            		<td>
+	                			<span class="sigp2Mandatory">Heure fin : </span>
+		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
+		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            </table>  
+			        <BR/><BR/>
+                    <div align="center">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CONGES()%>" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+                    </div>          
             	</FIELDSET>
            
             
             <%} %>
-            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">        
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">
+			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_UNITE_DECOMPTE()%>" value="UNITEDECOMPTE">        
 		</FORM>
 	</BODY>
 </HTML>

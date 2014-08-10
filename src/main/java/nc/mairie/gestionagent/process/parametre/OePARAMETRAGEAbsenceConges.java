@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.parametre;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,8 @@ import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
+import nc.mairie.technique.FormateListe;
+import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
@@ -26,6 +29,9 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	public String focus = null;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private TypeAbsenceDto typeCreation;
+	private String uniteDecompte;
+	private ArrayList<String> listeUniteDecompte;
+	private String[] LB_UNITE_DECOMPTE;
 
 	public String ACTION_CREATION = "Création d'un congé exceptionnel.";
 	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel.";
@@ -51,11 +57,31 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseListeDeroulante();
 
 		if (getListeTypeAbsence().size() == 0) {
 			initialiseListeTypeAbsence(request);
 		}
 
+	}
+
+	private void initialiseListeDeroulante() {
+		// Si liste unité décompte vide alors affectation
+		if (getLB_UNITE_DECOMPTE() == LBVide) {
+			ArrayList<String> sf = new ArrayList<String>();
+			sf.add("minutes");
+			sf.add("jours");
+			setListeUniteDecompte(sf);
+			int[] tailles = { 20 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<String> list = getListeUniteDecompte().listIterator(); list.hasNext();) {
+				String u = list.next();
+				String ligne[] = { u };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_UNITE_DECOMPTE(aFormat.getListeFormatee());
+		}
 	}
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
@@ -107,9 +133,19 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				return performPB_AJOUTER_CONGES(request);
 			}
 
+			// Si clic sur le bouton PB_VALIDER_CONGES
+			if (testerParametre(request, getNOM_PB_VALIDER_CONGES())) {
+				return performPB_VALIDER_CONGES(request);
+			}
+
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
+			}
+
+			// Si clic sur le bouton PB_UNITE_DECOMPTE
+			if (testerParametre(request, getNOM_PB_UNITE_DECOMPTE())) {
+				return performPB_UNITE_DECOMPTE(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -230,6 +266,20 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 
 		addZone(getNOM_RG_DATE_FIN(), type.getTypeSaisiDto().isCalendarDateFin() ? getNOM_RB_DATE_FIN_OUI()
 				: getNOM_RB_DATE_FIN_NON());
+		addZone(getNOM_RG_HEURE_DEBUT(), type.getTypeSaisiDto().isCalendarHeureDebut() ? getNOM_RB_HEURE_DEBUT_OUI()
+				: getNOM_RB_HEURE_DEBUT_NON());
+		addZone(getNOM_RG_HEURE_FIN(), type.getTypeSaisiDto().isCalendarHeureFin() ? getNOM_RB_HEURE_FIN_OUI()
+				: getNOM_RB_HEURE_FIN_NON());
+
+		// Unite Decompte
+		int indiceUnite = 0;
+		for (int i = 0; i < getListeUniteDecompte().size(); i++) {
+			if (getListeUniteDecompte().get(i).equals(type.getTypeSaisiDto().getUniteDecompte())) {
+				indiceUnite = i;
+				break;
+			}
+		}
+		addZone(getNOM_LB_UNITE_DECOMPTE_SELECT(), String.valueOf(indiceUnite));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
@@ -263,7 +313,15 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		addZone(getNOM_ST_MOTIF(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_COMPL(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_QUOTA(), Const.CHAINE_VIDE);
+
+		addZone(getNOM_RG_DATE_FIN(), getNOM_RB_DATE_FIN_NON());
+		addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
+		addZone(getNOM_RG_HEURE_FIN(), getNOM_RB_HEURE_FIN_NON());
+
+		addZone(getNOM_LB_UNITE_DECOMPTE_SELECT(), Const.ZERO);
+
 		setTypeCreation(null);
+		setUniteDecompte(null);
 	}
 
 	public TypeAbsenceDto getTypeCreation() {
@@ -314,6 +372,16 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				: type.getTypeSaisiDto().getInfosComplementaires());
 		addZone(getNOM_ST_QUOTA(), type.getTypeSaisiDto().getUnitePeriodeQuotaDto() == null ? Const.CHAINE_VIDE : type
 				.getTypeSaisiDto().getUnitePeriodeQuotaDto().getIdRefUnitePeriodeQuota().toString());
+
+		// Unite Decompte
+		int indiceUnite = 0;
+		for (int i = 0; i < getListeUniteDecompte().size(); i++) {
+			if (getListeUniteDecompte().get(i).equals(type.getTypeSaisiDto().getUniteDecompte())) {
+				indiceUnite = i;
+				break;
+			}
+		}
+		addZone(getNOM_LB_UNITE_DECOMPTE_SELECT(), String.valueOf(indiceUnite));
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_VISUALISATION);
@@ -489,5 +557,111 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 
 	public String getNOM_RB_DATE_FIN_NON() {
 		return "NOM_RB_DATE_FIN_NON";
+	}
+
+	public String getNOM_RG_HEURE_DEBUT() {
+		return "NOM_RG_HEURE_DEBUT";
+	}
+
+	public String getVAL_RG_HEURE_DEBUT() {
+		return getZone(getNOM_RG_HEURE_DEBUT());
+	}
+
+	public String getNOM_RB_HEURE_DEBUT_OUI() {
+		return "NOM_RB_HEURE_DEBUT_OUI";
+	}
+
+	public String getNOM_RB_HEURE_DEBUT_NON() {
+		return "NOM_RB_HEURE_DEBUT_NON";
+	}
+
+	public String getNOM_RG_HEURE_FIN() {
+		return "NOM_RG_HEURE_FIN";
+	}
+
+	public String getVAL_RG_HEURE_FIN() {
+		return getZone(getNOM_RG_HEURE_FIN());
+	}
+
+	public String getNOM_RB_HEURE_FIN_OUI() {
+		return "NOM_RB_HEURE_FIN_OUI";
+	}
+
+	public String getNOM_RB_HEURE_FIN_NON() {
+		return "NOM_RB_HEURE_FIN_NON";
+	}
+
+	public String getNOM_PB_UNITE_DECOMPTE() {
+		return "NOM_PB_UNITE_DECOMPTE";
+	}
+
+	public boolean performPB_UNITE_DECOMPTE(HttpServletRequest request) throws Exception {
+		// unite decompte
+		int indiceUnite = (Services.estNumerique(getVAL_LB_UNITE_DECOMPTE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_UNITE_DECOMPTE_SELECT()) : -1);
+		String unite = getListeUniteDecompte().get(indiceUnite);
+		setUniteDecompte(unite);
+		return true;
+	}
+
+	private String[] getLB_UNITE_DECOMPTE() {
+		if (LB_UNITE_DECOMPTE == null) {
+			LB_UNITE_DECOMPTE = initialiseLazyLB();
+		}
+		return LB_UNITE_DECOMPTE;
+	}
+
+	private void setLB_UNITE_DECOMPTE(String[] newLB_UNITE_DECOMPTE) {
+		LB_UNITE_DECOMPTE = newLB_UNITE_DECOMPTE;
+	}
+
+	public String getNOM_LB_UNITE_DECOMPTE() {
+		return "NOM_LB_UNITE_DECOMPTE";
+	}
+
+	public String getNOM_LB_UNITE_DECOMPTE_SELECT() {
+		return "NOM_LB_UNITE_DECOMPTE_SELECT";
+	}
+
+	public String[] getVAL_LB_UNITE_DECOMPTE() {
+		return getLB_UNITE_DECOMPTE();
+	}
+
+	public String getVAL_LB_UNITE_DECOMPTE_SELECT() {
+		return getZone(getNOM_LB_UNITE_DECOMPTE_SELECT());
+	}
+
+	public String getUniteDecompte() {
+		return uniteDecompte;
+	}
+
+	public void setUniteDecompte(String uniteDecompte) {
+		this.uniteDecompte = uniteDecompte;
+	}
+
+	public ArrayList<String> getListeUniteDecompte() {
+		return listeUniteDecompte;
+	}
+
+	public void setListeUniteDecompte(ArrayList<String> listeUniteDecompte) {
+		this.listeUniteDecompte = listeUniteDecompte;
+	}
+
+	public String getNOM_PB_VALIDER_CONGES() {
+		return "NOM_PB_VALIDER_CONGES";
+	}
+
+	public boolean performPB_VALIDER_CONGES(HttpServletRequest request) {
+		if(getTypeCreation()==null){
+			//TODO declarer erreur
+			return false;
+		}
+		
+		
+		
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
+		return true;
 	}
 }
