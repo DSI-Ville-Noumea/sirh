@@ -46,8 +46,9 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	private String[] LB_TYPE_QUOTA;
 
 	public String ACTION_CREATION = "Création d'un congé exceptionnel.";
-	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel.";
+	public String ACTION_MODIFICATION = "Modification d'un congé exceptionnel :";
 	public String ACTION_VISUALISATION = "Visualisation d'un congé exceptionnel :";
+	public String ACTION_SUPPRESSION = "Suppression d'un congé exceptionnel :";
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -196,6 +197,10 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				// Si clic sur le bouton PB_VISUALISATION
 				if (testerParametre(request, getNOM_PB_VISUALISATION(indiceAbs))) {
 					return performPB_VISUALISATION(request, indiceAbs);
+				}
+				// Si clic sur le bouton PB_SUPPRIMER
+				if (testerParametre(request, getNOM_PB_SUPPRIMER(indiceAbs))) {
+					return performPB_SUPPRIMER(request, indiceAbs);
 				}
 			}
 		}
@@ -811,67 +816,86 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 			return false;
 		}
+		if (getVAL_ST_ACTION().equals(ACTION_SUPPRESSION)) {
 
-		// vérification de la validité du formulaire
-		if (!performControlerChamps(request))
-			return false;
+			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+			ReturnMessageDto srm = t.deleteTypeAbsence(agentConnecte.getIdAgent(), getTypeCreation()
+					.getIdRefTypeAbsence());
 
-		if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
-			getTypeCreation().setLibelle(getVAL_ST_LIBELLE());
-		}
-		getTypeCreation().getTypeSaisiDto().setCalendarDateDebut(true);
-		getTypeCreation().getTypeSaisiDto().setCalendarDateFin(
-				getVAL_RG_DATE_FIN().equals(getNOM_RB_DATE_FIN_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setCalendarHeureDebut(
-				getVAL_RG_HEURE_DEBUT().equals(getNOM_RB_HEURE_DEBUT_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setCalendarHeureFin(
-				getVAL_RG_HEURE_FIN().equals(getNOM_RB_HEURE_FIN_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setChkDateDebut(
-				getVAL_RG_AM_PM_DEBUT().equals(getNOM_RB_AM_PM_DEBUT_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setChkDateFin(
-				getVAL_RG_AM_PM_FIN().equals(getNOM_RB_AM_PM_FIN_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setPieceJointe(
-				getVAL_RG_PIECE_JOINTE().equals(getNOM_RB_PIECE_JOINTE_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setFonctionnaire(
-				getVAL_CK_STATUT_F().equals(getCHECKED_ON()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setContractuel(getVAL_CK_STATUT_C().equals(getCHECKED_ON()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setConventionCollective(
-				getVAL_CK_STATUT_CC().equals(getCHECKED_ON()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setSaisieKiosque(
-				getVAL_RG_SAISIE_KIOSQUE().equals(getNOM_RB_SAISIE_KIOSQUE_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setDescription(
-				getVAL_ST_DESCRIPTION().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_DESCRIPTION());
-		getTypeCreation().getTypeSaisiDto().setMotif(getVAL_RG_MOTIF().equals(getNOM_RB_MOTIF_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setInfosComplementaires(
-				getVAL_ST_INFO_COMPL().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_INFO_COMPL());
-		getTypeCreation().getTypeSaisiDto().setAlerte(getVAL_RG_ALERTE().equals(getNOM_RB_ALERTE_OUI()) ? true : false);
-		getTypeCreation().getTypeSaisiDto().setMessageAlerte(
-				getVAL_ST_MESSAGE_ALERTE().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_MESSAGE_ALERTE());
-		getTypeCreation().getTypeSaisiDto().setQuotaMax(Integer.valueOf(getVAL_ST_QUOTA()));
-
-		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_TYPE_QUOTA_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_TYPE_QUOTA_SELECT())) : -1);
-		UnitePeriodeQuotaDto unitePeriodeQuotaDto = null;
-		if (numEtat != -1 && numEtat != 0) {
-			unitePeriodeQuotaDto = getListeTypeQuota().get(numEtat - 1);
-		}
-		getTypeCreation().getTypeSaisiDto().setUnitePeriodeQuotaDto(unitePeriodeQuotaDto);
-
-		// envoyer l'info aux WS
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(getTypeCreation());
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveTypeAbsence(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
+			if (srm.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : srm.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur(err);
+				return false;
 			}
-			getTransaction().declarerErreur(err);
-			return false;
+		} else {
+
+			// vérification de la validité du formulaire
+			if (!performControlerChamps(request))
+				return false;
+
+			if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
+				getTypeCreation().setLibelle(getVAL_ST_LIBELLE());
+			}
+			getTypeCreation().getTypeSaisiDto().setCalendarDateDebut(true);
+			getTypeCreation().getTypeSaisiDto().setCalendarDateFin(
+					getVAL_RG_DATE_FIN().equals(getNOM_RB_DATE_FIN_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setCalendarHeureDebut(
+					getVAL_RG_HEURE_DEBUT().equals(getNOM_RB_HEURE_DEBUT_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setCalendarHeureFin(
+					getVAL_RG_HEURE_FIN().equals(getNOM_RB_HEURE_FIN_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setChkDateDebut(
+					getVAL_RG_AM_PM_DEBUT().equals(getNOM_RB_AM_PM_DEBUT_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setChkDateFin(
+					getVAL_RG_AM_PM_FIN().equals(getNOM_RB_AM_PM_FIN_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setPieceJointe(
+					getVAL_RG_PIECE_JOINTE().equals(getNOM_RB_PIECE_JOINTE_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setFonctionnaire(
+					getVAL_CK_STATUT_F().equals(getCHECKED_ON()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setContractuel(
+					getVAL_CK_STATUT_C().equals(getCHECKED_ON()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setConventionCollective(
+					getVAL_CK_STATUT_CC().equals(getCHECKED_ON()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setSaisieKiosque(
+					getVAL_RG_SAISIE_KIOSQUE().equals(getNOM_RB_SAISIE_KIOSQUE_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setDescription(
+					getVAL_ST_DESCRIPTION().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_DESCRIPTION());
+			getTypeCreation().getTypeSaisiDto()
+					.setMotif(getVAL_RG_MOTIF().equals(getNOM_RB_MOTIF_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setInfosComplementaires(
+					getVAL_ST_INFO_COMPL().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_INFO_COMPL());
+			getTypeCreation().getTypeSaisiDto().setAlerte(
+					getVAL_RG_ALERTE().equals(getNOM_RB_ALERTE_OUI()) ? true : false);
+			getTypeCreation().getTypeSaisiDto().setMessageAlerte(
+					getVAL_ST_MESSAGE_ALERTE().equals(Const.CHAINE_VIDE) ? null : getVAL_ST_MESSAGE_ALERTE());
+			getTypeCreation().getTypeSaisiDto().setQuotaMax(Integer.valueOf(getVAL_ST_QUOTA()));
+
+			// etat
+			int numEtat = (Services.estNumerique(getZone(getNOM_LB_TYPE_QUOTA_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_TYPE_QUOTA_SELECT())) : -1);
+			UnitePeriodeQuotaDto unitePeriodeQuotaDto = null;
+			if (numEtat != -1 && numEtat != 0) {
+				unitePeriodeQuotaDto = getListeTypeQuota().get(numEtat - 1);
+			}
+			getTypeCreation().getTypeSaisiDto().setUnitePeriodeQuotaDto(unitePeriodeQuotaDto);
+
+			// envoyer l'info aux WS
+			String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+					.deepSerialize(getTypeCreation());
+
+			SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+			ReturnMessageDto srm = t.saveTypeAbsence(agentConnecte.getIdAgent(), json);
+
+			if (srm.getErrors().size() > 0) {
+				String err = Const.CHAINE_VIDE;
+				for (String erreur : srm.getErrors()) {
+					err += " " + erreur;
+				}
+				getTransaction().declarerErreur(err);
+				return false;
+			}
 		}
 
 		// On nomme l'action
@@ -1116,4 +1140,27 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	public String getVAL_ST_LIBELLE() {
 		return getZone(getNOM_ST_LIBELLE());
 	}
+
+	public String getNOM_PB_SUPPRIMER(int i) {
+		return "NOM_PB_SUPPRIMER" + i;
+	}
+
+	public boolean performPB_SUPPRIMER(HttpServletRequest request, int indiceEltASupprimer) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		viderZoneSaisie(request);
+
+		// on recupere la demande
+		TypeAbsenceDto aChercher = new TypeAbsenceDto();
+		aChercher.setIdRefTypeAbsence(indiceEltASupprimer);
+		TypeAbsenceDto type = getListeTypeAbsence().get(getListeTypeAbsence().indexOf(aChercher));
+		setTypeCreation(type);
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_SUPPRESSION);
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
 }

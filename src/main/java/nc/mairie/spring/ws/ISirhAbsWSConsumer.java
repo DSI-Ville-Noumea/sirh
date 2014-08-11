@@ -33,6 +33,8 @@ public interface ISirhAbsWSConsumer {
 	List<TypeAbsenceDto> getListeRefTypeAbsenceDto();
 
 	ReturnMessageDto saveTypeAbsence(String idAgentConnecte, String json);
+	
+	ReturnMessageDto deleteTypeAbsence(String idAgentConnecte, Integer idRefTypeAbsence);
 
 	// Motifs
 	List<MotifDto> getListeMotif();

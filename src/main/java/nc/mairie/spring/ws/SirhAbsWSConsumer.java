@@ -64,6 +64,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
 	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
+	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -502,6 +503,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgentConnecte);
 		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto deleteTypeAbsence(String idAgentConnecte, Integer idRefTypeAbsence) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsDeleteCongeExcep;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
+		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
