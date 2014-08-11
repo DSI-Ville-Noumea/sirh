@@ -156,12 +156,16 @@
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>
 	            </FIELDSET>
-            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION) || process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
+				<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){%>
+	            	<legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
+				<%}else{ %>
+	            	<legend class="sigp2Legend"><%=process.ACTION_CREATION %> </legend>
+				<%} %>
 		            <table>
 		            	<tr>
-		            		<td>
+		            		<td width="500px">
 	                			<span class="sigp2Mandatory">Unité de décompte : </span>
 								<span class="sigp2-saisie">
 									<SELECT style="width: 90px;" onchange='executeBouton("<%=process.getNOM_PB_UNITE_DECOMPTE() %>")'  <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> class="sigp2-saisie" name="<%= process.getNOM_LB_UNITE_DECOMPTE() %>">
@@ -169,9 +173,10 @@
 									</SELECT>
 								</span>
 		            		</td>
+		            		<td>&nbsp;</td>
 		            	</tr>
 		            	<tr>
-		            		<td width="500px">
+		            		<td>
 	                			<span class="sigp2Mandatory">Date debut : </span>
  								<INPUT type="radio" checked="checked" disabled="disabled"><span class="sigp2-saisie">Oui</span>			
 		            		</td>
@@ -184,14 +189,73 @@
 		            	<tr>
 		            		<td>
 	                			<span class="sigp2Mandatory">Heure debut : </span>
- 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
-		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
+ 								<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
+		            			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_DEBUT(),process.getNOM_RB_HEURE_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
+ 							</td>
+		            		<td>
+								<span class="sigp2Mandatory">Heure fin : </span>
+	                			<%if(process.getTypeCreation().getTypeSaisiDto().getUniteDecompte().equals("jours")){ %>
+		                			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            			<INPUT type="radio" disabled="disabled" <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
+								<%}else { %>
+	 								<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
+								<%} %>
+		            		</td>
+		            	</tr>
+	                	<%if(process.getTypeCreation().getTypeSaisiDto().getUniteDecompte().equals("jours")){ %>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Demi-journée debut : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_DEBUT(),process.getNOM_RB_AM_PM_DEBUT_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Demi-journée fin : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_AM_PM_FIN(),process.getNOM_RB_AM_PM_FIN_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            	<%} %>
+		            	<tr>
+		            		<td colspan="2">
+								<span class="sigp2Mandatory">Statuts : </span>
+		            			<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_STATUT_F(),process.getVAL_CK_STATUT_F())%>><span class="sigp2-saisie">Fonctionnaire</span>
+		            			<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_STATUT_CC(),process.getVAL_CK_STATUT_CC())%>><span class="sigp2-saisie">Conventions</span>
+		            			<INPUT type="checkbox" <%= process.forCheckBoxHTML(process.getNOM_CK_STATUT_C(),process.getVAL_CK_STATUT_C())%>><span class="sigp2-saisie">Contractuels</span>
+							</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+	                			<span class="sigp2Mandatory">Pièce jointe : </span>
+	 							<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PIECE_JOINTE(),process.getNOM_RB_PIECE_JOINTE_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_PIECE_JOINTE(),process.getNOM_RB_PIECE_JOINTE_NON())%>><span class="sigp2-saisie">Non</span>
+			            	</td>
+		            		<td>
+								<span class="sigp2Mandatory">Saisie Kiosque : </span>
+		                		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SAISIE_KIOSQUE(),process.getNOM_RB_SAISIE_KIOSQUE_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_SAISIE_KIOSQUE(),process.getNOM_RB_SAISIE_KIOSQUE_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            	</tr>
+		            	<tr>
+		            		<td colspan="2">
+								<span class="sigp2Mandatory">Description : </span>
+								<BR/>
+		            			<textarea rows="3" style="width:800px" name="<%= process.getNOM_ST_DESCRIPTION() %>" ><%= process.getVAL_ST_DESCRIPTION() %></textarea>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+								<span class="sigp2Mandatory">Motif obligatoire (pour saisie) : </span>
+		            			<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_MOTIF() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOTIF(),process.getNOM_RB_MOTIF_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_MOTIF() %>")'<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_MOTIF(),process.getNOM_RB_MOTIF_NON())%>><span class="sigp2-saisie">Non</span>
 							</td>
 		            		<td>
-	                			<span class="sigp2Mandatory">Heure fin : </span>
-		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_OUI())%>><span class="sigp2-saisie">Oui</span>
-		            			<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_HEURE_FIN(),process.getNOM_RB_HEURE_FIN_NON())%>><span class="sigp2-saisie">Non</span>
-							</td>
+			            		<%if(process.getTypeCreation().getTypeSaisiDto().isMotif()){ %>
+									<span class="sigp2Mandatory">Indication motif : </span>
+			            			<textarea rows="3" style="width:450px" name="<%= process.getNOM_ST_INFO_COMPL() %>" ><%= process.getVAL_ST_INFO_COMPL() %></textarea>
+			            		<%} %>
+		            		</td>
 		            	</tr>
 		            </table>  
 			        <BR/><BR/>
@@ -204,7 +268,8 @@
             
             <%} %>
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">
-			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_UNITE_DECOMPTE()%>" value="UNITEDECOMPTE">        
+			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_UNITE_DECOMPTE()%>" value="UNITEDECOMPTE">     
+			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_MOTIF()%>" value="MOTIF">   
 		</FORM>
 	</BODY>
 </HTML>

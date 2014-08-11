@@ -6,6 +6,8 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeGroupeAbsence;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.metier.Const;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -29,7 +31,6 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	public String focus = null;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private TypeAbsenceDto typeCreation;
-	private String uniteDecompte;
 	private ArrayList<String> listeUniteDecompte;
 	private String[] LB_UNITE_DECOMPTE;
 
@@ -148,6 +149,11 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				return performPB_UNITE_DECOMPTE(request);
 			}
 
+			// Si clic sur le bouton PB_MOTIF
+			if (testerParametre(request, getNOM_PB_MOTIF())) {
+				return performPB_MOTIF(request);
+			}
+
 			// Si clic sur les boutons du tableau
 			for (TypeAbsenceDto abs : getListeTypeAbsence()) {
 				int indiceAbs = abs.getIdRefTypeAbsence();
@@ -243,6 +249,21 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 
 	public boolean performPB_AJOUTER_CONGES(HttpServletRequest request) throws Exception {
 		viderZoneSaisie(request);
+
+		// TODO
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto();
+		groupeDto.setIdRefGroupeAbsence(EnumTypeGroupeAbsence.CONGES_EXCEP.getValue());
+
+		RefTypeSaisiDto saisieDto = new RefTypeSaisiDto();
+		saisieDto.setUniteDecompte("minutes");
+		saisieDto.setMotif(false);
+
+		TypeAbsenceDto newType = new TypeAbsenceDto();
+		newType.setGroupeAbsence(groupeDto);
+		newType.setTypeSaisiDto(saisieDto);
+		
+		setTypeCreation(newType);
+
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 
@@ -270,6 +291,25 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				: getNOM_RB_HEURE_DEBUT_NON());
 		addZone(getNOM_RG_HEURE_FIN(), type.getTypeSaisiDto().isCalendarHeureFin() ? getNOM_RB_HEURE_FIN_OUI()
 				: getNOM_RB_HEURE_FIN_NON());
+		addZone(getNOM_RG_AM_PM_DEBUT(), type.getTypeSaisiDto().isChkDateDebut() ? getNOM_RB_AM_PM_DEBUT_OUI()
+				: getNOM_RB_AM_PM_DEBUT_NON());
+		addZone(getNOM_RG_AM_PM_FIN(), type.getTypeSaisiDto().isChkDateFin() ? getNOM_RB_AM_PM_FIN_OUI()
+				: getNOM_RB_AM_PM_FIN_NON());
+		addZone(getNOM_RG_PIECE_JOINTE(), type.getTypeSaisiDto().isPieceJointe() ? getNOM_RB_PIECE_JOINTE_OUI()
+				: getNOM_RB_PIECE_JOINTE_NON());
+		addZone(getNOM_RG_SAISIE_KIOSQUE(), type.getTypeSaisiDto().isSaisieKiosque() ? getNOM_RB_SAISIE_KIOSQUE_OUI()
+				: getNOM_RB_SAISIE_KIOSQUE_NON());
+		addZone(getNOM_ST_DESCRIPTION(), type.getTypeSaisiDto().getDescription() == null ? Const.CHAINE_VIDE : type
+				.getTypeSaisiDto().getDescription());
+		addZone(getNOM_RG_MOTIF(), type.getTypeSaisiDto().isMotif() ? getNOM_RB_MOTIF_OUI() : getNOM_RB_MOTIF_NON());
+		addZone(getNOM_ST_INFO_COMPL(), type.getTypeSaisiDto().getInfosComplementaires() == null ? Const.CHAINE_VIDE
+				: type.getTypeSaisiDto().getInfosComplementaires());
+
+		addZone(getNOM_CK_STATUT_F(), type.getTypeSaisiDto().isFonctionnaire() ? getCHECKED_ON() : getCHECKED_OFF());
+		addZone(getNOM_CK_STATUT_C(), type.getTypeSaisiDto().isContractuel() ? getCHECKED_ON() : getCHECKED_OFF());
+		addZone(getNOM_CK_STATUT_CC(), type.getTypeSaisiDto().isConventionCollective() ? getCHECKED_ON()
+				: getCHECKED_OFF());
+		// TODO
 
 		// Unite Decompte
 		int indiceUnite = 0;
@@ -317,11 +357,20 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		addZone(getNOM_RG_DATE_FIN(), getNOM_RB_DATE_FIN_NON());
 		addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
 		addZone(getNOM_RG_HEURE_FIN(), getNOM_RB_HEURE_FIN_NON());
+		addZone(getNOM_RG_AM_PM_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
+		addZone(getNOM_RG_AM_PM_FIN(), getNOM_RB_HEURE_FIN_NON());
+		addZone(getNOM_RG_PIECE_JOINTE(), getNOM_RB_PIECE_JOINTE_NON());
+		addZone(getNOM_RG_SAISIE_KIOSQUE(), getNOM_RB_SAISIE_KIOSQUE_NON());
+		addZone(getNOM_RG_MOTIF(), getNOM_RB_MOTIF_NON());
+		addZone(getNOM_CK_STATUT_F(), getCHECKED_OFF());
+		addZone(getNOM_CK_STATUT_C(), getCHECKED_OFF());
+		addZone(getNOM_CK_STATUT_CC(), getCHECKED_OFF());
+
+		// TODO
 
 		addZone(getNOM_LB_UNITE_DECOMPTE_SELECT(), Const.ZERO);
 
 		setTypeCreation(null);
-		setUniteDecompte(null);
 	}
 
 	public TypeAbsenceDto getTypeCreation() {
@@ -600,7 +649,14 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		int indiceUnite = (Services.estNumerique(getVAL_LB_UNITE_DECOMPTE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_UNITE_DECOMPTE_SELECT()) : -1);
 		String unite = getListeUniteDecompte().get(indiceUnite);
-		setUniteDecompte(unite);
+		getTypeCreation().getTypeSaisiDto().setUniteDecompte(unite);
+		if (unite.equals("minutes")) {
+			addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_OUI());
+		} else if (unite.equals("jours")) {
+			addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
+			addZone(getNOM_RG_HEURE_FIN(), getNOM_RB_HEURE_FIN_NON());
+		}
+
 		return true;
 	}
 
@@ -631,14 +687,6 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		return getZone(getNOM_LB_UNITE_DECOMPTE_SELECT());
 	}
 
-	public String getUniteDecompte() {
-		return uniteDecompte;
-	}
-
-	public void setUniteDecompte(String uniteDecompte) {
-		this.uniteDecompte = uniteDecompte;
-	}
-
 	public ArrayList<String> getListeUniteDecompte() {
 		return listeUniteDecompte;
 	}
@@ -652,16 +700,133 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	}
 
 	public boolean performPB_VALIDER_CONGES(HttpServletRequest request) {
-		if(getTypeCreation()==null){
-			//TODO declarer erreur
+		if (getTypeCreation() == null) {
+			// TODO declarer erreur
 			return false;
 		}
-		
-		
-		
+
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		viderZoneSaisie(request);
 		return true;
+	}
+
+	public String getNOM_RG_AM_PM_DEBUT() {
+		return "NOM_RG_AM_PM_DEBUT";
+	}
+
+	public String getVAL_RG_AM_PM_DEBUT() {
+		return getZone(getNOM_RG_AM_PM_DEBUT());
+	}
+
+	public String getNOM_RB_AM_PM_DEBUT_OUI() {
+		return "NOM_RB_AM_PM_DEBUT_OUI";
+	}
+
+	public String getNOM_RB_AM_PM_DEBUT_NON() {
+		return "NOM_RB_AM_PM_DEBUT_NON";
+	}
+
+	public String getNOM_RG_AM_PM_FIN() {
+		return "NOM_RG_AM_PM_FIN";
+	}
+
+	public String getVAL_RG_AM_PM_FIN() {
+		return getZone(getNOM_RG_AM_PM_FIN());
+	}
+
+	public String getNOM_RB_AM_PM_FIN_OUI() {
+		return "NOM_RB_AM_PM_FIN_OUI";
+	}
+
+	public String getNOM_RB_AM_PM_FIN_NON() {
+		return "NOM_RB_AM_PM_FIN_NON";
+	}
+
+	public String getNOM_RG_PIECE_JOINTE() {
+		return "NOM_RG_PIECE_JOINTE";
+	}
+
+	public String getVAL_RG_PIECE_JOINTE() {
+		return getZone(getNOM_RG_PIECE_JOINTE());
+	}
+
+	public String getNOM_RB_PIECE_JOINTE_OUI() {
+		return "NOM_RB_PIECE_JOINTE_OUI";
+	}
+
+	public String getNOM_RB_PIECE_JOINTE_NON() {
+		return "NOM_RB_PIECE_JOINTE_NON";
+	}
+
+	public String getNOM_RG_SAISIE_KIOSQUE() {
+		return "NOM_RG_SAISIE_KIOSQUE";
+	}
+
+	public String getVAL_RG_SAISIE_KIOSQUE() {
+		return getZone(getNOM_RG_SAISIE_KIOSQUE());
+	}
+
+	public String getNOM_RB_SAISIE_KIOSQUE_OUI() {
+		return "NOM_RB_SAISIE_KIOSQUE_OUI";
+	}
+
+	public String getNOM_RB_SAISIE_KIOSQUE_NON() {
+		return "NOM_RB_SAISIE_KIOSQUE_NON";
+	}
+
+	public String getNOM_RG_MOTIF() {
+		return "NOM_RG_MOTIF";
+	}
+
+	public String getVAL_RG_MOTIF() {
+		return getZone(getNOM_RG_MOTIF());
+	}
+
+	public String getNOM_RB_MOTIF_OUI() {
+		return "NOM_RB_MOTIF_OUI";
+	}
+
+	public String getNOM_RB_MOTIF_NON() {
+		return "NOM_RB_MOTIF_NON";
+	}
+
+	public String getNOM_PB_MOTIF() {
+		return "NOM_PB_MOTIF";
+	}
+
+	public boolean performPB_MOTIF(HttpServletRequest request) throws Exception {
+		// motif / info complémentaires
+		if (getVAL_RG_MOTIF().equals(getNOM_RB_MOTIF_OUI())) {
+			getTypeCreation().getTypeSaisiDto().setMotif(true);
+		} else {
+			getTypeCreation().getTypeSaisiDto().setMotif(false);
+		}
+
+		return true;
+	}
+
+	public String getNOM_CK_STATUT_F() {
+		return "NOM_CK_STATUT_F";
+	}
+
+	public String getVAL_CK_STATUT_F() {
+		return getZone(getNOM_CK_STATUT_F());
+	}
+
+	public String getNOM_CK_STATUT_C() {
+		return "NOM_CK_STATUT_C";
+	}
+
+	public String getVAL_CK_STATUT_C() {
+		return getZone(getNOM_CK_STATUT_C());
+	}
+
+	public String getNOM_CK_STATUT_CC() {
+		return "NOM_CK_STATUT_CC";
+	}
+
+	public String getVAL_CK_STATUT_CC() {
+		return getZone(getNOM_CK_STATUT_CC());
 	}
 }
