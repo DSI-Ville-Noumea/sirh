@@ -405,8 +405,8 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		addZone(getNOM_RG_DATE_FIN(), getNOM_RB_DATE_FIN_NON());
 		addZone(getNOM_RG_HEURE_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
 		addZone(getNOM_RG_HEURE_FIN(), getNOM_RB_HEURE_FIN_NON());
-		addZone(getNOM_RG_AM_PM_DEBUT(), getNOM_RB_HEURE_DEBUT_NON());
-		addZone(getNOM_RG_AM_PM_FIN(), getNOM_RB_HEURE_FIN_NON());
+		addZone(getNOM_RG_AM_PM_DEBUT(), getNOM_RB_AM_PM_DEBUT_NON());
+		addZone(getNOM_RG_AM_PM_FIN(), getNOM_RB_AM_PM_FIN_NON());
 		addZone(getNOM_RG_PIECE_JOINTE(), getNOM_RB_PIECE_JOINTE_NON());
 		addZone(getNOM_RG_SAISIE_KIOSQUE(), getNOM_RB_SAISIE_KIOSQUE_NON());
 		addZone(getNOM_RG_MOTIF(), getNOM_RB_MOTIF_NON());
