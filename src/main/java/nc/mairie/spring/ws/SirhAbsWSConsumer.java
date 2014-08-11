@@ -14,6 +14,7 @@ import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -61,6 +62,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
 	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
+	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
+	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -481,6 +484,25 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
+	}
+
+	@Override
+	public List<UnitePeriodeQuotaDto> getUnitePeriodeQuota() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsListeUnitePeriodeQuota;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(UnitePeriodeQuotaDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveTypeAbsence(String idAgentConnecte, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCongeExcep;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgentConnecte);
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 }

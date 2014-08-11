@@ -162,6 +162,9 @@
 	            	<legend class="sigp2Legend"><%=process.ACTION_MODIFICATION %> <%=process.getTypeCreation().getLibelle() %></legend>
 				<%}else{ %>
 	            	<legend class="sigp2Legend"><%=process.ACTION_CREATION %> </legend>
+					<span class="sigp2Mandatory">Libellé : </span>
+					<INPUT class="sigp2-saisie" size="150" name="<%= process.getNOM_ST_LIBELLE() %>" type="text"  value="<%= process.getVAL_ST_LIBELLE() %>">
+					<BR/>
 				<%} %>
 		            <table>
 		            	<tr>
@@ -257,6 +260,31 @@
 			            		<%} %>
 		            		</td>
 		            	</tr>
+		            	<tr>
+		            		<td>
+								<span class="sigp2Mandatory">Quota pour calcul dépassement : </span>
+								<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_QUOTA() %>" type="text"  value="<%= process.getVAL_ST_QUOTA() %>">
+		            		</td>
+		            		<td>
+								<span class="sigp2Mandatory">Type de quota : </span>
+								<SELECT style="width: 150px;" class="sigp2-saisie" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> name="<%= process.getNOM_LB_TYPE_QUOTA() %>" >
+									<%=process.forComboHTML(process.getVAL_LB_TYPE_QUOTA(), process.getVAL_LB_TYPE_QUOTA_SELECT()) %>
+								</SELECT>
+			            	</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+								<span class="sigp2Mandatory">Alerte depassement lors saisie : </span>
+		            			<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_ALERTE() %>")' <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_ALERTE(),process.getNOM_RB_ALERTE_OUI())%>><span class="sigp2-saisie">Oui</span>
+			            		<INPUT type="radio" onclick='executeBouton("<%=process.getNOM_PB_ALERTE() %>")'<%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_ALERTE(),process.getNOM_RB_ALERTE_NON())%>><span class="sigp2-saisie">Non</span>
+							</td>
+		            		<td>
+			            		<%if(process.getTypeCreation().getTypeSaisiDto().isAlerte()){ %>
+									<span class="sigp2Mandatory">Message alerte : </span>
+			            			<textarea rows="3" style="width:450px" name="<%= process.getNOM_ST_MESSAGE_ALERTE() %>" ><%= process.getVAL_ST_MESSAGE_ALERTE() %></textarea>
+			            		<%} %>
+		            		</td>
+		            	</tr>
 		            </table>  
 			        <BR/><BR/>
                     <div align="center">	 
@@ -270,6 +298,7 @@
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER_CONGES()%>" value="AJOUTERCONGES">
 			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_UNITE_DECOMPTE()%>" value="UNITEDECOMPTE">     
 			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_MOTIF()%>" value="MOTIF">   
+			<INPUT type="submit" style="visibility:hidden;" name="<%=process.getNOM_PB_ALERTE()%>" value="ALERTE">   
 		</FORM>
 	</BODY>
 </HTML>
