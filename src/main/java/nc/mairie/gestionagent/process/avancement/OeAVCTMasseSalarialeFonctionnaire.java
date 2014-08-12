@@ -1692,6 +1692,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 		// on enregistre
 		commitTransaction();
+		performPB_CHANGER_ANNEE(request);
 		return true;
 	}
 
@@ -1867,7 +1868,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 		// on valide les modifis
 		commitTransaction();
-
+		performPB_CHANGER_ANNEE(request);
 		// "INF201","@ agents ont été affectés."
 		setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF201", String.valueOf(nbAgentAffectes)));
 		return true;

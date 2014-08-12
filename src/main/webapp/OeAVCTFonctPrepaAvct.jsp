@@ -160,7 +160,7 @@ function reduireHierarchy() {
 							<th rowspan="2">Durée Std</th>
 							<th rowspan="2">Date Avct Mini <br> Moy <br> Maxi</th>
 							<th rowspan="2">Verif SGC							
-								<INPUT type="checkbox" name="CHECK_ALL_SGC" onClick='activeSGC("<%=process.getListeAvct().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_SGC" onClick='activeSGC()'>
 							</th>
 							<th rowspan="2">Vérifié par</th>
 						</tr>

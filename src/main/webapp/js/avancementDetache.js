@@ -5,18 +5,10 @@ function validDRH(indice)
   if (box != null && box.checked)
   {
     document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].style.visibility = "visible";
-    if (document.formu.elements['NOM_LB_AVIS_CAP_'+indice] != null)
-    {
-    	document.formu.elements['NOM_LB_AVIS_CAP_'+indice].style.visibility = "visible";
-    }
   }
   else
   {
     document.formu.elements['NOM_CK_PROJET_ARRETE_'+indice].style.visibility = "hidden";
-    if (document.formu.elements['NOM_LB_AVIS_CAP_'+indice] != null)
-    {
-    	document.formu.elements['NOM_LB_AVIS_CAP_'+indice].style.visibility = "hidden";
-    }
   }
 }
 
@@ -27,10 +19,6 @@ function validProjet(indice)
   if (box != null && box.checked)
   {
 	document.formu.elements['NOM_CK_VALID_DRH_'+indice].disabled = true;
-    if (document.formu.elements['NOM_LB_AVIS_CAP_'+indice] != null)
-    {
-    	document.formu.elements['NOM_LB_AVIS_CAP_'+indice].disabled = true;
-    }
     document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].style.visibility = "visible";
     document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].style.visibility = "visible";
     document.formu.elements['NOM_CK_AFFECTER_'+indice].style.visibility = "visible";
@@ -38,10 +26,6 @@ function validProjet(indice)
   else
   {
 	document.formu.elements['NOM_CK_VALID_DRH_'+indice].disabled = false;
-    if (document.formu.elements['NOM_LB_AVIS_CAP_'+indice] != null)
-    {
-    	document.formu.elements['NOM_LB_AVIS_CAP_'+indice].disabled = false;
-    }
     document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].style.visibility = "hidden";
     document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].style.visibility = "hidden";
     document.formu.elements['NOM_CK_AFFECTER_'+indice].style.visibility = "hidden";
@@ -64,41 +48,4 @@ function validAffecter(indice)
 	document.formu.elements['NOM_EF_NUM_ARRETE_'+indice].disabled = false; 
 	document.formu.elements['NOM_EF_DATE_ARRETE_'+indice].disabled = false; 
   }
-}
-// active/Désactive toutes les cases à cocher pour la validation DRH
-function activeDRH(tailleListe)
-{
-	for (i=0; i<tailleListe; i++){
-  		var box = document.formu.elements['NOM_CK_VALID_DRH_'+i];  		
-  		if(document.formu.elements['CHECK_ALL_DRH'].checked ){
-  			if(box!=null && !box.disabled){			
-				box.checked=true; 
-				validDRH(i);  
-			}			
-  		}else{
-  			if(box!=null && !box.disabled){		
-				box.checked=false; 
-				validDRH(i);
-			}
-		}
-    } 
-}
-// active/Désactive toutes les cases à cocher pour le projet arrete
-function activeProjet(tailleListe)
-{
-	for (i=0; i<tailleListe; i++){
-  		var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+i]; 
-  		var boxDRH = document.formu.elements['NOM_CK_VALID_DRH_'+i];   		
-  		if(document.formu.elements['CHECK_ALL_PROJET'].checked && boxDRH!=null && boxDRH.checked){
-  			if(box!=null && !box.disabled){		
-				box.checked=true; 
-				validProjet(i);
-			}
-  		}else{
-  			if(box!=null && !box.disabled){	
-				box.checked=false; 
-				validProjet(i);
-			}
-		}
-    }  
 }

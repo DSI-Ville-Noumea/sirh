@@ -17,7 +17,7 @@
 <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="TableTools-2.0.1/media/js/TableTools.min.js"></script>
-<script type="text/javascript" src="js/avancement.js"></script>
+<script type="text/javascript" src="js/avancementDetache.js"></script>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -40,6 +40,70 @@ document.formu.elements[nom].focus();
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
 	<FORM name="formu" method="POST" class="sigp2-titre">
+	<script type="text/javascript">
+		function activeDRH() {						
+				<%
+				for (int j = 0;j<process.getListeAvct().size();j++){
+					AvancementDetaches avct = process.getListeAvct().get(j);
+					Integer i = avct.getIdAvct();
+				%>
+				var box = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];  		
+		  		if(document.formu.elements['CHECK_ALL_DRH'].checked ){
+		  			if(box!=null && !box.disabled){			
+						box.checked=true; 
+						validDRH(<%=i%>);  
+					}			
+		  		}else{
+		  			if(box!=null && !box.disabled){		
+						box.checked=false; 
+						validDRH(<%=i%>);
+					}
+				}
+				<%}%>
+		}
+		function activeProjet() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementDetaches avct = process.getListeAvct().get(j);
+				Integer i = avct.getIdAvct();
+			%>
+			var box = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>]; 
+				var boxDRH = document.formu.elements['NOM_CK_VALID_DRH_'+<%=i%>];   		
+				if(document.formu.elements['CHECK_ALL_PROJET'].checked && boxDRH!=null && boxDRH.checked){
+					if(box!=null && !box.disabled){		
+					box.checked=true; 
+					validProjet(<%=i%>);
+				}
+				}else{
+					if(box!=null && !box.disabled){	
+					box.checked=false; 
+					validProjet(<%=i%>);
+				}
+			}
+			<%}%>
+		}
+		function activeAffecter() {						
+			<%
+			for (int j = 0;j<process.getListeAvct().size();j++){
+				AvancementDetaches avct = process.getListeAvct().get(j);
+				Integer i = avct.getIdAvct();
+			%>
+			var box = document.formu.elements['NOM_CK_AFFECTER_'+<%=i%>];  
+				var boxProjet = document.formu.elements['NOM_CK_PROJET_ARRETE_'+<%=i%>];  		
+				if(document.formu.elements['CHECK_ALL_AFFECTER'].checked && boxProjet!=null && boxProjet.checked){
+					if(box!=null && !box.disabled){	
+					box.checked=true;  
+					validAffecter(<%=i%>);
+				}			
+		  	}else{
+					if(box!=null && !box.disabled){	
+					box.checked=false;	 
+					validAffecter(<%=i%>);
+				}		
+			}
+			<%}%>
+		}
+	</script>
 	
 <script type="text/javascript">
 function activeImpr() {						
@@ -113,18 +177,18 @@ function activeRegul() {
 							<th rowspan="2">Durée Std</th>
 							<th rowspan="2">Date Avct Moy</th>
 							<th rowspan="2">Valid. DRH							
-								<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH("<%=process.getListeAvct().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_DRH" onClick='activeDRH()'>
 							</th>
 							<th rowspan="2">Motif Avct</th>
 							<th rowspan="2">Projet Arrete
-								<INPUT type="checkbox" name="CHECK_ALL_PROJET" onClick='activeProjet("<%=process.getListeAvct().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_PROJET" onClick='activeProjet()'>
 							</th>
 							<th rowspan="2">Num Arrete</th>
 							<th rowspan="2">Date Arrete</th>
 							<th rowspan="2">Regul. <br> <INPUT type="checkbox" name="CHECK_ALL_REGUL" onClick='activeRegul()'></th>
 							<th rowspan="2">A imprimer<br> <INPUT type="checkbox" name="CHECK_ALL_IMPR" onClick='activeImpr()'></th>
 							<th rowspan="2">Affecter
-								<INPUT type="checkbox" name="CHECK_ALL_AFFECTER" onClick='activeAffecter("<%=process.getListeAvct().size() %>")'>
+								<INPUT type="checkbox" name="CHECK_ALL_AFFECTER" onClick='activeAffecter()'>
 							</th>
 						</tr>
 						<tr>
