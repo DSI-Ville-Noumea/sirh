@@ -12,6 +12,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	private Integer idDemande;
 	private Integer idTypeDemande;
+	private String libelleTypeDemande;
 	private RefGroupeAbsenceDto groupeAbsence;
 	private Date dateDemande;
 	private Date dateDebut;
@@ -286,6 +287,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setTypeSaisi(RefTypeSaisiDto typeSaisi) {
 		this.typeSaisi = typeSaisi;
+	}
+
+	public String getLibelleTypeDemande() {
+		return libelleTypeDemande;
+	}
+
+	public void setLibelleTypeDemande(String libelleTypeDemande) {
+		this.libelleTypeDemande = libelleTypeDemande;
 	}
 
 }
