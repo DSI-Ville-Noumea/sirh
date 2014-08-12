@@ -332,7 +332,7 @@
                             <td align="center">
                             <%if(abs.isDepassementCompteur()){ %>
                             	<img src="images/info.jpg" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
-                            	<%} %>
+                            <%} %>
                             </td>                            
                             <td><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
                             <td><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
