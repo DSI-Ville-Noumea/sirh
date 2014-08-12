@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.enums.EnumTypeGroupeAbsence"%>
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumEtatAbsence"%>
 <%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto"%>
@@ -318,7 +319,7 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>                            	
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
                             <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
@@ -343,17 +344,17 @@
                             <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>">
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A48.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A54.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A55.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A53.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A52.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A49.getCode()||abs.getIdTypeDemande()==EnumTypeAbsence.ASA_A50.getCode())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
 							</td>  							

@@ -673,7 +673,6 @@ public class OeABSVisualisation extends BasicProcess {
 				addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 			} else if (abs.getGroupeAbsence() != null
 					&& abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
-				// TODO rendre cela generique avec le type de saisie
 				if (abs.getTypeSaisi().isChkDateDebut()) {
 					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 				} else if (abs.getTypeSaisi().isCalendarHeureDebut()) {
@@ -687,7 +686,7 @@ public class OeABSVisualisation extends BasicProcess {
 			} else {
 				addZone(getNOM_ST_DUREE(i), "&nbsp;");
 			}
-			addZone(getNOM_ST_MOTIF(i), abs.getMotif());
+			addZone(getNOM_ST_MOTIF(i), abs.getMotif() == null ? "&nbsp;" : abs.getMotif());
 			addZone(getNOM_ST_ETAT(i), EnumEtatAbsence.getValueEnumEtatAbsence(abs.getIdRefEtat()));
 		}
 	}
@@ -1185,6 +1184,15 @@ public class OeABSVisualisation extends BasicProcess {
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()) {
 				duree = getHeureMinute(p.getDuree().intValue());
+			} else if (p.getGroupeAbsence() != null
+					&& p.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
+				if (p.getTypeSaisi().isChkDateDebut()) {
+					duree = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString() + "j";
+				} else if (p.getTypeSaisi().isCalendarHeureDebut()) {
+					duree = p.getDuree() == null ? "&nbsp;" : getHeureMinute(p.getDuree().intValue());
+				} else if (p.getTypeSaisi().isCalendarDateDebut()) {
+					duree = p.getDuree() == null ? "&nbsp;" : p.getDuree().toString() + "j";
+				}
 			}
 			ret[index][3] = duree;
 			ret[index][4] = EnumEtatAbsence.getValueEnumEtatAbsence(p.getIdRefEtat());
@@ -1243,7 +1251,9 @@ public class OeABSVisualisation extends BasicProcess {
 	public boolean performPB_DUPLIQUER(HttpServletRequest request, int idDemande) throws Exception {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
-		TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()));
+		TypeAbsenceDto t = new TypeAbsenceDto();
+		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+		TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t));
 
 		// on recup l'organisation syndicale
 		OrganisationSyndicaleDto orga = null;
@@ -1333,25 +1343,18 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA : A48, A54, A55, A52, A53, A50, A49 et etat=validé ou prise,
-		// alors un
-		// motif est
-		// obligatoire
-		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
-				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
+		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
+		// alors un motif est obligatoire
+		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())
+				&& dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
-
-			String info = "Demande "
-					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
-							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
-					+ sdf.format(dem.getDateDemande()) + ".";
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+					+ " de l'agent " + ag.getNoMatricule() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_EN_ATTENTE(), dem.getIdDemande().toString());
@@ -1475,26 +1478,19 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-		// Si ASA : A48, A54, A55, A52, A53, A50, A49 et etat=validé ou prise,
-		// alors un
-		// motif est
-		// obligatoire
-		if ((dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A49.getCode()
-				|| dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A52
-				.getCode())
+		// Si ASA ou CONGE_EXCEP et etat=validé ou prise,
+		// alors un motif est obligatoire
+		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			String info = "Demande "
-					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
-							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
-					+ sdf.format(dem.getDateDemande()) + ".";
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+					+ " de l'agent " + ag.getNoMatricule() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
@@ -1505,10 +1501,10 @@ public class OeABSVisualisation extends BasicProcess {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			String info = "Demande "
-					+ getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(dem.getIdTypeDemande()))
-							.getLibelle() + " de l'agent " + ag.getNoMatricule() + " du "
-					+ sdf.format(dem.getDateDemande()) + ".";
+			TypeAbsenceDto t = new TypeAbsenceDto();
+			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+					+ " de l'agent " + ag.getNoMatricule() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
 			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());

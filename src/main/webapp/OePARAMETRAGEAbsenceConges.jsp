@@ -59,7 +59,7 @@
 							<table cellpadding="0" cellspacing="0" border="0" class="display" id="CongesExcep"> 
 			                    <thead>
 			                        <tr>
-			                            <th width="80px">
+			                            <th width="100px">
 			                            	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_CONGES()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
 			            				</th>  
 			                            <th>Type</th>
