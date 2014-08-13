@@ -1,5 +1,7 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,11 +9,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.enums.EnumTypeAbsence;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.SoldeMonthDto;
+import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
@@ -46,9 +48,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
+	private ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep;
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
+	
+	private DecimalFormat df = new DecimalFormat("0");
+	
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -180,7 +186,25 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			addZone(getNOM_ST_DEBUT_ASA_A55(i), sdf.format(monthDto.getDateDebut()));
 			addZone(getNOM_ST_FIN_ASA_A55(i), sdf.format(monthDto.getDateFin()));
 		}
-
+		
+		df.setRoundingMode(RoundingMode.DOWN);
+		setListeSoldeCongesExcep((ArrayList<SoldeSpecifiqueDto>) soldeGlobal.getListeSoldeCongesExcep());
+		for (int i = 0; i < getListeSoldeCongesExcep().size(); i++) {
+			SoldeSpecifiqueDto soldeSpecifiqueDto = getListeSoldeCongesExcep().get(i);
+			if("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
+				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? "" : df.format(soldeSpecifiqueDto.getSolde() / 60)
+						+ "h ";
+				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60))  ? "&nbsp;" : df.format(soldeSpecifiqueDto.getSolde()
+						% 60) + "m";
+				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure + soldeCongesExcepMinute);
+			}
+			if("jours".equals(soldeSpecifiqueDto.getUniteDecompte())) {
+				String soldeCongesExcepHeure = soldeSpecifiqueDto.getSolde() + " j";
+				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure);
+			}
+			
+			addZone(getNOM_ST_TYPE_CONGES_EXCEP(i), soldeSpecifiqueDto.getLibelle());
+		}
 	}
 
 	public String getNOM_ST_ACTION() {
@@ -327,6 +351,22 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String getNOM_PB_HISTORIQUE(int i) {
 		return "NOM_PB_HISTORIQUE" + i;
+	}
+	
+	public String getNOM_ST_SOLDE_CONGES_EXCEP(int i) {
+		return "NOM_ST_SOLDE_CONGES_EXCEP_" + i;
+	}
+	
+	public String getVAL_ST_SOLDE_CONGES_EXCEP(int i) {
+		return getZone(getNOM_ST_SOLDE_CONGES_EXCEP(i));
+	}
+	
+	public String getNOM_ST_TYPE_CONGES_EXCEP(int i) {
+		return "NOM_ST_TYPE_CONGES_EXCEP_" + i;
+	}
+	
+	public String getVAL_ST_TYPE_CONGES_EXCEP(int i) {
+		return getZone(getNOM_ST_TYPE_CONGES_EXCEP(i));
 	}
 
 	public boolean performPB_HISTORIQUE(HttpServletRequest request, Integer codeTypeAbsence) throws Exception {
@@ -518,4 +558,15 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		return true;
 	}
+
+	public ArrayList<SoldeSpecifiqueDto> getListeSoldeCongesExcep() {
+		return listeSoldeCongesExcep;
+	}
+
+	public void setListeSoldeCongesExcep(
+			ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep) {
+		this.listeSoldeCongesExcep = listeSoldeCongesExcep;
+	}
+	
+	
 }

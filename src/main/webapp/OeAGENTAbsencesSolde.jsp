@@ -152,9 +152,27 @@
 							<% } %>
 						</table>				    
 				    </FIELDSET>
-				    <BR/>				    
-				</FIELDSET>				
+				    <BR/>
+				    
+				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+				    	<legend class="sigp2Legend">* Congés Exceptionnels</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:400px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="150px;" align="center">Type</td>
+								<td width="150px;" align="center">Congés déjà pris ou en cours</td>
+							</tr>
+							<% for(int i = 0; i< process.getListeSoldeCongesExcep().size();i++){ %>
+							<tr>
+								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_TYPE_CONGES_EXCEP(i)%></td>
+								<td width="150px;" style="text-align: center"><%=process.getVAL_ST_SOLDE_CONGES_EXCEP(i)%></td>
+							</tr>
+							<% } %>
+						</table>
+				    </FIELDSET>
+				    <BR/>
+				</FIELDSET>
 				<BR/>
+				
 				<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 					<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
