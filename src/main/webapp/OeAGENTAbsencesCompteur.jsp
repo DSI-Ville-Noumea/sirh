@@ -42,7 +42,7 @@
 			</FIELDSET>
 		
 			<% if (!process.getMessageInfo().equals("")){ %>
-				<span style="color: red;" class="sigp2Mandatory"><%=process.getMessageInfo() %></span>
+				<span style="color: red;margin-left:10px;" class="sigp2Mandatory"><%=process.getMessageInfo() %></span>
 			<%} %>
 			<%if (! "".equals(process.getVAL_ST_ACTION()) ) {%>	
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_RECUP)){ %>

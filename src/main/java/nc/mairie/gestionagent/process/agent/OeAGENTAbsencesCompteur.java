@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.FiltreSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
@@ -120,9 +121,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-				String ligne[] = { type.getLibelle() };
+				
+				if(EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence().intValue()) {
+					String ligne[] = { type.getLibelle() };
 
-				aFormat.ajouteLigne(ligne);
+					aFormat.ajouteLigne(ligne);
+				}
 			}
 			setLB_TYPE_ABSENCE(aFormat.getListeFormatee(false));
 		}
@@ -263,15 +267,15 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		Date dateDeb = new DateTime(annee, 1, 1, 0, 0, 0).toDate();
 		FiltreSoldeDto dto = new FiltreSoldeDto();
 		dto.setDateDebut(dateDeb);
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		afficheSolde(getTypeAbsenceCourant(), json);
 
 		// On nomme l'action
 		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.RECUP.getCode().toString())) {
+			dto.setTypeDemande(EnumTypeAbsence.RECUP.getCode());
+			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_RECUP);
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
+			dto.setTypeDemande(EnumTypeAbsence.REPOS_COMP.getCode());
+			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
@@ -318,11 +322,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return true;
 	}
 
-	private void afficheSolde(TypeAbsenceDto typeAbsenceCourant, String json) {
+	private void afficheSolde(TypeAbsenceDto typeAbsenceCourant, FiltreSoldeDto dto) {
 		viderZoneSaisie();
 
 		// Solde depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(dto);
 		SoldeDto soldeGlobal = consuAbs.getSoldeAgent(getAgentCourant().getIdAgent(), json);
 
 		switch (typeAbsenceCourant.getIdRefTypeAbsence()) {

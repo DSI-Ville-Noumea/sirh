@@ -5,8 +5,8 @@ import java.util.Date;
 public class FiltreSoldeDto {
 
 	private Date dateDebut;
-
 	private Date dateFin;
+	private Integer typeDemande;
 
 	public Date getDateDebut() {
 		return dateDebut;
@@ -23,4 +23,13 @@ public class FiltreSoldeDto {
 	public void setDateFin(Date dateFin) {
 		this.dateFin = dateFin;
 	}
+
+	public Integer getTypeDemande() {
+		return typeDemande;
+	}
+
+	public void setTypeDemande(Integer typeDemande) {
+		this.typeDemande = typeDemande;
+	}
+	
 }
