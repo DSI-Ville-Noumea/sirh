@@ -1,6 +1,5 @@
 package nc.mairie.gestionagent.absence.dto;
 
-import nc.mairie.enums.EnumTypeGroupeAbsence;
 
 public class RefGroupeAbsenceDto {
 
@@ -11,8 +10,8 @@ public class RefGroupeAbsenceDto {
 	public RefGroupeAbsenceDto() {
 	}
 
-	public RefGroupeAbsenceDto(EnumTypeGroupeAbsence typeGroupe) {
-		this.idRefGroupeAbsence = typeGroupe.getValue();
+	public RefGroupeAbsenceDto(Integer typeGroupe) {
+		this.idRefGroupeAbsence = typeGroupe;
 	}
 
 	public Integer getIdRefGroupeAbsence() {

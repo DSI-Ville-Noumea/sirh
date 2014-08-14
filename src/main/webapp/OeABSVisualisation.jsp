@@ -2,13 +2,15 @@
 <%@page import="nc.mairie.enums.EnumTypeGroupeAbsence"%>
 <%@page import="nc.mairie.enums.EnumTypeAbsence"%>
 <%@page import="nc.mairie.enums.EnumEtatAbsence"%>
-<%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto"%>
+<%@page import="nc.mairie.gestionagent.absence.dto.DemandeDto" %>
+<%@page import="nc.mairie.gestionagent.absence.dto.TypeAbsenceDto" %>
+<%@page import="nc.mairie.gestionagent.absence.dto.RefTypeSaisiDto" %>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
-<HTML>
 
+<HTML>
     <HEAD>
         <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
         <META http-equiv="Content-Style-Type" content="text/css">
@@ -379,7 +381,7 @@
                     <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>');">
                     <BR/><BR/>
                     <div align="center">
-	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">	 
+	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
                     </div>
 	            </FIELDSET>
@@ -410,102 +412,83 @@
                     <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	            </FIELDSET>
             <%} %>
-            <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A48_A54_A50)){ %>
+
+			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
+			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_DEMANDE)){ 
+					TypeAbsenceDto typeCreation = process.getTypeCreation(); %>
+			
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A48_A54_A50 %></legend>
-	            	<%@ include file="CreationAbsAmPm.jsp" %>
-	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A48_A54_A50()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>
-            <%}else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A55)){ %>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A55 %></legend>
+	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %></legend>
 	            	<table>
 	            		<tr>
+	            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateDebut()) { %>
 	            			<td width="80px">
-                        		<span class="sigp2Mandatory">Date début : </span>
+                        		<span class="sigp2Mandatory">Date de début :</span>
 	            			</td>
 	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
+		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+		                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
 		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
 	            			</td>
-	            		</tr>
-	            		<tr>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isCalendarHeureDebut()) { %>
 	            			<td>
-                        		<span class="sigp2Mandatory">Heure de début : </span>
+                        		<span class="sigp2Mandatory">Heure de début :</span>
 	            			</td>
 	            			<td>
-								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
-									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT()) %>
+								<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_HEURE_SELECT_DEBUT() %>">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT_DEBUT())%>
 								</SELECT>	
 	            			</td>
-	            		</tr>
-	            		<tr>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isDuree()) { %>
 	            			<td>
-                        		<span class="sigp2Mandatory">Durée : </span>
-	            			</td>
-	            			<td>
-								<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>"><span class="sigp2Mandatory"> heure(s)</span>
-	            			</td>
-	            		</tr>
-	            	</table>
-	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A55()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>            
-            <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A53)){%>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A53 %></legend>
-	            	<table>
-	            		<tr>
-	            			<td width="80px">
-                        		<span class="sigp2Mandatory">OS : </span>
-	            			</td>
-	            			<td colspan="2">
-						        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS()%>" style="width:340px;">
-						        	<%=process.forComboHTML(process.getVAL_LB_OS(), process.getVAL_LB_OS_SELECT())%>
-						        </SELECT>
-	            			</td>
-	            		</tr>
-	            		<tr>
-	            			<td>
-                        		<span class="sigp2Mandatory">Date début : </span>
+                        		<span class="sigp2Mandatory">Durée :</span>
 	            			</td>
 	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+								<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>">
+								<span class="sigp2Mandatory"> heure(s)</span>
 	            			</td>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isChkDateDebut()) { %>
 	            			<td>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
 	            			</td>
+	            			<% } %>
 	            		</tr>
 	            		<tr>
-	            			<td>
-                        		<span class="sigp2Mandatory">Date fin : </span>
+	            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateFin()) { %>
+	            			<td width="80px">
+                        		<span class="sigp2Mandatory">Date de fin :</span>
 	            			</td>
 	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_FIN()%>" >
+		                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+		                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>" >
 		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
 	            			</td>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isCalendarHeureFin()) { %>
+	            			<td>
+                        		<span class="sigp2Mandatory">Heure de fin :</span>
+	            			</td>
+	            			<td>
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
+									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT_FIN()) %>
+								</SELECT>	
+	            			</td>
+	            			<% } %>
+	            			<% if(typeCreation.getTypeSaisiDto().isChkDateFin()) { %>
 	            			<td>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_M()) %> ><span class="sigp2Mandatory">M</span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %> ><span class="sigp2Mandatory">AM</span>
 	            			</td>
+	            			<% } %>
 	            		</tr>
-	            	</table>
-	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A53()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>  
-            <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A52)){%>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A52 %></legend>
-	            	<table>
+	            		<% if(typeCreation.getTypeSaisiDto().isCompteurCollectif()) { %>
 	            		<tr>
 	            			<td width="80px">
-                        		<span class="sigp2Mandatory">OS : </span>
+                        		<span class="sigp2Mandatory">Organisation Syndicale :</span>
 	            			</td>
 	            			<td colspan="2">
 						        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_OS()%>" style="width:340px;">
@@ -513,79 +496,37 @@
 						        </SELECT>
 	            			</td>
 	            		</tr>
+	            		<% } %>
+	            		<% if(typeCreation.getTypeSaisiDto().isMotif()) { %>
 	            		<tr>
 	            			<td>
-                        		<span class="sigp2Mandatory">Date début : </span>
+                        		<span class="sigp2Mandatory">Motif :</span>
 	            			</td>
 	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+								<textarea cols="15" rows="3" name="<%=process.getNOM_ST_MOTIF_CREATION()%>" title="Zone de saisie du commentaire">
+									<%=process.getVAL_ST_MOTIF_CREATION().trim() %>
+								</textarea>
+								<%=typeCreation.getTypeSaisiDto().getInfosComplementaires() %>
 	            			</td>
 	            		</tr>
+	            		<% } %>
+	            		<% if(typeCreation.getTypeSaisiDto().isPieceJointe()) { %>
 	            		<tr>
 	            			<td>
-                        		<span class="sigp2Mandatory">Heure de début : </span>
+                        		<span class="sigp2Mandatory">Pièce jointe :</span>
 	            			</td>
-	            			<td>
-								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
-									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT()) %>
-								</SELECT>	
-	            			</td>
+	            			<td><!-- TODO --></td>
 	            		</tr>
-	            		<tr>
-	            			<td>
-                        		<span class="sigp2Mandatory">Durée : </span>
-	            			</td>
-	            			<td>
-								<INPUT class="sigp2-saisie" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>"><span class="sigp2Mandatory"> heure(s)</span>
-	            			</td>
-	            		</tr>
+	            		<% } %>
 	            	</table>
 	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A52()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>   
-            <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_A49)){%>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_A49 %></legend>
-	            	<table>
-	            		<tr>
-	            			<td width="80px">
-                        		<span class="sigp2Mandatory">Date début : </span>
-	            			</td>
-	            			<td>
-		                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text"	value="<%= process.getVAL_ST_DATE_DEBUT()%>" >
-		                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
-	            			</td>
-	            		</tr>
-	            		<tr>
-	            			<td>
-                        		<span class="sigp2Mandatory">Heure de début : </span>
-	            			</td>
-	            			<td>
-								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_HEURE() %>">
-									<%=process.forComboHTML(process.getVAL_LB_HEURE(), process.getVAL_LB_HEURE_SELECT()) %>
-								</SELECT>	
-	            			</td>
-	            		</tr>
-	            	</table>
-	            	<BR/>
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_A49()%>">	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>  
-	        <%} else if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_CONGES_EXCEP)){%>
-				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            <legend class="sigp2Legend"><%=process.ACTION_CREATION_CONGES_EXCEP %></legend>
-		            <%if(process.getTypeCreation()!=null && process.getTypeCreation().getTypeSaisiDto()!=null ){%>
-			            <%if(process.getTypeCreation().getTypeSaisiDto().isChkDateDebut()){ %>
-			            	<%@ include file="CreationAbsAmPm.jsp" %>
-			            <%} %>
-		            	<BR/>
-	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_CONGES_EXCEP()%>">
-		            <%} %>	 
-                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-	            </FIELDSET>      
-            <%} %>
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
+                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
+	            </FIELDSET>
+			<% } %>
+			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
+
+
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_DEMANDE()%>" value="RECHERCHERAGENTDEMANDE">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_DEMANDE()%>" value="SUPPRECHERCHERAGENTDEMANDE">

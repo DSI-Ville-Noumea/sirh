@@ -85,14 +85,9 @@ public class OeABSVisualisation extends BasicProcess {
 	private HashMap<Integer, List<DemandeDto>> history = new HashMap<>();
 
 	public String ACTION_CREATION = "Création d'une absence.";
-	public String ACTION_CREATION_A48_A54_A50 = "Création d'une demande ASA.";
-	public String ACTION_CREATION_A55 = "Création d'une délégation (DP).";
-	public String ACTION_CREATION_A53 = "Création d'une formation syndicale.";
-	public String ACTION_CREATION_A52 = "Création d'une décharge de service.";
-	public String ACTION_CREATION_A49 = "Création d'une participation à une réunion syndicale.";
+	public String ACTION_CREATION_DEMANDE = "Création d'une demande";
 	public String ACTION_MOTIF_ANNULATION = "Motif pour l'annulation de la demande.";
 	public String ACTION_MOTIF_EN_ATTENTE = "Motif pour la mise en attente de la demande.";
-	public String ACTION_CREATION_CONGES_EXCEP = "Création d'un congé exceptionnel.";
 
 	private TypeAbsenceDto typeCreation;
 	private AgentNW agentCreation;
@@ -338,28 +333,8 @@ public class OeABSVisualisation extends BasicProcess {
 				return performPB_ANNULER(request);
 			}
 			// Si clic sur le bouton PB_VALIDER_CREATION_A48_A54_A50
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A48_A54_A50())) {
-				return performPB_VALIDER_CREATION_A48_A54_A50(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A55
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A55())) {
-				return performPB_VALIDER_CREATION_A55(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A53
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A53())) {
-				return performPB_VALIDER_CREATION_A53(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A52
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A52())) {
-				return performPB_VALIDER_CREATION_A52(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_A49
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_A49())) {
-				return performPB_VALIDER_CREATION_A49(request);
-			}
-			// Si clic sur le bouton PB_VALIDER_CREATION_CONGES_EXCEP
-			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_CONGES_EXCEP())) {
-				return performPB_VALIDER_CREATION_CONGES_EXCEP(request);
+			if (testerParametre(request, getNOM_PB_VALIDER_CREATION_DEMANDE())) {
+				return performPB_VALIDER_CREATION_DEMANDE(request);
 			}
 
 			// Si clic sur les boutons du tableau
@@ -604,11 +579,6 @@ public class OeABSVisualisation extends BasicProcess {
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
 				+ getVAL_ST_AGENT_DEMANDE();
-		String idAgentAction = getVAL_ST_AGENT_ACTION().equals(Const.CHAINE_VIDE) ? null : "900"
-				+ getVAL_ST_AGENT_ACTION();
-
-		// SERVICE
-		String sigleService = getVAL_EF_SERVICE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_SERVICE().toUpperCase();
 
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
@@ -845,34 +815,26 @@ public class OeABSVisualisation extends BasicProcess {
 				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
 				return false;
-
 			}
 			setAgentCreation(agent);
 		}
 
 		// On nomme l'action
-		if (type != null
+		if ((type != null
 				&& (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
-						|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString()) || type
-						.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString()))) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A48_A54_A50);
-		} else if (type != null
-				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A55);
-		} else if (type != null
-				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A53);
-		} else if (type != null
-				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A52);
-		} else if (type != null
-				&& type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_A49);
-		} else if (type != null && type.getGroupeAbsence() != null
-				&& type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
-			addZone(getNOM_ST_ACTION(), ACTION_CREATION_CONGES_EXCEP);
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString()) 
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
+					|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())))
+			||	(type != null && type.getGroupeAbsence() != null
+					&& type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())
+				) {
+			
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
-			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH");
+			getTransaction().declarerErreur("Cette famille ne peut être saisie dans SIRH.");
 		}
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -956,72 +918,9 @@ public class OeABSVisualisation extends BasicProcess {
 	public String getVAL_RG_FIN_MAM() {
 		return getZone(getNOM_RG_FIN_MAM());
 	}
-
-	public String getNOM_PB_VALIDER_CREATION_A48_A54_A50() {
-		return "NOM_PB_VALIDER_CREATION_A48_A54_A50";
-	}
-
-	public boolean performPB_VALIDER_CREATION_A48_A54_A50(HttpServletRequest request) throws Exception {
-		AgentNW ag = getAgentCreation();
-		TypeAbsenceDto type = getTypeCreation();
-
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT());
-		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
-		Boolean matinDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM());
-		Boolean matinFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM());
-
-		AgentNW agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			return false;
-		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setDateDebut(dateDeb);
-		dto.setDateDebutAM(matinDebut);
-		dto.setDateDebutPM(apresMidiDebut);
-		dto.setDateFin(dateFin);
-		dto.setDateFinAM(matinFin);
-		dto.setDateFinPM(apresMidiFin);
-		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
-		dto.setGroupeAbsence(groupeDto);
-
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur(err);
-			return false;
-		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
-		return true;
+	
+	public String getNOM_PB_VALIDER_CREATION_DEMANDE() {
+		return "NOM_PB_VALIDER_CREATION_DEMANDE";
 	}
 
 	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
@@ -1277,7 +1176,7 @@ public class OeABSVisualisation extends BasicProcess {
 			addZone(getNOM_ST_DUREE(), soldeAsaA55Heure + soldeAsaA55Minute);
 			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 			Integer resHeure = getListeHeure().indexOf(sdf.format(dem.getDateDebut()));
-			addZone(getNOM_LB_HEURE_SELECT(), resHeure.toString());
+			addZone(getVAL_LB_HEURE_SELECT_DEBUT(), resHeure.toString());
 		}
 		setTypeCreation(type);
 
@@ -1630,64 +1529,159 @@ public class OeABSVisualisation extends BasicProcess {
 		return "NOM_LB_HEURE";
 	}
 
-	public String getNOM_LB_HEURE_SELECT() {
-		return "NOM_LB_HEURE_SELECT";
-	}
-
 	public String[] getVAL_LB_HEURE() {
 		return getLB_HEURE();
 	}
 
-	public String getVAL_LB_HEURE_SELECT() {
-		return getZone(getNOM_LB_HEURE_SELECT());
+	public String getNOM_LB_HEURE_SELECT_DEBUT() {
+		return "NOM_LB_HEURE_SELECT_DEBUT";
 	}
 
-	public String getNOM_PB_VALIDER_CREATION_A55() {
-		return "NOM_PB_VALIDER_CREATION_A55";
+	public String getVAL_LB_HEURE_SELECT_DEBUT() {
+		return getZone(getNOM_LB_HEURE_SELECT_DEBUT());
 	}
 
-	public boolean performPB_VALIDER_CREATION_A55(HttpServletRequest request) throws Exception {
+	public String getNOM_LB_HEURE_SELECT_FIN() {
+		return "NOM_LB_HEURE_SELECT_FIN";
+	}
+
+	public String getVAL_LB_HEURE_SELECT_FIN() {
+		return getZone(getNOM_LB_HEURE_SELECT_FIN());
+	}
+
+	public String getNOM_ST_MOTIF_CREATION() {
+		return "NOM_ST_MOTIF_CREATION";
+	}
+
+	public String getVAL_ST_MOTIF_CREATION() {
+		return getZone(getNOM_ST_MOTIF_CREATION());
+	}
+
+	public boolean performPB_VALIDER_CREATION_DEMANDE(HttpServletRequest request) throws Exception {
+		
 		AgentNW ag = getAgentCreation();
 		TypeAbsenceDto type = getTypeCreation();
 
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
-			return false;
-		}
-		// heure obligatoire
-		int indiceHeure = (Services.estNumerique(getVAL_LB_HEURE_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT())
-				: -1);
-		if (indiceHeure <= 0) {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String heure = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT()));
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heure);
-
+		DemandeDto dto = new DemandeDto();
+		
+		Date dateDebut = null;
+		Date dateFin = null;
+		
 		AgentNW agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			return false;
 		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setDateDebut(dateDeb);
-		dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
-
+		
+		///////////////// DATE DEBUT ////////////////////
+		if(type.getTypeSaisiDto().isCalendarDateDebut()) {
+			if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+				// "ERR002","La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+				return false;
+			}
+			dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
+		}
+		///////////////// HEURE DEBUT ////////////////////
+		if(type.getTypeSaisiDto().isCalendarHeureDebut()) {
+			// heure obligatoire
+			int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_SELECT_DEBUT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT_DEBUT())
+					: -1);
+			if (indiceHeureDebut <= 0) {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
+				return false;
+			}
+			String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT_DEBUT()));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heureDebut);
+		}
+		///////////////// RADIO BOUTON DEBUT ////////////////////
+		if(type.getTypeSaisiDto().isChkDateDebut()){
+			if(null == getVAL_RG_DEBUT_MAM() || "".equals(getVAL_RG_DEBUT_MAM())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+				return false;
+			}
+			dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
+			dto.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
+		}
+		///////////////// DUREE ////////////////////
+		if(type.getTypeSaisiDto().isDuree()){
+			if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
+				// "ERR002","La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+				return false;
+			}
+			dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
+		}
+		///////////////// DATE FIN ////////////////////
+		if(type.getTypeSaisiDto().isCalendarDateFin()) {
+			if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
+				// "ERR002","La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
+				return false;
+			}
+			dateFin = sdf.parse(getVAL_ST_DATE_FIN());
+		}
+		///////////////// HEURE FIN ////////////////////
+		if(type.getTypeSaisiDto().isCalendarHeureFin()) {
+			// heure obligatoire
+			int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_SELECT_FIN()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT_FIN())
+					: -1);
+			if (indiceHeureFin <= 0) {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de fin"));
+				return false;
+			}
+			String heureFin = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT_FIN()));
+			dateFin = sdf.parse(getVAL_ST_DATE_FIN() + " " + heureFin);
+		}
+		///////////////// RADIO BOUTON FIN ////////////////////
+		if(type.getTypeSaisiDto().isChkDateFin()){
+			if(null == getVAL_RG_FIN_MAM() || "".equals(getVAL_RG_FIN_MAM())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+				return false;
+			}
+			dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
+			dto.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
+		}
+		
+		///////////////// ORGANISATION SYNDICALE ////////////////////
+		if(type.getTypeSaisiDto().isCompteurCollectif()) {
+			int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
+			OrganisationSyndicaleDto orgaSynd = null;
+			if (numOrga != -1) {
+				orgaSynd = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
+				dto.setOrganisationSyndicale(orgaSynd);
+			} else {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
+				return false;
+			}
+		}
+		if(type.getTypeSaisiDto().isMotif()){
+			if(null == getVAL_ST_MOTIF_CREATION() || "".equals(getVAL_ST_MOTIF_CREATION().trim())) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
+				return false;
+			}
+			dto.setCommentaire(getVAL_ST_MOTIF_CREATION());
+		}
+		if(type.getTypeSaisiDto().isPieceJointe()){
+			//TODO
+		}
+		
+		dto.setDateDebut(dateDebut);
+		dto.setDateFin(dateFin);
+		
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+			agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 		dto.setAgentWithServiceDto(agDto);
+		
 		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
+		
+		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(type.getGroupeAbsence().getIdRefGroupeAbsence());
 		dto.setGroupeAbsence(groupeDto);
+		
 		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
 
 		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
@@ -1706,7 +1700,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
+//		performPB_FILTRER(request);
 		return true;
 	}
 
@@ -1752,296 +1746,5 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeOrganisationSyndicale(ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale) {
 		this.listeOrganisationSyndicale = listeOrganisationSyndicale;
-	}
-
-	public String getNOM_PB_VALIDER_CREATION_A53() {
-		return "NOM_PB_VALIDER_CREATION_A53";
-	}
-
-	public boolean performPB_VALIDER_CREATION_A53(HttpServletRequest request) throws Exception {
-		AgentNW ag = getAgentCreation();
-		TypeAbsenceDto type = getTypeCreation();
-
-		// on recup l'organisation syndicale
-		int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
-		OrganisationSyndicaleDto orga = null;
-		if (numOrga != -1) {
-			orga = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
-		} else {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
-			return false;
-		}
-
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT());
-		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
-		Boolean matinDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM());
-		Boolean matinFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM());
-
-		AgentNW agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			return false;
-		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setOrganisationSyndicale(orga);
-		dto.setDateDebut(dateDeb);
-		dto.setDateDebutAM(matinDebut);
-		dto.setDateDebutPM(apresMidiDebut);
-		dto.setDateFin(dateFin);
-		dto.setDateFinAM(matinFin);
-		dto.setDateFinPM(apresMidiFin);
-		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
-		dto.setGroupeAbsence(groupeDto);
-		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
-
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur(err);
-			return false;
-		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
-		return true;
-	}
-
-	public String getNOM_PB_VALIDER_CREATION_A52() {
-		return "NOM_PB_VALIDER_CREATION_A52";
-	}
-
-	public boolean performPB_VALIDER_CREATION_A52(HttpServletRequest request) throws Exception {
-		AgentNW ag = getAgentCreation();
-		TypeAbsenceDto type = getTypeCreation();
-
-		// on recup l'organisation syndicale
-		int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
-		OrganisationSyndicaleDto orga = null;
-		if (numOrga != -1) {
-			orga = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
-		} else {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
-			return false;
-		}
-
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
-			return false;
-		}
-		// heure obligatoire
-		int indiceHeure = (Services.estNumerique(getVAL_LB_HEURE_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT())
-				: -1);
-		if (indiceHeure <= 0) {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String heure = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT()));
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heure);
-
-		AgentNW agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			return false;
-		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setOrganisationSyndicale(orga);
-		dto.setDateDebut(dateDeb);
-		dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
-
-		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
-		dto.setGroupeAbsence(groupeDto);
-		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
-
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur(err);
-			return false;
-		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
-		return true;
-	}
-
-	public String getNOM_PB_VALIDER_CREATION_A49() {
-		return "NOM_PB_VALIDER_CREATION_A49";
-	}
-
-	public boolean performPB_VALIDER_CREATION_A49(HttpServletRequest request) throws Exception {
-		AgentNW ag = getAgentCreation();
-		TypeAbsenceDto type = getTypeCreation();
-
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		// heure obligatoire
-		int indiceHeure = (Services.estNumerique(getVAL_LB_HEURE_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT())
-				: -1);
-		if (indiceHeure <= 0) {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String heure = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT()));
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heure);
-
-		AgentNW agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			return false;
-		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setDateDebut(dateDeb);
-		dto.setDuree(60.0);
-
-		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.ASA);
-		dto.setGroupeAbsence(groupeDto);
-
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur(err);
-			return false;
-		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
-		return true;
-	}
-
-	public String getNOM_PB_VALIDER_CREATION_CONGES_EXCEP() {
-		return "NOM_PB_VALIDER_CREATION_CONGES_EXCEP";
-	}
-
-	public boolean performPB_VALIDER_CREATION_CONGES_EXCEP(HttpServletRequest request) throws Exception {
-		AgentNW ag = getAgentCreation();
-		TypeAbsenceDto type = getTypeCreation();
-
-		if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-			return false;
-		}
-		if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
-			// "ERR002","La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateDeb = sdf.parse(getVAL_ST_DATE_DEBUT());
-		Date dateFin = sdf.parse(getVAL_ST_DATE_FIN());
-		Boolean matinDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiDebut = getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM());
-		Boolean matinFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M());
-		Boolean apresMidiFin = getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM());
-
-		AgentNW agentConnecte = getAgentConnecte(request);
-		if (agentConnecte == null) {
-			return false;
-		}
-
-		DemandeDto dto = new DemandeDto();
-		dto.setDateDebut(dateDeb);
-		dto.setDateDebutAM(matinDebut);
-		dto.setDateDebutPM(apresMidiDebut);
-		dto.setDateFin(dateFin);
-		dto.setDateFinAM(matinFin);
-		dto.setDateFinPM(apresMidiFin);
-		AgentWithServiceDto agDto = new AgentWithServiceDto();
-		agDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
-		dto.setAgentWithServiceDto(agDto);
-		dto.setIdTypeDemande(type.getIdRefTypeAbsence());
-		dto.setIdRefEtat(EnumEtatAbsence.SAISIE.getCode());
-		RefGroupeAbsenceDto groupeDto = new RefGroupeAbsenceDto(EnumTypeGroupeAbsence.CONGES_EXCEP);
-		dto.setGroupeAbsence(groupeDto);
-
-		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
-				.deepSerialize(dto);
-
-		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		ReturnMessageDto srm = t.saveDemande(agentConnecte.getIdAgent(), json);
-
-		if (srm.getErrors().size() > 0) {
-			String err = Const.CHAINE_VIDE;
-			for (String erreur : srm.getErrors()) {
-				err += " " + erreur;
-			}
-			getTransaction().declarerErreur(err);
-			return false;
-		}
-		// On nomme l'action
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-		performPB_FILTRER(request);
-		return true;
 	}
 }
