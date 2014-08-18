@@ -1195,7 +1195,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		///////////////// MOTIF //////////////////// 
 		if(type.getTypeSaisiDto().isMotif()){
-			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif());
+			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? "" : dem.getMotif().trim());
 		}
 		
 		///////////////// DUREE //////////////////// 
