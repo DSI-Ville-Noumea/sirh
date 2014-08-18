@@ -5,15 +5,19 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.HistoPrime;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
@@ -62,6 +66,7 @@ public class OeAGENTPrime extends BasicProcess {
 	private String calculPaye;
 
 	private RubriqueDao rubriqueDao;
+	private HistoPrimeDao histoPrimeDao;
 
 	private void initialiseDao() {
 		// on initialise le dao
@@ -69,6 +74,9 @@ public class OeAGENTPrime extends BasicProcess {
 
 		if (getRubriqueDao() == null) {
 			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getHistoPrimeDao() == null) {
+			setHistoPrimeDao(new HistoPrimeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -470,6 +478,9 @@ public class OeAGENTPrime extends BasicProcess {
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 			// suppression
 			UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+			// RG_AG_PR_A04
+			HistoPrime histo = new HistoPrime(getPrimeCourante());
+			getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.SUPPRESSION);
 			getPrimeCourante().supprimerPrime(getTransaction(), user);
 
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
@@ -511,11 +522,17 @@ public class OeAGENTPrime extends BasicProcess {
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+				// RG_AG_PR_A04
+				HistoPrime histo = new HistoPrime(getPrimeCourante());
+				getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 				getPrimeCourante().modifierPrime(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
 				UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 
+				// RG_AG_PR_A04
+				HistoPrime histo = new HistoPrime(getPrimeCourante());
+				getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.CREATION);
 				getPrimeCourante().creerPrime(getTransaction(), user);
 			}
 			// RG_AG_PR_A01
@@ -1062,6 +1079,14 @@ public class OeAGENTPrime extends BasicProcess {
 
 	public void setRubriqueDao(RubriqueDao rubriqueDao) {
 		this.rubriqueDao = rubriqueDao;
+	}
+
+	public HistoPrimeDao getHistoPrimeDao() {
+		return histoPrimeDao;
+	}
+
+	public void setHistoPrimeDao(HistoPrimeDao histoPrimeDao) {
+		this.histoPrimeDao = histoPrimeDao;
 	}
 
 }

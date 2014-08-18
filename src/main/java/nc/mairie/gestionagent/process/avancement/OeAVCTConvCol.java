@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.HistoPrime;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementConvCol;
+import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -44,6 +47,7 @@ public class OeAVCTConvCol extends BasicProcess {
 	public String agentEnErreur = Const.CHAINE_VIDE;
 
 	private AvancementConvColDao avancementConvColDao;
+	private HistoPrimeDao histoPrimeDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
@@ -52,6 +56,9 @@ public class OeAVCTConvCol extends BasicProcess {
 
 		if (getAvancementConvColDao() == null) {
 			setAvancementConvColDao(new AvancementConvColDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHistoPrimeDao() == null) {
+			setHistoPrimeDao(new HistoPrimeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -339,6 +346,9 @@ public class OeAVCTConvCol extends BasicProcess {
 							prime.setDatFin("01/01/" + avct.getAnnee());
 							prime.setNoRubr(prime.getNoRubr());
 							prime.setDatDeb(prime.getDatDeb());
+							// RG_AG_PR_A04
+							HistoPrime histo = new HistoPrime(prime);
+							getHistoPrimeDao().creerHistoPrime(histo, user, EnumTypeHisto.MODIFICATION);
 							prime.modifierPrime(getTransaction(), agent, user);
 
 							Prime newPrime = new Prime();
@@ -353,6 +363,9 @@ public class OeAVCTConvCol extends BasicProcess {
 							newPrime.setRefArr(avct.getNumArrete());
 							newPrime.setDateArrete(sdf.format(avct.getDateArrete()));
 							newPrime.setNoRubr("1200");
+							// RG_AG_PR_A04
+							HistoPrime histo2 = new HistoPrime(newPrime);
+							getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
 							newPrime.creerPrime(getTransaction(), user);
 						}
 					} else {
@@ -366,6 +379,9 @@ public class OeAVCTConvCol extends BasicProcess {
 						newPrime.setRefArr(avct.getNumArrete());
 						newPrime.setDateArrete(sdf.format(avct.getDateArrete()));
 						newPrime.setNoRubr("1200");
+						// RG_AG_PR_A04
+						HistoPrime histo2 = new HistoPrime(newPrime);
+						getHistoPrimeDao().creerHistoPrime(histo2, user, EnumTypeHisto.CREATION);
 						newPrime.creerPrime(getTransaction(), user);
 					}
 
@@ -867,6 +883,14 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	public void setAvancementConvColDao(AvancementConvColDao avancementConvColDao) {
 		this.avancementConvColDao = avancementConvColDao;
+	}
+
+	public HistoPrimeDao getHistoPrimeDao() {
+		return histoPrimeDao;
+	}
+
+	public void setHistoPrimeDao(HistoPrimeDao histoPrimeDao) {
+		this.histoPrimeDao = histoPrimeDao;
 	}
 
 }
