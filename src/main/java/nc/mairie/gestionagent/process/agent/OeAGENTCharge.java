@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -15,10 +16,13 @@ import nc.mairie.metier.agent.CodeChargeLogt;
 import nc.mairie.metier.agent.CodeLogt;
 import nc.mairie.metier.agent.CodeMutu;
 import nc.mairie.metier.agent.Creancier;
+import nc.mairie.metier.agent.HistoCharge;
 import nc.mairie.metier.paye.Matricule;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.agent.HistoChargeDao;
 import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
+import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -89,6 +93,7 @@ public class OeAGENTCharge extends BasicProcess {
 	private String calculPaye;
 
 	private RubriqueDao rubriqueDao;
+	private HistoChargeDao histoChargeDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -224,6 +229,9 @@ public class OeAGENTCharge extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getRubriqueDao() == null) {
 			setRubriqueDao(new RubriqueDao((MairieDao) context.getBean("mairieDao")));
+		}
+		if (getHistoChargeDao() == null) {
+			setHistoChargeDao(new HistoChargeDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -698,6 +706,9 @@ public class OeAGENTCharge extends BasicProcess {
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION()).equals(ACTION_SUPPRESSION)) {
 			// suppression
+			// RG_AG_CG_A03
+			HistoCharge histo = new HistoCharge(getChargeCourante());
+			getHistoChargeDao().creerHistoCharge(histo, user, EnumTypeHisto.SUPPRESSION);
 			getChargeCourante().supprimerCharge(getTransaction(), user);
 			if (getTransaction().isErreur())
 				return false;
@@ -746,9 +757,15 @@ public class OeAGENTCharge extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
+				// RG_AG_CG_A03
+				HistoCharge histo = new HistoCharge(getChargeCourante());
+				getHistoChargeDao().creerHistoCharge(histo, user, EnumTypeHisto.MODIFICATION);
 				getChargeCourante().modifierCharge(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
+				// RG_AG_CG_A03
+				HistoCharge histo = new HistoCharge(getChargeCourante());
+				getHistoChargeDao().creerHistoCharge(histo, user, EnumTypeHisto.CREATION);
 				getChargeCourante().creerCharge(getTransaction(), user);
 			}
 			// RG_AG_CG_A04
@@ -1808,5 +1825,13 @@ public class OeAGENTCharge extends BasicProcess {
 
 	public void setRubriqueDao(RubriqueDao rubriqueDao) {
 		this.rubriqueDao = rubriqueDao;
+	}
+
+	public HistoChargeDao getHistoChargeDao() {
+		return histoChargeDao;
+	}
+
+	public void setHistoChargeDao(HistoChargeDao histoChargeDao) {
+		this.histoChargeDao = histoChargeDao;
 	}
 }
