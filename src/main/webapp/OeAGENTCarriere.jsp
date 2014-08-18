@@ -159,7 +159,7 @@
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION) || process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
 			<table>
 				<tr>
-					<td width="150px;">
+					<td width="200px;">
 						<span class="sigp2Mandatory">Statut :</span>
 					</td>
 					<td>

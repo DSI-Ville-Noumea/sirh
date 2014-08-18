@@ -7,6 +7,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -20,6 +21,7 @@ import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.carriere.ModeReglement;
 import nc.mairie.metier.carriere.StatutCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
@@ -30,6 +32,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.referentiel.TypeContrat;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
+import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
@@ -110,6 +113,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private TypeContratDao typeContratDao;
 	private ContratDao contratDao;
 	private FichePosteDao fichePosteDao;
+	private HistoCarriereDao histoCarriereDao;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -187,6 +191,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHistoCarriereDao() == null) {
+			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -686,6 +693,9 @@ public class OeAGENTCarriere extends BasicProcess {
 			if (derniereCarriere != null) {
 				if (!derniereCarriere.getCodeCategorie().equals("8")) {
 					derniereCarriere.setDateFin(Const.CHAINE_VIDE);
+					// RG_AG_CA_A03
+					HistoCarriere histo = new HistoCarriere(derniereCarriere);
+					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 					derniereCarriere.modifierCarriere(getTransaction(), getAgentCourant(), user);
 					declarerModifDateFin = true;
 				} else {
@@ -694,6 +704,9 @@ public class OeAGENTCarriere extends BasicProcess {
 			}
 
 			// Suppression
+			// RG_AG_CA_A03
+			HistoCarriere histo = new HistoCarriere(getCarriereCourante());
+			getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.SUPPRESSION);
 			getCarriereCourante().supprimerCarriere(getTransaction(), user);
 			if (getTransaction().isErreur())
 				return false;
@@ -729,6 +742,9 @@ public class OeAGENTCarriere extends BasicProcess {
 								|| derniereCarriere.getDateFin().equals(Const.DATE_NULL) || !derniereCarriere
 								.getDateFin().equals(getCarriereCourante().getDateDebut()))) {
 					derniereCarriere.setDateFin(getCarriereCourante().getDateDebut());
+					// RG_AG_CA_A03
+					HistoCarriere histo = new HistoCarriere(derniereCarriere);
+					getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 					derniereCarriere.modifierCarriere(getTransaction(), getAgentCourant(), user);
 					declarerModifDateFin = true;
 				}
@@ -736,9 +752,15 @@ public class OeAGENTCarriere extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
+				// RG_AG_CA_A03
+				HistoCarriere histo = new HistoCarriere(getCarriereCourante());
+				getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 				getCarriereCourante().modifierCarriere(getTransaction(), getAgentCourant(), user);
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
 				// Création
+				// RG_AG_CA_A03
+				HistoCarriere histo = new HistoCarriere(getCarriereCourante());
+				getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.CREATION);
 				getCarriereCourante().creerCarriere(getTransaction(), getAgentCourant(), user);
 			}
 
@@ -750,6 +772,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_REOUVERTURE)) {
 			Carriere derniereCarriere = getDerniereCarriere();
 			derniereCarriere.setDateFin(Const.CHAINE_VIDE);
+			// RG_AG_CA_A03
+			HistoCarriere histo = new HistoCarriere(derniereCarriere);
+			getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 			derniereCarriere.modifierCarriere(getTransaction(), getAgentCourant(), user);
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		}
@@ -880,8 +905,10 @@ public class OeAGENTCarriere extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_MOTIFS_SELECT())) : -1);
 		MotifCarriere motif = numLigneMotif > 0 ? (MotifCarriere) getListeMotifCarriere().get(numLigneMotif - 1) : null;
 
-		if (getCarriereCourante() == null)
+		if (getCarriereCourante() == null) {
 			setCarriereCourante(new Carriere());
+			getCarriereCourante().setNoMatricule(getAgentCourant().getNoMatricule());
+		}
 
 		getCarriereCourante().setDateDebut(dateDebut);
 		getCarriereCourante().setDateFin(dateFin);
@@ -3266,5 +3293,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public HistoCarriereDao getHistoCarriereDao() {
+		return histoCarriereDao;
+	}
+
+	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
+		this.histoCarriereDao = histoCarriereDao;
 	}
 }

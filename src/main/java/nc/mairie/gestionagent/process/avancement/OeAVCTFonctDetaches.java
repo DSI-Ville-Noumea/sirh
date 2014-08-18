@@ -12,6 +12,7 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatAvancement;
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
@@ -19,8 +20,10 @@ import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
+import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
+import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -78,6 +81,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	private MotifAvancementDao motifAvancementDao;
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvancementDetachesDao avancementDetachesDao;
+	private HistoCarriereDao histoCarriereDao;
 
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -125,6 +129,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		if (getAvancementDetachesDao() == null) {
 			setAvancementDetachesDao(new AvancementDetachesDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getHistoCarriereDao() == null) {
+			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -939,6 +946,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 						// on ferme cette carriere
 						carr.setDateFin(dateAvct);
+						// RG_AG_CA_A03
+						HistoCarriere histo = new HistoCarriere(carr);
+						getHistoCarriereDao().creerHistoCarriere(histo, user, EnumTypeHisto.MODIFICATION);
 						carr.modifierCarriere(getTransaction(), agentCarr, user);
 
 						// on crée un nouvelle carriere
@@ -970,6 +980,10 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 						nouvelleCarriere.setModeReglement(carr.getModeReglement());
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 
+						// RG_AG_CA_A03
+						nouvelleCarriere.setNoMatricule(agentCarr.getNoMatricule());
+						HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
+						getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
 
 						getAvancementDetachesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAgent(),
@@ -1570,5 +1584,13 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 	public void setAvancementDetachesDao(AvancementDetachesDao avancementDetachesDao) {
 		this.avancementDetachesDao = avancementDetachesDao;
+	}
+
+	public HistoCarriereDao getHistoCarriereDao() {
+		return histoCarriereDao;
+	}
+
+	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
+		this.histoCarriereDao = histoCarriereDao;
 	}
 }
