@@ -5,19 +5,26 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
+import nc.mairie.metier.carriere.HistoPositionAdm;
 import nc.mairie.metier.paye.Matricule;
+import nc.mairie.spring.dao.metier.carriere.HistoPositionAdmDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
 
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.CharacterDataArea;
@@ -42,6 +49,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 	private AgentNW agentCourant;
 	private PositionAdmAgent paCourante;
+
+	private HistoPositionAdmDao histoPositionAdmDao;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche PA.";
 	public String ACTION_CONSULTATION = "Consultation d'une fiche PA.";
@@ -81,6 +90,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// SI CALCUL PAYE EN COURS
 		String percou = DTAARA_CALC.read().toString();
 		if (!percou.trim().equals(Const.CHAINE_VIDE)) {
@@ -112,6 +123,14 @@ public class OeAGENTPosAdm extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
 				return;
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getHistoPositionAdmDao() == null) {
+			setHistoPositionAdmDao(new HistoPositionAdmDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -384,6 +403,10 @@ public class OeAGENTPosAdm extends BasicProcess {
 			// RG_AG_PA_A08
 			if (prev != null) {
 				prev.setDatfin(null);
+
+				// RG_AG_PA_A01
+				HistoPositionAdm histo = new HistoPositionAdm(prev);
+				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.MODIFICATION);
 				prev.modifierPositionAdmAgent(getTransaction(), getAgentCourant(), user);
 
 				if (getPaCourante().estPAInactive(getTransaction()) && !prev.estPAInactive(getTransaction()))
@@ -391,6 +414,9 @@ public class OeAGENTPosAdm extends BasicProcess {
 			}
 
 			// suppression
+			// RG_AG_PA_A01
+			HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
+			getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.SUPPRESSION);
 			getPaCourante().supprimerPositionAdmAgent(getTransaction(), user);
 			if (getTransaction().isErreur())
 				return false;
@@ -433,6 +459,10 @@ public class OeAGENTPosAdm extends BasicProcess {
 					&& (prevPA.getDatfin() == null || prevPA.getDatfin().equals(Const.DATE_NULL) || Services
 							.compareDates(prevPA.getDatfin(), getPaCourante().getDatdeb()) != 0)) {
 				prevPA.setDatfin(getPaCourante().getDatdeb());
+
+				// RG_AG_PA_A01
+				HistoPositionAdm histo = new HistoPositionAdm(prevPA);
+				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.MODIFICATION);
 				if (!prevPA.modifierPositionAdmAgent(getTransaction(), getAgentCourant(), user)) {
 					// "ERR009",
 					// "Une erreur s'est produite sur la base de données.");
@@ -443,6 +473,10 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification
+
+				// RG_AG_PA_A01
+				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
+				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.MODIFICATION);
 				if (!getPaCourante().modifierPositionAdmAgent(getTransaction(), getAgentCourant(), user)) {
 					// "ERR009",
 					// "Une erreur s'est produite sur la base de données.");
@@ -483,6 +517,9 @@ public class OeAGENTPosAdm extends BasicProcess {
 				 * } }
 				 */
 
+				// RG_AG_PA_A01
+				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
+				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.CREATION);
 				if (!getPaCourante().creerPositionAdmAgent(getTransaction(), user)) {
 					// "ERR009",
 					// "Une erreur s'est produite sur la base de données.");
@@ -1061,5 +1098,13 @@ public class OeAGENTPosAdm extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public HistoPositionAdmDao getHistoPositionAdmDao() {
+		return histoPositionAdmDao;
+	}
+
+	public void setHistoPositionAdmDao(HistoPositionAdmDao histoPositionAdmDao) {
+		this.histoPositionAdmDao = histoPositionAdmDao;
 	}
 }
