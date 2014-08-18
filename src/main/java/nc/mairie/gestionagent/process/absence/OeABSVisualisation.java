@@ -1176,7 +1176,7 @@ public class OeABSVisualisation extends BasicProcess {
 			addZone(getNOM_ST_DUREE(), soldeAsaA55Heure + soldeAsaA55Minute);
 			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 			Integer resHeure = getListeHeure().indexOf(sdf.format(dem.getDateDebut()));
-			addZone(getVAL_LB_HEURE_SELECT_DEBUT(), resHeure.toString());
+			addZone(getVAL_LB_HEURE_DEBUT_SELECT(), resHeure.toString());
 		}
 		setTypeCreation(type);
 
@@ -1533,20 +1533,28 @@ public class OeABSVisualisation extends BasicProcess {
 		return getLB_HEURE();
 	}
 
-	public String getNOM_LB_HEURE_SELECT_DEBUT() {
-		return "NOM_LB_HEURE_SELECT_DEBUT";
+	public String getNOM_LB_HEURE_DEBUT() {
+		return "NOM_LB_HEURE_DEBUT";
 	}
 
-	public String getVAL_LB_HEURE_SELECT_DEBUT() {
-		return getZone(getNOM_LB_HEURE_SELECT_DEBUT());
+	public String getNOM_LB_HEURE_DEBUT_SELECT() {
+		return "NOM_LB_HEURE_DEBUT_SELECT";
 	}
 
-	public String getNOM_LB_HEURE_SELECT_FIN() {
-		return "NOM_LB_HEURE_SELECT_FIN";
+	public String getVAL_LB_HEURE_DEBUT_SELECT() {
+		return getZone(getNOM_LB_HEURE_DEBUT_SELECT());
 	}
 
-	public String getVAL_LB_HEURE_SELECT_FIN() {
-		return getZone(getNOM_LB_HEURE_SELECT_FIN());
+	public String getNOM_LB_HEURE_FIN() {
+		return "NOM_LB_HEURE_FIN";
+	}
+
+	public String getNOM_LB_HEURE_FIN_SELECT() {
+		return "NOM_LB_HEURE_FIN_SELECT";
+	}
+
+	public String getVAL_LB_HEURE_FIN_SELECT() {
+		return getZone(getNOM_LB_HEURE_FIN_SELECT());
 	}
 
 	public String getNOM_ST_MOTIF_CREATION() {
@@ -1584,14 +1592,14 @@ public class OeABSVisualisation extends BasicProcess {
 		///////////////// HEURE DEBUT ////////////////////
 		if(type.getTypeSaisiDto().isCalendarHeureDebut()) {
 			// heure obligatoire
-			int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_SELECT_DEBUT()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT_DEBUT())
+			int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_DEBUT_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_DEBUT_SELECT())
 					: -1);
-			if (indiceHeureDebut <= 0) {
+			if (indiceHeureDebut < 0) {
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
 				return false;
 			}
-			String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT_DEBUT()));
+			String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DEBUT_SELECT()));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heureDebut);
 		}
@@ -1625,14 +1633,15 @@ public class OeABSVisualisation extends BasicProcess {
 		///////////////// HEURE FIN ////////////////////
 		if(type.getTypeSaisiDto().isCalendarHeureFin()) {
 			// heure obligatoire
-			int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_SELECT_FIN()) ? Integer.parseInt(getVAL_LB_HEURE_SELECT_FIN())
+			int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_FIN_SELECT()) ? Integer.parseInt(getVAL_LB_HEURE_FIN_SELECT())
 					: -1);
 			if (indiceHeureFin <= 0) {
 				// "ERR002", "La zone @ est obligatoire."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de fin"));
 				return false;
 			}
-			String heureFin = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_SELECT_FIN()));
+			String heureFin = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_FIN_SELECT()));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			dateFin = sdf.parse(getVAL_ST_DATE_FIN() + " " + heureFin);
 		}
 		///////////////// RADIO BOUTON FIN ////////////////////
