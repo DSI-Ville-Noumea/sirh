@@ -57,7 +57,7 @@
 	<!--  WS DES ABSENCES -->
 	<!--  -->	
 	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
-		override="false" value="http://svi-tomcat0:8085/sirh-abs-ws/" />
+		override="false" value="http://localhost:8080/sirh-abs-ws/" />
 		
 	<!--  -->
 	<!--  WS RADI pour interroger AD -->

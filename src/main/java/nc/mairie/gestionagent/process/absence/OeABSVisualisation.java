@@ -1154,32 +1154,61 @@ public class OeABSVisualisation extends BasicProcess {
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
 		TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t));
 
-		// on recup l'organisation syndicale
-		OrganisationSyndicaleDto orga = null;
-		if (dem.getOrganisationSyndicale() != null) {
-			orga = dem.getOrganisationSyndicale();
-		}
+		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsence().indexOf(type)));
+		
 		AgentNW agt = AgentNW.chercherAgent(getTransaction(), dem.getAgentWithServiceDto().getIdAgent().toString());
-
 		addZone(getNOM_ST_AGENT_CREATION(), agt.getNoMatricule());
-		addZone(getNOM_ST_DATE_DEBUT(), new SimpleDateFormat("dd/MM/yyyy").format(dem.getDateDebut()));
-		addZone(getNOM_ST_DATE_FIN(), new SimpleDateFormat("dd/MM/yyyy").format(dem.getDateFin()));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		// date de debut
+		if(type.getTypeSaisiDto().isCalendarDateDebut()){
+			addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dem.getDateDebut()));
+		}
+		// date de fin
+		if(type.getTypeSaisiDto().isCalendarDateFin()){
+			addZone(getNOM_ST_DATE_FIN(), sdf.format(dem.getDateFin()));
+		}
+		// checkbox
 		addZone(getNOM_RG_DEBUT_MAM(), dem.isDateDebutAM() ? getNOM_RB_M() : getNOM_RB_AM());
 		addZone(getNOM_RG_FIN_MAM(), dem.isDateFinAM() ? getNOM_RB_M() : getNOM_RB_AM());
-		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsence().indexOf(type)));
-		addZone(getNOM_LB_OS_SELECT(),
-				orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
-		if (dem.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()) {
-			String soldeAsaA55Heure = (dem.getDuree().intValue() / 60) == 0 ? "" : dem.getDuree().intValue() / 60 + "";
-			String soldeAsaA55Minute = (dem.getDuree().intValue() % 60) == 0 ? "" : "." + dem.getDuree().intValue()
-					% 60;
-			addZone(getNOM_ST_DUREE(), soldeAsaA55Heure + soldeAsaA55Minute);
-			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-			Integer resHeure = getListeHeure().indexOf(sdf.format(dem.getDateDebut()));
+		
+		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
+		// HEURE DEBUT
+		if(type.getTypeSaisiDto().isCalendarHeureDebut()) {
+			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateDebut()));
 			addZone(getVAL_LB_HEURE_DEBUT_SELECT(), resHeure.toString());
 		}
+		// HEURE FIN
+		if(type.getTypeSaisiDto().isCalendarHeureFin()) {
+			Integer resHeure = getListeHeure().indexOf(sdfHeure.format(dem.getDateFin()));
+			addZone(getVAL_LB_HEURE_FIN_SELECT(), resHeure.toString());
+		}
+		// organisation syndicale
+		if(type.getTypeSaisiDto().isCompteurCollectif()){
+		// on recup l'organisation syndicale
+			OrganisationSyndicaleDto orga = null;
+			if (dem.getOrganisationSyndicale() != null) {
+				orga = dem.getOrganisationSyndicale();
+			}
+			addZone(getNOM_LB_OS_SELECT(),
+					orga == null ? Const.ZERO : String.valueOf(getListeOrganisationSyndicale().indexOf(orga)));
+		}
+		///////////////// MOTIF //////////////////// 
+		if(type.getTypeSaisiDto().isMotif()){
+			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif());
+		}
+		
+		///////////////// DUREE //////////////////// 
+		if(type.getTypeSaisiDto().isDuree()){
+			String duree = (dem.getDuree() / 60) == 0 ? "" : dem.getDuree() / 60 + "";
+			addZone(getNOM_ST_DUREE(), duree);
+		}
+		
+		///////////////// PIECE JOINTE ////////////////////
+		//TODO
+		
 		setTypeCreation(type);
-
+		
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_CREATION);
 
@@ -1653,7 +1682,6 @@ public class OeABSVisualisation extends BasicProcess {
 			dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
 			dto.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
 		}
-		
 		///////////////// ORGANISATION SYNDICALE ////////////////////
 		if(type.getTypeSaisiDto().isCompteurCollectif()) {
 			int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
@@ -1668,6 +1696,7 @@ public class OeABSVisualisation extends BasicProcess {
 				return false;
 			}
 		}
+		///////////////// MOTIF ////////////////////
 		if(type.getTypeSaisiDto().isMotif()){
 			if(null == getVAL_ST_MOTIF_CREATION() || "".equals(getVAL_ST_MOTIF_CREATION().trim())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
@@ -1675,6 +1704,7 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			dto.setCommentaire(getVAL_ST_MOTIF_CREATION());
 		}
+		///////////////// PIECE JOINTE ////////////////////
 		if(type.getTypeSaisiDto().isPieceJointe()){
 			//TODO
 		}
