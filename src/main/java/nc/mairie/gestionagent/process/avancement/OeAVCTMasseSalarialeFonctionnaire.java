@@ -34,6 +34,7 @@ import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
 import nc.mairie.spring.dao.metier.referentiel.AvisCapDao;
@@ -89,6 +90,7 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
+	private AffectationDao affectationDao;
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -147,6 +149,9 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -856,32 +861,36 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 					}
 
 					// on recupere le grade du poste
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-					if (aff.getIdFichePoste() == null) {
-						// on ne fait rien
-					} else {
-						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
-						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-						Service section = Service.getSection(getTransaction(), fp.getIdServi());
-						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
-						// on regarde si l'agent est AFFECTE dans une autre
-						// administration
-						if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
-								|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
-							avct.setDirectionService(null);
-							avct.setSectionService(null);
-							// alors on va chercher l'autre administration de
-							// l'agent
-							try {
-								AutreAdministrationAgent autreAdminAgent = getAutreAdministrationAgentDao()
-										.chercherAutreAdministrationAgentActive(Integer.valueOf(a.getIdAgent()));
-								if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
-									avct.setDirectionService(autreAdminAgent.getIdAutreAdmin().toString());
-								}
-							} catch (Exception e2) {
-								// pas d'autre admin
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(a.getIdAgent()));
+					} catch (Exception e2) {
+						continue;
+					}
+					if (aff == null || aff.getIdFichePoste() == null) {
+						continue;
+					}
+					FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
+					Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+					Service section = Service.getSection(getTransaction(), fp.getIdServi());
+					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
+					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
+					// on regarde si l'agent est AFFECTE dans une autre
+					// administration
+					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
+							|| paAgent.getCdpadm().equals("57") || paAgent.getCdpadm().equals("58")) {
+						avct.setDirectionService(null);
+						avct.setSectionService(null);
+						// alors on va chercher l'autre administration de
+						// l'agent
+						try {
+							AutreAdministrationAgent autreAdminAgent = getAutreAdministrationAgentDao()
+									.chercherAutreAdministrationAgentActive(Integer.valueOf(a.getIdAgent()));
+							if (autreAdminAgent != null && autreAdminAgent.getIdAutreAdmin() != null) {
+								avct.setDirectionService(autreAdminAgent.getIdAutreAdmin().toString());
 							}
+						} catch (Exception e2) {
+							// pas d'autre admin
 						}
 					}
 
@@ -2092,5 +2101,13 @@ public class OeAVCTMasseSalarialeFonctionnaire extends BasicProcess {
 
 	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
 		this.histoCarriereDao = histoCarriereDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

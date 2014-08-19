@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
@@ -30,6 +31,7 @@ import nc.mairie.metier.parametrage.TypeRegIndemn;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.Service;
@@ -49,7 +51,9 @@ import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
+import nc.mairie.spring.dao.metier.poste.HistoAffectationDao;
 import nc.mairie.spring.dao.metier.poste.HistoFichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.metier.specificites.AvantageNatureAffDao;
@@ -187,6 +191,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private FichePosteDao fichePosteDao;
 	private HistoFichePosteDao histoFichePosteDao;
+	private HistoAffectationDao histoAffectationDao;
+	private AffectationDao affectationDao;
+
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Constructeur du process OeAGENTEmploisAffectation. Date de création :
@@ -2124,21 +2132,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		return true;
 	}
 
-	private byte[] getNoteServiceInterneReportAsByteArray(String idAffectation) throws Exception {
+	private byte[] getNoteServiceInterneReportAsByteArray(Integer idAffectation) throws Exception {
 
 		ClientResponse response = createAndFireRequestNoteService(idAffectation, null);
 
 		return readResponseAsByteArray(response);
 	}
 
-	private byte[] getNoteServiceReportAsByteArray(String idAffectation, String typeDocument) throws Exception {
+	private byte[] getNoteServiceReportAsByteArray(Integer idAffectation, String typeDocument) throws Exception {
 
 		ClientResponse response = createAndFireRequestNoteService(idAffectation, typeDocument);
 
 		return readResponseAsByteArray(response);
 	}
 
-	private ClientResponse createAndFireRequestNoteService(String idAffectation, String typeDocument) {
+	private ClientResponse createAndFireRequestNoteService(Integer idAffectation, String typeDocument) {
 		String urlWS = null;
 		if (typeDocument == null) {
 			urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_NS_INTERNE_SIRH") + "?idAffectation="
@@ -2178,7 +2186,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				} else if (getFichePosteSecondaireCourant() == null
 						&& getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePoste())));
+							getAffectationCourant().getIdFichePoste()));
 					initialiserFichePoste();
 				}
 			}
@@ -2193,7 +2201,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				} else if (getFichePosteSecondaireCourant() == null
 						&& getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePosteSecondaire())));
+							getAffectationCourant().getIdFichePosteSecondaire()));
 					initialiserFichePosteSecondaire();
 				}
 			}
@@ -2210,13 +2218,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				} else if (getFichePosteSecondaireCourant() == null
 						&& getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePoste())));
+							getAffectationCourant().getIdFichePoste()));
 					initialiserFichePoste();
 				}
 			} else {
 				if (getAffectationCourant().getIdFichePoste() != null) {
-					FichePoste fp = getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePoste()));
+					FichePoste fp = getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste());
 
 					setFichePosteCourant(fp);
 					initialiserFichePoste();
@@ -2233,13 +2240,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				} else if (getFichePosteSecondaireCourant() == null
 						&& getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePosteSecondaire())));
+							getAffectationCourant().getIdFichePosteSecondaire()));
 					initialiserFichePosteSecondaire();
 				}
 			} else {
 				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePosteSecondaire())));
+							getAffectationCourant().getIdFichePosteSecondaire()));
 					initialiserFichePosteSecondaire();
 				}
 			}
@@ -2247,7 +2254,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// Récup du motif d'affectation et temps de travail
 			if (getAffectationCourant().getIdMotifAffectation() != null) {
 				MotifAffectation ma = getMotifAffectationDao().chercherMotifAffectation(
-						Integer.valueOf(getAffectationCourant().getIdMotifAffectation()));
+						getAffectationCourant().getIdMotifAffectation());
 				addZone(getNOM_LB_MOTIF_AFFECTATION_SELECT(), String.valueOf(getListeMotifAffectation().indexOf(ma)));
 				for (int i = 0; i < getListeTempsTravail().length; i++) {
 					String tpsT = getListeTempsTravail()[i];
@@ -2309,7 +2316,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				&& getFichePosteCourant().getIdFichePoste() != null
 				&& getAffectationCourant().getIdAffectation() != null) {
 			setListeAvantageAFF(getAvantageNatureDao().listerAvantageNatureAvecAFF(
-					Integer.valueOf(getAffectationCourant().getIdAffectation())));
+					getAffectationCourant().getIdAffectation()));
 		}
 		int indiceAvNat = 0;
 		if (getListeAvantageFP() != null && getListeAvantageFP().size() != 0) {
@@ -2386,8 +2393,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListeDelegationAFF() == null && getFichePosteCourant() != null
 				&& getFichePosteCourant().getIdFichePoste() != null && getAffectationCourant() != null
 				&& getAffectationCourant().getIdAffectation() != null) {
-			setListeDelegationAFF(getDelegationDao().listerDelegationAvecAFF(
-					Integer.valueOf(getAffectationCourant().getIdAffectation())));
+			setListeDelegationAFF(getDelegationDao()
+					.listerDelegationAvecAFF(getAffectationCourant().getIdAffectation()));
 		}
 		int indiceDel = 0;
 		if (getListeDelegationFP() != null && getListeDelegationFP().size() != 0) {
@@ -2432,7 +2439,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private void initialiseListeAffectation(HttpServletRequest request) throws Exception {
 
 		// Recherche des affectations de l'agent
-		ArrayList<Affectation> aff = Affectation.listerAffectationAvecAgent(getTransaction(), getAgentCourant());
+		ArrayList<Affectation> aff = getAffectationDao().listerAffectationAvecAgent(
+				Integer.valueOf(getAgentCourant().getIdAgent()));
 		setListeAffectation(aff);
 
 		boolean affectationActive = false;
@@ -2442,21 +2450,19 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			for (int i = 0; i < getListeAffectation().size(); i++) {
 				Affectation a = (Affectation) getListeAffectation().get(i);
 				affectationActive = affectationActive || a.isActive();
-				FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(a.getIdFichePoste()));
+				FichePoste fp = getFichePosteDao().chercherFichePoste(a.getIdFichePoste());
 				HistoFichePoste hfp = null;
 				ArrayList<HistoFichePoste> listeHistoFP = new ArrayList<HistoFichePoste>();
-				if (a.getDateFinAff() != null && !a.getDateFinAff().equals(Const.DATE_NULL)
-						&& !a.getDateFinAff().equals(Const.CHAINE_VIDE)) {
+				if (a.getDateFinAff() != null) {
 					// on cherche la FDP dans histo_fiche_poste
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					listeHistoFP = getHistoFichePosteDao().listerHistoFichePosteDansDate(
-							Integer.valueOf(a.getIdFichePoste()), sdf.parse(Services.formateDate(a.getDateDebutAff())),
-							sdf.parse((Services.formateDate(a.getDateFinAff()))));
+					listeHistoFP = getHistoFichePosteDao().listerHistoFichePosteDansDate(a.getIdFichePoste(),
+							a.getDateDebutAff(), a.getDateFinAff());
 				}
 				// si il n'y en a pas on prend les infos dans la table
 				// FICHE_POSTE
 				if (listeHistoFP == null || listeHistoFP.size() == 0) {
-					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(a.getIdFichePoste()));
+					fp = getFichePosteDao().chercherFichePoste(a.getIdFichePoste());
 				} else {
 					// si il y en a plusieurs on prend la date la plus recente
 					hfp = (HistoFichePoste) listeHistoFP.get(0);
@@ -2504,10 +2510,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				addZone(getNOM_ST_DIR(indiceAff), direction != null ? direction.getCodService() : "&nbsp;");
 				addZone(getNOM_ST_SERV(indiceAff),
 						service != null ? service.getLibService() + " ( " + service.getCodService() + " )" : "&nbsp;");
-				addZone(getNOM_ST_DATE_DEBUT(indiceAff), a.getDateDebutAff());
+				addZone(getNOM_ST_DATE_DEBUT(indiceAff), sdf.format(a.getDateDebutAff()));
 				addZone(getNOM_ST_DATE_FIN(indiceAff),
-						a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE)
-								|| a.getDateFinAff().equals(Const.DATE_NULL) ? "&nbsp;" : a.getDateFinAff());
+						a.getDateFinAff() == null ? "&nbsp;" : sdf.format(a.getDateFinAff()));
 				addZone(getNOM_ST_NUM_FP(indiceAff), numFP.equals(Const.CHAINE_VIDE) ? "&nbsp;" : numFP);
 				addZone(getNOM_ST_TITRE(indiceAff), titreFichePoste.equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: titreFichePoste);
@@ -2753,7 +2758,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListePrimePointageAFF() == null && getFichePosteCourant() != null
 				&& getAffectationCourant().getIdAffectation() != null) {
 			setListePrimePointageAFF(getPrimePointageAffDao().listerPrimePointageAff(
-					Integer.valueOf(getAffectationCourant().getIdAffectation())));
+					getAffectationCourant().getIdAffectation()));
 		}
 		int indicePrime = 0;
 		if (getListePrimePointageFP() != null && getListePrimePointageFP().size() != 0) {
@@ -2826,7 +2831,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getListeRegimeAFF() == null && getAffectationCourant() != null
 				&& getAffectationCourant().getIdAffectation() != null) {
 			setListeRegimeAFF(getRegIndemnDao().listerRegimeIndemnitaireAvecAFF(
-					Integer.valueOf(getAffectationCourant().getIdAffectation())));
+					getAffectationCourant().getIdAffectation()));
 		}
 		int indiceReg = 0;
 		if (getListeRegimeFP() != null && getListeRegimeFP().size() != 0) {
@@ -3018,16 +3023,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			ArrayList<Affectation> affActives = Affectation.listerAffectationActiveAvecAgent(getTransaction(),
-					getAgentCourant());
+			ArrayList<Affectation> affActives = getAffectationDao().listerAffectationActiveAvecAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()));
 			if (affActives.size() == 1) {
 				setAffectationCourant((Affectation) affActives.get(0));
 				// Recherche des informations à afficher
-				setFichePosteCourant(getFichePosteDao().chercherFichePoste(
-						Integer.valueOf(getAffectationCourant().getIdFichePoste())));
+				setFichePosteCourant(getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste()));
 				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePosteSecondaire())));
+							getAffectationCourant().getIdFichePosteSecondaire()));
 				}
 			} else if (affActives.size() == 0) {
 				/*
@@ -3107,6 +3111,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (getHistoFichePosteDao() == null) {
 			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getHistoAffectationDao() == null) {
+			setHistoAffectationDao(new HistoAffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -3138,10 +3148,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Vérification du non-chevauchement des dates des affectations
 		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
-			if (!aAff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-				if (aAff.getDateFinAff() != null && !aAff.getDateFinAff().equals(Const.DATE_NULL)) {
+			if (!aAff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+				if (aAff.getDateFinAff() != null) {
 					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aAff.getDateFinAff()) <= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
 							// "ERR201",
 							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
@@ -3149,8 +3159,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							return false;
 						}
 					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), aAff.getDateDebutAff()) >= 0
-								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), aAff.getDateFinAff()) <= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0
+								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
 							// "ERR201",
 							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
@@ -3166,7 +3176,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						setFocus(getNOM_PB_AJOUTER());
 						return false;
 					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), aAff.getDateDebutAff()) >= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0) {
 							// "ERR201",
 							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
@@ -3191,13 +3201,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Vérification de la non-affectation de la Fiche de poste choisie dans
 		// les dates choisies
-		ArrayList<Affectation> listeAffFP = Affectation.listerAffectationAvecFP(getTransaction(),
-				getFichePosteCourant());
+		ArrayList<Affectation> listeAffFP = getAffectationDao().listerAffectationAvecFP(
+				getFichePosteCourant().getIdFichePoste());
 		for (Affectation aff : listeAffFP) {
-			if (!aff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-				if (aff.getDateFinAff() != null && !aff.getDateFinAff().equals(Const.DATE_NULL)) {
+			if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+				if (aff.getDateFinAff() != null) {
 					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 							// "ERR085",
 							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3205,8 +3215,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							return false;
 						}
 					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), aff.getDateDebutAff()) >= 0
-								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
+								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 							// "ERR085",
 							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3222,7 +3232,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						setFocus(getNOM_PB_AJOUTER());
 						return false;
 					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), aff.getDateDebutAff()) >= 0) {
+						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
 							// "ERR085",
 							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3237,13 +3247,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Vérification de la non-affectation de la Fiche de poste secondaire
 		// choisie dans les dates choisies
 		if (getFichePosteSecondaireCourant() != null) {
-			ArrayList<Affectation> listeAffFPSecondaire = Affectation.listerAffectationAvecFP(getTransaction(),
-					getFichePosteSecondaireCourant());
+			ArrayList<Affectation> listeAffFPSecondaire = getAffectationDao().listerAffectationAvecFP(
+					getFichePosteSecondaireCourant().getIdFichePoste());
 			for (Affectation aff : listeAffFPSecondaire) {
-				if (!aff.getIdAffectation().equals(getAffectationCourant().getIdAffectation())) {
-					if (aff.getDateFinAff() != null && !aff.getDateFinAff().equals(Const.DATE_NULL)) {
+				if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+					if (aff.getDateFinAff() != null) {
 						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
+							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 								// "ERR085",
 								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3251,8 +3261,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 								return false;
 							}
 						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), aff.getDateDebutAff()) >= 0
-									&& Services.compareDates(getVAL_EF_DATE_DEBUT(), aff.getDateFinAff()) <= 0) {
+							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
+									&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
 								// "ERR085",
 								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3268,7 +3278,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							setFocus(getNOM_PB_AJOUTER());
 							return false;
 						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), aff.getDateDebutAff()) >= 0) {
+							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
 								// "ERR085",
 								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
 								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
@@ -3684,9 +3694,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			// Alim zones
 			addZone(getNOM_EF_REF_ARRETE(), getAffectationCourant().getRefArreteAff());
-			addZone(getNOM_EF_DATE_ARRETE(), getAffectationCourant().getDateArrete());
-			addZone(getNOM_EF_DATE_DEBUT(), getAffectationCourant().getDateDebutAff());
-			addZone(getNOM_EF_DATE_FIN(), getAffectationCourant().getDateFinAff());
+			addZone(getNOM_EF_DATE_ARRETE(),
+					getAffectationCourant().getDateArrete() == null ? Const.CHAINE_VIDE : sdf
+							.format(getAffectationCourant().getDateArrete()));
+			addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getAffectationCourant().getDateDebutAff()));
+			addZone(getNOM_EF_DATE_FIN(),
+					getAffectationCourant().getDateFinAff() == null ? Const.CHAINE_VIDE : sdf
+							.format(getAffectationCourant().getDateFinAff()));
 			addZone(getNOM_EF_COMMENTAIRE(), getAffectationCourant().getCommentaire());
 
 			// On nomme l'action
@@ -3779,9 +3793,13 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 			// Alim zones
 			addZone(getNOM_EF_REF_ARRETE(), getAffectationCourant().getRefArreteAff());
-			addZone(getNOM_EF_DATE_ARRETE(), getAffectationCourant().getDateArrete());
-			addZone(getNOM_EF_DATE_DEBUT(), getAffectationCourant().getDateDebutAff());
-			addZone(getNOM_EF_DATE_FIN(), getAffectationCourant().getDateFinAff());
+			addZone(getNOM_EF_DATE_ARRETE(),
+					getAffectationCourant().getDateArrete() == null ? Const.CHAINE_VIDE : sdf
+							.format(getAffectationCourant().getDateArrete()));
+			addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getAffectationCourant().getDateDebutAff()));
+			addZone(getNOM_EF_DATE_FIN(),
+					getAffectationCourant().getDateFinAff() == null ? Const.CHAINE_VIDE : sdf
+							.format(getAffectationCourant().getDateFinAff()));
 			addZone(getNOM_EF_COMMENTAIRE(), getAffectationCourant().getCommentaire());
 
 			// On nomme l'action
@@ -3856,9 +3874,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 				// Alim zones
 				addZone(getNOM_EF_REF_ARRETE(), getAffectationCourant().getRefArreteAff());
-				addZone(getNOM_EF_DATE_ARRETE(), getAffectationCourant().getDateArrete());
-				addZone(getNOM_EF_DATE_DEBUT(), getAffectationCourant().getDateDebutAff());
-				addZone(getNOM_EF_DATE_FIN(), getAffectationCourant().getDateFinAff());
+				addZone(getNOM_EF_DATE_ARRETE(), getAffectationCourant().getDateArrete() == null ? Const.CHAINE_VIDE
+						: sdf.format(getAffectationCourant().getDateArrete()));
+				addZone(getNOM_EF_DATE_DEBUT(), sdf.format(getAffectationCourant().getDateDebutAff()));
+				addZone(getNOM_EF_DATE_FIN(),
+						getAffectationCourant().getDateFinAff() == null ? Const.CHAINE_VIDE : sdf
+								.format(getAffectationCourant().getDateFinAff()));
 				addZone(getNOM_EF_COMMENTAIRE(), getAffectationCourant().getCommentaire());
 
 				// On nomme l'action
@@ -4057,11 +4078,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// ON SUPPRIME LES SPECIFICITES DE L'AFFECTATION LIE
 			getPrimePointageAffDao().supprimerToutesPrimePointageAff(getAffectationCourant().getIdAffectation());
 			// Suppression
-			FichePoste fichePoste = getFichePosteDao().chercherFichePoste(
-					Integer.valueOf(getAffectationCourant().getIdFichePoste()));
-			getAffectationCourant().supprimerAffectation(getTransaction(), user, getAgentCourant(), fichePoste);
-			if (getTransaction().isErreur())
+			FichePoste fichePoste = getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste());
+			// RG_AG_AF_A01
+			HistoAffectation histo = new HistoAffectation(getAffectationCourant());
+			getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.SUPPRESSION);
+
+			if (!Connecteur.supprimerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste))
 				return false;
+			getAffectationDao().supprimerAffectation(getAffectationCourant().getIdAffectation());
 
 			setFocus(getNOM_PB_AJOUTER());
 		} else if (getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
@@ -4111,29 +4135,38 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					.toString());
 
 			// Affectation des attributs
-			getAffectationCourant().setIdAgent(getAgentCourant().getIdAgent());
-			getAffectationCourant().setIdFichePoste(getFichePosteCourant().getIdFichePoste().toString());
+			// on sauvegarde l'ancienne date de debut
+			Date oldDateDeb = getAffectationCourant().getDateDebutAff();
+			getAffectationCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getAffectationCourant().setIdFichePoste(getFichePosteCourant().getIdFichePoste());
 			getAffectationCourant().setRefArreteAff(
 					getVAL_EF_REF_ARRETE().length() == 0 ? null : getVAL_EF_REF_ARRETE());
-			getAffectationCourant().setDateArrete(Services.formateDate(getVAL_EF_DATE_ARRETE()));
-			getAffectationCourant().setDateDebutAff(Services.formateDate(getVAL_EF_DATE_DEBUT()));
+			getAffectationCourant().setDateArrete(
+					getVAL_EF_DATE_ARRETE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE()));
+			getAffectationCourant().setDateDebutAff(sdf.parse(getVAL_EF_DATE_DEBUT()));
 			getAffectationCourant().setDateFinAff(
-					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : Services
-							.formateDate(getVAL_EF_DATE_FIN()));
-			getAffectationCourant().setIdMotifAffectation(newMotifAffectation.getIdMotifAffectation().toString());
+					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_FIN()));
+			getAffectationCourant().setIdMotifAffectation(newMotifAffectation.getIdMotifAffectation());
 			getAffectationCourant().setTempsTravail(
 					getListeTempsTravail()[Integer.parseInt(getVAL_LB_TEMPS_TRAVAIL_SELECT())]);
 			getAffectationCourant().setCodeEcole(eg.getCdEcol());
 			getAffectationCourant().setIdFichePosteSecondaire(
 					getFichePosteSecondaireCourant() != null ? getFichePosteSecondaireCourant().getIdFichePoste()
-							.toString() : null);
+							: null);
 			getAffectationCourant().setCommentaire(
 					getVAL_EF_COMMENTAIRE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_COMMENTAIRE());
 
 			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
 				// Modification
-				getAffectationCourant().modifierAffectation(getTransaction(), user, getAgentCourant(),
-						getFichePosteCourant());
+				// RG_AG_AF_A01
+				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
+				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
+
+				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(),
+						getFichePosteCourant(), oldDateDeb))
+					return false;
+				getAffectationDao().modifierAffectation(getAffectationCourant());
+
 				// mise à jour du champ primaire de sppost
 				Connecteur.modifierSPPOST_Primaire(getTransaction(), getFichePosteCourant().getNumFp(), true);
 				if (getFichePosteSecondaireCourant() != null) {
@@ -4149,11 +4182,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 							false);
 				}
 				// Création Affectation
-				FichePoste fichePoste = getFichePosteDao().chercherFichePoste(
-						Integer.valueOf(getAffectationCourant().getIdFichePoste()));
-				if (!getAffectationCourant().creerAffectation(getTransaction(), user, getAgentCourant(), fichePoste)) {
+				FichePoste fichePoste = getFichePosteDao()
+						.chercherFichePoste(getAffectationCourant().getIdFichePoste());
+				// RG_AG_AF_A01
+				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
+				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.CREATION);
+
+				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
 					return false;
 				}
+				getAffectationDao().creerAffectation(getAffectationCourant());
 
 				// on sauvegarde les FDP au moment de la creation d'une
 				// affectation
@@ -4181,8 +4219,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			AvantageNature avNat = (AvantageNature) getListeAvantageAAjouter().get(i);
 			Integer idCreer = getAvantageNatureDao().creerAvantageNature(avNat.getNumRubrique(),
 					avNat.getIdTypeAvantage(), avNat.getIdNatureAvantage(), avNat.getMontant());
-			AvantageNatureAFF avNatAFF = new AvantageNatureAFF(Integer.valueOf(getAffectationCourant()
-					.getIdAffectation()), idCreer);
+			AvantageNatureAFF avNatAFF = new AvantageNatureAFF(getAffectationCourant().getIdAffectation(), idCreer);
 			getAvantageNatureAffDao().creerAvantageNatureAff(avNatAFF.getIdAvantage(), avNatAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -4195,7 +4232,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			AvantageNature avNat = (AvantageNature) getListeAvantageASupprimer().get(i);
 			try {
 				AvantageNatureAFF avNatAFF = getAvantageNatureAffDao().chercherAvantageNatureAFF(avNat.getIdAvantage(),
-						Integer.valueOf(getAffectationCourant().getIdAffectation()));
+						getAffectationCourant().getIdAffectation());
 				getAvantageNatureAffDao().supprimerAvantageNatureAff(avNatAFF.getIdAvantage(),
 						avNatAFF.getIdAffectation());
 				getAvantageNatureDao().supprimerAvantageNature(avNat.getIdAvantage());
@@ -4211,8 +4248,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		for (int i = 0; i < getListeDelegationAAjouter().size(); i++) {
 			Delegation deleg = (Delegation) getListeDelegationAAjouter().get(i);
 			Integer idCreer = getDelegationDao().creerDelegation(deleg.getIdTypeDelegation(), deleg.getLibDelegation());
-			DelegationAFF delAFF = new DelegationAFF(Integer.valueOf(getAffectationCourant().getIdAffectation()),
-					idCreer);
+			DelegationAFF delAFF = new DelegationAFF(getAffectationCourant().getIdAffectation(), idCreer);
 			getDelegationAffDao().creerDelegationAFF(delAFF.getIdDelegation(), delAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -4225,7 +4261,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			Delegation deleg = (Delegation) getListeDelegationASupprimer().get(i);
 			try {
 				DelegationAFF delAFF = getDelegationAffDao().chercherDelegationAFF(
-						Integer.valueOf(getAffectationCourant().getIdAffectation()), deleg.getIdDelegation());
+						getAffectationCourant().getIdAffectation(), deleg.getIdDelegation());
 				getDelegationAffDao().supprimerDelegationAFF(delAFF.getIdDelegation(), delAFF.getIdAffectation());
 				getDelegationDao().supprimerDelegation(deleg.getIdDelegation());
 			} catch (Exception e) {
@@ -4241,7 +4277,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeAAjouter().get(i);
 			Integer idCreer = getRegIndemnDao().creerRegimeIndemnitaire(regIndemn.getIdTypeRegIndemn(),
 					regIndemn.getNumRubrique(), regIndemn.getForfait(), regIndemn.getNombrePoints());
-			RegIndemnAFF riAFF = new RegIndemnAFF(Integer.valueOf(getAffectationCourant().getIdAffectation()), idCreer);
+			RegIndemnAFF riAFF = new RegIndemnAFF(getAffectationCourant().getIdAffectation(), idCreer);
 			getRegIndemnAffDao().creerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
 			if (getTransaction().isErreur()) {
 				getTransaction().declarerErreur(
@@ -4254,7 +4290,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			RegimeIndemnitaire regIndemn = (RegimeIndemnitaire) getListeRegimeASupprimer().get(i);
 			try {
 				RegIndemnAFF riAFF = getRegIndemnAffDao().chercherRegIndemnAFF(
-						Integer.valueOf(getAffectationCourant().getIdAffectation()), regIndemn.getIdRegIndemn());
+						getAffectationCourant().getIdAffectation(), regIndemn.getIdRegIndemn());
 				getRegIndemnAffDao().supprimerRegIndemnAFF(riAFF.getIdRegime(), riAFF.getIdAffectation());
 				getRegIndemnDao().supprimerRegimeIndemnitaire(regIndemn.getIdRegIndemn());
 			} catch (Exception e) {
@@ -4268,7 +4304,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		for (PrimePointageAff prime : getListePrimePointageAffAAjouter()) {
 			try {
 				getPrimePointageAffDao().creerPrimePointageAff(prime.getNumRubrique(),
-						Integer.valueOf(getAffectationCourant().getIdAffectation()));
+						getAffectationCourant().getIdAffectation());
 
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
@@ -4279,8 +4315,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		for (PrimePointageAff prime : getListePrimePointageAffASupprimer()) {
 			try {
-				getPrimePointageAffDao().supprimerPrimePointageAff(
-						Integer.valueOf(getAffectationCourant().getIdAffectation()), prime.getNumRubrique());
+				getPrimePointageAffDao().supprimerPrimePointageAff(getAffectationCourant().getIdAffectation(),
+						prime.getNumRubrique());
 			} catch (Exception e) {
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + " Au moins une prime de pointage n'a pu être supprimée.");
@@ -4613,7 +4649,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		return true;
 	}
 
-	private boolean sauvegardeFDP(String idFichePoste) throws Exception {
+	private boolean sauvegardeFDP(Integer idFichePoste) throws Exception {
 		// on verifie que les repertoires existent
 		verifieRepertoire("SauvegardeFDP");
 
@@ -5002,7 +5038,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	// return "ECR-AG-EMPLOIS-SPECIFICITES";
 	// }
 
-	private boolean verifieExistFichier(String idAffectation, String typeDocument) throws Exception {
+	private boolean verifieExistFichier(Integer idAffectation, String typeDocument) throws Exception {
 		// on regarde si le fichier existe
 		try {
 			getDocumentDao().chercherDocumentByContainsNom("NS_" + idAffectation + "_" + typeDocument);
@@ -5144,14 +5180,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		this.listeRegimeASupprimer = listeRegimeASupprimer;
 	}
 
-	private byte[] getFDPReportAsByteArray(String idFichePoste) throws Exception {
+	private byte[] getFDPReportAsByteArray(Integer idFichePoste) throws Exception {
 
 		ClientResponse response = createAndFireRequest(idFichePoste);
 
 		return readResponseAsByteArray(response);
 	}
 
-	public ClientResponse createAndFireRequest(String idFichePoste) {
+	public ClientResponse createAndFireRequest(Integer idFichePoste) {
 		String urlWSArretes = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_FDP_SIRH") + "?idFichePoste="
 				+ idFichePoste;
 
@@ -5347,6 +5383,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setHistoFichePosteDao(HistoFichePosteDao histoFichePosteDao) {
 		this.histoFichePosteDao = histoFichePosteDao;
+	}
+
+	public HistoAffectationDao getHistoAffectationDao() {
+		return histoAffectationDao;
+	}
+
+	public void setHistoAffectationDao(HistoAffectationDao histoAffectationDao) {
+		this.histoAffectationDao = histoAffectationDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 
 }

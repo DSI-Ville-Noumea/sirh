@@ -27,6 +27,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -63,6 +64,7 @@ public class OePTGSaisie extends BasicProcess {
 	private SimpleDateFormat wsdf = new SimpleDateFormat("yyyyMMdd", new Locale("fr", "FR"));
 	private Logger logger = LoggerFactory.getLogger(OePTGSaisie.class);
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 	public String focus = null;
 
 	@Override
@@ -123,6 +125,9 @@ public class OePTGSaisie extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -451,19 +456,20 @@ public class OePTGSaisie extends BasicProcess {
 	public String getIdAgent() throws Exception {
 		AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), idAgent);
 		String service = "";
-		Affectation affAgent = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		} else {
+		try {
+			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(
+					Integer.valueOf(agent.getIdAgent()));
 			if (affAgent.getIdFichePoste() != null) {
 				try {
-					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(affAgent.getIdFichePoste()));
+					FichePoste fp = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePoste());
 					Service serviceAgent = Service.chercherService(getTransaction(), fp.getIdServi());
 					service = serviceAgent.getLibService();
 				} catch (Exception e) {
 
 				}
 			}
+		} catch (Exception e) {
+
 		}
 		return agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + idAgent + ")"
 				+ (service.equals("") ? "" : " - " + service);
@@ -699,5 +705,13 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

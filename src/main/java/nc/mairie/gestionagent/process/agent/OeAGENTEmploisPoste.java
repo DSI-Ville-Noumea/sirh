@@ -56,6 +56,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
@@ -161,6 +162,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	private ActiviteDao activiteDao;
 	private ActiviteFPDao activiteFPDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -215,8 +217,8 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			ArrayList<Affectation> affActives = Affectation.listerAffectationActiveAvecAgent(getTransaction(),
-					getAgentCourant());
+			ArrayList<Affectation> affActives = getAffectationDao().listerAffectationActiveAvecAgent(
+					Integer.valueOf(getAgentCourant().getIdAgent()));
 			if (affActives.size() == 0) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR083"));
 				return;
@@ -225,11 +227,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 				return;
 			} else {
 				setAffectationCourant((Affectation) affActives.get(0));
-				setFichePosteCourant(getFichePosteDao().chercherFichePoste(
-						Integer.valueOf(getAffectationCourant().getIdFichePoste())));
+				setFichePosteCourant(getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste()));
 				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
 					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(getAffectationCourant().getIdFichePosteSecondaire())));
+							getAffectationCourant().getIdFichePosteSecondaire()));
 				}
 				alimenterFicheDePoste();
 			}
@@ -312,6 +313,9 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2516,5 +2520,13 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

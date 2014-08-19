@@ -15,6 +15,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -47,6 +48,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	private ArrayList<AgentWithServiceDto> listeApprobateurs = new ArrayList<AgentWithServiceDto>();
 	private Hashtable<AgentWithServiceDto, ArrayList<String>> hashApprobateur;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	public String focus = null;
 	private boolean first = true;
@@ -117,6 +119,9 @@ public class OeDROITSKiosque extends BasicProcess {
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeApprobateur() {
@@ -164,16 +169,17 @@ public class OeDROITSKiosque extends BasicProcess {
 				agentDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 
 				if (!getListeApprobateurs().contains(agentDto)) {
-					Affectation affCourante = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-							ag.getIdAgent());
-					if (getTransaction().isErreur()) {
+					Affectation affCourante = null;
+					try {
+						affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(ag.getIdAgent()));
+					} catch (Exception e) {
 						// "ERR400", //
 						// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", ag.getIdAgent()));
 						throw new Exception();
 					}
-					FichePoste fpCourante = getFichePosteDao().chercherFichePoste(
-							Integer.valueOf(affCourante.getIdFichePoste()));
+					FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());
 					Service serv = Service.chercherService(getTransaction(), fpCourante.getIdServi());
 
 					agentDto.setNom(ag.getNomAgent());
@@ -634,5 +640,13 @@ public class OeDROITSKiosque extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

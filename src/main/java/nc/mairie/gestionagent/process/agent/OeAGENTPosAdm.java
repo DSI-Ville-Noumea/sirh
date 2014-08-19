@@ -484,39 +484,6 @@ public class OeAGENTPosAdm extends BasicProcess {
 					return false;
 				}
 			} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION)) {
-				// REDMINE #2423 : on supprime cette regle de gestion
-				// Création
-				/*
-				 * if (getPaCourante().estPAInactive(getTransaction())) { //
-				 * RG_AG_PA_C03 ArrayList<Affectation> affActive =
-				 * Affectation.listerAffectationActiveAvecAgent
-				 * (getTransaction(), getAgentCourant());
-				 * 
-				 * if (affActive.size() > 0) { Affectation active =
-				 * (Affectation) affActive.get(0); if
-				 * (Services.compareDates(active.getDateDebutAff(),
-				 * getPaCourante().getDatdeb()) > 0) {
-				 * getTransaction().declarerErreur
-				 * (MessageUtils.getMessage("ERR133")); return false; }
-				 * 
-				 * // si l'affectation a une date de fin if
-				 * (!active.getDateFinAff().equals(Const.CHAINE_VIDE)) {
-				 * getTransaction
-				 * ().declarerErreur(MessageUtils.getMessage("ERR133")); return
-				 * false; } FichePoste fp =
-				 * FichePoste.chercherFichePoste(getTransaction(),
-				 * active.getIdFichePoste());
-				 * active.setDateFinAff(getPaCourante().getDatdeb()); if
-				 * (!active.modifierAffectation(getTransaction(), user,
-				 * getAgentCourant(), fp)) { // "ERR009", //
-				 * "Une erreur s'est produite sur la base de données.");
-				 * getTransaction
-				 * ().declarerErreur(MessageUtils.getMessage("ERR009")); return
-				 * false; }
-				 * 
-				 * } }
-				 */
-
 				// RG_AG_PA_A01
 				HistoPositionAdm histo = new HistoPositionAdm(getPaCourante());
 				getHistoPositionAdmDao().creerHistoPositionAdm(histo, user, EnumTypeHisto.CREATION);

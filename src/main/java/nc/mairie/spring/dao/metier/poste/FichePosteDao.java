@@ -237,11 +237,11 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 		for (int i = 0; i < liens.size(); i++) {
 			Affectation aLien = (Affectation) liens.get(i);
 			try {
-				FichePoste fp = chercherFichePoste(Integer.valueOf(aLien.getIdFichePoste()));
+				FichePoste fp = chercherFichePoste(aLien.getIdFichePoste());
 				result.add(fp);
 				if (aLien.getIdFichePosteSecondaire() != null) {
 					try {
-						FichePoste fpSecondaire = chercherFichePoste(Integer.valueOf(aLien.getIdFichePosteSecondaire()));
+						FichePoste fpSecondaire = chercherFichePoste(aLien.getIdFichePosteSecondaire());
 						result.add(fpSecondaire);
 					} catch (Exception e) {
 						return new ArrayList<FichePoste>();
@@ -501,8 +501,8 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user, Transaction aTransaction)
-			throws Exception {
+	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user,
+			Transaction aTransaction, AffectationDao affDao) throws Exception {
 		// Modification du FichePoste
 
 		// historisation
@@ -514,7 +514,8 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 		if (fp.getIdResponsable() != null) {
 			fpResponsable = chercherFichePoste(fp.getIdResponsable());
 		}
-		Connecteur.modifierSPPOST(aTransaction, fp, fpResponsable);
+		ArrayList<Affectation> listeAffFP = affDao.listerAffectationAvecFP(fp.getIdFichePoste());
+		Connecteur.modifierSPPOST(aTransaction, fp, fpResponsable, listeAffFP);
 
 	}
 

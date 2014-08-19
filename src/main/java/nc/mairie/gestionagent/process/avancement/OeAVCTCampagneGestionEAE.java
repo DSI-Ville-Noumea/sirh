@@ -86,6 +86,7 @@ import nc.mairie.spring.dao.metier.parametrage.TitreDiplomeDao;
 import nc.mairie.spring.dao.metier.parametrage.TitreFormationDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFPDao;
 import nc.mairie.spring.dao.metier.poste.FEFPDao;
@@ -191,6 +192,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private ActiviteFPDao activiteFPDao;
 	private FicheEmploiDao ficheEmploiDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -337,43 +339,41 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						eval.setIdAgent(Integer.valueOf(agentEvaluateur.getIdAgent()));
 
 						// on recupere le poste
-						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-								agentEvaluateur.getIdAgent());
-						if (getTransaction().isErreur() || aff.getIdFichePoste() == null) {
-							getTransaction().traiterErreur();
+						Affectation aff = null;
+						try {
+							aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+									Integer.valueOf(agentEvaluateur.getIdAgent()));
+						} catch (Exception e) {
+
 						}
 
 						if (aff != null && aff.getIdFichePoste() != null) {
-							FichePoste fp = getFichePosteDao().chercherFichePoste(
-									Integer.valueOf(aff.getIdFichePoste()));
+							FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 							TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 							eval.setFonction(tp.getLibTitrePoste());
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
-							ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation
-									.listerAffectationAvecFPEtAgent(getTransaction(), fp, agentEvaluateur.getIdAgent());
+							ArrayList<Affectation> listeAffectationSurMemeFDP = getAffectationDao()
+									.listerAffectationAvecFPEtAgent(Integer.valueOf(fp.getIdFichePoste()),
+											Integer.valueOf(agentEvaluateur.getIdAgent()));
 							if (listeAffectationSurMemeFDP.size() > 0) {
-								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff()
-												.equals(Const.CHAINE_VIDE)
-										|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
-										: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
 							}
 							// on cherche toutes les affectations sur le meme
 							// service et
 							// on prend la date la plus ancienne
 							// NB : pour les affectations successives
-							ArrayList<Affectation> listeAffectationService = Affectation
-									.listerAffectationAgentAvecService(getTransaction(), agentEvaluateur.getIdAgent(),
+							ArrayList<Affectation> listeAffectationService = getAffectationDao()
+									.listerAffectationAgentAvecService(Integer.valueOf(agentEvaluateur.getIdAgent()),
 											fp.getIdServi());
-							String dateDebutService = null;
+							Date dateDebutService = null;
 							for (int i = 0; i < listeAffectationService.size(); i++) {
 								Affectation affCours = listeAffectationService.get(i);
 								if (listeAffectationService.size() > i + 1) {
 									if (listeAffectationService.get(i + 1) != null) {
 										Affectation affPrecedente = listeAffectationService.get(i + 1);
-										if (affCours.getDateDebutAff().equals(
-												Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+										if (sdf.format(affCours.getDateDebutAff()).equals(
+												Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()), 1))) {
 											dateDebutService = affPrecedente.getDateDebutAff();
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
@@ -385,8 +385,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 									dateDebutService = affCours.getDateDebutAff();
 								}
 							}
-							eval.setDateEntreeService(dateDebutService == null
-									|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
+							eval.setDateEntreeService(dateDebutService);
 						}
 
 						eval.setDateEntreeCollectivite(agentEvaluateur.getDateDerniereEmbauche() == null
@@ -587,36 +586,36 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				eae.getUserControle(), eae.getIdDelegataire());
 
 		// on recupere le poste
-		Affectation affAgent = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
 		FichePoste fpPrincipale = null;
 		FichePoste fpSecondaire = null;
 		FichePoste fpResponsable = null;
 		TitrePoste tpResp = null;
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		} else {
+		try {
+			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(
+					Integer.valueOf(a.getIdAgent()));
 			try {
-				fpPrincipale = getFichePosteDao().chercherFichePoste(Integer.valueOf(affAgent.getIdFichePoste()));
+				fpPrincipale = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePoste());
 				// on recupere le superieur hierarchique
 				if (fpPrincipale.getIdResponsable() != null) {
-					Affectation affSuperieur = Affectation.chercherAffectationAvecFP(getTransaction(), fpPrincipale
-							.getIdResponsable().toString());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (affSuperieur.getIdFichePoste() != null) {
-						fpResponsable = getFichePosteDao().chercherFichePoste(
-								Integer.valueOf(affSuperieur.getIdFichePoste()));
-						tpResp = getTitrePosteDao().chercherTitrePoste(fpResponsable.getIdTitrePoste());
+					try {
+						Affectation affSuperieur = getAffectationDao().chercherAffectationAvecFP(
+								fpPrincipale.getIdResponsable());
+						if (affSuperieur.getIdFichePoste() != null) {
+							fpResponsable = getFichePosteDao().chercherFichePoste(affSuperieur.getIdFichePoste());
+							tpResp = getTitrePosteDao().chercherTitrePoste(fpResponsable.getIdTitrePoste());
+						}
+					} catch (Exception e) {
+
 					}
 				}
 			} catch (Exception e) {
 
 			}
 			if (affAgent.getIdFichePosteSecondaire() != null) {
-				fpSecondaire = getFichePosteDao().chercherFichePoste(
-						Integer.valueOf(affAgent.getIdFichePosteSecondaire()));
+				fpSecondaire = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePosteSecondaire());
 			}
+		} catch (Exception e) {
+
 		}
 
 		// on crée les FDP et activites/competences
@@ -660,28 +659,25 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// responsable
 			// on prend la date la plus ancienne
 			if (fpResponsable != null && fpResponsable.getIdServi() != null) {
-				ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
-						getTransaction(), fpResponsable, agentResp.getIdAgent());
+				ArrayList<Affectation> listeAffectationSurMemeFDP = getAffectationDao().listerAffectationAvecFPEtAgent(
+						fpResponsable.getIdFichePoste(), Integer.valueOf(agentResp.getIdAgent()));
 				if (listeAffectationSurMemeFDP.size() > 0) {
-					eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-							|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-							|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null : sdf
-							.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+					eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
 				}
 				// on cherche toutes les affectations sur le meme
 				// service et
 				// on prend la date la plus ancienne
 				// NB : pour les affectations successives
-				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
-						getTransaction(), agentResp.getIdAgent(), fpResponsable.getIdServi());
-				String dateDebutService = null;
+				ArrayList<Affectation> listeAffectationService = getAffectationDao().listerAffectationAgentAvecService(
+						Integer.valueOf(agentResp.getIdAgent()), fpResponsable.getIdServi());
+				Date dateDebutService = null;
 				for (int i = 0; i < listeAffectationService.size(); i++) {
 					Affectation affCours = listeAffectationService.get(i);
 					if (listeAffectationService.size() > i + 1) {
 						if (listeAffectationService.get(i + 1) != null) {
 							Affectation affPrecedente = listeAffectationService.get(i + 1);
-							if (affCours.getDateDebutAff().equals(
-									Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+							if (sdf.format(affCours.getDateDebutAff()).equals(
+									Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()), 1))) {
 								dateDebutService = affPrecedente.getDateDebutAff();
 							} else {
 								dateDebutService = affCours.getDateDebutAff();
@@ -693,8 +689,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						dateDebutService = affCours.getDateDebutAff();
 					}
 				}
-				eval.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
-						: sdf.parse(dateDebutService));
+				eval.setDateEntreeService(dateDebutService);
 			}
 			getEaeEvaluateurDao().creerEaeEvaluateur(eval.getIdEae(), eval.getIdAgent(), eval.getFonction(),
 					eval.getDateEntreeService(), eval.getDateEntreeCollectivite(), eval.getDateEntreeFonction());
@@ -902,6 +897,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1945,12 +1943,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			}
 			// on cherche toutes les affectations sur la FDP
 			// on prend la date la plus ancienne
-			ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
-					getTransaction(), fpSecondaire, evalue.getIdAgent().toString());
+			ArrayList<Affectation> listeAffectationSurMemeFDP = getAffectationDao().listerAffectationAvecFPEtAgent(
+					fpSecondaire.getIdFichePoste(), evalue.getIdAgent());
 			if (listeAffectationSurMemeFDP.size() > 0) {
-				fichePosteEae.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-						|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE) ? null : sdf
-						.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+				fichePosteEae.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
 			}
 			// grade du poste
 			Grade g = Grade.chercherGrade(getTransaction(), fpSecondaire.getCodeGrade());
@@ -1976,64 +1972,64 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					} catch (Exception e) {
 
 					}
-					Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp
-							.getIdFichePoste().toString());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (affResp != null && affResp.getIdAgent() != null) {
-						AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), affResp.getIdAgent());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						}
-						if (agentResp != null && agentResp.getIdAgent() != null) {
-							fichePosteEae.setDateEntreeCollectResp(agentResp.getDateDerniereEmbauche() == null
-									|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf
-									.parse(agentResp.getDateDerniereEmbauche()));
-						}
-
-						// on cherche toutes les affectations sur la FDP du
-						// responsable
-						// on prend la date la plus ancienne
-						if (fpResp != null && fpResp.getIdServi() != null) {
-							ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation
-									.listerAffectationAvecFPEtAgent(getTransaction(), fpResp, agentResp.getIdAgent());
-							if (listeAffectationRespSurMemeFDP.size() > 0) {
-								fichePosteEae.setDateEntreeFonctionResp(listeAffectationRespSurMemeFDP.get(0)
-										.getDateDebutAff() == null
-										|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
-												.equals(Const.CHAINE_VIDE) ? null : sdf
-										.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
+					try {
+						Affectation affResp = getAffectationDao().chercherAffectationActiveAvecFP(
+								fpResp.getIdFichePoste());
+						if (affResp != null && affResp.getIdAgent() != null) {
+							AgentNW agentResp = AgentNW
+									.chercherAgent(getTransaction(), affResp.getIdAgent().toString());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
 							}
-							// on cherche toutes les affectations sur le meme
-							// service et
+							if (agentResp != null && agentResp.getIdAgent() != null) {
+								fichePosteEae.setDateEntreeCollectResp(agentResp.getDateDerniereEmbauche() == null
+										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE) ? null : sdf
+										.parse(agentResp.getDateDerniereEmbauche()));
+							}
+
+							// on cherche toutes les affectations sur la FDP du
+							// responsable
 							// on prend la date la plus ancienne
-							// NB : pour les affectations successives
-							ArrayList<Affectation> listeAffectationRespService = Affectation
-									.listerAffectationAgentAvecService(getTransaction(), agentResp.getIdAgent(),
-											fpResp.getIdServi());
-							String dateDebutService = null;
-							for (int i = 0; i < listeAffectationRespService.size(); i++) {
-								Affectation affCours = listeAffectationRespService.get(i);
-								if (listeAffectationRespService.size() > i + 1) {
-									if (listeAffectationRespService.get(i + 1) != null) {
-										Affectation affPrecedente = listeAffectationRespService.get(i + 1);
-										if (affCours.getDateDebutAff().equals(
-												Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
-											dateDebutService = affPrecedente.getDateDebutAff();
+							if (fpResp != null && fpResp.getIdServi() != null) {
+								ArrayList<Affectation> listeAffectationRespSurMemeFDP = getAffectationDao()
+										.listerAffectationAvecFPEtAgent(fpResp.getIdFichePoste(),
+												Integer.valueOf(agentResp.getIdAgent()));
+								if (listeAffectationRespSurMemeFDP.size() > 0) {
+									fichePosteEae.setDateEntreeFonctionResp(listeAffectationRespSurMemeFDP.get(0)
+											.getDateDebutAff());
+								}
+								// on cherche toutes les affectations sur le
+								// meme
+								// service et
+								// on prend la date la plus ancienne
+								// NB : pour les affectations successives
+								ArrayList<Affectation> listeAffectationRespService = getAffectationDao()
+										.listerAffectationAgentAvecService(Integer.valueOf(agentResp.getIdAgent()),
+												fpResp.getIdServi());
+								Date dateDebutService = null;
+								for (int i = 0; i < listeAffectationRespService.size(); i++) {
+									Affectation affCours = listeAffectationRespService.get(i);
+									if (listeAffectationRespService.size() > i + 1) {
+										if (listeAffectationRespService.get(i + 1) != null) {
+											Affectation affPrecedente = listeAffectationRespService.get(i + 1);
+											if (sdf.format(affCours.getDateDebutAff()).equals(
+													Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()), 1))) {
+												dateDebutService = affPrecedente.getDateDebutAff();
+											} else {
+												dateDebutService = affCours.getDateDebutAff();
+											}
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
 										}
 									} else {
 										dateDebutService = affCours.getDateDebutAff();
 									}
-								} else {
-									dateDebutService = affCours.getDateDebutAff();
 								}
+								fichePosteEae.setDateEntreeServiceResp(dateDebutService);
 							}
-							fichePosteEae.setDateEntreeServiceResp(dateDebutService == null
-									|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateDebutService));
 						}
+					} catch (Exception e) {
+
 					}
 				} catch (Exception e) {
 
@@ -2165,13 +2161,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (modifDateFonction && evalue != null) {
 					// on cherche toutes les affectations sur la FDP
 					// on prend la date la plus ancienne
-					ArrayList<Affectation> listeAffectationSurMemeFDP = Affectation.listerAffectationAvecFPEtAgent(
-							getTransaction(), fpPrincipale, evalue.getIdAgent().toString());
+					ArrayList<Affectation> listeAffectationSurMemeFDP = getAffectationDao()
+							.listerAffectationAvecFPEtAgent(fpPrincipale.getIdFichePoste(), evalue.getIdAgent());
 					if (listeAffectationSurMemeFDP.size() > 0) {
-						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff() == null
-								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.CHAINE_VIDE)
-								|| listeAffectationSurMemeFDP.get(0).getDateDebutAff().equals(Const.DATE_NULL) ? null
-								: sdf.parse(listeAffectationSurMemeFDP.get(0).getDateDebutAff()));
+						fpModif.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
 					}
 				}
 				// grade du poste
@@ -2199,70 +2192,67 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						} catch (Exception e) {
 
 						}
-						Affectation affResp = Affectation.chercherAffectationActiveAvecFP(getTransaction(), fpResp
-								.getIdFichePoste().toString());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						}
-						if (affResp != null && affResp.getIdAgent() != null) {
-							AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), affResp.getIdAgent());
-							if (getTransaction().isErreur()) {
-								getTransaction().traiterErreur();
-							}
-							if (agentResp != null && agentResp.getIdAgent() != null) {
-								fpModif.setDateEntreeCollectResp(agentResp.getDateDerniereEmbauche() == null
-										|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
-										|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf
-										.parse(agentResp.getDateDerniereEmbauche()));
-							}
-
-							// on cherche toutes les affectations sur la FDP du
-							// responsable
-							// on prend la date la plus ancienne
-							if (fpResp != null && fpResp.getIdServi() != null) {
-								ArrayList<Affectation> listeAffectationRespSurMemeFDP = Affectation
-										.listerAffectationAvecFPEtAgent(getTransaction(), fpResp,
-												agentResp.getIdAgent());
-								if (listeAffectationRespSurMemeFDP.size() > 0) {
-									fpModif.setDateEntreeFonctionResp(listeAffectationRespSurMemeFDP.get(0)
-											.getDateDebutAff() == null
-											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
-													.equals(Const.CHAINE_VIDE)
-											|| listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()
-													.equals(Const.DATE_NULL) ? null : sdf
-											.parse(listeAffectationRespSurMemeFDP.get(0).getDateDebutAff()));
+						try {
+							Affectation affResp = getAffectationDao().chercherAffectationActiveAvecFP(
+									fpResp.getIdFichePoste());
+							if (affResp != null && affResp.getIdAgent() != null) {
+								AgentNW agentResp = AgentNW.chercherAgent(getTransaction(), affResp.getIdAgent()
+										.toString());
+								if (getTransaction().isErreur()) {
+									getTransaction().traiterErreur();
 								}
-								// on cherche toutes les affectations sur le
-								// meme
-								// service et
+								if (agentResp != null && agentResp.getIdAgent() != null) {
+									fpModif.setDateEntreeCollectResp(agentResp.getDateDerniereEmbauche() == null
+											|| agentResp.getDateDerniereEmbauche().equals(Const.CHAINE_VIDE)
+											|| agentResp.getDateDerniereEmbauche().equals(Const.DATE_NULL) ? null : sdf
+											.parse(agentResp.getDateDerniereEmbauche()));
+								}
+
+								// on cherche toutes les affectations sur la FDP
+								// du
+								// responsable
 								// on prend la date la plus ancienne
-								// NB : pour les affectations successives
-								ArrayList<Affectation> listeAffectationRespService = Affectation
-										.listerAffectationAgentAvecService(getTransaction(), agentResp.getIdAgent(),
-												fpResp.getIdServi());
-								String dateDebutService = null;
-								for (int i = 0; i < listeAffectationRespService.size(); i++) {
-									Affectation affCours = listeAffectationRespService.get(i);
-									if (listeAffectationRespService.size() > i + 1) {
-										if (listeAffectationRespService.get(i + 1) != null) {
-											Affectation affPrecedente = listeAffectationRespService.get(i + 1);
-											if (affCours.getDateDebutAff().equals(
-													Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
-												dateDebutService = affPrecedente.getDateDebutAff();
+								if (fpResp != null && fpResp.getIdServi() != null) {
+									ArrayList<Affectation> listeAffectationRespSurMemeFDP = getAffectationDao()
+											.listerAffectationAvecFPEtAgent(fpResp.getIdFichePoste(),
+													Integer.valueOf(agentResp.getIdAgent()));
+									if (listeAffectationRespSurMemeFDP.size() > 0) {
+										fpModif.setDateEntreeFonctionResp(listeAffectationRespSurMemeFDP.get(0)
+												.getDateDebutAff());
+									}
+									// on cherche toutes les affectations sur le
+									// meme
+									// service et
+									// on prend la date la plus ancienne
+									// NB : pour les affectations successives
+									ArrayList<Affectation> listeAffectationRespService = getAffectationDao()
+											.listerAffectationAgentAvecService(Integer.valueOf(agentResp.getIdAgent()),
+													fpResp.getIdServi());
+									Date dateDebutService = null;
+									for (int i = 0; i < listeAffectationRespService.size(); i++) {
+										Affectation affCours = listeAffectationRespService.get(i);
+										if (listeAffectationRespService.size() > i + 1) {
+											if (listeAffectationRespService.get(i + 1) != null) {
+												Affectation affPrecedente = listeAffectationRespService.get(i + 1);
+												if (sdf.format(affCours.getDateDebutAff()).equals(
+														Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()),
+																1))) {
+													dateDebutService = affPrecedente.getDateDebutAff();
+												} else {
+													dateDebutService = affCours.getDateDebutAff();
+												}
 											} else {
 												dateDebutService = affCours.getDateDebutAff();
 											}
 										} else {
 											dateDebutService = affCours.getDateDebutAff();
 										}
-									} else {
-										dateDebutService = affCours.getDateDebutAff();
 									}
+									fpModif.setDateEntreeServiceResp(dateDebutService);
 								}
-								fpModif.setDateEntreeServiceResp(dateDebutService == null
-										|| dateDebutService.equals(Const.CHAINE_VIDE) ? null : sdf
-										.parse(dateDebutService));
 							}
+						} catch (Exception e) {
+
 						}
 					} catch (Exception e) {
 
@@ -2507,27 +2497,29 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			evalAModif.setIdEae(getEaeCourant().getIdEae());
 			evalAModif.setIdAgent(Integer.valueOf(ag.getIdAgent()));
 			// on recupere l'affectation en cours
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			Affectation aff = null;
+			try {
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(ag.getIdAgent()));
+			} catch (Exception e) {
+
 			}
 
 			if (aff != null && aff.getIdFichePoste() != null) {
-				FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+				FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 				// on cherche toutes les affectations sur le meme
 				// service et
 				// on prend la date la plus ancienne
 				// NB : pour les affectations successives
-				ArrayList<Affectation> listeAffectationService = Affectation.listerAffectationAgentAvecService(
-						getTransaction(), ag.getIdAgent(), fp.getIdServi());
-				String dateDebutService = null;
+				ArrayList<Affectation> listeAffectationService = getAffectationDao().listerAffectationAgentAvecService(
+						Integer.valueOf(ag.getIdAgent()), fp.getIdServi());
+				Date dateDebutService = null;
 				for (int i = 0; i < listeAffectationService.size(); i++) {
 					Affectation affCours = listeAffectationService.get(i);
 					if (listeAffectationService.size() > i + 1) {
 						if (listeAffectationService.get(i + 1) != null) {
 							Affectation affPrecedente = listeAffectationService.get(i + 1);
-							if (affCours.getDateDebutAff().equals(
-									Services.ajouteJours(affPrecedente.getDateFinAff(), 1))) {
+							if (sdf.format(affCours.getDateDebutAff()).equals(
+									Services.ajouteJours(sdf.format(affPrecedente.getDateFinAff()), 1))) {
 								dateDebutService = affPrecedente.getDateDebutAff();
 							} else {
 								dateDebutService = affCours.getDateDebutAff();
@@ -2539,9 +2531,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						dateDebutService = affCours.getDateDebutAff();
 					}
 				}
-				evalAModif
-						.setDateEntreeService(dateDebutService == null || dateDebutService.equals(Const.CHAINE_VIDE) ? null
-								: sdf.parse(dateDebutService));
+				evalAModif.setDateEntreeService(dateDebutService);
 			}
 
 			evalAModif.setDateEntreeCollectivite(ag.getDateDerniereEmbauche() == null
@@ -3579,17 +3569,17 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		EaeEvalue evalue = getEaeEvalueDao().chercherEaeEvalue(getEaeCourant().getIdEae());
 		AgentNW ag = AgentNW.chercherAgent(getTransaction(), evalue.getIdAgent().toString());
 		// on cherche les FDP de l'agent
-		Affectation affCours = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
 		FichePoste fpPrincipale = null;
 		FichePoste fpSecondaire = null;
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-		} else {
-			fpPrincipale = getFichePosteDao().chercherFichePoste(Integer.valueOf(affCours.getIdFichePoste()));
+		try {
+			Affectation affCours = getAffectationDao().chercherAffectationActiveAvecAgent(
+					Integer.valueOf(ag.getIdAgent()));
+			fpPrincipale = getFichePosteDao().chercherFichePoste(affCours.getIdFichePoste());
 			if (affCours.getIdFichePosteSecondaire() != null) {
-				fpSecondaire = getFichePosteDao().chercherFichePoste(
-						Integer.valueOf(affCours.getIdFichePosteSecondaire()));
+				fpSecondaire = getFichePosteDao().chercherFichePoste(affCours.getIdFichePosteSecondaire());
 			}
+		} catch (Exception e) {
+
 		}
 		// on met les données dans EAE-evalué
 		performCreerEvalue(request, ag, false, evalue.isAgentDetache(), false);
@@ -4210,5 +4200,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

@@ -35,6 +35,7 @@ import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifCarriereDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.referentiel.TypeContratDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -114,6 +115,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private ContratDao contratDao;
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
+	private AffectationDao affectationDao;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -194,6 +196,9 @@ public class OeAGENTCarriere extends BasicProcess {
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2587,9 +2592,9 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	private void performCalculContractuel(Carriere carr) throws Exception {
 		// on recupere le grade et la filiere du poste
-		Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
-				.getIdAgent());
-		FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+		Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(getAgentCourant()
+				.getIdAgent()));
+		FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
 		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
 		GradeGenerique gg = GradeGenerique.chercherGradeGenerique(getTransaction(), grade.getCodeGradeGenerique());
@@ -3301,5 +3306,13 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
 		this.histoCarriereDao = histoCarriereDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

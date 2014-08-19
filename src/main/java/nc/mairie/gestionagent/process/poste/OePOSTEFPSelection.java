@@ -10,6 +10,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -42,6 +43,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -108,6 +110,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -275,7 +280,8 @@ public class OePOSTEFPSelection extends BasicProcess {
 		if (!getVAL_ST_AGENT().equals(Const.CHAINE_VIDE)) {
 			AgentNW a = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
 			// Recherche de tous les liens Agent / FichePoste
-			ArrayList<Affectation> liens = Affectation.listerAffectationActiveAvecAgent(getTransaction(), a);
+			ArrayList<Affectation> liens = getAffectationDao().listerAffectationActiveAvecAgent(
+					Integer.valueOf(a.getIdAgent()));
 			aListe = getFichePosteDao().listerFichePosteAvecAgent(liens);
 		}
 
@@ -726,5 +732,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

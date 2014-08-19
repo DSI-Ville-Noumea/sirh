@@ -14,6 +14,7 @@ import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -41,6 +42,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	private TitrePosteDao titrePosteDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -66,6 +68,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -114,8 +119,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			Integer i = Integer.valueOf(agent.getIdAgent());
 			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+					Integer.valueOf(agent.getIdAgent()));
+			FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			addZone(getNOM_ST_LIB_POSTE_AGENT(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
@@ -264,10 +270,11 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			for (PositionAdmAgent pa : listeNomatrActif) {
 				// on regarde si il y a une affectation active
 				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), pa.getNomatr());
-				@SuppressWarnings("unused")
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					@SuppressWarnings("unused")
+					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+							Integer.valueOf(ag.getIdAgent()));
+				} catch (Exception e) {
 					continue;
 				}
 				liste += pa.getNomatr() + ",";
@@ -287,9 +294,11 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur())
 				return false;
-			@SuppressWarnings("unused")
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), ag.getIdAgent());
-			if (getTransaction().isErreur()) {
+			try {
+				@SuppressWarnings("unused")
+				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+						Integer.valueOf(ag.getIdAgent()));
+			} catch (Exception e) {
 				return false;
 			}
 
@@ -311,11 +320,11 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 				} else {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
-					@SuppressWarnings("unused")
-					Affectation aff = Affectation
-							.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
+					try {
+						@SuppressWarnings("unused")
+						Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agt.getIdAgent()));
+					} catch (Exception e) {
 						continue;
 					}
 					listeAgentEnActivite.add(ag);
@@ -338,11 +347,11 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 				} else {
 					// on regarde si il y a une affectation active
 					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
-					@SuppressWarnings("unused")
-					Affectation aff = Affectation
-							.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
+					try {
+						@SuppressWarnings("unused")
+						Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agt.getIdAgent()));
+					} catch (Exception e) {
 						continue;
 					}
 					listeAgentEnActivite.add(ag);
@@ -359,14 +368,14 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			ArrayList<AgentNW> listeAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
 			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
 			for (AgentNW agt : listeAgent) {
-				@SuppressWarnings("unused")
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agt.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					@SuppressWarnings("unused")
+					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+							Integer.valueOf(agt.getIdAgent()));
+				} catch (Exception e) {
 					continue;
-				} else {
-					listeAgentEnActivite.add(agt);
 				}
+				listeAgentEnActivite.add(agt);
 			}
 			aListe = listeAgentEnActivite;
 		}
@@ -405,8 +414,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			Integer i = Integer.valueOf(agent.getIdAgent());
 			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+					Integer.valueOf(agent.getIdAgent()));
+			FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			addZone(getNOM_ST_LIB_POSTE_AGENT_POSSIBLE(i), tp.getLibTitrePoste());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
@@ -762,5 +772,13 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

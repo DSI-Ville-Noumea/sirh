@@ -12,6 +12,7 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -44,6 +45,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	private boolean first = true;
 
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (28/03/2003
@@ -145,6 +147,9 @@ public class OeAGENTRecherche extends BasicProcess {
 
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -310,22 +315,24 @@ public class OeAGENTRecherche extends BasicProcess {
 				// on recupere le service de l'agent si il y en a un
 				String service = Const.CHAINE_VIDE;
 				AgentNW agent = (AgentNW) getListeAgent().get(0);
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				}
-				if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
-					try {
-						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
-						Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						} else {
-							service = serv.getLibService();
-						}
-					} catch (Exception e) {
+				try {
+					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+							Integer.valueOf(agent.getIdAgent()));
+					if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
+						try {
+							FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
+							Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							} else {
+								service = serv.getLibService();
+							}
+						} catch (Exception e) {
 
+						}
 					}
+				} catch (Exception e) {
+
 				}
 
 				VariableGlobale.ajouter(request, "SERVICE_AGENT", service);
@@ -763,22 +770,24 @@ public class OeAGENTRecherche extends BasicProcess {
 			// on recupere le service de l'agent si il y en a un
 			String service = Const.CHAINE_VIDE;
 			AgentNW agent = (AgentNW) getListeAgent().get(elemSelection);
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-			}
-			if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
-				try {
-					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
-					Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					} else {
-						service = serv.getLibService();
-					}
-				} catch (Exception e) {
+			try {
+				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+						Integer.valueOf(agent.getIdAgent()));
+				if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
+					try {
+						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
+						Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
+						if (getTransaction().isErreur()) {
+							getTransaction().traiterErreur();
+						} else {
+							service = serv.getLibService();
+						}
+					} catch (Exception e) {
 
+					}
 				}
+			} catch (Exception e) {
+
 			}
 
 			VariableGlobale.ajouter(request, "SERVICE_AGENT", service);
@@ -810,5 +819,13 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

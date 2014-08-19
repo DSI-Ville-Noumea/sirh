@@ -28,6 +28,9 @@ import nc.mairie.metier.agent.AgentNW;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -43,6 +46,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.codehaus.plexus.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -74,6 +78,8 @@ public class OePTGVisualisation extends BasicProcess {
 	public String status = "VISU";
 	public String focus = null;
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
+
+	private AffectationDao affectationDao;
 
 	private void afficheListePointages() {
 		GregorianCalendar greg = new GregorianCalendar();
@@ -764,6 +770,7 @@ public class OePTGVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
@@ -794,6 +801,14 @@ public class OePTGVisualisation extends BasicProcess {
 			if (agt != null) {
 				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
 			}
+		}
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -1346,10 +1361,11 @@ public class OePTGVisualisation extends BasicProcess {
 			dateCreation = sdfSortie.format(sdf.parse(dateCreation));
 		}
 		// on cherche l'affectation en cours
-		Affectation affEnCours = Affectation.chercherAffectationAgentPourDate(getTransaction(), "900" + idAgent,
-				sdf.parse(dateCreation));
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
+		try {
+			@SuppressWarnings("unused")
+			Affectation affEnCours = getAffectationDao().chercherAffectationAgentPourDate(
+					Integer.valueOf("900" + idAgent), sdf.parse(dateCreation));
+		} catch (Exception e) {
 			// "ERR504",
 			// "L'agent @ n'est affecté à aucun poste le @. Aucun pointage ne peut être saisi pour cette date."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR504", idAgent, dateCreation));
@@ -1580,6 +1596,14 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public String getVAL_ST_OPERATEUR(int i) {
 		return getZone(getNOM_ST_OPERATEUR(i));
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 
 }

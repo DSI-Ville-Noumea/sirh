@@ -1,5 +1,6 @@
 package nc.mairie.gestionagent.process.poste;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +16,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.StatutFP;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -54,6 +56,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -88,6 +91,9 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -903,8 +909,8 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				FichePoste fiche = getFichePosteDao().chercherFichePosteAvecNumeroFP(getVAL_EF_NUM_FICHE_POSTE_AFF());
 				if (fiche != null && fiche.getIdFichePoste() != null) {
 					// on alimente une liste d'affectation que l'on affiche
-					ArrayList<Affectation> listeAff = Affectation.listerAffectationAvecFPOrderDatDeb(getTransaction(),
-							fiche);
+					ArrayList<Affectation> listeAff = getAffectationDao().listerAffectationAvecFPOrderDatDeb(
+							fiche.getIdFichePoste());
 					setListeAffectation(listeAff);
 					initialiseListeAff();
 
@@ -928,24 +934,23 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 	}
 
 	private void initialiseListeAff() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		for (int i = 0; i < getListeAffectation().size(); i++) {
 			Affectation a = (Affectation) getListeAffectation().get(i);
-			FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(a.getIdFichePoste()));
+			FichePoste fp = getFichePosteDao().chercherFichePoste(a.getIdFichePoste());
 			// Titre du poste
 			TitrePoste tp = getTitrePosteDao().chercherTitrePoste(fp.getIdTitrePoste());
 			// Service
 			Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 			Service service = Service.getSection(getTransaction(), fp.getIdServi());
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), a.getIdAgent());
+			AgentNW agent = AgentNW.chercherAgent(getTransaction(), a.getIdAgent().toString());
 
 			addZone(getNOM_ST_DIR_AFF(i), direction != null ? direction.getCodService() : "&nbsp;");
 			addZone(getNOM_ST_SERV_AFF(i), service != null ? service.getLibService() : "&nbsp;");
 			addZone(getNOM_ST_AGENT_AFF(i),
 					agent.getNomAgent() + " " + agent.getPrenomAgent() + "(" + agent.getNoMatricule() + ")");
-			addZone(getNOM_ST_DATE_DEBUT_AFF(i), a.getDateDebutAff());
-			addZone(getNOM_ST_DATE_FIN_AFF(i),
-					a.getDateFinAff() == null || a.getDateFinAff().equals(Const.CHAINE_VIDE) ? "&nbsp;" : a
-							.getDateFinAff());
+			addZone(getNOM_ST_DATE_DEBUT_AFF(i), sdf.format(a.getDateDebutAff()));
+			addZone(getNOM_ST_DATE_FIN_AFF(i), a.getDateFinAff() == null ? "&nbsp;" : sdf.format(a.getDateFinAff()));
 			addZone(getNOM_ST_NUM_FP_AFF(i), fp.getNumFp().equals(Const.CHAINE_VIDE) ? "&nbsp;" : fp.getNumFp());
 			addZone(getNOM_ST_TITRE_AFF(i), tp == null ? "&nbsp;" : tp.getLibTitrePoste());
 
@@ -1116,5 +1121,13 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

@@ -25,6 +25,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -65,6 +66,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private AvancementConvColDao avancementConvColDao;
 	private FichePosteDao fichePosteDao;
 	private HistoPrimeDao histoPrimeDao;
+	private AffectationDao affectationDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
@@ -79,6 +81,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		}
 		if (getHistoPrimeDao() == null) {
 			setHistoPrimeDao(new HistoPrimeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -592,15 +597,17 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						avct.setNumArrete(annee);
 						avct.setDateEmbauche(sdf.parse(a.getDateDerniereEmbauche()));
 
-						Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-								a.getIdAgent());
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
+						Affectation aff = null;
+						try {
+							aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+									Integer.valueOf(a.getIdAgent()));
+						} catch (Exception e2) {
+							continue;
 						}
 						if (aff == null || aff.getIdFichePoste() == null) {
 							continue;
 						}
-						FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
 						Service section = Service.getSection(getTransaction(), fp.getIdServi());
 						if (carr != null) {
@@ -1289,5 +1296,13 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 	public void setHistoPrimeDao(HistoPrimeDao histoPrimeDao) {
 		this.histoPrimeDao = histoPrimeDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

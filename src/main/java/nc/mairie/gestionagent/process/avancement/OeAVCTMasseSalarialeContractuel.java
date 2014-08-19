@@ -27,6 +27,7 @@ import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
 import nc.mairie.spring.dao.metier.avancement.AvancementContractuelsDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -69,6 +70,7 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private FichePosteDao fichePosteDao;
 	private HistoCarriereDao histoCarriereDao;
+	private AffectationDao affectationDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -117,6 +119,9 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -629,14 +634,16 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 					avct.setPa(pa.getLiPAdm());
 
 					// on recupere le grade du poste
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), a.getIdAgent());
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
-					}
-					if (aff.getIdFichePoste() == null) {
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(a.getIdAgent()));
+					} catch (Exception e2) {
 						continue;
 					}
-					FichePoste fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					if (aff == null || aff.getIdFichePoste() == null) {
+						continue;
+					}
+					FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 
 					avct.setNumFp(fp.getNumFp());
 					// on cherche à quelle categorie appartient l'agent
@@ -1354,5 +1361,13 @@ public class OeAVCTMasseSalarialeContractuel extends BasicProcess {
 
 	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
 		this.histoCarriereDao = histoCarriereDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

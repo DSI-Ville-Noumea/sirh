@@ -36,6 +36,7 @@ import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
 import nc.mairie.spring.dao.metier.suiviMedical.SuiviMedicalDao;
@@ -110,6 +111,7 @@ public class OeSMConvocation extends BasicProcess {
 	private MedecinDao medecinDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
 	private FichePosteDao fichePosteDao;
+	private AffectationDao affectationDao;
 
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
 		return visiteMedicaleDao;
@@ -223,6 +225,9 @@ public class OeSMConvocation extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -821,13 +826,16 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			if (getTransaction().isErreur())
-				getTransaction().traiterErreur();
+			Affectation aff = null;
+			try {
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+			} catch (Exception e) {
+
+			}
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
 				try {
-					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 				} catch (Exception e) {
 
 				}
@@ -957,14 +965,17 @@ public class OeSMConvocation extends BasicProcess {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-							agent.getIdAgent());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agent.getIdAgent()));
+					} catch (Exception e) {
+
+					}
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
 						try {
-							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+							fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 						} catch (Exception e) {
 
 						}
@@ -1101,14 +1112,17 @@ public class OeSMConvocation extends BasicProcess {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-							agent.getIdAgent());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agent.getIdAgent()));
+					} catch (Exception e) {
+
+					}
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
 						try {
-							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+							fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 						} catch (Exception e) {
 
 						}
@@ -1244,14 +1258,17 @@ public class OeSMConvocation extends BasicProcess {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-							agent.getIdAgent());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agent.getIdAgent()));
+					} catch (Exception e) {
+
+					}
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
 						try {
-							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+							fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 						} catch (Exception e) {
 
 						}
@@ -1354,13 +1371,16 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			if (getTransaction().isErreur())
-				getTransaction().traiterErreur();
+			Affectation aff = null;
+			try {
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+			} catch (Exception e) {
+
+			}
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
 				try {
-					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 				} catch (Exception e) {
 
 				}
@@ -1456,13 +1476,16 @@ public class OeSMConvocation extends BasicProcess {
 						continue;
 					}
 				}
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-				if (getTransaction().isErreur())
-					getTransaction().traiterErreur();
+				Affectation aff = null;
+				try {
+					aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+				} catch (Exception e) {
+
+				}
 				FichePoste fp = null;
 				if (aff != null && aff.getIdFichePoste() != null) {
 					try {
-						fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+						fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 					} catch (Exception e) {
 
 					}
@@ -1565,14 +1588,17 @@ public class OeSMConvocation extends BasicProcess {
 							continue;
 						}
 					}
-					Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(),
-							agent.getIdAgent());
-					if (getTransaction().isErreur())
-						getTransaction().traiterErreur();
+					Affectation aff = null;
+					try {
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+								Integer.valueOf(agent.getIdAgent()));
+					} catch (Exception e) {
+
+					}
 					FichePoste fp = null;
 					if (aff != null && aff.getIdFichePoste() != null) {
 						try {
-							fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+							fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 						} catch (Exception e) {
 
 						}
@@ -1670,13 +1696,16 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), agent.getIdAgent());
-			if (getTransaction().isErreur())
-				getTransaction().traiterErreur();
+			Affectation aff = null;
+			try {
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+			} catch (Exception e) {
+
+			}
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
 				try {
-					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 				} catch (Exception e) {
 
 				}
@@ -1767,14 +1796,16 @@ public class OeSMConvocation extends BasicProcess {
 					continue;
 				}
 			}
-			Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), vm.getIdAgent()
-					.toString());
-			if (getTransaction().isErreur())
-				getTransaction().traiterErreur();
+			Affectation aff = null;
+			try {
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+			} catch (Exception e) {
+
+			}
 			FichePoste fp = null;
 			if (aff != null && aff.getIdFichePoste() != null) {
 				try {
-					fp = getFichePosteDao().chercherFichePoste(Integer.valueOf(aff.getIdFichePoste()));
+					fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 				} catch (Exception e) {
 
 				}
@@ -3443,6 +3474,14 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 
 }

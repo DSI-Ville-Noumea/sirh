@@ -12,5 +12,5 @@ public interface PrimePointageAffDaoInterface {
 
 	public ArrayList<PrimePointageAff> listerPrimePointageAff(Integer idAffectation);
 
-	public void supprimerToutesPrimePointageAff(String idAffectation);
+	public void supprimerToutesPrimePointageAff(Integer idAffectation);
 }

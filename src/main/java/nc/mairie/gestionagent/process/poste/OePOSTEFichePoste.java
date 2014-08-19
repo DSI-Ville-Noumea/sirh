@@ -71,6 +71,7 @@ import nc.mairie.spring.dao.metier.parametrage.TypeRegIndemnDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteFEDao;
 import nc.mairie.spring.dao.metier.poste.ActiviteFPDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.BudgetDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceDao;
 import nc.mairie.spring.dao.metier.poste.CompetenceFEDao;
@@ -273,6 +274,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FicheEmploiDao ficheEmploiDao;
 	private FichePosteDao fichePosteDao;
 	private HistoFichePosteDao histoFichePosteDao;
+	private AffectationDao affectationDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -575,6 +577,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getHistoFichePosteDao() == null) {
 			setHistoFichePosteDao(new HistoFichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -793,7 +798,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getFichePosteCourante() != null && getAgentCourant() != null && getAffectationCourante() != null) {
 			String chaine = "Cette fiche de poste est affectée à l'agent " + getAgentCourant().getNomAgent() + " "
 					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
-					+ getAffectationCourante().getDateDebutAff();
+					+ sdf.format(getAffectationCourante().getDateDebutAff());
 			if (getContratCourant() != null && getContratCourant().getIdContrat() != null) {
 				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le "
 						+ sdf.format(getContratCourant().getDatdeb());
@@ -2342,7 +2347,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		} else {
 			getFichePosteDao().modifierFichePoste(getFichePosteCourante(), getHistoFichePosteDao(), user,
-					getTransaction());
+					getTransaction(), getAffectationDao());
 			if (getVAL_ST_ACTION().equals(ACTION_IMPRESSION)) {
 				// Fiche poste imprimée
 				messageInf = MessageUtils.getMessage("INF111", getFichePosteCourante().getNumFp());
@@ -3568,8 +3573,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (fichePosteCourante != null && fichePosteCourante.getIdFichePoste() != null
 				&& !getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 			// Vérifie l'affectation
-			ArrayList<Affectation> liste = Affectation.listerAffectationAvecFPPrimaireOuSecondaire(getTransaction(),
-					getFichePosteCourante());
+			ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(
+					getFichePosteCourante().getIdFichePoste());
 			setFpCouranteAffectee(getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste));
 
 			// Recherche de tous les liens FicheEmploi / FichePoste
@@ -3603,13 +3608,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 						getFichePosteCourante().getIdFichePoste().toString()));
 			}
 			if (getAgentCourant() != null) {
-				Affectation aff = Affectation.chercherAffectationActiveAvecAgent(getTransaction(), getAgentCourant()
-						.getIdAgent());
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-					setAffectationCourante(null);
-				} else {
+				try {
+					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+							Integer.valueOf(getAgentCourant().getIdAgent()));
 					setAffectationCourante(aff);
+				} catch (Exception e) {
+					setAffectationCourante(null);
 				}
 				try {
 					Contrat c = getContratDao().chercherContratAgentDateComprise(
@@ -5063,8 +5067,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 					.parseInt(getZone(getNOM_LB_STATUT_SELECT())) : -1);
 			StatutFP sfp = (StatutFP) getListeStatut().get(numLigneStatut);
 
-			ArrayList<Affectation> liste = Affectation.listerAffectationAvecFPPrimaireOuSecondaire(getTransaction(),
-					getFichePosteCourante());
+			ArrayList<Affectation> liste = getAffectationDao().listerAffectationAvecFPPrimaireOuSecondaire(
+					getFichePosteCourante().getIdFichePoste());
 			return (!getFichePosteDao().estAffectee(getFichePosteCourante().getIdFichePoste(), liste) && !sfp
 					.getLibStatutFp().equals(EnumStatutFichePoste.INACTIVE.getLibLong()));
 		} else {
@@ -6954,5 +6958,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setHistoFichePosteDao(HistoFichePosteDao histoFichePosteDao) {
 		this.histoFichePosteDao = histoFichePosteDao;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
 	}
 }

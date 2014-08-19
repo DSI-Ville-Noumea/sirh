@@ -51,7 +51,7 @@ public class PrimePointageAffDao extends SirhDao implements PrimePointageAffDaoI
 	}
 
 	@Override
-	public void supprimerToutesPrimePointageAff(String idAffectation) {
+	public void supprimerToutesPrimePointageAff(Integer idAffectation) {
 		String sql = "DELETE FROM " + NOM_TABLE + "  where " + CHAMP_ID_AFFECTATION + "=? ";
 		jdbcTemplate.update(sql, new Object[] { idAffectation });
 	}
