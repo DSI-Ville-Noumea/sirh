@@ -1,5 +1,10 @@
 package nc.mairie.spring.dao.metier.poste;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -50,5 +55,35 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 
 		// Creation du HistoAffectation
 		creerHistoAffectationBD(histo);
+	}
+
+	@Override
+	public ArrayList<HistoAffectation> listerAffectationHistoAvecAgent(Integer idAgent) throws Exception {
+		String sql = " select * from " + NOM_TABLE + "  WHERE " + CHAMP_ID_AGENT + "=? order by "
+				+ CHAMP_DATE_DEBUT_AFF;
+
+		ArrayList<HistoAffectation> liste = new ArrayList<HistoAffectation>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { idAgent });
+		for (Map<String, Object> row : rows) {
+			HistoAffectation a = new HistoAffectation();
+			a.setIdAffectation((Integer) row.get(CHAMP_ID_AFFECTATION));
+			a.setIdMotifAffectation((Integer) row.get(CHAMP_ID_MOTIF_AFFECTATION));
+			a.setIdFichePoste((Integer) row.get(CHAMP_ID_FICHE_POSTE));
+			a.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
+			a.setRefArreteAff((String) row.get(CHAMP_REF_ARRETE_AFF));
+			a.setDateArrete((Date) row.get(CHAMP_DATE_ARRETE));
+			a.setDateDebutAff((Date) row.get(CHAMP_DATE_DEBUT_AFF));
+			a.setDateFinAff((Date) row.get(CHAMP_DATE_FIN_AFF));
+			a.setTempsTravail((String) row.get(CHAMP_TEMPS_TRAVAIL));
+			a.setCodeEcole((String) row.get(CHAMP_CODE_ECOLE));
+			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
+			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
+			a.setTypeHisto((String) row.get(CHAMP_TYPE_HISTO));
+			a.setUserHisto((String) row.get(CHAMP_USER_HISTO));
+			liste.add(a);
+		}
+
+		return liste;
 	}
 }
