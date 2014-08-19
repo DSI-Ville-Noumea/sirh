@@ -14,10 +14,15 @@ import nc.mairie.metier.Const;
 import nc.mairie.metier.droits.Autorisation;
 import nc.mairie.robot.Robot;
 import nc.mairie.servlets.Frontale;
+import nc.mairie.spring.dao.metier.droits.AutorisationDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Transaction;
 import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Insérez la description du type ici. Date de création : (30/10/2002 14:15:09)
@@ -28,6 +33,7 @@ public class ServletAgent extends Frontale {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private AutorisationDao autorisationDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (05/11/2002
@@ -44,7 +50,8 @@ public class ServletAgent extends Frontale {
 		String ACTION = request.getParameter("ACTION");
 		if (ACTION != null && !ACTION.equals(Const.CHAINE_VIDE)) {
 			// On vérifie si on a une session
-			BasicProcess processCourant = (BasicProcess) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_PROCESS);
+			BasicProcess processCourant = (BasicProcess) VariableGlobale.recuperer(request,
+					VariableGlobale.GLOBAL_PROCESS);
 
 			if (processCourant != null) {
 				BasicProcess processMemorise = (BasicProcess) VariableGlobale.recuperer(request, "PROCESS_MEMORISE");
@@ -68,8 +75,8 @@ public class ServletAgent extends Frontale {
 	 * @param processCourant
 	 */
 	@Override
-	protected boolean performRecupererStatut(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response,
-			BasicProcess processCourant) throws Exception {
+	protected boolean performRecupererStatut(javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response, BasicProcess processCourant) throws Exception {
 
 		if (request.getParameter("ACTION") != null && processCourant.etatStatut() == MaClasse.STATUT_RECHERCHE_AGENT)
 			return true;
@@ -88,7 +95,7 @@ public class ServletAgent extends Frontale {
 	protected boolean performControleHabilitation(HttpServletRequest request) throws Exception {
 		if (!super.performControleHabilitation(request))
 			return false;
-
+		initialiseDao();
 		UserAppli aUserAppli = getUserAppli(request);
 
 		boolean droitsOK = false;
@@ -116,12 +123,21 @@ public class ServletAgent extends Frontale {
 		return true;
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAutorisationDao() == null) {
+			setAutorisationDao(new AutorisationDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	public void initialiseHabilitations(javax.servlet.http.HttpServletRequest request) throws Exception {
 		// recup du userAppli
 		UserAppli aUserAppli = getUserAppli(request);
 
 		Transaction t = new Transaction(getUserAppli(request));
-		ArrayList<Autorisation> autorisations = Autorisation.listerAutorisationAvecUtilisateur(t, aUserAppli.getUserName());
+		ArrayList<Autorisation> autorisations = getAutorisationDao().listerAutorisationAvecUtilisateur(
+				aUserAppli.getUserName());
 		t.rollbackTransaction();
 
 		Autorisation a;
@@ -160,5 +176,13 @@ public class ServletAgent extends Frontale {
 		}
 
 		return ds;
+	}
+
+	public AutorisationDao getAutorisationDao() {
+		return autorisationDao;
+	}
+
+	public void setAutorisationDao(AutorisationDao autorisationDao) {
+		this.autorisationDao = autorisationDao;
 	}
 }
