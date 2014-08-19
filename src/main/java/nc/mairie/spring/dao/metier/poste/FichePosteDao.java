@@ -143,10 +143,9 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 			String dateJour = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 			sql += " and (aff1.id_agent='" + idAgent + "' or aff2.id_agent='" + idAgent + "')";
 			sql += " AND ((aff1.DATE_DEBUT_AFF <= '" + dateJour
-					+ "' AND (aff1.DATE_FIN_AFF is null or aff1.DATE_FIN_AFF = '" + Const.DATE_NULL
-					+ "' or aff1.DATE_FIN_AFF >='" + dateJour + "'))or(aff2.DATE_DEBUT_AFF <= '" + dateJour
-					+ "' AND (aff2.DATE_FIN_AFF is null or aff2.DATE_FIN_AFF = '" + Const.DATE_NULL
-					+ "' or aff2.DATE_FIN_AFF >='" + dateJour + "')))";
+					+ "' AND (aff1.DATE_FIN_AFF is null or  aff1.DATE_FIN_AFF >='" + dateJour
+					+ "'))or(aff2.DATE_DEBUT_AFF <= '" + dateJour
+					+ "' AND (aff2.DATE_FIN_AFF is null or  aff2.DATE_FIN_AFF >='" + dateJour + "')))";
 		}
 		sql += " order by tp.LIB_TITRE_POSTE,fp.NUM_FP,fp.id_fiche_poste";
 
@@ -344,12 +343,10 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				+ NOM_TABLE
 				+ " FP, R_STATUT_FP STAT WHERE NUM_FP LIKE '%"
 				+ numPartiel
-				+ "%' AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF = '"
-				+ Const.DATE_NULL
-				+ "' and id_fiche_poste_secondaire is not null) AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF = '"
-				+ Const.DATE_NULL + "') AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP " + "AND (STAT.LIB_STATUT_FP = '"
-				+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' OR STAT.LIB_STATUT_FP = '"
-				+ EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
+				+ "%' AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF is null and id_fiche_poste_secondaire is not null) "
+				+ "AND ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP "
+				+ "AND (STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.VALIDEE.getLibLong()
+				+ "' OR STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
@@ -434,12 +431,10 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 
 		String sql = "select fp.* from "
 				+ NOM_TABLE
-				+ " FP, R_STATUT_FP STAT WHERE FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF = '"
-				+ Const.DATE_NULL
-				+ "' and id_fiche_poste_secondaire is not null) AND FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF = '"
-				+ Const.DATE_NULL + "') AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP " + "AND (STAT.LIB_STATUT_FP = '"
-				+ EnumStatutFichePoste.VALIDEE.getLibLong() + "' or STAT.LIB_STATUT_FP = '"
-				+ EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
+				+ " FP, R_STATUT_FP STAT WHERE FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE_SECONDAIRE FROM AFFECTATION  WHERE DATE_FIN_AFF is null and id_fiche_poste_secondaire is not null) "
+				+ "AND FP.ID_FICHE_POSTE NOT IN (SELECT ID_FICHE_POSTE FROM AFFECTATION WHERE DATE_FIN_AFF is null) AND STAT.ID_STATUT_FP = FP.ID_STATUT_FP "
+				+ "AND (STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.VALIDEE.getLibLong()
+				+ "' or STAT.LIB_STATUT_FP = '" + EnumStatutFichePoste.GELEE.getLibLong() + "') WITH UR";
 
 		ArrayList<FichePoste> liste = new ArrayList<FichePoste>();
 
