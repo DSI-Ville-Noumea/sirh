@@ -12,12 +12,12 @@
 <!-- The contents of this file will be loaded for each web application -->
 <Context antiJARLocking="true" path="/SIRH" sessionCookiePath="/">
 	<!-- Default set of monitored resources -->
-	<WatchedResource>WEB-INF/web.xml</WatchedResource>	
-		
-		
-	<!--  -->
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+
+	<!-- -->
 	<!-- DATASOURCES -->
-	<!--  -->		
+	<!-- -->
 	<Resource name="jdbc/SIRH_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" testWhileIdle="true"
 		testOnBorrow="true" testOnReturn="false" validationQuery="select 1 from sysdummy1"
@@ -46,50 +46,55 @@
 		maxWait="10000" initialSize="1" username="eae_adm" password="changemi"
 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
 		poolPreparedStatements="true" />
-		
-	<!--  -->
-	<!--  WS DES POINTAGES -->
-	<!--  -->	
+
+	<!-- -->
+	<!-- WS DES POINTAGES -->
+	<!-- -->
 	<Parameter description="SIRH PTG WS url" name="SIRH_PTG_WS"
 		override="false" value="http://svi-tomcat0:8085/sirh-ptg-ws/" />
-		
-	<!--  -->
-	<!--  WS DES ABSENCES -->
-	<!--  -->	
+
+	<!-- -->
+	<!-- WS DES ABSENCES -->
+	<!-- -->
 	<Parameter description="SIRH ABS WS url" name="SIRH_ABS_WS"
-		override="false" value="http://localhost:8080/sirh-abs-ws/" />
-		
-	<!--  -->
-	<!--  WS RADI pour interroger AD -->
-	<!--  -->			
-	<Parameter description="RADI WS url" name="RADI_WS"
-		override="false" value="http://svi-tomcat0:8085/radi/" />
+		override="false" value="http://svi-tomcat0:8085/sirh-abs-ws/" />
 
-	<!--  -->
+	<!-- -->
+	<!-- WS RADI pour interroger AD -->
+	<!-- -->
+	<Parameter description="RADI WS url" name="RADI_WS" override="false"
+		value="http://svi-tomcat0:8085/radi/" />
+
+	<!-- -->
 	<!-- Pour l'arbre des FDP -->
-	<!--  -->	
-	<Parameter description="SIRH WS endpoint url for FichePoste tree" name="SIRH_WS_URL_ARBRE_FDP" override="false"
+	<!-- -->
+	<Parameter description="SIRH WS endpoint url for FichePoste tree"
+		name="SIRH_WS_URL_ARBRE_FDP" override="false"
 		value="http://svi-tomcat0:8085/sirhws/fichePostes/rebuildFichePosteTree" />
-		
-		
-	<!--  -->
+
+
+	<!-- -->
 	<!-- Pour l'edition BIRT des avancements -->
-	<!--  -->	
-	<Parameter description="SIRH WS url pour le tableau des avancements CAP" name="SIRH_WS_URL_TABLEAU_AVCT_CAP" override="false"
+	<!-- -->
+	<Parameter description="SIRH WS url pour le tableau des avancements CAP"
+		name="SIRH_WS_URL_TABLEAU_AVCT_CAP" override="false"
 		value="http://svi-tomcat0:8085/sirhws/avancements/downloadTableauAvancements" />
-	<Parameter description="SIRH WS url pour les arretes des avancements" name="SIRH_WS_URL_ARRETES_AVCT" override="false"
-		value="http://svi-tomcat0:8085/sirhws/avancements/downloadArretes" />	
+	<Parameter description="SIRH WS url pour les arretes des avancements"
+		name="SIRH_WS_URL_ARRETES_AVCT" override="false"
+		value="http://svi-tomcat0:8085/sirhws/avancements/downloadArretes" />
 
 
 
-	<!--  -->
+	<!-- -->
 	<!-- SHAREPOINT -->
-	<!--  -->
+	<!-- -->
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
-	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED" override="false"
-		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
-	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION" override="false"
-		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
+	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
+		override="false"
+		value="http://qual.portail.ville-robinnw.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
+	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
+		override="false"
+		value="http://qual.portail.ville-robinnw.nc/kiosque-rh/_layouts/robinnw.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
 	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la 
 		GED Sharepoint -->
 	<Parameter description="User pour connexion NTLM à Sharepoint"
@@ -103,48 +108,58 @@
 	<Parameter description="PORT pour connexion NTLM à Sharepoint"
 		name="PORT_SHAREPOINT_DROIT_EAE" override="false" value="80" />
 	<Parameter description="URL mise à jour droit EAE Sharepoint"
-		name="URL_DROIT_EAE_SHAREPOINT" override="false" value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
-				
-	<!--  -->
+		name="URL_DROIT_EAE_SHAREPOINT" override="false"
+		value="/sites/publication/_layouts/robinnw.RH.Eae/ApprouverEvalue.aspx" />
+
+	<!-- -->
 	<!-- AVANCEMENT / SIMULATION -->
-	<!--  -->	
+	<!-- -->
 	<Parameter description="Année pour la calcul des avancements"
 		name="ANNEE_AVCT" override="false" value="2014" />
 	<Parameter description="Année pour la calcul des avancements"
 		name="ANNEE_MASSE_SALARIALE" override="false" value="2015" />
 
-	<!--  -->
+	<!-- -->
 	<!-- AUTRE PARAM -->
-	<!--  -->	
-	<Parameter description="parametre pour afficher dans le titre de l'appli si on est en prod ou en recette"
-		name="TYPE_SIRH" override="false" value="DEV" />		
-				
-	<!--  -->
+	<!-- -->
+	<Parameter
+		description="parametre pour afficher dans le titre de l'appli si on est en prod ou en recette"
+		name="TYPE_SIRH" override="false" value="DEV" />
+
+	<!-- -->
 	<!-- Parametres pour l'affichage des nouveaux modules -->
-	<!--  -->	
-	<Parameter description="Paramètre pour savoir si on affiche l&apos;onglet avancement CAP"
+	<!-- -->
+	<Parameter
+		description="Paramètre pour savoir si on affiche l&apos;onglet avancement CAP"
 		name="AFFICHAGE_AVCT_CAP" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche l&apos;onglet avancement Edition des arretés"
+	<Parameter
+		description="Paramètre pour savoir si on affiche l&apos;onglet avancement Edition des arretés"
 		name="AFFICHAGE_AVCT_ARR" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche l&apos;onglet avancement mise à jour des carrières"
+	<Parameter
+		description="Paramètre pour savoir si on affiche l&apos;onglet avancement mise à jour des carrières"
 		name="AFFICHAGE_AVCT_CARR" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche la page de test"
 		name="AFFICHAGE_TEST" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche la page de paramétrage des éléments de salaire"
+	<Parameter
+		description="Paramètre pour savoir si on affiche la page de paramétrage des éléments de salaire"
 		name="AFFICHAGE_PARAM_ELEM_SALAIRE" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module pointage"
 		name="AFFICHAGE_POINTAGE" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module absence"
 		name="AFFICHAGE_ABSENCE" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
+	<Parameter
+		description="Paramètre pour savoir si on affiche la simulation de la masse salariale"
 		name="AFFICHAGE_SIMU" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module suivi médicale"
+	<Parameter
+		description="Paramètre pour savoir si on affiche le module suivi médicale"
 		name="AFFICHAGE_SUIVI_MEDICAL" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module fiche emploi"
 		name="AFFICHAGE_FICHE_EMPLOI" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module HSCT de l&apos;agent"
+	<Parameter
+		description="Paramètre pour savoir si on affiche le module HSCT de l&apos;agent"
 		name="AFFICHAGE_HSCT" override="false" value="TRUE" />
-	<Parameter description="Paramètre pour savoir si on affiche le module EAE de l&apos;agent"
+	<Parameter
+		description="Paramètre pour savoir si on affiche le module EAE de l&apos;agent"
 		name="AFFICHAGE_EAE_AGENT" override="false" value="TRUE" />
 	<Parameter description="Paramètre pour savoir si on affiche le module Avancement"
 		name="AFFICHAGE_AVCT" override="false" value="TRUE" />
@@ -153,35 +168,45 @@
 	<Parameter description="Paramètre pour savoir si on affiche le module Election"
 		name="AFFICHAGE_ELECTION" override="false" value="TRUE" />
 
-	<!--  -->
+	<!-- -->
 	<!-- Parametres pour la gestion des documents -->
-	<!--  -->	
+	<!-- -->
 	<Parameter description="SIRH WS url pour les FDP SIRH" name="SIRH_WS_URL_FDP_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
-	<Parameter description="SIRH WS url pour les Notes de service SIRH" name="SIRH_WS_URL_NS_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceSIRH" />
-	<Parameter description="SIRH WS url pour les Notes de service interne SIRH" name="SIRH_WS_URL_NS_INTERNE_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
-	<Parameter description="SIRH WS url pour les convocations aux VM SIRH" name="SIRH_WS_URL_CONVOCATION_VM_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
-	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH" name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />		
-	<Parameter description="SIRH WS url pour les contrats de travail SIRH" name="SIRH_WS_URL_CONTRAT_SIRH"
-		override="false" value="http://svi-tomcat0:8085/sirhws/contrat/downloadContratSIRH" />		
-	<Parameter description="repertoire pour les documents issus des modeles" name="REPERTOIRE_ACTES" override="false"
-		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
-	<Parameter description="repertoire pour les documents issus des modeles" name="REPERTOIRE_ROOT" override="false"
-		value="//cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
-	<Parameter description="repertoire pour les documents temporaires" name="REPERTOIRE_TEMP" override="false"
-		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" />
-	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE" override="false"
+		override="false"
+		value="http://svi-tomcat0:8085/sirhws/fichePostes/downloadFichePosteSIRH" />
+	<Parameter description="SIRH WS url pour les Notes de service SIRH"
+		name="SIRH_WS_URL_NS_SIRH" override="false"
+		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceSIRH" />
+	<Parameter description="SIRH WS url pour les Notes de service interne SIRH"
+		name="SIRH_WS_URL_NS_INTERNE_SIRH" override="false"
+		value="http://svi-tomcat0:8085/sirhws/noteService/downloadNoteServiceInterneSIRH" />
+	<Parameter description="SIRH WS url pour les convocations aux VM SIRH"
+		name="SIRH_WS_URL_CONVOCATION_VM_SIRH" override="false"
+		value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadConvocationSIRH" />
+	<Parameter description="SIRH WS url pour les lettre d'accompagnement aux VM SIRH"
+		name="SIRH_WS_URL_ACCOMPAGNEMENT_VM_SIRH" override="false"
+		value="http://svi-tomcat0:8085/sirhws/suiviMedical/downloadLettreAccompagnementSIRH" />
+	<Parameter description="SIRH WS url pour les contrats de travail SIRH"
+		name="SIRH_WS_URL_CONTRAT_SIRH" override="false"
+		value="http://svi-tomcat0:8085/sirhws/contrat/downloadContratSIRH" />
+	<Parameter description="repertoire pour les documents issus des modeles"
+		name="REPERTOIRE_ACTES" override="false"
 		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
 	<Parameter description="repertoire pour les documents issus des modeles"
-		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />	
+		name="REPERTOIRE_ROOT" override="false"
+		value="//cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
+	<Parameter description="repertoire pour les documents temporaires"
+		name="REPERTOIRE_TEMP" override="false"
+		value="//cristal/drh$/DRH/SIRH-document/DEV/temp/" />
+	<Parameter description="repertoire pour les documents" name="REPERTOIRE_LECTURE"
+		override="false"
+		value="file://///cristal/drh$/DRH/SIRH-document/DEV/Document_Associe/" />
+	<Parameter description="repertoire pour les documents issus des modeles"
+		name="REPERTOIRE_SP" override="false" value="//svq-sp/SIRH/FILEWATCHER_EAE/" />
 
-	<!--  -->
+	<!-- -->
 	<!-- Parametres extrait du web.xml -->
-	<!--  -->	
+	<!-- -->
 	<Parameter description="parametre utile au framework" name="HOST_SGBD"
 		override="false" value="SIRH_DS2" />
 	<Parameter description="parametre pour accès à la DTAARA_CALC"
@@ -195,19 +220,19 @@
 	<Parameter description="Nom de la DTAARA_CALC" name="DTAARA_NAME"
 		override="false" value="CALCUL" />
 
-	<!--  -->
+	<!-- -->
 	<!-- Authentification LDAP -->
-	<!--  -->	
+	<!-- -->
 	<Parameter description="" name="CRITERE_RECHERCHE_LDAP"
 		override="false" value="samaccountname" />
 	<Parameter description="" name="HOST_LDAP_ADMIN" override="false"
 		value="cn=adminwas,ou=WAS,ou=APPLI,ou=Z-users" />
 	<Parameter description="" name="HOST_LDAP" override="false"
-		value="ldap://hurle.site-mairie.noumea.nc:389 ldap://gberge.site-mairie.noumea.nc:389 ldap://netone.site-mairie.noumea.nc:389" />
+		value="ldap://hurle.site-mairie.robinnw.nc:389 ldap://gberge.site-mairie.robinnw.nc:389 ldap://netone.site-mairie.robinnw.nc:389" />
 	<Parameter description="" name="INITCTX_LDAP" override="false"
 		value="com.sun.jndi.ldap.LdapCtxFactory" />
 	<Parameter description="" name="HOST_LDAP_PASSWORD" override="false"
 		value="***REMOVED***" />
 	<Parameter description="" name="BASE_LDAP" override="false"
-		value="dc=site-mairie,dc=noumea,dc=nc" />
+		value="dc=site-mairie,dc=robinnw,dc=nc" />
 </Context>
