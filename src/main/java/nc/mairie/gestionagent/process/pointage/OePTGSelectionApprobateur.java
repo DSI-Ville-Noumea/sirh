@@ -8,12 +8,13 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.TitrePosteDao;
@@ -34,8 +35,8 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 	public String focus = null;
-	private ArrayList<AgentNW> listeApprobateursPossible;
-	private ArrayList<AgentNW> listeApprobateurs = new ArrayList<AgentNW>();
+	private ArrayList<Agent> listeApprobateursPossible;
+	private ArrayList<Agent> listeApprobateurs = new ArrayList<Agent>();
 
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
@@ -43,6 +44,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -71,6 +73,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		}
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -115,9 +120,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	private void afficheListe(HttpServletRequest request) throws Exception {
 		for (int j = 0; j < getListeApprobateurs().size(); j++) {
-			AgentNW agent = (AgentNW) getListeApprobateurs().get(j);
+			Agent agent = (Agent) getListeApprobateurs().get(j);
 			Integer i = Integer.valueOf(agent.getIdAgent());
-			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
+			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent().toString());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
 					Integer.valueOf(agent.getIdAgent()));
@@ -163,7 +168,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 			// Si clic sur le bouton PB_OK
 			for (int i = 0; i < getListeApprobateursPossible().size(); i++) {
-				AgentNW ag = getListeApprobateursPossible().get(i);
+				Agent ag = getListeApprobateursPossible().get(i);
 				if (testerParametre(request, getNOM_PB_OK(Integer.valueOf(ag.getIdAgent())))) {
 					return performPB_OK(request, Integer.valueOf(ag.getIdAgent()));
 				}
@@ -261,7 +266,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
+		ArrayList<Agent> aListe = new ArrayList<Agent>();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
 			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent
@@ -269,7 +274,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			String liste = Const.CHAINE_VIDE;
 			for (PositionAdmAgent pa : listeNomatrActif) {
 				// on regarde si il y a une affectation active
-				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), pa.getNomatr());
+				Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(pa.getNomatr()));
 				try {
 					@SuppressWarnings("unused")
 					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
@@ -282,15 +287,16 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			if (!liste.equals(Const.CHAINE_VIDE)) {
 				liste = liste.substring(0, liste.length() - 1);
 			}
-			aListe = AgentNW.listerAgentWithListNomatr(getTransaction(), liste);
+			aListe = getAgentDao().listerAgentWithListNomatr(liste);
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), zone);
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					Integer.valueOf(zone));
 			if (getTransaction().isErreur()) {
 				return false;
 			}
 			// on regarde si il y a une affectation active
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), paAgent.getNomatr());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(paAgent.getNomatr()));
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur())
 				return false;
@@ -307,19 +313,19 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
 			// on recupere une liste d'agent avec le nom commencant par...
-			ArrayList<AgentNW> listeAgentWithNom = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
-			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			ArrayList<Agent> listeAgentWithNom = getAgentDao().listerAgentAvecNomCommencant(zone);
+			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
 			// on parcours cette liste pour ne mettre que les agents en activite
-			for (AgentNW ag : listeAgentWithNom) {
+			for (Agent ag : listeAgentWithNom) {
 				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						ag.getNoMatricule());
+						ag.getNomatr());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					continue;
 				} else {
 					// on regarde si il y a une affectation active
-					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
+					Agent agt = getAgentDao().chercherAgentParMatricule(Integer.valueOf(paActive.getNomatr()));
 					try {
 						@SuppressWarnings("unused")
 						Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
@@ -334,19 +340,19 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			// on recupere une liste d'agent avec le prénom commencant par...
-			ArrayList<AgentNW> listeAgentWithPrenom = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
-			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			ArrayList<Agent> listeAgentWithPrenom = getAgentDao().listerAgentAvecPrenomCommencant(zone);
+			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
 			// on parcours cette liste pour ne mettre que les agents en activite
-			for (AgentNW ag : listeAgentWithPrenom) {
+			for (Agent ag : listeAgentWithPrenom) {
 				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						ag.getNoMatricule());
+						ag.getNomatr());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
 					continue;
 				} else {
 					// on regarde si il y a une affectation active
-					AgentNW agt = AgentNW.chercherAgentParMatricule(getTransaction(), paActive.getNomatr());
+					Agent agt = getAgentDao().chercherAgentParMatricule(Integer.valueOf(paActive.getNomatr()));
 					try {
 						@SuppressWarnings("unused")
 						Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
@@ -365,9 +371,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
 							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
 									.getCodService()) ? 4 : 0);
-			ArrayList<AgentNW> listeAgent = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
-			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
-			for (AgentNW agt : listeAgent) {
+			ArrayList<Agent> listeAgent = getAgentDao().listerAgentAvecServiceCommencant(prefixe);
+			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
+			for (Agent agt : listeAgent) {
 				try {
 					@SuppressWarnings("unused")
 					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
@@ -385,12 +391,12 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
 			return false;
 		}
-		ArrayList<AgentNW> xcludeListe = getListeApprobateurs();
+		ArrayList<Agent> xcludeListe = getListeApprobateurs();
 		aListe = elim_doublure_approbateur(aListe, xcludeListe);
 
-		Comparator<AgentNW> comp = new Comparator<AgentNW>() {
+		Comparator<Agent> comp = new Comparator<Agent>() {
 			@Override
-			public int compare(AgentNW o1, AgentNW o2) {
+			public int compare(Agent o1, Agent o2) {
 				return o1.getNomAgent().compareTo(o2.getNomAgent());
 			}
 
@@ -410,9 +416,9 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	private void afficheListeApproPossible(HttpServletRequest request) throws Exception {
 		for (int j = 0; j < getListeApprobateursPossible().size(); j++) {
-			AgentNW agent = (AgentNW) getListeApprobateursPossible().get(j);
+			Agent agent = (Agent) getListeApprobateursPossible().get(j);
 			Integer i = Integer.valueOf(agent.getIdAgent());
-			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
+			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent().toString());
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
 					Integer.valueOf(agent.getIdAgent()));
@@ -423,22 +429,22 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		}
 	}
 
-	public ArrayList<AgentNW> getListeApprobateurs() {
+	public ArrayList<Agent> getListeApprobateurs() {
 		return listeApprobateurs;
 	}
 
-	public void setListeApprobateurs(ArrayList<AgentNW> listeApprobateurs) {
+	public void setListeApprobateurs(ArrayList<Agent> listeApprobateurs) {
 		this.listeApprobateurs = listeApprobateurs;
 	}
 
-	private ArrayList<AgentNW> elim_doublure_approbateur(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
+	private ArrayList<Agent> elim_doublure_approbateur(ArrayList<Agent> l1, ArrayList<Agent> l2) {
 		if (null == l1)
 			return null;
 
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((AgentNW) l2.get(i)).getIdAgent()).equals(((AgentNW) l1.get(j)).getIdAgent()))
+					if ((((Agent) l2.get(i)).getIdAgent()).equals(((Agent) l1.get(j)).getIdAgent()))
 						l1.remove(j);
 
 				}
@@ -447,11 +453,11 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 		return l1;
 	}
 
-	public ArrayList<AgentNW> getListeApprobateursPossible() {
-		return listeApprobateursPossible == null ? new ArrayList<AgentNW>() : listeApprobateursPossible;
+	public ArrayList<Agent> getListeApprobateursPossible() {
+		return listeApprobateursPossible == null ? new ArrayList<Agent>() : listeApprobateursPossible;
 	}
 
-	public void setListeApprobateursPossible(ArrayList<AgentNW> listeApprobateursPossible) {
+	public void setListeApprobateursPossible(ArrayList<Agent> listeApprobateursPossible) {
 		this.listeApprobateursPossible = listeApprobateursPossible;
 	}
 
@@ -545,7 +551,7 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	 */
 	public boolean performPB_OK(HttpServletRequest request, Integer idAgent) throws Exception {
 
-		AgentNW agent = AgentNW.chercherAgent(getTransaction(), idAgent.toString());
+		Agent agent = getAgentDao().chercherAgent(idAgent);
 		if (getVAL_CK_SELECT_LIGNE_POSSIBLE(idAgent).equals(getCHECKED_ON())) {
 			getListeApprobateursPossible().remove(agent);
 			getListeApprobateurs().add(agent);
@@ -647,10 +653,10 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
+		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListeApprobateurs().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListeApprobateurs().get(j);
+			Agent ag = (Agent) getListeApprobateurs().get(j);
 			Integer i = Integer.valueOf(ag.getIdAgent());
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
@@ -780,5 +786,13 @@ public class OePTGSelectionApprobateur extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

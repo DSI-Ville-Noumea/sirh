@@ -8,14 +8,19 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 public class OePTGSelectionAgent extends BasicProcess {
 
@@ -23,9 +28,9 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<AgentNW> listeAgents = new ArrayList<AgentNW>();
-	private ArrayList<AgentNW> listeAgentsDepart;
-	private ArrayList<AgentNW> listAff = new ArrayList<AgentNW>();
+	private ArrayList<Agent> listeAgents = new ArrayList<Agent>();
+	private ArrayList<Agent> listeAgentsDepart;
+	private ArrayList<Agent> listAff = new ArrayList<Agent>();
 	private String typePopulation;
 
 	private ArrayList<Service> listeServices;
@@ -33,7 +38,10 @@ public class OePTGSelectionAgent extends BasicProcess {
 	public String focus = null;
 	private boolean first = true;
 
+	private AgentDao agentDao;
+
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+		initialiseDao();
 
 		// Initialise la liste des services
 		initialiseListeService();
@@ -46,27 +54,35 @@ public class OePTGSelectionAgent extends BasicProcess {
 		}
 
 		@SuppressWarnings("unchecked")
-		ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEAGENT");
+		ArrayList<Agent> xcludeListe = (ArrayList<Agent>) VariablesActivite.recuperer(this, "LISTEAGENT");
 		if (getListeAgentsDepart() == null)
-			setListeAgentsDepart(new ArrayList<AgentNW>());
-		getListeAgentsDepart().addAll(xcludeListe == null ? new ArrayList<AgentNW>() : xcludeListe);
+			setListeAgentsDepart(new ArrayList<Agent>());
+		getListeAgentsDepart().addAll(xcludeListe == null ? new ArrayList<Agent>() : xcludeListe);
 
 		VariablesActivite.enlever(this, "LISTEAGENT");
 		VariablesActivite.enlever(this, "TYPE");
 		afficheListeAgents();
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	private void afficheListeAgents() {
-		setListAff(new ArrayList<AgentNW>());
+		setListAff(new ArrayList<Agent>());
 		getListAff().addAll(getListeAgentsDepart());
-		getListAff().addAll(getListeAgents() == null ? new ArrayList<AgentNW>() : getListeAgents());
+		getListAff().addAll(getListeAgents() == null ? new ArrayList<Agent>() : getListeAgents());
 		for (int j = 0; j < getListAff().size(); j++) {
-			AgentNW agent = (AgentNW) getListAff().get(j);
+			Agent agent = (Agent) getListAff().get(j);
 			Integer i = Integer.valueOf(agent.getIdAgent());
 			if (getListeAgentsDepart().contains(agent)) {
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 			}
-			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
+			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent().toString());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 		}
 
@@ -120,14 +136,14 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
 	 *         elements identiques
 	 */
-	public static ArrayList<AgentNW> elim_doubure_agents(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
+	public static ArrayList<Agent> elim_doubure_agents(ArrayList<Agent> l1, ArrayList<Agent> l2) {
 		if (null == l1)
 			return null;
 
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((AgentNW) l2.get(i)).getIdAgent()).equals(((AgentNW) l1.get(j)).getIdAgent()))
+					if ((((Agent) l2.get(i)).getIdAgent()).equals(((Agent) l1.get(j)).getIdAgent()))
 						l1.remove(j);
 
 				}
@@ -183,10 +199,10 @@ public class OePTGSelectionAgent extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
-		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
+		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListAff().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListAff().get(j);
+			Agent ag = (Agent) getListAff().get(j);
 			Integer i = Integer.valueOf(ag.getIdAgent());
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
@@ -313,29 +329,29 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
+		ArrayList<Agent> aListe = new ArrayList<Agent>();
 		// RG_AG_EC_C01
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			aListe = AgentNW.listerAgent(getTransaction());
+			aListe = (ArrayList<Agent>) getAgentDao().listerAgent();
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			AgentNW aAgent = AgentNW.chercherAgent(getTransaction(),
-					Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
+			Agent aAgent = getAgentDao().chercherAgent(
+					Integer.valueOf(Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0")));
 			// Si erreur alors pas trouvé. On traite
 			if (getTransaction().isErreur()) {
 				return false;
 			}
 
-			aListe = new ArrayList<AgentNW>();
+			aListe = new ArrayList<Agent>();
 			aListe.add(aAgent);
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
-			aListe = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
+			aListe = getAgentDao().listerAgentAvecNomCommencant(zone);
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
+			aListe = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
 			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
 			String prefixe = service.getCodService().substring(
@@ -343,7 +359,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
 							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
 									.getCodService()) ? 4 : 0);
-			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
+			aListe = getAgentDao().listerAgentAvecServiceCommencant(prefixe);
 		}
 
 		// Si la liste est vide alors erreur
@@ -352,8 +368,8 @@ public class OePTGSelectionAgent extends BasicProcess {
 			return false;
 		}
 		// on verifie que l'agent soit bien C,CC ou F
-		ArrayList<AgentNW> listeAExclure = new ArrayList<AgentNW>();
-		for (AgentNW ag : aListe) {
+		ArrayList<Agent> listeAExclure = new ArrayList<Agent>();
+		for (Agent ag : aListe) {
 			Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -392,27 +408,27 @@ public class OePTGSelectionAgent extends BasicProcess {
 		first = newFirst;
 	}
 
-	public ArrayList<AgentNW> getListAff() {
+	public ArrayList<Agent> getListAff() {
 		return listAff;
 	}
 
-	public void setListAff(ArrayList<AgentNW> listAff) {
+	public void setListAff(ArrayList<Agent> listAff) {
 		this.listAff = listAff;
 	}
 
-	public ArrayList<AgentNW> getListeAgentsDepart() {
+	public ArrayList<Agent> getListeAgentsDepart() {
 		return listeAgentsDepart;
 	}
 
-	public void setListeAgentsDepart(ArrayList<AgentNW> listeAgentsDepart) {
+	public void setListeAgentsDepart(ArrayList<Agent> listeAgentsDepart) {
 		this.listeAgentsDepart = listeAgentsDepart;
 	}
 
-	public ArrayList<AgentNW> getListeAgents() {
+	public ArrayList<Agent> getListeAgents() {
 		return listeAgents;
 	}
 
-	public void setListeAgents(ArrayList<AgentNW> listeAgents) {
+	public void setListeAgents(ArrayList<Agent> listeAgents) {
 		this.listeAgents = listeAgents;
 	}
 
@@ -422,5 +438,13 @@ public class OePTGSelectionAgent extends BasicProcess {
 
 	public void setTypePopulation(String typePopulation) {
 		this.typePopulation = typePopulation;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

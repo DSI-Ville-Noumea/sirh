@@ -1,7 +1,7 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.metier.agent.AgentNW"%>
+<%@page import="nc.mairie.metier.agent.Agent"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -140,7 +140,7 @@ function SelectLigne(id,tailleTableau)
 				<tbody>
 				<%
 					for (int i = 0;i<process.getListAff().size();i++){
-						AgentNW ag = process.getListAff().get(i);
+						Agent ag = process.getListAff().get(i);
 						Integer indiceAgent = Integer.valueOf(ag.getIdAgent());
 				%>
 						<tr>

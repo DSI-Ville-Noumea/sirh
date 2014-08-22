@@ -1,7 +1,7 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.agent.Agent"%>
 <%@page import="nc.mairie.utils.TreeHierarchy"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.metier.agent.AgentNW"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <HTML>
@@ -134,7 +134,7 @@
 					<table class="sigp2NewTab" style="text-align:left;width:1010px;">
 					<%
 							for (int i = 0;i<process.getListeApprobateursPossible().size();i++){
-								AgentNW ag = process.getListeApprobateursPossible().get(i);
+								Agent ag = process.getListeApprobateursPossible().get(i);
 								Integer indiceAgent = Integer.valueOf(ag.getIdAgent());
 					%>
 						<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeApprobateursPossible().size()%>)" >
@@ -165,7 +165,7 @@
 				<tbody>
 				<%
 					for (int i = 0;i<process.getListeApprobateurs().size();i++){
-						AgentNW ag = process.getListeApprobateurs().get(i);
+						Agent ag = process.getListeApprobateurs().get(i);
 						Integer indiceActeur = Integer.valueOf(ag.getIdAgent());
 				%>
 						<tr>
