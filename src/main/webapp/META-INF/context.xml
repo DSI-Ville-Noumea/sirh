@@ -91,10 +91,10 @@
 	<!-- Pour les fichiers sotckés sur la GED Sharepoint -->
 	<Parameter description="URL GED Shareoint" name="URL_SHAREPOINT_GED"
 		override="false"
-		value="http://qual.portail.ville-robinnw.nc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
+		value="http://qual.portail.ville-noumeanc/kiosque-rh/_layouts/DocIdRedir.aspx?ID=" />
 	<Parameter description="URL GED Shareoint avec version" name="URL_SHAREPOINT_GED_VERSION"
 		override="false"
-		value="http://qual.portail.ville-robinnw.nc/kiosque-rh/_layouts/robinnw.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
+		value="http://qual.portail.ville-noumea.nc/kiosque-rh/_layouts/Noumea.RH.Eae/EAEDownloadVersion.aspx?documentId=" />
 	<!-- Pour la mise à jour des droits sur les fichiers EAEs sotckés sur la 
 		GED Sharepoint -->
 	<Parameter description="User pour connexion NTLM à Sharepoint"
@@ -109,7 +109,7 @@
 		name="PORT_SHAREPOINT_DROIT_EAE" override="false" value="80" />
 	<Parameter description="URL mise à jour droit EAE Sharepoint"
 		name="URL_DROIT_EAE_SHAREPOINT" override="false"
-		value="/sites/publication/_layouts/robinnw.RH.Eae/ApprouverEvalue.aspx" />
+		value="/sites/publication/_layouts/Noumea.RH.Eae/ApprouverEvalue.aspx" />
 
 	<!-- -->
 	<!-- AVANCEMENT / SIMULATION -->
@@ -228,11 +228,11 @@
 	<Parameter description="" name="HOST_LDAP_ADMIN" override="false"
 		value="cn=adminwas,ou=WAS,ou=APPLI,ou=Z-users" />
 	<Parameter description="" name="HOST_LDAP" override="false"
-		value="ldap://hurle.site-mairie.robinnw.nc:389 ldap://gberge.site-mairie.robinnw.nc:389 ldap://netone.site-mairie.robinnw.nc:389" />
+		value="ldap://hurle.site-mairie.noumea.nc:389 ldap://gberge.site-mairie.noumea.nc:389 ldap://netone.site-mairie.noumea.nc:389" />
 	<Parameter description="" name="INITCTX_LDAP" override="false"
 		value="com.sun.jndi.ldap.LdapCtxFactory" />
 	<Parameter description="" name="HOST_LDAP_PASSWORD" override="false"
 		value="***REMOVED***" />
 	<Parameter description="" name="BASE_LDAP" override="false"
-		value="dc=site-mairie,dc=robinnw,dc=nc" />
+		value="dc=site-mairie,dc=noumea,dc=nc" />
 </Context>
