@@ -34,7 +34,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS");
 		String url = urlWS + searchAgentRadi;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr));
+		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
 		logger.debug("Call " + url + " with employeenumber=" + getEmployeeNumberWithNomatr(nomatr));
 		ClientResponse res = createAndFireRequest(params, url);
 
@@ -74,7 +74,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("RADI_WS");
 		String url = urlWS + searchAgentRadi;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr));
+		params.put("employeenumber", getEmployeeNumberWithNomatr(nomatr).toString());
 		logger.debug("Call " + url + " with employeenumber=" + getEmployeeNumberWithNomatr(nomatr));
 		ClientResponse res = createAndFireRequest(params, url);
 		List<LightUserDto> list = readResponseAsList(LightUserDto.class, res, url);
@@ -102,18 +102,18 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 	}
 
 	@Override
-	public String getEmployeeNumberWithNomatr(Integer nomatr) {
-		return "90" + nomatr;
+	public Integer getEmployeeNumberWithNomatr(Integer nomatr) {
+		return Integer.valueOf("90" + nomatr);
 	}
 
 	@Override
-	public String getIdAgentWithNomatr(Integer nomatr) {
-		return "900" + nomatr;
+	public Integer getIdAgentWithNomatr(Integer nomatr) {
+		return Integer.valueOf("900" + nomatr);
 	}
 
 	@Override
-	public String getNomatrWithIdAgent(Integer idAgent) {
-		return idAgent.toString().substring(3, idAgent.toString().length());
+	public Integer getNomatrWithIdAgent(Integer idAgent) {
+		return Integer.valueOf(idAgent.toString().substring(3, idAgent.toString().length()));
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class RadiWSConsumer implements IRadiWSConsumer {
 	}
 
 	@Override
-	public String getNomatrWithEmployeeNumber(Integer employeeNumber) {
-		return employeeNumber.toString().substring(2, employeeNumber.toString().length());
+	public Integer getNomatrWithEmployeeNumber(Integer employeeNumber) {
+		return Integer.valueOf(employeeNumber.toString().substring(2, employeeNumber.toString().length()));
 	}
 }

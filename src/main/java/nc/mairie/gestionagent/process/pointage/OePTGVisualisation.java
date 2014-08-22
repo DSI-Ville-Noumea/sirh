@@ -24,10 +24,11 @@ import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -74,12 +75,13 @@ public class OePTGVisualisation extends BasicProcess {
 	private HashMap<Integer, List<ConsultPointageDto>> history = new HashMap<>();
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	private SimpleDateFormat hrs = new SimpleDateFormat("HH:mm");
-	private AgentNW loggedAgent;
+	private Agent loggedAgent;
 	public String status = "VISU";
 	public String focus = null;
 	private Logger logger = LoggerFactory.getLogger(OePTGVisualisation.class);
 
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 
 	private void afficheListePointages() {
 		GregorianCalendar greg = new GregorianCalendar();
@@ -782,24 +784,24 @@ public class OePTGVisualisation extends BasicProcess {
 			performPB_FILTRER();
 		}
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_MIN(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_MIN(), agt.getNomatr().toString());
 			}
 		}
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_MAX(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_MAX(), agt.getNomatr().toString());
 			}
 		}
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATE) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
 	}
@@ -809,6 +811,9 @@ public class OePTGVisualisation extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -826,7 +831,7 @@ public class OePTGVisualisation extends BasicProcess {
 				return false;
 			}
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(),
+				loggedAgent = getAgentDao().chercherAgentParMatricule(
 						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -836,7 +841,7 @@ public class OePTGVisualisation extends BasicProcess {
 				}
 			}
 		} else {
-			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			loggedAgent = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		return true;
 
@@ -940,8 +945,10 @@ public class OePTGVisualisation extends BasicProcess {
 			addZone(getNOM_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
 		}
 
-		String idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MIN();
-		String idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : "900" + getVAL_ST_AGENT_MAX();
+		Integer idAgentMin = getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf("900"
+				+ getVAL_ST_AGENT_MIN());
+		Integer idAgentMax = getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE) ? null : Integer.valueOf("900"
+				+ getVAL_ST_AGENT_MAX());
 
 		// si superieur à 1000 alors on bloque
 		boolean filtreAgent = false;
@@ -954,10 +961,10 @@ public class OePTGVisualisation extends BasicProcess {
 		if (numPopulation != -1 && numPopulation != 0) {
 			filtreAgent = true;
 			population = getListePopulation().get(numPopulation - 1);
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentWithStatut(getTransaction(), population);
+			ArrayList<Agent> listAgent = getAgentDao().listerAgentWithStatut(population);
 			ArrayList<Integer> listeTempAgent = new ArrayList<Integer>();
-			for (AgentNW ag : listAgent) {
-				listeTempAgent.add(Integer.valueOf(ag.getIdAgent()));
+			for (Agent ag : listAgent) {
+				listeTempAgent.add(ag.getIdAgent());
 			}
 			// on receupere tous les agents qui ont des pointages
 			// on regarde si il sont du type de population choisi
@@ -974,15 +981,14 @@ public class OePTGVisualisation extends BasicProcess {
 		if (idAgentMin != null && idAgentMax == null) {
 			filtreAgent = true;
 			if (!idAgentMinMax.contains(idAgentMin)) {
-				idAgentMinMax.add(idAgentMin);
+				idAgentMinMax.add(idAgentMin.toString());
 			}
 		} else if (idAgentMin != null && idAgentMax != null) {
 			filtreAgent = true;
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentEntreDeuxIdAgent(getTransaction(),
-					Integer.valueOf(idAgentMin), Integer.valueOf(idAgentMax));
-			for (AgentNW ag : listAgent) {
-				if (!idAgentMinMax.contains(ag.getIdAgent())) {
-					idAgentMinMax.add(ag.getIdAgent());
+			ArrayList<Agent> listAgent = getAgentDao().listerAgentEntreDeuxIdAgent(idAgentMin, idAgentMax);
+			for (Agent ag : listAgent) {
+				if (!idAgentMinMax.contains(ag.getIdAgent().toString())) {
+					idAgentMinMax.add(ag.getIdAgent().toString());
 				}
 			}
 		}
@@ -1007,11 +1013,11 @@ public class OePTGVisualisation extends BasicProcess {
 				ArrayList<String> codesServices = listeSousService;
 				if (!codesServices.contains(codeService))
 					codesServices.add(codeService);
-				ArrayList<AgentNW> listAgent = AgentNW.listerAgentAvecServicesETMatricules(getTransaction(),
-						codesServices, idAgentMin, idAgentMax);
-				for (AgentNW ag : listAgent) {
-					if (!idAgentService.contains(Integer.valueOf(ag.getIdAgent()))) {
-						idAgentService.add(ag.getIdAgent());
+				ArrayList<Agent> listAgent = getAgentDao().listerAgentAvecServicesETMatricules(codesServices,
+						idAgentMin, idAgentMax);
+				for (Agent ag : listAgent) {
+					if (!idAgentService.contains(ag.getIdAgent().toString())) {
+						idAgentService.add(ag.getIdAgent().toString());
 					}
 				}
 			}
@@ -1162,7 +1168,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
 		return true;
 	}
@@ -1170,7 +1176,7 @@ public class OePTGVisualisation extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
 		return true;
 	}
@@ -1184,7 +1190,7 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
 		return true;
 	}
@@ -1344,10 +1350,10 @@ public class OePTGVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
 			return false;
 		}
-		@SuppressWarnings("unused")
-		AgentNW agent = AgentNW.chercherAgent(getTransaction(), "900" + idAgent);
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
+		try {
+			@SuppressWarnings("unused")
+			Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + idAgent));
+		} catch (Exception e) {
 			// "ERR503",
 			// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgent));
@@ -1414,7 +1420,7 @@ public class OePTGVisualisation extends BasicProcess {
 		this.listeTypes = listeTypes;
 	}
 
-	public AgentNW getLoggedAgent() {
+	public Agent getLoggedAgent() {
 		return loggedAgent;
 	}
 
@@ -1604,6 +1610,14 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

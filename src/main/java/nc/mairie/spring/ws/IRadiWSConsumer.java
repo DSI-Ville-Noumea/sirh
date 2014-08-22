@@ -10,11 +10,11 @@ public interface IRadiWSConsumer {
 
 	public LightUserDto getAgentCompteADByLogin(String login);
 
-	public String getEmployeeNumberWithNomatr(Integer nomatr);
+	public Integer getEmployeeNumberWithNomatr(Integer nomatr);
 
-	public String getIdAgentWithNomatr(Integer nomatr);
+	public Integer getIdAgentWithNomatr(Integer nomatr);
 
-	public String getNomatrWithIdAgent(Integer idAgent);
+	public Integer getNomatrWithIdAgent(Integer idAgent);
 
-	public String getNomatrWithEmployeeNumber(Integer employeeNumber);
+	public Integer getNomatrWithEmployeeNumber(Integer employeeNumber);
 }

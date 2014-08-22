@@ -97,24 +97,24 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public FichePointageDto getSaisiePointage(String idAgent, String monday) {
+	public FichePointageDto getSaisiePointage(Integer idAgent, String monday) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgSaisie;
 		HashMap<String, String> params = new HashMap<>();
-		idAgent = idAgent.startsWith("900") ? idAgent : "900" + idAgent;
+		idAgent = idAgent.toString().startsWith("900") ? idAgent : Integer.valueOf("900" + idAgent);
 		params.put("date", monday);
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with " + idAgent + ", " + monday);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(FichePointageDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, String idAgent, String statutAgent) {
+	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, Integer idAgent, String statutAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVisualisationSetState;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		params.put("statutAgent", statutAgent);
 
 		StringBuilder json = new StringBuilder("[");
@@ -362,11 +362,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto setSaisiePointage(String idAgent, FichePointageDto toSerialize) {
+	public ReturnMessageDto setSaisiePointage(Integer idAgent, FichePointageDto toSerialize) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgSaisie;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		ClientResponse res = createAndPostRequest(
 				params,
 				url,
@@ -467,13 +467,13 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public boolean startVentilation(String idAgent, Date dateVentilation, String agentsJson, String statut,
+	public boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
 			String idRefTypePointage) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgStartVentilation;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		params.put("date", sdf.format(dateVentilation));
 		params.put("statut", statut);
 		if (idRefTypePointage != null)
@@ -488,11 +488,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public boolean startDeversementPaie(String idAgent, String statut) {
+	public boolean startDeversementPaie(Integer idAgent, String statut) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgStartDeversement;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		params.put("statut", statut);
 		ClientResponse res = createAndFireRequest(params, url);
 		if (res.getStatus() == HttpStatus.OK.value()) {
@@ -544,12 +544,12 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public boolean startExportEtatsPayeur(String idAgentExporting, String statutString) {
+	public boolean startExportEtatsPayeur(Integer idAgentExporting, String statutString) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgStartExportEtatsPayeur;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentExporting);
+		params.put("idAgent", idAgentExporting.toString());
 		params.put("statut", statutString);
 		ClientResponse res = createAndFireRequest(params, url);
 

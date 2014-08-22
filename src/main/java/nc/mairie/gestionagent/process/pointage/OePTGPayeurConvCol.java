@@ -9,7 +9,10 @@ import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -20,6 +23,7 @@ import nc.mairie.utils.MessageUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OeAGENTAccidentTravail Date de création : (30/06/11 13:56:32)
@@ -46,9 +50,19 @@ public class OePTGPayeurConvCol extends BasicProcess {
 
 	private String urlFichier;
 
+	private AgentDao agentDao;
+
 	@Override
 	public String getJSP() {
 		return "OePTGPayeurConvCol.jsp";
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	@Override
@@ -65,7 +79,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
+		initialiseDao();
 		// liste des historiques des editions
 		initialiseHistoriqueEditions();
 
@@ -141,7 +155,7 @@ public class OePTGPayeurConvCol extends BasicProcess {
 		try {
 			// on recupere l'agent connecté
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-			AgentNW agentConnecte = null;
+			Agent agentConnecte = null;
 
 			if (!u.getUserName().equals("nicno85")) {
 				// on fait la correspondance entre le login et l'agent via RADI
@@ -153,10 +167,10 @@ public class OePTGPayeurConvCol extends BasicProcess {
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return false;
 				}
-				agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+				agentConnecte = getAgentDao().chercherAgentParMatricule(
 						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			} else {
-				agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+				agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
 			}
 			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
 
@@ -265,6 +279,14 @@ public class OePTGPayeurConvCol extends BasicProcess {
 		} else {
 			return res;
 		}
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

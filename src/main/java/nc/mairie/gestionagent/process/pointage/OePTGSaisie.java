@@ -23,10 +23,11 @@ import nc.mairie.gestionagent.pointage.dto.JourPointageDto;
 import nc.mairie.gestionagent.pointage.dto.PrimeDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -53,18 +54,19 @@ public class OePTGSaisie extends BasicProcess {
      *
      */
 	private static final long serialVersionUID = 1L;
-	private String idAgent = "";
+	private Integer idAgent = null;
 	private Date dateLundi = new Date();
 	private List<List<PrimeDto>> primess = new ArrayList<>();
 	private FichePointageDto listeFichePointage;
 	private HashMap<String, List<AbsenceDto>> absences = new HashMap<>();
 	private HashMap<String, List<HeureSupDto>> hsups = new HashMap<>();
-	private AgentNW loggedAgent;
+	private Agent loggedAgent;
 	private SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM yyyy", new Locale("fr", "FR"));
 	private SimpleDateFormat wsdf = new SimpleDateFormat("yyyyMMdd", new Locale("fr", "FR"));
 	private Logger logger = LoggerFactory.getLogger(OePTGSaisie.class);
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 	public String focus = null;
 
 	@Override
@@ -98,7 +100,7 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		initialiseDao();
 		setFocus(getDefaultFocus());
-		setIdAgent((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
+		setIdAgent((Integer) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_PTG));
 		setDateLundi((String) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_LUNDI_PTG));
 		if (!getTransaction().isErreur()) {
 			initialiseDonnees();
@@ -129,6 +131,9 @@ public class OePTGSaisie extends BasicProcess {
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private boolean save(HttpServletRequest request) throws Exception {
@@ -150,17 +155,17 @@ public class OePTGSaisie extends BasicProcess {
 				return false;
 			}
 			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(),
-						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				try {
+					loggedAgent = getAgentDao().chercherAgentParMatricule(
+							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
 					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 					return false;
 				}
 			}
 		} else {
-			loggedAgent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			loggedAgent = getAgentDao().chercherAgentParMatricule(5138);
 		}
 
 		// on enregistre les pointages
@@ -454,11 +459,10 @@ public class OePTGSaisie extends BasicProcess {
 	}
 
 	public String getIdAgent() throws Exception {
-		AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), idAgent);
+		Agent agent = getAgentDao().chercherAgentParMatricule(idAgent);
 		String service = "";
 		try {
-			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(
-					Integer.valueOf(agent.getIdAgent()));
+			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			if (affAgent.getIdFichePoste() != null) {
 				try {
 					FichePoste fp = getFichePosteDao().chercherFichePoste(affAgent.getIdFichePoste());
@@ -665,7 +669,7 @@ public class OePTGSaisie extends BasicProcess {
 		this.hsups = hsups;
 	}
 
-	public void setIdAgent(String idAgent) {
+	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
 	}
 
@@ -713,5 +717,13 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

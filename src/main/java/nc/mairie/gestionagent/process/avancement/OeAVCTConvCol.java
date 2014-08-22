@@ -9,11 +9,12 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.HistoPrime;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.avancement.AvancementConvCol;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -48,6 +49,7 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	private AvancementConvColDao avancementConvColDao;
 	private HistoPrimeDao histoPrimeDao;
+	private AgentDao agentDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
@@ -59,6 +61,9 @@ public class OeAVCTConvCol extends BasicProcess {
 		}
 		if (getHistoPrimeDao() == null) {
 			setHistoPrimeDao(new HistoPrimeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -96,12 +101,12 @@ public class OeAVCTConvCol extends BasicProcess {
 			for (int j = 0; j < getListeAvct().size(); j++) {
 				AvancementConvCol av = (AvancementConvCol) getListeAvct().get(j);
 				Integer i = av.getIdAvct();
-				AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+				Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 
 				addZone(getNOM_ST_GRADE(i), av.getGrade());
 				addZone(getNOM_ST_GRADE_LIB(i), av.getLibGrade() == null ? "&nbsp;" : av.getLibGrade());
 				addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-				addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+				addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 				addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 				addZone(getNOM_ST_DATE_EMBAUCHE(i),
 						av.getDateEmbauche() == null ? "&nbsp;" : sdf.format(av.getDateEmbauche()));
@@ -293,11 +298,11 @@ public class OeAVCTConvCol extends BasicProcess {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 
 					// on crée une ligne de prime
-					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
+					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 
 					// on regarde si la prime existe dejà ou pas
 					@SuppressWarnings("unused")
-					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNoMatricule(),
+					Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), agent.getNomatr(),
 							avct.getAnnee() + "0101");
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -309,8 +314,8 @@ public class OeAVCTConvCol extends BasicProcess {
 						// si datfin!=0
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
-						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " ("
-								+ agent.getNoMatricule() + "); ";
+						agentEnErreur += agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + agent.getNomatr()
+								+ "); ";
 						// on met un 'S' dans son avancement
 						avct.setCarriereSimu("S");
 						getAvancementConvColDao().modifierAvancementConvCol(avct.getIdAvct(), avct.getIdAgent(),
@@ -337,8 +342,8 @@ public class OeAVCTConvCol extends BasicProcess {
 
 					// on recherche la derniere ligne de prime pour la rubrique
 					// 1200(prime ancienneté)
-					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
-							agent.getNoMatricule(), "1200");
+					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNomatr(),
+							"1200");
 					// si il y en a une alors on la ferme et on en crée une
 					// nouvelle
 					if (!getTransaction().isErreur()) {
@@ -352,7 +357,7 @@ public class OeAVCTConvCol extends BasicProcess {
 							prime.modifierPrime(getTransaction(), agent, user);
 
 							Prime newPrime = new Prime();
-							newPrime.setNoMatr(agent.getNoMatricule());
+							newPrime.setNoMatr(agent.getNomatr().toString());
 							if ((Integer.valueOf(prime.getMtPri()) + 1) > 30) {
 								newPrime.setMtPri("30");
 							} else {
@@ -372,7 +377,7 @@ public class OeAVCTConvCol extends BasicProcess {
 						getTransaction().traiterErreur();
 
 						Prime newPrime = new Prime();
-						newPrime.setNoMatr(agent.getNoMatricule());
+						newPrime.setNoMatr(agent.getNomatr().toString());
 						newPrime.setMtPri("3");
 						newPrime.setDatDeb("01/01/" + avct.getAnnee());
 						newPrime.setDatFin(Const.ZERO);
@@ -891,6 +896,14 @@ public class OeAVCTConvCol extends BasicProcess {
 
 	public void setHistoPrimeDao(HistoPrimeDao histoPrimeDao) {
 		this.histoPrimeDao = histoPrimeDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
@@ -68,7 +68,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 	private String[] LB_SIEGE_LESION;
 	private String[] LB_TYPE;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private AccidentTravail accidentTravailCourant;
 
 	private ArrayList<AccidentTravail> listeAT;
@@ -197,7 +197,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeAT(request);
@@ -239,7 +239,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des accidents du travail de l'agent
 		ArrayList<AccidentTravail> listeAT = getAccidentTravailDao().listerAccidentTravailAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+				getAgentCourant().getIdAgent());
 		setListeAT(listeAT);
 
 		int indiceAcc = 0;
@@ -250,7 +250,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				SiegeLesion s = (SiegeLesion) getHashSiegeLesion().get(at.getIdSiege());
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-						Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "AT", at.getIdAt());
+						getAgentCourant().getIdAgent(), "HSCT", "AT", at.getIdAt());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -384,7 +384,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 			// RG_AG_AT_A02
 			PositionAdmAgent dernPosAdmn = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
-					getAgentCourant().getNoMatricule(),
+					getAgentCourant().getNomatr(),
 					Services.convertitDate(Services.formateDate(getZone(getNOM_EF_DATE())), "dd/MM/yyyy", "yyyyMMdd"));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -443,8 +443,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 
 			// Création de l'objet VisiteMedicale à créer/modifier
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			AgentNW agentCourant = getAgentCourant();
-			getAccidentTravailCourant().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
+			Agent agentCourant = getAgentCourant();
+			getAccidentTravailCourant().setIdAgent(agentCourant.getIdAgent());
 			getAccidentTravailCourant().setDateAt(sdf.parse(date));
 			getAccidentTravailCourant().setDateAtInitial(
 					dateInit.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateInit));
@@ -677,11 +677,11 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		this.accidentTravailCourant = accidentTravailCourant;
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -961,7 +961,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-				Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "AT", getAccidentTravailCourant().getIdAt());
+				getAgentCourant().getIdAgent(), "HSCT", "AT", getAccidentTravailCourant().getIdAt());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -1135,7 +1135,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
+				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		// Alim zones
@@ -1279,7 +1279,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+					getAgentCourant().getIdAgent(), d.getIdDocument());
 
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
@@ -1346,7 +1346,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
-		getLienDocumentAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 		getLienDocumentAgentCourant().setIdDocument(id);
 		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
 				getLienDocumentAgentCourant().getIdDocument());

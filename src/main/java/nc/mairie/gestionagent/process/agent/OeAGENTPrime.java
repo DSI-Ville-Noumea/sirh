@@ -9,7 +9,7 @@ import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.HistoPrime;
 import nc.mairie.metier.agent.Prime;
 import nc.mairie.metier.paye.Matricule;
@@ -50,7 +50,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 	private Hashtable<String, Rubrique> hashRubriques;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Prime primeCourante;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche Prime.";
@@ -135,7 +135,7 @@ public class OeAGENTPrime extends BasicProcess {
 
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListePrimes(request);
@@ -506,8 +506,8 @@ public class OeAGENTPrime extends BasicProcess {
 				return false;
 			}
 			// Création de l'objet prime à créer/modifier
-			AgentNW agentCourant = getAgentCourant();
-			getPrimeCourante().setNoMatr(agentCourant.getNoMatricule());
+			Agent agentCourant = getAgentCourant();
+			getPrimeCourante().setNoMatr(agentCourant.getNomatr().toString());
 			getPrimeCourante().setNoRubr(r.getNorubr().toString());
 			getPrimeCourante().setRefArr(refArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : refArr);
 			getPrimeCourante().setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : dateArr);
@@ -681,11 +681,11 @@ public class OeAGENTPrime extends BasicProcess {
 		return getZone(getNOM_EF_REF_ARR());
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

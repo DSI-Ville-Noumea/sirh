@@ -9,7 +9,7 @@ import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.HistoPositionAdm;
@@ -47,7 +47,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 	private Hashtable<String, PositionAdm> hashPA;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private PositionAdmAgent paCourante;
 
 	private HistoPositionAdmDao histoPositionAdmDao;
@@ -115,7 +115,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListePA(request);
@@ -230,7 +230,7 @@ public class OeAGENTPosAdm extends BasicProcess {
 		if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION) && getListePAAgent().size() > 1) {
 			PositionAdmAgent paBase = (PositionAdmAgent) getPaCourante().getBasicMetierBase();
 			PositionAdmAgent posAdmPrec = PositionAdmAgent.chercherPositionAdmAgentPrec(getTransaction(),
-					getAgentCourant().getNoMatricule(),
+					getAgentCourant().getNomatr(),
 					Services.convertitDate(Services.formateDate(paBase.getDatdeb()), "dd/MM/yyyy", "yyyyMMdd"));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -440,8 +440,8 @@ public class OeAGENTPosAdm extends BasicProcess {
 			PositionAdm pa = getSelectedPA();
 
 			// Création de l'objet PositionAdministrative à créer/modifier
-			AgentNW agentCourant = getAgentCourant();
-			getPaCourante().setNomatr(agentCourant.getNoMatricule());
+			Agent agentCourant = getAgentCourant();
+			getPaCourante().setNomatr(agentCourant.getNomatr().toString());
 			getPaCourante().setCdpadm(pa.getCdpadm());
 			getPaCourante().setRefarr(refArr);
 			getPaCourante().setDatdeb(dateDebut);
@@ -714,11 +714,11 @@ public class OeAGENTPosAdm extends BasicProcess {
 		this.listePA = listePA;
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

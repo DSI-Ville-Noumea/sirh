@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.FiliereGrade;
@@ -26,6 +26,7 @@ import nc.mairie.metier.parametrage.Cap;
 import nc.mairie.metier.parametrage.MotifAvancement;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.referentiel.AvisCap;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.parametrage.CapDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
@@ -106,6 +107,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvisCapDao avisCapDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
+	private AgentDao agentDao;
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -136,9 +138,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		initialiseListeService();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
 		}
 
 		// Initialisation de la liste des documents suivi medicaux
@@ -169,6 +171,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		if (getAvancementFonctionnairesDao() == null) {
 			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private ArrayList<String> listerDocumentsArretes() throws ParseException {
@@ -193,11 +198,11 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
 					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
@@ -230,8 +235,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 			// avis VDN
 			String avisVDN = av.getIdAvisCap() == null ? "&nbsp;" : getAvisCapDao().chercherAvisCap(av.getIdAvisCap())
 					.getLibCourtAvisCap().toUpperCase();
-			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCode()) + " <br> "
-					+ avisSHD + " <br> " + avisVDN);
+			addZone(getNOM_ST_MOTIF_AVCT(i), (motifVDN == null ? "&nbsp;" : motifVDN.getCode()) + " <br> " + avisSHD
+					+ " <br> " + avisVDN);
 
 			addZone(getNOM_ST_ETAT(i), av.getEtat());
 			addZone(getNOM_ST_OBSERVATION(i), av.getObservationArr() == null ? "&nbsp;" : av.getObservationArr());
@@ -681,9 +686,9 @@ public class OeAVCTFonctArretes extends BasicProcess {
 		}
 
 		// recuperation agent
-		AgentNW agent = null;
+		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
 		// recuperation du service
@@ -705,8 +710,8 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 		}
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
-				filiere == null ? null : filiere.getLibFiliere(),
-				agent == null ? null : Integer.valueOf(agent.getIdAgent()), listeSousService, categorie, idCap));
+				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(),
+				listeSousService, categorie, idCap));
 
 		afficheListeAvancement();
 		return true;
@@ -1411,7 +1416,7 @@ public class OeAVCTFonctArretes extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -2424,5 +2429,13 @@ public class OeAVCTFonctArretes extends BasicProcess {
 
 	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
 		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

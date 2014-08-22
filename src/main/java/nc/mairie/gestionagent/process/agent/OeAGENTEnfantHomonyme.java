@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Enfant;
 import nc.mairie.metier.agent.LienEnfantAgent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.EnfantDao;
 import nc.mairie.spring.dao.metier.agent.LienEnfantAgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -34,10 +35,11 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 
 	private ArrayList<Enfant> listeEnfantHomonyme;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Enfant enfantCourant;
 	private LienEnfantAgentDao lienEnfantAgentDao;
 	private EnfantDao enfantDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -50,7 +52,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		if (getAgentCourant() == null) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 			} else {
@@ -80,9 +82,9 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 			FormateListe aListeEnfantFormatee = new FormateListe(taillesEnfHomonyme);
 			for (int i = 0; i < getListeEnfantHomonyme().size(); i++) {
 				Enfant enfant = (Enfant) getListeEnfantHomonyme().get(i);
-				ArrayList<AgentNW> parents = AgentNW.listerAgentNWAvecEnfant(getTransaction(), enfant);
+				ArrayList<Agent> parents = getAgentDao().listerAgentAvecEnfant(enfant.getIdEnfant());
 				if (parents.size() < 2 && parents.size() > 0) {
-					String colonnes[] = { parents.get(0).getNoMatricule(),
+					String colonnes[] = { parents.get(0).getNomatr().toString(),
 							parents.get(0).getNomAgent() + " " + parents.get(0).getPrenomAgent(),
 							enfant.getCommentaire() };
 					aListeEnfantFormatee.ajouteLigne(colonnes);
@@ -101,6 +103,9 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 		}
 		if (getEnfantDao() == null) {
 			setEnfantDao(new EnfantDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -130,7 +135,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 					getEnfantCourant().getCommentaire());
 
 			// Creation du lien
-			LienEnfantAgent aLien = new LienEnfantAgent(Integer.valueOf(getAgentCourant().getIdAgent()), id, false);
+			LienEnfantAgent aLien = new LienEnfantAgent(getAgentCourant().getIdAgent(), id, false);
 			getLienEnfantAgentDao().creerLienEnfantAgent(aLien.getIdAgent(), aLien.getIdEnfant(),
 					aLien.isEnfantACharge());
 			commitTransaction();
@@ -170,8 +175,8 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 		setEnfantCourant((Enfant) getListeEnfantHomonyme().get(numligne));
 
 		// Creation du lien
-		LienEnfantAgent aLien = new LienEnfantAgent(Integer.valueOf(getAgentCourant().getIdAgent()), getEnfantCourant()
-				.getIdEnfant(), false);
+		LienEnfantAgent aLien = new LienEnfantAgent(getAgentCourant().getIdAgent(), getEnfantCourant().getIdEnfant(),
+				false);
 		getLienEnfantAgentDao().creerLienEnfantAgent(aLien.getIdAgent(), aLien.getIdEnfant(), aLien.isEnfantACharge());
 		commitTransaction();
 
@@ -257,9 +262,9 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	/**
 	 * Getter de l'agent courant.
 	 * 
-	 * @return AgentNW
+	 * @return Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -268,7 +273,7 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	public void setAgentCourant(AgentNW agentCourant) {
+	public void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -374,5 +379,13 @@ public class OeAGENTEnfantHomonyme extends BasicProcess {
 
 	public void setEnfantDao(EnfantDao enfantDao) {
 		this.enfantDao = enfantDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

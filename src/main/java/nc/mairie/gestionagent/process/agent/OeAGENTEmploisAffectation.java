@@ -19,7 +19,7 @@ import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.carriere.Carriere;
@@ -118,7 +118,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public final String ACTION_SUPPRIMER_SPEC = "Supprimer";
 	private Affectation affectationCourant;
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private FichePoste fichePosteCourant;
 	private FichePoste fichePosteSecondaireCourant;
 
@@ -219,7 +219,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -2071,8 +2071,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		if (verifieExistFichier(aff.getIdAffectation(), typeDocument)) {
 			Document d = getDocumentDao().chercherDocumentByContainsNom(
 					"NS_" + aff.getIdAffectation() + "_" + typeDocument);
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+					d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
@@ -2109,7 +2109,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
 			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdAgent(getAgentCourant().getIdAgent());
 			lda.setIdDocument(id);
 			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
@@ -2439,8 +2439,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private void initialiseListeAffectation(HttpServletRequest request) throws Exception {
 
 		// Recherche des affectations de l'agent
-		ArrayList<Affectation> aff = getAffectationDao().listerAffectationAvecAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Affectation> aff = getAffectationDao().listerAffectationAvecAgent(getAgentCourant().getIdAgent());
 		setListeAffectation(aff);
 
 		boolean affectationActive = false;
@@ -2527,9 +2526,10 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			if (getTransaction().isErreur())
 				getTransaction().declarerErreur(
 						getTransaction().traiterErreur() + "<BR/>"
-								+ MessageUtils.getMessage("INF003", getAgentCourant().getNoMatricule()));
+								+ MessageUtils.getMessage("INF003", getAgentCourant().getNomatr().toString()));
 			else
-				getTransaction().declarerErreur(MessageUtils.getMessage("INF003", getAgentCourant().getNoMatricule()));
+				getTransaction().declarerErreur(
+						MessageUtils.getMessage("INF003", getAgentCourant().getNomatr().toString()));
 
 			setFocus(getNOM_PB_AJOUTER());
 		}
@@ -3001,7 +3001,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeAffectation(request);
@@ -3024,7 +3024,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Si pas d'affectation en cours
 		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 			ArrayList<Affectation> affActives = getAffectationDao().listerAffectationActiveAvecAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()));
+					getAgentCourant().getIdAgent());
 			if (affActives.size() == 1) {
 				setAffectationCourant((Affectation) affActives.get(0));
 				// Recherche des informations à afficher
@@ -4137,7 +4137,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			// Affectation des attributs
 			// on sauvegarde l'ancienne date de debut
 			Date oldDateDeb = getAffectationCourant().getDateDebutAff();
-			getAffectationCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getAffectationCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getAffectationCourant().setIdFichePoste(getFichePosteCourant().getIdFichePoste());
 			getAffectationCourant().setRefArreteAff(
 					getVAL_EF_REF_ARRETE().length() == 0 ? null : getVAL_EF_REF_ARRETE());
@@ -4162,8 +4162,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.MODIFICATION);
 
-				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(),
-						getFichePosteCourant(), oldDateDeb))
+				if (!Connecteur.modifierSPMTSR(getTransaction(), getAffectationCourant(),
+						getAgentCourant().getNomatr(), getFichePosteCourant(), oldDateDeb))
 					return false;
 				getAffectationDao().modifierAffectation(getAffectationCourant());
 
@@ -4679,7 +4679,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
 			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdAgent(getAgentCourant().getIdAgent());
 			lda.setIdDocument(id);
 			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
@@ -4713,7 +4713,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -5139,8 +5139,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// on interroge le WS pour savoir si la prime est utilisée sur un
 		// pointage donné.
 		try {
-			return t.isPrimeUtilPointage(primePointage.getNumRubrique(),
-					Integer.valueOf(getAgentCourant().getIdAgent()));
+			return t.isPrimeUtilPointage(primePointage.getNumRubrique(), getAgentCourant().getIdAgent());
 		} catch (Exception e) {
 			// TODO A SUPPRIMER QUAND PTG-WS SERA EN PROD
 			return false;

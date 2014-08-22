@@ -14,7 +14,8 @@ import java.util.TimeZone;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilPrimeDto;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.Transaction;
 
@@ -26,8 +27,8 @@ public class OePTGVentilationUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	public static String getTabVisu(Transaction aTransaction, int date, int typePointage, String agentsJson)
-			throws Exception {
+	public static String getTabVisu(Transaction aTransaction, int date, int typePointage, String agentsJson,
+			AgentDao agentDao) throws Exception {
 
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 
@@ -35,7 +36,7 @@ public class OePTGVentilationUtils {
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		sb.append("<table  class=\"display\"  id=\"VentilationTable\">");
 
-		AgentNW agent;
+		Agent agent;
 		// sb.append("<td><INPUT title='Editer le pointage' type='image' class='<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, \"\")%>' src='images/modifier.gif' height='16px' width='16px' name='<%=process.getSAISIE_PTG(indicePtg)%>'></td>");
 
 		switch (RefTypePointageEnum.getRefTypePointageEnum(typePointage)) {
@@ -51,9 +52,9 @@ public class OePTGVentilationUtils {
 				sb.append("<tbody>");
 				for (VentilPrimeDto prime : rep) {
 					RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getIdRefPrime());
-					agent = AgentNW.chercherAgent(aTransaction, String.valueOf(prime.getId_agent()));
+					agent = agentDao.chercherAgent(prime.getId_agent());
 					sb.append("<tr>");
-					sb.append("<td>" + agent.getNoMatricule() + "</td>");
+					sb.append("<td>" + agent.getNomatr() + "</td>");
 					sb.append("<td>" + agent.getNomAgent() + " " + agent.getPrenomAgent() + "</td>");
 					sb.append("<td>" + moisAnnee.format(prime.getDateDebutMois()) + "</td>");
 					sb.append("<td>" + primeDetail.getLibelle() + "</td>");

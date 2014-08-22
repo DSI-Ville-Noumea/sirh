@@ -20,8 +20,11 @@ import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -36,6 +39,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
@@ -57,12 +61,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	private Logger logger = LoggerFactory.getLogger(OePTGVentilationFonct.class);
 
-	private ArrayList<AgentNW> listeAgentsVentil;
+	private ArrayList<Agent> listeAgentsVentil;
 	private String tabVisuP;
 	private String tabErreurVentil;
 
 	private Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs;
 	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
+
+	private AgentDao agentDao;
 
 	public OePTGVentilationFonct() {
 		super();
@@ -87,22 +93,23 @@ public class OePTGVentilationFonct extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 
 		addZone(getNOM_RG_TYPE(), getNOM_RB_TYPE_TOUT());
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_MIN) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_MIN(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_MIN(), agt.getNomatr().toString());
 			}
 		}
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_MAX) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_MAX(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_MAX(), agt.getNomatr().toString());
 			}
 		}
 
@@ -113,6 +120,14 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	}
 
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
 	private void initialiseTabErreurVentil() {
 		setTabErreurVentil(OePTGVentilationUtils.getTabErreurVentil("F"));
 	}
@@ -121,9 +136,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// on recupere les agents selectionnées dans l'ecran de
 		// selection
 		@SuppressWarnings("unchecked")
-		ArrayList<AgentNW> listeAgentSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "AGENTS");
+		ArrayList<Agent> listeAgentSelect = (ArrayList<Agent>) VariablesActivite.recuperer(this, "AGENTS");
 		if (listeAgentSelect != null) {
-			setListeAgentsVentil(new ArrayList<AgentNW>());
+			setListeAgentsVentil(new ArrayList<Agent>());
 			getListeAgentsVentil().addAll(listeAgentSelect);
 		}
 		VariablesActivite.enlever(this, "AGENTS");
@@ -131,9 +146,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		int indiceAgent = 0;
 		if (getListeAgentsVentil() != null) {
 			for (int i = 0; i < getListeAgentsVentil().size(); i++) {
-				AgentNW ag = (AgentNW) getListeAgentsVentil().get(i);
+				Agent ag = (Agent) getListeAgentsVentil().get(i);
 				addZone(getNOM_ST_LIB_AGENT(indiceAgent),
-						ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNoMatricule() + ")");
+						ag.getNomAgent() + " " + ag.getPrenomAgent() + " (" + ag.getNomatr() + ")");
 
 				indiceAgent++;
 			}
@@ -253,9 +268,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		setTabVisuP(null);
 		setHashVentilAbs(null);
 		setHashVentilHsup(null);
-		setTabErreurVentil("");
-		addZone(getNOM_ST_AGENT_MIN(), "");
-		addZone(getNOM_ST_AGENT_MAX(), "");
+		setTabErreurVentil(Const.CHAINE_VIDE);
+		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -308,7 +323,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_AGENT(HttpServletRequest request) throws Exception {
-		ArrayList<AgentNW> listeAg = new ArrayList<AgentNW>();
+		ArrayList<Agent> listeAg = new ArrayList<Agent>();
 		if (getListeAgentsVentil() != null) {
 			listeAg.addAll(getListeAgentsVentil());
 		}
@@ -323,7 +338,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_SUPPRIMER_AGENT(HttpServletRequest request, int elemASupprimer) throws Exception {
-		AgentNW a = (AgentNW) getListeAgentsVentil().get(elemASupprimer);
+		Agent a = (Agent) getListeAgentsVentil().get(elemASupprimer);
 
 		if (a != null) {
 			if (getListeAgentsVentil() != null) {
@@ -335,7 +350,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		return true;
 	}
 
-	private void supprimeAgent(AgentNW a) throws Exception {
+	private void supprimeAgent(Agent a) throws Exception {
 		if (getListeAgentsVentil().contains(a)) {
 			getListeAgentsVentil().remove(a);
 		}
@@ -350,11 +365,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 		return getZone(getNOM_ST_LIB_AGENT(i));
 	}
 
-	public ArrayList<AgentNW> getListeAgentsVentil() {
+	public ArrayList<Agent> getListeAgentsVentil() {
 		return listeAgentsVentil;
 	}
 
-	public void setListeAgentsVentil(ArrayList<AgentNW> listeAgentsVentil) {
+	public void setListeAgentsVentil(ArrayList<Agent> listeAgentsVentil) {
 		this.listeAgentsVentil = listeAgentsVentil;
 	}
 
@@ -410,8 +425,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 		// on construit la liste des agents
 		List<Integer> listeIdAgents = new ArrayList<>();
 		if (getListeAgentsVentil() != null) {
-			for (AgentNW ag : getListeAgentsVentil()) {
-				listeIdAgents.add(Integer.valueOf(ag.getIdAgent()));
+			for (Agent ag : getListeAgentsVentil()) {
+				listeIdAgents.add(ag.getIdAgent());
 			}
 		}
 
@@ -427,7 +442,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 		// on recupere l'agent connecté
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		AgentNW agentConnecte = null;
+		Agent agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -437,7 +452,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
 					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -446,7 +461,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 				return false;
 			}
 		} else {
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Date dateVentilation = sdf.parse(getVAL_EF_DATE_DEBUT());
@@ -512,7 +527,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public boolean performPB_RECHERCHER_AGENT_MIN(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MIN, true);
 		return true;
 	}
@@ -541,9 +556,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
 			return false;
 		}
-		if (!getVAL_ST_AGENT_MIN().equals("")) {
-			if (getVAL_ST_AGENT_MAX().equals("")) {
-				AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT_MIN());
+		if (!getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE)) {
+			if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+				Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_MIN()));
 				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
 				listeCarr.add(carr);
 				addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
@@ -556,13 +571,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 		}
 
 		for (Carriere carr : listeCarr) {
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
-				agents.add(Integer.valueOf(ag.getIdAgent()));
+			if (!agents.contains(ag.getIdAgent())) {
+				agents.add(ag.getIdAgent());
 			}
 
 		}
@@ -579,7 +594,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 			initialiseHashTableHsup(typePointage);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, new JSONSerializer().exclude("*.class").serialize(agents)));
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao()));
 		}
 		return true;
 	}
@@ -594,10 +609,10 @@ public class OePTGVentilationFonct extends BasicProcess {
 				return false;
 			}
 			String idAgentMin = "900" + agentMin;
-			@SuppressWarnings("unused")
-			AgentNW agMin = AgentNW.chercherAgent(getTransaction(), idAgentMin);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			try {
+				@SuppressWarnings("unused")
+				Agent agMin = getAgentDao().chercherAgent(Integer.valueOf(idAgentMin));
+			} catch (Exception e) {
 				// "ERR503",
 				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMin));
@@ -612,10 +627,10 @@ public class OePTGVentilationFonct extends BasicProcess {
 				return false;
 			}
 			String idAgentMax = "900" + agentMax;
-			@SuppressWarnings("unused")
-			AgentNW agMax = AgentNW.chercherAgent(getTransaction(), idAgentMax);
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			try {
+				@SuppressWarnings("unused")
+				Agent agMax = getAgentDao().chercherAgent(Integer.valueOf(idAgentMax));
+			} catch (Exception e) {
 				// "ERR503",
 				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", idAgentMax));
@@ -643,7 +658,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public boolean performPB_RECHERCHER_AGENT_MAX(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_MAX, true);
 		return true;
 	}
@@ -661,7 +676,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	public boolean performPB_DEVERSER(HttpServletRequest request) throws Exception {
 		// on recupere l'agent connecté
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		AgentNW agentConnecte = null;
+		Agent agentConnecte = null;
 		if (!u.getUserName().equals("nicno85")) {
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -671,7 +686,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
 					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
@@ -680,7 +695,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 				return false;
 			}
 		} else {
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		// on lance le deversement
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
@@ -702,7 +717,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public String getTabErreurVentil() {
-		return tabErreurVentil == null ? "" : tabErreurVentil;
+		return tabErreurVentil == null ? Const.CHAINE_VIDE : tabErreurVentil;
 	}
 
 	public void setTabErreurVentil(String tabErreurVentil) {
@@ -710,7 +725,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public String getTabVisuP() {
-		return tabVisuP == null ? "" : tabVisuP;
+		return tabVisuP == null ? Const.CHAINE_VIDE : tabVisuP;
 	}
 
 	public void setTabVisuP(String tabVisuP) {
@@ -725,13 +740,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 		List<Integer> agents = new ArrayList<Integer>();
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
 		for (Carriere carr : listeCarr) {
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
-				agents.add(Integer.valueOf(ag.getIdAgent()));
+			if (!agents.contains(ag.getIdAgent())) {
+				agents.add(ag.getIdAgent());
 			}
 
 		}
@@ -765,11 +780,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 		for (VentilAbsenceDto abs : data) {
 			greg.setTime(abs.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-			ret[index][1] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()).equals("") ? "&nbsp;"
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees());
-			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals("") ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
-			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals("") ? "&nbsp;"
+			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals(
+					Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates());
 			ret[index][4] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()
 					+ abs.getMinutesNonConcertees() + abs.getMinutesImmediates());
@@ -798,13 +813,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
 		for (Carriere carr : listeCarr) {
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
-				agents.add(Integer.valueOf(ag.getIdAgent()));
+			if (!agents.contains(ag.getIdAgent())) {
+				agents.add(ag.getIdAgent());
 			}
 
 		}
@@ -841,13 +856,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 		List<Integer> agents = new ArrayList<Integer>();
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
 		for (Carriere carr : listeCarr) {
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
-				agents.add(Integer.valueOf(ag.getIdAgent()));
+			if (!agents.contains(ag.getIdAgent())) {
+				agents.add(ag.getIdAgent());
 			}
 
 		}
@@ -881,22 +896,22 @@ public class OePTGVentilationFonct extends BasicProcess {
 		for (VentilHSupDto hsup : data) {
 			greg.setTime(hsup.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals("") ? "&nbsp;"
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs());
 			ret[index][2] = "&nbsp;";
-			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals("") ? "&nbsp;"
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat());
-			ret[index][4] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals("") ? "&nbsp;"
+			ret[index][4] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires());
-			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals("") ? "&nbsp;"
+			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup25());
-			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals("") ? "&nbsp;"
+			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup50());
-			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals("") ? "&nbsp;"
+			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit());
-			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals("") ? "&nbsp;"
+			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf());
-			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals("") ? "&nbsp;"
+			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai());
 			index++;
 		}
@@ -923,13 +938,13 @@ public class OePTGVentilationFonct extends BasicProcess {
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
 		for (Carriere carr : listeCarr) {
-			AgentNW ag = AgentNW.chercherAgentParMatricule(getTransaction(), carr.getNoMatricule());
+			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
 			}
-			if (!agents.contains(Integer.valueOf(ag.getIdAgent()))) {
-				agents.add(Integer.valueOf(ag.getIdAgent()));
+			if (!agents.contains(ag.getIdAgent())) {
+				agents.add(ag.getIdAgent());
 			}
 
 		}
@@ -956,5 +971,17 @@ public class OePTGVentilationFonct extends BasicProcess {
 	public Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> getHashVentilHsup() throws Exception {
 		return hashVentilHsup == null ? new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>()
 				: hashVentilHsup;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+
+	public Agent getAgent(Integer idAgent) throws Exception {
+		return getAgentDao().chercherAgent(idAgent);
 	}
 }

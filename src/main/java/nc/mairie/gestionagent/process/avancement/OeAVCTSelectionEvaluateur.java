@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdmAgent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.Services;
 import nc.mairie.utils.MessageUtils;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
@@ -22,13 +27,15 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<AgentNW> listeEvaluateurs;
-	private ArrayList<AgentNW> listeEvaluateursExistant;
-	private ArrayList<AgentNW> listeEvaluateursPossible;
-	private ArrayList<AgentNW> listeDepart = new ArrayList<AgentNW>();
+	private ArrayList<Agent> listeEvaluateurs;
+	private ArrayList<Agent> listeEvaluateursExistant;
+	private ArrayList<Agent> listeEvaluateursPossible;
+	private ArrayList<Agent> listeDepart = new ArrayList<Agent>();
 
 	public String focus = null;
 	private boolean first = true;
+
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -39,13 +46,16 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	 */
 	@SuppressWarnings("unchecked")
 	public void initialiseZones(HttpServletRequest request) throws Exception {
+
+		initialiseDao();
+
 		// on recupere les evaluateurs deja present
-		ArrayList<AgentNW> listDep = new ArrayList<AgentNW>();
+		ArrayList<Agent> listDep = new ArrayList<Agent>();
 		if (isFirst()) {
-			listDep = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
+			listDep = (ArrayList<Agent>) VariablesActivite.recuperer(this, "LISTEEVALUATEUR");
 			VariablesActivite.enlever(this, "LISTEEVALUATEUR");
 			setListeDepart(null);
-			ArrayList<AgentNW> listeBis = (ArrayList<AgentNW>) listDep.clone();
+			ArrayList<Agent> listeBis = (ArrayList<Agent>) listDep.clone();
 			setListeDepart(listeBis);
 			setFirst(false);
 		}
@@ -55,7 +65,15 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	}
 
-	private void recupereEvaluateur(HttpServletRequest request, ArrayList<AgentNW> listDep) {
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+	}
+
+	private void recupereEvaluateur(HttpServletRequest request, ArrayList<Agent> listDep) {
 		if (getListeEvaluateursExistant().size() == 0) {
 
 			// Affectation de la liste
@@ -66,9 +84,9 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	private void afficheListe(HttpServletRequest request) {
 		for (int j = 0; j < getListeEvaluateurs().size(); j++) {
-			AgentNW agent = (AgentNW) getListeEvaluateurs().get(j);
-			Integer i = Integer.valueOf(agent.getIdAgent());
-			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
+			Agent agent = (Agent) getListeEvaluateurs().get(j);
+			Integer i = agent.getIdAgent();
+			addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent().toString());
 			addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			if (getListeEvaluateursExistant().contains(agent))
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
@@ -77,9 +95,9 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	private void afficheListeEvalPossible(HttpServletRequest request) {
 		for (int j = 0; j < getListeEvaluateursPossible().size(); j++) {
-			AgentNW agent = (AgentNW) getListeEvaluateursPossible().get(j);
-			Integer i = Integer.valueOf(agent.getIdAgent());
-			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent());
+			Agent agent = (Agent) getListeEvaluateursPossible().get(j);
+			Integer i = agent.getIdAgent();
+			addZone(getNOM_ST_ID_AGENT_POSSIBLE(i), agent.getIdAgent().toString());
 			addZone(getNOM_ST_LIB_AGENT_POSSIBLE(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 			addZone(getNOM_CK_SELECT_LIGNE_POSSIBLE(i), getCHECKED_OFF());
 		}
@@ -134,11 +152,11 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
 
-		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
+		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListeEvaluateurs().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListeEvaluateurs().get(j);
-			Integer i = Integer.valueOf(ag.getIdAgent());
+			Agent ag = (Agent) getListeEvaluateurs().get(j);
+			Integer i = ag.getIdAgent();
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);
@@ -185,9 +203,9 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 			// Si clic sur le bouton PB_OK
 			for (int i = 0; i < getListeEvaluateursPossible().size(); i++) {
-				AgentNW ag = getListeEvaluateursPossible().get(i);
-				if (testerParametre(request, getNOM_PB_OK(Integer.valueOf(ag.getIdAgent())))) {
-					return performPB_OK(request, Integer.valueOf(ag.getIdAgent()));
+				Agent ag = getListeEvaluateursPossible().get(i);
+				if (testerParametre(request, getNOM_PB_OK(ag.getIdAgent()))) {
+					return performPB_OK(request, ag.getIdAgent());
 				}
 			}
 		}
@@ -342,10 +360,11 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
+		ArrayList<Agent> aListe = new ArrayList<Agent>();
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent.listerPositionAdmAgentEnActivite(getTransaction());
+			ArrayList<PositionAdmAgent> listeNomatrActif = PositionAdmAgent
+					.listerPositionAdmAgentEnActivite(getTransaction());
 			String liste = Const.CHAINE_VIDE;
 			for (PositionAdmAgent pa : listeNomatrActif) {
 				liste += pa.getNomatr() + ",";
@@ -353,28 +372,30 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 			if (!liste.equals(Const.CHAINE_VIDE)) {
 				liste = liste.substring(0, liste.length() - 1);
 			}
-			aListe = AgentNW.listerAgentWithListNomatr(getTransaction(), liste);
+			aListe = getAgentDao().listerAgentWithListNomatr(liste);
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
-			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), zone);
+			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+					Integer.valueOf(zone));
 			if (getTransaction().isErreur()) {
 				return false;
 			}
-			AgentNW aAgent = AgentNW.chercherAgentParMatricule(getTransaction(), paAgent.getNomatr());
-			// Si erreur alors pas trouvé. On traite
-			if (getTransaction().isErreur())
+			try {
+				Agent aAgent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(paAgent.getNomatr()));
+				aListe.add(aAgent);
+			} catch (Exception e) {
 				return false;
-
-			aListe.add(aAgent);
+			}
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
 			// on recupere une liste d'agent avec le nom commencant par...
-			ArrayList<AgentNW> listeAgentWithNom = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
-			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			ArrayList<Agent> listeAgentWithNom = getAgentDao().listerAgentAvecNomCommencant(zone);
+			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
 			// on parcours cette liste pour ne mettre que les agents en activite
-			for (AgentNW ag : listeAgentWithNom) {
-				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+			for (Agent ag : listeAgentWithNom) {
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						ag.getNomatr());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
@@ -387,11 +408,12 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
 			// on recupere une liste d'agent avec le prénom commencant par...
-			ArrayList<AgentNW> listeAgentWithPrenom = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
-			ArrayList<AgentNW> listeAgentEnActivite = new ArrayList<AgentNW>();
+			ArrayList<Agent> listeAgentWithPrenom = getAgentDao().listerAgentAvecPrenomCommencant(zone);
+			ArrayList<Agent> listeAgentEnActivite = new ArrayList<Agent>();
 			// on parcours cette liste pour ne mettre que les agents en activite
-			for (AgentNW ag : listeAgentWithPrenom) {
-				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), ag.getNoMatricule());
+			for (Agent ag : listeAgentWithPrenom) {
+				PositionAdmAgent paActive = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
+						ag.getNomatr());
 				if (paActive == null || getTransaction().isErreur()) {
 					if (getTransaction().isErreur())
 						getTransaction().traiterErreur();
@@ -408,7 +430,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("ERR005", "resultat"));
 			return false;
 		}
-		ArrayList<AgentNW> xcludeListe = getListeEvaluateurs();
+		ArrayList<Agent> xcludeListe = getListeEvaluateurs();
 		aListe = elim_doublure_evaluateur(aListe, xcludeListe);
 
 		setListeEvaluateursPossible(null);
@@ -424,14 +446,15 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 		return true;
 	}
 
-	private ArrayList<AgentNW> elim_doublure_evaluateur(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
+	private ArrayList<Agent> elim_doublure_evaluateur(ArrayList<Agent> l1, ArrayList<Agent> l2) {
 		if (null == l1)
 			return null;
 
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((AgentNW) l2.get(i)).getIdAgent()).equals(((AgentNW) l1.get(j)).getIdAgent()))
+					if ((((Agent) l2.get(i)).getIdAgent().toString()).equals(((Agent) l1.get(j)).getIdAgent()
+							.toString()))
 						l1.remove(j);
 
 				}
@@ -440,33 +463,33 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 		return l1;
 	}
 
-	public ArrayList<AgentNW> getListeEvaluateursExistant() {
+	public ArrayList<Agent> getListeEvaluateursExistant() {
 		if (listeEvaluateursExistant == null)
-			return new ArrayList<AgentNW>();
+			return new ArrayList<Agent>();
 		return listeEvaluateursExistant;
 	}
 
-	public void setListeEvaluateursExistant(ArrayList<AgentNW> listeEvaluateursExistant) {
+	public void setListeEvaluateursExistant(ArrayList<Agent> listeEvaluateursExistant) {
 		this.listeEvaluateursExistant = listeEvaluateursExistant;
 	}
 
-	public ArrayList<AgentNW> getListeEvaluateurs() {
+	public ArrayList<Agent> getListeEvaluateurs() {
 		if (listeEvaluateurs == null)
-			return new ArrayList<AgentNW>();
+			return new ArrayList<Agent>();
 		return listeEvaluateurs;
 	}
 
-	public void setListeEvaluateurs(ArrayList<AgentNW> listeEvaluateurs) {
+	public void setListeEvaluateurs(ArrayList<Agent> listeEvaluateurs) {
 		this.listeEvaluateurs = listeEvaluateurs;
 	}
 
-	public ArrayList<AgentNW> getListeEvaluateursPossible() {
+	public ArrayList<Agent> getListeEvaluateursPossible() {
 		if (listeEvaluateursPossible == null)
-			return new ArrayList<AgentNW>();
+			return new ArrayList<Agent>();
 		return listeEvaluateursPossible;
 	}
 
-	public void setListeEvaluateursPossible(ArrayList<AgentNW> listeEvaluateursPossible) {
+	public void setListeEvaluateursPossible(ArrayList<Agent> listeEvaluateursPossible) {
 		this.listeEvaluateursPossible = listeEvaluateursPossible;
 	}
 
@@ -542,7 +565,7 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 	 */
 	public boolean performPB_OK(HttpServletRequest request, Integer idAgent) throws Exception {
 
-		AgentNW agent = AgentNW.chercherAgent(getTransaction(), idAgent.toString());
+		Agent agent = getAgentDao().chercherAgent(idAgent);
 		if (getVAL_CK_SELECT_LIGNE_POSSIBLE(idAgent).equals(getCHECKED_ON())) {
 			getListeEvaluateursPossible().remove(agent);
 			getListeEvaluateurs().add(agent);
@@ -557,11 +580,11 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 		return focus;
 	}
 
-	public ArrayList<AgentNW> getListeDepart() {
-		return listeDepart == null ? new ArrayList<AgentNW>() : listeDepart;
+	public ArrayList<Agent> getListeDepart() {
+		return listeDepart == null ? new ArrayList<Agent>() : listeDepart;
 	}
 
-	public void setListeDepart(ArrayList<AgentNW> listeDepart) {
+	public void setListeDepart(ArrayList<Agent> listeDepart) {
 		this.listeDepart = listeDepart;
 	}
 
@@ -571,6 +594,14 @@ public class OeAVCTSelectionEvaluateur extends BasicProcess {
 
 	public void setFirst(boolean first) {
 		this.first = first;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

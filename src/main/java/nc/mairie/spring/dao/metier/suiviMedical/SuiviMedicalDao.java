@@ -8,7 +8,7 @@ import java.util.Map;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
 import nc.mairie.spring.dao.utils.SirhDao;
 
@@ -79,7 +79,7 @@ public class SuiviMedicalDao extends SirhDao implements SuiviMedicalDaoInterface
 
 	@Override
 	public ArrayList<SuiviMedical> listerSuiviMedicalAvecMoisetAnneeSansEffectue(Integer mois, Integer annee,
-			AgentNW agent, ArrayList<String> listeSousService, String relance, String motifVM, String etat,
+			Agent agent, ArrayList<String> listeSousService, String relance, String motifVM, String etat,
 			String statut) throws Exception {
 		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_MOIS + "=? and " + CHAMP_ANNEE + "=? and "
 				+ CHAMP_ETAT + "!= ? ";

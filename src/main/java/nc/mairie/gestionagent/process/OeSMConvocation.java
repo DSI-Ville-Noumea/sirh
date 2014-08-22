@@ -22,7 +22,7 @@ import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.enums.EnumMotifVisiteMed;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.hsct.Medecin;
@@ -33,6 +33,7 @@ import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.MotifVisiteMed;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.SPABSENDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
@@ -112,14 +113,7 @@ public class OeSMConvocation extends BasicProcess {
 	private VisiteMedicaleDao visiteMedicaleDao;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
-
-	public VisiteMedicaleDao getVisiteMedicaleDao() {
-		return visiteMedicaleDao;
-	}
-
-	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
-		this.visiteMedicaleDao = visiteMedicaleDao;
-	}
+	private AgentDao agentDao;
 
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 	private ArrayList<Service> listeServices;
@@ -152,9 +146,9 @@ public class OeSMConvocation extends BasicProcess {
 		initialiseListeDeroulante();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
 			performPB_RECHERCHER(request);
 		}
 		// Initialisation de la liste des documents suivi medicaux
@@ -229,6 +223,9 @@ public class OeSMConvocation extends BasicProcess {
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void afficheListeDocuments() {
@@ -276,7 +273,7 @@ public class OeSMConvocation extends BasicProcess {
 		for (int j = 0; j < getListeSuiviMed().size(); j++) {
 			SuiviMedical sm = (SuiviMedical) getListeSuiviMed().get(j);
 			Integer i = sm.getIdSuiviMed();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(sm.getIdAgent());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
@@ -652,9 +649,9 @@ public class OeSMConvocation extends BasicProcess {
 			}
 
 			// recuperation agent
-			AgentNW agent = null;
+			Agent agent = null;
 			if (getVAL_ST_AGENT().length() != 0) {
-				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 			}
 
 			// recuperation du service
@@ -800,14 +797,13 @@ public class OeSMConvocation extends BasicProcess {
 		if (!listeNomatr.equals(Const.CHAINE_VIDE)) {
 			listeNomatr = listeNomatr.substring(0, listeNomatr.length() - 1);
 		}
-		ArrayList<AgentNW> listeSMCas9 = AgentNW.listerAgentSansVMPAEnCours(getTransaction(), listeNomatr);
+		ArrayList<Agent> listeSMCas9 = getAgentDao().listerAgentSansVMPAEnCours(listeNomatr);
 		int nbCas9 = 0;
 
 		for (int i = 0; i < listeSMCas9.size(); i++) {
-			AgentNW agent = listeSMCas9.get(i);
+			Agent agent = listeSMCas9.get(i);
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-					agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNomatr());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -828,7 +824,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			Affectation aff = null;
 			try {
-				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			} catch (Exception e) {
 
 			}
@@ -840,8 +836,8 @@ public class OeSMConvocation extends BasicProcess {
 
 				}
 			}
-			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+			sm.setIdAgent(agent.getIdAgent());
+			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
@@ -912,8 +908,7 @@ public class OeSMConvocation extends BasicProcess {
 			for (int i = 0; i < listeMatriculeSMCas5.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas5.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -956,7 +951,7 @@ public class OeSMConvocation extends BasicProcess {
 				if (90 < compteurJoursMA) {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
+					Agent agent = getAgentDao().chercherAgentParMatricule(nomatrAgent);
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -967,8 +962,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					Affectation aff = null;
 					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-								Integer.valueOf(agent.getIdAgent()));
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 					} catch (Exception e) {
 
 					}
@@ -980,8 +974,8 @@ public class OeSMConvocation extends BasicProcess {
 
 						}
 					}
-					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+					sm.setIdAgent(agent.getIdAgent());
+					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
@@ -1059,8 +1053,7 @@ public class OeSMConvocation extends BasicProcess {
 			for (int i = 0; i < listeMatriculeSMCas4.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas4.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1103,7 +1096,7 @@ public class OeSMConvocation extends BasicProcess {
 				if (90 > compteurJoursMA && compteurJoursMA > 30) {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
+					Agent agent = getAgentDao().chercherAgentParMatricule(nomatrAgent);
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1114,8 +1107,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					Affectation aff = null;
 					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-								Integer.valueOf(agent.getIdAgent()));
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 					} catch (Exception e) {
 
 					}
@@ -1127,8 +1119,8 @@ public class OeSMConvocation extends BasicProcess {
 
 						}
 					}
-					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+					sm.setIdAgent(agent.getIdAgent());
+					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
@@ -1205,8 +1197,7 @@ public class OeSMConvocation extends BasicProcess {
 			for (int i = 0; i < listeMatriculeSMCas3.size(); i++) {
 				Integer nomatrAgent = listeMatriculeSMCas3.get(i);
 				// on regarde que la PA est active
-				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						nomatrAgent.toString());
+				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), nomatrAgent);
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1249,7 +1240,7 @@ public class OeSMConvocation extends BasicProcess {
 				if (compteurJoursITT > 15) {
 					// on crée la nouvelle ligne
 					SuiviMedical sm = new SuiviMedical();
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), nomatrAgent.toString());
+					Agent agent = getAgentDao().chercherAgentParMatricule(nomatrAgent);
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1260,8 +1251,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					Affectation aff = null;
 					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-								Integer.valueOf(agent.getIdAgent()));
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 					} catch (Exception e) {
 
 					}
@@ -1273,8 +1263,8 @@ public class OeSMConvocation extends BasicProcess {
 
 						}
 					}
-					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+					sm.setIdAgent(agent.getIdAgent());
+					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
@@ -1349,10 +1339,9 @@ public class OeSMConvocation extends BasicProcess {
 			VisiteMedicale vm = listeSMCas1.get(i);
 			// on crée la nouvelle ligne
 			SuiviMedical sm = new SuiviMedical();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(vm.getIdAgent());
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-					agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNomatr());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1373,7 +1362,7 @@ public class OeSMConvocation extends BasicProcess {
 
 			Affectation aff = null;
 			try {
-				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			} catch (Exception e) {
 
 			}
@@ -1385,8 +1374,8 @@ public class OeSMConvocation extends BasicProcess {
 
 				}
 			}
-			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+			sm.setIdAgent(agent.getIdAgent());
+			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
@@ -1456,10 +1445,10 @@ public class OeSMConvocation extends BasicProcess {
 				SuiviMedical smAncien = listeSMCas8.get(i);
 				// on crée la nouvelle ligne
 				SuiviMedical sm = new SuiviMedical();
-				AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), smAncien.getNomatr().toString());
+				Agent agent = getAgentDao().chercherAgentParMatricule(smAncien.getNomatr());
 				// on regarde que la PA est active
 				PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-						agent.getNoMatricule());
+						agent.getNomatr());
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					continue;
@@ -1478,7 +1467,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 				Affectation aff = null;
 				try {
-					aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+					aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 				} catch (Exception e) {
 
 				}
@@ -1579,7 +1568,7 @@ public class OeSMConvocation extends BasicProcess {
 				if (paSuivante.getCdpadm().equals("01")) {
 					// si c'est bon alors on crée le suiviMedical
 					SuiviMedical sm = new SuiviMedical();
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(), paSuivante.getNomatr());
+					Agent agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(paSuivante.getNomatr()));
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1590,8 +1579,7 @@ public class OeSMConvocation extends BasicProcess {
 					}
 					Affectation aff = null;
 					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-								Integer.valueOf(agent.getIdAgent()));
+						aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 					} catch (Exception e) {
 
 					}
@@ -1603,8 +1591,8 @@ public class OeSMConvocation extends BasicProcess {
 
 						}
 					}
-					sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-					sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+					sm.setIdAgent(agent.getIdAgent());
+					sm.setNomatr(agent.getNomatr());
 					sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 					sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 							carr.getCodeCategorie()) : null);
@@ -1671,15 +1659,13 @@ public class OeSMConvocation extends BasicProcess {
 	private void performCalculCas6(Integer moisChoisi, Integer anneeChoisi) throws Exception {
 		// CAS N°6 : Visite Nouvel arrivant
 		// on liste tous les nouveaux arrivant
-		ArrayList<AgentNW> listeAgentCas6 = AgentNW.listerAgentNouveauxArrivant(getTransaction(), moisChoisi,
-				anneeChoisi);
+		ArrayList<Agent> listeAgentCas6 = getAgentDao().listerAgentNouveauxArrivant(moisChoisi, anneeChoisi);
 		int nbCas6 = 0;
 		for (int i = 0; i < listeAgentCas6.size(); i++) {
 			SuiviMedical sm = new SuiviMedical();
-			AgentNW agent = listeAgentCas6.get(i);
+			Agent agent = listeAgentCas6.get(i);
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-					agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNomatr());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1698,7 +1684,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			Affectation aff = null;
 			try {
-				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			} catch (Exception e) {
 
 			}
@@ -1710,15 +1696,14 @@ public class OeSMConvocation extends BasicProcess {
 
 				}
 			}
-			sm.setIdAgent(Integer.valueOf(agent.getIdAgent()));
-			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+			sm.setIdAgent(agent.getIdAgent());
+			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
 			sm.setIdServi(fp != null ? fp.getIdServi() : null);
 			sm.setDateDerniereVisite(null);
-			Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse(agent.getDateDerniereEmbauche());
-			sm.setDatePrevisionVisite(d2);
+			sm.setDatePrevisionVisite(agent.getDateDerniereEmbauche());
 			sm.setIdMotifVm(EnumMotifVisiteMed.VM_NOUVEAU.getCode());
 			sm.setNbVisitesRatees(0);
 			sm.setIdMedecin(null);
@@ -1731,8 +1716,8 @@ public class OeSMConvocation extends BasicProcess {
 			// on regarde la liste des SM pour ne pas réecrire une ligne du meme
 			// agent
 			try {
-				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(
-						Integer.valueOf(agent.getIdAgent()), moisChoisi, anneeChoisi);
+				SuiviMedical smTemp = getSuiviMedDao().chercherSuiviMedicalAgentMoisetAnnee(agent.getIdAgent(),
+						moisChoisi, anneeChoisi);
 				logger.debug("SM : " + smTemp.toString());
 				// si une ligne existe deja
 				// on regarde si etat Travail
@@ -1776,10 +1761,9 @@ public class OeSMConvocation extends BasicProcess {
 			VisiteMedicale vm = listeVMCas2.get(i);
 
 			SuiviMedical sm = new SuiviMedical();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), vm.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(vm.getIdAgent());
 			// on regarde que la PA est active
-			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(),
-					agent.getNoMatricule());
+			PositionAdmAgent pa = PositionAdmAgent.chercherPositionAdmAgentActive(getTransaction(), agent.getNomatr());
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -1798,7 +1782,7 @@ public class OeSMConvocation extends BasicProcess {
 			}
 			Affectation aff = null;
 			try {
-				aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(agent.getIdAgent()));
+				aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			} catch (Exception e) {
 
 			}
@@ -1811,7 +1795,7 @@ public class OeSMConvocation extends BasicProcess {
 				}
 			}
 			sm.setIdAgent(vm.getIdAgent());
-			sm.setNomatr(Integer.valueOf(agent.getNoMatricule()));
+			sm.setNomatr(agent.getNomatr());
 			sm.setAgent(agent.getNomAgent() + " " + agent.getPrenomAgent());
 			sm.setStatut(carr != null && carr.getCodeCategorie() != null ? getSuiviMedDao().getStatutSM(
 					carr.getCodeCategorie()) : null);
@@ -3053,7 +3037,7 @@ public class OeSMConvocation extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -3482,6 +3466,22 @@ public class OeSMConvocation extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public VisiteMedicaleDao getVisiteMedicaleDao() {
+		return visiteMedicaleDao;
+	}
+
+	public void setVisiteMedicaleDao(VisiteMedicaleDao visiteMedicaleDao) {
+		this.visiteMedicaleDao = visiteMedicaleDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

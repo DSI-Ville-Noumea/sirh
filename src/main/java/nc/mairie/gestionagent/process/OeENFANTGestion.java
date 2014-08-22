@@ -11,7 +11,7 @@ import nc.mairie.enums.EnumNationalite;
 import nc.mairie.enums.EnumSexe;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Enfant;
 import nc.mairie.metier.agent.LienEnfantAgent;
 import nc.mairie.metier.agent.Scolarite;
@@ -19,6 +19,7 @@ import nc.mairie.metier.commun.Commune;
 import nc.mairie.metier.commun.CommuneEtrangere;
 import nc.mairie.metier.commun.Departement;
 import nc.mairie.metier.commun.Pays;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.EnfantDao;
 import nc.mairie.spring.dao.metier.agent.LienEnfantAgentDao;
 import nc.mairie.spring.dao.metier.agent.ScolariteDao;
@@ -56,7 +57,7 @@ public class OeENFANTGestion extends BasicProcess {
 	public String ACTION_CONSULTATION = "Consultation d'une fiche enfant.";
 	public String ACTION_CREATION = "Création d'une fiche enfant.";
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private LienEnfantAgent lienEnfantAgentCourant;
 	private ArrayList<Enfant> listeEnfants;
 	private List<Scolarite> listeScolarites;
@@ -64,12 +65,13 @@ public class OeENFANTGestion extends BasicProcess {
 	private Scolarite scolariteCourant;
 	private Pays paysNaissance;
 	private Object communeNaissance;
-	private AgentNW autreParentCourant;
+	private Agent autreParentCourant;
 	private LienEnfantAgent lienEnfantAutreParent;
 
 	private ScolariteDao scolariteDao;
 	private LienEnfantAgentDao lienEnfantAgentDao;
 	private EnfantDao enfantDao;
+	private AgentDao agentDao;
 
 	public String focus = null;
 
@@ -87,6 +89,9 @@ public class OeENFANTGestion extends BasicProcess {
 		}
 		if (getEnfantDao() == null) {
 			setEnfantDao(new EnfantDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -209,11 +214,11 @@ public class OeENFANTGestion extends BasicProcess {
 		} else {
 			for (int i = 0; i < liens.size(); i++) {
 				LienEnfantAgent aLien = (LienEnfantAgent) liens.get(i);
-				if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent())) {
+				if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent().toString())) {
 					setLienEnfantAgentCourant(aLien);
 				} else {
 					setLienEnfantAutreParent(aLien);
-					AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent().toString());
+					Agent a = getAgentDao().chercherAgent(aLien.getIdAgent());
 					setAutreParentCourant(a);
 				}
 			}
@@ -264,12 +269,12 @@ public class OeENFANTGestion extends BasicProcess {
 
 		for (int i = 0; i < liens.size(); i++) {
 			LienEnfantAgent aLien = (LienEnfantAgent) liens.get(i);
-			if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent())) {
+			if (aLien.getIdAgent().toString().equals(getAgentCourant().getIdAgent().toString())) {
 				setLienEnfantAgentCourant(aLien);
 				estACharge = aLien.isEnfantACharge();
 			} else {
 				setLienEnfantAutreParent(aLien);
-				AgentNW a = AgentNW.chercherAgent(getTransaction(), aLien.getIdAgent().toString());
+				Agent a = getAgentDao().chercherAgent(aLien.getIdAgent());
 				setAutreParentCourant(a);
 			}
 		}
@@ -321,11 +326,11 @@ public class OeENFANTGestion extends BasicProcess {
 					if (getEnfantCourant().getCodePaysNaissEt() != null) {
 						commNaiss = CommuneEtrangere
 								.chercherCommuneEtrangere(getTransaction(), getEnfantCourant().getCodePaysNaissEt()
-										.toString(), getEnfantCourant().getCodeCommuneNaissEt().toString());
+										.toString(), getEnfantCourant().getCodeCommuneNaissEt());
 					} else if (getEnfantCourant().getCodeCommuneNaissFr() != null
 							&& getEnfantCourant().getCodeCommuneNaissFr() != 0) {
 						commNaiss = Commune.chercherCommune(getTransaction(), getEnfantCourant()
-								.getCodeCommuneNaissFr().toString());
+								.getCodeCommuneNaissFr());
 					}
 				}
 			}
@@ -350,7 +355,7 @@ public class OeENFANTGestion extends BasicProcess {
 		} else if (getCommuneNaissance() instanceof CommuneEtrangere) {
 			CommuneEtrangere c = (CommuneEtrangere) getCommuneNaissance();
 			// recup du pays de la commune Etrangere
-			Pays p = Pays.chercherPays(getTransaction(), c.getCodPays());
+			Pays p = Pays.chercherPays(getTransaction(), Integer.valueOf(c.getCodPays()));
 			setPaysNaissance(p);
 
 			addZone(getNOM_ST_PAYS_NAISS(), p.getLibPays());
@@ -366,9 +371,9 @@ public class OeENFANTGestion extends BasicProcess {
 	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
 	 * 10:53:36)
 	 * 
-	 * @return nc.mairie.metier.agent.AgentNW
+	 * @return nc.mairie.metier.agent.Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -378,7 +383,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	private AgentNW getAutreParentCourant() {
+	private Agent getAutreParentCourant() {
 		return autreParentCourant;
 	}
 
@@ -396,7 +401,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * Insérez la description de la méthode ici. Date de création : (27/03/2003
 	 * 11:27:55)
 	 * 
-	 * @return nc.mairie.metier.agent.EnfantNW
+	 * @return nc.mairie.metier.agent.Enfant
 	 */
 	private Enfant getEnfantCourant() {
 		return enfantCourant;
@@ -820,8 +825,7 @@ public class OeENFANTGestion extends BasicProcess {
 	private void initialiseListeEnfants(HttpServletRequest request) throws Exception {
 
 		// Recherche des enfants de l'agent
-		ArrayList<Enfant> a = getEnfantDao().listerEnfantAgent(Integer.valueOf(getAgentCourant().getIdAgent()),
-				getLienEnfantAgentDao());
+		ArrayList<Enfant> a = getEnfantDao().listerEnfantAgent(getAgentCourant().getIdAgent(), getLienEnfantAgentDao());
 		setListeEnfants(a);
 
 		int indiceEnfant = 0;
@@ -832,10 +836,10 @@ public class OeENFANTGestion extends BasicProcess {
 				// si commune renseignée
 				if (aEnfant.getCodeCommuneNaissEt() != null && aEnfant.getCodeCommuneNaissEt() != 0) {
 					CommuneEtrangere c = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), aEnfant
-							.getCodePaysNaissEt().toString(), aEnfant.getCodeCommuneNaissEt().toString());
+							.getCodePaysNaissEt().toString(), aEnfant.getCodeCommuneNaissEt());
 					nomCommune = c.getLibCommuneEtrangere();
 				} else if (aEnfant.getCodeCommuneNaissFr() != null && aEnfant.getCodeCommuneNaissFr() != 0) {
-					Commune c = Commune.chercherCommune(getTransaction(), aEnfant.getCodeCommuneNaissFr().toString());
+					Commune c = Commune.chercherCommune(getTransaction(), aEnfant.getCodeCommuneNaissFr());
 					nomCommune = c.getLibCommune();
 				}
 
@@ -886,7 +890,7 @@ public class OeENFANTGestion extends BasicProcess {
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
 				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				// initialisation fenêtre si changement de l'agent
@@ -915,7 +919,7 @@ public class OeENFANTGestion extends BasicProcess {
 		// Si le statut est AUTRE_PARENT
 		if (etatStatut() == STATUT_AUTRE_PARENT) {
 			// recup de l'agent Activite
-			AgentNW a = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent a = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (a != null) {
 				setAutreParentCourant(a);
 				afficheAutreParent(request);
@@ -1001,7 +1005,7 @@ public class OeENFANTGestion extends BasicProcess {
 				return false;
 			}
 			// la date de naissance ne doit pas être < date naissance agent
-			String dateAgent = getAgentCourant().getDateNaissance();
+			String dateAgent = sdf.format(getAgentCourant().getDateNaissance());
 			int compare = Services.compareDates(getZone(getNOM_EF_DATE_NAISS()), dateAgent);
 			if (compare == -9999) {
 				// ERR203 : Opération impossible. Veuillez vérifier le format
@@ -1315,7 +1319,7 @@ public class OeENFANTGestion extends BasicProcess {
 			boolean estACharge = getVAL_RG_CHARGE().equals(getNOM_RB_CHARGE_O());
 			if (getAgentCourant() != null) {
 				LienEnfantAgent newLien = new LienEnfantAgent();
-				newLien.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+				newLien.setIdAgent(getAgentCourant().getIdAgent());
 				newLien.setIdEnfant(id);
 				newLien.setEnfantACharge(estACharge);
 				getLienEnfantAgentDao().creerLienEnfantAgent(newLien.getIdAgent(), newLien.getIdEnfant(),
@@ -1328,7 +1332,7 @@ public class OeENFANTGestion extends BasicProcess {
 			// RG_AG_EN_C01
 			if (getAutreParentCourant() != null) {
 				setLienEnfantAutreParent(new LienEnfantAgent());
-				getLienEnfantAutreParent().setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
+				getLienEnfantAutreParent().setIdAgent(getAutreParentCourant().getIdAgent());
 				getLienEnfantAutreParent().setIdEnfant(id);
 				getLienEnfantAutreParent().setEnfantACharge(false);
 				getLienEnfantAgentDao().creerLienEnfantAgent(getLienEnfantAutreParent().getIdAgent(),
@@ -1386,7 +1390,7 @@ public class OeENFANTGestion extends BasicProcess {
 		// RG_AG_EN_C01
 		if (getLienEnfantAutreParent() == null && getAutreParentCourant() != null) {
 			LienEnfantAgent newLien = new LienEnfantAgent();
-			newLien.setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
+			newLien.setIdAgent(getAutreParentCourant().getIdAgent());
 			newLien.setIdEnfant(getEnfantCourant().getIdEnfant());
 			newLien.setEnfantACharge(false);
 			getLienEnfantAgentDao().creerLienEnfantAgent(newLien.getIdAgent(), newLien.getIdEnfant(),
@@ -1394,7 +1398,7 @@ public class OeENFANTGestion extends BasicProcess {
 		}
 		if (getLienEnfantAutreParent() != null) {
 			if (getAutreParentCourant() != null) {
-				getLienEnfantAutreParent().setIdAgent(Integer.valueOf(getAutreParentCourant().getIdAgent()));
+				getLienEnfantAutreParent().setIdAgent(getAutreParentCourant().getIdAgent());
 				getLienEnfantAutreParent().setEnfantACharge(false);
 				getLienEnfantAgentDao().modifierLienEnfantAgent(getLienEnfantAutreParent().getIdAgent(),
 						getLienEnfantAutreParent().getIdEnfant(), getLienEnfantAutreParent().isEnfantACharge());
@@ -1467,9 +1471,9 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 10:53:36)
 	 * 
 	 * @param newAgentCourant
-	 *            nc.mairie.metier.agent.AgentNW
+	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentCourant(AgentNW newAgentCourant) {
+	private void setAgentCourant(Agent newAgentCourant) {
 		agentCourant = newAgentCourant;
 	}
 
@@ -1478,9 +1482,9 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 15:22:22)
 	 * 
 	 * @param newAutreParentCourant
-	 *            nc.mairie.metier.agent.AgentNW
+	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAutreParentCourant(AgentNW newAutreParentCourant) {
+	private void setAutreParentCourant(Agent newAutreParentCourant) {
 		autreParentCourant = newAutreParentCourant;
 	}
 
@@ -1500,7 +1504,7 @@ public class OeENFANTGestion extends BasicProcess {
 	 * 11:27:55)
 	 * 
 	 * @param newEnfantCourant
-	 *            nc.mairie.metier.agent.EnfantNW
+	 *            nc.mairie.metier.agent.Enfant
 	 */
 	private void setEnfantCourant(Enfant newEnfantCourant) {
 		enfantCourant = newEnfantCourant;
@@ -1894,7 +1898,7 @@ public class OeENFANTGestion extends BasicProcess {
 	/**
 	 * Retourne un objet lien enfant-agent
 	 * 
-	 * @return LienEnfantNWAgentNW
+	 * @return LienEnfantAgent
 	 */
 	private LienEnfantAgent getLienEnfantAgentCourant() {
 		return lienEnfantAgentCourant;
@@ -1912,7 +1916,7 @@ public class OeENFANTGestion extends BasicProcess {
 	/**
 	 * Retourne un objet lien enfant-autreParent
 	 * 
-	 * @return LienEnfantNWAgentNW
+	 * @return LienEnfantAgent
 	 */
 	private LienEnfantAgent getLienEnfantAutreParent() {
 		return lienEnfantAutreParent;
@@ -2345,6 +2349,14 @@ public class OeENFANTGestion extends BasicProcess {
 
 	public void setEnfantDao(EnfantDao enfantDao) {
 		this.enfantDao = enfantDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

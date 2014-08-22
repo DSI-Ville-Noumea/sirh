@@ -21,7 +21,7 @@ import nc.mairie.enums.EnumTypeCompetence;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
@@ -60,6 +60,7 @@ import nc.mairie.metier.specificites.DelegationFP;
 import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemFP;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
@@ -221,16 +222,16 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private HashMap<Integer, String> hashOrigineCompetence;
 	private FichePoste fichePosteCourante;
 	private Affectation affectationCourante;
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Contrat contratCourant;
 	private TypeContrat typeContratCourant;
 	private FicheEmploi emploiPrimaire;
 	private FicheEmploi emploiSecondaire;
 	private FichePoste responsable;
-	private AgentNW agtResponsable;
+	private Agent agtResponsable;
 	private TitrePoste titrePosteResponsable;
 	private FichePoste remplacement;
-	private AgentNW agtRemplacement;
+	private Agent agtRemplacement;
 	private TitrePoste titrePosteRemplacement;
 	private Service service;
 	public String focus = null;
@@ -275,6 +276,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -580,6 +582,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -758,7 +763,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_ST_RESPONSABLE(), getResponsable().getNumFp());
 			if (getAgtResponsable() != null) {
 				addZone(getNOM_ST_INFO_RESP(), getAgtResponsable().getNomAgent() + " "
-						+ getAgtResponsable().getPrenomAgent() + " (" + getAgtResponsable().getNoMatricule() + ") - "
+						+ getAgtResponsable().getPrenomAgent() + " (" + getAgtResponsable().getNomatr() + ") - "
 						+ getTitrePosteResponsable().getLibTitrePoste());
 			} else {
 				addZone(getNOM_ST_INFO_RESP(), "Cette fiche de poste (" + getTitrePosteResponsable().getLibTitrePoste()
@@ -778,7 +783,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			addZone(getNOM_ST_REMPLACEMENT(), getRemplacement().getNumFp());
 			if (getAgtRemplacement() != null) {
 				addZone(getNOM_ST_INFO_REMP(), getAgtRemplacement().getNomAgent() + " "
-						+ getAgtRemplacement().getPrenomAgent() + " (" + getAgtRemplacement().getNoMatricule() + ") - "
+						+ getAgtRemplacement().getPrenomAgent() + " (" + getAgtRemplacement().getNomatr() + ") - "
 						+ getTitrePosteRemplacement().getLibTitrePoste());
 			} else {
 				addZone(getNOM_ST_INFO_REMP(), "Cette fiche de poste ("
@@ -797,7 +802,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if (getFichePosteCourante() != null && getAgentCourant() != null && getAffectationCourante() != null) {
 			String chaine = "Cette fiche de poste est affectée à l'agent " + getAgentCourant().getNomAgent() + " "
-					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNoMatricule() + ") depuis le "
+					+ getAgentCourant().getPrenomAgent() + " (" + getAgentCourant().getNomatr() + ") depuis le "
 					+ sdf.format(getAffectationCourante().getDateDebutAff());
 			if (getContratCourant() != null && getContratCourant().getIdContrat() != null) {
 				chaine += " (" + getTypeContratCourant().getLibTypeContrat() + " depuis le "
@@ -2582,7 +2587,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
 			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdAgent(getAgentCourant().getIdAgent());
 			lda.setIdDocument(id);
 			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
@@ -2638,9 +2643,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		} else if (getVAL_EF_RECHERCHE() != null && !getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE)
 				&& getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) {
 			// recuperation agent
-			AgentNW agent = null;
+			Agent agent = null;
 			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
-				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
+				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_RECHERCHE_BY_AGENT()));
 			}
 			// l agent n existe pas
 			if (null == agent || null == agent.getIdAgent()) {
@@ -2651,7 +2656,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(Const.CHAINE_VIDE, null,
 					null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
-					agent == null ? null : Integer.valueOf(agent.getIdAgent()));
+					agent == null ? null : agent.getIdAgent());
 
 			// si aucun resultat ==> message erreur
 			if (null == fp || 0 == fp.size()) {
@@ -2695,9 +2700,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// dans le cas ou seul le numero de poste est saisi
 		} else if (getVAL_EF_RECHERCHE_BY_AGENT() != null && !getVAL_EF_RECHERCHE_BY_AGENT().equals(Const.CHAINE_VIDE)) {
 			// recuperation agent
-			AgentNW agent = null;
+			Agent agent = null;
 			if (getVAL_EF_RECHERCHE_BY_AGENT().length() != 0) {
-				agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_EF_RECHERCHE_BY_AGENT());
+				agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_RECHERCHE_BY_AGENT()));
 			}
 			// l agent n existe pas
 			if (null == agent || null == agent.getIdAgent()) {
@@ -2708,7 +2713,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 			ArrayList<FichePoste> fp = getFichePosteDao().listerFichePosteAvecCriteresAvances(Const.CHAINE_VIDE, null,
 					null, getVAL_EF_RECHERCHE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_RECHERCHE(),
-					agent == null ? null : Integer.valueOf(agent.getIdAgent()));
+					agent == null ? null : agent.getIdAgent());
 
 			// si aucun resultat ==> message erreur
 			if (null == fp || 0 == fp.size()) {
@@ -3599,25 +3604,24 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
 			}
 			// Init Infos Affectation FP
-			setAgentCourant(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getFichePosteCourante()
-					.getIdFichePoste().toString()));
+			setAgentCourant(getAgentDao().chercherAgentAffecteFichePoste(getFichePosteCourante().getIdFichePoste()));
 			// si on a pas trouve d'gent affecté sur FP primaire, on recherche
 			// sur secondaire
 			if (getAgentCourant() == null) {
-				setAgentCourant(AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(),
-						getFichePosteCourante().getIdFichePoste().toString()));
+				setAgentCourant(getAgentDao().chercherAgentAffecteFichePosteSecondaire(
+						getFichePosteCourante().getIdFichePoste()));
 			}
 			if (getAgentCourant() != null) {
 				try {
 					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-							Integer.valueOf(getAgentCourant().getIdAgent()));
+							getAgentCourant().getIdAgent());
 					setAffectationCourante(aff);
 				} catch (Exception e) {
 					setAffectationCourante(null);
 				}
 				try {
-					Contrat c = getContratDao().chercherContratAgentDateComprise(
-							Integer.valueOf(getAgentCourant().getIdAgent()), new Date());
+					Contrat c = getContratDao().chercherContratAgentDateComprise(getAgentCourant().getIdAgent(),
+							new Date());
 					setContratCourant(c);
 				} catch (Exception e) {
 					setContratCourant(null);
@@ -4356,8 +4360,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void setResponsable(FichePoste resp) throws Exception {
 		this.responsable = resp;
 		if (resp != null) {
-			setAgtResponsable(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getResponsable()
-					.getIdFichePoste().toString()));
+			setAgtResponsable(getAgentDao().chercherAgentAffecteFichePoste(getResponsable().getIdFichePoste()));
 			setTitrePosteResponsable(getTitrePosteDao().chercherTitrePoste(getResponsable().getIdTitrePoste()));
 		} else {
 			setAgtResponsable(null);
@@ -5114,8 +5117,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public void setRemplacement(FichePoste remp) throws Exception {
 		this.remplacement = remp;
 		if (remp != null) {
-			setAgtRemplacement(AgentNW.chercherAgentAffecteFichePoste(getTransaction(), getRemplacement()
-					.getIdFichePoste().toString()));
+			setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
 			setTitrePosteRemplacement(getTitrePosteDao().chercherTitrePoste(getRemplacement().getIdTitrePoste()));
 		} else {
 			setAgtRemplacement(null);
@@ -5576,7 +5578,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return agtResponsable
 	 */
-	private AgentNW getAgtResponsable() {
+	private Agent getAgtResponsable() {
 		return agtResponsable;
 	}
 
@@ -5585,7 +5587,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param agtResponsable
 	 */
-	private void setAgtResponsable(AgentNW agtResponsable) {
+	private void setAgtResponsable(Agent agtResponsable) {
 		this.agtResponsable = agtResponsable;
 	}
 
@@ -5594,7 +5596,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return agtRemplacement
 	 */
-	private AgentNW getAgtRemplacement() {
+	private Agent getAgtRemplacement() {
 		return agtRemplacement;
 	}
 
@@ -5603,7 +5605,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param agtRemplacement
 	 */
-	private void setAgtRemplacement(AgentNW agtRemplacement) {
+	private void setAgtRemplacement(Agent agtRemplacement) {
 		this.agtRemplacement = agtRemplacement;
 	}
 
@@ -5666,7 +5668,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	private AgentNW getAgentCourant() {
+	private Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -5675,7 +5677,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -6966,5 +6968,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

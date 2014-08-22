@@ -1,6 +1,6 @@
 package nc.mairie.gestionagent.dto;
 
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 
 public class AgentDto {
 
@@ -12,10 +12,10 @@ public class AgentDto {
 
 	}
 
-	public AgentDto(AgentNW agent) {
+	public AgentDto(Agent agent) {
 		nom = agent.getNomAgent();
 		prenom = agent.getPrenomAgent();
-		idAgent = Integer.valueOf(agent.getIdAgent());
+		idAgent = agent.getIdAgent();
 	}
 
 	public String getNom() {

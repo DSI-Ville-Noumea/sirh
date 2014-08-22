@@ -14,7 +14,10 @@ import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -25,6 +28,9 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+
+import org.springframework.context.ApplicationContext;
+
 import flexjson.JSONSerializer;
 
 /**
@@ -50,6 +56,8 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	public String ACTION_VISUALISATION = "Visualisation d'un congé exceptionnel :";
 	public String ACTION_SUPPRESSION = "Suppression d'un congé exceptionnel :";
 
+	private AgentDao agentDao;
+
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
 	 * s'il y en a, avec setListeLB_XXX() ATTENTION : Les Objets dans la liste
@@ -70,12 +78,21 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
+		initialiseDao();
 		initialiseListeDeroulante();
 
 		if (getListeTypeAbsence().size() == 0) {
 			initialiseListeTypeAbsence(request);
 		}
 
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeDeroulante() {
@@ -770,8 +787,8 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		return "NOM_PB_VALIDER_CONGES";
 	}
 
-	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
-		AgentNW agent = null;
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
@@ -785,10 +802,10 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				return null;
 			} else {
 				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-					agent = AgentNW.chercherAgentParMatricule(getTransaction(),
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-					if (getTransaction().isErreur()) {
-						getTransaction().traiterErreur();
+					try {
+						agent = getAgentDao().chercherAgentParMatricule(
+								radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+					} catch (Exception e) {
 						// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 						getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 						return null;
@@ -796,7 +813,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 				}
 			}
 		} else {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agent = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		return agent;
 	}
@@ -809,7 +826,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 			return false;
 		}
 
-		AgentNW agentConnecte = getAgentConnecte(request);
+		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			// "ERR183",
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
@@ -1161,6 +1178,14 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 		// On pose le statut
 		setStatut(STATUT_MEME_PROCESS);
 		return true;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

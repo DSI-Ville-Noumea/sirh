@@ -3,6 +3,7 @@ package nc.mairie.gestionagent.process.agent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +19,11 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -32,6 +36,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 import org.joda.time.DateTime;
+import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
@@ -46,7 +51,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Integer soldeCourantMinute;
 	private Integer soldeCourantPrecMinute;
 
@@ -62,6 +67,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	public String ACTION_CREATION_RECUP = "Alimenter le compteur de récupération";
 	public String ACTION_CREATION_REPOS_COMP = "Alimenter le compteur de repos compensateur";
 
+	private AgentDao agentDao;
+
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
 	 * 11:39:24)
@@ -69,6 +76,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	 */
 	public OeAGENTAbsencesCompteur() {
 		super();
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -94,12 +109,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 			} else {
@@ -114,18 +131,21 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto();
+			setListeTypeAbsence(new ArrayList<TypeAbsenceDto>());
 
 			int[] tailles = { 100 };
 			String padding[] = { "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
-			for (ListIterator<TypeAbsenceDto> list = getListeTypeAbsence().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeAbsenceDto> list = listeComplete.listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
-				
-				if(EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence().intValue()) {
+
+				if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence()
+						.intValue()) {
 					String ligne[] = { type.getLibelle() };
 
 					aFormat.ajouteLigne(ligne);
+					getListeTypeAbsence().add(type);
 				}
 			}
 			setLB_TYPE_ABSENCE(aFormat.getListeFormatee(false));
@@ -182,11 +202,11 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return "ECR-AG-ABS-CPTEUR";
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -250,16 +270,19 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		ArrayList<MotifCompteurDto> listeMotifs = (ArrayList<MotifCompteurDto>) consuAbs
 				.getListeMotifCompteur(getTypeAbsenceCourant().getIdRefTypeAbsence());
 		setListeMotifCompteur(listeMotifs);
+		if (getListeMotifCompteur().size() > 0) {
+			int[] tailles = { 30 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (MotifCompteurDto motif : getListeMotifCompteur()) {
+				String ligne[] = { motif.getLibelle() };
 
-		int[] tailles = { 30 };
-		String padding[] = { "G" };
-		FormateListe aFormat = new FormateListe(tailles, padding, false);
-		for (MotifCompteurDto motif : getListeMotifCompteur()) {
-			String ligne[] = { motif.getLibelle() };
-
-			aFormat.ajouteLigne(ligne);
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_MOTIF(aFormat.getListeFormatee(true));
+		} else {
+			setLB_MOTIF(null);
 		}
-		setLB_MOTIF(aFormat.getListeFormatee(false));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -273,21 +296,29 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			dto.setTypeDemande(EnumTypeAbsence.RECUP.getCode());
 			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_RECUP);
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
 			dto.setTypeDemande(EnumTypeAbsence.REPOS_COMP.getCode());
 			afficheSolde(getTypeAbsenceCourant(), dto);
 			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_REPOS_COMP);
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A48.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.ASA_A48.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.ASA_A54.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.ASA_A55.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.ASA_A53.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA.");
 
-		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A50.getCode().toString())
-				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.ASA_A50.getCode().toString())
+				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("Ce type d'ASA ne se gère pas par compteur.");
 
@@ -392,7 +423,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			return false;
 
 		// on recupere l'agent connecté
-		AgentNW agentConnecte = getAgentConnecte(request);
+		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -451,12 +482,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
 					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			MotifCompteurDto motif = null;
-			if (indiceMotif >= 0) {
-				motif = getListeMotifCompteur().get(indiceMotif);
+			if (indiceMotif > 0) {
+				motif = getListeMotifCompteur().get(indiceMotif - 1);
 			}
 
 			CompteurDto compteurDto = new CompteurDto();
-			compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
@@ -521,12 +552,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
 					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
 			MotifCompteurDto motif = null;
-			if (indiceMotif >= 0) {
-				motif = getListeMotifCompteur().get(indiceMotif);
+			if (indiceMotif > 0) {
+				motif = getListeMotifCompteur().get(indiceMotif - 1);
 			}
 
 			CompteurDto compteurDto = new CompteurDto();
-			compteurDto.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
@@ -555,9 +586,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		return true;
 	}
 
-	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		AgentNW agentConnecte = null;
+		Agent agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -565,14 +596,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			if (user == null) {
 				return null;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			try {
+				agentConnecte = getAgentDao().chercherAgentParMatricule(
+						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			} catch (Exception e) {
 				return null;
 			}
 		} else {
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		return agentConnecte;
 	}
@@ -581,7 +612,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// motif obligatoire
 		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
 				: -1);
-		if (indiceMotif < 0) {
+		if (indiceMotif <= 0) {
 			// "ERR002", "La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 			return false;
@@ -754,5 +785,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public void setMessageInfo(String messageInfo) {
 		this.messageInfo = messageInfo;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

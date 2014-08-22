@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="nc.mairie.technique.VariableGlobale"%>
-<%@page import="nc.mairie.metier.agent.AgentNW"%>
+<%@page import="nc.mairie.metier.agent.Agent"%>
 <%@page import="nc.mairie.technique.BasicProcess"%>
 <html>
 <head>
@@ -20,17 +21,20 @@
 			<nobr>
             <IMG name="AgentRecherche" title="Recherche d'un agent" src="images/loupe.gif" height="20" width="20" onclick='executeBouton(this);'>
             <br>
-			<%AgentNW agent = (AgentNW)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_AGENT_MAIRIE);%>
+			<%
+				Agent agent = (Agent)VariableGlobale.recuperer(request,VariableGlobale.GLOBAL_AGENT_MAIRIE);
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			%>
 			<%String serviceAgent = (String)VariableGlobale.recuperer(request,"SERVICE_AGENT");%>
 			<%String res = serviceAgent; %>
             <%if (agent != null) {%>
              	<span class="sigp2" style="font-size : 11px;font-family : Arial;font-weight : bold;color : #555555;text-align: center;">
-             		<%= agent.nomUsage%>
-             		<%= agent.prenom%>
+             		<%= agent.getNomUsage()%>
+             		<%= agent.getPrenom()%>
              		<br>
-             		mat. <%= agent.noMatricule%>
+             		mat. <%= agent.getNomatr()%>
              		<br>
-             		(<%= agent.dateNaissance%>)
+             		(<%= sdf.format(agent.getDateNaissance()) %>)
              		<br>
              		<% if(serviceAgent!=null){%>
 		             	<%if(serviceAgent.length()>30){

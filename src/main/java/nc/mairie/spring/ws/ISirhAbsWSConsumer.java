@@ -32,9 +32,9 @@ public interface ISirhAbsWSConsumer {
 	// Type d'absences
 	List<TypeAbsenceDto> getListeRefTypeAbsenceDto();
 
-	ReturnMessageDto saveTypeAbsence(String idAgentConnecte, String json);
-	
-	ReturnMessageDto deleteTypeAbsence(String idAgentConnecte, Integer idRefTypeAbsence);
+	ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json);
+
+	ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence);
 
 	// Motifs
 	List<MotifDto> getListeMotif();
@@ -47,22 +47,22 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto saveMotifCompteur(String json);
 
 	// solde
-	SoldeDto getSoldeAgent(String idAgent, String json);
+	SoldeDto getSoldeAgent(Integer idAgent, String json);
 
 	// compteurs
-	ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurRecup(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurReposComp(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurAsaA48(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurAsaA55(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurAsaA52(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurAsaA52(Integer idAgentConnecte, String json);
 
-	ReturnMessageDto addCompteurAsaA53(String idAgentConnecte, String json);
+	ReturnMessageDto addCompteurAsaA53(Integer idAgentConnecte, String json);
 
 	List<CompteurAsaDto> getListeCompteursA48();
 
@@ -85,7 +85,7 @@ public interface ISirhAbsWSConsumer {
 
 	List<DemandeDto> getVisualisationHistory(int absId);
 
-	ReturnMessageDto saveDemande(String idAgentConnecte, String json);
+	ReturnMessageDto saveDemande(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto setAbsState(Integer idAgent, String json);
 

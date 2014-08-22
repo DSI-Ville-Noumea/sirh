@@ -5,7 +5,7 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="nc.mairie.metier.agent.AgentNW"%>
+<%@page import="nc.mairie.metier.agent.Agent"%>
 						<table  class="display"  id="VentilationTableAbs">
 							<thead>
 								<tr>
@@ -21,33 +21,33 @@
 							</thead>
 							<tbody>
 							<%
-							SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
-							Enumeration<Hashtable<Integer, String>> e = process.getHashVentilAbs().keys();
-							AgentNW agent;
-							while (e.hasMoreElements()) {
-								Hashtable<Integer, String> ag = e.nextElement();
-								Enumeration<Integer> o = ag.keys();
-								Integer idAgent = o.nextElement();
-								Collection<String> r = ag.values();
-								String moisAnneeR = r.iterator().next();
-								List<VentilAbsenceDto> abs = process.getHashVentilAbs().get(ag);
-								int minutesConcertees = 0;
-								int minutesNonConcertees = 0;
-								int minutesImmediates = 0;
-								String affMois = "";
-								String nomatr = "";
-								String prenom = "";
-								String nom = "";
-								for (VentilAbsenceDto t : abs) {
-									minutesConcertees += t.getMinutesConcertees();
-									minutesNonConcertees += t.getMinutesNonConcertees();
-									minutesImmediates += t.getMinutesImmediates();
-									agent = AgentNW.chercherAgent(process.getTransaction(), String.valueOf(t.getId_agent()));
-									nomatr = agent.getNoMatricule();
-									prenom = agent.getPrenomAgent();
-									nom = agent.getNomAgent();
-									affMois = moisAnnee.format(t.getDateLundi());
-								}
+								SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
+												Enumeration<Hashtable<Integer, String>> e = process.getHashVentilAbs().keys();
+												Agent agent;
+												while (e.hasMoreElements()) {
+													Hashtable<Integer, String> ag = e.nextElement();
+													Enumeration<Integer> o = ag.keys();
+													Integer idAgent = o.nextElement();
+													Collection<String> r = ag.values();
+													String moisAnneeR = r.iterator().next();
+													List<VentilAbsenceDto> abs = process.getHashVentilAbs().get(ag);
+													int minutesConcertees = 0;
+													int minutesNonConcertees = 0;
+													int minutesImmediates = 0;
+													String affMois = "";
+													String nomatr = "";
+													String prenom = "";
+													String nom = "";
+													for (VentilAbsenceDto t : abs) {
+														minutesConcertees += t.getMinutesConcertees();
+														minutesNonConcertees += t.getMinutesNonConcertees();
+														minutesImmediates += t.getMinutesImmediates();
+														agent = process.getAgent(t.getId_agent());
+														nomatr = agent.getNomatr().toString();
+														prenom = agent.getPrenomAgent();
+														nom = agent.getNomAgent();
+														affMois = moisAnnee.format(t.getDateLundi());
+													}
 							%>
 								<tr id="abs_<%=moisAnneeR+"_"+idAgent%>">
 									<td><%=nomatr%></td>

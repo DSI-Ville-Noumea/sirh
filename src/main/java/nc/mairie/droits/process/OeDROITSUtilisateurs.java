@@ -10,11 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.metier.droits.GroupeUtilisateur;
 import nc.mairie.metier.droits.Utilisateur;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.droits.GroupeDao;
 import nc.mairie.spring.dao.metier.droits.GroupeUtilisateurDao;
 import nc.mairie.spring.dao.metier.droits.UtilisateurDao;
@@ -65,6 +66,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 	private GroupeDao groupeDao;
 	private GroupeUtilisateurDao groupeUtilisateurDao;
 	private NFADao nfaDao;
+	private AgentDao agentDao;
 
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 		// POUR RESTER SUR LA MEME PAGE LORS DE LA RECHERCHE D'UN AGENT
@@ -136,6 +138,9 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 		if (getNfaDao() == null) {
 			setNfaDao(new NFADao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -161,7 +166,7 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 				String infoAgent = "&nbsp;";
 				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-					AgentNW agent = AgentNW.chercherAgentParMatricule(getTransaction(),
+					Agent agent = getAgentDao().chercherAgentParMatricule(
 							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
 					String prenomAgent = agent.getPrenomAgent().toLowerCase();
 					String premLettre = prenomAgent.substring(0, 1).toUpperCase();
@@ -815,5 +820,13 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public void setNfaDao(NFADao nfaDao) {
 		this.nfaDao = nfaDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

@@ -37,14 +37,14 @@ public interface ISirhPtgWSConsumer {
 
 	VentilDateDto getVentilationEnCours(String statut);
 
-	boolean startVentilation(String idAgent, Date dateVentilation, String agentsJson, String statut,
+	boolean startVentilation(Integer idAgent, Date dateVentilation, String agentsJson, String statut,
 			String idRefTypePointage);
 
 	boolean isValidAvailable(String agentStatus);
 
 	boolean isValidEnCours(String agentStatus);
 
-	boolean startDeversementPaie(String idAgent, String statut);
+	boolean startDeversementPaie(Integer idAgent, String statut);
 
 	boolean canStartExportEtatsPayeur(String statut);
 
@@ -52,7 +52,7 @@ public interface ISirhPtgWSConsumer {
 
 	byte[] downloadFicheEtatsPayeur(Integer idEtatPayeur);
 
-	boolean startExportEtatsPayeur(String idAgentExporting, String statutString);
+	boolean startExportEtatsPayeur(Integer idAgentExporting, String statutString);
 
 	List<VentilErreurDto> getErreursVentilation(String type);
 
@@ -63,11 +63,11 @@ public interface ISirhPtgWSConsumer {
 	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
 
 	// Saisie
-	FichePointageDto getSaisiePointage(String idAgent, String monday);
+	FichePointageDto getSaisiePointage(Integer idAgent, String monday);
 
-	ReturnMessageDto setSaisiePointage(String idAgent, FichePointageDto toSerialize);
+	ReturnMessageDto setSaisiePointage(Integer idAgent, FichePointageDto toSerialize);
 
-	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, int idRefEtat, String idagent, String statutAgent);
+	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, int idRefEtat, Integer idAgent, String statutAgent);
 
 	// Filtres
 	List<RefEtatDto> getEtatsPointage();

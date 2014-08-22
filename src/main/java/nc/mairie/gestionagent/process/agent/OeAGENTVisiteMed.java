@@ -25,7 +25,7 @@ import nc.mairie.enums.EnumMotifVisiteMed;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.agent.PositionAdmAgent;
@@ -82,7 +82,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 	private String[] LB_MOTIF;
 	private String[] LB_RECOMMANDATION;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private VisiteMedicale visiteCourante;
 	private Inaptitude inaptitudeCourante;
 
@@ -169,7 +169,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeVisiteMed(request);
@@ -325,12 +325,12 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des visites médicales de l'agent
 		ArrayList<VisiteMedicale> listeVisiteMed = getVisiteMedicaleDao().listerVisiteMedicaleAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+				getAgentCourant().getIdAgent());
 
 		// Recherche des suivi médicaux de l'agent en statut planifié ou
 		// convoqué
 		ArrayList<SuiviMedical> listeSuiviMed = getSuiviMedDao().listerSuiviMedicalEtatAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), EnumEtatSuiviMed.CONVOQUE.getCode(),
+				getAgentCourant().getIdAgent(), EnumEtatSuiviMed.CONVOQUE.getCode(),
 				EnumEtatSuiviMed.PLANIFIE.getCode(), EnumEtatSuiviMed.ACCOMP.getCode());
 		for (int i = 0; i < listeSuiviMed.size(); i++) {
 			// on recupere le suivi medical que l'on transforme en visite
@@ -379,7 +379,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				}
 				// calcul du nb de docs
 				ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-						Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "VM", vm.getIdVisite());
+						getAgentCourant().getIdAgent(), "HSCT", "VM", vm.getIdVisite());
 				int nbDoc = 0;
 				if (listeDocAgent != null) {
 					nbDoc = listeDocAgent.size();
@@ -629,11 +629,11 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		return true;
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -984,7 +984,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// RG_AG_VM_C01 - Vérification si la PA de l'agent donne le
 				// droit à visite médicale à la date donnée
 				PositionAdmAgent posAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
-						getAgentCourant().getNoMatricule(), Services.convertitDate(
+						getAgentCourant().getNomatr(), Services.convertitDate(
 								Services.formateDate(getZone(getNOM_EF_DATE_VISITE())), "dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
@@ -1064,7 +1064,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				// Création de l'objet VisiteMedicale à créer/modifier
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				AgentNW agentCourant = getAgentCourant();
+				Agent agentCourant = getAgentCourant();
 				getVisiteCourante().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
 				getVisiteCourante().setDateDerniereVisite(sdf.parse(dateVisite));
 				getVisiteCourante().setDureeValidite(duree.equals(Const.CHAINE_VIDE) ? 0 : Integer.valueOf(duree));
@@ -1084,7 +1084,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 									.chercherSuiviMedical(getVisiteCourante().getIdSuiviMed());
 							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao()
 									.listerSuiviMedicalAgentAnterieurDate(
-											Integer.valueOf(getAgentCourant().getIdAgent()), sm.getMois(),
+											getAgentCourant().getIdAgent(), sm.getMois(),
 											sm.getAnnee());
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
@@ -1104,7 +1104,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 								|| getVisiteCourante().getIdMotifVm().toString()
 										.equals(EnumMotifVisiteMed.VM_DEMANDE_SERVICE.getCode().toString())) {
 							VisiteMedicale vmASupp = getVisiteMedicaleDao().chercherVisiteMedicaleCriteres(
-									Integer.valueOf(getAgentCourant().getIdAgent()), med.getIdMedecin(),
+									getAgentCourant().getIdAgent(), med.getIdMedecin(),
 									getVisiteCourante().getIdMotifVm());
 							getVisiteMedicaleDao().supprimerVisiteMedicale(vmASupp.getIdVisite());
 						}
@@ -2668,7 +2668,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgentTYPE(getLienDocumentAgentDao(),
-				Integer.valueOf(getAgentCourant().getIdAgent()), "HSCT", "VM", getVisiteCourante().getIdVisite());
+				getAgentCourant().getIdAgent(), "HSCT", "VM", getVisiteCourante().getIdVisite());
 		setListeDocuments(listeDocAgent);
 
 		int indiceActeVM = 0;
@@ -2902,7 +2902,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		Document d = getDocumentCourant();
 
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
+				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -3087,7 +3087,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
 			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+					getAgentCourant().getIdAgent(), d.getIdDocument());
 			File f = new File(d.getLienDocument());
 			if (f.exists()) {
 				f.delete();
@@ -3180,7 +3180,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
-		getLienDocumentAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 		getLienDocumentAgentCourant().setIdDocument(id);
 		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
 				getLienDocumentAgentCourant().getIdDocument());
@@ -3373,7 +3373,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// créer de VM
 				try {
 					SuiviMedical smInterdit = getSuiviMedDao().chercherDernierSuiviMedicalAgent(
-							Integer.valueOf(getAgentCourant().getIdAgent()));
+							getAgentCourant().getIdAgent());
 					if (!smInterdit.getEtat().equals(EnumEtatSuiviMed.EFFECTUE.getCode())) {
 						// "ERR091",
 						// "Une convocation est en attente, vous ne pouvez pas créer de visite médicale avec ce motif.");

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.eae.CampagneActeur;
 import nc.mairie.metier.eae.CampagneAction;
@@ -30,6 +30,7 @@ import nc.mairie.spring.dao.metier.EAE.CampagneActeurDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneActionDao;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeDocumentDao;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
 import nc.mairie.spring.dao.utils.EaeDao;
@@ -93,10 +94,11 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	public MultipartRequest multi = null;
 	public File fichierUpload = null;
 
-	private ArrayList<AgentNW> listeDestinataireMulti;
+	private ArrayList<Agent> listeDestinataireMulti;
 
 	private TypeDocumentDao typeDocumentDao;
 	private DocumentDao documentDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -119,14 +121,14 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			throw new Exception();
 		}
 
-		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-			addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
-			addZone(getNOM_ST_ID_AGENT(), agt.getIdAgent());
-		}
-
 		initialiseDao();
+
+		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		if (agt != null && agt.getIdAgent() != null) {
+			addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
+			addZone(getNOM_ST_ID_AGENT(), agt.getIdAgent().toString());
+		}
 
 		// Initialisation des listes déroulantes
 		initialiseListeDeroulante();
@@ -164,6 +166,9 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	private void initialiseListeAction(HttpServletRequest request) throws Exception {
@@ -192,7 +197,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 				addZone(getNOM_ST_NOM_ACTION(indiceAction), action.getNomAction());
 				addZone(getNOM_ST_TRANSMETTRE(indiceAction), sdf.format(action.getDateTransmission()));
 				addZone(getNOM_ST_MESSAGE(indiceAction), action.getMessage());
-				AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
+				Agent agt = getAgentDao().chercherAgent(action.getIdAgentRealisation());
 				addZone(getNOM_ST_REALISER_PAR(indiceAction),
 						agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 				addZone(getNOM_ST_POUR_LE(indiceAction), sdf.format(action.getDateAFaireLe()));
@@ -418,7 +423,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		addZone(getNOM_ST_MESSAGE(), action.getMessage());
 		addZone(getNOM_ST_TRANSMETTRE(),
 				action.getDateTransmission() == null ? Const.CHAINE_VIDE : sdf.format(action.getDateTransmission()));
-		AgentNW agt = AgentNW.chercherAgent(getTransaction(), action.getIdAgentRealisation().toString());
+		Agent agt = getAgentDao().chercherAgent(action.getIdAgentRealisation());
 		addZone(getNOM_ST_AGENT(), agt.getNomAgent().toUpperCase() + " " + agt.getPrenomAgent());
 		addZone(getNOM_ST_ID_AGENT(), action.getIdAgentRealisation().toString());
 		addZone(getNOM_ST_NOM_ACTION(), action.getNomAction());
@@ -687,7 +692,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 		// on sauvegarde les destinataires
 		for (int i = 0; i < getListeDestinataireMulti().size(); i++) {
-			AgentNW a = getListeDestinataireMulti().get(i);
+			Agent a = getListeDestinataireMulti().get(i);
 			ajouterDestinataire(a);
 		}
 
@@ -1086,7 +1091,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -1243,7 +1248,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * RG_PE_FE_A05
 	 */
 	public boolean performPB_AJOUTER_DESTINATAIRE(HttpServletRequest request) throws Exception {
-		ArrayList<AgentNW> listeDesti = new ArrayList<AgentNW>();
+		ArrayList<Agent> listeDesti = new ArrayList<Agent>();
 		if (getListeDestinataireMulti() != null) {
 			listeDesti.addAll(getListeDestinataireMulti());
 		}
@@ -1269,7 +1274,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_SUPPRIMER_DESTINATAIRE(HttpServletRequest request, int elemASupprimer) throws Exception {
-		AgentNW a = (AgentNW) getListeDestinataireMulti().get(elemASupprimer);
+		Agent a = (Agent) getListeDestinataireMulti().get(elemASupprimer);
 
 		if (a != null) {
 			if (getListeDestinataireMulti() != null) {
@@ -1281,10 +1286,10 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		return true;
 	}
 
-	private void supprimeDestinataire(AgentNW a) throws Exception {
+	private void supprimeDestinataire(Agent a) throws Exception {
 		if (getActionCourante() != null) {
 			CampagneActeur acteur = getCampagneActeurDao().chercherCampagneActeur(
-					getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
+					getActionCourante().getIdCampagneAction(), a.getIdAgent());
 			if (acteur != null) {
 				getCampagneActeurDao().supprimerCampagneActeur(acteur.getIdCampagneActeurs());
 			}
@@ -1300,9 +1305,9 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * 
 	 * @return listeDestinataireMulti ArrayList
 	 */
-	public ArrayList<AgentNW> getListeDestinataireMulti() {
+	public ArrayList<Agent> getListeDestinataireMulti() {
 		if (listeDestinataireMulti == null)
-			listeDestinataireMulti = new ArrayList<AgentNW>();
+			listeDestinataireMulti = new ArrayList<Agent>();
 		return listeDestinataireMulti;
 	}
 
@@ -1312,7 +1317,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 	 * @param listeDestinataireMulti
 	 *            ArrayList
 	 */
-	private void setListeDestinataireMulti(ArrayList<AgentNW> listeDestinataireMulti) {
+	private void setListeDestinataireMulti(ArrayList<Agent> listeDestinataireMulti) {
 		this.listeDestinataireMulti = listeDestinataireMulti;
 	}
 
@@ -1344,10 +1349,10 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 			if (getListeDestinataireMulti().size() == 0 && getActionCourante().getIdCampagneAction() != null) {
 				ArrayList<CampagneActeur> listeDestinataire = getCampagneActeurDao().listerCampagneActeur(
 						getActionCourante().getIdCampagneAction());
-				ArrayList<AgentNW> listeAgentDestinataire = new ArrayList<AgentNW>();
+				ArrayList<Agent> listeAgentDestinataire = new ArrayList<Agent>();
 				for (int i = 0; i < listeDestinataire.size(); i++) {
 					CampagneActeur campAct = listeDestinataire.get(i);
-					AgentNW ag = AgentNW.chercherAgent(getTransaction(), campAct.getIdAgent().toString());
+					Agent ag = getAgentDao().chercherAgent(campAct.getIdAgent());
 					listeAgentDestinataire.add(ag);
 				}
 				setListeDestinataireMulti(listeAgentDestinataire);
@@ -1356,10 +1361,10 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		// on recupere les Destinataire selectionnées dans l'ecran de
 		// selection
 		@SuppressWarnings("unchecked")
-		ArrayList<AgentNW> listeDestinataireSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "ACTEURS");
+		ArrayList<Agent> listeDestinataireSelect = (ArrayList<Agent>) VariablesActivite.recuperer(this, "ACTEURS");
 		if (listeDestinataireSelect != null && listeDestinataireSelect.size() != 0) {
 			for (int i = 0; i < listeDestinataireSelect.size(); i++) {
-				AgentNW a = (AgentNW) listeDestinataireSelect.get(i);
+				Agent a = (Agent) listeDestinataireSelect.get(i);
 				if (a != null) {
 					if (!getListeDestinataireMulti().contains(a)) {
 						getListeDestinataireMulti().add(a);
@@ -1374,7 +1379,7 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 		int indiceActeur = 0;
 		if (getListeDestinataireMulti() != null) {
 			for (int i = 0; i < getListeDestinataireMulti().size(); i++) {
-				AgentNW ag = (AgentNW) getListeDestinataireMulti().get(i);
+				Agent ag = (Agent) getListeDestinataireMulti().get(i);
 				addZone(getNOM_ST_LIB_AGENT(indiceActeur), ag.getNomAgent() + " " + ag.getPrenomAgent());
 
 				indiceActeur++;
@@ -1383,16 +1388,15 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 	}
 
-	private void ajouterDestinataire(AgentNW a) throws Exception {
+	private void ajouterDestinataire(Agent a) throws Exception {
 		if (getActionCourante() != null) {
 			// Sauvegarde des nouveaux acteurs
 			try {
 				@SuppressWarnings("unused")
 				CampagneActeur campAct = getCampagneActeurDao().chercherCampagneActeur(
-						getActionCourante().getIdCampagneAction(), Integer.valueOf(a.getIdAgent()));
+						getActionCourante().getIdCampagneAction(), a.getIdAgent());
 			} catch (Exception e) {
-				getCampagneActeurDao().creerCampagneActeur(getActionCourante().getIdCampagneAction(),
-						Integer.valueOf(a.getIdAgent()));
+				getCampagneActeurDao().creerCampagneActeur(getActionCourante().getIdCampagneAction(), a.getIdAgent());
 			}
 		}
 	}
@@ -2054,5 +2058,13 @@ public class OeAVCTCampagnePlanification extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

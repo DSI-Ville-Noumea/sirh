@@ -4,9 +4,14 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.utils.VariablesActivite;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * Process OePOSTEFEActiviteSelection Date de création : (03/02/09 14:56:59)
@@ -18,15 +23,24 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<AgentNW> listeActeurs;
+	private ArrayList<Agent> listeActeurs;
 	public String focus = null;
+	private AgentDao agentDao;
 
-	public ArrayList<AgentNW> getListeActeurs() {
-		return listeActeurs==null ? new ArrayList<AgentNW>() : listeActeurs;
+	public ArrayList<Agent> getListeActeurs() {
+		return listeActeurs == null ? new ArrayList<Agent>() : listeActeurs;
 	}
 
-	public void setListeActeurs(ArrayList<AgentNW> listeActeurs) {
+	public void setListeActeurs(ArrayList<Agent> listeActeurs) {
 		this.listeActeurs = listeActeurs;
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -37,22 +51,23 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 * 
 	 */
 	public void initialiseZones(HttpServletRequest request) throws Exception {
-		if (getListeActeurs().size()==0) {
+		initialiseDao();
+		if (getListeActeurs().size() == 0) {
 			@SuppressWarnings("unchecked")
-			ArrayList<AgentNW> xcludeListe = (ArrayList<AgentNW>) VariablesActivite.recuperer(this, "LISTEACTEURS");
-			ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
-			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), "DD");
+			ArrayList<Agent> xcludeListe = (ArrayList<Agent>) VariablesActivite.recuperer(this, "LISTEACTEURS");
+			ArrayList<Agent> aListe = new ArrayList<Agent>();
+			aListe = getAgentDao().listerAgentAvecServiceCommencant("DD");
 			aListe = elim_doubure_acteurs(aListe, xcludeListe);
 
 			// Affectation de la liste
-			setListeActeurs(new ArrayList<AgentNW>());
+			setListeActeurs(new ArrayList<Agent>());
 			for (int j = 0; j < aListe.size(); j++) {
-				AgentNW agent = (AgentNW) aListe.get(j);
-				Integer i = Integer.valueOf(agent.getIdAgent());
-				
+				Agent agent = (Agent) aListe.get(j);
+				Integer i = agent.getIdAgent();
+
 				if (agent != null) {
 					getListeActeurs().add(agent);
-					addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent());
+					addZone(getNOM_ST_ID_AGENT(i), agent.getIdAgent().toString());
 					addZone(getNOM_ST_LIB_AGENT(i), agent.getNomAgent() + " " + agent.getPrenomAgent());
 				}
 			}
@@ -63,17 +78,19 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 * 
 	 * @param l1
 	 * @param l2
-	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs avec l2
-	 * fonctionne uniquement avec une liste l1 n'ayant pas 2 elements identiques
+	 * @return ArrayListe ayant éléminé de la liste l1 les éléments en communs
+	 *         avec l2 fonctionne uniquement avec une liste l1 n'ayant pas 2
+	 *         elements identiques
 	 */
-	public static ArrayList<AgentNW> elim_doubure_acteurs(ArrayList<AgentNW> l1, ArrayList<AgentNW> l2) {
+	public static ArrayList<Agent> elim_doubure_acteurs(ArrayList<Agent> l1, ArrayList<Agent> l2) {
 		if (null == l1)
 			return null;
 
 		if (null != l2) {
 			for (int i = 0; i < l2.size(); i++) {
 				for (int j = 0; j < l1.size(); j++) {
-					if ((((AgentNW) l2.get(i)).getIdAgent()).equals(((AgentNW) l1.get(j)).getIdAgent()))
+					if ((((Agent) l2.get(i)).getIdAgent().toString()).equals(((Agent) l1.get(j)).getIdAgent()
+							.toString()))
 						l1.remove(j);
 
 				}
@@ -129,11 +146,11 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_VALIDER(HttpServletRequest request) throws Exception {
-		ArrayList<AgentNW> listAgentSelect = new ArrayList<AgentNW>();
+		ArrayList<Agent> listAgentSelect = new ArrayList<Agent>();
 		for (int j = 0; j < getListeActeurs().size(); j++) {
 			// on recupère la ligne concernée
-			AgentNW ag = (AgentNW) getListeActeurs().get(j);
-			Integer i = Integer.valueOf(ag.getIdAgent());
+			Agent ag = (Agent) getListeActeurs().get(j);
+			Integer i = ag.getIdAgent();
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);
@@ -240,6 +257,14 @@ public class OeAVCTSelectionActeurs extends BasicProcess {
 	 */
 	public String getVAL_CK_SELECT_LIGNE(int i) {
 		return getZone(getNOM_CK_SELECT_LIGNE(i));
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 
 }

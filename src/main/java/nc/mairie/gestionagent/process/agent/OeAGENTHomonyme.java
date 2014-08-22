@@ -1,13 +1,15 @@
 package nc.mairie.gestionagent.process.agent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.robot.PersonnelMain;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contact;
 import nc.mairie.metier.referentiel.SituationFamiliale;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.ContactDao;
 import nc.mairie.spring.dao.metier.referentiel.SituationFamilialeDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -31,12 +33,13 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String[] LB_AGENT_HOMONYME;
-	ArrayList<AgentNW> listeAgtHomonyme;
+	ArrayList<Agent> listeAgtHomonyme;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private boolean creation;
 	private ContactDao contactDao;
 	private SituationFamilialeDao situationFamilialeDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -49,10 +52,10 @@ public class OeAGENTHomonyme extends BasicProcess {
 	public void initialiseZones(HttpServletRequest request) throws Exception {
 
 		if (getAgentCourant() == null) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				setCreation(getAgentCourant().getNoMatricule() == null);
+				setCreation(getAgentCourant().getNomatr() == null);
 			} else {
 				// ERR004 : "Vous devez d'abord rechercher un agent."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR004"));
@@ -62,14 +65,16 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 		initialiseDao();
 
-		setListeAgtHomonyme((ArrayList<AgentNW>) VariablesActivite.recuperer(this,
+		setListeAgtHomonyme((ArrayList<Agent>) VariablesActivite.recuperer(this,
 				VariablesActivite.ACTIVITE_LST_AGT_HOMONYME));
 
 		int taillesAgtHomonyme[] = { 9, 58, 58, 10 };
 		FormateListe aListeAgtFormatee = new FormateListe(taillesAgtHomonyme);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		for (int i = 0; i < getListeAgtHomonyme().size(); i++) {
-			AgentNW agt = (AgentNW) getListeAgtHomonyme().get(i);
-			String colonnes[] = { agt.getNoMatricule(), agt.getNomAgent(), agt.getPrenomAgent(), agt.getDateNaissance() };
+			Agent agt = (Agent) getListeAgtHomonyme().get(i);
+			String colonnes[] = { agt.getNomatr().toString(), agt.getNomAgent(), agt.getPrenomAgent(),
+					sdf.format(agt.getDateNaissance()) };
 			aListeAgtFormatee.ajouteLigne(colonnes);
 		}
 		setLB_AGENT_HOMONYME(aListeAgtFormatee.getListeFormatee());
@@ -83,6 +88,9 @@ public class OeAGENTHomonyme extends BasicProcess {
 		}
 		if (getSituationFamilialeDao() == null) {
 			setSituationFamilialeDao(new SituationFamilialeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -126,11 +134,10 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 */
 	public boolean performPB_CREER_AGT_HOMONYME(HttpServletRequest request) throws Exception {
 		// Création de l'agent
-		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
 		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
-				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
+				getAgentCourant().getIdSituationFamiliale());
+		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
 		if (!getTransaction().isErreur()) {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 			commitTransaction();
@@ -143,11 +150,11 @@ public class OeAGENTHomonyme extends BasicProcess {
 		if (isCreation())
 			// "INF001","Agent @ créé"
 			setStatut(STATUT_PROCESS_APPELANT, false,
-					MessageUtils.getMessage("INF001", getAgentCourant().getNoMatricule()));
+					MessageUtils.getMessage("INF001", getAgentCourant().getNomatr().toString()));
 		else
 			// "INF001","Agent @ modifié"
 			setStatut(STATUT_PROCESS_APPELANT, false,
-					MessageUtils.getMessage("INF002", getAgentCourant().getNoMatricule()));
+					MessageUtils.getMessage("INF002", getAgentCourant().getNomatr().toString()));
 
 		return true;
 	}
@@ -213,7 +220,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -222,7 +229,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -319,7 +326,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 		}
 
 		if (indiceAgt >= 0) {
-			AgentNW a = (AgentNW) getListeAgtHomonyme().get(indiceAgt);
+			Agent a = (Agent) getListeAgtHomonyme().get(indiceAgt);
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, a);
 		}
 
@@ -332,7 +339,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * 
 	 * @return listeAgtHomonyme
 	 */
-	private ArrayList<AgentNW> getListeAgtHomonyme() {
+	private ArrayList<Agent> getListeAgtHomonyme() {
 		return listeAgtHomonyme;
 	}
 
@@ -342,7 +349,7 @@ public class OeAGENTHomonyme extends BasicProcess {
 	 * @param listeAgtHomonyme
 	 *            listeAgtHomonyme à définir
 	 */
-	private void setListeAgtHomonyme(ArrayList<AgentNW> listeAgtHomonyme) {
+	private void setListeAgtHomonyme(ArrayList<Agent> listeAgtHomonyme) {
 		this.listeAgtHomonyme = listeAgtHomonyme;
 	}
 
@@ -360,5 +367,13 @@ public class OeAGENTHomonyme extends BasicProcess {
 
 	public void setSituationFamilialeDao(SituationFamilialeDao situationFamilialeDao) {
 		this.situationFamilialeDao = situationFamilialeDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

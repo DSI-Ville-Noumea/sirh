@@ -6,7 +6,7 @@ import java.util.Map;
 
 import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.eae.EAE;
 import nc.mairie.spring.dao.utils.EaeDao;
 
@@ -114,7 +114,7 @@ public class EaeEAEDao extends EaeDao implements EaeEAEDaoInterface {
 
 	@Override
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut,
-			ArrayList<String> listeSousService, String capBool, AgentNW agentEvaluateur, AgentNW agentEvalue,
+			ArrayList<String> listeSousService, String capBool, Agent agentEvaluateur, Agent agentEvalue,
 			String affecte) throws Exception {
 		String reqWhere = Const.CHAINE_VIDE;
 		String reqInner = Const.CHAINE_VIDE;

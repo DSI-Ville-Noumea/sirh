@@ -17,8 +17,11 @@ import nc.mairie.gestionagent.absence.dto.SoldeSpecifiqueDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
@@ -28,6 +31,7 @@ import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
 
 import org.joda.time.DateTime;
+import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
@@ -44,7 +48,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	public String ACTION_VISUALISATION = "Consultation de l'historique d'un compteur";
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private ArrayList<TypeAbsenceDto> listeTypeAbsence;
 	private ArrayList<HistoriqueSoldeDto> listeHistorique;
 	private ArrayList<SoldeMonthDto> listeSoldeA55;
@@ -52,9 +56,10 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
-	
+
 	private DecimalFormat df = new DecimalFormat("0");
-	
+
+	private AgentDao agentDao;
 
 	/**
 	 * Constructeur du process OeAGENTAbsences. Date de création : (05/09/11
@@ -63,6 +68,14 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	 */
 	public OeAGENTAbsencesSolde() {
 		super();
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -88,11 +101,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			throw new Exception();
 		}
 
+		initialiseDao();
+
 		initialiseListeDeroulante();
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				Calendar cal = Calendar.getInstance();
@@ -186,23 +201,23 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			addZone(getNOM_ST_DEBUT_ASA_A55(i), sdf.format(monthDto.getDateDebut()));
 			addZone(getNOM_ST_FIN_ASA_A55(i), sdf.format(monthDto.getDateFin()));
 		}
-		
+
 		df.setRoundingMode(RoundingMode.DOWN);
 		setListeSoldeCongesExcep((ArrayList<SoldeSpecifiqueDto>) soldeGlobal.getListeSoldeCongesExcep());
 		for (int i = 0; i < getListeSoldeCongesExcep().size(); i++) {
 			SoldeSpecifiqueDto soldeSpecifiqueDto = getListeSoldeCongesExcep().get(i);
-			if("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
-				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? "" : df.format(soldeSpecifiqueDto.getSolde() / 60)
-						+ "h ";
-				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60))  ? "&nbsp;" : df.format(soldeSpecifiqueDto.getSolde()
-						% 60) + "m";
+			if ("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
+				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? "" : df
+						.format(soldeSpecifiqueDto.getSolde() / 60) + "h ";
+				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60)) ? "&nbsp;"
+						: df.format(soldeSpecifiqueDto.getSolde() % 60) + "m";
 				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure + soldeCongesExcepMinute);
 			}
-			if("jours".equals(soldeSpecifiqueDto.getUniteDecompte())) {
+			if ("jours".equals(soldeSpecifiqueDto.getUniteDecompte())) {
 				String soldeCongesExcepHeure = soldeSpecifiqueDto.getSolde() + " j";
 				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure);
 			}
-			
+
 			addZone(getNOM_ST_TYPE_CONGES_EXCEP(i), soldeSpecifiqueDto.getLibelle());
 		}
 	}
@@ -261,11 +276,11 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return "ECR-AG-ABS";
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -352,19 +367,19 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	public String getNOM_PB_HISTORIQUE(int i) {
 		return "NOM_PB_HISTORIQUE" + i;
 	}
-	
+
 	public String getNOM_ST_SOLDE_CONGES_EXCEP(int i) {
 		return "NOM_ST_SOLDE_CONGES_EXCEP_" + i;
 	}
-	
+
 	public String getVAL_ST_SOLDE_CONGES_EXCEP(int i) {
 		return getZone(getNOM_ST_SOLDE_CONGES_EXCEP(i));
 	}
-	
+
 	public String getNOM_ST_TYPE_CONGES_EXCEP(int i) {
 		return "NOM_ST_TYPE_CONGES_EXCEP_" + i;
 	}
-	
+
 	public String getVAL_ST_TYPE_CONGES_EXCEP(int i) {
 		return getZone(getNOM_ST_TYPE_CONGES_EXCEP(i));
 	}
@@ -396,13 +411,13 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		// Liste depuis SIRH-ABS-WS
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
 		ArrayList<HistoriqueSoldeDto> listeHistorique = (ArrayList<HistoriqueSoldeDto>) consuAbs
-				.getHistoriqueCompteurAgent(Integer.valueOf(getAgentCourant().getIdAgent()), codeTypeAbsence, json);
+				.getHistoriqueCompteurAgent(getAgentCourant().getIdAgent(), codeTypeAbsence, json);
 		setListeHistorique(listeHistorique);
 
 		for (int i = 0; i < getListeHistorique().size(); i++) {
 
 			HistoriqueSoldeDto histo = (HistoriqueSoldeDto) getListeHistorique().get(i);
-			AgentNW ag = AgentNW.chercherAgent(getTransaction(), histo.getIdAgentModification().toString());
+			Agent ag = getAgentDao().chercherAgent(histo.getIdAgentModification());
 
 			addZone(getNOM_ST_DATE(i),
 					sdfDate.format(histo.getDateModifcation()) + "<br/>" + sdfHeure.format(histo.getDateModifcation()));
@@ -563,10 +578,16 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		return listeSoldeCongesExcep;
 	}
 
-	public void setListeSoldeCongesExcep(
-			ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep) {
+	public void setListeSoldeCongesExcep(ArrayList<SoldeSpecifiqueDto> listeSoldeCongesExcep) {
 		this.listeSoldeCongesExcep = listeSoldeCongesExcep;
 	}
-	
-	
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+
 }

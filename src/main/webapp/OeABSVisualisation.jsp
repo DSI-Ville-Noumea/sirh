@@ -439,7 +439,7 @@
 					TypeAbsenceDto typeCreation = process.getTypeCreation(); %>
 			
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
-	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNoMatricule() %>)</legend>
+	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
 	            	<FORM name="formuCreationDemande" method="POST" class="sigp2-titre">
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 		            	<table>

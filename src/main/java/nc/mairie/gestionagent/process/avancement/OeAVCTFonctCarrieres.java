@@ -14,7 +14,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.carriere.Carriere;
@@ -22,6 +22,7 @@ import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.referentiel.AutreAdministrationDao;
@@ -67,6 +68,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 	private AvisCapDao avisCapDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
 	private HistoCarriereDao histoCarriereDao;
+	private AgentDao agentDao;
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -98,9 +100,9 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		initialiseListeService();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
 		}
 
 		// Si liste avancements vide alors initialisation.
@@ -124,6 +126,9 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -337,9 +342,9 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		}
 
 		// recuperation agent
-		AgentNW agent = null;
+		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
 		// recuperation du service
@@ -353,8 +358,8 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.ARRETE.getValue()
 				+ "' ) and (ID_AVIS_EMP!= 5  or ID_AVIS_EMP is null ) ";
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
-				filiere == null ? null : filiere.getLibFiliere(),
-				agent == null ? null : Integer.valueOf(agent.getIdAgent()), listeSousService, null, null));
+				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(),
+				listeSousService, null, null));
 
 		afficheListeAvancement();
 		return true;
@@ -364,11 +369,11 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
 					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
@@ -475,7 +480,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
-					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
+					Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
 					// on recupere la carrière en cours
 					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCarr);
 
@@ -498,7 +503,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								dateAvctFinale = avct.getDateAvctMoy();
 							} else {
 								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
+										+ agentCarr.getNomatr() + "); ";
 								continue;
 							}
 						} else {
@@ -507,7 +512,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								idAvisEmp = "MOY";
 							} else {
 								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
+										+ agentCarr.getNomatr() + "); ";
 								continue;
 							}
 						}
@@ -521,7 +526,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 							getTransaction().traiterErreur();
 						} else {
 							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-									+ agentCarr.getNoMatricule() + "); ";
+									+ agentCarr.getNomatr() + "); ";
 							// on met un 'S' dans son avancement
 							avct.setCarriereSimu("S");
 							getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
@@ -609,7 +614,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								dateAvctFinale = avct.getDateAvctMoy();
 							} else {
 								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
+										+ agentCarr.getNomatr() + "); ";
 								continue;
 							}
 						} else {
@@ -618,7 +623,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 								idAvisEmp = "MOY";
 							} else {
 								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
+										+ agentCarr.getNomatr() + "); ";
 								continue;
 							}
 						}
@@ -662,7 +667,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 
 						// RG_AG_CA_A03
-						nouvelleCarriere.setNoMatricule(agentCarr.getNoMatricule());
+						nouvelleCarriere.setNoMatricule(agentCarr.getNomatr().toString());
 						HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
 						getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
@@ -680,7 +685,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
 						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-								+ agentCarr.getNoMatricule() + "); ";
+								+ agentCarr.getNomatr() + "); ";
 						// on met un 'S' dans son avancement
 						avct.setCarriereSimu("S");
 						getAvancementFonctionnairesDao().modifierAvancement(avct.getIdAvct(), avct.getIdAvisCap(),
@@ -1293,7 +1298,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -1500,7 +1505,7 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 	 */
 	public boolean performPB_RAFRAICHIR(HttpServletRequest request, Integer idAvct) throws Exception {
 		AvancementFonctionnaires avct = getAvancementFonctionnairesDao().chercherAvancement(idAvct);
-		AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
+		Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 		Carriere carrEnCours = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
 
 		// on regarde si l'agent a une carriere de simulation dejà
@@ -1573,90 +1578,96 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_MAJ_DATE_AVCT(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
-					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
-
-					if (getTransaction().isErreur()) {
-						return false;
-					}
-					// on recupere la carrière en cours
-					Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCarr);
-
-					if (getTransaction().isErreur()) {
-						return false;
-					}
-
-					// si la carriere est bien la derniere de la liste
-					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
-
-						// pourla date d'avancement
-						Date dateAvctFinale = null;
-						String idAvisEmp = null;
-						if (avct.getIdAvisEmp() != null) {
-							try {
-								idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp()).getLibCourtAvisCap()
-										.toUpperCase();
-							} catch (Exception e) {
-								return false;
-							}
-							if (idAvisEmp.equals("MIN")) {
-								dateAvctFinale = avct.getDateAvctMini();
-							} else if (idAvisEmp.equals("MOY")) {
-								dateAvctFinale = avct.getDateAvctMoy();
-							} else if (idAvisEmp.equals("MAX")) {
-								dateAvctFinale = avct.getDateAvctMaxi();
-							} else if (idAvisEmp.equals("FAV")) {
-								dateAvctFinale = avct.getDateAvctMoy();
-							} else {
-								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
-								continue;
-							}
-						} else {
-							if (avct.getIdMotifAvct() == 3) {
-								dateAvctFinale = avct.getDateAvctMoy();
-								idAvisEmp = "MOY";
-							} else {
-								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-										+ agentCarr.getNoMatricule() + "); ";
-								continue;
-							}
-						}
-
-						// il faut faire attention qu'il n'y a pas de carriere
-						// de simu deja en cours
-						@SuppressWarnings("unused")
-						Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(), agentCarr,
-								Services.convertitDate(sdfFormatDate.format(dateAvctFinale), "dd/MM/yyyy", "yyyyMMdd"));
-						if (getTransaction().isErreur()) {
-							getTransaction().traiterErreur();
-						} else {
-							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-									+ agentCarr.getNoMatricule() + "); ";
-							continue;
-						}
-
-						// on calcul Grade - ACC/BM en fonction de l'avis CAP
-						// il est différent du resultat affiché dans le tableau
-						// si AVIS_CAP != MOY
-						// car pour la simulation on prenait comme ref de calcul
-						// la duree MOY
-						if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18"))
-								&& avct.getPeriodeStandard() == 12) {
-						} else {
-							calculAccBm(avct, carr, null, idAvisEmp);
-						}
-
+					try {
+						Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
+						// on recupere la carrière en cours
+						Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agentCarr);
 						if (getTransaction().isErreur()) {
 							return false;
 						}
-						commitTransaction();
-					} else {
-						// si ce n'est pas la derniere carriere du tableau ie :
-						// si datfin!=0
-						// on met l'agent dans une variable et on affiche cette
-						// liste à l'ecran
-						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-								+ agentCarr.getNoMatricule() + "); ";
+
+						// si la carriere est bien la derniere de la liste
+						if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
+
+							// pourla date d'avancement
+							Date dateAvctFinale = null;
+							String idAvisEmp = null;
+							if (avct.getIdAvisEmp() != null) {
+								try {
+									idAvisEmp = getAvisCapDao().chercherAvisCap(avct.getIdAvisEmp())
+											.getLibCourtAvisCap().toUpperCase();
+								} catch (Exception e) {
+									return false;
+								}
+								if (idAvisEmp.equals("MIN")) {
+									dateAvctFinale = avct.getDateAvctMini();
+								} else if (idAvisEmp.equals("MOY")) {
+									dateAvctFinale = avct.getDateAvctMoy();
+								} else if (idAvisEmp.equals("MAX")) {
+									dateAvctFinale = avct.getDateAvctMaxi();
+								} else if (idAvisEmp.equals("FAV")) {
+									dateAvctFinale = avct.getDateAvctMoy();
+								} else {
+									agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+											+ agentCarr.getNomatr() + "); ";
+									continue;
+								}
+							} else {
+								if (avct.getIdMotifAvct() == 3) {
+									dateAvctFinale = avct.getDateAvctMoy();
+									idAvisEmp = "MOY";
+								} else {
+									agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+											+ agentCarr.getNomatr() + "); ";
+									continue;
+								}
+							}
+
+							// il faut faire attention qu'il n'y a pas de
+							// carriere
+							// de simu deja en cours
+							@SuppressWarnings("unused")
+							Carriere carrSimu = Carriere.chercherCarriereSuperieurOuEgaleDate(getTransaction(),
+									agentCarr, Services.convertitDate(sdfFormatDate.format(dateAvctFinale),
+											"dd/MM/yyyy", "yyyyMMdd"));
+							if (getTransaction().isErreur()) {
+								getTransaction().traiterErreur();
+							} else {
+								agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+										+ agentCarr.getNomatr() + "); ";
+								continue;
+							}
+
+							// on calcul Grade - ACC/BM en fonction de l'avis
+							// CAP
+							// il est différent du resultat affiché dans le
+							// tableau
+							// si AVIS_CAP != MOY
+							// car pour la simulation on prenait comme ref de
+							// calcul
+							// la duree MOY
+							if ((carr.getCodeCategorie().equals("2") || carr.getCodeCategorie().equals("18"))
+									&& avct.getPeriodeStandard() == 12) {
+							} else {
+								calculAccBm(avct, carr, null, idAvisEmp);
+							}
+
+							if (getTransaction().isErreur()) {
+								return false;
+							}
+							commitTransaction();
+						} else {
+							// si ce n'est pas la derniere carriere du tableau
+							// ie :
+							// si datfin!=0
+							// on met l'agent dans une variable et on affiche
+							// cette
+							// liste à l'ecran
+							agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
+									+ agentCarr.getNomatr() + "); ";
+						}
+					} catch (Exception e) {
+						return false;
 					}
 				}
 			}
@@ -1727,5 +1738,13 @@ public class OeAVCTFonctCarrieres extends BasicProcess {
 
 	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
 		this.histoCarriereDao = histoCarriereDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

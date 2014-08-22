@@ -13,7 +13,10 @@ import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.utils.SirhDao;
+import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
 import nc.mairie.spring.ws.RadiWSConsumer;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
@@ -29,6 +32,7 @@ import nc.mairie.utils.VariablesActivite;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import flexjson.JSONSerializer;
 
@@ -55,6 +59,8 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	public String ACTION_CREATION = "Création d'un compteur.";
 	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
 
+	private AgentDao agentDao;
+
 	@Override
 	public String getJSP() {
 		return "OeELECSaisieCompteurA54.jsp";
@@ -65,6 +71,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	 */
 	public String getNomEcran() {
 		return "ECR-ELEC-COMPTEUR";
+	}
+
+	private void initialiseDao() {
+		// on initialise le dao
+		ApplicationContext context = ApplicationContextProvider.getContext();
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	@Override
@@ -81,12 +95,12 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR190"));
 			throw new Exception();
 		}
-
+		initialiseDao();
 		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATE) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			if (agt != null) {
-				addZone(getNOM_ST_AGENT_CREATE(), agt.getNoMatricule());
+				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
 			}
 		}
 
@@ -153,13 +167,13 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		int indiceLigne = 0;
 		for (CompteurAsaDto dto : getListeCompteur()) {
 
-			AgentNW ag = AgentNW.chercherAgent(getTransaction(), dto.getIdAgent().toString());
+			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dto.getDateDebut());
 			Integer annee = cal.get(Calendar.YEAR);
 
-			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
 			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(dto.getNb().intValue()));
@@ -362,7 +376,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
 		return true;
 	}
@@ -438,7 +452,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			return false;
 
 		// on recupere l'agent connecté
-		AgentNW agentConnecte = getAgentConnecte(request);
+		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
@@ -451,7 +465,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 		// on recupere la saisie
 		String nomatr = getVAL_ST_AGENT_CREATE();
-		AgentNW agCompteur = AgentNW.chercherAgentParMatricule(getTransaction(), nomatr);
+		Agent agCompteur = getAgentDao().chercherAgentParMatricule(Integer.valueOf(nomatr));
 
 		// motif
 		int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer.parseInt(getVAL_LB_MOTIF_SELECT())
@@ -474,7 +488,7 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		}
 
 		CompteurDto compteurDto = new CompteurDto();
-		compteurDto.setIdAgent(Integer.valueOf(agCompteur.getIdAgent()));
+		compteurDto.setIdAgent(agCompteur.getIdAgent());
 		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 		compteurDto.setDureeAAjouter(Integer.valueOf(getVAL_ST_NB_JOURS()));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
@@ -500,9 +514,9 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 		return true;
 	}
 
-	private AgentNW getAgentConnecte(HttpServletRequest request) throws Exception {
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		AgentNW agentConnecte = null;
+		Agent agentConnecte = null;
 		if (!(u.getUserName().equals("nicno85"))) {
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -510,14 +524,14 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 			if (user == null) {
 				return null;
 			}
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(),
-					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
+			try {
+				agentConnecte = getAgentDao().chercherAgentParMatricule(
+						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			} catch (Exception e) {
 				return null;
 			}
 		} else {
-			agentConnecte = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
 		}
 		return agentConnecte;
 	}
@@ -617,5 +631,13 @@ public class OeELECSaisieCompteurA54 extends BasicProcess {
 
 	public void setListeMotifCompteur(ArrayList<MotifCompteurDto> listeMotifCompteur) {
 		this.listeMotifCompteur = listeMotifCompteur;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

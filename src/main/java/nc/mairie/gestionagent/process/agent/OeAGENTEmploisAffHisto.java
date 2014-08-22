@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.metier.poste.Service;
@@ -30,7 +30,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private ArrayList<HistoAffectation> listeHistoAffectation;
 	private HistoAffectationDao histoAffectationDao;
 	private FichePosteDao fichePosteDao;
@@ -48,7 +48,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeHistoAffectation(request);
@@ -76,7 +76,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		ArrayList<HistoAffectation> affHisto = getHistoAffectationDao().listerAffectationHistoAvecAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+				getAgentCourant().getIdAgent());
 		setListeHistoAffectation(affHisto);
 
 		int indiceHistoAff = 0;
@@ -169,7 +169,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -178,7 +178,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

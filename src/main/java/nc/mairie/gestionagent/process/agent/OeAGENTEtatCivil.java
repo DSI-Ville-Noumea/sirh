@@ -1,6 +1,7 @@
 package nc.mairie.gestionagent.process.agent;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.ListIterator;
@@ -15,7 +16,7 @@ import nc.mairie.enums.EnumTypeContact;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contact;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.commun.BanqueGuichet;
@@ -28,6 +29,7 @@ import nc.mairie.metier.commun.VoieQuartier;
 import nc.mairie.metier.referentiel.Collectivite;
 import nc.mairie.metier.referentiel.EtatServiceMilitaire;
 import nc.mairie.metier.referentiel.SituationFamiliale;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.ContactDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.referentiel.CollectiviteDao;
@@ -78,7 +80,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private ArrayList<BanqueGuichet> listeBanqueGuichet;
 	private ArrayList<EtatServiceMilitaire> listeTypeServiceMilitaire;
 	private String[] listeNationalite;
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private String lieuNaissance;
 	private Pays paysNaissanceCourant;
 	private Object commNaissanceCourant;
@@ -109,6 +111,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private ContactDao contactDao;
 	private TypeContactDao typeContactDao;
 	private SituationFamilialeDao situationFamilialeDao;
+	private AgentDao agentDao;
+
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	// Fin gestion des contacts
 	public String getMessage() {
@@ -286,10 +291,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		// RG : verif agent homonyme (même nom, prénom, date de Naissance)
 		if (creation) {
-			String dateNaiss = Services.formateDateInternationale(getVAL_EF_DATE_NAISSANCE());
+			String dateNaiss = Services.formateDate(getVAL_EF_DATE_NAISSANCE());
 
-			ArrayList<AgentNW> listAgent = AgentNW.listerAgentHomonyme(getTransaction(), getAgentCourant()
-					.getNomUsage(), getAgentCourant().getPrenomUsage(), dateNaiss);
+			ArrayList<Agent> listAgent = getAgentDao().listerAgentHomonyme(getAgentCourant().getNomUsage(),
+					getAgentCourant().getPrenomUsage(), sdf.parse(dateNaiss));
 			listAgent.remove(getAgentCourant());
 			if (listAgent.size() > 0) {
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LST_AGT_HOMONYME, listAgent);
@@ -300,11 +305,10 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// Création de l'agent
-		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
 		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
-				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
+				getAgentCourant().getIdSituationFamiliale());
+		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
 		if (getTransaction().isErreur()) {
 			return false;
 		}
@@ -312,7 +316,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 
 		for (Contact contact : getListeContactAAjouter()) {
-			contact.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			contact.setIdAgent(getAgentCourant().getIdAgent());
 			getContactDao().creerContact(contact.getIdAgent(), contact.getIdTypeContact(), contact.getDescription(),
 					contact.isDiffusable(), contact.isPrioritaire());
 		}
@@ -338,19 +342,20 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// jour
 		// RG_AG_EC_C05
 		String messageDateEmbauche = Const.CHAINE_VIDE;
-		if (Services.compareDates(getAgentCourant().getDatePremiereEmbauche(), Services.dateDuJour()) > 0) {
+		if (Services.compareDates(sdf.format(getAgentCourant().getDatePremiereEmbauche()), Services.dateDuJour()) > 0) {
 			messageDateEmbauche = "Attention, vous avez saisi une date d'embauche supérieure à la date du jour.";
 		}
 
 		if (creation) // "INF001","Agent @ créé"
 		{
 			setStatut(STATUT_PROCESS_APPELANT, false,
-					MessageUtils.getMessage("INF001", getAgentCourant().getNoMatricule()) + " " + message + " "
+					MessageUtils.getMessage("INF001", getAgentCourant().getNomatr().toString()) + " " + message + " "
 							+ messageDateEmbauche);
 		} else // "INF001","Agent @ modifié"
 		{
-			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF002", getAgentCourant().getNoMatricule())
-					+ " " + messageDateEmbauche);
+			setStatut(STATUT_MEME_PROCESS, false,
+					MessageUtils.getMessage("INF002", getAgentCourant().getNomatr().toString()) + " "
+							+ messageDateEmbauche);
 		}
 
 		return true;
@@ -365,7 +370,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private boolean alimenterAgent(HttpServletRequest request) throws Exception {
 
 		if (getAgentCourant() == null) {
-			setAgentCourant(new AgentNW());
+			setAgentCourant(new Agent());
 		}
 
 		getAgentCourant().setCivilite(getVAL_LB_CIVILITE_SELECT());
@@ -393,13 +398,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		 */
 		int indiceCol = (Services.estNumerique(getVAL_LB_COLLECTIVITE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_COLLECTIVITE_SELECT()) : -1);
-		getAgentCourant().setIdCollectivite(
-				((Collectivite) getListeCollectivite().get(indiceCol)).getIdCollectivite().toString());
+		getAgentCourant().setIdCollectivite(((Collectivite) getListeCollectivite().get(indiceCol)).getIdCollectivite());
 
 		int indiceSitu = (Services.estNumerique(getVAL_LB_SITUATION_SELECT()) ? Integer
 				.parseInt(getVAL_LB_SITUATION_SELECT()) : -1);
 		getAgentCourant().setIdSituationFamiliale(
-				((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation().toString());
+				((SituationFamiliale) getListeSituation().get(indiceSitu)).getIdSituation());
 
 		int indiceNation = (Services.estNumerique(getVAL_LB_NATIONALITE_SELECT()) ? Integer
 				.parseInt(getVAL_LB_NATIONALITE_SELECT()) : -1);
@@ -407,29 +411,32 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				getLB_NATIONALITE()[indiceNation].length() == 0 ? null : getLB_NATIONALITE()[indiceNation].substring(0,
 						1));
 
-		getAgentCourant().setDateNaissance(getVAL_EF_DATE_NAISSANCE());
+		getAgentCourant().setDateNaissance(sdf.parse(getVAL_EF_DATE_NAISSANCE()));
 
 		if (getPaysNaissanceCourant() != null) {
-			getAgentCourant().setCodePaysNaissanceEt(getPaysNaissanceCourant().getCodPays());
-			getAgentCourant().setCodeCommuneNaissanceEt(
-					((CommuneEtrangere) getCommNaissanceCourant()).getCodCommuneEtrangere());
+			getAgentCourant().setCodePaysNaissEt(Integer.valueOf(getPaysNaissanceCourant().getCodPays()));
+			getAgentCourant().setCodeCommuneNaissEt(
+					Integer.valueOf(((CommuneEtrangere) getCommNaissanceCourant()).getCodCommuneEtrangere()));
 		} else {
-			getAgentCourant().setCodeCommuneNaissanceFr(((Commune) getCommNaissanceCourant()).getCodCommune());
+			getAgentCourant().setCodeCommuneNaissFr(
+					Integer.valueOf(((Commune) getCommNaissanceCourant()).getCodCommune()));
 		}
 
-		getAgentCourant().setDatePremiereEmbauche(getVAL_EF_DATE_PREM_EMB());
+		getAgentCourant().setDatePremiereEmbauche(sdf.parse(getVAL_EF_DATE_PREM_EMB()));
 		// RG_AG_EC_C06
 		getAgentCourant().setDateDerniereEmbauche(
-				getVAL_EF_DATE_DERN_EMB().equals(Const.CHAINE_VIDE) ? getVAL_EF_DATE_PREM_EMB()
-						: getVAL_EF_DATE_DERN_EMB());
+				getVAL_EF_DATE_DERN_EMB().equals(Const.CHAINE_VIDE) ? sdf.parse(getVAL_EF_DATE_PREM_EMB()) : sdf
+						.parse(getVAL_EF_DATE_DERN_EMB()));
 		getAgentCourant().setNumCarteSejour(getVAL_EF_NUM_CARTE_SEJOUR());
-		getAgentCourant().setDateValiditeCarteSejour(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR());
+		getAgentCourant().setDateValiditeCarteSejour(
+				getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR().equals(Const.CHAINE_VIDE) ? null : sdf
+						.parse(getVAL_EF_DATE_VALIDITE_CARTE_SEJOUR()));
 
 		// Adresse
 		if (getVAL_RG_VILLE_DOMICILE().equals(getNOM_RB_VILLE_DOMICILE_NOUMEA())) {
 			// Adresse nouméa, voie obligatoire
-			getAgentCourant()
-					.setIdVoie(getVoieQuartierCourant() == null ? null : getVoieQuartierCourant().getCodVoie());
+			getAgentCourant().setIdVoie(
+					getVoieQuartierCourant() == null ? null : Integer.valueOf(getVoieQuartierCourant().getCodVoie()));
 			getAgentCourant().setRueNonNoumea(null);
 		} else {
 			getAgentCourant().setIdVoie(null);
@@ -439,27 +446,15 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getAgentCourant().setNumRue(getVAL_EF_NUM_RUE());
 		getAgentCourant().setNumRueBisTer(getVAL_EF_BIS_TER());
 		getAgentCourant().setAdresseComplementaire(getVAL_EF_ADRESSE_COMPLEMENTAIRE());
-		getAgentCourant().setCodePostalVilleDom(getCommuneDomCourant().getCodCodePostal());
-		getAgentCourant().setCodeComVilleDom(getCommuneDomCourant().getCodCommune());
+		getAgentCourant().setCposVilleDom(Integer.valueOf(getCommuneDomCourant().getCodCodePostal()));
+		getAgentCourant().setCcomVilleDom(Integer.valueOf(getCommuneDomCourant().getCodCommune()));
 		getAgentCourant().setBp(getVAL_EF_BP());
-		getAgentCourant().setCodePostalVilleBp(getVAL_EF_CODE_POSTAL_BP());
-		getAgentCourant().setCodeComVilleBp(
-				getCommuneBPCourant() != null ? getCommuneBPCourant().getCodCommune() : null);
+		getAgentCourant().setCposVilleBp(
+				getVAL_EF_CODE_POSTAL_BP().equals(Const.CHAINE_VIDE) ? null : Integer
+						.valueOf(getVAL_EF_CODE_POSTAL_BP()));
+		getAgentCourant().setCcomVilleBp(
+				getCommuneBPCourant() != null ? Integer.valueOf(getCommuneBPCourant().getCodCommune()) : null);
 
-		/**
-		 * FIX CLV https://redmine.ville-noumea.nc/issues/2424 *
-		 */
-		// Si nom d'usage pas saisi, le renseigner avec le nom Marital, sinon le
-		// nom patro
-		// RG_AG_EC_C01
-		// if (getVAL_EF_NOM_USAGE().length() == 0) {
-		// String nomUsage = (getVAL_EF_NOM_MARITAL().length() != 0 ?
-		// getVAL_EF_NOM_MARITAL() : getVAL_EF_NOM_PATRONYMIQUE());
-		// getAgentCourant().setNomUsage(nomUsage);
-		// }
-		/**
-		 * FIN FIX CLV https://redmine.ville-noumea.nc/issues/2424 *
-		 */
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DU COMPTE
 		// ///////////////////////////
@@ -468,15 +463,15 @@ public class OeAGENTEtatCivil extends BasicProcess {
 				.parseInt(getVAL_LB_BANQUE_GUICHET_SELECT()) : -1);
 		if (indiceBanqueGuichet != 0) {
 			BanqueGuichet bg = (BanqueGuichet) getListeBanqueGuichet().get(indiceBanqueGuichet);
-			getAgentCourant().setCodeGuichet(bg.getCodGuichet());
-			getAgentCourant().setCodeBanque(bg.getCodBanque());
+			getAgentCourant().setCdGuichet(Integer.valueOf(bg.getCodGuichet()));
+			getAgentCourant().setCdBanque(Integer.valueOf(bg.getCodBanque()));
 
 			getAgentCourant().setNumCompte(Services.lpad(getVAL_EF_NUM_COMPTE(), 11, "0"));
-			getAgentCourant().setRib(getVAL_EF_RIB());
+			getAgentCourant().setRib(Integer.valueOf(getVAL_EF_RIB()));
 			getAgentCourant().setIntituleCompte(getVAL_EF_INTITULE_COMPTE());
 		} else {
-			getAgentCourant().setCodeGuichet(null);
-			getAgentCourant().setCodeBanque(null);
+			getAgentCourant().setCdGuichet(null);
+			getAgentCourant().setCdBanque(null);
 			getAgentCourant().setNumCompte(null);
 			getAgentCourant().setRib(null);
 			getAgentCourant().setIntituleCompte(null);
@@ -493,11 +488,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			getAgentCourant().setIdEtatService(null);
 		} else {
 			aEtatService = (EtatServiceMilitaire) getListeTypeServiceMilitaire().get(indiceEtatService - 1);
-			getAgentCourant().setIdEtatService(aEtatService.getIdEtatService().toString());
+			getAgentCourant().setIdEtatService(aEtatService.getIdEtatService());
 		}
 		getAgentCourant().setVcat(getVAL_RG_VCAT().equals(getNOM_RB_VCAT_OUI()) ? "O" : "N");
-		getAgentCourant().setDebutService(getVAL_EF_SERVICE_DEBUT());
-		getAgentCourant().setFinService(getVAL_EF_SERVICE_FIN());
+		getAgentCourant().setDebutService(
+				getVAL_EF_SERVICE_DEBUT().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_DEBUT()));
+		getAgentCourant().setFinService(
+				getVAL_EF_SERVICE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_SERVICE_FIN()));
 
 		// /////////////////////////////////////////////////////////////////////////
 		// ////////////////////// ALIMENTATION DES CHARGES
@@ -792,22 +789,19 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			// **************************************
 			// Vérification unicité n° CAFAT
 			// **************************************
+			try {
+				Agent cafatAg = getAgentDao().chercherCafat(getVAL_EF_NUM_CAFAT(), getAgentCourant().getIdAgent());
 
-			AgentNW cafatAg = AgentNW.chercherCafat(getTransaction(), getVAL_EF_NUM_CAFAT(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				if (cafatAg != null && cafatAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "cafat"));
+					result &= false;
+
 				}
-			}
-
-			if (cafatAg != null && cafatAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "cafat"));
-				result &= false;
+			} catch (Exception e) {
 
 			}
-
 		}
 
 		// **************************************
@@ -824,21 +818,18 @@ public class OeAGENTEtatCivil extends BasicProcess {
 			// **************************************
 			// Vérification unicité n° RUAM
 			// **************************************
+			try {
+				Agent ruamAg = getAgentDao().chercherRuam(getVAL_EF_NUM_RUAMM(), getAgentCourant().getIdAgent());
 
-			AgentNW ruamAg = AgentNW.chercherRuam(getTransaction(), getVAL_EF_NUM_RUAMM(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				if (ruamAg != null && ruamAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "ruamm"));
+					result &= false;
 				}
-			}
+			} catch (Exception e) {
 
-			if (ruamAg != null && ruamAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "ruamm"));
-				result &= false;
 			}
-
 		}
 
 		// **************************************
@@ -846,22 +837,19 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// **************************************
 
 		if (getVAL_EF_NUM_MUTUELLE().length() != 0) {
+			try {
+				Agent mutuelleAg = getAgentDao().chercherMutuelle(getVAL_EF_NUM_MUTUELLE(),
+						getAgentCourant().getIdAgent());
 
-			AgentNW mutuelleAg = AgentNW
-					.chercherMutuelle(getTransaction(), getVAL_EF_NUM_MUTUELLE(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				if (mutuelleAg != null && mutuelleAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "mutuelle"));
+					result &= false;
 				}
-			}
+			} catch (Exception e) {
 
-			if (mutuelleAg != null && mutuelleAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "mutuelle"));
-				result &= false;
 			}
-
 		}
 
 		// **************************************
@@ -869,21 +857,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// **************************************
 
 		if (getVAL_EF_NUM_CLR().length() != 0) {
-
-			AgentNW clrAg = AgentNW.chercherClr(getTransaction(), getVAL_EF_NUM_CLR(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+			try {
+				Agent clrAg = getAgentDao().chercherClr(getVAL_EF_NUM_CLR(), getAgentCourant().getIdAgent());
+				if (clrAg != null && clrAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CLR"));
+					result &= false;
 				}
-			}
+			} catch (Exception e) {
 
-			if (clrAg != null && clrAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CLR"));
-				result &= false;
 			}
-
 		}
 
 		// **************************************
@@ -891,19 +875,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// **************************************
 
 		if (getVAL_EF_NUM_CRE().length() != 0) {
+			try {
+				Agent creAg = getAgentDao().chercherCre(getVAL_EF_NUM_CRE(), getAgentCourant().getIdAgent());
 
-			AgentNW creAg = AgentNW.chercherCre(getTransaction(), getVAL_EF_NUM_CRE(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
+				if (creAg != null && creAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CRE"));
+					result &= false;
 				}
-			}
+			} catch (Exception e) {
 
-			if (creAg != null && creAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "CRE"));
-				result &= false;
 			}
 		}
 
@@ -913,18 +895,18 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		if (getVAL_EF_NUM_IRCAFEX().length() != 0) {
 
-			AgentNW ircafexAg = AgentNW.chercherIrcafex(getTransaction(), getVAL_EF_NUM_IRCAFEX(), getAgentCourant());
-			if (result == true) {
-				if (getTransaction().isErreur()) {
-					getTransaction().traiterErreur();
-				}
-			}
+			try {
+				Agent ircafexAg = getAgentDao()
+						.chercherIrcafex(getVAL_EF_NUM_IRCAFEX(), getAgentCourant().getIdAgent());
 
-			if (ircafexAg != null && ircafexAg.getIdAgent() != null) {
-				// "ERR997",
-				// "Ce numéro de @ est déjà utilisé, il doit être unique."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "Ircafex"));
-				result &= false;
+				if (ircafexAg != null && ircafexAg.getIdAgent() != null) {
+					// "ERR997",
+					// "Ce numéro de @ est déjà utilisé, il doit être unique."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR997", "Ircafex"));
+					result &= false;
+				}
+			} catch (Exception e) {
+
 			}
 		}
 
@@ -989,8 +971,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 					}
 					if (!dejaLigneDirecte) {
 						ArrayList<Contact> contactExist = getContactDao().listerContactAgentAvecTypeContact(
-								Integer.valueOf(getAgentCourant().getIdAgent()),
-								EnumTypeContact.LIGNE_DIRECTE.getCode());
+								getAgentCourant().getIdAgent(), EnumTypeContact.LIGNE_DIRECTE.getCode());
 						if (contactExist != null && contactExist.size() > 0) {
 							dejaLigneDirecte = true;
 						}
@@ -1019,7 +1000,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private boolean performControlerSaisieRIB(HttpServletRequest request) throws Exception {
 		// RG_AG_EC_C08
 		boolean result = true;
-		AgentNW a = getAgentCourant();
+		Agent a = getAgentCourant();
 		boolean compteNumerique = false;
 		if (a.getNumCompte() != null && !getVAL_EF_RIB().equals(Const.CHAINE_VIDE)) {
 			// on regarde si le numero de compte est numerique ou non
@@ -1041,7 +1022,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		return result;
 	}
 
-	private int calculCleRIB(AgentNW a, boolean compteNumerique) {
+	private int calculCleRIB(Agent a, boolean compteNumerique) {
 		String numCompte = a.getNumCompte();
 		// si n° compte numerique
 		if (!compteNumerique) {
@@ -1050,8 +1031,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		int res = 0;
 		// Calcul de la clé rib d'apres http://fr.wikipedia.org/wiki/Clé_RIB
-		int b = Integer.parseInt(a.getCodeBanque());
-		int g = Integer.parseInt(a.getCodeGuichet());
+		int b = a.getCdBanque();
+		int g = a.getCdGuichet();
 		int d = Integer.parseInt(numCompte.substring(0, 6));
 		int c = Integer.parseInt(numCompte.substring(6, numCompte.length()));
 		int calc = 89 * b + 15 * g + 76 * d + 3 * c;
@@ -2176,7 +2157,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
 
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 
 			setAgentCourant(aAgent);
 
@@ -2247,6 +2228,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 		if (getSituationFamilialeDao() == null) {
 			setSituationFamilialeDao(new SituationFamilialeDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -2426,8 +2410,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// //////////////////////////////////////////////////////////////////////////////////////
 		addZone(getNOM_ST_PHOTO(), Const.CHAINE_VIDE);
 		try {
-			Document doc = getDocumentDao().chercherDocumentParTypeEtAgent("PHO",
-					Integer.valueOf(getAgentCourant().getIdAgent()));
+			Document doc = getDocumentDao().chercherDocumentParTypeEtAgent("PHO", getAgentCourant().getIdAgent());
 			String repPartage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			if (doc != null) {
 				if (new File(repPartage + doc.getLienDocument()).exists()) {
@@ -2443,7 +2426,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		addZone(getNOM_LB_CIVILITE_SELECT(), getAgentCourant().getCivilite());
 
-		addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " " + getAgentCourant().getNomAgent() + " "
+		addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " " + getAgentCourant().getNomAgent() + " "
 				+ getAgentCourant().getPrenomAgent());
 		addZone(getNOM_ST_SEXE(),
 				(getAgentCourant().getCivilite().equals(EnumCivilite.M.getCode()) ? EnumSexe.MASCULIN.getValue()
@@ -2458,7 +2441,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int indiceSitu = 0;
 		for (int i = 0; i < getListeSituation().size(); i++) {
 			if (((SituationFamiliale) getListeSituation().get(i)).getIdSituation().toString()
-					.equals(getAgentCourant().getIdSituationFamiliale())) {
+					.equals(getAgentCourant().getIdSituationFamiliale().toString())) {
 				indiceSitu = i;
 				break;
 			}
@@ -2469,7 +2452,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		int indiceCol = 0;
 		for (int i = 0; i < getListeCollectivite().size(); i++) {
 			if (((Collectivite) getListeCollectivite().get(i)).getIdCollectivite().toString()
-					.equals(getAgentCourant().getIdCollectivite())) {
+					.equals(getAgentCourant().getIdCollectivite().toString())) {
 				indiceCol = i;
 				break;
 			}
@@ -2488,16 +2471,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 		addZone(getNOM_LB_NATIONALITE_SELECT(), String.valueOf(indiceNat));
 
-		addZone(getNOM_EF_DATE_NAISSANCE(), (getAgentCourant().getDateNaissance() == null || getAgentCourant()
-				.getDateNaissance().equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE : getAgentCourant().getDateNaissance());
-		addZone(getNOM_EF_DATE_PREM_EMB(), (getAgentCourant().getDatePremiereEmbauche() == null || getAgentCourant()
-				.getDatePremiereEmbauche().equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE : getAgentCourant()
-				.getDatePremiereEmbauche());
-		addZone(getNOM_EF_DATE_DERN_EMB(), (getAgentCourant().getDateDerniereEmbauche() == null || getAgentCourant()
-				.getDateDerniereEmbauche().equals(Const.DATE_NULL)) ? Const.CHAINE_VIDE : getAgentCourant()
-				.getDateDerniereEmbauche());
+		addZone(getNOM_EF_DATE_NAISSANCE(),
+				getAgentCourant().getDateNaissance() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
+						.getDateNaissance()));
+		addZone(getNOM_EF_DATE_PREM_EMB(), getAgentCourant().getDatePremiereEmbauche() == null ? Const.CHAINE_VIDE
+				: sdf.format(getAgentCourant().getDatePremiereEmbauche()));
+		addZone(getNOM_EF_DATE_DERN_EMB(), getAgentCourant().getDateDerniereEmbauche() == null ? Const.CHAINE_VIDE
+				: sdf.format(getAgentCourant().getDateDerniereEmbauche()));
 		addZone(getNOM_EF_NUM_CARTE_SEJOUR(), getAgentCourant().getNumCarteSejour());
-		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(), getAgentCourant().getDateValiditeCarteSejour());
+		addZone(getNOM_EF_DATE_VALIDITE_CARTE_SEJOUR(),
+				getAgentCourant().getDateValiditeCarteSejour() == null ? Const.CHAINE_VIDE : sdf
+						.format(getAgentCourant().getDateValiditeCarteSejour()));
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones de l'adresse
@@ -2513,8 +2497,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		// //////////////////////////////////////////////////////////////////////////////////////
 		for (int i = 0; i < getListeBanqueGuichet().size(); i++) {
 			BanqueGuichet bg = (BanqueGuichet) getListeBanqueGuichet().get(i);
-			if (bg != null && bg.getCodBanque().equals(getAgentCourant().getCodeBanque())
-					&& bg.getCodGuichet().equals(getAgentCourant().getCodeGuichet())) {
+			if (bg != null && getAgentCourant().getCdBanque() != null
+					&& bg.getCodBanque().equals(getAgentCourant().getCdBanque().toString())
+					&& bg.getCodGuichet().equals(getAgentCourant().getCdGuichet().toString())) {
 				addZone(getNOM_LB_BANQUE_GUICHET_SELECT(), String.valueOf(i));
 				addZone(getNOM_ST_BANQUE_GUICHET(),
 						bg == null ? Const.CHAINE_VIDE : bg.getLibBanque() + " - " + bg.getLibGuichet());
@@ -2524,7 +2509,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 		addZone(getNOM_EF_NUM_COMPTE(), getAgentCourant().getNumCompte() == null ? Const.CHAINE_VIDE
 				: getAgentCourant().getNumCompte());
-		addZone(getNOM_EF_RIB(), getAgentCourant().getRib() == null ? Const.CHAINE_VIDE : getAgentCourant().getRib());
+		addZone(getNOM_EF_RIB(), getAgentCourant().getRib() == null ? Const.CHAINE_VIDE : getAgentCourant().getRib()
+				.toString());
 		addZone(getNOM_EF_INTITULE_COMPTE(), getAgentCourant().getIntituleCompte() == null ? Const.CHAINE_VIDE
 				: getAgentCourant().getIntituleCompte());
 
@@ -2545,10 +2531,12 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		addZone(getNOM_RG_VCAT(),
 				(getAgentCourant().getVcat() != null && getAgentCourant().getVcat().equals("O")) ? getNOM_RB_VCAT_OUI()
 						: getNOM_RB_VCAT_NON());
-		addZone(getNOM_EF_SERVICE_DEBUT(), getAgentCourant().getDebutService() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getDebutService());
-		addZone(getNOM_EF_SERVICE_FIN(), getAgentCourant().getFinService() == null ? Const.CHAINE_VIDE
-				: getAgentCourant().getFinService());
+		addZone(getNOM_EF_SERVICE_DEBUT(),
+				getAgentCourant().getDebutService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
+						.getDebutService()));
+		addZone(getNOM_EF_SERVICE_FIN(),
+				getAgentCourant().getFinService() == null ? Const.CHAINE_VIDE : sdf.format(getAgentCourant()
+						.getFinService()));
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Zones Couverture
@@ -2601,14 +2589,14 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private void initialiseZonesLieuNaissance(HttpServletRequest request) throws Exception {
 		// recup du lieu de naissance
 		if (getLieuNaissance() == null && getAgentCourant() != null) {
-			if (getAgentCourant().getCodePaysNaissanceEt() == null) {
+			if (getAgentCourant().getCodePaysNaissEt() == null) {
 				setCommNaissanceCourant(Commune.chercherCommune(getTransaction(), getAgentCourant()
-						.getCodeCommuneNaissanceFr()));
+						.getCodeCommuneNaissFr()));
 				setLieuNaissance(((Commune) getCommNaissanceCourant()).getLibCommune() + " - " + Const.COMMUNE_FRANCE);
 			} else {
-				setPaysNaissanceCourant(Pays.chercherPays(getTransaction(), getAgentCourant().getCodePaysNaissanceEt()));
+				setPaysNaissanceCourant(Pays.chercherPays(getTransaction(), getAgentCourant().getCodePaysNaissEt()));
 				setCommNaissanceCourant(CommuneEtrangere.chercherCommuneEtrangere(getTransaction(),
-						getPaysNaissanceCourant().getCodPays(), getAgentCourant().getCodeCommuneNaissanceEt()));
+						getPaysNaissanceCourant().getCodPays(), getAgentCourant().getCodeCommuneNaissEt()));
 				setLieuNaissance(((CommuneEtrangere) getCommNaissanceCourant()).getLibCommuneEtrangere() + " - "
 						+ getPaysNaissanceCourant().getLibPays());
 			}
@@ -2632,11 +2620,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		setLB_COMMUNE_DOM(new FormateListe(tailles, listeCommunes, champs).getListeFormatee());
 
 		// La commune adresse courante
-		if (getCommuneDomCourant() == null && getAgentCourant() != null
-				&& getAgentCourant().getCodeComVilleDom() != null
-				&& !getAgentCourant().getCodeComVilleDom().equals("0")) {
+		if (getCommuneDomCourant() == null && getAgentCourant() != null && getAgentCourant().getCcomVilleDom() != null) {
 			setCommuneDomCourant(CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant()
-					.getCodePostalVilleDom(), getAgentCourant().getCodeComVilleDom()));
+					.getCposVilleDom(), getAgentCourant().getCcomVilleDom()));
 		}
 
 		if (getCommuneDomCourant() != null) {
@@ -2663,10 +2649,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		}
 
 		// La commune boîte postale
-		if (getAgentCourant() != null && getAgentCourant().getCodeComVilleBp() != null
-				&& !getAgentCourant().getCodeComVilleBp().equals("0")) {
+		if (getAgentCourant() != null && getAgentCourant().getCcomVilleBp() != null) {
 			setCommuneBPCourant(CommunePostal.chercherCommunePostal(getTransaction(), getAgentCourant()
-					.getCodePostalVilleBp(), getAgentCourant().getCodeComVilleBp()));
+					.getCposVilleBp(), getAgentCourant().getCcomVilleBp()));
 			if (getTransaction().isErreur()) {
 				return;
 			}
@@ -2720,9 +2705,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	private void initialiseZonesVoieQuartier(HttpServletRequest request) throws Exception {
 		// recup du champ voie-quartier
 		if (getVoieQuartierCourant() == null && getAgentCourant() != null) {
-			if (getAgentCourant().getIdVoie() != null && !getAgentCourant().getIdVoie().equals("0")) {
+			if (getAgentCourant().getIdVoie() != null) {
 				setVoieQuartierCourant(VoieQuartier.chercherVoieQuartierAvecCodVoie(getTransaction(), getAgentCourant()
-						.getIdVoie()));
+						.getIdVoie().toString()));
 				addZone(getNOM_RG_VILLE_DOMICILE(), getNOM_RB_VILLE_DOMICILE_NOUMEA());
 			} else if (getAgentCourant().getIdVoie() == null) {
 				addZone(getNOM_RG_VILLE_DOMICILE(), getNOM_RB_VILLE_DOMICILE_AUTRE());
@@ -2769,7 +2754,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 */
 	private void initialiseListeContact(HttpServletRequest request) throws Exception {
 
-		ArrayList<Contact> a = getContactDao().listerContactAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Contact> a = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
 		setListeContact(a);
 
 		afficheListeContact();
@@ -2893,9 +2878,9 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 * Insérez la description de la méthode ici. Date de création : (16/03/2011
 	 * 10:29:03)
 	 * 
-	 * @return nc.mairie.metier.agent.AgentNW
+	 * @return nc.mairie.metier.agent.Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -2905,7 +2890,7 @@ public class OeAGENTEtatCivil extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	public void setAgentCourant(AgentNW agentCourant) {
+	public void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -3650,23 +3635,17 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		alimenterAgent(request);
 
 		// Création/Modification de l'agent
-		ArrayList<Contact> lContact = getContactDao().listerContactAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Contact> lContact = getContactDao().listerContactAgent(getAgentCourant().getIdAgent());
 		SituationFamiliale situFam = getSituationFamilialeDao().chercherSituationFamilialeById(
-				Integer.valueOf(getAgentCourant().getIdSituationFamiliale()));
-		getAgentCourant().creerAgentNW(getTransaction(), lContact, situFam);
+				getAgentCourant().getIdSituationFamiliale());
+		getAgentDao().creerAgent(getTransaction(), getAgentCourant(), lContact, situFam);
+
 		if (!getTransaction().isErreur()) {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getAgentCourant());
 			commitTransaction();
 		} else {
 			return false;
 		}
-
-		// "INF001","Agent @ créé"
-		/*
-		 * setStatut(STATUT_SUIVI, false, MairieMessages.getMessage("INF001",
-		 * getAgentCourant().getNoMatricule()) + " " + message);
-		 */
 		return true;
 	}
 
@@ -4618,5 +4597,13 @@ public class OeAGENTEtatCivil extends BasicProcess {
 
 	public void setSituationFamilialeDao(SituationFamilialeDao situationFamilialeDao) {
 		this.situationFamilialeDao = situationFamilialeDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

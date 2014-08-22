@@ -207,11 +207,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public SoldeDto getSoldeAgent(String idAgent, String json) {
+	public SoldeDto getSoldeAgent(Integer idAgent, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsSoldeRecupAgent;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgent);
+		params.put("idAgent", idAgent.toString());
 		logger.debug("Call " + url + " with idAgent : " + idAgent);
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(SoldeDto.class, res, url);
@@ -282,21 +282,21 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurRecup(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurRecup(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurRecup;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurReposComp(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurReposComp(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurReposComp;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -311,11 +311,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurAsaA48(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurAsaA48(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurAsaA48;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -349,11 +349,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveDemande(String idAgentConnecte, String json) {
+	public ReturnMessageDto saveDemande(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDemandeSauvegarde;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -403,11 +403,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurAsaA54(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurAsaA54(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurAsaA54;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -431,31 +431,31 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurAsaA55(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurAsaA55(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurAsaA55;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurAsaA52(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurAsaA52(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurAsaA52;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto addCompteurAsaA53(String idAgentConnecte, String json) {
+	public ReturnMessageDto addCompteurAsaA53(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCompteurAsaA53;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
@@ -497,21 +497,21 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto saveTypeAbsence(String idAgentConnecte, String json) {
+	public ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsAddCongeExcep;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 	@Override
-	public ReturnMessageDto deleteTypeAbsence(String idAgentConnecte, Integer idRefTypeAbsence) {
+	public ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDeleteCongeExcep;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idAgent", idAgentConnecte);
+		params.put("idAgent", idAgentConnecte.toString());
 		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);

@@ -15,13 +15,14 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementDetaches;
 import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.HistoCarriere;
 import nc.mairie.metier.parametrage.MotifAvancement;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementDetachesDao;
 import nc.mairie.spring.dao.metier.carriere.HistoCarriereDao;
 import nc.mairie.spring.dao.metier.parametrage.MotifAvancementDao;
@@ -82,6 +83,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvancementDetachesDao avancementDetachesDao;
 	private HistoCarriereDao histoCarriereDao;
+	private AgentDao agentDao;
 
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -132,6 +134,9 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		}
 		if (getHistoCarriereDao() == null) {
 			setHistoCarriereDao(new HistoCarriereDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -328,11 +333,11 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementDetaches av = (AvancementDetaches) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
 					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
@@ -922,10 +927,10 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 			if (!avct.getEtat().equals(EnumEtatAvancement.AFFECTE.getValue())) {
 				if (getVAL_CK_AFFECTER(i).equals(getCHECKED_ON())) {
 					// on recupere l'agent concerné
-					AgentNW agentCarr = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
+					Agent agentCarr = getAgentDao().chercherAgent(avct.getIdAgent());
 					// on recupere la derniere carrière dans l'année
 					Carriere carr = Carriere.chercherDerniereCarriereAvecAgentEtAnnee(getTransaction(),
-							Integer.valueOf(agentCarr.getNoMatricule()), avct.getAnnee().toString());
+							agentCarr.getNomatr(), avct.getAnnee().toString());
 					// si la carriere est bien la derniere de la liste
 					if (carr.getDateFin() == null || carr.getDateFin().equals("0")) {
 						// alors on fait les modifs sur avancement
@@ -981,7 +986,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 						nouvelleCarriere.setTypeContrat(carr.getTypeContrat());
 
 						// RG_AG_CA_A03
-						nouvelleCarriere.setNoMatricule(agentCarr.getNoMatricule());
+						nouvelleCarriere.setNoMatricule(agentCarr.getNomatr().toString());
 						HistoCarriere histo2 = new HistoCarriere(nouvelleCarriere);
 						getHistoCarriereDao().creerHistoCarriere(histo2, user, EnumTypeHisto.CREATION);
 						nouvelleCarriere.creerCarriere(getTransaction(), agentCarr, user);
@@ -1016,7 +1021,7 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 						// on met l'agent dans une variable et on affiche cette
 						// liste à l'ecran
 						agentEnErreur += agentCarr.getNomAgent() + " " + agentCarr.getPrenomAgent() + " ("
-								+ agentCarr.getNoMatricule() + "); ";
+								+ agentCarr.getNomatr() + "); ";
 					}
 				}
 			}
@@ -1592,5 +1597,13 @@ public class OeAVCTFonctDetaches extends BasicProcess {
 
 	public void setHistoCarriereDao(HistoCarriereDao histoCarriereDao) {
 		this.histoCarriereDao = histoCarriereDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

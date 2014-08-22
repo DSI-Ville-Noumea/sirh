@@ -8,10 +8,11 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -37,15 +38,16 @@ public class OeAGENTRecherche extends BasicProcess {
      */
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_ETAT_CIVIL = 1;
-	private ArrayList<AgentNW> listeAgent;
+	private ArrayList<Agent> listeAgent;
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
-	private AgentNW AgentActivite;
+	private Agent AgentActivite;
 	public String focus = null;
 	private boolean first = true;
 
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Insérez la description de la méthode ici. Date de création : (28/03/2003
@@ -53,7 +55,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	private AgentNW getAgentActivite() {
+	private Agent getAgentActivite() {
 		return AgentActivite;
 	}
 
@@ -63,9 +65,9 @@ public class OeAGENTRecherche extends BasicProcess {
 	 * 
 	 * @return ArrayList
 	 */
-	public ArrayList<AgentNW> getListeAgent() {
+	public ArrayList<Agent> getListeAgent() {
 		if (listeAgent == null) {
-			listeAgent = new ArrayList<AgentNW>();
+			listeAgent = new ArrayList<Agent>();
 		}
 		return listeAgent;
 	}
@@ -126,7 +128,7 @@ public class OeAGENTRecherche extends BasicProcess {
 		}
 		initialiseDao();
 		// Récup de l'agent activité, s'il existe
-		AgentNW aAgent = (AgentNW) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
+		Agent aAgent = (Agent) VariableActivite.recuperer(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
 		if (aAgent != null) {
 			setAgentActivite(aAgent);
 			VariableActivite.enlever(this, VariableActivite.ACTIVITE_AGENT_MAIRIE);
@@ -150,6 +152,9 @@ public class OeAGENTRecherche extends BasicProcess {
 		}
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -230,33 +235,33 @@ public class OeAGENTRecherche extends BasicProcess {
 
 		String zone = getVAL_EF_ZONE();
 
-		ArrayList<AgentNW> aListe = new ArrayList<AgentNW>();
+		ArrayList<Agent> aListe = new ArrayList<Agent>();
 		// RG_AG_EC_C01
 		// Si rien de saisi, recherche de tous les agents
 		if (zone.length() == 0) {
-			aListe = AgentNW.listerAgent(getTransaction());
+			aListe = (ArrayList<Agent>) getAgentDao().listerAgent();
 			// Sinon, si numérique on cherche l'agent
 		} else if (Services.estNumerique(zone)) {
 			if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_CAFAT())) {
-				aListe = AgentNW.listerAgentAvecCafatCommencant(getTransaction(), zone);
+				aListe = getAgentDao().listerAgentAvecCafatCommencant(zone);
 			} else {
-				AgentNW aAgent = AgentNW.chercherAgent(getTransaction(),
-						Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0"));
-				// Si erreur alors pas trouvé. On traite
-				if (getTransaction().isErreur()) {
+				try {
+					Agent aAgent = getAgentDao().chercherAgent(
+							Integer.valueOf(Const.PREFIXE_MATRICULE + Services.lpad(zone, 5, "0")));
+
+					aListe = new ArrayList<Agent>();
+					aListe.add(aAgent);
+				} catch (Exception e) {
 					return false;
 				}
-
-				aListe = new ArrayList<AgentNW>();
-				aListe.add(aAgent);
 			}
 
 			// Sinon, les agents dont le nom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_NOM())) {
-			aListe = AgentNW.listerAgentAvecNomCommencant(getTransaction(), zone);
+			aListe = getAgentDao().listerAgentAvecNomCommencant(zone);
 			// sinon les agents dont le prénom commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_PRENOM())) {
-			aListe = AgentNW.listerAgentAvecPrenomCommencant(getTransaction(), zone);
+			aListe = getAgentDao().listerAgentAvecPrenomCommencant(zone);
 			// sinon les agents dont le numero cafat commence par
 		} else if (getVAL_RG_RECHERCHE().equals(getNOM_RB_RECH_SERVICE())) {
 			Service service = Service.chercherService(getTransaction(), getVAL_ST_CODE_SERVICE());
@@ -265,14 +270,14 @@ public class OeAGENTRecherche extends BasicProcess {
 					Service.isEntite(service.getCodService()) ? 1 : Service.isDirection(service.getCodService()) ? 2
 							: Service.isDivision(service.getCodService()) ? 3 : Service.isSection(service
 									.getCodService()) ? 4 : 0);
-			aListe = AgentNW.listerAgentAvecServiceCommencant(getTransaction(), prefixe);
+			aListe = getAgentDao().listerAgentAvecServiceCommencant(prefixe);
 		}
 
 		// S'il y a un agent en entrée alors on l'enlève de la liste
 		if (getAgentActivite() != null) {
 			for (int i = 0; i < aListe.size(); i++) {
-				AgentNW a = (AgentNW) aListe.get(i);
-				if (a.getNoMatricule().equals(getAgentActivite().getNoMatricule())) {
+				Agent a = (Agent) aListe.get(i);
+				if (a.getNomatr().toString().equals(getAgentActivite().getNomatr().toString())) {
 					aListe.remove(a);
 				}
 			}
@@ -289,9 +294,9 @@ public class OeAGENTRecherche extends BasicProcess {
 		int indiceAgent = 0;
 		if (getListeAgent() != null) {
 			for (int i = 0; i < getListeAgent().size(); i++) {
-				AgentNW agent = (AgentNW) getListeAgent().get(i);
+				Agent agent = (Agent) getListeAgent().get(i);
 
-				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
+				addZone(getNOM_ST_MATR(indiceAgent), agent.getNomatr().toString());
 				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
 				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
 				addZone(getNOM_ST_CAFAT(indiceAgent),
@@ -314,10 +319,9 @@ public class OeAGENTRecherche extends BasicProcess {
 				VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getListeAgent().get(0));
 				// on recupere le service de l'agent si il y en a un
 				String service = Const.CHAINE_VIDE;
-				AgentNW agent = (AgentNW) getListeAgent().get(0);
+				Agent agent = (Agent) getListeAgent().get(0);
 				try {
-					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-							Integer.valueOf(agent.getIdAgent()));
+					Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 					if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
 						try {
 							FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
@@ -350,7 +354,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	 * @param newAgentActivite
 	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentActivite(AgentNW newAgentActivite) {
+	private void setAgentActivite(Agent newAgentActivite) {
 		AgentActivite = newAgentActivite;
 	}
 
@@ -361,7 +365,7 @@ public class OeAGENTRecherche extends BasicProcess {
 	 * @param newListeAgent
 	 *            ArrayList
 	 */
-	private void setListeAgent(ArrayList<AgentNW> newListeAgent) {
+	private void setListeAgent(ArrayList<Agent> newListeAgent) {
 		listeAgent = newListeAgent;
 	}
 
@@ -520,15 +524,15 @@ public class OeAGENTRecherche extends BasicProcess {
 		// Remplissage de la liste
 		String[] colonnes = { tri };
 		boolean[] ordres = { true };
-		ArrayList<AgentNW> a = Services.trier(getListeAgent(), colonnes, ordres);
+		ArrayList<Agent> a = Services.trier(getListeAgent(), colonnes, ordres);
 		setListeAgent(a);
 
 		int indiceAgent = 0;
 		if (getListeAgent() != null) {
 			for (int i = 0; i < getListeAgent().size(); i++) {
-				AgentNW agent = (AgentNW) getListeAgent().get(i);
+				Agent agent = (Agent) getListeAgent().get(i);
 
-				addZone(getNOM_ST_MATR(indiceAgent), agent.getNoMatricule());
+				addZone(getNOM_ST_MATR(indiceAgent), agent.getNomatr().toString());
 				addZone(getNOM_ST_NOM(indiceAgent), agent.getNomAgent());
 				addZone(getNOM_ST_PRENOM(indiceAgent), agent.getPrenomAgent());
 				addZone(getNOM_ST_CAFAT(indiceAgent),
@@ -769,10 +773,9 @@ public class OeAGENTRecherche extends BasicProcess {
 			VariableGlobale.ajouter(request, VariableGlobale.GLOBAL_AGENT_MAIRIE, getListeAgent().get(elemSelection));
 			// on recupere le service de l'agent si il y en a un
 			String service = Const.CHAINE_VIDE;
-			AgentNW agent = (AgentNW) getListeAgent().get(elemSelection);
+			Agent agent = (Agent) getListeAgent().get(elemSelection);
 			try {
-				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-						Integer.valueOf(agent.getIdAgent()));
+				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 				if (aff != null && aff.getIdAffectation() != null && aff.getIdFichePoste() != null) {
 					try {
 						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
@@ -827,5 +830,13 @@ public class OeAGENTRecherche extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

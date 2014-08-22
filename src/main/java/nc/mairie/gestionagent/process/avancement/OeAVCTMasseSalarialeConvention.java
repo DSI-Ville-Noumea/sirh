@@ -12,7 +12,7 @@ import nc.mairie.enums.EnumEtatAvancement;
 import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.HistoPrime;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.agent.PositionAdmAgent;
@@ -23,6 +23,7 @@ import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.HistoPrimeDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementConvColDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
@@ -67,6 +68,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	private FichePosteDao fichePosteDao;
 	private HistoPrimeDao histoPrimeDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	private void initialiseDao() {
@@ -84,6 +86,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		}
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -111,10 +116,10 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		initialiseDao();
 		initialiseListeDeroulante();
 
-		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
-			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+		if (agt != null && agt.getIdAgent() != null) {
+			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
 			performPB_LANCER(request);
 		}
 	}
@@ -377,7 +382,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -467,9 +472,9 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		getAvancementConvColDao().supprimerAvancementConvColTravailAvecAnnee(Integer.valueOf(an));
 
 		// recuperation agent
-		AgentNW agent = null;
+		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
 		if (!performCalculConvCol(getVAL_ST_CODE_SERVICE(), an, agent))
@@ -492,8 +497,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 	 * @param agent
 	 * @throws Exception
 	 */
-	private boolean performCalculConvCol(String codeService, String annee, AgentNW agent) throws Exception {
-		ArrayList<AgentNW> la = new ArrayList<AgentNW>();
+	private boolean performCalculConvCol(String codeService, String annee, Agent agent) throws Exception {
+		ArrayList<Agent> la = new ArrayList<Agent>();
 		if (agent != null) {
 			// il faut regarder si cet agent est de type Convention Collective
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), agent);
@@ -525,11 +530,11 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			if (!listeNomatrAgent.equals(Const.CHAINE_VIDE)) {
 				listeNomatrAgent = listeNomatrAgent.substring(0, listeNomatrAgent.length() - 1);
 			}
-			la = AgentNW.listerAgentEligibleAvct(getTransaction(), listeSousService, listeNomatrAgent);
+			la = getAgentDao().listerAgentEligibleAvct(listeSousService, listeNomatrAgent);
 		}
 
 		// Parcours des agents
-		for (AgentNW a : la) {
+		for (Agent a : la) {
 			// Recuperation de la carriere en cours
 			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), a);
 			if (getTransaction().isErreur() || carr == null || carr.getDateDebut() == null) {
@@ -537,7 +542,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 				continue;
 			}
 			PositionAdmAgent paAgent = PositionAdmAgent.chercherPositionAdmAgentDateComprise(getTransaction(),
-					a.getNoMatricule(),
+					a.getNomatr(),
 					Services.formateDateInternationale(Services.dateDuJour()).replace("-", Const.CHAINE_VIDE));
 			if (getTransaction().isErreur() || paAgent == null || paAgent.getCdpadm() == null
 					|| paAgent.estPAInactive(getTransaction())) {
@@ -550,7 +555,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 			// collective pour savoir si l'agent repond à la regle de
 			// l'anciennete
 			ArrayList<Carriere> listeCarriereConvCol = Carriere.listerCarriereAgentByType(getTransaction(),
-					a.getNoMatricule(), "CC");
+					a.getNomatr(), "CC");
 			Carriere plusAnciennCarrConvColl = null;
 			for (int i = 0; i < listeCarriereConvCol.size(); i++) {
 				Carriere carrCours = listeCarriereConvCol.get(i);
@@ -581,12 +586,12 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 					try {
 						@SuppressWarnings("unused")
 						AvancementConvCol avct = getAvancementConvColDao().chercherAvancementConvColAvecAnneeEtAgent(
-								Integer.valueOf(annee), Integer.valueOf(a.getIdAgent()));
+								Integer.valueOf(annee), a.getIdAgent());
 					} catch (Exception e) {
 						getTransaction().traiterErreur();
 						// Création de l'avancement
 						AvancementConvCol avct = new AvancementConvCol();
-						avct.setIdAgent(Integer.valueOf(a.getIdAgent()));
+						avct.setIdAgent(a.getIdAgent());
 						avct.setAnnee(Integer.valueOf(annee));
 						avct.setEtat(EnumEtatAvancement.TRAVAIL.getValue());
 
@@ -595,12 +600,11 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 						avct.setDateArrete(sdf.parse("01/01/" + annee));
 						avct.setNumArrete(annee);
-						avct.setDateEmbauche(sdf.parse(a.getDateDerniereEmbauche()));
+						avct.setDateEmbauche(a.getDateDerniereEmbauche());
 
 						Affectation aff = null;
 						try {
-							aff = getAffectationDao().chercherAffectationActiveAvecAgent(
-									Integer.valueOf(a.getIdAgent()));
+							aff = getAffectationDao().chercherAffectationActiveAvecAgent(a.getIdAgent());
 						} catch (Exception e2) {
 							continue;
 						}
@@ -622,8 +626,8 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 						// On regarde si il y a deja une prime de saisie
 						@SuppressWarnings("unused")
-						Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNoMatricule(),
-								annee + "0101");
+						Prime primeExist = Prime.chercherPrime1200ByRubrAndDate(getTransaction(), a.getNomatr(), annee
+								+ "0101");
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 							avct.setCarriereSimu(null);
@@ -633,7 +637,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 						// on cherche la derniere prime 1200
 						Prime prime1200 = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
-								a.getNoMatricule(), "1200");
+								a.getNomatr(), "1200");
 						if (getTransaction().isErreur()) {
 							getTransaction().traiterErreur();
 						} else {
@@ -752,12 +756,12 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementConvCol av = (AvancementConvCol) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 
 			addZone(getNOM_ST_GRADE(i), av.getGrade());
 			addZone(getNOM_ST_GRADE_LIB(i), av.getLibGrade() == null ? "&nbsp;" : av.getLibGrade());
 			addZone(getNOM_ST_DIRECTION(i), av.getDirectionService() + " <br> " + av.getSectionService());
-			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DATE_EMBAUCHE(i),
 					av.getDateEmbauche() == null ? "&nbsp;" : sdf.format(av.getDateEmbauche()));
@@ -881,11 +885,11 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							avct.getCodePa());
 
 					// on crée une ligne de prime
-					AgentNW agent = AgentNW.chercherAgent(getTransaction(), avct.getIdAgent().toString());
+					Agent agent = getAgentDao().chercherAgent(avct.getIdAgent());
 					// on recherche la derniere ligne de prime pour la rubrique
 					// 1200(prime ancienneté)
-					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(),
-							agent.getNoMatricule(), "1200");
+					Prime prime = Prime.chercherDernierePrimeOuverteAvecRubrique(getTransaction(), agent.getNomatr(),
+							"1200");
 					// si il y en a une alors on la ferme et on en crée une
 					// nouvelle
 					if (!getTransaction().isErreur()) {
@@ -899,7 +903,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 							prime.modifierPrime(getTransaction(), agent, user);
 
 							Prime newPrime = new Prime();
-							newPrime.setNoMatr(agent.getNoMatricule());
+							newPrime.setNoMatr(agent.getNomatr().toString());
 							if ((Integer.valueOf(prime.getMtPri()) + 1) > 30) {
 								newPrime.setMtPri("30");
 							} else {
@@ -919,7 +923,7 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 						getTransaction().traiterErreur();
 
 						Prime newPrime = new Prime();
-						newPrime.setNoMatr(agent.getNoMatricule());
+						newPrime.setNoMatr(agent.getNomatr().toString());
 						newPrime.setMtPri("3");
 						newPrime.setDatDeb("01/01/" + avct.getAnnee());
 						newPrime.setDatFin(Const.ZERO);
@@ -1304,5 +1308,13 @@ public class OeAVCTMasseSalarialeConvention extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

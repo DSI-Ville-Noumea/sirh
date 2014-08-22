@@ -6,10 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
 import nc.mairie.spring.dao.metier.poste.StatutFPDao;
@@ -38,12 +39,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 	private boolean advancedSearch = false;
 	private boolean rechercheAffectation = false;
 	private Service service = null;
-	private AgentNW agentCourant = null;
+	private Agent agentCourant = null;
 
 	private TitrePosteDao titrePosteDao;
 	private StatutFPDao statutFPDao;
 	private FichePosteDao fichePosteDao;
 	private AffectationDao affectationDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -87,11 +89,11 @@ public class OePOSTEFPSelection extends BasicProcess {
 		} else if (affSecondaire != null) {
 			setRechercheAffectation(affSecondaire);
 		}
-		AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+		Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 		VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-		if (agt != null && agt.getIdAgent() != null && !agt.getIdAgent().equals(Const.CHAINE_VIDE)) {
+		if (agt != null && agt.getIdAgent() != null) {
 			setAgentCourant(agt);
-			addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule());
+			addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr().toString());
 			addZone(getNOM_RG_TYPE_RECHERCHE(), getNOM_RB_TYPE_AGENT());
 			performPB_RECHERCHER(request);
 			// rechercheParAgent(request);
@@ -113,6 +115,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 		}
 		if (getAffectationDao() == null) {
 			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -169,11 +174,12 @@ public class OePOSTEFPSelection extends BasicProcess {
 				FichePoste fp = (FichePoste) getListeFichePoste().get(i);
 				String titreFichePoste = fp.getIdTitrePoste() == null ? "&nbsp;" : getTitrePosteDao()
 						.chercherTitrePoste(fp.getIdTitrePoste()).getLibTitrePoste();
-				AgentNW agent = AgentNW.chercherAgentAffecteFichePoste(getTransaction(), fp.getIdFichePoste()
-						.toString());
-				if (agent == null)
-					agent = AgentNW.chercherAgentAffecteFichePosteSecondaire(getTransaction(), fp.getIdFichePoste()
-							.toString());
+				Agent agent = null;
+				try {
+					agent = getAgentDao().chercherAgentAffecteFichePoste(fp.getIdFichePoste());
+				} catch (Exception e) {
+					agent = getAgentDao().chercherAgentAffecteFichePosteSecondaire(fp.getIdFichePoste());
+				}
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
 				addZone(getNOM_ST_TITRE(indiceFp), titreFichePoste);
@@ -278,10 +284,9 @@ public class OePOSTEFPSelection extends BasicProcess {
 		}
 
 		if (!getVAL_ST_AGENT().equals(Const.CHAINE_VIDE)) {
-			AgentNW a = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			Agent a = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 			// Recherche de tous les liens Agent / FichePoste
-			ArrayList<Affectation> liens = getAffectationDao().listerAffectationActiveAvecAgent(
-					Integer.valueOf(a.getIdAgent()));
+			ArrayList<Affectation> liens = getAffectationDao().listerAffectationActiveAvecAgent(a.getIdAgent());
 			aListe = getFichePosteDao().listerFichePosteAvecAgent(liens);
 		}
 
@@ -510,7 +515,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -614,7 +619,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	private AgentNW getAgentCourant() {
+	private Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -623,7 +628,7 @@ public class OePOSTEFPSelection extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -740,5 +745,13 @@ public class OePOSTEFPSelection extends BasicProcess {
 
 	public void setAffectationDao(AffectationDao affectationDao) {
 		this.affectationDao = affectationDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

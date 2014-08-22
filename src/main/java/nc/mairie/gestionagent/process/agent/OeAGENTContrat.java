@@ -15,7 +15,7 @@ import nc.mairie.enums.EnumTypeContrat;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
@@ -73,7 +73,7 @@ public class OeAGENTContrat extends BasicProcess {
 	public String CHOIX_CONTRAT_O = "Oui";
 	public String CHOIX_CONTRAT_N = "Non";
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private TypeContrat typeContratCourant;
 	private Motif motifCourant;
 	private ArrayList<Contrat> listeContrat;
@@ -145,7 +145,7 @@ public class OeAGENTContrat extends BasicProcess {
 		if (getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O())) {
 			// Contrat c = Contrat.chercherContratCourant(getTransaction(),
 			// getAgentCourant());
-			Contrat c = getContratDao().chercherDernierContrat(Integer.valueOf(getAgentCourant().getIdAgent()));
+			Contrat c = getContratDao().chercherDernierContrat(getAgentCourant().getIdAgent());
 			setContratReference(c);
 
 			if (getContratReference() != null) {
@@ -259,7 +259,7 @@ public class OeAGENTContrat extends BasicProcess {
 			String newJustification = getZone(getNOM_EF_JUSTIFICATION());
 
 			// Affectation des attributs
-			getContratCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getContratCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getContratCourant().setAvenant(newAvenant);
 			if (newAvenant)
 				getContratCourant().setIdContratRef(getContratReference().getIdContrat());
@@ -418,8 +418,7 @@ public class OeAGENTContrat extends BasicProcess {
 		if (!getContratCourant().isAvenant()) {
 
 			boolean rgOK = true;
-			ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()));
+			ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(getAgentCourant().getIdAgent());
 			for (int i = 0; i < lc.size(); i++) {
 				Contrat c = (Contrat) lc.get(i);
 				if (!c.getIdContrat().equals(getContratCourant().getIdContrat())) {
@@ -944,7 +943,7 @@ public class OeAGENTContrat extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeContratsAgent(request);
@@ -963,7 +962,7 @@ public class OeAGENTContrat extends BasicProcess {
 	private void initialiseListeContratsAgent(HttpServletRequest request) throws Exception {
 
 		// Recherche des contrats de l'agent
-		ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<Contrat> lc = getContratDao().listerContratAvecAgent(getAgentCourant().getIdAgent());
 		setListeContrat(lc);
 
 		int indiceContrat = 0;
@@ -1157,9 +1156,9 @@ public class OeAGENTContrat extends BasicProcess {
 	/**
 	 * Retourne l'agent courant.
 	 * 
-	 * @return AgentNW
+	 * @return Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -1168,7 +1167,7 @@ public class OeAGENTContrat extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -1511,8 +1510,8 @@ public class OeAGENTContrat extends BasicProcess {
 		// si le fichier existe alors on supprime l'entrée où il y a le fichier
 		if (verifieExistFichier(getContratCourant().getIdContrat())) {
 			Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + getContratCourant().getIdContrat());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+					d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {
@@ -1552,7 +1551,7 @@ public class OeAGENTContrat extends BasicProcess {
 					d.getDateDocument(), d.getCommentaire(), d.getIdTypeDocument(), d.getNomOriginal());
 
 			DocumentAgent lda = new DocumentAgent();
-			lda.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			lda.setIdAgent(getAgentCourant().getIdAgent());
 			lda.setIdDocument(id);
 			getLienDocumentAgentDao().creerDocumentAgent(lda.getIdAgent(), lda.getIdDocument());
 
@@ -1606,14 +1605,14 @@ public class OeAGENTContrat extends BasicProcess {
 		return true;
 	}
 
-	private byte[] getContratReportAsByteArray(String idAgent, Integer idContrat) throws Exception {
+	private byte[] getContratReportAsByteArray(Integer idAgent, Integer idContrat) throws Exception {
 
 		ClientResponse response = createAndFireRequestContrat(idAgent, idContrat);
 
 		return readResponseAsByteArray(response);
 	}
 
-	private ClientResponse createAndFireRequestContrat(String idAgent, Integer idContrat) {
+	private ClientResponse createAndFireRequestContrat(Integer idAgent, Integer idContrat) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_WS_URL_CONTRAT_SIRH") + "?idAgent=" + idAgent
 				+ "&idContrat=" + idContrat;
 

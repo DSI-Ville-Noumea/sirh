@@ -3,7 +3,7 @@ package nc.mairie.spring.dao.metier.EAE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.eae.EAE;
 
 public interface EaeEAEDaoInterface {
@@ -11,7 +11,7 @@ public interface EaeEAEDaoInterface {
 	public ArrayList<EAE> listerEAETravailPourCampagne(String etat, Integer idCampagneEAE) throws Exception;
 
 	public ArrayList<EAE> listerEAEPourCampagne(Integer idCampagneEAE, String etat, String statut,
-			ArrayList<String> listeSousService, String cap, AgentNW agentEvaluateur, AgentNW agentEvalue, String detach)
+			ArrayList<String> listeSousService, String cap, Agent agentEvaluateur, Agent agentEvalue, String detach)
 			throws Exception;
 
 	public ArrayList<EAE> listerEAEFinaliseControlePourCampagne(Integer idCampagneEAE) throws Exception;

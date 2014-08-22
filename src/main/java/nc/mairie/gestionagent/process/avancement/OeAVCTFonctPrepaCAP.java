@@ -19,7 +19,7 @@ import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.PositionAdm;
 import nc.mairie.metier.avancement.AvancementCapPrintJob;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
@@ -38,6 +38,7 @@ import nc.mairie.metier.referentiel.AvisCap;
 import nc.mairie.spring.dao.metier.EAE.CampagneEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEAEDao;
 import nc.mairie.spring.dao.metier.EAE.EaeEvaluationDao;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementCapPrintJobDao;
 import nc.mairie.spring.dao.metier.avancement.AvancementFonctionnairesDao;
 import nc.mairie.spring.dao.metier.parametrage.CadreEmploiDao;
@@ -126,6 +127,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	private AutreAdministrationDao autreAdministrationDao;
 	private AvisCapDao avisCapDao;
 	private AvancementFonctionnairesDao avancementFonctionnairesDao;
+	private AgentDao agentDao;
+
 	private SimpleDateFormat sdfFormatDate = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
@@ -156,9 +159,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		initialiseListeService();
 
 		if (etatStatut() == STATUT_RECHERCHER_AGENT) {
-			AgentNW agt = (AgentNW) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
 			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
-			addZone(getNOM_ST_AGENT(), agt.getNoMatricule());
+			addZone(getNOM_ST_AGENT(), agt.getNomatr().toString());
 		}
 
 		// Si liste avancements vide alors initialisation.
@@ -189,11 +192,11 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		for (int j = 0; j < getListeAvct().size(); j++) {
 			AvancementFonctionnaires av = (AvancementFonctionnaires) getListeAvct().get(j);
 			Integer i = av.getIdAvct();
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), av.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(av.getIdAgent());
 			Grade gradeAgent = Grade.chercherGrade(getTransaction(), av.getGrade());
 			Grade gradeSuivantAgent = Grade.chercherGrade(getTransaction(), av.getIdNouvGrade());
 
-			addZone(getNOM_ST_MATRICULE(i), agent.getNoMatricule());
+			addZone(getNOM_ST_MATRICULE(i), agent.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), agent.getNomAgent() + " <br> " + agent.getPrenomAgent());
 			addZone(getNOM_ST_DIRECTION(i),
 					Services.estNumerique(av.getDirectionService()) ? getAutreAdministrationDao()
@@ -456,6 +459,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		if (getAvancementFonctionnairesDao() == null) {
 			setAvancementFonctionnairesDao(new AvancementFonctionnairesDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -679,9 +685,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		}
 
 		// recuperation agent
-		AgentNW agent = null;
+		Agent agent = null;
 		if (getVAL_ST_AGENT().length() != 0) {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), getVAL_ST_AGENT());
+			agent = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT()));
 		}
 
 		// recuperation du service
@@ -695,8 +701,8 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 		String reqEtat = " and (ETAT='" + EnumEtatAvancement.SGC.getValue() + "' or ETAT='"
 				+ EnumEtatAvancement.SEF.getValue() + "')";
 		setListeAvct(getAvancementFonctionnairesDao().listerAvancementAvecAnneeEtat(Integer.valueOf(annee), reqEtat,
-				filiere == null ? null : filiere.getLibFiliere(),
-				agent == null ? null : Integer.valueOf(agent.getIdAgent()), listeSousService, null, null));
+				filiere == null ? null : filiere.getLibFiliere(), agent == null ? null : agent.getIdAgent(),
+				listeSousService, null, null));
 
 		afficheListeAvancement();
 		return true;
@@ -720,7 +726,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 */
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		AgentNW agent = null;
+		Agent agent = null;
 		if (!user.getUserName().equals("nicno85")) {
 			// on fait la correspondance entre le login et l'agent via RADI
 			RadiWSConsumer radiConsu = new RadiWSConsumer();
@@ -731,10 +737,10 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(),
+			agent = getAgentDao().chercherAgentParMatricule(
 					radiConsu.getNomatrWithEmployeeNumber(ag.getEmployeeNumber()));
 		} else {
-			agent = AgentNW.chercherAgentParMatricule(getTransaction(), "5138");
+			agent = getAgentDao().chercherAgentParMatricule(5138);
 		}
 
 		for (int i = 0; i < getListeImpression().size(); i++) {
@@ -743,9 +749,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
-					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
-							cadre.getLibCadreEmploi(), false, true);
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
+							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
+							false, true);
 				} catch (Exception e) {
 					getTransaction().traiterErreur();
 					// "ERR182",
@@ -760,9 +766,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
-					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
-							cadre.getLibCadreEmploi(), true, true);
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
+							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
+							true, true);
 				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -776,9 +782,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
-					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
-							cadre.getLibCadreEmploi(), false, false);
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
+							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
+							false, false);
 				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -792,9 +798,9 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 					Cap cap = getCapDao().chercherCapByCodeCap(getVAL_ST_CODE_CAP(i));
 					CadreEmploi cadre = getCadreEmploiDao().chercherCadreEmploiByLib(getVAL_ST_CADRE_EMPLOI(i));
 					// on crée l'entrée dans la table du job
-					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(Integer.valueOf(agent.getIdAgent()),
-							user.getUserName(), cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(),
-							cadre.getLibCadreEmploi(), true, false);
+					getAvancementCapPrintJobDao().creerAvancementCapPrintJob(agent.getIdAgent(), user.getUserName(),
+							cap.getIdCap(), cap.getCodeCap(), cadre.getIdCadreEmploi(), cadre.getLibCadreEmploi(),
+							true, false);
 				} catch (Exception e) {
 					// "ERR182",
 					// "Une erreur est survenue dans la génération du tableau. Merci de contacter le responsable du projet."
@@ -1797,7 +1803,7 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	 */
 	public boolean performPB_RECHERCHER_AGENT(HttpServletRequest request) throws Exception {
 		// On met l'agent courant en var d'activité
-		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new AgentNW());
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
 
 		setStatut(STATUT_RECHERCHER_AGENT, true);
 		return true;
@@ -2212,5 +2218,13 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 
 	public void setAvancementFonctionnairesDao(AvancementFonctionnairesDao avancementFonctionnairesDao) {
 		this.avancementFonctionnairesDao = avancementFonctionnairesDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

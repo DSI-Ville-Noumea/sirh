@@ -10,11 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumEtatSuiviMed;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.hsct.Medecin;
 import nc.mairie.metier.hsct.VisiteMedicale;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.metier.suiviMedical.SuiviMedical;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.hsct.MedecinDao;
 import nc.mairie.spring.dao.metier.hsct.VisiteMedicaleDao;
 import nc.mairie.spring.dao.metier.suiviMedical.MotifVisiteMedDao;
@@ -51,6 +52,7 @@ public class OeSMHistorique extends BasicProcess {
 	private MotifVisiteMedDao motifVisiteMedDao;
 	private MedecinDao medecinDao;
 	private VisiteMedicaleDao visiteMedicaleDao;
+	private AgentDao agentDao;
 
 	@Override
 	public void initialiseZones(HttpServletRequest request) throws Exception {
@@ -101,6 +103,9 @@ public class OeSMHistorique extends BasicProcess {
 		if (getVisiteMedicaleDao() == null) {
 			setVisiteMedicaleDao(new VisiteMedicaleDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	public VisiteMedicaleDao getVisiteMedicaleDao() {
@@ -115,7 +120,7 @@ public class OeSMHistorique extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		for (int i = 0; i < getListeHistoSuiviMed().size(); i++) {
 			SuiviMedical sm = (SuiviMedical) getListeHistoSuiviMed().get(i);
-			AgentNW agent = AgentNW.chercherAgent(getTransaction(), sm.getIdAgent().toString());
+			Agent agent = getAgentDao().chercherAgent(sm.getIdAgent());
 			addZone(getNOM_ST_NUM_SM(i), sm.getIdSuiviMed().toString());
 			addZone(getNOM_ST_MATR(i), sm.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(i), sm.getAgent());
@@ -712,5 +717,13 @@ public class OeSMHistorique extends BasicProcess {
 
 	public void setMedecinDao(MedecinDao medecinDao) {
 		this.medecinDao = medecinDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

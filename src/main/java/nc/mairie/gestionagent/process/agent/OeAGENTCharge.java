@@ -9,7 +9,7 @@ import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Charge;
 import nc.mairie.metier.agent.CodeAcci;
 import nc.mairie.metier.agent.CodeChargeLogt;
@@ -68,7 +68,7 @@ public class OeAGENTCharge extends BasicProcess {
 	private Hashtable<String, CodeLogt> hashCodesLogt;
 	private Hashtable<String, CodeChargeLogt> hashCodesChargeLogt;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Charge chargeCourante;
 
 	public String ACTION_SUPPRESSION = "Suppression d'une fiche Charge.";
@@ -213,7 +213,7 @@ public class OeAGENTCharge extends BasicProcess {
 
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeCharges(request);
@@ -740,8 +740,8 @@ public class OeAGENTCharge extends BasicProcess {
 			Creancier c = getSelectedCreancier();
 
 			// Création de l'objet VisiteMedicale à créer/modifier
-			AgentNW agentCourant = getAgentCourant();
-			getChargeCourante().setNoMatr(agentCourant.getNoMatricule());
+			Agent agentCourant = getAgentCourant();
+			getChargeCourante().setNoMatr(agentCourant.getNomatr().toString());
 			getChargeCourante().setNoRubr(r.getNorubr().toString());
 			getChargeCourante().setCdCrea(c != null ? c.getCdCrea() : Const.ZERO);
 			getChargeCourante().setMttreg(montant.equals(Const.CHAINE_VIDE) ? Const.ZERO : montant);
@@ -1043,11 +1043,11 @@ public class OeAGENTCharge extends BasicProcess {
 		return getZone(getNOM_LB_CREANCIER_SELECT());
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

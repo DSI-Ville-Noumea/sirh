@@ -11,7 +11,7 @@ import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.PositionAdmAgent;
 import nc.mairie.metier.avancement.AvancementFonctionnaires;
@@ -71,7 +71,7 @@ public class OeAGENTCarriere extends BasicProcess {
 	private String[] LB_REGIMES;
 	private String[] LB_STATUTS;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Carriere carriereCourante;
 	private ArrayList<Carriere> listeCarriere;
 	private ArrayList<Grade> listeGrade;
@@ -165,7 +165,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeCarrieres(request);
@@ -638,7 +638,7 @@ public class OeAGENTCarriere extends BasicProcess {
 				Contrat contrat = null;
 				try {
 					contrat = getContratDao().chercherContratAgentDateComprise(
-							Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(getVAL_EF_DATE_DEBUT()));
+							getAgentCourant().getIdAgent(), sdf.parse(getVAL_EF_DATE_DEBUT()));
 				} catch (Exception e) {
 					// pas de contrat
 				}
@@ -912,7 +912,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (getCarriereCourante() == null) {
 			setCarriereCourante(new Carriere());
-			getCarriereCourante().setNoMatricule(getAgentCourant().getNoMatricule());
+			getCarriereCourante().setNoMatricule(getAgentCourant().getNomatr().toString());
 		}
 
 		getCarriereCourante().setDateDebut(dateDebut);
@@ -933,7 +933,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			Contrat contrat = null;
 			try {
 				contrat = getContratDao().chercherContratAgentDateComprise(
-						Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(dateDebut));
+						getAgentCourant().getIdAgent(), sdf.parse(dateDebut));
 			} catch (Exception e) {
 				// aucun contrat trouvé
 			}
@@ -1107,7 +1107,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			PositionAdmAgent dernierePA = null;
 			// on verifie qu'il existe une PA comprise dans dateDebCarr
 			PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent.chercherPositionAdmAgentDateFinExclu(
-					getTransaction(), getAgentCourant().getNoMatricule(),
+					getTransaction(), getAgentCourant().getNomatr(),
 					Services.convertitDate(Services.formateDate(getVAL_EF_DATE_DEBUT()), "dd/MM/yyyy", "yyyyMMdd"));
 			// si PA recupérée est ACTIVE
 			if (!posAdmAgtActiveAUneDate.estPAInactive(getTransaction())) {
@@ -1163,14 +1163,14 @@ public class OeAGENTCarriere extends BasicProcess {
 			Carriere carrBase = (Carriere) getCarriereCourante().getBasicMetierBase();
 			if (carrBase != null) {
 				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
-						.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+						.getNomatr(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
 						"dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// si pas de carriere precendente on regarde la carriere
 					// suivant
 					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
-							.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+							.getNomatr(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
 							"dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1192,7 +1192,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					// si on a une carriere precedente
 					// on cherche la carriere suivante
 					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
-							.getNoMatricule(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
+							.getNomatr(), Services.convertitDate(Services.formateDate(carrBase.getDateDebut()),
 							"dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1221,14 +1221,14 @@ public class OeAGENTCarriere extends BasicProcess {
 			} else {
 				// c'est qu'on est en cretion d'une nouvelle carriere
 				Carriere carrPrec = Carriere.chercherCarriereAgentPrec(getTransaction(), getAgentCourant()
-						.getNoMatricule(), Services.convertitDate(
+						.getNomatr(), Services.convertitDate(
 						Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 				if (getTransaction().isErreur()) {
 					getTransaction().traiterErreur();
 					// si pas de carriere precendente on regarde la carriere
 					// suivant
 					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
-							.getNoMatricule(), Services.convertitDate(
+							.getNomatr(), Services.convertitDate(
 							Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1250,7 +1250,7 @@ public class OeAGENTCarriere extends BasicProcess {
 					// si on a une carriere precedente
 					// on cherche la carriere suivante
 					Carriere carrSuiv = Carriere.chercherCarriereAgentSuiv(getTransaction(), getAgentCourant()
-							.getNoMatricule(), Services.convertitDate(
+							.getNomatr(), Services.convertitDate(
 							Services.formateDate(getCarriereCourante().getDateDebut()), "dd/MM/yyyy", "yyyyMMdd"));
 					if (getTransaction().isErreur()) {
 						getTransaction().traiterErreur();
@@ -1594,11 +1594,11 @@ public class OeAGENTCarriere extends BasicProcess {
 		return getZone(getNOM_LB_MOTIFS_SELECT());
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -2592,8 +2592,8 @@ public class OeAGENTCarriere extends BasicProcess {
 
 	private void performCalculContractuel(Carriere carr) throws Exception {
 		// on recupere le grade et la filiere du poste
-		Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(Integer.valueOf(getAgentCourant()
-				.getIdAgent()));
+		Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(getAgentCourant()
+				.getIdAgent());
 		FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
 		// on cherche à quelle categorie appartient l'agent (A,B,A+..;)
 		Grade grade = Grade.chercherGrade(getTransaction(), fp.getCodeGrade());
@@ -2647,7 +2647,7 @@ public class OeAGENTCarriere extends BasicProcess {
 		// on regarde si il y a d'autre carrieres avec le meme grade
 		// si oui on prend la carriere plus lointaine
 		ArrayList<Carriere> listeCarrMemeGrade = Carriere.listerCarriereAvecGradeEtStatut(getTransaction(),
-				getAgentCourant().getNoMatricule(), carr.getCodeGrade(), carr.getCodeCategorie());
+				getAgentCourant().getNomatr(), carr.getCodeGrade(), carr.getCodeCategorie());
 		if (listeCarrMemeGrade != null && listeCarrMemeGrade.size() > 0) {
 			carr = (Carriere) listeCarrMemeGrade.get(0);
 		}
@@ -3230,7 +3230,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			Contrat contrat = null;
 			try {
 				contrat = getContratDao().chercherContratAgentDateComprise(
-						Integer.valueOf(getAgentCourant().getIdAgent()), sdf.parse(getVAL_EF_DATE_DEBUT()));
+						getAgentCourant().getIdAgent(), sdf.parse(getVAL_EF_DATE_DEBUT()));
 			} catch (Exception e) {
 				// pas de contrat
 			}

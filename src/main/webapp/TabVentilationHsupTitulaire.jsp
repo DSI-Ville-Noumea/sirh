@@ -7,7 +7,7 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="nc.mairie.metier.agent.AgentNW"%>
+<%@page import="nc.mairie.metier.agent.Agent"%>
 						<table  class="display"  id="VentilationTableHsupTitulaire"  width="100%" >
 							<thead>
 								<tr>
@@ -28,47 +28,47 @@
 							</thead>
 							<tbody>
 							<%
-							SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
-							Enumeration<Hashtable<Integer, String>> e = process.getHashVentilHsup().keys();
-							AgentNW agent;
-							while (e.hasMoreElements()) {
-								Hashtable<Integer, String> ag = e.nextElement();
-								Enumeration<Integer> o = ag.keys();
-								Integer idAgent = o.nextElement();
-								Collection<String> r = ag.values();
-								String moisAnneeR = r.iterator().next();
-								List<VentilHSupDto> hsup = process.getHashVentilHsup().get(ag);
-								int abs = 0;
-								int minutesHorsContrat = 0;								
-								int minutesComplementaires = 0;					
-								int minutesSimples = 0;				
-								int minutesComposees = 0;		
-								int minutesNuit = 0;
-								int minutesDJF = 0;
-								int minutesMai = 0;
-								String affMois = "";
-								String nomatr = "";
-								String prenom = "";
-								String nom = "";
-								double weekBase=0;
-								for (VentilHSupDto t : hsup) {
-									abs += t.getMabs();
-									minutesHorsContrat += t.getmHorsContrat();									
-									minutesComplementaires += t.getmNormales();					
-									minutesSimples += t.getmSimples();			
-									minutesComposees += t.getmComposees();	
-									minutesNuit += t.getmNuit();
-									minutesDJF += t.getmDjf();
-									minutesMai += t.getM1Mai();									
-									agent = AgentNW.chercherAgent(process.getTransaction(), String.valueOf(t.getId_agent()));
-									nomatr = agent.getNoMatricule();
-									prenom = agent.getPrenomAgent();
-									nom = agent.getNomAgent();
-									affMois = moisAnnee.format(t.getDateLundi());
-									Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(process.getTransaction(), agent);
-									BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(process.getTransaction(), carr.getCodeBase());
-									weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."));
-								}
+								SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
+												Enumeration<Hashtable<Integer, String>> e = process.getHashVentilHsup().keys();
+												Agent agent;
+												while (e.hasMoreElements()) {
+													Hashtable<Integer, String> ag = e.nextElement();
+													Enumeration<Integer> o = ag.keys();
+													Integer idAgent = o.nextElement();
+													Collection<String> r = ag.values();
+													String moisAnneeR = r.iterator().next();
+													List<VentilHSupDto> hsup = process.getHashVentilHsup().get(ag);
+													int abs = 0;
+													int minutesHorsContrat = 0;								
+													int minutesComplementaires = 0;					
+													int minutesSimples = 0;				
+													int minutesComposees = 0;		
+													int minutesNuit = 0;
+													int minutesDJF = 0;
+													int minutesMai = 0;
+													String affMois = "";
+													String nomatr = "";
+													String prenom = "";
+													String nom = "";
+													double weekBase=0;
+													for (VentilHSupDto t : hsup) {
+														abs += t.getMabs();
+														minutesHorsContrat += t.getmHorsContrat();									
+														minutesComplementaires += t.getmNormales();					
+														minutesSimples += t.getmSimples();			
+														minutesComposees += t.getmComposees();	
+														minutesNuit += t.getmNuit();
+														minutesDJF += t.getmDjf();
+														minutesMai += t.getM1Mai();									
+														agent = process.getAgent(t.getId_agent());
+														nomatr = agent.getNomatr().toString();
+														prenom = agent.getPrenomAgent();
+														nom = agent.getNomAgent();
+														affMois = moisAnnee.format(t.getDateLundi());
+														Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(process.getTransaction(), agent);
+														BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(process.getTransaction(), carr.getCodeBase());
+														weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."));
+													}
 							%>
 								<tr id="hsup_<%=moisAnneeR+"_"+idAgent%>">
 									<td><%=nomatr%></td>

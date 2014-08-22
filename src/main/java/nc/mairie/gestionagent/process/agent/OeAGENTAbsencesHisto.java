@@ -13,7 +13,7 @@ import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -33,7 +33,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private ArrayList<DemandeDto> listeDemandeNonPrises;
 	private ArrayList<DemandeDto> listeDemandeEnCours;
 	private ArrayList<DemandeDto> listeToutesDemandes;
@@ -81,7 +81,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Si agentCourant vide
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseHistoAgentNonPrises(request, null, null, null, null, null);
@@ -178,7 +178,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat,
+				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat,
 				idRefTypeAbsence);
 		setListeToutesDemandes(a);
 
@@ -234,7 +234,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "EN_COURS", dateDebut, dateFin, dateDemande,
+				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande,
 				idRefEtat, idRefTypeAbsence);
 		setListeDemandeEnCours(a);
 
@@ -291,7 +291,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), "NON_PRISES", dateDebut, dateFin, dateDemande,
+				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande,
 				idRefEtat, idRefTypeAbsence);
 		setListeDemandeNonPrises(a);
 
@@ -410,11 +410,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		return "ECR-AG-ABS-HISTO";
 	}
 
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

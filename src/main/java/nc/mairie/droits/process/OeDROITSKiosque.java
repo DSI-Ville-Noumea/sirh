@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.FichePoste;
 import nc.mairie.metier.poste.Service;
@@ -160,23 +160,21 @@ public class OeDROITSKiosque extends BasicProcess {
 	private void ajouteApprobateurs(HttpServletRequest request) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		ArrayList<AgentNW> listeEvaluateurSelect = (ArrayList<AgentNW>) VariablesActivite.recuperer(this,
-				"APPROBATEURS");
+		ArrayList<Agent> listeEvaluateurSelect = (ArrayList<Agent>) VariablesActivite.recuperer(this, "APPROBATEURS");
 		VariablesActivite.enlever(this, "APPROBATEURS");
 		if (listeEvaluateurSelect != null && listeEvaluateurSelect.size() > 0) {
-			for (AgentNW ag : listeEvaluateurSelect) {
+			for (Agent ag : listeEvaluateurSelect) {
 				AgentWithServiceDto agentDto = new AgentWithServiceDto();
-				agentDto.setIdAgent(Integer.valueOf(ag.getIdAgent()));
+				agentDto.setIdAgent(ag.getIdAgent());
 
 				if (!getListeApprobateurs().contains(agentDto)) {
 					Affectation affCourante = null;
 					try {
-						affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(
-								Integer.valueOf(ag.getIdAgent()));
+						affCourante = getAffectationDao().chercherAffectationActiveAvecAgent(ag.getIdAgent());
 					} catch (Exception e) {
 						// "ERR400", //
 						// "L'agent @ n'est affecté à aucun poste. Il ne peut être ajouté en tant qu'approbateur."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", ag.getIdAgent()));
+						getTransaction().declarerErreur(MessageUtils.getMessage("ERR400", ag.getIdAgent().toString()));
 						throw new Exception();
 					}
 					FichePoste fpCourante = getFichePosteDao().chercherFichePoste(affCourante.getIdFichePoste());

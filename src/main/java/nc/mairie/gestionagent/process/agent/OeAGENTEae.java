@@ -15,7 +15,7 @@ import nc.mairie.enums.EnumEtatEAE;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.eae.CampagneEAE;
@@ -45,6 +45,7 @@ import nc.mairie.spring.dao.metier.EAE.EaeFinalisationDao;
 import nc.mairie.spring.dao.metier.EAE.EaeNumIncrementDocumentDao;
 import nc.mairie.spring.dao.metier.EAE.EaePlanActionDao;
 import nc.mairie.spring.dao.metier.EAE.EaeTypeDeveloppementDao;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDocumentDao;
@@ -101,7 +102,7 @@ public class OeAGENTEae extends BasicProcess {
 	private ArrayList<EaeTypeDeveloppement> listeTypeDeveloppement;
 	private Hashtable<String, EaeTypeDeveloppement> hashTypeDeveloppement;
 
-	private AgentNW AgentCourant;
+	private Agent AgentCourant;
 	private ArrayList<EAE> listeEae;
 	private ArrayList<EaeEvaluateur> listeEvaluateurEae;
 	private ArrayList<EaePlanAction> listeObjectifPro;
@@ -139,6 +140,7 @@ public class OeAGENTEae extends BasicProcess {
 	private TypeDocumentDao typeDocumentDao;
 	private DocumentAgentDao lienDocumentAgentDao;
 	private DocumentDao documentDao;
+	private AgentDao agentDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -171,7 +173,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeEae(request);
@@ -187,7 +189,7 @@ public class OeAGENTEae extends BasicProcess {
 
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgent(getLienDocumentAgentDao(),
-				Integer.valueOf(getAgentCourant().getIdAgent()), Const.CHAINE_VIDE, "EAE");
+				getAgentCourant().getIdAgent(), Const.CHAINE_VIDE, "EAE");
 		setListeAncienEAE(listeDocAgent);
 
 		if (getListeAncienEAE() != null) {
@@ -214,8 +216,7 @@ public class OeAGENTEae extends BasicProcess {
 	private void initialiseListeEae(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des EAE de l'agent
-		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalueSans2012(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+		ArrayList<EaeEvalue> listeEAEEvalue = getEaeEvalueDao().listerEaeEvalueSans2012(getAgentCourant().getIdAgent());
 
 		ArrayList<EAE> listeEAE = new ArrayList<EAE>();
 
@@ -236,9 +237,9 @@ public class OeAGENTEae extends BasicProcess {
 				String evaluateur = Const.CHAINE_VIDE;
 				for (int j = 0; j < listeEvaluateur.size(); j++) {
 					EaeEvaluateur eval = listeEvaluateur.get(j);
-					AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
+					Agent agentEvaluateur = getAgentDao().chercherAgent(eval.getIdAgent());
 					evaluateur += agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
-							+ agentEvaluateur.getNoMatricule() + ") <br/> ";
+							+ agentEvaluateur.getNomatr() + ") <br/> ";
 				}
 
 				addZone(getNOM_ST_ANNEE(indiceEae), camp.getAnnee().toString());
@@ -343,12 +344,15 @@ public class OeAGENTEae extends BasicProcess {
 		if (getDocumentDao() == null) {
 			setDocumentDao(new DocumentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
 	 * @return Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return AgentCourant;
 	}
 
@@ -356,7 +360,7 @@ public class OeAGENTEae extends BasicProcess {
 	 * @param newAgentCourant
 	 *            Agent
 	 */
-	private void setAgentCourant(AgentNW newAgentCourant) {
+	private void setAgentCourant(Agent newAgentCourant) {
 		AgentCourant = newAgentCourant;
 	}
 
@@ -749,9 +753,9 @@ public class OeAGENTEae extends BasicProcess {
 		setListeEvaluateurEae(listeEvaluateur);
 		for (int j = 0; j < listeEvaluateur.size(); j++) {
 			EaeEvaluateur eval = listeEvaluateur.get(j);
-			AgentNW agentEvaluateur = AgentNW.chercherAgent(getTransaction(), eval.getIdAgent().toString());
+			Agent agentEvaluateur = getAgentDao().chercherAgent(eval.getIdAgent());
 			String evaluateur = agentEvaluateur.getNomAgent() + " " + agentEvaluateur.getPrenomAgent() + " ("
-					+ agentEvaluateur.getNoMatricule() + ") ";
+					+ agentEvaluateur.getNomatr() + ") ";
 
 			addZone(getNOM_ST_EVALUATEUR_NOM(j), evaluateur.equals(Const.CHAINE_VIDE) ? "non renseigné" : evaluateur);
 			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné"
@@ -4598,7 +4602,7 @@ public class OeAGENTEae extends BasicProcess {
 				doc.getNomOriginal());
 
 		DocumentAgent lien = new DocumentAgent();
-		lien.setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		lien.setIdAgent(getAgentCourant().getIdAgent());
 		lien.setIdDocument(id);
 		getLienDocumentAgentDao().creerDocumentAgent(lien.getIdAgent(), lien.getIdDocument());
 
@@ -4703,5 +4707,13 @@ public class OeAGENTEae extends BasicProcess {
 
 	public void setDocumentDao(DocumentDao documentDao) {
 		this.documentDao = documentDao;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
 	}
 }

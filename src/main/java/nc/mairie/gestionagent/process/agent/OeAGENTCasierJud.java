@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.CasierJudiciaire;
 import nc.mairie.spring.dao.metier.agent.CasierJudiciaireDao;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -37,7 +37,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'un extrait.";
 	private String ACTION_CREATION = "Création d'un extrait.";
 
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private ArrayList<CasierJudiciaire> listeCasierJud;
 	private CasierJudiciaire casierJudiciaireCourant;
 	public String focus = null;
@@ -73,10 +73,10 @@ public class OeAGENTCasierJud extends BasicProcess {
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
 				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " "
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " "
 						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
 						+ getAgentCourant().getPrenomAgent());
 
@@ -106,7 +106,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		// Recherche des extraits de casier judiciaire de l'agent
 		ArrayList<CasierJudiciaire> a = getCasierJudiciaireDao().listerCasierJudiciaireAvecAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()));
+				getAgentCourant().getIdAgent());
 		setListeCasierJud(a);
 
 		int indiceCasierJud = 0;
@@ -271,7 +271,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 
 		} else {
 			// Affectation des attributs
-			getCasierJudiciaireCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getCasierJudiciaireCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getCasierJudiciaireCourant().setDateExtrait(sdf.parse(newDateExtrait));
 			getCasierJudiciaireCourant().setNumExtrait(newNumExtrait);
 			getCasierJudiciaireCourant().setPrivationDroitsCiv(newPrivDroitsCiv);
@@ -482,9 +482,9 @@ public class OeAGENTCasierJud extends BasicProcess {
 	/**
 	 * Retourne l'agent courant.
 	 * 
-	 * @return AgentNW
+	 * @return Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -493,7 +493,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 

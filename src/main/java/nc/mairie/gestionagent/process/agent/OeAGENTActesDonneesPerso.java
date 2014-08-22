@@ -21,7 +21,7 @@ import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.Contrat;
 import nc.mairie.metier.agent.Document;
 import nc.mairie.metier.agent.DocumentAgent;
@@ -69,7 +69,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT = 1;
 
 	public String focus = null;
-	private AgentNW agentCourant;
+	private Agent agentCourant;
 	private Document documentCourant;
 	private DocumentAgent lienDocumentAgentCourant;
 	private String urlFichier;
@@ -143,7 +143,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || etatStatut() == STATUT_RECHERCHER_AGENT
 				|| MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
 				initialiseListeDocuments(request);
@@ -211,7 +211,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getLB_CONTRAT() == LBVide) {
 			if (null != getAgentCourant()) {
 				ArrayList<Contrat> c = getContratDao().listerContratAvecAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()));
+						getAgentCourant().getIdAgent());
 				if (c.size() > 0) {
 					int[] tailles = { 14, 8, 12 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -236,7 +236,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		if (getLB_AFFECTATION() == LBVide) {
 			if (null != getAgentCourant()) {
 				ArrayList<Affectation> aff = getAffectationDao().listerAffectationAvecAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()));
+						getAgentCourant().getIdAgent());
 				if (aff.size() > 0) {
 					int[] tailles = { 15, 50 };
 					FormateListe aFormat = new FormateListe(tailles);
@@ -262,7 +262,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 			if (null != getAgentCourant()) {
 				// Recherche de tous les liens Agent / FichePoste
 				ArrayList<Affectation> liens = getAffectationDao().listerAffectationActiveAvecAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()));
+						getAgentCourant().getIdAgent());
 				ArrayList<FichePoste> listeFp = getFichePosteDao().listerFichePosteAvecAgent(liens);
 				if (listeFp.size() > 0) {
 					int[] tailles = { 15, 50 };
@@ -482,7 +482,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				// on supprime le document existant dans la base de données
 				Document d = getDocumentDao().chercherDocumentByContainsNom("C_" + c.getIdContrat());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -498,7 +498,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 								"NS_" + aff.getIdAffectation() + "_"
 										+ nomSansExtension.substring(3, nomSansExtension.length()));
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -510,7 +510,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				// on supprime le document existant dans la base de données
 				Document d = getDocumentDao().chercherDocumentByContainsNom("FP_" + fichePoste.getIdFichePoste());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -522,7 +522,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				// on supprime le document existant dans la base de données
 				Document d = getDocumentDao().chercherDocumentByContainsNom("PHO_" + getAgentCourant().getIdAgent());
 				DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-						Integer.valueOf(getAgentCourant().getIdAgent()), d.getIdDocument());
+						getAgentCourant().getIdAgent(), d.getIdDocument());
 				String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 				File f = new File(repertoireStockage + d.getLienDocument());
 				if (f.exists()) {
@@ -602,7 +602,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 				getDocumentCourant().getIdTypeDocument(), getDocumentCourant().getNomOriginal());
 
 		setLienDocumentAgentCourant(new DocumentAgent());
-		getLienDocumentAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+		getLienDocumentAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 		getLienDocumentAgentCourant().setIdDocument(id);
 		getLienDocumentAgentDao().creerDocumentAgent(getLienDocumentAgentCourant().getIdAgent(),
 				getLienDocumentAgentCourant().getIdDocument());
@@ -774,7 +774,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	 * 
 	 * @return agentCourant
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return agentCourant;
 	}
 
@@ -783,7 +783,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 	 * 
 	 * @param agentCourant
 	 */
-	private void setAgentCourant(AgentNW agentCourant) {
+	private void setAgentCourant(Agent agentCourant) {
 		this.agentCourant = agentCourant;
 	}
 
@@ -832,7 +832,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des documents de l'agent
 		ArrayList<Document> listeDocAgent = getDocumentDao().listerDocumentAgent(getLienDocumentAgentDao(),
-				Integer.valueOf(getAgentCourant().getIdAgent()), getVueCourant(), "DONNEES PERSONNELLES");
+				getAgentCourant().getIdAgent(), getVueCourant(), "DONNEES PERSONNELLES");
 		setListeDocuments(listeDocAgent);
 
 		int indiceActe = 0;
@@ -915,7 +915,7 @@ public class OeAGENTActesDonneesPerso extends BasicProcess {
 
 		TypeDocument td = (TypeDocument) getTypeDocumentDao().chercherTypeDocument(d.getIdTypeDocument());
 		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				Integer.valueOf(getAgentCourant().getIdAgent()), getDocumentCourant().getIdDocument());
+				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		// Alim zones

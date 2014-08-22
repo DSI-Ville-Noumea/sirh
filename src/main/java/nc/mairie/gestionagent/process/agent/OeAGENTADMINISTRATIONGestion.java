@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.metier.Const;
-import nc.mairie.metier.agent.AgentNW;
+import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.agent.AutreAdministrationAgent;
 import nc.mairie.metier.referentiel.AutreAdministration;
 import nc.mairie.spring.dao.metier.agent.AutreAdministrationAgentDao;
@@ -42,7 +42,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private String ACTION_MODIFICATION = "Modification d'une administration.";
 	private String ACTION_CREATION = "Création d'une administration.";
 
-	private AgentNW AgentCourant;
+	private Agent AgentCourant;
 	private Hashtable<Integer, AutreAdministration> hashAdministration;
 	private ArrayList<AutreAdministrationAgent> listeAgentAdministrations;
 	private ArrayList<AutreAdministration> listeAdministrations;
@@ -80,7 +80,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	 * 
 	 * @return nc.mairie.metier.agent.Agent
 	 */
-	public AgentNW getAgentCourant() {
+	public Agent getAgentCourant() {
 		return AgentCourant;
 	}
 
@@ -304,7 +304,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 		// Recherche des administrations de l'agent
 		ArrayList<AutreAdministrationAgent> a = getAutreAdministrationAgentDao()
-				.listerAutreAdministrationAgentAvecAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+				.listerAutreAdministrationAgentAvecAgent(getAgentCourant().getIdAgent());
 		setListeAgentAdministrations(a);
 
 		// Init de la liste des administrations de l'agent
@@ -372,10 +372,10 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 
 		// Si agentCourant vide ou si etat recherche
 		if (getAgentCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			AgentNW aAgent = (AgentNW) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
+			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNoMatricule() + " "
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " "
 						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
 						+ getAgentCourant().getPrenomAgent());
 
@@ -517,7 +517,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 					Integer.parseInt(getZone(getNOM_LB_ADMINISTRATION_SELECT())));
 
 			// Affectation des attributs
-			getAutreAdministrationAgentCourant().setIdAgent(Integer.valueOf(getAgentCourant().getIdAgent()));
+			getAutreAdministrationAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin());
 			getAutreAdministrationAgentCourant().setDateEntree(sdf.parse(newDateDeb));
 			getAutreAdministrationAgentCourant().setDateSortie(
@@ -643,7 +643,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	 * @param newAgentCourant
 	 *            nc.mairie.metier.agent.Agent
 	 */
-	private void setAgentCourant(AgentNW newAgentCourant) {
+	private void setAgentCourant(Agent newAgentCourant) {
 		AgentCourant = newAgentCourant;
 	}
 

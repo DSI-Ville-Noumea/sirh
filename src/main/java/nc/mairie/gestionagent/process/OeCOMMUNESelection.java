@@ -178,8 +178,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 			for (int i = 0; i < getListePays().size(); i++) {
 				Pays p = (Pays) getListePays().get(i);
 
-				addZone(getNOM_ST_CODE_PAYS(indicePays), p.getCodPays().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getCodPays());
-				addZone(getNOM_ST_LIB_PAYS(indicePays), p.getLibPays().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getLibPays());
+				addZone(getNOM_ST_CODE_PAYS(indicePays),
+						p.getCodPays().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getCodPays());
+				addZone(getNOM_ST_LIB_PAYS(indicePays),
+						p.getLibPays().equals(Const.CHAINE_VIDE) ? "&nbsp;" : p.getLibPays());
 
 				indicePays++;
 			}
@@ -312,8 +314,10 @@ public class OeCOMMUNESelection extends BasicProcess {
 			for (int i = 0; i < getListeCommune().size(); i++) {
 				CommuneDepartement c = (CommuneDepartement) getListeCommune().get(i);
 
-				addZone(getNOM_ST_CODE(indiceComm), c.getCodCommune().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCodCommune());
-				addZone(getNOM_ST_LIB(indiceComm), c.getLibVille().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibVille());
+				addZone(getNOM_ST_CODE(indiceComm),
+						c.getCodCommune().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getCodCommune());
+				addZone(getNOM_ST_LIB(indiceComm),
+						c.getLibVille().equals(Const.CHAINE_VIDE) ? "&nbsp;" : c.getLibVille());
 
 				indiceComm++;
 			}
@@ -580,7 +584,7 @@ public class OeCOMMUNESelection extends BasicProcess {
 		if (getOrigine().equals(Const.COMMUNE_FRANCE)) {
 			// Récup de la commune sélectionnée
 			String codeCommune = ((CommuneDepartement) getListeCommune().get(elemSelection)).getCodCommune();
-			Commune aCommune = Commune.chercherCommune(getTransaction(), codeCommune);
+			Commune aCommune = Commune.chercherCommune(getTransaction(), Integer.valueOf(codeCommune));
 			if (getTransaction().isErreur()) {
 				return false;
 			}
@@ -616,12 +620,14 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 		// Recup des communes de ce pays si pas encore fait
 		if (getHashPaysCommuneEtrangere().get(aPays) == null) {
-			getHashPaysCommuneEtrangere().put(aPays, CommuneEtrangere.listerCommuneEtrangerePays(getTransaction(), aPays));
+			getHashPaysCommuneEtrangere().put(aPays,
+					CommuneEtrangere.listerCommuneEtrangerePays(getTransaction(), aPays));
 		}
 
 		// Recup des villes
 		@SuppressWarnings("unchecked")
-		ArrayList<CommuneEtrangere> lesCommunes = (ArrayList<CommuneEtrangere>) getHashPaysCommuneEtrangere().get(aPays);
+		ArrayList<CommuneEtrangere> lesCommunes = (ArrayList<CommuneEtrangere>) getHashPaysCommuneEtrangere()
+				.get(aPays);
 
 		setListeCommunePays(lesCommunes);
 		estPaysSelectionne = true;
@@ -638,7 +644,8 @@ public class OeCOMMUNESelection extends BasicProcess {
 
 				addZone(getNOM_ST_CODE(indiceCommPays),
 						ce.getCodCommuneEtrangere().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ce.getCodCommuneEtrangere());
-				addZone(getNOM_ST_LIB(indiceCommPays), ce.getLibCommuneEtrangere().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ce.getLibCommuneEtrangere());
+				addZone(getNOM_ST_LIB(indiceCommPays), ce.getLibCommuneEtrangere().equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: ce.getLibCommuneEtrangere());
 
 				indiceCommPays++;
 			}

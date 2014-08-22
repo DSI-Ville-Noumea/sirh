@@ -243,7 +243,7 @@
         <script type="text/javascript">
         
 		function startCompteur(duree){
-			<%if(OePTGVentilationUtils.isVentilationEnCours("F")){ %>
+			<%if(OePTGVentilationUtils.isVentilationEnCours("F")){%>
 			var o=document.getElementById("box" );
 			if(duree >= 0) {
 				//on format les minutes et les secondes
@@ -258,7 +258,7 @@
 		}
 		 
 		function startCompteurDeversement(duree){
-			<%if(OePTGVentilationUtils.isDeversementEnCours("F")){ %>
+			<%if(OePTGVentilationUtils.isDeversementEnCours("F")){%>
 			var o=document.getElementById("boxDeversement");
 			if(duree >= 0) {
 				//on format les minutes et les secondes
@@ -277,91 +277,149 @@
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();startCompteur('120');startCompteurDeversement('300');" >
         <%@ include file="BanniereErreur.jsp" %>
         <FORM name="formu" method="POST" class="sigp2-titre">
-            <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+            <INPUT name="JSP" type="hidden" value="<%=process.getJSP()%>">
             <div style="margin-left:10px;margin-top:20px;text-align:left;" align="left">
-                <% if (process.onglet.equals("ONGLET1")) {%>
+                <%
+                	if (process.onglet.equals("ONGLET1")) {
+                %>
                 <span id="titreOngletVentilation" class="OngletActif" onclick="afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <span id="titreOngletVentilation" class="OngletInactif" onclick="afficheOnglet('ONGLET1');">&nbsp;Ventilation&nbsp;</span>&nbsp;&nbsp;
-                <% }%>
-                <% if (process.onglet.equals("ONGLET2")) {%>
+                <%
+                	}
+                %>
+                <%
+                	if (process.onglet.equals("ONGLET2")) {
+                %>
                 <span id="titreOngletHS" class="OngletActif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <span id="titreOngletHS" class="OngletInactif" onclick="afficheOnglet('ONGLET2');">&nbsp;Heures supplémentaires&nbsp;</span>&nbsp;&nbsp;
-                <% }%>
-                <% if (process.onglet.equals("ONGLET3")) {%>
+                <%
+                	}
+                %>
+                <%
+                	if (process.onglet.equals("ONGLET3")) {
+                %>
                 <span id="titreOngletPrimes" class="OngletActif" onclick="afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <span id="titreOngletPrimes" class="OngletInactif" onclick="afficheOnglet('ONGLET3');">&nbsp;Primes&nbsp;</span>&nbsp;&nbsp;
-                <% }%>
-                <% if (process.onglet.equals("ONGLET4")) {%>
+                <%
+                	}
+                %>
+                <%
+                	if (process.onglet.equals("ONGLET4")) {
+                %>
                 <span id="titreOngletAbs" class="OngletActif" onclick="afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <span id="titreOngletAbs" class="OngletInactif" onclick="afficheOnglet('ONGLET4');">&nbsp;Absences&nbsp;</span>&nbsp;&nbsp;
-                <% }%>
-                <% if (process.onglet.equals("ONGLET5")) {%>
+                <%
+                	}
+                %>
+                <%
+                	if (process.onglet.equals("ONGLET5")) {
+                %>
                 <span id="titreOngletValidation" class="OngletActif" onclick="afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <span id="titreOngletValidation" class="OngletInactif" onclick="afficheOnglet('ONGLET5');">&nbsp;Validation&nbsp;</span>&nbsp;&nbsp;
-                <% }%>
+                <%
+                	}
+                %>
             </div>
 
 
-            <% if (process.onglet.equals("ONGLET1")) {%>
+            <%
+            	if (process.onglet.equals("ONGLET1")) {
+            %>
             <div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <div id="corpsOngletVentilation" title="Ventilation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-                    <% }%>
+                    <%
+                    	}
+                    %>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                         <legend class="sigp2Legend">Ventilation des pointages des <span style="color: red;">FONCTIONNAIRES</span></legend>
 						<span class="sigp2Mandatory" style="margin-left:20px;position:relative;width:50px;">Date :</span>
-						<%if(process.ventilationExist()){ %>
-							<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">				
-						<%}else{ %>
-							<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%= process.getNOM_EF_DATE_DEBUT() %>" size="10" type="text"	value="<%= process.getVAL_EF_DATE_DEBUT() %>">
+						<%
+							if(process.ventilationExist()){
+						%>
+							<input class="sigp2-saisie" disabled="disabled"  maxlength="10"	name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"	value="<%=process.getVAL_EF_DATE_DEBUT()%>">				
+						<%
+											}else{
+										%>
+							<input id="<%=process.getNOM_EF_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	name="<%=process.getNOM_EF_DATE_DEBUT()%>" size="10" type="text"	value="<%=process.getVAL_EF_DATE_DEBUT()%>">
 							<IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_EF_DATE_DEBUT()%>', 'dd/mm/y');">
-						<%} %>
+						<%
+							}
+						%>
                 		<span class="sigp2Mandatory" style="width:50px;margin-left:50px;">Type :</span>
-                        <INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires
-						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes
-						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences
-						<INPUT type="radio" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %> <%= process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_TOUT())%>>Tout
+                        <INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_HS())%>>Heures supplémentaires
+						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_PRIME())%>>Primes
+						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_ABS())%>>Absences
+						<INPUT type="radio" <%=MairieUtils.getDisabled(request, process.getNomEcran())%> <%=process.forRadioHTML(process.getNOM_RG_TYPE(),process.getNOM_RB_TYPE_TOUT())%>>Tout
 						<BR/><BR/>
                 		<span class="sigp2" style="width:50px;margin-left:20px;">Agents :</span>
 				        <INPUT type="image" src="images/ajout.gif" height="16px" width="16px" name="<%=process.getNOM_PB_AJOUTER_AGENT()%>">
 				       <br/>
-			            <%if(process.getListeAgentsVentil()!=null && process.getListeAgentsVentil().size()>0){ %>
+			            <%
+			            	if(process.getListeAgentsVentil()!=null && process.getListeAgentsVentil().size()>0){
+			            %>
 							<div style="overflow: auto;height: 120px;width:1000px;margin-left:20px;">
 								<table class="sigp2NewTab" style="text-align:left;width:980px;">
 								<%
-								int indiceAgent = 0;
-									for (int i = 0;i<process.getListeAgentsVentil().size();i++){
+									int indiceAgent = 0;
+															for (int i = 0;i<process.getListeAgentsVentil().size();i++){
 								%>
 										<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeAgentsVentil().size()%>)" >
 											<td class="sigp2NewTab-liste" style="position:relative;width:30px;" align="center">											
-												<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT(indiceAgent)%>">
+												<INPUT title="supprimer" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>" name="<%=process.getNOM_PB_SUPPRIMER_AGENT(indiceAgent)%>">
 											</td>
 											<td class="sigp2NewTab-liste" style="position:relative;text-align: left;"><%=process.getVAL_ST_LIB_AGENT(indiceAgent)%></td>
 										</tr>
 										<%
-										indiceAgent++;
-									}
-								%>
+											indiceAgent++;
+																	}
+										%>
 								</table>	
 							</div>
 						<br/>
-						<%} %>
+						<%
+							}
+						%>
 						<BR/><BR/>
-						<%if( OePTGVentilationUtils.canProcessVentilation("F")){ %>
+						<%
+							if( OePTGVentilationUtils.canProcessVentilation("F")){
+						%>
 						<INPUT type="submit" class="sigp2-Bouton-100" value="Ventiler" name="<%=process.getNOM_PB_VENTILER()%>">
-						<%}else{ %>		
-							<%if(OePTGVentilationUtils.isDeversementEnCours("F")){ %>
+						<%
+							}else{
+						%>		
+							<%
+										if(OePTGVentilationUtils.isDeversementEnCours("F")){
+									%>
 		             			<span style="color: red;">Une validation est en cours. Vous ne pouvez effectuer de ventilation.</span>
-							<% }else if(OePTGVentilationUtils.isVentilationEnCours("F")){ %>
+							<%
+								}else if(OePTGVentilationUtils.isVentilationEnCours("F")){
+							%>
 								<INPUT type="submit" class="sigp2-Bouton-200" value="En cours, rafraichîr" name="<%=process.getNOM_PB_RAFRAICHIR()%>">
 		             			<span style="color: red;" id="box"></span>
-	             			<%} %>
-						<%} %>	
+	             			<%
+	             				}
+	             			%>
+						<%
+							}
+						%>	
                     </FIELDSET>
                     <br/><br/>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
@@ -371,16 +429,18 @@
                 </div>
 
 
-                <% if (process.onglet.equals("ONGLET2")) {%>
+                <%
+                	if (process.onglet.equals("ONGLET2")) {
+                %>
                 <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des heures supplémentaires</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10" maxlength="4" type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MIN()%>" size="10" maxlength="4" type="text" value="<%=process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
 							<span class="sigp2" style="width:100px">Agent max :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MAX()%>" size="10" maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MAX()%>" size="10" maxlength="4"  type="text" value="<%=process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
@@ -389,22 +449,28 @@
 	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
 	                	<%@ include file="TabVentilationHsupTitulaire.jsp" %>
 	                </FIELDSET>
-                <% } else {%>
+                <%
+                	} else {
+                %>
                 <div id="corpsOngletHS" title="Heures supplémentaires" class="OngletCorps" style="display:none;margin-right:10px;">
-                <% }%>
+                <%
+                	}
+                %>
                     </div>
 
 
-                 <% if (process.onglet.equals("ONGLET3")) {%>
+                 <%
+                 	if (process.onglet.equals("ONGLET3")) {
+                 %>
                  <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
                 	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des primes</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%=process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
 							<span class="sigp2" style="width:100px">Agent max :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MAX()%>" size="10"  maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MAX()%>" size="10"  maxlength="4"  type="text" value="<%=process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(3)%>">
@@ -413,22 +479,28 @@
                     	<legend class="sigp2Legend">Visualisation de la ventilation des primes des <span style="color: red;">FONCTIONNAIRES</span></legend>	
                         <%=process.getTabVisuP()%>		
                     </FIELDSET>
-                 <% } else {%>
+                 <%
+                 	} else {
+                 %>
                  <div id="corpsOngletPrimes" title="Primes" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
-                 <% }%>
+                 <%
+                 	}
+                 %>
                  </div>
 
 
-                <% if (process.onglet.equals("ONGLET4")) {%>
+                <%
+                	if (process.onglet.equals("ONGLET4")) {
+                %>
                 <div id="corpsOngletAbs" title="Absences" class="OngletCorps" style="display:block;margin-right:10px;width:1030px;">
                	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                             <legend class="sigp2Legend">Filtres des absences</legend>		
 			                <span class="sigp2" style="width:100px">Agent min :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MIN()%>" size="10"  maxlength="4"  type="text" value="<%=process.getVAL_ST_AGENT_MIN()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>');">
 							<span class="sigp2" style="width:100px">Agent max :</span>
-			                <INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_MAX()%>" size="10" maxlength="4"  type="text" value="<%= process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
+			                <INPUT class="sigp2-saisie" name="<%=process.getNOM_ST_AGENT_MAX()%>" size="10" maxlength="4"  type="text" value="<%=process.getVAL_ST_AGENT_MAX()%>" style="margin-right:10px;">
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(1)%>">
