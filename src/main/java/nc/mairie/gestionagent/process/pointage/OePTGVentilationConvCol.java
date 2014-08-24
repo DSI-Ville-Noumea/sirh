@@ -264,9 +264,9 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		setTabVisuP(null);
 		setHashVentilAbs(null);
 		setHashVentilHsup(null);
-		setTabErreurVentil("");
-		addZone(getNOM_ST_AGENT_MIN(), "");
-		addZone(getNOM_ST_AGENT_MAX(), "");
+		setTabErreurVentil(Const.CHAINE_VIDE);
+		addZone(getNOM_ST_AGENT_MIN(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_AGENT_MAX(), Const.CHAINE_VIDE);
 
 		return true;
 	}
@@ -552,8 +552,8 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
 			return false;
 		}
-		if (!getVAL_ST_AGENT_MIN().equals("")) {
-			if (getVAL_ST_AGENT_MAX().equals("")) {
+		if (!getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE)) {
+			if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
 				Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_MIN()));
 				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
 				listeCarr.add(carr);
@@ -713,7 +713,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	}
 
 	public String getTabErreurVentil() {
-		return tabErreurVentil == null ? "" : tabErreurVentil;
+		return tabErreurVentil == null ? Const.CHAINE_VIDE : tabErreurVentil;
 	}
 
 	public void setTabErreurVentil(String tabErreurVentil) {
@@ -721,7 +721,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	}
 
 	public String getTabVisuP() {
-		return tabVisuP == null ? "" : tabVisuP;
+		return tabVisuP == null ? Const.CHAINE_VIDE : tabVisuP;
 	}
 
 	public void setTabVisuP(String tabVisuP) {
@@ -776,11 +776,11 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		for (VentilAbsenceDto abs : data) {
 			greg.setTime(abs.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-			ret[index][1] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()).equals("") ? "&nbsp;"
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees());
-			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals("") ? "&nbsp;"
+			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
-			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals("") ? "&nbsp;"
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates());
 			ret[index][4] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()
 					+ abs.getMinutesNonConcertees() + abs.getMinutesImmediates());
@@ -884,7 +884,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		// on recupere les valeurs
 		List<VentilHSupDto> data = list.get(cle);
 
-		int numParams = 10;
+		int numParams = 12;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		GregorianCalendar greg = new GregorianCalendar();
@@ -892,22 +892,26 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		for (VentilHSupDto hsup : data) {
 			greg.setTime(hsup.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals("") ? "&nbsp;"
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400());
+			ret[index][2] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs());
-			ret[index][2] = "&nbsp;";
-			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals("") ? "&nbsp;"
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400());
+			ret[index][4] = "&nbsp;";
+			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat());
-			ret[index][4] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals("") ? "&nbsp;"
+			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires());
-			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals("") ? "&nbsp;"
+			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup25());
-			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals("") ? "&nbsp;"
+			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup50());
-			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals("") ? "&nbsp;"
+			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit());
-			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals("") ? "&nbsp;"
+			ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf());
-			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals("") ? "&nbsp;"
+			ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai());
 			index++;
 		}

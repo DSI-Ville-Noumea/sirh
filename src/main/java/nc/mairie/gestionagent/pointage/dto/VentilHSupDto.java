@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class VentilHSupDto extends VentilDto {
 
 	private int mabs;
+	private int mabsAs400;
 	private int mHorsContrat;
 	private int mSup;
 	private int mSup25;
@@ -224,4 +225,13 @@ public class VentilHSupDto extends VentilDto {
 	public void setmComposeesR(int mComposeesR) {
 		this.mComposeesR = mComposeesR;
 	}
+
+	public int getMabsAs400() {
+		return mabsAs400;
+	}
+
+	public void setMabsAs400(int mabsAs400) {
+		this.mabsAs400 = mabsAs400;
+	}
+	
 }

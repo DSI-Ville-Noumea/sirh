@@ -567,7 +567,14 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		}
 
 		for (Carriere carr : listeCarr) {
-			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
+			Agent ag = null; 
+			try {
+				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
+			}catch(org.springframework.dao.EmptyResultDataAccessException e) {
+				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
+				getTransaction().traiterErreur();
+				continue;
+			}
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -606,7 +613,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			}
 			String idAgentMin = "900" + agentMin;
 			try {
-				@SuppressWarnings("unused")
+			@SuppressWarnings("unused")
 				Agent agMin = getAgentDao().chercherAgent(Integer.valueOf(idAgentMin));
 			} catch (Exception e) {
 				// "ERR503",
@@ -624,7 +631,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			}
 			String idAgentMax = "900" + agentMax;
 			try {
-				@SuppressWarnings("unused")
+			@SuppressWarnings("unused")
 				Agent agMax = getAgentDao().chercherAgent(Integer.valueOf(idAgentMax));
 			} catch (Exception e) {
 				// "ERR503",
@@ -745,7 +752,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			} catch (Exception e) {
 				continue;
 			}
-		}
+			}
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
@@ -815,9 +822,10 @@ public class OePTGVentilationContractuels extends BasicProcess {
 					agents.add(ag.getIdAgent());
 				}
 			} catch (Exception e) {
+				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
 				continue;
 			}
-		}
+			}
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("C");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
@@ -859,7 +867,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 			} catch (Exception e) {
 				continue;
 			}
-		}
+			}
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
@@ -882,7 +890,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		// on recupere les valeurs
 		List<VentilHSupDto> data = list.get(cle);
 
-		int numParams = 10;
+		int numParams = 12;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
 		GregorianCalendar greg = new GregorianCalendar();
@@ -890,22 +898,26 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		for (VentilHSupDto hsup : data) {
 			greg.setTime(hsup.getDateLundi());
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400());
+			ret[index][2] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getMabs());
-			ret[index][2] = "&nbsp;";
-			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400());
+			ret[index][4] = "&nbsp;";
+			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat());
-			ret[index][4] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires());
-			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup25());
-			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmSup50());
-			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit());
-			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf());
-			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+			ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai());
 			index++;
 		}
@@ -932,7 +944,14 @@ public class OePTGVentilationContractuels extends BasicProcess {
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
 		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "C");
 		for (Carriere carr : listeCarr) {
-			Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
+			Agent ag = null;
+			try {
+				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
+			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
+				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
+				getTransaction().traiterErreur();
+				continue;
+			}
 			if (getTransaction().isErreur()) {
 				getTransaction().traiterErreur();
 				continue;
@@ -969,7 +988,7 @@ public class OePTGVentilationContractuels extends BasicProcess {
 
 	public AgentDao getAgentDao() {
 		return agentDao;
-	}
+}
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;

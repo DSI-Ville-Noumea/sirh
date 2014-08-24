@@ -133,9 +133,11 @@
                 "aoColumns": [
                               {"sWidth": "65px"},
                               {"sWidth": "200px"},
+                              {"sWidth": "55px"},
                               {"sWidth": "50px"},
-                              {"sWidth": "70px"},
-                              {"sWidth": "40px"},
+                              {"sWidth": "50px"},
+                              {"sWidth": "50px"},
+                              {"sWidth": "45px"},
                               {"sWidth": "70px"},
                               {"sWidth": "70px"},
                               {"sWidth": "70px"},
@@ -193,7 +195,7 @@
                     .addClass("subDataTable")
                     .attr("cellpadding", "0")
                     .attr("cellspacing", "0")
-                    .attr("style", "margin-left: 302px;")
+                    .attr("style", "margin-left: 260px;")
                     .append($(document.createElement("thead"))
                     );
 
@@ -208,15 +210,17 @@
                 tbody.append($(document.createElement("tr"))
                         .addClass(i % 2 == 0 ? "even" : "odd")
                         .append($(document.createElement("td")).html(donnees[0]).attr("style", "width: 55px;"))
-                        .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 75px;"))
-                        .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 45px;"))
-                        .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 74px;"))
-                        .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 75px"))
-                        .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 75px"))
-                        .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 73px"))
-                        .append($(document.createElement("td")).html(donnees[7]).attr("style", "width: 75px"))
-                        .append($(document.createElement("td")).html(donnees[8]).attr("style", "width: 73px"))
-                        .append($(document.createElement("td")).html(donnees[9]).attr("style", "width: 75px"))
+                        .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 50px;"))
+                        .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 50px;"))
+                        .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 50px;"))
+                        .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 45px"))
+                        .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[6]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[7]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[8]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[9]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[10]).attr("style", "width: 65px"))
+                        .append($(document.createElement("td")).html(donnees[11]).attr("style", "width: 65px"))
                         );
             }
             // Append the detail table into the detail container
