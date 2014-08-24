@@ -1065,7 +1065,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				// Création de l'objet VisiteMedicale à créer/modifier
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				Agent agentCourant = getAgentCourant();
-				getVisiteCourante().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
+				getVisiteCourante().setIdAgent(agentCourant.getIdAgent());
 				getVisiteCourante().setDateDerniereVisite(sdf.parse(dateVisite));
 				getVisiteCourante().setDureeValidite(duree.equals(Const.CHAINE_VIDE) ? 0 : Integer.valueOf(duree));
 				getVisiteCourante().setApte(apteVM);
@@ -1083,8 +1083,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 							SuiviMedical sm = getSuiviMedDao()
 									.chercherSuiviMedical(getVisiteCourante().getIdSuiviMed());
 							ArrayList<SuiviMedical> listeSmAModif = getSuiviMedDao()
-									.listerSuiviMedicalAgentAnterieurDate(
-											getAgentCourant().getIdAgent(), sm.getMois(),
+									.listerSuiviMedicalAgentAnterieurDate(getAgentCourant().getIdAgent(), sm.getMois(),
 											sm.getAnnee());
 							for (int i = 0; i < listeSmAModif.size(); i++) {
 								SuiviMedical smModif = listeSmAModif.get(i);
@@ -2901,8 +2900,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+				getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -3086,8 +3085,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("VM_" + vm.getIdVisite());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					getAgentCourant().getIdAgent(), d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+					d.getIdDocument());
 			File f = new File(d.getLienDocument());
 			if (f.exists()) {
 				f.delete();

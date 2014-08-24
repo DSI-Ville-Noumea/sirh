@@ -78,7 +78,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 		getListAff().addAll(getListeAgents() == null ? new ArrayList<Agent>() : getListeAgents());
 		for (int j = 0; j < getListAff().size(); j++) {
 			Agent agent = (Agent) getListAff().get(j);
-			Integer i = Integer.valueOf(agent.getIdAgent());
+			Integer i = agent.getIdAgent();
 			if (getListeAgentsDepart().contains(agent)) {
 				addZone(getNOM_CK_SELECT_LIGNE(i), getCHECKED_ON());
 			}
@@ -203,7 +203,7 @@ public class OePTGSelectionAgent extends BasicProcess {
 		for (int j = 0; j < getListAff().size(); j++) {
 			// on recupère la ligne concernée
 			Agent ag = (Agent) getListAff().get(j);
-			Integer i = Integer.valueOf(ag.getIdAgent());
+			Integer i = ag.getIdAgent();
 			// si la colonne selection est cochée
 			if (getVAL_CK_SELECT_LIGNE(i).equals(getCHECKED_ON())) {
 				listAgentSelect.add(ag);

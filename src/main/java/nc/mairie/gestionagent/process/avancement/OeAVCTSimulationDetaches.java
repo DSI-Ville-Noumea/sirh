@@ -447,11 +447,7 @@ public class OeAVCTSimulationDetaches extends BasicProcess {
 
 					avct.setIdNouvGrade(gradeSuivant.getCodeGrade() == null
 							|| gradeSuivant.getCodeGrade().length() == 0 ? null : gradeSuivant.getCodeGrade());
-					// avct.setLibNouvGrade(gradeSuivant.getLibGrade());
 					avct.setCdcadr(gradeActuel.getCodeCadre());
-
-					// avct.setDateArrete("01/01/" + annee);
-					// avct.setNumArrete(annee);
 
 					// IBA,INM,INA
 					Bareme bareme = Bareme.chercherBareme(getTransaction(), carr.getIban());

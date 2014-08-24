@@ -214,8 +214,7 @@ public class OeAGENTHandicap extends BasicProcess {
 	private void initialiseListeHandicap(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		// Recherche des handicaps de l'agent
-		ArrayList<Handicap> listeHandicap = getHandicapDao().listerHandicapAgent(
-				getAgentCourant().getIdAgent());
+		ArrayList<Handicap> listeHandicap = getHandicapDao().listerHandicapAgent(getAgentCourant().getIdAgent());
 		setListeHandicap(listeHandicap);
 
 		int indiceHandi = 0;
@@ -527,7 +526,7 @@ public class OeAGENTHandicap extends BasicProcess {
 			// Création de l'objet VisiteMedicale à créer/modifier
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Agent agentCourant = getAgentCourant();
-			getHandicapCourant().setIdAgent(Integer.valueOf(agentCourant.getIdAgent()));
+			getHandicapCourant().setIdAgent(agentCourant.getIdAgent());
 			getHandicapCourant().setIdTypeHandicap(nom.getIdTypeHandicap());
 			getHandicapCourant().setDateDebutHandicap(sdf.parse(dateDebut));
 			getHandicapCourant().setDateFinHandicap(dateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateFin));
@@ -2081,8 +2080,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+				getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		if (getTransaction().isErreur())
@@ -2266,8 +2265,8 @@ public class OeAGENTHandicap extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("HANDI_" + handi.getIdHandicap());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					getAgentCourant().getIdAgent(), d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+					d.getIdDocument());
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
 			if (f.exists()) {

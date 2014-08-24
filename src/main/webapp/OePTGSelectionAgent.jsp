@@ -141,7 +141,7 @@ function SelectLigne(id,tailleTableau)
 				<%
 					for (int i = 0;i<process.getListAff().size();i++){
 						Agent ag = process.getListAff().get(i);
-						Integer indiceAgent = Integer.valueOf(ag.getIdAgent());
+						Integer indiceAgent = ag.getIdAgent();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_AGENT(indiceAgent)%></td>

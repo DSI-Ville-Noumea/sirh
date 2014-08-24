@@ -135,7 +135,7 @@
 					<%
 							for (int i = 0;i<process.getListeApprobateursPossible().size();i++){
 								Agent ag = process.getListeApprobateursPossible().get(i);
-								Integer indiceAgent = Integer.valueOf(ag.getIdAgent());
+								Integer indiceAgent = ag.getIdAgent();
 					%>
 						<tr id="<%=indiceAgent%>" onmouseover="SelectLigne(<%=indiceAgent%>,<%=process.getListeApprobateursPossible().size()%>)" >
 							<td style="display:none;"><%=process.getVAL_ST_ID_AGENT_POSSIBLE(indiceAgent)%></td>
@@ -166,7 +166,7 @@
 				<%
 					for (int i = 0;i<process.getListeApprobateurs().size();i++){
 						Agent ag = process.getListeApprobateurs().get(i);
-						Integer indiceActeur = Integer.valueOf(ag.getIdAgent());
+						Integer indiceActeur = ag.getIdAgent();
 				%>
 						<tr>
 							<td><%=process.getVAL_ST_ID_AGENT(indiceActeur)%></td>

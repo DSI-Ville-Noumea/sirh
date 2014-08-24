@@ -354,8 +354,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 							// on cherche toutes les affectations sur la FDP
 							// on prend la date la plus ancienne
 							ArrayList<Affectation> listeAffectationSurMemeFDP = getAffectationDao()
-									.listerAffectationAvecFPEtAgent(Integer.valueOf(fp.getIdFichePoste()),
-											agentEvaluateur.getIdAgent());
+									.listerAffectationAvecFPEtAgent(fp.getIdFichePoste(), agentEvaluateur.getIdAgent());
 							if (listeAffectationSurMemeFDP.size() > 0) {
 								eval.setDateEntreeFonction(listeAffectationSurMemeFDP.get(0).getDateDebutAff());
 							}
