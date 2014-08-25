@@ -180,10 +180,9 @@
                     // Finally return the table
                     return detailContainer;
                 }
-                function testClickPbCreation(){
+                function testClickFiltrer(){
                 	if(event.keyCode == 13){
-                		alert('az');
-                		document.formuCreation.elements['NOM_PB_CREATION'].click();
+                		executeBouton('NOM_PB_FILTRER');
                 	}
                 }
             </SCRIPT>		
@@ -191,7 +190,7 @@
         </HEAD>
         <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();return setfocus('<%=process.getFocus()%>')">	
         <%@ include file="BanniereErreur.jsp" %>
-        <FORM name="formu" method="POST" class="sigp2-titre">
+        <FORM onkeypress="testClickFiltrer();" name="formu" method="POST" class="sigp2-titre">
             <INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
             <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
                 <legend class="sigp2Legend">Filtres pour l'affichage</legend>
@@ -378,13 +377,11 @@
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_ACTION()%>" value="RECHERCHERAGENTACTION">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION()%>" value="SUPPRECHERCHERAGENTACTION"> 
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
-            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION">        
-        </FORM>
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
         
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 					<legend class="sigp2Legend">Création d'une absence</legend>
-					<FORM name="formuCreation" method="POST" class="sigp2-titre" >
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 	                	<span class="sigp2Mandatory">Famille : </span>
 				        <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_FAMILLE_CREATION()%>">
@@ -398,13 +395,11 @@
 		                    <INPUT type="submit" class="sigp2-Bouton-100" value="Creer" name="<%=process.getNOM_PB_CREATION()%>">
 		                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
 	                    </div>
-                    </FORM>
 	            </FIELDSET>
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_ANNULATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend"><span style="color: red;">Motif pour l'annulation de l'absence</span></legend>
-		            <FORM name="formuValiderMotifAnnulation" method="POST" class="sigp2-titre">
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 						<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_ANNULATION() %></span>
 						<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ID_DEMANDE_ANNULATION() %>" disabled="disabled" style="visibility: hidden;" type="text" value="<%= process.getVAL_ST_ID_DEMANDE_ANNULATION() %>">
@@ -414,13 +409,11 @@
 	                    <BR/><BR/>
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF_ANNULATION()%>">	 
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-                    </FORM>
 	            </FIELDSET>
             <%} %>
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_MOTIF_EN_ATTENTE)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            <legend class="sigp2Legend"><span style="color: red;">Motif pour la mise en attente de l'absence</span></legend>
-					<FORM name="formuValiderMotifEnAttente" method="POST" class="sigp2-titre">
            				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 						<span class="sigp2Mandatory">Informations : <%= process.getVAL_ST_INFO_MOTIF_EN_ATTENTE() %></span>
 						<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_ID_DEMANDE_EN_ATTENTE() %>" disabled="disabled" style="visibility: hidden;" type="text" value="<%= process.getVAL_ST_ID_DEMANDE_EN_ATTENTE() %>">
@@ -430,8 +423,7 @@
 	                    <BR/><BR/>
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_MOTIF_EN_ATTENTE()%>">	 
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
-                    </FORM>
-	            </FIELDSET>
+                </FIELDSET>
             <%} %>
 
 			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
@@ -440,12 +432,11 @@
 			
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
-	            	<FORM name="formuCreationDemande" method="POST" class="sigp2-titre">
-           				<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+	            		<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
 		            	<table>
 		            		<tr>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateDebut()) { %>
-		            			<td width="80px">
+		            			<td width="100px">
 	                        		<span class="sigp2Mandatory">Date de début :</span>
 		            			</td>
 		            			<td>
@@ -482,7 +473,7 @@
 		            		</tr>
 		            		<tr>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateFin()) { %>
-		            			<td width="80px">
+		            			<td>
 	                        		<span class="sigp2Mandatory">Date de fin :</span>
 		            			</td>
 		            			<td>
@@ -510,7 +501,7 @@
 		            		</tr>
 		            		<% if(typeCreation.getTypeSaisiDto().isCompteurCollectif()) { %>
 		            		<tr>
-		            			<td width="80px">
+		            			<td>
 	                        		<span class="sigp2Mandatory">Organisation Syndicale :</span>
 		            			</td>
 		            			<td colspan="2">
@@ -543,10 +534,10 @@
 		            	<BR/>
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">
-                    </FORM>
 	            </FIELDSET>
 			<% } %>
 			<!-- ------------------------ CREATION D UNE DEMANDE ----------------------------- -->
-
+       
+        </FORM>
     </BODY>
 </HTML>
