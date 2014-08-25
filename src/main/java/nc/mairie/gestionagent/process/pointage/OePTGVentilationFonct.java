@@ -232,7 +232,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 						index1 = 3;
 					rawAgent = rawAgent.substring(index1, rawAgent.lastIndexOf("."));
 					logger.info("\n rawAgent=" + rawAgent);
-					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, rawAgent);
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, Integer.valueOf(rawAgent));
 					setStatut(STATUT_SAISIE_PTG, true);
 					return true;
 				}

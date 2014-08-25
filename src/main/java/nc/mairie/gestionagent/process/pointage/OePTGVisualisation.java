@@ -1307,7 +1307,7 @@ public class OePTGVisualisation extends BasicProcess {
 					return performPB_DELAY(request, i);
 				}
 				if (testerParametre(request, getSAISIE_PTG(i))) {
-					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_MATRICULE_AGENT(i));
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, Integer.valueOf(getVAL_MATRICULE_AGENT(i)));
 					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
 					setStatut(STATUT_SAISIE_PTG, true);
 					return true;
@@ -1321,7 +1321,7 @@ public class OePTGVisualisation extends BasicProcess {
 				}
 
 				status = "EDIT";
-				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, getVAL_ST_AGENT_CREATE());
+				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, Integer.valueOf(getVAL_ST_AGENT_CREATE()));
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG,
 						getLundiCreate(getVAL_ST_DATE_CREATE()));
 				setStatut(STATUT_SAISIE_PTG, true);
