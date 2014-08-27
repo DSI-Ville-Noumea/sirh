@@ -596,9 +596,9 @@ public class OePTGVentilationFonct extends BasicProcess {
 			return false;
 		}
 		if (typePointage == 1) {
-			initialiseHashTableAbs(typePointage);
+			initialiseHashTableAbs(typePointage, agents);
 		} else if (typePointage == 2) {
-			initialiseHashTableHsup(typePointage);
+			initialiseHashTableHsup(typePointage, agents);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
 					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao()));
@@ -745,25 +745,8 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	public String getHistoryAbs(String moisAnnee, Integer idAgent) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
-		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
-		for (Carriere carr : listeCarr) {
-			Agent ag = null;
-			try {
-				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
-			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
-				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (!agents.contains(ag.getIdAgent())) {
-				agents.add(ag.getIdAgent());
-			}
+			agents.add(idAgent);
 
-		}
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
@@ -820,30 +803,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	}
 
-	private void initialiseHashTableAbs(int typePointage) throws Exception {
-		List<Integer> agents = new ArrayList<Integer>();
+	private void initialiseHashTableAbs(int typePointage, List<Integer> agents) throws Exception {
+		
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
-		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
-		for (Carriere carr : listeCarr) {
-			Agent ag = null;
-			try {
-				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
-			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
-				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (!agents.contains(ag.getIdAgent())) {
-				agents.add(ag.getIdAgent());
-			}
-
-		}
+		
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
@@ -874,26 +839,10 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public String getHistoryHsup(String moisAnnee, Integer idAgent) throws Exception {
+		
 		List<Integer> agents = new ArrayList<Integer>();
-		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
-		for (Carriere carr : listeCarr) {
-			Agent ag = null;
-			try {
-				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
-			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
-				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (!agents.contains(ag.getIdAgent())) {
-				agents.add(ag.getIdAgent());
-			}
-
-		}
+		agents.add(idAgent);
+		
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
@@ -963,30 +912,12 @@ public class OePTGVentilationFonct extends BasicProcess {
 
 	}
 
-	private void initialiseHashTableHsup(int typePointage) throws Exception {
-		List<Integer> agents = new ArrayList<Integer>();
+	private void initialiseHashTableHsup(int typePointage, List<Integer> agents) throws Exception {
+		
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
-		ArrayList<Carriere> listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
-		for (Carriere carr : listeCarr) {
-			Agent ag = null;
-			try {
-				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
-			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
-				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (!agents.contains(ag.getIdAgent())) {
-				agents.add(ag.getIdAgent());
-			}
-
-		}
+		
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
 		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
