@@ -1274,7 +1274,7 @@ public class OeAGENTCharge extends BasicProcess {
 				return;
 			}
 
-			if (r.getNorubr().equals("3000")) {
+			if (r.getNorubr() == 3000) {
 				addZone(getNOM_EF_MAT_CHARGE(), getAgentCourant().getNumMutuelle());
 				matriculeChargeEditable = true;
 				showMatriculeCharge = true;
