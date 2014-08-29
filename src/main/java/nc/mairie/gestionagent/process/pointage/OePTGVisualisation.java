@@ -86,6 +86,7 @@ public class OePTGVisualisation extends BasicProcess {
 	private void afficheListePointages() {
 		GregorianCalendar greg = new GregorianCalendar();
 		greg.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
+		greg.setFirstDayOfWeek(Calendar.MONDAY);
 
 		for (ConsultPointageDto ptg : getListePointage().values()) {
 			greg.setTime(ptg.getDate());
