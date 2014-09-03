@@ -97,7 +97,11 @@ public class OePTGVisualisation extends BasicProcess {
 					+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")");
 			addZone(getMATRICULE_ST_AGENT(i),
 					agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
-			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+			String type = ptg.getTypePointage();
+			if(ptg.isHeuresSupRecuperees()) {
+				type += " (R)";
+			}
+			addZone(getNOM_ST_TYPE(i), type);
 			addZone(getNOM_ST_SEMAINE(i), String.valueOf(greg.get(Calendar.WEEK_OF_YEAR)));
 
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
