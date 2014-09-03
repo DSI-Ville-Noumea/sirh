@@ -535,7 +535,7 @@
                 <div id="corpsOngletValidation" title="Validation" class="OngletCorps" style="display:none;margin-right:10px;width:1030px;">
                 <% }%>
 	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
-		                <legend class="sigp2Legend">Validation de la ventilation des pointages des <span style="color: red;">CONRACTUELS</span></legend>	
+		                <legend class="sigp2Legend">Validation de la ventilation des pointages des <span style="color: red;">CONTRACTUELS</span></legend>	
 		              	<span style="color: red;">Attention , cette action est irreversible !</span>    
 		              	<br>  <br>         
 		              	<%if(OePTGVentilationUtils.isVentilationEnCours("C")){ %>

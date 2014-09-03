@@ -87,4 +87,8 @@ public interface ISirhPtgWSConsumer {
 
 	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
 
+	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil,
+			Integer idRefTypePointage, String statut, Date ventilationDate,
+			String agentMin, String agentMax);
+
 }

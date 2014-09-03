@@ -57,6 +57,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgCheckIsVentilRuning = "ventilation/isVentilation";
 	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
 	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
+	private static final String sirhPtgListeAgentsForShowVentilation = "ventilation/listeAgentsToShowVentilation";
+	
 	// export paie
 	private static final String sirhPtgCheckValid = "exportPaie/canStartExportPaie";
 	private static final String sirhPtgCheckIsValidRuning = "exportPaie/isExportPaie";
@@ -648,5 +650,26 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		logger.trace("json recu:" + output);
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
+	}
+	
+	@Override
+	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut,
+			Date ventilationDate, String agentMin, String agentMax) {
+		
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgListeAgentsForShowVentilation;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idDateVentil", idDateVentil.toString());
+		params.put("typePointage", idRefTypePointage.toString());
+		params.put("ventilationDate", sdf.format(ventilationDate));
+		params.put("statut", statut);
+		params.put("agentMin", agentMin);
+		params.put("agentMax", agentMax);
+		
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(Integer.class, res, url);
 	}
 }

@@ -21,7 +21,6 @@ import nc.mairie.gestionagent.pointage.dto.VentilHSupDto;
 import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.carriere.Carriere;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -543,9 +542,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 	}
 
 	public boolean performPB_AFFICHER_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
-		ArrayList<Carriere> listeCarr = new ArrayList<Carriere>();
-		List<Integer> agents = new ArrayList<Integer>();
-
+		
 		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
 		}
@@ -556,38 +553,7 @@ public class OePTGVentilationFonct extends BasicProcess {
 		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
 			return false;
 		}
-		if (!getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE)) {
-			if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
-				Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_ST_AGENT_MIN()));
-				Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), ag);
-				listeCarr.add(carr);
-				addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
-			} else {
-				listeCarr = Carriere.listerCarriereActiveParCategorieNoMatrBetweenPourPointage(getTransaction(), "F",
-						getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
-			}
-		} else {
-			listeCarr = Carriere.listerCarriereActiveParCategoriePourPointage(getTransaction(), "F");
-		}
-
-		for (Carriere carr : listeCarr) {
-			Agent ag = null;
-			try {
-				ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(carr.getNoMatricule()));
-			} catch(org.springframework.dao.EmptyResultDataAccessException e) {
-				logger.debug("Erreur de donnees dans la table AGENT sur l'agent " + carr.getNoMatricule());
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				continue;
-			}
-			if (!agents.contains(ag.getIdAgent())) {
-				agents.add(ag.getIdAgent());
-			}
-
-		}
+		
 		// on recupere la ventilation en cours
 		VentilDateDto ventilEnCours = getInfoVentilation("F");
 		if (ventilEnCours == null || ventilEnCours.getIdVentilDate() == null) {
@@ -595,6 +561,11 @@ public class OePTGVentilationFonct extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
 			return false;
 		}
+		
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		List<Integer> agents = consum.getListeAgentsForShowVentilation(
+				ventilEnCours.getIdVentilDate(), new Integer(typePointage), "F", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
+		
 		if (typePointage == 1) {
 			initialiseHashTableAbs(typePointage, agents);
 		} else if (typePointage == 2) {
