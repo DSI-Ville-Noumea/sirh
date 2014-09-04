@@ -123,24 +123,38 @@
                     });
                 });
 
+                function loadPointageHistory(pointageId) {
+                    
+                	var url = "HistoriquePointage?idPointage=" + pointageId;
+                	
+                	$.ajax({
+                		type: "GET",
+                		url: url,
+                		dataType : "html",
+                		//affichage de l'erreur en cas de problème
+                		error:function(msg, string){
+                				alert( "Error !: " + string );
+                			},
+                		success:function(html){
+                			var list = html;
+                    		//alert('Historique du pointage : #tr'+pointageId);
+                            var oTable = $('#VisualisationPointageList').dataTable();
+                            var tr = document.getElementById('tr' + pointageId);
 
-
-
-                function loadPointageHistory(pointageId, list) {
-                    //alert('Historique du pointage : #tr'+pointageId);
-                    var oTable = $('#VisualisationPointageList').dataTable();
-                    var tr = document.getElementById('tr' + pointageId);
-
-                    if (oTable.fnIsOpen(tr)) {
-                        oTable.fnClose(tr);
-                    } else {
-                        oTable.fnOpen(tr, buildDetailTable(list));
-                    }
+                            if (oTable.fnIsOpen(tr)) {
+                                oTable.fnClose(tr);
+                            } else {
+                                oTable.fnOpen(tr, buildDetailTable(list));
+                            }
+                			
+                		}
+        			}); 
+                	
+                    return 0;
                 }
 
                 function launchJSPSaisie(idAgent, date) {
                     document.location.href = './OePTGSaisie.jsp?idAgent=' + idAgent + '&dateLundi=' + date;
-                   
                 }
 
                 /**
@@ -357,7 +371,7 @@
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/modifier.gif" height="15px" width="15px" title="Editer le pointage" onClick="executeBouton('<%=process.getSAISIE_PTG(indicePtg)%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</td>  
                             <td align="center">
-                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>', '<%=process.getHistory(indicePtg)%>')">
+                            	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>')">
                             </td>
                             <td><%=process.getVAL_ST_AGENT(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
@@ -418,7 +432,7 @@
 				
             
             </FIELDSET>
-            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">	
+            <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>" value="SUPPRECHERCHERSERVICE">
 			<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MIN()%>" value="RECHERCHERAGENTMIN">
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MIN()%>" value="SUPPRECHERCHERAGENTMIN">	
             <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>" value="RECHERCHERAGENTMAX">

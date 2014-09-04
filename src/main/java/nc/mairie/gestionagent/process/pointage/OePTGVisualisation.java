@@ -1070,7 +1070,7 @@ public class OePTGVisualisation extends BasicProcess {
 				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
 				type != null ? type.getIdRefTypePointage() : null);
 		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
-		loadHistory();
+//		loadHistory();
 
 		afficheListePointages();
 
