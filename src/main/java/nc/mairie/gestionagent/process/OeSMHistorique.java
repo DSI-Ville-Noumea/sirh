@@ -166,7 +166,7 @@ public class OeSMHistorique extends BasicProcess {
 					VisiteMedicale vm = getVisiteMedicaleDao().chercherVisiteMedicaleLieeSM(sm.getIdSuiviMed(),
 							sm.getIdAgent());
 					if (vm != null && vm.getIdVisite() != null) {
-						addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte().equals("1") ? "Apte"
+						addZone(getNOM_ST_AVIS(i), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte"
 								: "Inapte");
 					} else {
 						addZone(getNOM_ST_AVIS(i), "&nbsp;");

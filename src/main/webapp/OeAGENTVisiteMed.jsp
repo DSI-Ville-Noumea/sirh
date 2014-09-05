@@ -384,7 +384,7 @@
 		</TABLE>
 		<%} %>
 		</FIELDSET>
-		<% } else if (process.getVisiteCourante() != null && process.getVisiteCourante().getApte()!=null && process.getVisiteCourante().getApte().equals("0")) { %>		
+		<% } else if (process.getVisiteCourante() != null && process.getVisiteCourante().getApte()!=null && process.getVisiteCourante().getApte()==0) { %>		
 		<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
 				    <legend class="sigp2Legend">Liste des inaptitudes</legend>
 				    <br/>

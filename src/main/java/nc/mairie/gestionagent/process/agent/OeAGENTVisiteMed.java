@@ -395,8 +395,8 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				addZone(getNOM_ST_MOTIF(indiceVisite),
 						motif == null || motif.getLibMotifVm().equals(Const.CHAINE_VIDE) ? "&nbsp;" : motif
 								.getLibMotifVm());
-				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;"
-						: vm.getApte().equals("1") ? "Apte" : "Inapte");
+				addZone(getNOM_ST_AVIS(indiceVisite), vm.getApte() == null ? "&nbsp;" : vm.getApte() == 1 ? "Apte"
+						: "Inapte");
 				addZone(getNOM_ST_RECOMMANDATION(indiceVisite),
 						r == null || r.getDescRecommandation().equals(Const.CHAINE_VIDE) ? "&nbsp;" : r
 								.getDescRecommandation());
@@ -536,7 +536,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		addZone(getNOM_LB_MEDECIN_SELECT(), String.valueOf(ligneMedecin));
 
 		if (getVisiteCourante().getApte() != null) {
-			if (getVisiteCourante().getApte().equals("1"))
+			if (getVisiteCourante().getApte() == 1)
 				addZone(getNOM_RG_AVIS(), getNOM_RB_APTE());
 			else
 				addZone(getNOM_RG_AVIS(), getNOM_RB_INAPTE());
@@ -597,7 +597,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 				medecin.getTitreMedecin() + " " + medecin.getPrenomMedecin() + " " + medecin.getNomMedecin());
 		addZone(getNOM_ST_MOTIF(), motif != null ? motif.getLibMotifVm() : Const.CHAINE_VIDE);
 		addZone(getNOM_ST_AVIS(), getVisiteCourante().getApte() == null ? Const.CHAINE_VIDE : getVisiteCourante()
-				.getApte().equals("1") ? "APTE" : "INAPTE");
+				.getApte() == 1 ? "APTE" : "INAPTE");
 		addZone(getNOM_ST_RECOMMANDATION(),
 				recommandation == null ? Const.CHAINE_VIDE : recommandation.getDescRecommandation());
 
@@ -2313,7 +2313,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 		VisiteMedicale visiteCourante = (VisiteMedicale) getListeVisites().get(indiceEltSelectionne);
 		setVisiteCourante(visiteCourante);
 		if (visiteCourante.getApte() != null)
-			if (visiteCourante.getApte().equals("0"))
+			if (visiteCourante.getApte() == 0)
 				initialiseListeInpatitude(request);
 
 		return true;
