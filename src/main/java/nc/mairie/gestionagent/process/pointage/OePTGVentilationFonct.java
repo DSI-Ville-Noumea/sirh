@@ -851,20 +851,20 @@ public class OePTGVentilationFonct extends BasicProcess {
 			ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400());
 			ret[index][4] = "&nbsp;";
-			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat());
-			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmNormales()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmNormales());
-			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSimples()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmSimples());
-			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmComposees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmComposees());
-			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit());
-			ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf());
-			ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai());
+			ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()-hsup.getmRecuperees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()-hsup.getmRecuperees());
+			ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmNormales()-hsup.getmNormalesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmNormales()-hsup.getmNormalesR());
+			ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSimples()-hsup.getmSimplesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmSimples()-hsup.getmSimplesR());
+			ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmComposees()-hsup.getmComposeesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmComposees()-hsup.getmComposeesR());
+			ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()-hsup.getmNuitR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()-hsup.getmNuitR());
+			ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()-hsup.getmDjfR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()-hsup.getmDjfR());
+			ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()-hsup.getM1maiR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+					: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()-hsup.getM1maiR());
 			index++;
 		}
 

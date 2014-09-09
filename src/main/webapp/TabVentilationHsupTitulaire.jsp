@@ -57,13 +57,13 @@
 								for (VentilHSupDto t : hsup) {
 									abs += t.getMabs();
 									absAs400 += t.getMabsAs400();
-									minutesHorsContrat += t.getmHorsContrat();
-									minutesComplementaires += t.getmNormales();
-									minutesSimples += t.getmSimples();
-									minutesComposees += t.getmComposees();
-									minutesNuit += t.getmNuit();
-									minutesDJF += t.getmDjf();
-									minutesMai += t.getM1Mai();
+									minutesHorsContrat += t.getmHorsContrat() - t.getmRecuperees();
+									minutesComplementaires += t.getmNormales() - t.getmNormalesR();
+									minutesSimples += t.getmSimples() - t.getmSimplesR();
+									minutesComposees += t.getmComposees() - t.getmComposeesR();
+									minutesNuit += t.getmNuit() - t.getmNuitR();
+									minutesDJF += t.getmDjf() - t.getmDjfR();
+									minutesMai += t.getM1Mai() - t.getM1maiR();
 														agent = process.getAgent(t.getId_agent());
 														nomatr = agent.getNomatr().toString();
 									prenom = agent.getPrenomAgent();
@@ -73,6 +73,8 @@
 									BaseHoraire baseHoraire = BaseHoraire.chercherBaseHoraire(process.getTransaction(), carr.getCodeBase());
 									weekBase = Double.valueOf(baseHoraire.getNbashh().replace(",", "."));
 								}
+								
+								if(minutesHorsContrat > 0) {
 							%>
 								<tr id="hsup_<%=moisAnneeR+"_"+idAgent%>">
 									<td><%=nomatr%></td>
@@ -93,6 +95,7 @@
 										<img  src="images/loupe.gif" height="16px" width="16px" title="Voir le détail du mois" onClick="loadVentilationHsupHistory('<%=process.getValHistoryHsup(moisAnneeR,idAgent)%>', '<%=process.getHistoryHsup(moisAnneeR,idAgent)%>')">
 									</td>			
 								</tr>
-								<%} %>
+								<% } 
+								} %>
 							</tbody>
 	                    </table>
