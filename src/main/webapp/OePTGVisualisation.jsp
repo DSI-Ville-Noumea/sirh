@@ -125,31 +125,28 @@
 
                 function loadPointageHistory(pointageId) {
                     
-                	var url = "HistoriquePointage?idPointage=" + pointageId;
+                	var oTable = $('#VisualisationPointageList').dataTable();
+                	var tr = document.getElementById('tr' + pointageId);
                 	
-                	$.ajax({
-                		type: "GET",
-                		url: url,
-                		dataType : "html",
-                		//affichage de l'erreur en cas de problème
-                		error:function(msg, string){
-                				alert( "Error !: " + string );
-                			},
-                		success:function(html){
-                			var list = html;
-                    		//alert('Historique du pointage : #tr'+pointageId);
-                            var oTable = $('#VisualisationPointageList').dataTable();
-                            var tr = document.getElementById('tr' + pointageId);
-
-                            if (oTable.fnIsOpen(tr)) {
-                                oTable.fnClose(tr);
-                            } else {
-                                oTable.fnOpen(tr, buildDetailTable(list));
-                            }
-                			
-                		}
-        			}); 
-                	
+                	if (oTable.fnIsOpen(tr)) {
+                        oTable.fnClose(tr);
+                    } else {
+	                	var url = "HistoriquePointage?idPointage=" + pointageId;
+	                	
+	                	$.ajax({
+	                		type: "GET",
+	                		url: url,
+	                		dataType : "html",
+	                		//affichage de l'erreur en cas de problème
+	                		error:function(msg, string){
+	                				alert( "Error !: " + string );
+	                			},
+	                		success:function(html){
+	                			var list = html;
+	                            oTable.fnOpen(tr, buildDetailTable(list));
+	                		}
+	        			}); 
+                    }
                     return 0;
                 }
 

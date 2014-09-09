@@ -1454,11 +1454,9 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	public String getHistory(int ptgId) {
-		if (!history.containsKey(ptgId)) {
-			SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-			history.put(ptgId, t.getVisualisationHistory(ptgId));
-		}
-		List<ConsultPointageDto> data = history.get(ptgId);
+		
+		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
+		List<ConsultPointageDto> data =t.getVisualisationHistory(ptgId);
 		int numParams = 8;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
