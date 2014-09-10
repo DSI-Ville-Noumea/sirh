@@ -1,10 +1,7 @@
 package nc.mairie.gestionagent.process.parametre;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.ListIterator;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,13 +34,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	private String[] LB_SPBASE;
-	private String[] LB_HEURE_LUNDI;
-	private String[] LB_HEURE_MARDI;
-	private String[] LB_HEURE_MERCREDI;
-	private String[] LB_HEURE_JEUDI;
-	private String[] LB_HEURE_VENDREDI;
-	private String[] LB_HEURE_SAMEDI;
-	private String[] LB_HEURE_DIMANCHE;
 	private String[] LB_MOTIF;
 
 	private SPBASEDao spbaseDao;
@@ -53,8 +43,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	private ArrayList<MotifCarriere> listeMotif;
 	private MotifCarriere motifCourant;
 	private MotifCarriereDao motifCarriereDao;
-
-	private ArrayList<String> listeHeure;
 
 	public String ACTION_CREATION = "1";
 	public String ACTION_MODIFICATION = "2";
@@ -86,9 +74,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		if (getListeSpbase() == null || getListeSpbase().size() == 0) {
 			initialiseListeSpbase(request);
 		}
-		if (getListeHeure().size() == 0) {
-			initialiseListeHeure(request);
-		}
 		if (getListeMotif().size() == 0) {
 			initialiseListeMotif(request);
 		}
@@ -116,55 +101,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		} else {
 			setLB_MOTIF(null);
 		}
-	}
-
-	private void initialiseListeHeure(HttpServletRequest request) {
-		setListeHeure(new ArrayList<String>());
-		int heureDeb = 3; // heures depart
-		int minuteDeb = 0; // minutes debut
-		int diffFinDeb = 8 * 60; // différence en minute entre le début et
-									// la
-									// fin
-		int interval = 15; // interval en minute
-
-		SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm"); // format
-																		// de
-																		// la
-																		// date
-
-		GregorianCalendar deb = new GregorianCalendar();
-		deb.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
-		if (heureDeb > 11) // gestion AM PM
-			deb.set(GregorianCalendar.AM_PM, GregorianCalendar.PM);
-		else
-			deb.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
-		deb.set(GregorianCalendar.HOUR, heureDeb % 12);
-		deb.set(GregorianCalendar.MINUTE, minuteDeb);
-
-		GregorianCalendar fin = (GregorianCalendar) deb.clone();
-		fin.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
-		fin.set(GregorianCalendar.MINUTE, diffFinDeb);
-
-		getListeHeure().add(formatDate.format(deb.getTime()));
-		Integer i = 1;
-		while (deb.compareTo(fin) < 0) {
-			deb.add(GregorianCalendar.MINUTE, interval);
-			getListeHeure().add(formatDate.format(deb.getTime()));
-			i++;
-		}
-		String[] a = new String[34];
-		a[0] = "";
-		for (int j = 0; j < getListeHeure().size(); j++) {
-			a[j + 1] = getListeHeure().get(j);
-		}
-		setLB_HEURE_LUNDI(a);
-		setLB_HEURE_MARDI(a);
-		setLB_HEURE_MERCREDI(a);
-		setLB_HEURE_JEUDI(a);
-		setLB_HEURE_VENDREDI(a);
-		setLB_HEURE_SAMEDI(a);
-		setLB_HEURE_DIMANCHE(a);
-
 	}
 
 	private void initialiseListeSpbase(HttpServletRequest request) throws Exception {
@@ -394,13 +330,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		addZone(getNOM_ST_ACTION_SPBASE(), ACTION_CREATION);
 		addZone(getNOM_EF_CODE_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_LIB_SPBASE(), Const.CHAINE_VIDE);
-		addZone(getNOM_LB_HEURE_LUNDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_MARDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_JEUDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), Const.ZERO);
-		addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), Const.ZERO);
 		addZone(getNOM_EF_BASE_HEBDO_LEG_H_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_BASE_HEBDO_H_SPBASE(), Const.CHAINE_VIDE);
@@ -435,55 +364,13 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 			setSpbaseCourant(base);
 			addZone(getNOM_EF_LIB_SPBASE(), base.getLiBase());
 			addZone(getNOM_EF_CODE_SPBASE(), base.getCdBase());
-			if (base.getNbhLu() != 0) {
-				String heureLundi = getStringHeure(base.getNbhLu());
-				Integer resHeure = getListeHeure().indexOf(heureLundi) + 1;
-				addZone(getNOM_LB_HEURE_LUNDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_LUNDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhMa() != 0) {
-				String heureMardi = getStringHeure(base.getNbhMa());
-				Integer resHeure = getListeHeure().indexOf(heureMardi) + 1;
-				addZone(getNOM_LB_HEURE_MARDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_MARDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhMe() != 0) {
-				String heureMercredi = getStringHeure(base.getNbhMe());
-				Integer resHeure = getListeHeure().indexOf(heureMercredi) + 1;
-				addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_MERCREDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhJe() != 0) {
-				String heureJeudi = getStringHeure(base.getNbhJe());
-				Integer resHeure = getListeHeure().indexOf(heureJeudi) + 1;
-				addZone(getNOM_LB_HEURE_JEUDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_JEUDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhVe() != 0) {
-				String heureVendredi = getStringHeure(base.getNbhVe());
-				Integer resHeure = getListeHeure().indexOf(heureVendredi) + 1;
-				addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_VENDREDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhSa() != 0) {
-				String heureSamedi = getStringHeure(base.getNbhSa());
-				Integer resHeure = getListeHeure().indexOf(heureSamedi) + 1;
-				addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_SAMEDI_SELECT(), Const.ZERO);
-			}
-			if (base.getNbhDi() != 0) {
-				String heureDimanche = getStringHeure(base.getNbhDi());
-				Integer resHeure = getListeHeure().indexOf(heureDimanche) + 1;
-				addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), resHeure.toString());
-			} else {
-				addZone(getNOM_LB_HEURE_DIMANCHE_SELECT(), Const.ZERO);
-			}
+			addZone(getNOM_EF_HEURE_LUNDI(), base.getNbhLu().toString());
+			addZone(getNOM_EF_HEURE_MARDI(), base.getNbhMa().toString());
+			addZone(getNOM_EF_HEURE_MERCREDI(), base.getNbhMe().toString());
+			addZone(getNOM_EF_HEURE_JEUDI(), base.getNbhJe().toString());
+			addZone(getNOM_EF_HEURE_VENDREDI(), base.getNbhVe().toString());
+			addZone(getNOM_EF_HEURE_SAMEDI(), base.getNbhSa().toString());
+			addZone(getNOM_EF_HEURE_DIMANCHE(), base.getNbhDi().toString());
 
 			if (base.getNbasCH() != 0) {
 				String avantPoint = base.getNbasCH().toString().substring(0, base.getNbasCH().toString().indexOf("."));
@@ -608,27 +495,13 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 				setSpbaseCourant(new SPBASE());
 				getSpbaseCourant().setCdBase(getVAL_EF_CODE_SPBASE());
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
-				String heureLundi = Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhLu(getHeureDouble(heureLundi));
-				String heureMardi = Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhMa(getHeureDouble(heureMardi));
-				String heureMercredi = Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhMe(getHeureDouble(heureMercredi));
-				String heureJeudi = Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhJe(getHeureDouble(heureJeudi));
-				String heureVendredi = Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhVe(getHeureDouble(heureVendredi));
-				String heureSamedi = Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) == 0 ? "0:0" : getListeHeure()
-						.get(Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhSa(getHeureDouble(heureSamedi));
-				String heureDimanche = Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) - 1);
-				getSpbaseCourant().setNbhDi(getHeureDouble(heureDimanche));
+				getSpbaseCourant().setNbhLu(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
+				getSpbaseCourant().setNbhMa(Double.valueOf(getVAL_EF_HEURE_MARDI()));
+				getSpbaseCourant().setNbhMe(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
+				getSpbaseCourant().setNbhJe(Double.valueOf(getVAL_EF_HEURE_JEUDI()));
+				getSpbaseCourant().setNbhVe(Double.valueOf(getVAL_EF_HEURE_VENDREDI()));
+				getSpbaseCourant().setNbhSa(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
+				getSpbaseCourant().setNbhDi(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
 
 				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H_SPBASE().equals(Const.CHAINE_VIDE) ? "0"
 						: getVAL_EF_BASE_HEBDO_LEG_H_SPBASE();
@@ -638,10 +511,14 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 				getSpbaseCourant().setNbasCH(getHeureDouble(totalBaseLegale));
 
 				// on fait le calcul de la base legale
-				Double nbHeureCalc = getSpbaseCourant().getNbhLu() + getSpbaseCourant().getNbhMa()
-						+ getSpbaseCourant().getNbhMe() + getSpbaseCourant().getNbhJe() + getSpbaseCourant().getNbhVe()
-						+ getSpbaseCourant().getNbhSa() + getSpbaseCourant().getNbhDi();
-				getSpbaseCourant().setNbasHH(nbHeureCalc);
+				Double nbHeureCalc = transformeHeure(getSpbaseCourant().getNbhLu())
+						+ transformeHeure(getSpbaseCourant().getNbhMa())
+						+ transformeHeure(getSpbaseCourant().getNbhMe())
+						+ transformeHeure(getSpbaseCourant().getNbhJe())
+						+ transformeHeure(getSpbaseCourant().getNbhVe())
+						+ transformeHeure(getSpbaseCourant().getNbhSa())
+						+ transformeHeure(getSpbaseCourant().getNbhDi());
+				getSpbaseCourant().setNbasHH(transformeResultatHeure(nbHeureCalc));
 
 				getSpbaseDao().creerSPBASE(getSpbaseCourant().getCdBase().toUpperCase(),
 						getSpbaseCourant().getLiBase().toUpperCase(), getSpbaseCourant().getNbhLu(),
@@ -651,27 +528,13 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 			} else if (getVAL_ST_ACTION_SPBASE().equals(ACTION_MODIFICATION)) {
 				getSpbaseCourant().setLiBase(getVAL_EF_LIB_SPBASE());
-				String heureLundi = Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_LUNDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhLu(getHeureDouble(heureLundi));
-				String heureMardi = Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_MARDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhMa(getHeureDouble(heureMardi));
-				String heureMercredi = Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_MERCREDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhMe(getHeureDouble(heureMercredi));
-				String heureJeudi = Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) == 0 ? "0:0" : getListeHeure().get(
-						Integer.valueOf(getVAL_LB_HEURE_JEUDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhJe(getHeureDouble(heureJeudi));
-				String heureVendredi = Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_VENDREDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhVe(getHeureDouble(heureVendredi));
-				String heureSamedi = Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) == 0 ? "0:0" : getListeHeure()
-						.get(Integer.valueOf(getVAL_LB_HEURE_SAMEDI_SELECT()) - 1);
-				getSpbaseCourant().setNbhSa(getHeureDouble(heureSamedi));
-				String heureDimanche = Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) == 0 ? "0:0"
-						: getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DIMANCHE_SELECT()) - 1);
-				getSpbaseCourant().setNbhDi(getHeureDouble(heureDimanche));
+				getSpbaseCourant().setNbhLu(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
+				getSpbaseCourant().setNbhMa(Double.valueOf(getVAL_EF_HEURE_MARDI()));
+				getSpbaseCourant().setNbhMe(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
+				getSpbaseCourant().setNbhJe(Double.valueOf(getVAL_EF_HEURE_JEUDI()));
+				getSpbaseCourant().setNbhVe(Double.valueOf(getVAL_EF_HEURE_VENDREDI()));
+				getSpbaseCourant().setNbhSa(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
+				getSpbaseCourant().setNbhDi(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
 
 				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H_SPBASE().equals(Const.CHAINE_VIDE) ? "0"
 						: getVAL_EF_BASE_HEBDO_LEG_H_SPBASE();
@@ -681,10 +544,14 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 				getSpbaseCourant().setNbasCH(getHeureDouble(totalBaseLegale));
 
 				// on fait le calcul de la base legale
-				Double nbHeureCalc = getSpbaseCourant().getNbhLu() + getSpbaseCourant().getNbhMa()
-						+ getSpbaseCourant().getNbhMe() + getSpbaseCourant().getNbhJe() + getSpbaseCourant().getNbhVe()
-						+ getSpbaseCourant().getNbhSa() + getSpbaseCourant().getNbhDi();
-				getSpbaseCourant().setNbasHH(nbHeureCalc);
+				Double nbHeureCalc = transformeHeure(getSpbaseCourant().getNbhLu())
+						+ transformeHeure(getSpbaseCourant().getNbhMa())
+						+ transformeHeure(getSpbaseCourant().getNbhMe())
+						+ transformeHeure(getSpbaseCourant().getNbhJe())
+						+ transformeHeure(getSpbaseCourant().getNbhVe())
+						+ transformeHeure(getSpbaseCourant().getNbhSa())
+						+ transformeHeure(getSpbaseCourant().getNbhDi());
+				getSpbaseCourant().setNbasHH(transformeResultatHeure(nbHeureCalc));
 
 				getSpbaseDao().modifierSPBASE(getSpbaseCourant().getCdBase().toUpperCase(),
 						getSpbaseCourant().getLiBase().toUpperCase(), getSpbaseCourant().getNbhLu(),
@@ -700,6 +567,32 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 		setFocus(getNOM_PB_ANNULER_SPBASE());
 		return true;
+	}
+
+	private Double transformeResultatHeure(Double nbHeureCalc) {
+		String nbHeure = nbHeureCalc.toString();
+		String partieEntiere = nbHeure.substring(0, nbHeure.indexOf("."));
+		String partieDecimale = nbHeure.substring(nbHeure.indexOf(".") + 1, nbHeure.length());
+		if (partieDecimale.equals("25")) {
+			partieDecimale = "15";
+		} else if (partieDecimale.equals("5")) {
+			partieDecimale = "3";
+		} else if (partieDecimale.equals("75")) {
+			partieDecimale = "45";
+		}
+		return Double.valueOf(partieEntiere + "." + partieDecimale);
+	}
+
+	private Double transformeHeure(Double nbheure) {
+		// on transforme les 7.48 en heure
+		String nbHeure = nbheure.toString();
+		String partieEntiere = nbHeure.substring(0, nbHeure.indexOf("."));
+		String partieDecimale = nbHeure.substring(nbHeure.indexOf(".") + 1, nbHeure.length());
+		if (partieDecimale.length() == 1) {
+			partieDecimale = partieDecimale + "0";
+		}
+		Integer res = (Integer.valueOf(partieEntiere) * 60) + Integer.valueOf(partieDecimale);
+		return Double.valueOf(res) / 60;
 	}
 
 	private Double getHeureDouble(String heure) {
@@ -883,403 +776,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 	 */
 	public String getVAL_EF_BASE_HEBDO_M_SPBASE() {
 		return getZone(getNOM_EF_BASE_HEBDO_M_SPBASE());
-	}
-
-	public ArrayList<String> getListeHeure() {
-		return listeHeure == null ? new ArrayList<String>() : listeHeure;
-	}
-
-	public void setListeHeure(ArrayList<String> listeHeure) {
-		this.listeHeure = listeHeure;
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_LUNDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_LUNDI() {
-		if (LB_HEURE_LUNDI == null)
-			LB_HEURE_LUNDI = initialiseLazyLB();
-		return LB_HEURE_LUNDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_LUNDI(String[] newLB_HEURE_LUNDI) {
-		LB_HEURE_LUNDI = newLB_HEURE_LUNDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_LUNDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_LUNDI() {
-		return "NOM_LB_HEURE_LUNDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_LUNDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_LUNDI_SELECT() {
-		return "NOM_LB_HEURE_LUNDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_LUNDI() {
-		return getLB_HEURE_LUNDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_LUNDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_LUNDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_LUNDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_MARDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_MARDI() {
-		if (LB_HEURE_MARDI == null)
-			LB_HEURE_MARDI = initialiseLazyLB();
-		return LB_HEURE_MARDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_MARDI(String[] newLB_HEURE_MARDI) {
-		LB_HEURE_MARDI = newLB_HEURE_MARDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_MARDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_MARDI() {
-		return "NOM_LB_HEURE_MARDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_MARDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_MARDI_SELECT() {
-		return "NOM_LB_HEURE_MARDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_MARDI() {
-		return getLB_HEURE_MARDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_MARDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_MARDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_MARDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_MERCREDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_MERCREDI() {
-		if (LB_HEURE_MERCREDI == null)
-			LB_HEURE_MERCREDI = initialiseLazyLB();
-		return LB_HEURE_MERCREDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_MERCREDI Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_MERCREDI(String[] newLB_HEURE_MERCREDI) {
-		LB_HEURE_MERCREDI = newLB_HEURE_MERCREDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_MERCREDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_MERCREDI() {
-		return "NOM_LB_HEURE_MERCREDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_MERCREDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_MERCREDI_SELECT() {
-		return "NOM_LB_HEURE_MERCREDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_MERCREDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_MERCREDI() {
-		return getLB_HEURE_MERCREDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_MERCREDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_MERCREDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_MERCREDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_JEUDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_JEUDI() {
-		if (LB_HEURE_JEUDI == null)
-			LB_HEURE_JEUDI = initialiseLazyLB();
-		return LB_HEURE_JEUDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_JEUDI(String[] newLB_HEURE_JEUDI) {
-		LB_HEURE_JEUDI = newLB_HEURE_JEUDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_JEUDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_JEUDI() {
-		return "NOM_LB_HEURE_JEUDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_JEUDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_JEUDI_SELECT() {
-		return "NOM_LB_HEURE_JEUDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_JEUDI() {
-		return getLB_HEURE_JEUDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_JEUDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_JEUDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_JEUDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_VENDREDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_VENDREDI() {
-		if (LB_HEURE_VENDREDI == null)
-			LB_HEURE_VENDREDI = initialiseLazyLB();
-		return LB_HEURE_VENDREDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_VENDREDI Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_VENDREDI(String[] newLB_HEURE_VENDREDI) {
-		LB_HEURE_VENDREDI = newLB_HEURE_VENDREDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_VENDREDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_VENDREDI() {
-		return "NOM_LB_HEURE_VENDREDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_VENDREDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_VENDREDI_SELECT() {
-		return "NOM_LB_HEURE_VENDREDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_VENDREDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_VENDREDI() {
-		return getLB_HEURE_VENDREDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_VENDREDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_VENDREDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_VENDREDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_SAMEDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_SAMEDI() {
-		if (LB_HEURE_SAMEDI == null)
-			LB_HEURE_SAMEDI = initialiseLazyLB();
-		return LB_HEURE_SAMEDI;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_SAMEDI Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_SAMEDI(String[] newLB_HEURE_SAMEDI) {
-		LB_HEURE_SAMEDI = newLB_HEURE_SAMEDI;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_SAMEDI Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_SAMEDI() {
-		return "NOM_LB_HEURE_SAMEDI";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_SAMEDI_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_SAMEDI_SELECT() {
-		return "NOM_LB_HEURE_SAMEDI_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_SAMEDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_SAMEDI() {
-		return getLB_HEURE_SAMEDI();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_SAMEDI Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_SAMEDI_SELECT() {
-		return getZone(getNOM_LB_HEURE_SAMEDI_SELECT());
-	}
-
-	/**
-	 * Getter de la liste avec un lazy initialize : LB_HEURE_DIMANCHE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	private String[] getLB_HEURE_DIMANCHE() {
-		if (LB_HEURE_DIMANCHE == null)
-			LB_HEURE_DIMANCHE = initialiseLazyLB();
-		return LB_HEURE_DIMANCHE;
-	}
-
-	/**
-	 * Setter de la liste: LB_HEURE_DIMANCHE Date de création : (21/11/11
-	 * 09:55:36)
-	 * 
-	 */
-	private void setLB_HEURE_DIMANCHE(String[] newLB_HEURE_DIMANCHE) {
-		LB_HEURE_DIMANCHE = newLB_HEURE_DIMANCHE;
-	}
-
-	/**
-	 * Retourne le nom de la zone pour la JSP : NOM_LB_HEURE_DIMANCHE Date de
-	 * création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_DIMANCHE() {
-		return "NOM_LB_HEURE_DIMANCHE";
-	}
-
-	/**
-	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
-	 * NOM_LB_HEURE_DIMANCHE_SELECT Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getNOM_LB_HEURE_DIMANCHE_SELECT() {
-		return "NOM_LB_HEURE_DIMANCHE_SELECT";
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne la valeur à afficher pour la zone de la
-	 * JSP : LB_HEURE_DIMANCHE Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String[] getVAL_LB_HEURE_DIMANCHE() {
-		return getLB_HEURE_DIMANCHE();
-	}
-
-	/**
-	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
-	 * la JSP : LB_HEURE_DIMANCHE Date de création : (21/11/11 09:55:36)
-	 * 
-	 */
-	public String getVAL_LB_HEURE_DIMANCHE_SELECT() {
-		return getZone(getNOM_LB_HEURE_DIMANCHE_SELECT());
 	}
 
 	/**
@@ -1566,5 +1062,61 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 
 	public void setMotifCarriereDao(MotifCarriereDao motifCarriereDao) {
 		this.motifCarriereDao = motifCarriereDao;
+	}
+
+	public String getNOM_EF_HEURE_LUNDI() {
+		return "NOM_EF_HEURE_LUNDI";
+	}
+
+	public String getVAL_EF_HEURE_LUNDI() {
+		return getZone(getNOM_EF_HEURE_LUNDI());
+	}
+
+	public String getNOM_EF_HEURE_MARDI() {
+		return "NOM_EF_HEURE_MARDI";
+	}
+
+	public String getVAL_EF_HEURE_MARDI() {
+		return getZone(getNOM_EF_HEURE_MARDI());
+	}
+
+	public String getNOM_EF_HEURE_MERCREDI() {
+		return "NOM_EF_HEURE_MERCREDI";
+	}
+
+	public String getVAL_EF_HEURE_MERCREDI() {
+		return getZone(getNOM_EF_HEURE_MERCREDI());
+	}
+
+	public String getNOM_EF_HEURE_JEUDI() {
+		return "NOM_EF_HEURE_JEUDI";
+	}
+
+	public String getVAL_EF_HEURE_JEUDI() {
+		return getZone(getNOM_EF_HEURE_JEUDI());
+	}
+
+	public String getNOM_EF_HEURE_VENDREDI() {
+		return "NOM_EF_HEURE_VENDREDI";
+	}
+
+	public String getVAL_EF_HEURE_VENDREDI() {
+		return getZone(getNOM_EF_HEURE_VENDREDI());
+	}
+
+	public String getNOM_EF_HEURE_SAMEDI() {
+		return "NOM_EF_HEURE_SAMEDI";
+	}
+
+	public String getVAL_EF_HEURE_SAMEDI() {
+		return getZone(getNOM_EF_HEURE_SAMEDI());
+	}
+
+	public String getNOM_EF_HEURE_DIMANCHE() {
+		return "NOM_EF_HEURE_DIMANCHE";
+	}
+
+	public String getVAL_EF_HEURE_DIMANCHE() {
+		return getZone(getNOM_EF_HEURE_DIMANCHE());
 	}
 }

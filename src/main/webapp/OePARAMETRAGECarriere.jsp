@@ -73,17 +73,13 @@
 										<label class="sigp2Mandatory">Lundi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_LUNDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_LUNDI() %>">
 			            			</td>
 			            			<td>
 										<label class="sigp2Mandatory">Vendredi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_VENDREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_VENDREDI() %>">
 			            			</td>
 			            		</tr>
 			            		<tr>
@@ -91,17 +87,13 @@
 										<label class="sigp2Mandatory">Mardi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MARDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MARDI() %>">
 			            			</td>
 			            			<td>
 										<label class="sigp2Mandatory">Samedi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_SAMEDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_SAMEDI() %>">
 			            			</td>
 			            		</tr>
 			            		<tr>
@@ -109,17 +101,13 @@
 										<label class="sigp2Mandatory">Mercredi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MERCREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MERCREDI() %>">
 			            			</td>
 			            			<td>
 										<label class="sigp2Mandatory">Dimanche :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_DIMANCHE() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_DIMANCHE() %>">
 			            			</td>
 			            		</tr>
 			            		<tr>
@@ -127,9 +115,7 @@
 										<label class="sigp2Mandatory">Jeudi :</label>
 			            			</td>
 			            			<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_JEUDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_JEUDI() %>">
 			            			</td>
 			            			<td>&nbsp;
 			            			</td>
@@ -186,17 +172,13 @@
 										<label class="sigp2Mandatory">Lundi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_LUNDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_LUNDI(), process.getVAL_LB_HEURE_LUNDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_LUNDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_LUNDI() %>">
 									</td>
 									<td>
 										<label class="sigp2Mandatory">Vendredi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_VENDREDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_VENDREDI(), process.getVAL_LB_HEURE_VENDREDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_VENDREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_VENDREDI() %>">
 									</td>
 								</tr>
 								<tr>
@@ -204,17 +186,13 @@
 										<label class="sigp2Mandatory">Mardi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_MARDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_MARDI(), process.getVAL_LB_HEURE_MARDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MARDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MARDI() %>">
 									</td>
 									<td>
 										<label class="sigp2Mandatory">Samedi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_SAMEDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_SAMEDI(), process.getVAL_LB_HEURE_SAMEDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_SAMEDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_SAMEDI() %>">
 									</td>
 								</tr>
 								<tr>
@@ -222,17 +200,13 @@
 										<label class="sigp2Mandatory">Mercredi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_MERCREDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_MERCREDI(), process.getVAL_LB_HEURE_MERCREDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MERCREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MERCREDI() %>">
 									</td>
 									<td>
 										<label class="sigp2Mandatory">Dimanche :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_DIMANCHE() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_DIMANCHE(), process.getVAL_LB_HEURE_DIMANCHE_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_DIMANCHE() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_DIMANCHE() %>">
 									</td>
 								</tr>
 								<tr>
@@ -240,9 +214,7 @@
 										<label class="sigp2Mandatory">Jeudi :</label>
 									</td>
 									<td>
-										<SELECT  name="<%= process.getNOM_LB_HEURE_JEUDI() %>" class="sigp2-liste">
-												<%=process.forComboHTML(process.getVAL_LB_HEURE_JEUDI(), process.getVAL_LB_HEURE_JEUDI_SELECT()) %>
-										</SELECT>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_JEUDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_JEUDI() %>">
 									</td>
 									<td colspan="2">&nbsp;
 									</td>
