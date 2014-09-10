@@ -1735,8 +1735,12 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	public void setSuperieurHierarchique(FichePoste superieurHierarchique) throws Exception {
 		this.superieurHierarchique = superieurHierarchique;
 		if (superieurHierarchique != null) {
-			setAgtResponsable(getAgentDao()
-					.chercherAgentAffecteFichePoste(getSuperieurHierarchique().getIdFichePoste()));
+			try {
+				setAgtResponsable(getAgentDao().chercherAgentAffecteFichePoste(
+						getSuperieurHierarchique().getIdFichePoste()));
+			} catch (Exception e) {
+				setAgtResponsable(null);
+			}
 			setTitrePosteResponsable(getTitrePosteDao()
 					.chercherTitrePoste(getSuperieurHierarchique().getIdTitrePoste()));
 		} else {
@@ -2201,7 +2205,11 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	public void setRemplacement(FichePoste remp) throws Exception {
 		this.remplacement = remp;
 		if (remp != null) {
-			setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
+			try{
+				setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
+			} catch (Exception e) {
+				setAgtRemplacement(null);
+			}
 			setTitrePosteRemplacement(getTitrePosteDao().chercherTitrePoste(getRemplacement().getIdTitrePoste()));
 		} else {
 			setAgtRemplacement(null);

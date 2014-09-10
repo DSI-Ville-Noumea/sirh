@@ -3604,7 +3604,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setRemplacement(getFichePosteDao().chercherFichePoste(getFichePosteCourante().getIdRemplacement()));
 			}
 			// Init Infos Affectation FP
-			setAgentCourant(getAgentDao().chercherAgentAffecteFichePoste(getFichePosteCourante().getIdFichePoste()));
+			try {
+				setAgentCourant(getAgentDao().chercherAgentAffecteFichePoste(getFichePosteCourante().getIdFichePoste()));
+			} catch (Exception e) {
+				setAgentCourant(null);
+			}
 			// si on a pas trouve d'gent affecté sur FP primaire, on recherche
 			// sur secondaire
 			if (getAgentCourant() == null) {
@@ -4360,7 +4364,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private void setResponsable(FichePoste resp) throws Exception {
 		this.responsable = resp;
 		if (resp != null) {
-			setAgtResponsable(getAgentDao().chercherAgentAffecteFichePoste(getResponsable().getIdFichePoste()));
+			try {
+				setAgtResponsable(getAgentDao().chercherAgentAffecteFichePoste(getResponsable().getIdFichePoste()));
+			} catch (Exception e) {
+				setAgtResponsable(null);
+			}
 			setTitrePosteResponsable(getTitrePosteDao().chercherTitrePoste(getResponsable().getIdTitrePoste()));
 		} else {
 			setAgtResponsable(null);
@@ -5117,7 +5125,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 	public void setRemplacement(FichePoste remp) throws Exception {
 		this.remplacement = remp;
 		if (remp != null) {
-			setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
+			try {
+				setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
+			} catch (Exception e) {
+				setAgtRemplacement(null);
+			}
 			setTitrePosteRemplacement(getTitrePosteDao().chercherTitrePoste(getRemplacement().getIdTitrePoste()));
 		} else {
 			setAgtRemplacement(null);
