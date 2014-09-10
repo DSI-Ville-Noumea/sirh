@@ -335,6 +335,8 @@ public class OeAGENTEtatCivil extends BasicProcess {
 		getListeContactASupprimer().clear();
 
 		commitTransaction();
+		//on re-initialise la liste des contacts
+		initialiseListeContact(request);
 
 		// si date de premiere embauche sup à la date du jour alors on affiche
 		// un message d'information
