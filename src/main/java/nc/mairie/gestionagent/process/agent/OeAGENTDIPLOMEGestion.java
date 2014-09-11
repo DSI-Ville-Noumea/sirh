@@ -875,7 +875,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// Récup des zones saisies
 		String newNomEcole = getZone(getNOM_EF_NOM_ECOLE());
-		String newDateObt = getZone(getNOM_EF_DATE_OBTENTION_DIPLOME());
+		String newDateObt = Services.formateDate(getZone(getNOM_EF_DATE_OBTENTION_DIPLOME()));
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION_DIPLOME()).equals(ACTION_SUPPRESSION_DIPLOME)) {
@@ -3094,7 +3094,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 
 		// Récup des zones saisies
 		String dureePermis = getZone(getNOM_ST_DUREE_PERMIS());
-		String dateObtention = getZone(getNOM_EF_DATE_OBTENTION_PERMIS());
+		String dateObtention = Services.formateDate(getZone(getNOM_EF_DATE_OBTENTION_PERMIS()));
 
 		// Si Action Suppression
 		if (getZone(getNOM_ST_ACTION_PERMIS()).equals(ACTION_SUPPRESSION_PERMIS)) {

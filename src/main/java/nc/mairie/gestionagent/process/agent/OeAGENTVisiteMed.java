@@ -998,7 +998,7 @@ public class OeAGENTVisiteMed extends BasicProcess {
 
 				// récupération des informations remplies dans les zones de
 				// saisie
-				String dateVisite = getZone(getNOM_EF_DATE_VISITE());
+				String dateVisite = Services.formateDate(getZone(getNOM_EF_DATE_VISITE()));
 				String duree = getZone(getNOM_EF_DUREE());
 				Boolean apte = getZone(getNOM_RG_AVIS()).equals(getNOM_RB_APTE());
 				Integer apteVM = null;

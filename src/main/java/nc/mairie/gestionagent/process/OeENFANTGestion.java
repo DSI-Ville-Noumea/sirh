@@ -324,9 +324,8 @@ public class OeENFANTGestion extends BasicProcess {
 			if (commNaiss == null) {
 				if (getEnfantCourant() != null) {
 					if (getEnfantCourant().getCodePaysNaissEt() != null) {
-						commNaiss = CommuneEtrangere
-								.chercherCommuneEtrangere(getTransaction(), getEnfantCourant().getCodePaysNaissEt()
-										.toString(), getEnfantCourant().getCodeCommuneNaissEt());
+						commNaiss = CommuneEtrangere.chercherCommuneEtrangere(getTransaction(), getEnfantCourant()
+								.getCodePaysNaissEt().toString(), getEnfantCourant().getCodeCommuneNaissEt());
 					} else if (getEnfantCourant().getCodeCommuneNaissFr() != null
 							&& getEnfantCourant().getCodeCommuneNaissFr() != 0) {
 						commNaiss = Commune.chercherCommune(getTransaction(), getEnfantCourant()
@@ -1837,17 +1836,17 @@ public class OeENFANTGestion extends BasicProcess {
 	 */
 	public boolean performPB_AJOUTER_SCOLARITE(HttpServletRequest request) throws Exception {
 		// Récup des zones saisies
-		String dateDebutScolarite = getZone(getNOM_EF_DATE_DEBUT_SCOLARITE()).length() == 0 ? null
-				: getZone(getNOM_EF_DATE_DEBUT_SCOLARITE());
-		String dateFinScolarite = getZone(getNOM_EF_DATE_FIN_SCOLARITE()).length() == 0 ? null
-				: getZone(getNOM_EF_DATE_FIN_SCOLARITE());
+		String dateDebutScolarite = getZone(getNOM_EF_DATE_DEBUT_SCOLARITE()).length() == 0 ? null : Services
+				.formateDate(getZone(getNOM_EF_DATE_DEBUT_SCOLARITE()));
+		String dateFinScolarite = getZone(getNOM_EF_DATE_FIN_SCOLARITE()).length() == 0 ? null : Services
+				.formateDate(getZone(getNOM_EF_DATE_FIN_SCOLARITE()));
 
 		if (performControlerSaisieScolarite(request, dateDebutScolarite, dateFinScolarite)) {
 			// Affectation des attributs
 			setScolariteCourant(new Scolarite());
 			getScolariteCourant().setIdEnfant(getEnfantCourant() == null ? null : getEnfantCourant().getIdEnfant());
 			getScolariteCourant().setDateDebutScolarite(sdf.parse(dateDebutScolarite));
-			getScolariteCourant().setDateFinScolarite(sdf.parse(dateFinScolarite));
+			getScolariteCourant().setDateFinScolarite(dateFinScolarite == null ? null : sdf.parse(dateFinScolarite));
 
 			// Ajout à la liste
 			getListeScolarites().add(getScolariteCourant());

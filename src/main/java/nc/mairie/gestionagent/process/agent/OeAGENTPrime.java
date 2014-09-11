@@ -495,10 +495,10 @@ public class OeAGENTPrime extends BasicProcess {
 
 			// récupération des informations remplies dans les zones de saisie
 			String refArr = getZone(getNOM_EF_REF_ARR());
-			String dateArr = getZone(getNOM_EF_DATE_ARR());
+			String dateArr = Services.formateDate(getZone(getNOM_EF_DATE_ARR()));
 			String montant = getZone(getNOM_EF_MONTANT());
-			String dateFin = getZone(getNOM_EF_DATE_FIN());
-			String dateDebut = getZone(getNOM_EF_DATE_DEBUT());
+			String dateFin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
+			String dateDebut = Services.formateDate(getZone(getNOM_EF_DATE_DEBUT()));
 
 			Rubrique r = getSelectedRubrique();
 			if (r == null) {
@@ -510,7 +510,7 @@ public class OeAGENTPrime extends BasicProcess {
 			getPrimeCourante().setNoMatr(agentCourant.getNomatr().toString());
 			getPrimeCourante().setNoRubr(r.getNorubr().toString());
 			getPrimeCourante().setRefArr(refArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : refArr);
-			getPrimeCourante().setDateArrete(dateArr.equals(Const.CHAINE_VIDE) ? Const.ZERO : dateArr);
+			getPrimeCourante().setDateArrete(dateArr == null ? Const.ZERO : dateArr);
 			getPrimeCourante().setMtPri(montant);
 			getPrimeCourante().setDatDeb(dateDebut);
 			getPrimeCourante().setDatFin(dateFin);

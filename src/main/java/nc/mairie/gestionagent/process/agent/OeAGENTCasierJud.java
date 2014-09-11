@@ -245,7 +245,7 @@ public class OeAGENTCasierJud extends BasicProcess {
 		}
 
 		// Récup des zones saisies
-		String newDateExtrait = getZone(getNOM_EF_DATE_EXTRAIT());
+		String newDateExtrait = Services.formateDate(getZone(getNOM_EF_DATE_EXTRAIT()));
 		String newNumExtrait = getZone(getNOM_EF_NUM_EXTRAIT());
 		String newCommentaire = getZone(getNOM_EF_COMMENTAIRE_EXTRAIT());
 		boolean newPrivDroitsCiv = getVAL_RG_PRIV_DROITS_CIVIQUE().equals(getNOM_RB_PRIV_DROITS_CIVIQUE_O()) ? true

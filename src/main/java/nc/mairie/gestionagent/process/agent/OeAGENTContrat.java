@@ -253,9 +253,9 @@ public class OeAGENTContrat extends BasicProcess {
 			String newIndMotif = getZone(getNOM_LB_MOTIF_SELECT());
 			Motif newMotif = (Motif) getListeMotif().get(Integer.parseInt(newIndMotif));
 			boolean newAvenant = getVAL_RG_AVENANT().equals(getNOM_RB_AVENANT_O()) ? true : false;
-			String newDateDebut = getZone(getNOM_EF_DATE_DEB());
-			String newDateFinPeriodeEssai = getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI());
-			String newDateFin = getZone(getNOM_EF_DATE_FIN());
+			String newDateDebut = Services.formateDate(getZone(getNOM_EF_DATE_DEB()));
+			String newDateFinPeriodeEssai = Services.formateDate(getZone(getNOM_EF_DATE_FIN_PERIODE_ESSAI()));
+			String newDateFin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
 			String newJustification = getZone(getNOM_EF_JUSTIFICATION());
 
 			// Affectation des attributs
@@ -266,7 +266,7 @@ public class OeAGENTContrat extends BasicProcess {
 			getContratCourant().setDatdeb(sdf.parse(newDateDebut));
 			getContratCourant().setDateFinPeriodeEss(
 					newDateFinPeriodeEssai.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFinPeriodeEssai));
-			getContratCourant().setDateFin(newDateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFin));
+			getContratCourant().setDateFin(newDateFin == null ? null : sdf.parse(newDateFin));
 			getContratCourant().setIdMotif(newMotif.getIdMotif());
 			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat());
 			getContratCourant().setJustification(newJustification);
@@ -1349,8 +1349,8 @@ public class OeAGENTContrat extends BasicProcess {
 					// si entre 6 mois et 1an alors dateFin = DateDeb+14 jours
 					// si inf à 6 mois alors dateFin = DateDeb+1 jours par
 					// semaine dans limite des 14jours
-					String datedebut = getZone(getNOM_EF_DATE_DEB());
-					String datefin = getZone(getNOM_EF_DATE_FIN());
+					String datedebut = Services.formateDate(getZone(getNOM_EF_DATE_DEB()));
+					String datefin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
 					String dateDebFinale = null;
 					String dateFinFinale = null;
 					try {

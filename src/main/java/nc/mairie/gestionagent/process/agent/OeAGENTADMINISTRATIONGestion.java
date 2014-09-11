@@ -375,9 +375,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			Agent aAgent = (Agent) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_AGENT_MAIRIE);
 			if (aAgent != null) {
 				setAgentCourant(aAgent);
-				addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " "
-						+ getAgentCourant().getLibCivilite() + " " + getAgentCourant().getNomAgent() + " "
-						+ getAgentCourant().getPrenomAgent());
+				addZone(getNOM_ST_AGENT(), getAgentCourant().getNomatr() + " " + getAgentCourant().getLibCivilite()
+						+ " " + getAgentCourant().getNomAgent() + " " + getAgentCourant().getPrenomAgent());
 
 				// initialisation fenêtre si changement de l'agent
 				initialiseFenetre(request);
@@ -489,8 +488,8 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 				.getIdAutreAdmin(), getAutreAdministrationAgentCourant().getIdAgent(),
 				getAutreAdministrationAgentCourant().getDateEntree());
 		// Récup des zones saisies
-		String newDateDeb = getZone(getNOM_EF_DATE_DEBUT());
-		String newDateFin = getZone(getNOM_EF_DATE_FIN());
+		String newDateDeb = Services.formateDate(getZone(getNOM_EF_DATE_DEBUT()));
+		String newDateFin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
 		if (getVAL_RG_FONCTIONNAIRE().equals(getNOM_RB_FONCTIONNAIRE_N())) {
 			getAutreAdministrationAgentCourant().setFonctionnaire(0);
 		} else {
@@ -520,8 +519,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 			getAutreAdministrationAgentCourant().setIdAgent(getAgentCourant().getIdAgent());
 			getAutreAdministrationAgentCourant().setIdAutreAdmin(newAdministration.getIdAutreAdmin());
 			getAutreAdministrationAgentCourant().setDateEntree(sdf.parse(newDateDeb));
-			getAutreAdministrationAgentCourant().setDateSortie(
-					newDateFin.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFin));
+			getAutreAdministrationAgentCourant().setDateSortie(newDateFin == null ? null : sdf.parse(newDateFin));
 
 			if (getZone(getNOM_ST_ACTION()).equals(ACTION_MODIFICATION)) {
 				// Modification

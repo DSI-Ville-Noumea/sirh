@@ -733,8 +733,8 @@ public class OeAGENTCharge extends BasicProcess {
 			// récupération des informations remplies dans les zones de saisie
 			String montant = getZone(getNOM_EF_MONTANT());
 			String taux = getZone(getNOM_EF_TAUX());
-			String dateFin = getZone(getNOM_EF_DATE_FIN());
-			String dateDebut = getZone(getNOM_EF_DATE_DEBUT());
+			String dateFin = Services.formateDate(getZone(getNOM_EF_DATE_FIN()));
+			String dateDebut = Services.formateDate(getZone(getNOM_EF_DATE_DEBUT()));
 			String matriculeCharge = getZone(getNOM_EF_MAT_CHARGE());
 
 			Creancier c = getSelectedCreancier();

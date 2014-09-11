@@ -398,8 +398,9 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			}
 
 			// récupération des informations remplies dans les zones de saisie
-			String date = getZone(getNOM_EF_DATE());
-			String dateInit = getZone(getNOM_EF_DATE_INITIALE());
+			String date = Services.formateDate(getZone(getNOM_EF_DATE()));
+			String dateInit = getZone(getNOM_EF_DATE_INITIALE()).equals(Const.CHAINE_VIDE) ? null : Services
+					.formateDate(getZone(getNOM_EF_DATE_INITIALE()));
 			String duree = getZone(getNOM_EF_NB_JOUR_IIT());
 
 			int numLigneType = (Services.estNumerique(getZone(getNOM_LB_TYPE_SELECT())) ? Integer
@@ -446,8 +447,7 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 			Agent agentCourant = getAgentCourant();
 			getAccidentTravailCourant().setIdAgent(agentCourant.getIdAgent());
 			getAccidentTravailCourant().setDateAt(sdf.parse(date));
-			getAccidentTravailCourant().setDateAtInitial(
-					dateInit.equals(Const.CHAINE_VIDE) ? null : sdf.parse(dateInit));
+			getAccidentTravailCourant().setDateAtInitial(dateInit == null ? null : sdf.parse(dateInit));
 			getAccidentTravailCourant().setNbJoursItt(duree.equals(Const.CHAINE_VIDE) ? null : Integer.valueOf(duree));
 			getAccidentTravailCourant().setIdTypeAt(type.getIdTypeAt());
 			getAccidentTravailCourant().setIdSiege(siege.getIdSiege());
@@ -1134,8 +1134,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		// Récup du Diplome courant
 		Document d = getDocumentCourant();
 
-		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(
-				getAgentCourant().getIdAgent(), getDocumentCourant().getIdDocument());
+		DocumentAgent lda = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+				getDocumentCourant().getIdDocument());
 		setLienDocumentAgentCourant(lda);
 
 		// Alim zones
@@ -1278,8 +1278,8 @@ public class OeAGENTAccidentTravail extends BasicProcess {
 		} else {
 			// on supprime le document existant dans la base de données
 			Document d = getDocumentDao().chercherDocumentByContainsNom("AT_" + at.getIdAt());
-			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(
-					getAgentCourant().getIdAgent(), d.getIdDocument());
+			DocumentAgent l = getLienDocumentAgentDao().chercherDocumentAgent(getAgentCourant().getIdAgent(),
+					d.getIdDocument());
 
 			String repertoireStockage = (String) ServletAgent.getMesParametres().get("REPERTOIRE_ROOT");
 			File f = new File(repertoireStockage + d.getLienDocument());
