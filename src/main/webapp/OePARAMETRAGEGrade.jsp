@@ -116,7 +116,7 @@
 								<span class="sigp2Mandatory">Grade :</span>
 							</td>
 							<td>
-								<INPUT class="sigp2-saisiemajuscule" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
+								<INPUT class="sigp2-saisie" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
 							</td>
 						</tr>
 						<tr>
@@ -193,7 +193,7 @@
 									<span class="sigp2Mandatory">Grade :</span>
 								</td>
 								<td>
-									<INPUT class="sigp2-saisiemajuscule" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
+									<INPUT class="sigp2-saisie" disabled="disabled" maxlength="50" name="<%= process.getNOM_EF_GRADE() %>" size="50" type="text" value="<%= process.getVAL_EF_GRADE() %>" />
 								</td>
 							</tr>
 							<tr>

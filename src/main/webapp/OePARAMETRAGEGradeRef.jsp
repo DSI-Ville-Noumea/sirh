@@ -68,7 +68,7 @@
 											<label class="sigp2Mandatory">Libellé:</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_CLASSE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_CLASSE() %>">
+					            			<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_CLASSE() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_CLASSE() %>">
 										</td>
 					            	</tr>	
 									<tr>
@@ -115,7 +115,7 @@
 											<label class="sigp2Mandatory">Libellé:</label>
 					            		</td>
 					            		<td>
-					            			<INPUT class="sigp2-saisiemajuscule" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_ECHELON() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_ECHELON() %>">
+					            			<INPUT class="sigp2-saisie" maxlength="60" name="<%= process.getNOM_EF_LIBELLE_ECHELON() %>" size="35" type="text" value="<%= process.getVAL_EF_LIBELLE_ECHELON() %>">
 										</td>
 					            	</tr>	
 									<tr>
