@@ -3612,8 +3612,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			// si on a pas trouve d'gent affecté sur FP primaire, on recherche
 			// sur secondaire
 			if (getAgentCourant() == null) {
-				setAgentCourant(getAgentDao().chercherAgentAffecteFichePosteSecondaire(
-						getFichePosteCourante().getIdFichePoste()));
+				try {
+					setAgentCourant(getAgentDao().chercherAgentAffecteFichePosteSecondaire(
+							getFichePosteCourante().getIdFichePoste()));
+				} catch (Exception e) {
+					setAgentCourant(null);
+				}
 			}
 			if (getAgentCourant() != null) {
 				try {

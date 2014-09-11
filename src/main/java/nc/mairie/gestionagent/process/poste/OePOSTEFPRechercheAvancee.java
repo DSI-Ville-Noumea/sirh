@@ -215,7 +215,11 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 				try {
 					agent = getAgentDao().chercherAgentAffecteFichePoste(fp.getIdFichePoste());
 				} catch (Exception e) {
-					agent = getAgentDao().chercherAgentAffecteFichePosteSecondaire(fp.getIdFichePoste());
+					try {
+						agent = getAgentDao().chercherAgentAffecteFichePosteSecondaire(fp.getIdFichePoste());
+					} catch (Exception e2) {
+
+					}
 				}
 
 				Service serv = Service.chercherService(getTransaction(), fp.getIdServi());
