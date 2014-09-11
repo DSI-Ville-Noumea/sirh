@@ -4145,7 +4145,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					getVAL_EF_DATE_ARRETE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE()));
 			getAffectationCourant().setDateDebutAff(sdf.parse(getVAL_EF_DATE_DEBUT()));
 			getAffectationCourant().setDateFinAff(
-					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_FIN()));
+					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(Services
+							.formateDate(getVAL_EF_DATE_FIN())));
 			getAffectationCourant().setIdMotifAffectation(newMotifAffectation.getIdMotifAffectation());
 			getAffectationCourant().setTempsTravail(
 					getListeTempsTravail()[Integer.parseInt(getVAL_LB_TEMPS_TRAVAIL_SELECT())]);

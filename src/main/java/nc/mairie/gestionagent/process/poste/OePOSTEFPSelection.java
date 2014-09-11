@@ -178,7 +178,11 @@ public class OePOSTEFPSelection extends BasicProcess {
 				try {
 					agent = getAgentDao().chercherAgentAffecteFichePoste(fp.getIdFichePoste());
 				} catch (Exception e) {
-					agent = getAgentDao().chercherAgentAffecteFichePosteSecondaire(fp.getIdFichePoste());
+					try {
+						agent = getAgentDao().chercherAgentAffecteFichePosteSecondaire(fp.getIdFichePoste());
+					} catch (Exception e2) {
+
+					}
 				}
 
 				addZone(getNOM_ST_NUM(indiceFp), fp.getNumFp());
