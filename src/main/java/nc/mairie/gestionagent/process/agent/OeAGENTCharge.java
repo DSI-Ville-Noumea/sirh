@@ -1235,6 +1235,7 @@ public class OeAGENTCharge extends BasicProcess {
 		addZone(getNOM_EF_MONTANT(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_TAUX(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_MAT_CHARGE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_INFO_CODE_CHARGE(), Const.CHAINE_VIDE);
 		if (r != null) {
 
 			afficheListeCodeCharge(r.getNorubr(), null);
@@ -1514,6 +1515,7 @@ public class OeAGENTCharge extends BasicProcess {
 		}
 		// si rubrique 3000 on affiche à coté de la liste deroulante le txsal et
 		// txpat
+		// si rubrique 2900 on affiche à coté de la liste deroulante le txpat
 		showDonneesMutu = false;
 		Rubrique r = getSelectedRubrique();
 		if (r != null) {
@@ -1527,6 +1529,12 @@ public class OeAGENTCharge extends BasicProcess {
 						.getTxpat()) * 100);
 				addZone(getNOM_ST_INFO_CODE_CHARGE(), "TxSal : " + txSal + "% , TxPat : " + txPat + "%");
 				showDonneesMutu = true;
+			} else if (r.getNorubr() == 2900) {
+				CodeAcci g = (CodeAcci) getListeCodesAcci().get(indiceCodeCharge);
+				String txPat = String.valueOf(Double.parseDouble(g.getTxpat()) * 100).length() > 4 ? String.valueOf(
+						Double.parseDouble(g.getTxpat()) * 100).substring(0, 4) : String.valueOf(Double.parseDouble(g
+						.getTxpat()) * 100);
+				addZone(getNOM_ST_INFO_CODE_CHARGE(), "TxPat : " + txPat + "%");
 			}
 		}
 		return true;
