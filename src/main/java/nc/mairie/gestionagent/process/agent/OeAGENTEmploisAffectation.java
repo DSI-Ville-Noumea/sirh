@@ -3151,41 +3151,14 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Vérification du non-chevauchement des dates des affectations
 		for (ListIterator<Affectation> list = getListeAffectation().listIterator(); list.hasNext();) {
 			Affectation aAff = (Affectation) list.next();
-			if (!aAff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
-				if (aAff.getDateFinAff() != null) {
-					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
-							// "ERR201",
-							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
-					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0
-								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
-							// "ERR201",
-							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
-					}
-				} else {
-					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						// "ERR201",
-						// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
-						setFocus(getNOM_PB_AJOUTER());
+			if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
+				if (!testRG1(aAff)) {
+					return false;
+				}
+			} else {
+				if (!aAff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+					if (!testRG1(aAff)) {
 						return false;
-					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0) {
-							// "ERR201",
-							// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
 					}
 				}
 			}
@@ -3207,80 +3180,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		ArrayList<Affectation> listeAffFP = getAffectationDao().listerAffectationAvecFP(
 				getFichePosteCourant().getIdFichePoste());
 		for (Affectation aff : listeAffFP) {
-			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
-				if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
-					if (aff.getDateFinAff() != null) {
-						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
-						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
-									&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
-						}
-					} else {
-						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-							// "ERR085",
-							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
-						}
-					}
+
+			if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
+				if (!testRG2(aff)) {
+					return false;
 				}
-			} else if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
-				if (aff.getDateFinAff() != null) {
-					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-							// "ERR085",
-							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
-					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
-								&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-							// "ERR085",
-							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
-					}
-				} else {
-					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-						// "ERR085",
-						// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-						setFocus(getNOM_PB_AJOUTER());
+			} else {
+				if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+					if (!testRG2(aff)) {
 						return false;
-					} else {
-						if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
-							// "ERR085",
-							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-							setFocus(getNOM_PB_AJOUTER());
-							return false;
-						}
 					}
 				}
 			}
@@ -3292,41 +3200,16 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			ArrayList<Affectation> listeAffFPSecondaire = getAffectationDao().listerAffectationAvecFP(
 					getFichePosteSecondaireCourant().getIdFichePoste());
 			for (Affectation aff : listeAffFPSecondaire) {
-				if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
-					if (aff.getDateFinAff() != null) {
-						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
-						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
-									&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
-						}
-					} else {
-						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
-							// "ERR085",
-							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-							setFocus(getNOM_PB_AJOUTER());
+
+				if (getAffectationCourant() == null || getAffectationCourant().getIdAffectation() == null) {
+					if (!testRG3(aff)) {
+						return false;
+					}
+				} else {
+					if (!aff.getIdAffectation().toString()
+							.equals(getAffectationCourant().getIdAffectation().toString())) {
+						if (!testRG3(aff)) {
 							return false;
-						} else {
-							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
-								// "ERR085",
-								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
-								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
-								setFocus(getNOM_PB_AJOUTER());
-								return false;
-							}
 						}
 					}
 				}
@@ -3348,6 +3231,126 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR080"));
 				setFocus(getNOM_PB_AJOUTER());
 				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean testRG3(Affectation aff) {
+		if (aff.getDateFinAff() != null) {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
+						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			}
+		} else {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				// "ERR085",
+				// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+				setFocus(getNOM_PB_AJOUTER());
+				return false;
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean testRG2(Affectation aff) {
+		if (aff.getDateFinAff() != null) {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
+						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			}
+		} else {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				// "ERR085",
+				// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+				setFocus(getNOM_PB_AJOUTER());
+				return false;
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
+					// "ERR085",
+					// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean testRG1(Affectation aAff) {
+		if (aAff.getDateFinAff() != null) {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
+					// "ERR201",
+					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0
+						&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aAff.getDateFinAff())) <= 0) {
+					// "ERR201",
+					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
+			}
+		} else {
+			if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+				// "ERR201",
+				// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
+				setFocus(getNOM_PB_AJOUTER());
+				return false;
+			} else {
+				if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aAff.getDateDebutAff())) >= 0) {
+					// "ERR201",
+					// "Opération impossible. La période saisie ne doit pas chevaucher les périodes précédentes."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR201"));
+					setFocus(getNOM_PB_AJOUTER());
+					return false;
+				}
 			}
 		}
 		return true;
@@ -4247,9 +4250,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 						return false;
 					}
 				}
+
 				if (!sauvegardeFDP(getAffectationCourant().getIdFichePoste())) {
 					return false;
 				}
+
 			}
 			if (getTransaction().isErreur())
 				return false;
