@@ -3022,25 +3022,28 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		initialiseListeSpecificites_spec();
 
 		// Si pas d'affectation en cours
-		if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
-			ArrayList<Affectation> affActives = getAffectationDao().listerAffectationActiveAvecAgent(
-					getAgentCourant().getIdAgent());
-			if (affActives.size() == 1) {
-				setAffectationCourant((Affectation) affActives.get(0));
-				// Recherche des informations à afficher
-				setFichePosteCourant(getFichePosteDao().chercherFichePoste(getAffectationCourant().getIdFichePoste()));
-				if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
-					setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
-							getAffectationCourant().getIdFichePosteSecondaire()));
+		if (!getVAL_ST_ACTION().equals(ACTION_CREATION)) {
+			if (getFichePosteCourant() == null || MaClasse.STATUT_RECHERCHE_AGENT == etatStatut()) {
+				ArrayList<Affectation> affActives = getAffectationDao().listerAffectationActiveAvecAgent(
+						getAgentCourant().getIdAgent());
+				if (affActives.size() == 1) {
+					setAffectationCourant((Affectation) affActives.get(0));
+					// Recherche des informations à afficher
+					setFichePosteCourant(getFichePosteDao().chercherFichePoste(
+							getAffectationCourant().getIdFichePoste()));
+					if (getAffectationCourant().getIdFichePosteSecondaire() != null) {
+						setFichePosteSecondaireCourant(getFichePosteDao().chercherFichePoste(
+								getAffectationCourant().getIdFichePosteSecondaire()));
+					}
+				} else if (affActives.size() == 0) {
+					/*
+					 * getTransaction().declarerErreur(MessageUtils.getMessage(
+					 * "ERR083" )); return;
+					 */
+				} else if (affActives.size() > 1) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR082"));
+					return;
 				}
-			} else if (affActives.size() == 0) {
-				/*
-				 * getTransaction().declarerErreur(MessageUtils.getMessage("ERR083"
-				 * )); return;
-				 */
-			} else if (affActives.size() > 1) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR082"));
-				return;
 			}
 		}
 		if (getVAL_RG_SPECIFICITE() == null || getVAL_RG_SPECIFICITE().length() == 0) {
@@ -3204,7 +3207,46 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		ArrayList<Affectation> listeAffFP = getAffectationDao().listerAffectationAvecFP(
 				getFichePosteCourant().getIdFichePoste());
 		for (Affectation aff : listeAffFP) {
-			if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+			if (getVAL_ST_ACTION().equals(ACTION_MODIFICATION)) {
+				if (!aff.getIdAffectation().toString().equals(getAffectationCourant().getIdAffectation().toString())) {
+					if (aff.getDateFinAff() != null) {
+						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+							if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+								// "ERR085",
+								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+								setFocus(getNOM_PB_AJOUTER());
+								return false;
+							}
+						} else {
+							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0
+									&& Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
+								// "ERR085",
+								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+								setFocus(getNOM_PB_AJOUTER());
+								return false;
+							}
+						}
+					} else {
+						if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
+							// "ERR085",
+							// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+							getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+							setFocus(getNOM_PB_AJOUTER());
+							return false;
+						} else {
+							if (Services.compareDates(getVAL_EF_DATE_FIN(), sdf.format(aff.getDateDebutAff())) >= 0) {
+								// "ERR085",
+								// "Cette Fiche de poste est déjà affectée à un autre agent aux dates données."
+								getTransaction().declarerErreur(MessageUtils.getMessage("ERR085"));
+								setFocus(getNOM_PB_AJOUTER());
+								return false;
+							}
+						}
+					}
+				}
+			} else if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 				if (aff.getDateFinAff() != null) {
 					if (Const.CHAINE_VIDE.equals(getVAL_EF_DATE_FIN())) {
 						if (Services.compareDates(getVAL_EF_DATE_DEBUT(), sdf.format(aff.getDateFinAff())) <= 0) {
@@ -4142,8 +4184,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getAffectationCourant().setRefArreteAff(
 					getVAL_EF_REF_ARRETE().length() == 0 ? null : getVAL_EF_REF_ARRETE());
 			getAffectationCourant().setDateArrete(
-					getVAL_EF_DATE_ARRETE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(getVAL_EF_DATE_ARRETE()));
-			getAffectationCourant().setDateDebutAff(sdf.parse(getVAL_EF_DATE_DEBUT()));
+					getVAL_EF_DATE_ARRETE().equals(Const.CHAINE_VIDE) ? null : sdf.parse(Services
+							.formateDate(getVAL_EF_DATE_ARRETE())));
+			getAffectationCourant().setDateDebutAff(sdf.parse(Services.formateDate(getVAL_EF_DATE_DEBUT())));
 			getAffectationCourant().setDateFinAff(
 					getVAL_EF_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf.parse(Services
 							.formateDate(getVAL_EF_DATE_FIN())));
@@ -4186,13 +4229,15 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				FichePoste fichePoste = getFichePosteDao()
 						.chercherFichePoste(getAffectationCourant().getIdFichePoste());
 				// RG_AG_AF_A01
+				Integer idCreer = getAffectationDao().creerAffectation(getAffectationCourant());
+				getAffectationCourant().setIdAffectation(idCreer);
+
 				HistoAffectation histo = new HistoAffectation(getAffectationCourant());
 				getHistoAffectationDao().creerHistoAffectation(histo, user, EnumTypeHisto.CREATION);
 
 				if (!Connecteur.creerSPMTSR(getTransaction(), getAffectationCourant(), getAgentCourant(), fichePoste)) {
 					return false;
 				}
-				getAffectationDao().creerAffectation(getAffectationCourant());
 
 				// on sauvegarde les FDP au moment de la creation d'une
 				// affectation

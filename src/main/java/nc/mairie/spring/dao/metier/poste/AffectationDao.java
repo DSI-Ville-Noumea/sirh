@@ -290,16 +290,18 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 	}
 
 	@Override
-	public void creerAffectation(Affectation aff) throws Exception {
-		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_MOTIF_AFFECTATION + "," + CHAMP_ID_FICHE_POSTE + ","
-				+ CHAMP_ID_AGENT + "," + CHAMP_REF_ARRETE_AFF + "," + CHAMP_DATE_ARRETE + "," + CHAMP_DATE_DEBUT_AFF
-				+ "," + CHAMP_DATE_FIN_AFF + "," + CHAMP_TEMPS_TRAVAIL + "," + CHAMP_CODE_ECOLE + ","
-				+ CHAMP_ID_FICHE_POSTE_SECONDAIRE + "," + CHAMP_COMMENTAIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate.update(
+	public Integer creerAffectation(Affectation aff) throws Exception {
+		String sql = "select " + CHAMP_ID + " from NEW TABLE (INSERT INTO " + NOM_TABLE + " ("
+				+ CHAMP_ID_MOTIF_AFFECTATION + "," + CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_AGENT + ","
+				+ CHAMP_REF_ARRETE_AFF + "," + CHAMP_DATE_ARRETE + "," + CHAMP_DATE_DEBUT_AFF + ","
+				+ CHAMP_DATE_FIN_AFF + "," + CHAMP_TEMPS_TRAVAIL + "," + CHAMP_CODE_ECOLE + ","
+				+ CHAMP_ID_FICHE_POSTE_SECONDAIRE + "," + CHAMP_COMMENTAIRE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?))";
+		Integer id = jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { aff.getIdMotifAffectation(), aff.getIdFichePoste(), aff.getIdAgent(),
 						aff.getRefArreteAff(), aff.getDateArrete(), aff.getDateDebutAff(), aff.getDateFinAff(),
 						aff.getTempsTravail(), aff.getCodeEcole(), aff.getIdFichePosteSecondaire(),
-						aff.getCommentaire() });
+						aff.getCommentaire() }, Integer.class);
+		return id;
 	}
 }

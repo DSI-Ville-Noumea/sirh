@@ -34,6 +34,6 @@ public interface AffectationDaoInterface {
 
 	public void modifierAffectation(Affectation aff) throws Exception;
 
-	public void creerAffectation(Affectation aff) throws Exception;
+	public Integer creerAffectation(Affectation aff) throws Exception;
 
 }
