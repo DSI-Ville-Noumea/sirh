@@ -43,7 +43,7 @@ public interface FichePosteDaoInterface {
 	public void modifierFichePoste(FichePoste fp, HistoFichePosteDao histoDao, UserAppli user,
 			Transaction aTransaction, AffectationDao affDao) throws Exception;
 
-	public FichePoste creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao,
-			Transaction aTransaction) throws Exception;
+	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
+			throws Exception;
 
 }

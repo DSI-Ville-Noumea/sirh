@@ -515,14 +515,13 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 	}
 
 	@Override
-	public FichePoste creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao,
-			Transaction aTransaction) throws Exception {
+	public Integer creerFichePoste(FichePoste fp, UserAppli user, HistoFichePosteDao histoDao, Transaction aTransaction)
+			throws Exception {
 		// Génération du numéro de fiche de poste
 		fp.setNumFp(createFichePosteNumber(fp.getAnneeCreation()));
 
 		// Creation de la FichePoste
 		Integer idCRee = creerFichePosteBD(fp);
-		fp.setIdFichePoste(idCRee);
 
 		FichePoste fpResponsable = null;
 		if (fp.getIdResponsable() != null) {
@@ -530,11 +529,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 		}
 		Connecteur.creerSPPOST(aTransaction, fp, fpResponsable);
 
-		// historisation
-		HistoFichePoste histo = new HistoFichePoste(fp);
-		histoDao.creerHistoFichePoste(histo, user, EnumTypeHisto.CREATION);
-
-		return fp;
+		return idCRee;
 	}
 
 	public void modifierFichePosteBD(FichePoste fichePoste) throws Exception {

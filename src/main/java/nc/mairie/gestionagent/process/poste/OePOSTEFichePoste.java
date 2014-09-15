@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.enums.EnumTypeHisto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -45,6 +46,7 @@ import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.FEFP;
 import nc.mairie.metier.poste.FicheEmploi;
 import nc.mairie.metier.poste.FichePoste;
+import nc.mairie.metier.poste.HistoFichePoste;
 import nc.mairie.metier.poste.Horaire;
 import nc.mairie.metier.poste.NiveauEtudeFP;
 import nc.mairie.metier.poste.Service;
@@ -2337,8 +2339,13 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		// Création de la fiche poste
 		if (getFichePosteCourante().getIdFichePoste() == null) {
-			setFichePosteCourante(getFichePosteDao().creerFichePoste(getFichePosteCourante(), user,
-					getHistoFichePosteDao(), getTransaction()));
+			Integer idCree = getFichePosteDao().creerFichePoste(getFichePosteCourante(), user, getHistoFichePosteDao(),
+					getTransaction());
+			setFichePosteCourante(getFichePosteCourante());
+			getFichePosteCourante().setIdFichePoste(idCree);
+			// historisation
+			HistoFichePoste histo = new HistoFichePoste(getFichePosteCourante());
+			getHistoFichePosteDao().creerHistoFichePoste(histo, user, EnumTypeHisto.CREATION);
 			if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 				// Fiche poste créée
 				messageInf = MessageUtils.getMessage("INF103", getFichePosteCourante().getNumFp());
