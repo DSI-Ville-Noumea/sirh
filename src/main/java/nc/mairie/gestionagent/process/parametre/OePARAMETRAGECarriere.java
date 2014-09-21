@@ -334,6 +334,13 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		addZone(getNOM_EF_BASE_HEBDO_LEG_M_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_BASE_HEBDO_H_SPBASE(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_BASE_HEBDO_M_SPBASE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_LUNDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_MARDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_MERCREDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_JEUDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_VENDREDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_SAMEDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_DIMANCHE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_SPBASE());

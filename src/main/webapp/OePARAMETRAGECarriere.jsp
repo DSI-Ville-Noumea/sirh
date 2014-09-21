@@ -54,6 +54,11 @@
 			            	<br>
 			            	<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_SPBASE())) { %>
 			            	<table>
+								<tr>
+									<td colspan="3">
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+									</td>
+								</tr>
 			            		<tr>
 			            			<td>
 										<label class="sigp2Mandatory">Code :</label>
@@ -127,10 +132,10 @@
 										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>"><span class="sigp2-saisie">Mn</span>
 			            			</td>           			
 			            		</tr>
 			            		<tr>
@@ -138,10 +143,10 @@
 										<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>"><span class="sigp2-saisie">Mn</span>
 			            			</td>          			
 			            		</tr>
 			            		<tr>
@@ -153,6 +158,11 @@
 			            	</table>					
 							<%} else {%>
 							<table>
+								<tr>
+									<td colspan="3">
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+									</td>
+								</tr>
 								<tr>
 									<td>
 										<label class="sigp2Mandatory">Code :</label>
@@ -224,10 +234,10 @@
 										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M_SPBASE() %>"><span class="sigp2-saisie">Mn</span>
 			            			</td>           			
 			            		</tr>
 			            		<tr>
@@ -235,10 +245,10 @@
 										<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H_SPBASE() %>"><span class="sigp2-saisie">H</span>
 			            			</td>
 			            			<td>
-										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>">
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M_SPBASE() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M_SPBASE() %>"><span class="sigp2-saisie">Mn</span>
 			            			</td>          			
 			            		</tr>
 			            		<tr>
