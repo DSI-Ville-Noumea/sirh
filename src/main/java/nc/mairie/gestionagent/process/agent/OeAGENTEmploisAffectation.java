@@ -4242,6 +4242,8 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 					return false;
 				}
 
+				commitTransaction();
+
 				// on sauvegarde les FDP au moment de la creation d'une
 				// affectation
 				// RG_AG_AF_A07
