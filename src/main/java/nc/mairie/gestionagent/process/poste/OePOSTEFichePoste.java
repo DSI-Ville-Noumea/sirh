@@ -719,7 +719,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
-			if (getListeNatureCredit() != null) {
+			if (getListeNatureCredit() != null && getFichePosteCourante().getIdNatureCredit()!=null) {
 				for (int i = 0; i < getListeNatureCredit().size(); i++) {
 					NatureCredit b = (NatureCredit) getListeNatureCredit().get(i);
 					if (b.getIdNatureCredit().toString().equals(getFichePosteCourante().getIdNatureCredit().toString())) {
@@ -727,6 +727,8 @@ public class OePOSTEFichePoste extends BasicProcess {
 						break;
 					}
 				}
+			}else{
+				addZone(getNOM_LB_NATURE_CREDIT_SELECT(), Const.ZERO);
 			}
 
 			afficheResponsable();
