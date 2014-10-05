@@ -158,6 +158,7 @@ Module_parametres.ajouterFils(new Lien("elemSal", "ParamElemSalaire", "Eléments 
 <%}%>
 Module_parametres.ajouterFils(new Lien("absence", "ParamAbsMotif", "Absence", "Gestion des paramètres des absences", true));
 Module_parametres.ajouterFils(new Lien("election", "ParamElec", "Election", "Gestion des paramètres des élections", true));
+Module_parametres.ajouterFils(new Lien("kiosque", "ParamKiosque", "Kiosque", "Gestion des paramètres du kiosque", true));
 //***************************************************************
 //*               Le module Gestion des droits
 //***************************************************************

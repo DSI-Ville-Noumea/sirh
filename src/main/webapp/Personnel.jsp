@@ -139,6 +139,7 @@
 		listeDroits.add("ParamAbsMotif");		
 		listeDroits.add("ParamAbsConge");	
 		listeDroits.add("ParamElec");	
+		listeDroits.add("ParamKiosque");	
 		
 		
 		/*Module GESTION DROITS*/

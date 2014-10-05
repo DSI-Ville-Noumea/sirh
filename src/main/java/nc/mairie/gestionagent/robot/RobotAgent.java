@@ -74,6 +74,7 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGrade;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGradeRef;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
@@ -313,6 +314,9 @@ public class RobotAgent extends Robot {
 		} // Module PARAMETRAGE - ELECTIONS
 		else if (activite.equals("ParamElec")) {
 			return new OePARAMETRAGEElection();
+			// Module PARAMETRAGE - KIOSQUE
+		} else if (activite.equals("ParamKiosque")) {
+			return new OePARAMETRAGEKiosque();
 		} // Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {
 			return new OeDROITSUtilisateurs();
