@@ -8,5 +8,7 @@ public interface ISirhDao {
 
 	void supprimerObject(Integer id) throws Exception;
 
+	void supprimerObjectIdString(String id) throws Exception;
+
 	<T> T chercherObject(Class<T> T, Integer id) throws Exception;
 }

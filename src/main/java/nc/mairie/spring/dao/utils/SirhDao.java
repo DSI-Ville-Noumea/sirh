@@ -54,4 +54,10 @@ public abstract class SirhDao implements ISirhDao {
 		return dataSource;
 	}
 
+	@Override
+	public void supprimerObjectIdString(String id) throws Exception {
+		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID + "=? ";
+		jdbcTemplate.update(sql, new Object[] { id });
+	}
+
 }

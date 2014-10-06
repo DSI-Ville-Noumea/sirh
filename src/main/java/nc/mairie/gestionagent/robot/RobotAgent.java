@@ -572,6 +572,14 @@ public class RobotAgent extends Robot {
 				OeELECSaisieCompteurA55.class.getName() + OeELECSaisieCompteurA55.STATUT_RECHERCHER_AGENT_CREATE,
 				OeAGENTRecherche.class.getName());
 
+
+		// ///////////////////
+		// PARAMETRES //
+		// ///////////////////
+		// Classe OePARAMETRAGEKiosque
+		navigation.put(OePARAMETRAGEKiosque.class.getName() + OePARAMETRAGEKiosque.STATUT_RECHERCHER_AGENT_CREATE,
+				OeAGENTRecherche.class.getName());
+
 		// ///////////////////
 		// DROITS //
 		// ///////////////////
@@ -750,6 +758,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// DROITS
