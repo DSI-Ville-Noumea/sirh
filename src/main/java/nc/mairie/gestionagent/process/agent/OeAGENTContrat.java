@@ -265,7 +265,7 @@ public class OeAGENTContrat extends BasicProcess {
 				getContratCourant().setIdContratRef(getContratReference().getIdContrat());
 			getContratCourant().setDatdeb(sdf.parse(newDateDebut));
 			getContratCourant().setDateFinPeriodeEss(
-					newDateFinPeriodeEssai.equals(Const.CHAINE_VIDE) ? null : sdf.parse(newDateFinPeriodeEssai));
+					newDateFinPeriodeEssai == null ? null : sdf.parse(newDateFinPeriodeEssai));
 			getContratCourant().setDateFin(newDateFin == null ? null : sdf.parse(newDateFin));
 			getContratCourant().setIdMotif(newMotif.getIdMotif());
 			getContratCourant().setIdTypeContrat(newTypeContrat.getIdTypeContrat());
