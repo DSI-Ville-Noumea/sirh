@@ -1812,19 +1812,22 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	private void performCreerCompetencesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
-		// Recherche de tous les liens FichePoste / Competence
-		ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(fpSecondaire.getIdFichePoste());
-		ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
-		for (int i = 0; i < listCompFDP.size(); i++) {
-			Competence comp = listCompFDP.get(i);
-			TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(comp.getIdTypeCompetence());
-			EaeFDPCompetence compEAE = new EaeFDPCompetence();
-			compEAE.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
-			compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
-			compEAE.setLibelleCompetence(comp.getNomCompetence());
+		if (fpSecondaire != null) {
+			// Recherche de tous les liens FichePoste / Competence
+			ArrayList<CompetenceFP> liens = getCompetenceFPDao().listerCompetenceFPAvecFP(
+					fpSecondaire.getIdFichePoste());
+			ArrayList<Competence> listCompFDP = getCompetenceDao().listerCompetenceAvecFP(liens);
+			for (int i = 0; i < listCompFDP.size(); i++) {
+				Competence comp = listCompFDP.get(i);
+				TypeCompetence typComp = getTypeCompetenceDao().chercherTypeCompetence(comp.getIdTypeCompetence());
+				EaeFDPCompetence compEAE = new EaeFDPCompetence();
+				compEAE.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
+				compEAE.setTypeCompetence(EnumTypeCompetence.getValueEnumTypeCompetence(typComp.getIdTypeCompetence()));
+				compEAE.setLibelleCompetence(comp.getNomCompetence());
 
-			getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFichePoste(), compEAE.getTypeCompetence(),
-					compEAE.getLibelleCompetence());
+				getEaeFDPCompetenceDao().creerEaeFDPCompetence(compEAE.getIdEaeFichePoste(),
+						compEAE.getTypeCompetence(), compEAE.getLibelleCompetence());
+			}
 		}
 	}
 
@@ -1866,17 +1869,18 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private void performCreerActivitesFichePosteSecondaire(HttpServletRequest request, FichePoste fpSecondaire)
 			throws Exception {
 		// gère les activites
+		if (fpSecondaire != null) {
+			// Recherche de tous les liens FicheEmploi / Activite
+			ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpSecondaire.getIdFichePoste());
+			ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
+			for (int i = 0; i < listActFDP.size(); i++) {
+				Activite act = listActFDP.get(i);
+				EaeFDPActivite acti = new EaeFDPActivite();
+				acti.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
+				acti.setLibelleActivite(act.getNomActivite());
 
-		// Recherche de tous les liens FicheEmploi / Activite
-		ArrayList<ActiviteFP> liens = getActiviteFPDao().listerActiviteFPAvecFP(fpSecondaire.getIdFichePoste());
-		ArrayList<Activite> listActFDP = getActiviteDao().listerActiviteAvecFP(liens);
-		for (int i = 0; i < listActFDP.size(); i++) {
-			Activite act = listActFDP.get(i);
-			EaeFDPActivite acti = new EaeFDPActivite();
-			acti.setIdEaeFichePoste(getIdCreerFichePosteSecondaire());
-			acti.setLibelleActivite(act.getNomActivite());
-
-			getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFichePoste(), acti.getLibelleActivite());
+				getEaeFDPActiviteDao().creerEaeFDPActivite(acti.getIdEaeFichePoste(), acti.getLibelleActivite());
+			}
 		}
 	}
 
