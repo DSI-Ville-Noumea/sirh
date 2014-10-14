@@ -520,7 +520,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-				eae.setCap(true);
+				// si l'avancement est de type TITU alors on met false #11510
+				if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+					eae.setCap(false);
+				} else {
+					eae.setCap(true);
+				}
 			} else {
 				eae.setCap(false);
 			}
@@ -565,7 +570,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-				eae.setCap(true);
+				// si l'avancement est de type TITU alors on met false #11510
+				if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+					eae.setCap(false);
+				} else {
+					eae.setCap(true);
+				}
 			} else {
 				eae.setCap(false);
 			}
@@ -3609,7 +3619,12 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			if (avct.getEtat().equals(EnumEtatAvancement.SGC.getValue())) {
-				eae.setCap(true);
+				// si l'avancement est de type TITU alors on met false #11510
+				if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+					eae.setCap(false);
+				} else {
+					eae.setCap(true);
+				}
 			} else {
 				eae.setCap(false);
 			}
