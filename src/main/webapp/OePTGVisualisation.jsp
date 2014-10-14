@@ -325,7 +325,7 @@
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
-                            <th>S</th>
+                            <th title="Numéro de la semaine" >S</th>
                             <th>Date</th>
                             <th>Début</th>
                             <th>Fin</th>
