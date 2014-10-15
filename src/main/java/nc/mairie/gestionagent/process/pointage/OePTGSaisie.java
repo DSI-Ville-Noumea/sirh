@@ -56,6 +56,7 @@ public class OePTGSaisie extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 	private Integer idAgent = null;
 	private Date dateLundi = new Date();
+	private boolean isDPM;
 	private List<List<PrimeDto>> primess = new ArrayList<>();
 	private FichePointageDto listeFichePointage;
 	private HashMap<String, List<AbsenceDto>> absences = new HashMap<>();
@@ -87,7 +88,9 @@ public class OePTGSaisie extends BasicProcess {
 	private void initialiseDonnees() throws Exception {
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
 		String date = wsdf.format(getDateLundi(0));
-		setListeFichePointage(t.getSaisiePointage(idAgent, date));
+		FichePointageDto dto = t.getSaisiePointage(idAgent, date);
+		setListeFichePointage(dto);
+		setDPM(dto.isDPM());
 	}
 
 	@Override
@@ -322,7 +325,7 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setTypeSaisie(typesaisie);
 		ret.setTitre(title);
 
-		DataContainer data = getData(id, d, false);
+		DataContainer data = getData(id, d, false, false);
 		boolean saisie = true;
 		switch (typesaisie) {
 			case "PERIODE_HEURES":
@@ -378,7 +381,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private AbsenceDto getAbsence(Date d, String id) {
 		AbsenceDto ret = null;
-		DataContainer data = getData(id, d, true);
+		DataContainer data = getData(id, d, true, false);
 		boolean saisie = true;
 
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
@@ -401,7 +404,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private HeureSupDto getHS(Date d, String id) {
 		HeureSupDto ret = null;
-		DataContainer data = getData(id, d, false);
+		DataContainer data = getData(id, d, false, true);
 		boolean saisie = true;
 
 		if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
@@ -410,7 +413,8 @@ public class OePTGSaisie extends BasicProcess {
 		}
 		if (saisie) {
 			ret = new HeureSupDto();
-			ret.setRecuperee(data.getChk().equals("CHECKED_ON"));
+			ret.setRecuperee(getListeFichePointage().isDPM() ? true : data.getChk().equals("CHECKED_ON"));
+			ret.setRappelService(data.getChkRappelService().equals("CHECKED_ON"));
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
@@ -422,7 +426,7 @@ public class OePTGSaisie extends BasicProcess {
 		return ret;
 	}
 
-	private DataContainer getData(String id, Date d, boolean isAbsence) {
+	private DataContainer getData(String id, Date d, boolean isAbsence, boolean isHeureSup) {
 		DataContainer ret = new DataContainer();
 		ret.setMotif(getZone("NOM_motif_" + id));
 		ret.setComment(getZone("NOM_comm_" + id));
@@ -434,6 +438,9 @@ public class OePTGSaisie extends BasicProcess {
 		ret.setIdRefEtat(Integer.parseInt("0" + getZone("NOM_idrefetat_" + id)));
 		if (isAbsence) {
 			ret.setIdTypeAbsence(Integer.parseInt("0" + getZone("NOM_typeAbs_" + id)));
+		} else if (isHeureSup) {
+			ret.setChk(getZone("NOM_CK_RECUP_" + id));
+			ret.setChkRappelService(getZone("NOM_CK_RAPPEL_" + id));
 		} else {
 			ret.setChk(getZone("NOM_CK_" + id));
 		}
@@ -725,5 +732,13 @@ public class OePTGSaisie extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public boolean isDPM() {
+		return isDPM;
+	}
+
+	public void setDPM(boolean isDPM) {
+		this.isDPM = isDPM;
 	}
 }

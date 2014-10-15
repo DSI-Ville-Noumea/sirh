@@ -12,6 +12,7 @@ public class FichePointageDto {
 	private AgentWithServiceDto agent;
 	private String semaine;
 	List<JourPointageDto> saisies;
+	private boolean isDPM;
 
 	public FichePointageDto() {
 		saisies = new ArrayList<JourPointageDto>();
@@ -47,5 +48,13 @@ public class FichePointageDto {
 
 	public void setSaisies(List<JourPointageDto> saisies) {
 		this.saisies = saisies;
+	}
+
+	public boolean isDPM() {
+		return isDPM;
+	}
+
+	public void setDPM(boolean isDPM) {
+		this.isDPM = isDPM;
 	}
 }

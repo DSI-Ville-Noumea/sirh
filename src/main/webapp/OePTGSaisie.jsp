@@ -21,6 +21,8 @@
         <SCRIPT type="text/javascript">
             function suppr(id) {
                 if (document.getElementById("NOM_CK_" + id) !== null) {  document.getElementById("NOM_CK_" + id).checked = false;  }
+                if (document.getElementById("NOM_CK_RECUP_" + id) !== null) {  document.getElementById("NOM_CK_RECUP_" + id).checked = false;  }
+                if (document.getElementById("NOM_CK_RAPPEL_" + id) !== null) {  document.getElementById("NOM_CK_RAPPEL_" + id).checked = false;  }
                 if (document.getElementById("NOM_nbr_" + id) !== null) {  document.getElementById("NOM_nbr_" + id).value = '';       }
                 document.getElementById("NOM_motif_" + id).value = '';
                 document.getElementById("NOM_comm_" + id).value = '';
@@ -180,7 +182,8 @@
 								String id = "HS:" + i + ":" + j;
 								Date heureDebut = null;
 								Date heureFin = null;
-								boolean checkedRecupere = false;
+								boolean checkedRecupere = process.isDPM()? true : false;
+								boolean checkedRappelService = false;
 								String motif = "";
 								String commentaire = "";
 								Integer idPtg = 0;
@@ -196,6 +199,7 @@
 									heureDebut = hs.getHeureDebut();
 									heureFin = hs.getHeureFin(); 
 									checkedRecupere = hs.isRecuperee();
+									checkedRappelService = hs.isRappelService();
 									motif = hs.getMotif();
 									commentaire = hs.getCommentaire();
 									idPtg = hs.getIdPointage();
@@ -225,7 +229,12 @@
 										</tr>
 										<tr bgcolor="#BFEFFF">
 											<td>
-												<input type="checkbox" name="NOM_CK_<%=id %>" <% if(checkedRecupere){ %> checked <% } %> /> A récupérer
+												<input type="checkbox"  <% if(process.isDPM()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A récupérer
+											</td>
+										</tr>
+										<tr bgcolor="#BFEFFF">
+											<td>
+												<input type="checkbox"  name="NOM_CK_RAPPEL_<%=id %>" <% if(checkedRappelService){ %> checked="checked" <% } %> /> Rappel en service
 											</td>
 										</tr>
 										<tr bgcolor="#BFEFFF">

@@ -5,6 +5,7 @@ import java.util.Date;
 public class DataContainer {
 
 	private String chk = "";
+	private String chkRappelService = "";
 	private String motif = "";
 	private String comment = "";
 	private Date timeD = new Date();
@@ -16,6 +17,14 @@ public class DataContainer {
 	private int idTypeAbsence = 0;
 
 	public DataContainer() {
+	}
+
+	public String getChkRappelService() {
+		return chkRappelService;
+	}
+
+	public void setChkRappelService(String chk) {
+		this.chkRappelService = chk;
 	}
 
 	public String getChk() {
