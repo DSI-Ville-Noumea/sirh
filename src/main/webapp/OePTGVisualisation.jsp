@@ -85,6 +85,7 @@
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "40px","sClass" : "center"},
+                            {"bSortable": true,"sWidth": "40px","sClass" : "center"},
                             {"sType": "date-francais","bSortable": true,"sWidth": "80px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
                             {"bSortable": false,"sWidth": "60px","sClass" : "center"},
@@ -97,7 +98,7 @@
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"},
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"}
                         ],
-						"aaSorting": [[ 10, "asc" ]],
+						"aaSorting": [[ 11, "asc" ]],
                         "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
                         "oLanguage": {
@@ -165,7 +166,7 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 329px;")
+                            .attr("style", "margin-left: 369px;")
                             .attr("width", "690px")
                             .append($(document.createElement("thead"))
                             );
@@ -244,6 +245,8 @@
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_SERVICE()%>');">
 			            	<INPUT type="hidden" id="codeservice" size="4" width="1px" name="<%=process.getNOM_ST_CODE_SERVICE()%>" value="<%=process.getVAL_ST_CODE_SERVICE()%>" class="sigp2-saisie">
                 		</td>
+                		<td>&nbsp;</td>
+                		<td>&nbsp;</td>
                 	</tr>
                 	<tr>
                 		<td>
@@ -277,6 +280,14 @@
 			                    <%=process.forComboHTML(process.getVAL_LB_POPULATION(), process.getVAL_LB_POPULATION_SELECT())%>
 			                </SELECT>
                 		</td>
+                		<td>
+                			<span class="sigp2">Type HS : </span>
+                		</td>
+                		<td>
+			                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_TYPE_HS()%>" style="width:125px;">
+			                    <%=process.forComboHTML(process.getVAL_LB_TYPE_HS(), process.getVAL_LB_TYPE_HS_SELECT())%>
+			                </SELECT>
+			            </td>
                 	</tr>
                 </table>         	
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
@@ -325,6 +336,7 @@
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
                             <th>Agent </th>
                             <th>Type</th>
+                            <th title="R: récupérées, RS: rappel en service." >R</th>
                             <th title="Numéro de la semaine" >S</th>
                             <th>Date</th>
                             <th>Début</th>
@@ -372,6 +384,7 @@
                             </td>
                             <td><%=process.getVAL_ST_AGENT(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
+                            <td><%=process.getVAL_ST_RECUP(indicePtg)%></td>
                             <td><%=process.getVAL_ST_SEMAINE(indicePtg)%></td>	
                             <td><%=process.getVAL_ST_DATE(indicePtg)%></td>							
                             <td><%=process.getVAL_ST_DATE_DEB(indicePtg)%></td>							

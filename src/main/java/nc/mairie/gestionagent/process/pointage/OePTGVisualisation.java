@@ -66,7 +66,9 @@ public class OePTGVisualisation extends BasicProcess {
 	public Hashtable<String, TreeHierarchy> hTree = null;
 	private String[] LB_ETAT;
 	private String[] LB_TYPE;
+	private String[] LB_TYPE_HS;
 	private String[] LB_POPULATION;
+	private ArrayList<String> listeTypeHS;
 	private ArrayList<String> listePopulation;
 	private ArrayList<RefEtatDto> listeEtats;
 	private HashMap<Integer, ConsultPointageDto> listePointage;
@@ -97,11 +99,9 @@ public class OePTGVisualisation extends BasicProcess {
 					+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")");
 			addZone(getMATRICULE_ST_AGENT(i),
 					agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
-			String type = ptg.getTypePointage();
-			if(ptg.isHeuresSupRecuperees()) {
-				type += " (R)";
-			}
-			addZone(getNOM_ST_TYPE(i), type);
+			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
+			addZone(getNOM_ST_RECUP(i), ptg.isHeuresSupRappelEnService() ? "RS" : ptg.isHeuresSupRecuperees() ? "R"
+					: Const.CHAINE_VIDE);
 			addZone(getNOM_ST_SEMAINE(i), String.valueOf(greg.get(Calendar.WEEK_OF_YEAR)));
 
 			addZone(getNOM_ST_DATE(i), sdf.format(ptg.getDate()));
@@ -176,6 +176,13 @@ public class OePTGVisualisation extends BasicProcess {
 		return LB_TYPE;
 	}
 
+	private String[] getLB_TYPE_HS() {
+		if (LB_TYPE_HS == null) {
+			LB_TYPE_HS = initialiseLazyLB();
+		}
+		return LB_TYPE_HS;
+	}
+
 	public ArrayList<RefEtatDto> getListeEtats() {
 		return listeEtats;
 	}
@@ -233,6 +240,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_LB_TYPE";
 	}
 
+	public String getNOM_LB_TYPE_HS() {
+		return "NOM_LB_TYPE_HS";
+	}
+
 	/**
 	 * Retourne le nom de la zone de la ligne sélectionnée pour la JSP :
 	 * NOM_LB_TYPE_SELECT Date de création : (28/11/11)
@@ -240,6 +251,10 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public String getNOM_LB_TYPE_SELECT() {
 		return "NOM_LB_TYPE_SELECT";
+	}
+
+	public String getNOM_LB_TYPE_HS_SELECT() {
+		return "NOM_LB_TYPE_HS_SELECT";
 	}
 
 	public String getNOM_PB_CREATE() {
@@ -443,6 +458,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_ST_TYPE_" + i;
 	}
 
+	public String getNOM_ST_RECUP(int i) {
+		return "NOM_ST_RECUP_" + i;
+	}
+
 	public String getMATRICULE_ST_AGENT(int i) {
 		return "NOM_ST_MATRICULE_" + i;
 	}
@@ -514,6 +533,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return getLB_TYPE();
 	}
 
+	public String[] getVAL_LB_TYPE_HS() {
+		return getLB_TYPE_HS();
+	}
+
 	/**
 	 * Méthode à personnaliser Retourne l'indice à sélectionner pour la zone de
 	 * la JSP : LB_TYPE Date de création : (28/11/11)
@@ -521,6 +544,10 @@ public class OePTGVisualisation extends BasicProcess {
 	 */
 	public String getVAL_LB_TYPE_SELECT() {
 		return getZone(getNOM_LB_TYPE_SELECT());
+	}
+
+	public String getVAL_LB_TYPE_HS_SELECT() {
+		return getZone(getNOM_LB_TYPE_HS_SELECT());
 	}
 
 	/**
@@ -658,6 +685,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return getZone(getNOM_ST_TYPE(i));
 	}
 
+	public String getVAL_ST_RECUP(int i) {
+		return getZone(getNOM_ST_RECUP(i));
+	}
+
 	public String getVal_Valid(int i) {
 		return "Valid_" + i;
 	}
@@ -703,6 +734,23 @@ public class OePTGVisualisation extends BasicProcess {
 			}
 			setLB_TYPE(aFormat.getListeFormatee(true));
 			addZone(getNOM_LB_TYPE_SELECT(), Const.ZERO);
+
+		}
+		// Si liste type vide alors affectation
+		if (getLB_TYPE_HS() == LBVide) {
+			ArrayList<String> listeTypeHS = new ArrayList<String>();
+			listeTypeHS.add("Récupérées");
+			listeTypeHS.add("Rappel en service");
+			setListeTypeHS(listeTypeHS);
+
+			int[] tailles = { 50 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (String pop : listeTypeHS) {
+				String ligne[] = { pop };
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TYPE_HS(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_TYPE_HS_SELECT(), Const.ZERO);
 
 		}
 		// Si liste population vide alors affectation
@@ -942,6 +990,18 @@ public class OePTGVisualisation extends BasicProcess {
 		if (numType != -1 && numType != 0) {
 			type = (RefTypePointageDto) getListeTypes().get(numType - 1);
 		}
+		// type heures sup
+		int numTypeHS = (Services.estNumerique(getZone(getNOM_LB_TYPE_HS_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_TYPE_HS_SELECT())) : -1);
+		String typeHS = null;
+		if (numTypeHS != -1 && numTypeHS != 0) {
+			String libTypeHS = getListeTypeHS().get(numTypeHS - 1);
+			if (libTypeHS.equals("Récupérées")) {
+				typeHS = "R";
+			} else if (libTypeHS.equals("Rappel en service")) {
+				typeHS = "RS";
+			}
+		}
 
 		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
@@ -1068,9 +1128,9 @@ public class OePTGVisualisation extends BasicProcess {
 
 		List<ConsultPointageDto> _listePointage = t.getVisualisationPointage(dateMin, dateMax,
 				(List<String>) intersectionCollection, etat != null ? etat.getIdRefEtat() : null,
-				type != null ? type.getIdRefTypePointage() : null);
+				type != null ? type.getIdRefTypePointage() : null, typeHS);
 		setListePointage((ArrayList<ConsultPointageDto>) _listePointage);
-//		loadHistory();
+		// loadHistory();
 
 		afficheListePointages();
 
@@ -1312,7 +1372,8 @@ public class OePTGVisualisation extends BasicProcess {
 					return performPB_DELAY(request, i);
 				}
 				if (testerParametre(request, getSAISIE_PTG(i))) {
-					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, Integer.valueOf(getVAL_MATRICULE_AGENT(i)));
+					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG,
+							Integer.valueOf(getVAL_MATRICULE_AGENT(i)));
 					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
 					setStatut(STATUT_SAISIE_PTG, true);
 					return true;
@@ -1326,7 +1387,8 @@ public class OePTGVisualisation extends BasicProcess {
 				}
 
 				status = "EDIT";
-				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG, Integer.valueOf(getVAL_ST_AGENT_CREATE()));
+				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG,
+						Integer.valueOf(getVAL_ST_AGENT_CREATE()));
 				VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG,
 						getLundiCreate(getVAL_ST_DATE_CREATE()));
 				setStatut(STATUT_SAISIE_PTG, true);
@@ -1401,6 +1463,10 @@ public class OePTGVisualisation extends BasicProcess {
 		LB_TYPE = newLB_TYPE;
 	}
 
+	private void setLB_TYPE_HS(String[] newLB_TYPE_HS) {
+		LB_TYPE_HS = newLB_TYPE_HS;
+	}
+
 	public void setListeEtats(ArrayList<RefEtatDto> listeEtats) {
 		this.listeEtats = listeEtats;
 	}
@@ -1454,9 +1520,9 @@ public class OePTGVisualisation extends BasicProcess {
 	}
 
 	public String getHistory(int ptgId) {
-		
+
 		SirhPtgWSConsumer t = new SirhPtgWSConsumer();
-		List<ConsultPointageDto> data =t.getVisualisationHistory(ptgId);
+		List<ConsultPointageDto> data = t.getVisualisationHistory(ptgId);
 		int numParams = 8;
 		String[][] ret = new String[data.size()][numParams];
 		int index = 0;
@@ -1621,6 +1687,14 @@ public class OePTGVisualisation extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public ArrayList<String> getListeTypeHS() {
+		return listeTypeHS;
+	}
+
+	public void setListeTypeHS(ArrayList<String> listeTypeHS) {
+		this.listeTypeHS = listeTypeHS;
 	}
 
 }

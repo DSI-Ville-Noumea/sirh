@@ -58,7 +58,7 @@ public interface ISirhPtgWSConsumer {
 
 	// Visualisation
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType);
+			Integer idRefEtat, Integer idRefType, String typeHeureSup);
 
 	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
 

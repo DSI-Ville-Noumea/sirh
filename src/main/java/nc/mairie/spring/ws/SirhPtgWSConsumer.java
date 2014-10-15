@@ -58,7 +58,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgVentilationEnCours = "ventilation/getVentilationEnCours";
 	private static final String sirhPtgErreursVentilation = "ventilation/getErreursVentilation";
 	private static final String sirhPtgListeAgentsForShowVentilation = "ventilation/listeAgentsToShowVentilation";
-	
+
 	// export paie
 	private static final String sirhPtgCheckValid = "exportPaie/canStartExportPaie";
 	private static final String sirhPtgCheckIsValidRuning = "exportPaie/isExportPaie";
@@ -272,8 +272,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
-			Integer idRefEtat, Integer idRefType) {
-
+			Integer idRefEtat, Integer idRefType, String typeHeureSup) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVisualisationPointage;
 
@@ -298,6 +297,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		}
 		if (idRefType != null) {
 			parameters.put("type", idRefType.toString());
+		}
+		if (typeHeureSup != null) {
+			parameters.put("typeHS", typeHeureSup);
 		}
 
 		ClientResponse res = createAndFireRequest(parameters, url);
@@ -651,16 +653,16 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
 		return result;
 	}
-	
+
 	@Override
-	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut,
-			Date ventilationDate, String agentMin, String agentMax) {
-		
+	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage,
+			String statut, Date ventilationDate, String agentMin, String agentMax) {
+
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgListeAgentsForShowVentilation;
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		
+
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
 		params.put("typePointage", idRefTypePointage.toString());
@@ -668,7 +670,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("statut", statut);
 		params.put("agentMin", agentMin);
 		params.put("agentMax", agentMax);
-		
+
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(Integer.class, res, url);
 	}
