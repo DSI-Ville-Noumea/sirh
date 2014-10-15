@@ -414,7 +414,7 @@ public class OePTGSaisie extends BasicProcess {
 		if (saisie) {
 			ret = new HeureSupDto();
 			ret.setRecuperee(getListeFichePointage().isDPM() ? true : data.getChk().equals("CHECKED_ON"));
-			ret.setRappelService(data.getChkRappelService().equals("CHECKED_ON"));
+			ret.setRappelService(getListeFichePointage().isDPM() ? false : data.getChkRappelService().equals("CHECKED_ON"));
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());

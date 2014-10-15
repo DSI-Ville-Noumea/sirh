@@ -232,11 +232,13 @@
 												<input type="checkbox"  <% if(process.isDPM()){ %> disabled="disabled" <% } %> name="NOM_CK_RECUP_<%=id %>" <% if(checkedRecupere){ %> checked="checked" <% } %> /> A récupérer
 											</td>
 										</tr>
+										<%if(process.isDPM()){ %>
 										<tr bgcolor="#BFEFFF">
 											<td>
 												<input type="checkbox"  name="NOM_CK_RAPPEL_<%=id %>" <% if(checkedRappelService){ %> checked="checked" <% } %> /> Rappel en service
 											</td>
 										</tr>
+										<%} %>
 										<tr bgcolor="#BFEFFF">
 											<td>
 												<INPUT type="text" size="22px" class="sigp2-saisie" name="NOM_motif_<%=id %>" value="<%=motif %>" title="Zone de saisie du motif" />
