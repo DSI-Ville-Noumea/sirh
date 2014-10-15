@@ -195,7 +195,7 @@
 									status = hs.getIdRefEtat() != null ? EtatPointageEnum.getDisplayableEtatPointageEnum(hs.getIdRefEtat()) : "";
 									heureDebut = hs.getHeureDebut();
 									heureFin = hs.getHeureFin(); 
-									checkedRecupere = hs.getRecuperee() != null ? hs.getRecuperee() : false;
+									checkedRecupere = hs.isRecuperee();
 									motif = hs.getMotif();
 									commentaire = hs.getCommentaire();
 									idPtg = hs.getIdPointage();
