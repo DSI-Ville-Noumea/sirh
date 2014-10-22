@@ -82,6 +82,7 @@
                             {"bSearchable": false,"bSortable": false,"sWidth": "1px"},
                             {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
                             {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                            {"bSortable": true,"sWidth": "60px"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "120px"},
                             {"bSortable": true,"sWidth": "40px","sClass" : "center"},
@@ -98,7 +99,7 @@
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"},
                             {"bSearchable": false,"bSortable": false,"sClass" : "center"}
                         ],
-						"aaSorting": [[ 11, "asc" ]],
+						"aaSorting": [[ 12, "asc" ]],
                         "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
                         "oLanguage": {
@@ -166,7 +167,7 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 369px;")
+                            .attr("style", "margin-left: 429px;")
                             .attr("width", "690px")
                             .append($(document.createElement("thead"))
                             );
@@ -334,6 +335,7 @@
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/ajout.gif" height="16px" width="16px" title="Creer un pointage" onClick="executeBouton('<%=process.getNOM_PB_CREATE_BOX()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
                             </th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage"></th>
+                            <th>Matr</th>
                             <th>Agent </th>
                             <th>Type</th>
                             <th title="R: récupérées, RS: rappel en service." >R</th>
@@ -382,6 +384,7 @@
                             <td align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique du pointage" onClick="loadPointageHistory('<%=process.getValHistory(indicePtg)%>')">
                             </td>
+                            <td><%=process.getVAL_ST_MATR(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_AGENT(indicePtg)%></td>  
                             <td><%=process.getVAL_ST_TYPE(indicePtg)%></td>
                             <td><%=process.getVAL_ST_RECUP(indicePtg)%></td>

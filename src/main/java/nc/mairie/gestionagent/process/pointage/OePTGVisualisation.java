@@ -95,10 +95,9 @@ public class OePTGVisualisation extends BasicProcess {
 			Integer i = ptg.getIdPointage();
 			AgentDto agtPtg = ptg.getAgent();
 
-			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom() + " ("
-					+ agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()) + ")");
-			addZone(getMATRICULE_ST_AGENT(i),
+			addZone(getNOM_ST_MATR(i),
 					agtPtg.getIdAgent().toString().substring(3, agtPtg.getIdAgent().toString().length()));
+			addZone(getNOM_ST_AGENT(i), agtPtg.getNom() + " " + agtPtg.getPrenom());
 			addZone(getNOM_ST_TYPE(i), ptg.getTypePointage());
 			addZone(getNOM_ST_RECUP(i), ptg.isHeuresSupRappelEnService() ? "RS" : ptg.isHeuresSupRecuperees() ? "R"
 					: Const.CHAINE_VIDE);
@@ -346,6 +345,10 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_ST_AGENT_" + i;
 	}
 
+	public String getNOM_ST_MATR(int i) {
+		return "NOM_ST_MATR_" + i;
+	}
+
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_AGENT_MAX Date de
 	 * création : (02/08/11 09:40:42)
@@ -462,10 +465,6 @@ public class OePTGVisualisation extends BasicProcess {
 		return "NOM_ST_RECUP_" + i;
 	}
 
-	public String getMATRICULE_ST_AGENT(int i) {
-		return "NOM_ST_MATRICULE_" + i;
-	}
-
 	/**
 	 * Getter du nom de l'écran (pour la gestion des droits)
 	 */
@@ -559,19 +558,15 @@ public class OePTGVisualisation extends BasicProcess {
 		return getZone(getNOM_ST_AGENT(i));
 	}
 
+	public String getVAL_ST_MATR(int i) {
+		return getZone(getNOM_ST_MATR(i));
+	}
+
 	/**
      *
      */
 	public String getSAISIE_PTG(int i) {
 		return "getSAISIE_PTG_" + i;
-	}
-
-	/**
-	 * Retourne la valeur à afficher par la JSP pour la zone
-	 * 
-	 */
-	public String getVAL_MATRICULE_AGENT(int i) {
-		return getZone(getMATRICULE_ST_AGENT(i));
 	}
 
 	/**
@@ -1373,7 +1368,7 @@ public class OePTGVisualisation extends BasicProcess {
 				}
 				if (testerParametre(request, getSAISIE_PTG(i))) {
 					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_PTG,
-							Integer.valueOf(getVAL_MATRICULE_AGENT(i)));
+							Integer.valueOf(getVAL_ST_MATR(i)));
 					VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_LUNDI_PTG, getLundi(i));
 					setStatut(STATUT_SAISIE_PTG, true);
 					return true;
