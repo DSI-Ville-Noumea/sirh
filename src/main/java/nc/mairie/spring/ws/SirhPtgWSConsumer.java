@@ -396,12 +396,13 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public <T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
-			String agentsJson) {
+			String agentsJson, boolean allVentilation) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVentilationsShow;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idDateVentil", idDateVentil.toString());
 		params.put("typePointage", idRefTypePointage.toString());
+		params.put("allVentilation", String.valueOf(allVentilation));
 		if (agentsJson.equals("[]"))
 			return new ArrayList<T>();
 		ClientResponse res = createAndPostRequest(params, url, agentsJson);
@@ -410,7 +411,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public <T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee,
-			Integer idRefTypePointage, Integer idAgent) {
+			Integer idRefTypePointage, Integer idAgent, boolean allVentilation) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVentilationsHistory;
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -418,6 +419,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		parameters.put("annee", "" + annee);
 		parameters.put("typePointage", "" + idRefTypePointage);
 		parameters.put("idAgent", "" + idAgent);
+		parameters.put("allVentilation", String.valueOf(allVentilation));
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(targetClass, res, url);
 	}
@@ -656,7 +658,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 	@Override
 	public List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage,
-			String statut, Date ventilationDate, String agentMin, String agentMax) {
+			String statut, Date ventilationDate, String agentMin, String agentMax, boolean allVentilation) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgListeAgentsForShowVentilation;
@@ -670,6 +672,7 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		params.put("statut", statut);
 		params.put("agentMin", agentMin);
 		params.put("agentMax", agentMax);
+		params.put("allVentilation", String.valueOf(allVentilation));
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(Integer.class, res, url);

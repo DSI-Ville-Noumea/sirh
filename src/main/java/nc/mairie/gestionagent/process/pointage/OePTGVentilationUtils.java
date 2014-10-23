@@ -28,7 +28,7 @@ public class OePTGVentilationUtils {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	public static String getTabVisu(Transaction aTransaction, int date, int typePointage, String agentsJson,
-			AgentDao agentDao) throws Exception {
+			AgentDao agentDao, boolean allVentilation) throws Exception {
 
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 
@@ -48,7 +48,8 @@ public class OePTGVentilationUtils {
 				sb.append("<th>Primes</th>");
 				sb.append("<th>Nombre</th>");
 				sb.append("</tr></thead>");
-				List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, date, typePointage, agentsJson);
+				List<VentilPrimeDto> rep = consum.getVentilations(VentilPrimeDto.class, date, typePointage, agentsJson,
+						allVentilation);
 				sb.append("<tbody>");
 				for (VentilPrimeDto prime : rep) {
 					RefPrimeDto primeDetail = consum.getPrimeDetailFromRefPrime(prime.getIdRefPrime());

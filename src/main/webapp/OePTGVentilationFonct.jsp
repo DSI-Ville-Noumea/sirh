@@ -448,6 +448,7 @@
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(2)%>">
+                 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher tout" name="<%=process.getNOM_PB_AFFICHER_TOUT_VENTIL(2)%>">
                  	</FIELDSET>
                     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1300px;">	
 	                	<legend class="sigp2Legend">Visualisation de la ventilation des heures supplémentaires des <span style="color: red;">FONCTIONNAIRES</span></legend>	
@@ -478,6 +479,7 @@
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(3)%>">
+                 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher tout" name="<%=process.getNOM_PB_AFFICHER_TOUT_VENTIL(3)%>">
                  	</FIELDSET>
                  	<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
                     	<legend class="sigp2Legend">Visualisation de la ventilation des primes des <span style="color: red;">FONCTIONNAIRES</span></legend>	
@@ -508,6 +510,7 @@
 			                <img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_MAX()%>');">
 			                <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_MAX()%>');">
 							<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_AFFICHER_VENTIL(1)%>">
+                 			<INPUT type="submit" class="sigp2-Bouton-100" value="Afficher tout" name="<%=process.getNOM_PB_AFFICHER_TOUT_VENTIL(1)%>">
                  	</FIELDSET>
 	                
 	                <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	

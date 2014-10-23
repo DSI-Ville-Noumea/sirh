@@ -26,10 +26,11 @@ public interface ISirhPtgWSConsumer {
 	List<AgentWithServiceDto> setApprobateurs(String json);
 
 	// Ventilation
-	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage, String agentsJson);
+	<T> List<T> getVentilations(Class<T> targetClass, Integer idDateVentil, Integer idRefTypePointage,
+			String agentsJson, boolean allVentilation);
 
 	<T> List<T> getVentilationsHistory(Class<T> targetClass, Integer mois, Integer annee, Integer idRefTypePointage,
-			Integer idAgent);
+			Integer idAgent, boolean allVentilation);
 
 	boolean isVentilAvailable(String agentStatus);
 
@@ -55,6 +56,9 @@ public interface ISirhPtgWSConsumer {
 	boolean startExportEtatsPayeur(Integer idAgentExporting, String statutString);
 
 	List<VentilErreurDto> getErreursVentilation(String type);
+
+	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil, Integer idRefTypePointage, String statut,
+			Date ventilationDate, String agentMin, String agentMax, boolean allVentilation);
 
 	// Visualisation
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
@@ -86,9 +90,5 @@ public interface ISirhPtgWSConsumer {
 	RefPrimeDto getPrimeDetailFromRefPrime(Integer idRefPrime);
 
 	boolean isPrimeUtilPointage(Integer numRubrique, Integer idAgent);
-
-	List<Integer> getListeAgentsForShowVentilation(Integer idDateVentil,
-			Integer idRefTypePointage, String statut, Date ventilationDate,
-			String agentMin, String agentMax);
 
 }

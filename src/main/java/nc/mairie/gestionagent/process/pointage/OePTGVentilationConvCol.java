@@ -62,6 +62,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	private ArrayList<Agent> listeAgentsVentil;
 	private String tabVisuP;
 	private String tabErreurVentil;
+	private boolean showAllVentilation;
 
 	private Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs;
 	private Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup;
@@ -200,6 +201,13 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			for (int i = 1; i < 4; i++) {
 				if (testerParametre(request, getNOM_PB_AFFICHER_VENTIL(i))) {
 					return performPB_AFFICHER_VENTIL(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_AFFICHER_TOUT_VENTIL
+			for (int i = 1; i < 4; i++) {
+				if (testerParametre(request, getNOM_PB_AFFICHER_TOUT_VENTIL(i))) {
+					return performPB_AFFICHER_TOUT_VENTIL(request, i);
 				}
 			}
 
@@ -538,7 +546,8 @@ public class OePTGVentilationConvCol extends BasicProcess {
 	}
 
 	public boolean performPB_AFFICHER_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
-		
+		setShowAllVentilation(false);
+
 		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
 			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
 		}
@@ -549,7 +558,7 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
 			return false;
 		}
-		
+
 		// on recupere la ventilation en cours
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		if (ventilEnCours == null || ventilEnCours.getIdVentilDate() == null) {
@@ -557,18 +566,19 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
 			return false;
 		}
-		
+
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
-		List<Integer> agents = consum.getListeAgentsForShowVentilation(
-				ventilEnCours.getIdVentilDate(), new Integer(typePointage), "CC", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
-		
+		List<Integer> agents = consum
+				.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(), new Integer(typePointage), "CC",
+						ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX(), false);
+
 		if (typePointage == 1) {
-			initialiseHashTableAbs(typePointage, agents);
+			initialiseHashTableAbs(typePointage, agents, false);
 		} else if (typePointage == 2) {
-			initialiseHashTableHsup(typePointage, agents);
+			initialiseHashTableHsup(typePointage, agents, false);
 		} else if (typePointage == 3) {
 			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
-					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao()));
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), false));
 		}
 		return true;
 	}
@@ -712,22 +722,23 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public String getHistoryAbs(String moisAnnee, Integer idAgent) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
-			agents.add(idAgent);
-		
+		agents.add(idAgent);
+
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(), 1,
-				new JSONSerializer().exclude("*.class").serialize(agents));
+				new JSONSerializer().exclude("*.class").serialize(agents), isShowAllVentilation());
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
 			cle.put(abs.getId_agent(), moisAnneeFormat.format(abs.getDateLundi()));
 			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(moisFormat.format(abs.getDateLundi())),
-					Integer.valueOf(anneeFormat.format(abs.getDateLundi())), 1, abs.getId_agent());
+					Integer.valueOf(anneeFormat.format(abs.getDateLundi())), 1, abs.getId_agent(),
+					isShowAllVentilation());
 			list.put(cle, listVentilAbs);
 		}
 		// on construit la clé
@@ -746,8 +757,8 @@ public class OePTGVentilationConvCol extends BasicProcess {
 			ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
 			ret[index][1] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees());
-			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
+			ret[index][2] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees()).equals(
+					Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(abs.getMinutesNonConcertees());
 			ret[index][3] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 					: OePTGVentilationUtils.getHeureMinute(abs.getMinutesImmediates());
 			ret[index][4] = OePTGVentilationUtils.getHeureMinute(abs.getMinutesConcertees()
@@ -766,27 +777,29 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		}
 		if (strret.lastIndexOf("|") != -1)
 			strret.deleteCharAt(strret.lastIndexOf("|"));
-		
+
 		return strret.toString();
 	}
 
-	private void initialiseHashTableAbs(int typePointage, List<Integer> agents) throws Exception {
-		
+	private void initialiseHashTableAbs(int typePointage, List<Integer> agents, boolean allVentilation)
+			throws Exception {
+
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
-		
+
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilAbsenceDto> rep = consum.getVentilations(VentilAbsenceDto.class, ventilEnCours.getIdVentilDate(),
-				typePointage, new JSONSerializer().exclude("*.class").serialize(agents));
+				typePointage, new JSONSerializer().exclude("*.class").serialize(agents), allVentilation);
 		Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>> hashVentilAbs = new Hashtable<Hashtable<Integer, String>, List<VentilAbsenceDto>>();
 		for (VentilAbsenceDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
 			List<VentilAbsenceDto> listVentilAbs = consum.getVentilationsHistory(VentilAbsenceDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
-					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent());
+					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
+					isShowAllVentilation());
 			hashVentilAbs.put(cle, listVentilAbs);
 		}
 		setHashVentilAbs(hashVentilAbs);
@@ -807,22 +820,23 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public String getHistoryHsup(String moisAnnee, Integer idAgent) throws Exception {
 		List<Integer> agents = new ArrayList<Integer>();
-			agents.add(idAgent);
-		
+		agents.add(idAgent);
+
 		SimpleDateFormat moisAnneeFormat = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat moisFormat = new SimpleDateFormat("MM");
 		SimpleDateFormat anneeFormat = new SimpleDateFormat("yyyy");
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(), 2,
-				new JSONSerializer().exclude("*.class").serialize(agents));
+				new JSONSerializer().exclude("*.class").serialize(agents), isShowAllVentilation());
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> list = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto hsup : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<>();
 			cle.put(hsup.getId_agent(), moisAnneeFormat.format(hsup.getDateLundi()));
 			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(moisFormat.format(hsup.getDateLundi())),
-					Integer.valueOf(anneeFormat.format(hsup.getDateLundi())), 2, hsup.getId_agent());
+					Integer.valueOf(anneeFormat.format(hsup.getDateLundi())), 2, hsup.getId_agent(),
+					isShowAllVentilation());
 			list.put(cle, listVentilHsup);
 		}
 		// on construit la clé
@@ -837,37 +851,46 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		GregorianCalendar greg = new GregorianCalendar();
 		greg.setTimeZone(TimeZone.getTimeZone("Pacific/Noumea"));
 		for (VentilHSupDto hsup : data) {
-			if(0 < hsup.getmHorsContrat() - hsup.getmRecuperees()) {
+			if (0 < hsup.getmHorsContrat() - hsup.getmRecuperees()) {
 				greg.setTime(hsup.getDateLundi());
 				ret[index][0] = "S " + String.valueOf(greg.get(Calendar.WEEK_OF_YEAR));
-				ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getMabs()+hsup.getMabsAs400());
+				ret[index][1] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs() + hsup.getMabsAs400()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getMabs()
+						+ hsup.getMabsAs400());
 				ret[index][2] = OePTGVentilationUtils.getHeureMinute(hsup.getMabs()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: OePTGVentilationUtils.getHeureMinute(hsup.getMabs());
 				ret[index][3] = OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: OePTGVentilationUtils.getHeureMinute(hsup.getMabsAs400());
 				ret[index][4] = "&nbsp;";
-				ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()-hsup.getmRecuperees()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat()-hsup.getmRecuperees());
-				ret[index][6] = OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()-hsup.getmComplementairesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmComplementaires()-hsup.getmComplementairesR());
-				ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()-hsup.getmSup25R()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()-hsup.getmSup25R());
-				ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()-hsup.getmSup50R()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()-hsup.getmSup50R());
-				ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()-hsup.getmNuitR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()-hsup.getmNuitR());
-				ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()-hsup.getmDjfR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()-hsup.getmDjfR());
-				ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()-hsup.getM1maiR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()-hsup.getM1maiR());
+				ret[index][5] = OePTGVentilationUtils.getHeureMinute(hsup.getmHorsContrat() - hsup.getmRecuperees())
+						.equals(Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup
+						.getmHorsContrat() - hsup.getmRecuperees());
+				ret[index][6] = OePTGVentilationUtils.getHeureMinute(
+						hsup.getmComplementaires() - hsup.getmComplementairesR()).equals(Const.CHAINE_VIDE) ? "&nbsp;"
+						: OePTGVentilationUtils
+								.getHeureMinute(hsup.getmComplementaires() - hsup.getmComplementairesR());
+				ret[index][7] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup25() - hsup.getmSup25R()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getmSup25()
+						- hsup.getmSup25R());
+				ret[index][8] = OePTGVentilationUtils.getHeureMinute(hsup.getmSup50() - hsup.getmSup50R()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getmSup50()
+						- hsup.getmSup50R());
+				ret[index][9] = OePTGVentilationUtils.getHeureMinute(hsup.getmNuit() - hsup.getmNuitR()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getmNuit()
+						- hsup.getmNuitR());
+				ret[index][10] = OePTGVentilationUtils.getHeureMinute(hsup.getmDjf() - hsup.getmDjfR()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getmDjf()
+						- hsup.getmDjfR());
+				ret[index][11] = OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai() - hsup.getM1maiR()).equals(
+						Const.CHAINE_VIDE) ? "&nbsp;" : OePTGVentilationUtils.getHeureMinute(hsup.getM1Mai()
+						- hsup.getM1maiR());
 				index++;
 			}
 		}
 
 		StringBuilder strret = new StringBuilder();
 		for (int i = 0; i < data.size(); i++) {
-			if(null != ret[i][5]) {
+			if (null != ret[i][5]) {
 				for (int j = 0; j < numParams; j++) {
 					strret.append(ret[i][j]).append(",");
 				}
@@ -877,27 +900,29 @@ public class OePTGVentilationConvCol extends BasicProcess {
 		}
 		if (strret.lastIndexOf("|") != -1)
 			strret.deleteCharAt(strret.lastIndexOf("|"));
-		
+
 		return strret.toString();
 	}
 
-	private void initialiseHashTableHsup(int typePointage, List<Integer> agents) throws Exception {
-		
+	private void initialiseHashTableHsup(int typePointage, List<Integer> agents, boolean allVentilation)
+			throws Exception {
+
 		SimpleDateFormat moisAnnee = new SimpleDateFormat("MM-yyyy");
 		SimpleDateFormat mois = new SimpleDateFormat("MM");
 		SimpleDateFormat annee = new SimpleDateFormat("yyyy");
-		
+
 		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
 		VentilDateDto ventilEnCours = getInfoVentilation("CC");
 		List<VentilHSupDto> rep = consum.getVentilations(VentilHSupDto.class, ventilEnCours.getIdVentilDate(),
-				typePointage, new JSONSerializer().exclude("*.class").serialize(agents));
+				typePointage, new JSONSerializer().exclude("*.class").serialize(agents), allVentilation);
 		Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>> hashVentilHsup = new Hashtable<Hashtable<Integer, String>, List<VentilHSupDto>>();
 		for (VentilHSupDto abs : rep) {
 			Hashtable<Integer, String> cle = new Hashtable<Integer, String>();
 			cle.put(abs.getId_agent(), moisAnnee.format(abs.getDateLundi()));
 			List<VentilHSupDto> listVentilHsup = consum.getVentilationsHistory(VentilHSupDto.class,
 					Integer.valueOf(mois.format(abs.getDateLundi())),
-					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent());
+					Integer.valueOf(annee.format(abs.getDateLundi())), typePointage, abs.getId_agent(),
+					isShowAllVentilation());
 			hashVentilHsup.put(cle, listVentilHsup);
 		}
 		setHashVentilHsup(hashVentilHsup);
@@ -922,5 +947,54 @@ public class OePTGVentilationConvCol extends BasicProcess {
 
 	public Agent getAgent(Integer idAgent) throws Exception {
 		return getAgentDao().chercherAgent(idAgent);
+	}
+
+	public String getNOM_PB_AFFICHER_TOUT_VENTIL(int typePointage) {
+		return "NOM_PB_AFFICHER_TOUT_VENTIL" + typePointage;
+	}
+
+	public boolean performPB_AFFICHER_TOUT_VENTIL(HttpServletRequest request, int typePointage) throws Exception {
+		setShowAllVentilation(true);
+
+		if (getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT_MAX(), getVAL_ST_AGENT_MIN());
+		}
+		if (getVAL_ST_AGENT_MIN().equals(Const.CHAINE_VIDE) && !getVAL_ST_AGENT_MAX().equals(Const.CHAINE_VIDE)) {
+			addZone(getNOM_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX());
+		}
+
+		if (!verifieFiltres(getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX())) {
+			return false;
+		}
+
+		VentilDateDto ventilEnCours = getInfoVentilation("CC");
+		// on recupere la ventilation en cours
+		if (ventilEnCours == null || ventilEnCours.getIdVentilDate() == null) {
+			// "ERR601", "Il n'y a pas de ventilation en cours."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR601"));
+			return false;
+		}
+
+		SirhPtgWSConsumer consum = new SirhPtgWSConsumer();
+		List<Integer> agents = consum.getListeAgentsForShowVentilation(ventilEnCours.getIdVentilDate(), new Integer(
+				typePointage), "CC", ventilEnCours.getDateVentil(), getVAL_ST_AGENT_MIN(), getVAL_ST_AGENT_MAX(), true);
+
+		if (typePointage == 1) {
+			initialiseHashTableAbs(typePointage, agents, true);
+		} else if (typePointage == 2) {
+			initialiseHashTableHsup(typePointage, agents, true);
+		} else if (typePointage == 3) {
+			setTabVisuP(OePTGVentilationUtils.getTabVisu(getTransaction(), ventilEnCours.getIdVentilDate(),
+					typePointage, new JSONSerializer().exclude("*.class").serialize(agents), getAgentDao(), true));
+		}
+		return true;
+	}
+
+	public boolean isShowAllVentilation() {
+		return showAllVentilation;
+	}
+
+	public void setShowAllVentilation(boolean showAllVentilation) {
+		this.showAllVentilation = showAllVentilation;
 	}
 }
