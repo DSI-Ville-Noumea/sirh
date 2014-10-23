@@ -761,11 +761,16 @@ public class OeAGENTEae extends BasicProcess {
 			addZone(getNOM_ST_EVALUATEUR_FONCTION(j), eval.getFonction().equals(Const.CHAINE_VIDE) ? "non renseigné"
 					: eval.getFonction());
 		}
-		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
-		String direction = eaeFDP.getDirectionService() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionService();
-		String serv = eaeFDP.getService() == null ? Const.CHAINE_VIDE : eaeFDP.getService();
-		addZone(getNOM_ST_SERVICE(), direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;"
-				: serv : direction + " / " + serv);
+		try {
+			EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eae.getIdEae(), true);
+			String direction = eaeFDP.getDirectionService() == null ? Const.CHAINE_VIDE : eaeFDP.getDirectionService();
+			String serv = eaeFDP.getService() == null ? Const.CHAINE_VIDE : eaeFDP.getService();
+			addZone(getNOM_ST_SERVICE(),
+					direction.equals(Const.CHAINE_VIDE) ? serv.equals(Const.CHAINE_VIDE) ? "&nbsp;" : serv : direction
+							+ " / " + serv);
+		} catch (Exception e) {
+			addZone(getNOM_ST_SERVICE(), Const.CHAINE_VIDE);
+		}
 
 		// Alim zone evaluation
 		EaeEvaluation evaluation = getEaeEvaluationDao().chercherEaeEvaluation(eae.getIdEae());
