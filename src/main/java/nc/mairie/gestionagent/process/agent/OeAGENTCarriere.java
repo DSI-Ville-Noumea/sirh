@@ -305,7 +305,7 @@ public class OeAGENTCarriere extends BasicProcess {
 			setListeMotifCarriere(liste);
 
 			if (getListeMotifCarriere().size() != 0) {
-				int[] tailles = { 1000 };
+				int[] tailles = { 50 };
 				FormateListe aFormat = new FormateListe(tailles);
 				for (ListIterator<MotifCarriere> list = getListeMotifCarriere().listIterator(); list.hasNext();) {
 					MotifCarriere de = (MotifCarriere) list.next();
