@@ -556,6 +556,252 @@
 						</FIELDSET>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Liste des bases horaires de pointage</legend>
+							<span class="sigp2-saisie" style="margin-left: 5px;">Code</span>
+							<span class="sigp2-saisie" style="margin-left: 20px;">Libellé</span>
+							<SELECT name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>" size="10"
+								style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) %>
+							</SELECT>
+			
+							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_BASE_HORAIRE_POINTAGE()%>">
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_BASE_HORAIRE_POINTAGE()%>">
+			    	        </div>
+			            	
+			            	<% if (process.getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE()!= null && !process.getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals("")) {%>
+			            	<br>
+			            	<% if (process.ACTION_CREATION.equals(process.getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE())) { %>
+			            	<table>
+								<tr>
+									<td colspan="3">
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+									</td>
+								</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Code :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="100" name="<%= process.getNOM_EF_CODE_BASE_HORAIRE_POINTAGE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_BASE_HORAIRE_POINTAGE() %>">
+			            			</td>
+			            			<td>
+										<label class="sigp2Mandatory">Libellé :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIB_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_BASE_HORAIRE_POINTAGE() %>">
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Description :</label>
+			            			</td>
+			            			<td colspan="3">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Lundi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_LUNDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_LUNDI() %>">
+			            			</td>
+			            			<td>
+										<label class="sigp2Mandatory">Vendredi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_VENDREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_VENDREDI() %>">
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Mardi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MARDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MARDI() %>">
+			            			</td>
+			            			<td>
+										<label class="sigp2Mandatory">Samedi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_SAMEDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_SAMEDI() %>">
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Mercredi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MERCREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MERCREDI() %>">
+			            			</td>
+			            			<td>
+										<label class="sigp2Mandatory">Dimanche :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_DIMANCHE() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_DIMANCHE() %>">
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Jeudi :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_JEUDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_JEUDI() %>">
+			            			</td>
+			            			<td>&nbsp;
+			            			</td>
+			            			<td>&nbsp;
+			            			</td>
+			            		</tr>
+			            		<tr>
+			            			<td colspan="2">
+										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H() %>"><span class="sigp2-saisie">H</span>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M() %>"><span class="sigp2-saisie">Mn</span>
+			            			</td>           			
+			            		</tr>
+			            		<tr>
+			            			<td colspan="2">
+										<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H() %>"><span class="sigp2-saisie">H</span>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M() %>"><span class="sigp2-saisie">Mn</span>
+			            			</td>          			
+			            		</tr>
+			            		<tr>
+			            			<td colspan="4" align="center">
+			            			<INPUT type="submit" class="sigp2-Bouton-100" value="Ajouter" name="<%=process.getNOM_PB_VALIDER_BASE_HORAIRE_POINTAGE()%>">
+			            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE()%>">
+			            			</td>
+			            		</tr>
+			            	</table>					
+							<%} else {%>
+							<table>
+								<tr>
+									<td colspan="3">
+											<label class="sigp2Mandatory" style="color: red;">Les heures sont à saisir sous la forme "H.Mn"</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Code :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_CODE_BASE_HORAIRE_POINTAGE() %>" size="5" type="text" value="<%= process.getVAL_EF_CODE_BASE_HORAIRE_POINTAGE() %>">
+									</td>
+									<td>
+										<label class="sigp2Mandatory">Libellé :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_LIB_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_LIB_BASE_HORAIRE_POINTAGE() %>">
+									</td>
+								</tr>
+			            		<tr>
+			            			<td>
+										<label class="sigp2Mandatory">Description :</label>
+			            			</td>
+			            			<td colspan="3">
+										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
+			            			</td>
+			            		</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Lundi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_LUNDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_LUNDI() %>">
+									</td>
+									<td>
+										<label class="sigp2Mandatory">Vendredi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_VENDREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_VENDREDI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Mardi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MARDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MARDI() %>">
+									</td>
+									<td>
+										<label class="sigp2Mandatory">Samedi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_SAMEDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_SAMEDI() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Mercredi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_MERCREDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_MERCREDI() %>">
+									</td>
+									<td>
+										<label class="sigp2Mandatory">Dimanche :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_DIMANCHE() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_DIMANCHE() %>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Jeudi :</label>
+									</td>
+									<td>
+										<INPUT class="sigp2-saisiemajuscule" name="<%= process.getNOM_EF_HEURE_JEUDI() %>" size="5" type="text" value="<%= process.getVAL_EF_HEURE_JEUDI() %>">
+									</td>
+									<td colspan="2">&nbsp;
+									</td>
+								</tr>
+			            		<tr>
+			            			<td colspan="2">
+										<label class="sigp2Mandatory">Base légale hebdomadaire :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_H() %>"><span class="sigp2-saisie">H</span>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" maxlength="2" name="<%= process.getNOM_EF_BASE_HEBDO_LEG_M() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_LEG_M() %>"><span class="sigp2-saisie">Mn</span>
+			            			</td>           			
+			            		</tr>
+			            		<tr>
+			            			<td colspan="2">
+										<label class="sigp2Mandatory">Base hebdomadaire (calc) :</label>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_H() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_H() %>"><span class="sigp2-saisie">H</span>
+			            			</td>
+			            			<td>
+										<INPUT class="sigp2-saisiemajuscule" disabled="disabled" name="<%= process.getNOM_EF_BASE_HEBDO_M() %>" size="5" type="text" value="<%= process.getVAL_EF_BASE_HEBDO_M() %>"><span class="sigp2-saisie">Mn</span>
+			            			</td>          			
+			            		</tr>
+			            		<tr>
+			            			<td colspan="4" align="center">
+			            			<INPUT type="submit" class="sigp2-Bouton-100" value="Modifier" name="<%=process.getNOM_PB_VALIDER_BASE_HORAIRE_POINTAGE()%>">
+			            			<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE()%>">
+			            			</td>
+			            		</tr>
+							</table>
+						   <%}%>
+							<%} %>							
+						</FIELDSET>	
+					</td>
+					<td></td>
+				</tr>
 			</table>	
 		</FORM>
 	</BODY>

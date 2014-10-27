@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
+import nc.mairie.metier.parametrage.BaseHorairePointage;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.TypeAvantage;
 import nc.mairie.metier.parametrage.TypeDelegation;
@@ -15,6 +16,7 @@ import nc.mairie.metier.poste.Ecole;
 import nc.mairie.metier.poste.EntiteGeo;
 import nc.mairie.metier.poste.NFA;
 import nc.mairie.metier.poste.TitrePoste;
+import nc.mairie.spring.dao.metier.parametrage.BaseHorairePointageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeDelegationDao;
@@ -54,6 +56,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private String[] LB_TYPE_REGIME;
 	private String[] LB_ECOLE;
 	private String[] LB_NFA;
+	private String[] LB_BASE_HORAIRE_POINTAGE;
+
+	private ArrayList<BaseHorairePointage> listeBaseHorairePointage;
+	private BaseHorairePointage baseHorairePointageCourant;
 
 	private ArrayList<EntiteGeo> listeEntite;
 	private EntiteGeo entiteGeoCourante;
@@ -96,6 +102,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private TitrePosteDao titrePosteDao;
 	private NFADao nfaDao;
 	private FichePosteDao fichePosteDao;
+	private BaseHorairePointageDao baseHorairePointageDao;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -170,6 +177,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getBaseHorairePointageDao() == null) {
+			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -440,6 +450,32 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			// Recherche des Ecoles
 			setListeEcole(Ecole.listerEcole(getTransaction()));
 			initialiseListeEcole(request);
+		}
+
+		if (getListeBaseHorairePointage() == null) {
+			// Recherche des bases horaires de pointage
+			setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
+					.listerBaseHorairePointage());
+			initialiseListeBaseHorairePointage(request);
+		}
+	}
+
+	private void initialiseListeBaseHorairePointage(HttpServletRequest request) throws Exception {
+		setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
+				.listerBaseHorairePointage());
+		if (getListeBaseHorairePointage().size() != 0) {
+			int tailles[] = { 6, 5 };
+			String padding[] = { "G", "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<BaseHorairePointage> list = getListeBaseHorairePointage().listIterator(); list.hasNext();) {
+				BaseHorairePointage base = (BaseHorairePointage) list.next();
+				String ligne[] = { base.getCodeBaseHorairePointage(), base.getLibelleBaseHorairePointage() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_BASE_HORAIRE_POINTAGE(aFormat.getListeFormatee());
+		} else {
+			setLB_BASE_HORAIRE_POINTAGE(null);
 		}
 	}
 
@@ -2502,6 +2538,26 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				return performPB_VALIDER_TYPE_REGIME(request);
 			}
 
+			// Si clic sur le bouton PB_ANNULER_BASE_HORAIRE_POINTAGE
+			if (testerParametre(request, getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE())) {
+				return performPB_ANNULER_BASE_HORAIRE_POINTAGE(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_BASE_HORAIRE_POINTAGE
+			if (testerParametre(request, getNOM_PB_CREER_BASE_HORAIRE_POINTAGE())) {
+				return performPB_CREER_BASE_HORAIRE_POINTAGE(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_BASE_HORAIRE_POINTAGE
+			if (testerParametre(request, getNOM_PB_MODIFIER_BASE_HORAIRE_POINTAGE())) {
+				return performPB_MODIFIER_BASE_HORAIRE_POINTAGE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_BASE_HORAIRE_POINTAGE
+			if (testerParametre(request, getNOM_PB_VALIDER_BASE_HORAIRE_POINTAGE())) {
+				return performPB_VALIDER_BASE_HORAIRE_POINTAGE(request);
+			}
+
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -3245,5 +3301,455 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public BaseHorairePointageDao getBaseHorairePointageDao() {
+		return baseHorairePointageDao;
+	}
+
+	public void setBaseHorairePointageDao(BaseHorairePointageDao baseHorairePointageDao) {
+		this.baseHorairePointageDao = baseHorairePointageDao;
+	}
+
+	private String[] getLB_BASE_HORAIRE_POINTAGE() {
+		if (LB_BASE_HORAIRE_POINTAGE == null)
+			LB_BASE_HORAIRE_POINTAGE = initialiseLazyLB();
+		return LB_BASE_HORAIRE_POINTAGE;
+	}
+
+	private void setLB_BASE_HORAIRE_POINTAGE(String[] newLB_BASE_HORAIRE_POINTAGE) {
+		LB_BASE_HORAIRE_POINTAGE = newLB_BASE_HORAIRE_POINTAGE;
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_POINTAGE() {
+		return "NOM_LB_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT() {
+		return "NOM_LB_BASE_HORAIRE_POINTAGE_SELECT";
+	}
+
+	public String[] getVAL_LB_BASE_HORAIRE_POINTAGE() {
+		return getLB_BASE_HORAIRE_POINTAGE();
+	}
+
+	public String getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT() {
+		return getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT());
+	}
+
+	public ArrayList<BaseHorairePointage> getListeBaseHorairePointage() {
+		return listeBaseHorairePointage;
+	}
+
+	public void setListeBaseHorairePointage(ArrayList<BaseHorairePointage> listeBaseHorairePointage) {
+		this.listeBaseHorairePointage = listeBaseHorairePointage;
+	}
+
+	public BaseHorairePointage getBaseHorairePointageCourant() {
+		return baseHorairePointageCourant;
+	}
+
+	public void setBaseHorairePointageCourant(BaseHorairePointage baseHorairePointageCourant) {
+		this.baseHorairePointageCourant = baseHorairePointageCourant;
+	}
+
+	public String getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE() {
+		return "NOM_PB_ANNULER_BASE_HORAIRE_POINTAGE";
+	}
+
+	public boolean performPB_ANNULER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE() {
+		return "NOM_ST_ACTION_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() {
+		return getZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE());
+	}
+
+	public String getNOM_PB_CREER_BASE_HORAIRE_POINTAGE() {
+		return "NOM_PB_CREER_BASE_HORAIRE_POINTAGE";
+	}
+
+	public boolean performPB_CREER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), ACTION_CREATION);
+		addZone(getNOM_EF_CODE_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_LIB_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_DESC_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_LEG_H(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_LEG_M(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_H(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_BASE_HEBDO_M(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_LUNDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_MARDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_MERCREDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_JEUDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_VENDREDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_SAMEDI(), Const.CHAINE_VIDE);
+		addZone(getNOM_EF_HEURE_DIMANCHE(), Const.CHAINE_VIDE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_BASE_HORAIRE_POINTAGE() {
+		return "NOM_PB_MODIFIER_BASE_HORAIRE_POINTAGE";
+	}
+
+	public boolean performPB_MODIFIER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT()) : -1);
+		if (indice != -1 && indice < getListeBaseHorairePointage().size()) {
+			BaseHorairePointage base = getListeBaseHorairePointage().get(indice);
+			setBaseHorairePointageCourant(base);
+			addZone(getNOM_EF_LIB_BASE_HORAIRE_POINTAGE(), base.getLibelleBaseHorairePointage());
+			addZone(getNOM_EF_DESC_BASE_HORAIRE_POINTAGE(), base.getDescriptionBaseHorairePointage());
+			addZone(getNOM_EF_CODE_BASE_HORAIRE_POINTAGE(), base.getCodeBaseHorairePointage());
+			addZone(getNOM_EF_HEURE_LUNDI(), base.getHeureLundi().toString());
+			addZone(getNOM_EF_HEURE_MARDI(), base.getHeureMardi().toString());
+			addZone(getNOM_EF_HEURE_MERCREDI(), base.getHeureMercredi().toString());
+			addZone(getNOM_EF_HEURE_JEUDI(), base.getHeureJeudi().toString());
+			addZone(getNOM_EF_HEURE_VENDREDI(), base.getHeureVendredi().toString());
+			addZone(getNOM_EF_HEURE_SAMEDI(), base.getHeureSamedi().toString());
+			addZone(getNOM_EF_HEURE_DIMANCHE(), base.getHeureDimanche().toString());
+
+			if (base.getBaseLegale() != 0) {
+				String avantPoint = base.getBaseLegale().toString()
+						.substring(0, base.getBaseLegale().toString().indexOf("."));
+				String apresPoint = base
+						.getBaseLegale()
+						.toString()
+						.substring(base.getBaseLegale().toString().indexOf(".") + 1,
+								base.getBaseLegale().toString().length());
+
+				addZone(getNOM_EF_BASE_HEBDO_LEG_H(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M(), apresPoint.equals("0") ? Const.CHAINE_VIDE
+						: apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
+			} else {
+				addZone(getNOM_EF_BASE_HEBDO_LEG_H(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_BASE_HEBDO_LEG_M(), Const.CHAINE_VIDE);
+
+			}
+
+			if (base.getBaseCalculee() != 0) {
+				String avantPoint = base.getBaseCalculee().toString()
+						.substring(0, base.getBaseCalculee().toString().indexOf("."));
+				String apresPoint = base
+						.getBaseCalculee()
+						.toString()
+						.substring(base.getBaseCalculee().toString().indexOf(".") + 1,
+								base.getBaseCalculee().toString().length());
+
+				addZone(getNOM_EF_BASE_HEBDO_H(), avantPoint.equals("0") ? Const.CHAINE_VIDE : avantPoint);
+				addZone(getNOM_EF_BASE_HEBDO_M(), apresPoint.equals("0") ? Const.CHAINE_VIDE
+						: apresPoint.length() == 1 ? apresPoint + "0" : apresPoint);
+			} else {
+				addZone(getNOM_EF_BASE_HEBDO_H(), Const.CHAINE_VIDE);
+				addZone(getNOM_EF_BASE_HEBDO_M(), Const.CHAINE_VIDE);
+
+			}
+
+			addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases horaires de pointage"));
+		}
+
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_BASE_HORAIRE_POINTAGE() {
+		return "NOM_PB_VALIDER_BASE_HORAIRE_POINTAGE";
+	}
+
+	public boolean performPB_VALIDER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
+		if (!performControlerSaisieBaseHorairePointage(request))
+			return false;
+
+		if (!performControlerRegleGestionBaseHorairePointage(request))
+			return false;
+
+		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != null
+				&& getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_CREATION)) {
+				setBaseHorairePointageCourant(new BaseHorairePointage());
+				getBaseHorairePointageCourant().setCodeBaseHorairePointage(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
+				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
+				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
+				getBaseHorairePointageCourant().setHeureJeudi(Double.valueOf(getVAL_EF_HEURE_JEUDI()));
+				getBaseHorairePointageCourant().setHeureVendredi(Double.valueOf(getVAL_EF_HEURE_VENDREDI()));
+				getBaseHorairePointageCourant().setHeureSamedi(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
+				getBaseHorairePointageCourant().setHeureDimanche(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
+
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_EF_BASE_HEBDO_LEG_H();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_EF_BASE_HEBDO_LEG_M();
+				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
+				getBaseHorairePointageCourant().setBaseLegale(getHeureDouble(totalBaseLegale));
+
+				// on fait le calcul de la base legale
+				Double nbHeureCalc = transformeHeure(getBaseHorairePointageCourant().getHeureLundi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureMardi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureMercredi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureJeudi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureVendredi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureSamedi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureDimanche());
+				getBaseHorairePointageCourant().setBaseCalculee(transformeResultatHeure(nbHeureCalc));
+
+				getBaseHorairePointageDao().creerBaseHorairePointage(getBaseHorairePointageCourant());
+
+			} else if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_MODIFICATION)) {
+				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
+				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
+				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
+				getBaseHorairePointageCourant().setHeureJeudi(Double.valueOf(getVAL_EF_HEURE_JEUDI()));
+				getBaseHorairePointageCourant().setHeureVendredi(Double.valueOf(getVAL_EF_HEURE_VENDREDI()));
+				getBaseHorairePointageCourant().setHeureSamedi(Double.valueOf(getVAL_EF_HEURE_SAMEDI()));
+				getBaseHorairePointageCourant().setHeureDimanche(Double.valueOf(getVAL_EF_HEURE_DIMANCHE()));
+
+				String heureBaseLegale = getVAL_EF_BASE_HEBDO_LEG_H().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_EF_BASE_HEBDO_LEG_H();
+				String minuteBaseLegale = getVAL_EF_BASE_HEBDO_LEG_M().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_EF_BASE_HEBDO_LEG_M();
+				String totalBaseLegale = heureBaseLegale + ":" + minuteBaseLegale;
+				getBaseHorairePointageCourant().setBaseLegale(getHeureDouble(totalBaseLegale));
+
+				// on fait le calcul de la base legale
+				Double nbHeureCalc = transformeHeure(getBaseHorairePointageCourant().getHeureLundi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureMardi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureMercredi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureJeudi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureVendredi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureSamedi())
+						+ transformeHeure(getBaseHorairePointageCourant().getHeureDimanche());
+				getBaseHorairePointageCourant().setBaseCalculee(transformeResultatHeure(nbHeureCalc));
+
+				getBaseHorairePointageDao().modifierBaseHorairePointage(getBaseHorairePointageCourant());
+				setBaseHorairePointageCourant(null);
+			}
+
+			initialiseListeBaseHorairePointage(request);
+			addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+		}
+
+		return true;
+	}
+
+	private Double transformeResultatHeure(Double nbHeureCalc) {
+		String nbHeure = nbHeureCalc.toString();
+		String partieEntiere = nbHeure.substring(0, nbHeure.indexOf("."));
+		String partieDecimale = nbHeure.substring(nbHeure.indexOf(".") + 1, nbHeure.length());
+		if (partieDecimale.equals("25")) {
+			partieDecimale = "15";
+		} else if (partieDecimale.equals("5")) {
+			partieDecimale = "3";
+		} else if (partieDecimale.equals("75")) {
+			partieDecimale = "45";
+		}
+		return Double.valueOf(partieEntiere + "." + partieDecimale);
+	}
+
+	private Double transformeHeure(Double nbheure) {
+		// on transforme les 7.48 en heure
+		String nbHeure = nbheure.toString();
+		String partieEntiere = nbHeure.substring(0, nbHeure.indexOf("."));
+		String partieDecimale = nbHeure.substring(nbHeure.indexOf(".") + 1, nbHeure.length());
+		if (partieDecimale.length() == 1) {
+			partieDecimale = partieDecimale + "0";
+		}
+		Integer res = (Integer.valueOf(partieEntiere) * 60) + Integer.valueOf(partieDecimale);
+		return Double.valueOf(res) / 60;
+	}
+
+	private Double getHeureDouble(String heure) {
+		Double res = Double.valueOf(heure.replace(":", "."));
+
+		return res;
+	}
+
+	private boolean performControlerRegleGestionBaseHorairePointage(HttpServletRequest request) {
+		// Vérification des contraintes d'unicité de la base horaire de pointage
+		if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_CREATION)) {
+
+			for (BaseHorairePointage base : getListeBaseHorairePointage()) {
+				if (base.getLibelleBaseHorairePointage().trim()
+						.equals(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce libellé"));
+					return false;
+				}
+				if (base.getCodeBaseHorairePointage().trim()
+						.equals(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE().toUpperCase().trim())) {
+					// "ERR974",
+					// "Attention, il existe déjà @ avec @. Veuillez contrôler."
+					getTransaction().declarerErreur(
+							MessageUtils.getMessage("ERR974", "une base horaire de pointage", "ce code"));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean performControlerSaisieBaseHorairePointage(HttpServletRequest request) {
+		// Verification libellé not null
+		if (getZone(getNOM_EF_LIB_BASE_HORAIRE_POINTAGE()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "libellé"));
+			return false;
+		}
+		// Verification code not null
+		if (getZone(getNOM_EF_CODE_BASE_HORAIRE_POINTAGE()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "code"));
+			return false;
+		}
+		// Verification nb heure legale not null
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() == 0 && getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base légale hebdomadaire"));
+			return false;
+		}
+		// Verification nb heure legale numerique
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_H()).length() != 0
+				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_H()))) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "heures légale"));
+			return false;
+		}
+		// Verification nb heure legale numerique
+		if (getZone(getNOM_EF_BASE_HEBDO_LEG_M()).length() != 0
+				&& !Services.estNumerique(getZone(getNOM_EF_BASE_HEBDO_LEG_M()))) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "minutes légale"));
+			return false;
+		}
+
+		return true;
+	}
+
+	public String getNOM_EF_CODE_BASE_HORAIRE_POINTAGE() {
+		return "NOM_EF_CODE_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getVAL_EF_CODE_BASE_HORAIRE_POINTAGE() {
+		return getZone(getNOM_EF_CODE_BASE_HORAIRE_POINTAGE());
+	}
+
+	public String getNOM_EF_LIB_BASE_HORAIRE_POINTAGE() {
+		return "NOM_EF_LIB_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getVAL_EF_LIB_BASE_HORAIRE_POINTAGE() {
+		return getZone(getNOM_EF_LIB_BASE_HORAIRE_POINTAGE());
+	}
+
+	public String getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() {
+		return "NOM_EF_DESC_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() {
+		return getZone(getNOM_EF_DESC_BASE_HORAIRE_POINTAGE());
+	}
+
+	public String getNOM_EF_HEURE_LUNDI() {
+		return "NOM_EF_HEURE_LUNDI";
+	}
+
+	public String getVAL_EF_HEURE_LUNDI() {
+		return getZone(getNOM_EF_HEURE_LUNDI());
+	}
+
+	public String getNOM_EF_HEURE_MARDI() {
+		return "NOM_EF_HEURE_MARDI";
+	}
+
+	public String getVAL_EF_HEURE_MARDI() {
+		return getZone(getNOM_EF_HEURE_MARDI());
+	}
+
+	public String getNOM_EF_HEURE_MERCREDI() {
+		return "NOM_EF_HEURE_MERCREDI";
+	}
+
+	public String getVAL_EF_HEURE_MERCREDI() {
+		return getZone(getNOM_EF_HEURE_MERCREDI());
+	}
+
+	public String getNOM_EF_HEURE_JEUDI() {
+		return "NOM_EF_HEURE_JEUDI";
+	}
+
+	public String getVAL_EF_HEURE_JEUDI() {
+		return getZone(getNOM_EF_HEURE_JEUDI());
+	}
+
+	public String getNOM_EF_HEURE_VENDREDI() {
+		return "NOM_EF_HEURE_VENDREDI";
+	}
+
+	public String getVAL_EF_HEURE_VENDREDI() {
+		return getZone(getNOM_EF_HEURE_VENDREDI());
+	}
+
+	public String getNOM_EF_HEURE_SAMEDI() {
+		return "NOM_EF_HEURE_SAMEDI";
+	}
+
+	public String getVAL_EF_HEURE_SAMEDI() {
+		return getZone(getNOM_EF_HEURE_SAMEDI());
+	}
+
+	public String getNOM_EF_HEURE_DIMANCHE() {
+		return "NOM_EF_HEURE_DIMANCHE";
+	}
+
+	public String getVAL_EF_HEURE_DIMANCHE() {
+		return getZone(getNOM_EF_HEURE_DIMANCHE());
+	}
+
+	public String getNOM_EF_BASE_HEBDO_LEG_H() {
+		return "NOM_EF_BASE_HEBDO_LEG_H";
+	}
+
+	public String getVAL_EF_BASE_HEBDO_LEG_H() {
+		return getZone(getNOM_EF_BASE_HEBDO_LEG_H());
+	}
+
+	public String getNOM_EF_BASE_HEBDO_LEG_M() {
+		return "NOM_EF_BASE_HEBDO_LEG_M";
+	}
+
+	public String getVAL_EF_BASE_HEBDO_LEG_M() {
+		return getZone(getNOM_EF_BASE_HEBDO_LEG_M());
+	}
+
+	public String getNOM_EF_BASE_HEBDO_H() {
+		return "NOM_EF_BASE_HEBDO_H";
+	}
+
+	public String getVAL_EF_BASE_HEBDO_H() {
+		return getZone(getNOM_EF_BASE_HEBDO_H());
+	}
+
+	public String getNOM_EF_BASE_HEBDO_M() {
+		return "NOM_EF_BASE_HEBDO_M";
+	}
+
+	public String getVAL_EF_BASE_HEBDO_M() {
+		return getZone(getNOM_EF_BASE_HEBDO_M());
 	}
 }
