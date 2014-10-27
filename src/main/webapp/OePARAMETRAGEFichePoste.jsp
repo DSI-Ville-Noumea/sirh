@@ -600,7 +600,7 @@
 										<label class="sigp2Mandatory">Description :</label>
 			            			</td>
 			            			<td colspan="3">
-										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
+										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="40" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
 			            			</td>
 			            		</tr>
 			            		<tr>
@@ -712,7 +712,7 @@
 										<label class="sigp2Mandatory">Description :</label>
 			            			</td>
 			            			<td colspan="3">
-										<INPUT class="sigp2-saisiemajuscule" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="20" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
+										<INPUT class="sigp2-saisie" maxlength="255" name="<%= process.getNOM_EF_DESC_BASE_HORAIRE_POINTAGE() %>" size="40" type="text" value="<%= process.getVAL_EF_DESC_BASE_HORAIRE_POINTAGE() %>">
 			            			</td>
 			            		</tr>
 								<tr>
