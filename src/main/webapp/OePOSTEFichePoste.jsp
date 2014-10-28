@@ -395,6 +395,16 @@
 										</SELECT>
 									</td>
 								</tr>
+								<tr>
+									<td>
+										<span class="sigp2Mandatory"> Base pointage : </span>
+									</td>
+									<td colspan="2">
+										<SELECT <%= process.estFDPInactive ?  "disabled='disabled'" : "" %> class="sigp2-saisie" name="<%= process.getNOM_LB_BASE_HORAIRE_POINTAGE() %>" style="width:120px" <%= MairieUtils.getDisabled(request, process.getNomEcran()) %>>
+											<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())%>
+										</SELECT>
+									</td>
+								</tr>
 							</table>
 						</fieldset>
 					</div>

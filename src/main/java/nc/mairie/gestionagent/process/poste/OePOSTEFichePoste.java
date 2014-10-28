@@ -29,6 +29,7 @@ import nc.mairie.metier.agent.DocumentAgent;
 import nc.mairie.metier.carriere.FiliereGrade;
 import nc.mairie.metier.carriere.Grade;
 import nc.mairie.metier.carriere.GradeGenerique;
+import nc.mairie.metier.parametrage.BaseHorairePointage;
 import nc.mairie.metier.parametrage.NatureAvantage;
 import nc.mairie.metier.parametrage.NatureCredit;
 import nc.mairie.metier.parametrage.TypeAvantage;
@@ -66,6 +67,7 @@ import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.ContratDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
+import nc.mairie.spring.dao.metier.parametrage.BaseHorairePointageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureAvantageDao;
 import nc.mairie.spring.dao.metier.parametrage.NatureCreditDao;
 import nc.mairie.spring.dao.metier.parametrage.TypeAvantageDao;
@@ -164,6 +166,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_STATUT;
 	private String[] LB_NIVEAU_ETUDE;
 	private String[] LB_NATURE_CREDIT;
+	private String[] LB_BASE_HORAIRE_POINTAGE;
 	// nouvelle liste suite remaniement fdp/activites
 	private ArrayList<Activite> listeToutesActi;
 	// activites de la fiche emploi primaire
@@ -196,6 +199,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<Grade> listeGrade;
 	private ArrayList<EntiteGeo> listeLocalisation;
 	private ArrayList<NatureCredit> listeNatureCredit;
+	private ArrayList<BaseHorairePointage> listeBaseHorairePointage;
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<AvantageNature> listeAvantageAAjouter;
 	private ArrayList<AvantageNature> listeAvantageASupprimer;
@@ -236,6 +240,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private Agent agtRemplacement;
 	private TitrePoste titrePosteRemplacement;
 	private Service service;
+	private BaseHorairePointage baseHorairePointageCourant;
 	public String focus = null;
 	private String urlFichier;
 	private String messageInf = Const.CHAINE_VIDE;
@@ -279,6 +284,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private HistoFichePosteDao histoFichePosteDao;
 	private AffectationDao affectationDao;
 	private AgentDao agentDao;
+	private BaseHorairePointageDao baseHorairePointageDao;
 
 	private Logger logger = LoggerFactory.getLogger(OePOSTEFichePoste.class);
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -587,6 +593,9 @@ public class OePOSTEFichePoste extends BasicProcess {
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
+		if (getBaseHorairePointageDao() == null) {
+			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
+		}
 	}
 
 	/**
@@ -719,7 +728,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			}
 
-			if (getListeNatureCredit() != null && getFichePosteCourante().getIdNatureCredit()!=null) {
+			if (getListeNatureCredit() != null && getFichePosteCourante().getIdNatureCredit() != null) {
 				for (int i = 0; i < getListeNatureCredit().size(); i++) {
 					NatureCredit b = (NatureCredit) getListeNatureCredit().get(i);
 					if (b.getIdNatureCredit().toString().equals(getFichePosteCourante().getIdNatureCredit().toString())) {
@@ -727,8 +736,21 @@ public class OePOSTEFichePoste extends BasicProcess {
 						break;
 					}
 				}
-			}else{
+			} else {
 				addZone(getNOM_LB_NATURE_CREDIT_SELECT(), Const.ZERO);
+			}
+
+			if (getListeBaseHorairePointage() != null && getFichePosteCourante().getIdBaseHorairePointage() != null) {
+				for (int i = 0; i < getListeBaseHorairePointage().size(); i++) {
+					BaseHorairePointage b = (BaseHorairePointage) getListeBaseHorairePointage().get(i);
+					if (b.getIdBaseHorairePointage().toString()
+							.equals(getFichePosteCourante().getIdBaseHorairePointage().toString())) {
+						addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), String.valueOf(i + 1));
+						break;
+					}
+				}
+			} else {
+				addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), Const.ZERO);
 			}
 
 			afficheResponsable();
@@ -1017,6 +1039,28 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setLB_NATURE_CREDIT(aFormat.getListeFormatee());
 			} else {
 				setLB_NATURE_CREDIT(null);
+			}
+		}
+
+		// Si liste base horaire pointage vide alors affectation
+		if (getLB_BASE_HORAIRE_POINTAGE() == LBVide) {
+			ArrayList<BaseHorairePointage> listeBaseHorairePointage = (ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
+					.listerBaseHorairePointage();
+			setListeBaseHorairePointage(listeBaseHorairePointage);
+			if (getListeBaseHorairePointage().size() != 0) {
+				int tailles[] = { 5, 6 };
+				String padding[] = { "G", "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<BaseHorairePointage> list = getListeBaseHorairePointage().listIterator(); list
+						.hasNext();) {
+					BaseHorairePointage base = (BaseHorairePointage) list.next();
+					String ligne[] = { base.getCodeBaseHorairePointage(), base.getLibelleBaseHorairePointage() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_BASE_HORAIRE_POINTAGE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_BASE_HORAIRE_POINTAGE(null);
 			}
 		}
 	}
@@ -1398,6 +1442,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		addZone(getNOM_ST_INFO_RESP(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_INFO_REMP(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_NATURE_CREDIT_SELECT(), "0");
+		addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), "0");
 
 		setLB_NIVEAU_ETUDE(null);
 	}
@@ -1628,6 +1673,17 @@ public class OePOSTEFichePoste extends BasicProcess {
 			return false;
 		}
 
+		// **********************
+		// Verification Base horaire de pointage
+		// **********************
+		int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
+
+		if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
+				|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
+			return false;
+		}
 		return true;
 	}
 
@@ -1916,6 +1972,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		Horaire reglementaire = (Horaire) getListeHoraire().get(numLigneReglementaire);
 
+		// Base horaire de pointage
+		int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
+
+		if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
+				|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire de pointage"));
+			return false;
+		}
+
+		BaseHorairePointage baseHorairePointage = (BaseHorairePointage) getListeBaseHorairePointage().get(
+				numLigneBaseHorairePointage - 1);
+
 		// Nature des credits
 		int numLigneNatureCredit = (Services.estNumerique(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_NATURE_CREDIT_SELECT())) : -1);
@@ -1948,6 +2017,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setIdCdthorReg(Integer.valueOf(reglementaire.getCdtHor()));
 		getFichePosteCourante().setDateDebAppliServ(sdf.parse(dateDebutAppliServ));
 		getFichePosteCourante().setIdNatureCredit(natureCredit.getIdNatureCredit());
+		getFichePosteCourante().setIdBaseHorairePointage(baseHorairePointage.getIdBaseHorairePointage());
 
 		if (getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.INACTIVE.getId())) {
 			getFichePosteCourante().setIdResponsable(null);
@@ -7001,5 +7071,55 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	private String[] getLB_BASE_HORAIRE_POINTAGE() {
+		if (LB_BASE_HORAIRE_POINTAGE == null)
+			LB_BASE_HORAIRE_POINTAGE = initialiseLazyLB();
+		return LB_BASE_HORAIRE_POINTAGE;
+	}
+
+	private void setLB_BASE_HORAIRE_POINTAGE(String[] newLB_BASE_HORAIRE_POINTAGE) {
+		LB_BASE_HORAIRE_POINTAGE = newLB_BASE_HORAIRE_POINTAGE;
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_POINTAGE() {
+		return "NOM_LB_BASE_HORAIRE_POINTAGE";
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT() {
+		return "NOM_LB_BASE_HORAIRE_POINTAGE_SELECT";
+	}
+
+	public String[] getVAL_LB_BASE_HORAIRE_POINTAGE() {
+		return getLB_BASE_HORAIRE_POINTAGE();
+	}
+
+	public String getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT() {
+		return getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT());
+	}
+
+	public BaseHorairePointageDao getBaseHorairePointageDao() {
+		return baseHorairePointageDao;
+	}
+
+	public void setBaseHorairePointageDao(BaseHorairePointageDao baseHorairePointageDao) {
+		this.baseHorairePointageDao = baseHorairePointageDao;
+	}
+
+	public ArrayList<BaseHorairePointage> getListeBaseHorairePointage() {
+		return listeBaseHorairePointage;
+	}
+
+	public void setListeBaseHorairePointage(ArrayList<BaseHorairePointage> listeBaseHorairePointage) {
+		this.listeBaseHorairePointage = listeBaseHorairePointage;
+	}
+
+	public BaseHorairePointage getBaseHorairePointageCourant() {
+		return baseHorairePointageCourant;
+	}
+
+	public void setBaseHorairePointageCourant(BaseHorairePointage baseHorairePointageCourant) {
+		this.baseHorairePointageCourant = baseHorairePointageCourant;
 	}
 }
