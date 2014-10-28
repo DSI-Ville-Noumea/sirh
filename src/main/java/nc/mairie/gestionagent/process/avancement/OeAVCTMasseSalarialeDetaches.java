@@ -1595,21 +1595,6 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						avct.setNouvIna(Integer.valueOf(nouvBareme.getIna()));
 					}
 
-					// on recupere le grade du poste
-					Affectation aff = null;
-					try {
-						aff = getAffectationDao().chercherAffectationActiveAvecAgent(a.getIdAgent());
-					} catch (Exception e2) {
-						continue;
-					}
-					if (aff == null || aff.getIdFichePoste() == null) {
-						continue;
-					}
-					FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
-					Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
-					Service section = Service.getSection(getTransaction(), fp.getIdServi());
-					avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
-					avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
 					// on regarde si l'agent est AFFECTE dans une autre
 					// administration
 					if (paAgent.getCdpadm().equals("54") || paAgent.getCdpadm().equals("56")
@@ -1627,6 +1612,23 @@ public class OeAVCTMasseSalarialeDetaches extends BasicProcess {
 						} catch (Exception e2) {
 							// pas d'autre administration
 						}
+					} else {
+
+						// on recupere le grade du poste
+						Affectation aff = null;
+						try {
+							aff = getAffectationDao().chercherAffectationActiveAvecAgent(a.getIdAgent());
+						} catch (Exception e2) {
+							continue;
+						}
+						if (aff == null || aff.getIdFichePoste() == null) {
+							continue;
+						}
+						FichePoste fp = getFichePosteDao().chercherFichePoste(aff.getIdFichePoste());
+						Service direction = Service.getDirection(getTransaction(), fp.getIdServi());
+						Service section = Service.getSection(getTransaction(), fp.getIdServi());
+						avct.setDirectionService(direction == null ? Const.CHAINE_VIDE : direction.getSigleService());
+						avct.setSectionService(section == null ? Const.CHAINE_VIDE : section.getSigleService());
 					}
 
 					if (carr != null) {
