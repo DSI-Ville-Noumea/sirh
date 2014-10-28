@@ -1978,7 +1978,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		if (numLigneBaseHorairePointage == 0 || getListeBaseHorairePointage().isEmpty()
 				|| numLigneBaseHorairePointage > getListeBaseHorairePointage().size()) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "base horaire de pointage"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de pointage"));
 			return false;
 		}
 

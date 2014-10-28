@@ -64,4 +64,9 @@ public class BaseHorairePointageDao extends SirhDao implements BaseHorairePointa
 						base.getHeureVendredi(), base.getHeureSamedi(), base.getHeureDimanche(), base.getBaseLegale(),
 						base.getBaseCalculee(), base.getIdBaseHorairePointage() });
 	}
+
+	@Override
+	public BaseHorairePointage chercherBaseHorairePointage(Integer idBaseHorairePointage) throws Exception {
+		return super.chercherObject(BaseHorairePointage.class, idBaseHorairePointage);
+	}
 }

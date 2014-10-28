@@ -12,4 +12,6 @@ public interface BaseHorairePointageDaoInterface {
 
 	public void modifierBaseHorairePointage(BaseHorairePointage base) throws Exception;
 
+	public BaseHorairePointage chercherBaseHorairePointage(Integer idBaseHorairePointage) throws Exception;
+
 }

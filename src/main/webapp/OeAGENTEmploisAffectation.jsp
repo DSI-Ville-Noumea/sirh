@@ -809,6 +809,12 @@
 				value="<%=process.getVAL_EF_COMMENTAIRE()%>"
 				style="margin-right: 60px;"> <span class="sigp2Mandatory"
 				style="width: 10px"> </span>
+				<BR /> <BR />
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base pointage :</span> 
+				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_POINTAGE()%>" style="width: 140px;">
+					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())%>
+				</SELECT>
+				
 			<%
 				} else if (process.getVAL_ST_ACTION().equals(process.ACTION_IMPRESSION)) {
 			%>
@@ -863,6 +869,11 @@
 				value="<%=process.getVAL_EF_COMMENTAIRE()%>"
 				style="margin-right: 60px;" disabled="disabled"> <span
 				class="sigp2Mandatory" style="width: 10px"> </span>
+				<BR /> <BR />
+				<span class="sigp2Mandatory" style="margin-left: 20px; position: relative; width: 120px;">Base pointage :</span> 
+				<SELECT class="sigp2-saisie" name="<%=process.getNOM_LB_BASE_HORAIRE_POINTAGE()%>" style="width: 140px;" disabled="disabled">
+					<%=process.forComboHTML(process.getVAL_LB_BASE_HORAIRE_POINTAGE(), process.getVAL_LB_BASE_HORAIRE_POINTAGE_SELECT())%>
+				</SELECT>
 			<%
 				}
 			%>
