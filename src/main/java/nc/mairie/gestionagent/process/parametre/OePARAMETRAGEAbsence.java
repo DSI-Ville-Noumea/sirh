@@ -108,7 +108,7 @@ public class OePARAMETRAGEAbsence extends BasicProcess {
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 
 			int[] tailles = { 100 };
 			String padding[] = { "G" };

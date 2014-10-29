@@ -8,6 +8,7 @@ import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
@@ -30,7 +31,9 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto saveOrganisationSyndicale(String json);
 
 	// Type d'absences
-	List<TypeAbsenceDto> getListeRefTypeAbsenceDto();
+	List<RefGroupeAbsenceDto> getRefGroupeAbsence();
+
+	List<TypeAbsenceDto> getListeRefTypeAbsenceDto(Integer idRefGroupe);
 
 	ReturnMessageDto saveTypeAbsence(Integer idAgentConnecte, String json);
 
@@ -81,7 +84,7 @@ public interface ISirhAbsWSConsumer {
 			String dateDemande, Integer idRefEtat, Integer idRefType);
 
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
-			Integer idAgentRecherche);
+			Integer idAgentRecherche, Integer idRefGroupe);
 
 	List<DemandeDto> getVisualisationHistory(int absId);
 

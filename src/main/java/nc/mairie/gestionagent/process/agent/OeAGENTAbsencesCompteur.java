@@ -131,7 +131,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto();
+			List<TypeAbsenceDto> listeComplete = consuAbs.getListeRefTypeAbsenceDto(null);
 			setListeTypeAbsence(new ArrayList<TypeAbsenceDto>());
 
 			int[] tailles = { 100 };

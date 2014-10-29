@@ -132,7 +132,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+		setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 
 		for (TypeAbsenceDto abs : getListeTypeAbsence()) {
 			if (abs.getGroupeAbsence() == null

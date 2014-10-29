@@ -99,7 +99,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 		// Si liste Type absence vide alors affectation
 		if (getListeTypeAbsence() == null || getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 
 			int[] tailles = { 30 };
 			String padding[] = { "G" };
@@ -178,8 +178,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat,
-				idRefTypeAbsence);
+				getAgentCourant().getIdAgent(), "TOUTES", dateDebut, dateFin, dateDemande, idRefEtat, idRefTypeAbsence);
 		setListeToutesDemandes(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -189,11 +188,11 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			DemandeDto dto = getListeToutesDemandes().get(i);
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
-			addZone(getNOM_ST_TYPE_DEMANDE_TT(i),
-					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_TT(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
+					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_TT(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
-			
+
 			if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 				addZone(getNOM_ST_HEURE_DEBUT_TT(i),
 						dto.getDateDebut() == null ? "&nbsp;" : sdfHeure.format(dto.getDateDebut()));
@@ -211,10 +210,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() + "j");
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
-				
+
 				if ("jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() == null ? "&nbsp;" : dto.getDuree().toString() + "j");
-				} 
+				}
 				if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_TT(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree()
 							.intValue()));
@@ -234,8 +233,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande,
-				idRefEtat, idRefTypeAbsence);
+				getAgentCourant().getIdAgent(), "EN_COURS", dateDebut, dateFin, dateDemande, idRefEtat,
+				idRefTypeAbsence);
 		setListeDemandeEnCours(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -246,8 +245,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 
-			addZone(getNOM_ST_TYPE_DEMANDE_EC(i),
-					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_EC(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
+					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_EC(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
@@ -267,10 +266,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() + "j");
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
-				
+
 				if ("jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() == null ? "&nbsp;" : dto.getDuree().toString() + "j");
-				} 
+				}
 				if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_EC(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree()
 							.intValue()));
@@ -291,8 +290,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 
 		// Recherche des absences non prises de l'agent
 		ArrayList<DemandeDto> a = (ArrayList<DemandeDto>) consuAbs.getListeDemandesAgent(
-				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande,
-				idRefEtat, idRefTypeAbsence);
+				getAgentCourant().getIdAgent(), "NON_PRISES", dateDebut, dateFin, dateDemande, idRefEtat,
+				idRefTypeAbsence);
 		setListeDemandeNonPrises(a);
 
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -303,8 +302,8 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dto.getIdTypeDemande());
 
-			addZone(getNOM_ST_TYPE_DEMANDE_NP(i),
-					getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t)).getLibelle());
+			addZone(getNOM_ST_TYPE_DEMANDE_NP(i), getListeTypeAbsence().get(getListeTypeAbsence().indexOf(t))
+					.getLibelle());
 			addZone(getNOM_ST_DATE_DEBUT_NP(i),
 					dto.getDateDebut() == null ? "&nbsp;" : sdfDate.format(dto.getDateDebut()));
 			if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
@@ -324,10 +323,10 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 				addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() + "j");
 			} else if (dto.getGroupeAbsence() != null
 					&& dto.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) {
-				
+
 				if ("jours".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() == null ? "&nbsp;" : dto.getDuree().toString() + "j");
-				} 
+				}
 				if ("minutes".equals(dto.getTypeSaisi().getUniteDecompte())) {
 					addZone(getNOM_ST_DUREE_NP(i), dto.getDuree() == null ? "&nbsp;" : getHeureMinute(dto.getDuree()
 							.intValue()));

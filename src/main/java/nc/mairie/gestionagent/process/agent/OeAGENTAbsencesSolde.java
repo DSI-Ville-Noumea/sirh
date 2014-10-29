@@ -124,7 +124,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	private void initialiseListeDeroulante() {
 		if (getListeTypeAbsence().size() == 0) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+			setListeTypeAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 		}
 		// Si liste annee vide alors affectation
 		if (getLB_ANNEE() == LBVide) {

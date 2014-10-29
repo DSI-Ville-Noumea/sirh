@@ -73,6 +73,7 @@ public class OeABSVisualisation extends BasicProcess {
 	public static final int STATUT_RECHERCHER_AGENT_CREATION = 3;
 
 	private String[] LB_ETAT;
+	private String[] LB_GROUPE;
 	private String[] LB_FAMILLE;
 	private String[] LB_FAMILLE_CREATION;
 	private String[] LB_HEURE;
@@ -82,6 +83,8 @@ public class OeABSVisualisation extends BasicProcess {
 	private ArrayList<Service> listeServices;
 	private ArrayList<EnumEtatAbsence> listeEtats;
 	private ArrayList<TypeAbsenceDto> listeFamilleAbsence;
+	private ArrayList<TypeAbsenceDto> listeFamilleAbsenceCreation;
+	private ArrayList<RefGroupeAbsenceDto> listeGroupeAbsence;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
 	private ArrayList<String> listeHeure;
 
@@ -185,20 +188,18 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// Si liste famille absence vide alors affectation
-		if (getLB_FAMILLE() == LBVide || getLB_FAMILLE_CREATION() == LBVide) {
+		if (getLB_FAMILLE_CREATION() == LBVide) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto());
+			setListeFamilleAbsenceCreation((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(null));
 
 			int[] tailles = { 100 };
 			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
+			for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsenceCreation().listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
 				String ligne[] = { type.getLibelle() };
 
 				aFormat.ajouteLigne(ligne);
 			}
-			setLB_FAMILLE(aFormat.getListeFormatee(true));
-			addZone(getNOM_LB_FAMILLE_SELECT(), Const.ZERO);
 			setLB_FAMILLE_CREATION(aFormat.getListeFormatee(false));
 			addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
 		}
@@ -299,6 +300,23 @@ public class OeABSVisualisation extends BasicProcess {
 			setLB_HEURE(a);
 		}
 
+		// Si liste groupe absence vide alors affectation
+		if (getLB_GROUPE() == LBVide) {
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeGroupeAbsence((ArrayList<RefGroupeAbsenceDto>) consuAbs.getRefGroupeAbsence());
+
+			int[] tailles = { 100 };
+			FormateListe aFormat = new FormateListe(tailles);
+			for (ListIterator<RefGroupeAbsenceDto> list = getListeGroupeAbsence().listIterator(); list.hasNext();) {
+				RefGroupeAbsenceDto type = (RefGroupeAbsenceDto) list.next();
+				String ligne[] = { type.getLibelle() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_GROUPE(aFormat.getListeFormatee(true));
+			addZone(getNOM_LB_GROUPE_SELECT(), Const.ZERO);
+		}
+
 	}
 
 	@Override
@@ -306,6 +324,11 @@ public class OeABSVisualisation extends BasicProcess {
 
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
+
+			// Si clic sur le bouton PB_SELECT_GROUPE
+			if (testerParametre(request, getNOM_PB_SELECT_GROUPE())) {
+				return performPB_SELECT_GROUPE(request);
+			}
 
 			// Si clic sur le bouton PB_RECHERCHER_AGENT_DEMANDE
 			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_DEMANDE())) {
@@ -591,6 +614,13 @@ public class OeABSVisualisation extends BasicProcess {
 		if (numType != -1 && numType != 0) {
 			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
 		}
+		// groupe
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		RefGroupeAbsenceDto groupe = null;
+		if (numGroupe != -1 && numGroupe != 0) {
+			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
+		}
 
 		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
 				+ getVAL_ST_AGENT_DEMANDE();
@@ -598,7 +628,8 @@ public class OeABSVisualisation extends BasicProcess {
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
 				type == null ? null : type.getIdRefTypeAbsence(),
-				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande));
+				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
+				groupe == null ? null : groupe.getIdRefGroupeAbsence());
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
@@ -814,7 +845,7 @@ public class OeABSVisualisation extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1) {
-			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType);
+			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
 			setTypeCreation(type);
 		}
 		String idAgent = "";
@@ -1167,9 +1198,9 @@ public class OeABSVisualisation extends BasicProcess {
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		TypeAbsenceDto t = new TypeAbsenceDto();
 		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-		TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t));
+		TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
-		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsence().indexOf(type)));
+		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), String.valueOf(getListeFamilleAbsenceCreation().indexOf(type)));
 
 		Agent agt = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		addZone(getNOM_ST_AGENT_CREATION(), agt.getNomatr().toString());
@@ -1296,7 +1327,8 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+			String info = "Demande "
+					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
 					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_EN_ATTENTE(), info);
 			addZone(getNOM_ST_MOTIF_EN_ATTENTE(), Const.CHAINE_VIDE);
@@ -1432,7 +1464,8 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+			String info = "Demande "
+					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
 					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
@@ -1446,7 +1479,8 @@ public class OeABSVisualisation extends BasicProcess {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
 			TypeAbsenceDto t = new TypeAbsenceDto();
 			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande " + getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t)).getLibelle()
+			String info = "Demande "
+					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
 					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
 			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
 			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
@@ -1808,5 +1842,79 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	private String[] getLB_GROUPE() {
+		if (LB_GROUPE == null)
+			LB_GROUPE = initialiseLazyLB();
+		return LB_GROUPE;
+	}
+
+	private void setLB_GROUPE(String[] newLB_GROUPE) {
+		LB_GROUPE = newLB_GROUPE;
+	}
+
+	public String getNOM_LB_GROUPE() {
+		return "NOM_LB_GROUPE";
+	}
+
+	public String getNOM_LB_GROUPE_SELECT() {
+		return "NOM_LB_GROUPE_SELECT";
+	}
+
+	public String[] getVAL_LB_GROUPE() {
+		return getLB_GROUPE();
+	}
+
+	public String getVAL_LB_GROUPE_SELECT() {
+		return getZone(getNOM_LB_GROUPE_SELECT());
+	}
+
+	public ArrayList<RefGroupeAbsenceDto> getListeGroupeAbsence() {
+		return listeGroupeAbsence;
+	}
+
+	public void setListeGroupeAbsence(ArrayList<RefGroupeAbsenceDto> listeGroupeAbsence) {
+		this.listeGroupeAbsence = listeGroupeAbsence;
+	}
+
+	public String getNOM_PB_SELECT_GROUPE() {
+		return "NOM_PB_SELECT_GROUPE";
+	}
+
+	public boolean performPB_SELECT_GROUPE(HttpServletRequest request) throws Exception {
+
+		// groupe
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		RefGroupeAbsenceDto groupe = null;
+		if (numGroupe != -1 && numGroupe != 0) {
+			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
+		}
+
+		// on charge les familles
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(groupe == null ? null
+				: groupe.getIdRefGroupeAbsence()));
+
+		int[] tailles = { 100 };
+		FormateListe aFormat = new FormateListe(tailles);
+		for (ListIterator<TypeAbsenceDto> list = getListeFamilleAbsence().listIterator(); list.hasNext();) {
+			TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+			String ligne[] = { type.getLibelle() };
+
+			aFormat.ajouteLigne(ligne);
+		}
+		setLB_FAMILLE(aFormat.getListeFormatee(true));
+		addZone(getNOM_LB_FAMILLE_SELECT(), Const.ZERO);
+		return true;
+	}
+
+	public ArrayList<TypeAbsenceDto> getListeFamilleAbsenceCreation() {
+		return listeFamilleAbsenceCreation;
+	}
+
+	public void setListeFamilleAbsenceCreation(ArrayList<TypeAbsenceDto> listeFamilleAbsenceCreation) {
+		this.listeFamilleAbsenceCreation = listeFamilleAbsenceCreation;
 	}
 }

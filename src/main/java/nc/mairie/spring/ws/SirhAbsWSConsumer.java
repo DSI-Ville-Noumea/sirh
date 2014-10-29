@@ -12,6 +12,7 @@ import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.SoldeDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
@@ -65,6 +66,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
 	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
+	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -360,7 +362,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
-			Integer idAgentRecherche) {
+			Integer idAgentRecherche, Integer idRefGroupe) {
 
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDemandes;
@@ -375,8 +377,10 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 			params.put("type", idRefType.toString());
 		if (idAgentRecherche != null)
 			params.put("idAgentRecherche", idAgentRecherche.toString());
+		if (idRefGroupe != null)
+			params.put("groupe", idRefGroupe.toString());
 		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
-				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche);
+				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}
@@ -479,10 +483,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<TypeAbsenceDto> getListeRefTypeAbsenceDto() {
+	public List<TypeAbsenceDto> getListeRefTypeAbsenceDto(Integer idRefGroupe) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeRefTypeAbs;
 		HashMap<String, String> params = new HashMap<>();
+		params.put("idRefGroupeAbsence", idRefGroupe.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}
@@ -515,6 +520,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idRefTypeAbsence", idRefTypeAbsence.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public List<RefGroupeAbsenceDto> getRefGroupeAbsence() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsGroupeAbsenceUrl;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponseAsList(RefGroupeAbsenceDto.class, res, url);
+
 	}
 
 }

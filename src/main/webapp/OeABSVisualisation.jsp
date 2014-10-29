@@ -250,6 +250,16 @@
                 	</tr>
                 	<tr>
                 		<td>
+                			<span class="sigp2">Groupe : </span>
+                		</td>
+                		<td colspan="4">
+			                <SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_GROUPE()%>" onchange='executeBouton("<%=process.getNOM_PB_SELECT_GROUPE()%>")' >
+			                    <%=process.forComboHTML(process.getVAL_LB_GROUPE(), process.getVAL_LB_GROUPE_SELECT())%>
+			                </SELECT>
+                		</td>
+                	</tr>
+                	<tr>
+                		<td>
                 			<span class="sigp2">Famille : </span>
                 		</td>
                 		<td colspan="4">
