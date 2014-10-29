@@ -487,7 +487,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeRefTypeAbs;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idRefGroupeAbsence", idRefGroupe.toString());
+		if (idRefGroupe != null)
+			params.put("idRefGroupeAbsence", idRefGroupe.toString());
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(TypeAbsenceDto.class, res, url);
 	}

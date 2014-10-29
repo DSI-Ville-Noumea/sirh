@@ -1893,9 +1893,13 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 
 		// on charge les familles
-		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(groupe == null ? null
-				: groupe.getIdRefGroupeAbsence()));
+		if (groupe != null) {
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			setListeFamilleAbsence((ArrayList<TypeAbsenceDto>) consuAbs.getListeRefTypeAbsenceDto(groupe
+					.getIdRefGroupeAbsence()));
+		} else {
+			setListeFamilleAbsence(null);
+		}
 
 		int[] tailles = { 100 };
 		FormateListe aFormat = new FormateListe(tailles);
