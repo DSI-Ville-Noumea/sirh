@@ -84,7 +84,7 @@ public interface ISirhAbsWSConsumer {
 			String dateDemande, Integer idRefEtat, Integer idRefType);
 
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe);
+			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider);
 
 	List<DemandeDto> getVisualisationHistory(int absId);
 

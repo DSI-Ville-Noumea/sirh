@@ -325,6 +325,11 @@ public class OeABSVisualisation extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// Si clic sur le bouton PB_FILTRER_DEMANDE_A_VALIDER
+			if (testerParametre(request, getNOM_PB_FILTRER_DEMANDE_A_VALIDER())) {
+				return performPB_FILTRER_DEMANDE_A_VALIDER(request);
+			}
+
 			// Si clic sur le bouton PB_SELECT_GROUPE
 			if (testerParametre(request, getNOM_PB_SELECT_GROUPE())) {
 				return performPB_SELECT_GROUPE(request);
@@ -612,7 +617,7 @@ public class OeABSVisualisation extends BasicProcess {
 				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
 		TypeAbsenceDto type = null;
 		if (numType != -1 && numType != 0) {
-			type = (TypeAbsenceDto) getListeFamilleAbsence().get(numType - 1);
+			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
 		}
 		// groupe
 		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
@@ -629,7 +634,7 @@ public class OeABSVisualisation extends BasicProcess {
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence());
+				groupe == null ? null : groupe.getIdRefGroupeAbsence(),false);
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
@@ -655,7 +660,7 @@ public class OeABSVisualisation extends BasicProcess {
 
 				TypeAbsenceDto t = new TypeAbsenceDto();
 				t.setIdRefTypeAbsence(abs.getIdTypeDemande());
-				TypeAbsenceDto type = getListeFamilleAbsence().get(getListeFamilleAbsence().indexOf(t));
+				TypeAbsenceDto type = getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t));
 
 				addZone(getNOM_ST_MATRICULE(i), ag.getNomatr().toString());
 				addZone(getNOM_ST_AGENT(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
@@ -1920,5 +1925,64 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public void setListeFamilleAbsenceCreation(ArrayList<TypeAbsenceDto> listeFamilleAbsenceCreation) {
 		this.listeFamilleAbsenceCreation = listeFamilleAbsenceCreation;
+	}
+
+	public String getNOM_PB_FILTRER_DEMANDE_A_VALIDER() {
+		return "NOM_PB_FILTRER_DEMANDE_A_VALIDER";
+	}
+
+	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
+
+		if (!performControlerFiltres()) {
+			return false;
+		}
+
+		String dateDeb = getVAL_ST_DATE_MIN();
+		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		String dateFin = getVAL_ST_DATE_MAX();
+		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
+				"yyyyMMdd");
+
+		// etat
+		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
+		EnumEtatAbsence etat = null;
+		if (numEtat != -1 && numEtat != 0) {
+			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
+		}
+		// famille
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
+		TypeAbsenceDto type = null;
+		if (numType != -1 && numType != 0) {
+			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
+		}
+		// groupe
+		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
+		RefGroupeAbsenceDto groupe = null;
+		if (numGroupe != -1 && numGroupe != 0) {
+			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
+		}
+
+		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
+				+ getVAL_ST_AGENT_DEMANDE();
+
+		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
+				type == null ? null : type.getIdRefTypeAbsence(),
+				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
+				groupe == null ? null : groupe.getIdRefGroupeAbsence(), true);
+		logger.debug("Taille liste absences : " + listeDemande.size());
+
+		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
+
+		loadHistory();
+
+		afficheListeAbsence();
+
+		return true;
 	}
 }

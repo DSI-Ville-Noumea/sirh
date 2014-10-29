@@ -273,6 +273,7 @@
 				<INPUT type="submit" class="sigp2-displayNone" name="<%=process.getNOM_PB_SELECT_GROUPE()%>">	
                 <BR/>         	
                 <INPUT type="submit" class="sigp2-Bouton-100" value="Afficher" name="<%=process.getNOM_PB_FILTRER()%>">		
+                <INPUT type="submit" class="sigp2-Bouton-200" value="Demandes à valider" name="<%=process.getNOM_PB_FILTRER_DEMANDE_A_VALIDER()%>">		
              	<div id="treeHierarchy" style="display: none;margin-left:300px;margin-top:20px; height: 340; width: 500; overflow:auto; background-color: #f4f4f4; border-width: 1px; border-style: solid;z-index:1;">
                 <script type="text/javascript">
                 d = new dTree('d');

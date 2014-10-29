@@ -362,11 +362,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	@Override
 	public List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
-			Integer idAgentRecherche, Integer idRefGroupe) {
-
+			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDemandes;
 		HashMap<String, String> params = new HashMap<>();
+		params.put("aValider", String.valueOf(aValider));
+
 		if (dateDebut != null)
 			params.put("from", dateDebut);
 		if (dateFin != null)
@@ -380,7 +381,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		if (idRefGroupe != null)
 			params.put("groupe", idRefGroupe.toString());
 		logger.debug("Call " + url + " with from : " + dateDebut + ",to : " + dateFin + ",etat : " + idRefEtat
-				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe);
+				+ ",type : " + idRefType + ",idAgentRecherche : " + idAgentRecherche + ",groupe : " + idRefGroupe
+				+ ",aValider : " + aValider);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}
