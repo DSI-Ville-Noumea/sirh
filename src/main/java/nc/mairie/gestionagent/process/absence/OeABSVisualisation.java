@@ -634,7 +634,7 @@ public class OeABSVisualisation extends BasicProcess {
 		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
 				type == null ? null : type.getIdRefTypeAbsence(),
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence(),false);
+				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false);
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
@@ -1933,48 +1933,8 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_FILTRER_DEMANDE_A_VALIDER(HttpServletRequest request) throws Exception {
 
-		if (!performControlerFiltres()) {
-			return false;
-		}
-
-		String dateDeb = getVAL_ST_DATE_MIN();
-		String dateMin = dateDeb.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateDeb, "dd/MM/yyyy",
-				"yyyyMMdd");
-
-		String dateFin = getVAL_ST_DATE_MAX();
-		String dateMax = dateFin.equals(Const.CHAINE_VIDE) ? null : Services.convertitDate(dateFin, "dd/MM/yyyy",
-				"yyyyMMdd");
-
-		// etat
-		int numEtat = (Services.estNumerique(getZone(getNOM_LB_ETAT_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_ETAT_SELECT())) : -1);
-		EnumEtatAbsence etat = null;
-		if (numEtat != -1 && numEtat != 0) {
-			etat = (EnumEtatAbsence) getListeEtats().get(numEtat - 1);
-		}
-		// famille
-		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FAMILLE_SELECT())) : -1);
-		TypeAbsenceDto type = null;
-		if (numType != -1 && numType != 0) {
-			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType - 1);
-		}
-		// groupe
-		int numGroupe = (Services.estNumerique(getZone(getNOM_LB_GROUPE_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_GROUPE_SELECT())) : -1);
-		RefGroupeAbsenceDto groupe = null;
-		if (numGroupe != -1 && numGroupe != 0) {
-			groupe = (RefGroupeAbsenceDto) getListeGroupeAbsence().get(numGroupe - 1);
-		}
-
-		String idAgentDemande = getVAL_ST_AGENT_DEMANDE().equals(Const.CHAINE_VIDE) ? null : "900"
-				+ getVAL_ST_AGENT_DEMANDE();
-
 		SirhAbsWSConsumer t = new SirhAbsWSConsumer();
-		List<DemandeDto> listeDemande = t.getListeDemandes(dateMin, dateMax, etat == null ? null : etat.getCode(),
-				type == null ? null : type.getIdRefTypeAbsence(),
-				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
-				groupe == null ? null : groupe.getIdRefGroupeAbsence(), true);
+		List<DemandeDto> listeDemande = t.getListeDemandes(null, null, null, null, null, null, true);
 		logger.debug("Taille liste absences : " + listeDemande.size());
 
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
