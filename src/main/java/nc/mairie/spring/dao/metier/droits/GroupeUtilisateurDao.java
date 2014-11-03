@@ -17,9 +17,9 @@ public class GroupeUtilisateurDao extends SirhDao implements GroupeUtilisateurDa
 	}
 
 	@Override
-	public void supprimerGroupeUtilisateurAvecGroupe(Integer idGroupe) throws Exception {
-		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_GROUPE + "=? ";
-		jdbcTemplate.update(sql, new Object[] { idGroupe });
+	public void supprimerGroupeUtilisateur(Integer idUtilisateur, Integer idGroupe) throws Exception {
+		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_GROUPE + "=? and " + CHAMP_ID_UTILISATEUR + "=?";
+		jdbcTemplate.update(sql, new Object[] { idGroupe, idUtilisateur });
 	}
 
 	@Override

@@ -410,7 +410,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 				Groupe g = (Groupe) getListeGroupesUtilisateur().get(i);
 				GroupeUtilisateur gu = getGroupeUtilisateurDao().chercherGroupeUtilisateur(
 						getUtilisateurCourant().getIdUtilisateur(), g.getIdGroupe());
-				getGroupeUtilisateurDao().supprimerGroupeUtilisateurAvecGroupe(gu.getIdGroupe());
+				getGroupeUtilisateurDao().supprimerGroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
+						gu.getIdGroupe());
 			}
 			getUtilisateurDao().supprimerUtilisateur(getUtilisateurCourant().getIdUtilisateur());
 		} else {
@@ -429,7 +430,8 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 					Groupe grp = (Groupe) getListeGroupesARetirer().get(i);
 					GroupeUtilisateur gu = getGroupeUtilisateurDao().chercherGroupeUtilisateur(
 							getUtilisateurCourant().getIdUtilisateur(), grp.getIdGroupe());
-					getGroupeUtilisateurDao().supprimerGroupeUtilisateurAvecGroupe(gu.getIdGroupe());
+					getGroupeUtilisateurDao().supprimerGroupeUtilisateur(getUtilisateurCourant().getIdUtilisateur(),
+							gu.getIdGroupe());
 				}
 			}
 			for (int i = 0; i < getListeGroupesAAjouter().size(); i++) {
