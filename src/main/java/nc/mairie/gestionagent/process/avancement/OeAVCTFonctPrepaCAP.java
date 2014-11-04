@@ -727,21 +727,16 @@ public class OeAVCTFonctPrepaCAP extends BasicProcess {
 	public boolean performPB_IMPRIMER(HttpServletRequest request) throws Exception {
 		UserAppli user = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agent = null;
-		if (!user.getUserName().equals("nicno85")) {
-			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto ag = radiConsu.getAgentCompteADByLogin(user.getUserName());
-			if (ag == null) {
-				// "ERR183",
-				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-				return false;
-			}
-			agent = getAgentDao().chercherAgentParMatricule(
-					radiConsu.getNomatrWithEmployeeNumber(ag.getEmployeeNumber()));
-		} else {
-			agent = getAgentDao().chercherAgentParMatricule(5138);
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto ag = radiConsu.getAgentCompteADByLogin(user.getUserName());
+		if (ag == null) {
+			// "ERR183",
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
 		}
+		agent = getAgentDao().chercherAgentParMatricule(radiConsu.getNomatrWithEmployeeNumber(ag.getEmployeeNumber()));
 
 		for (int i = 0; i < getListeImpression().size(); i++) {
 			if (getVAL_CK_TAB_SHD(i).equals(getCHECKED_ON())) {

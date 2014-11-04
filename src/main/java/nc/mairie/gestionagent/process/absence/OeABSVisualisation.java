@@ -978,30 +978,27 @@ public class OeABSVisualisation extends BasicProcess {
 		Agent agent = null;
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
-			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
-			if (user == null) {
-				getTransaction().traiterErreur();
-				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-				return null;
-			} else {
-				if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-					try {
-						agent = getAgentDao().chercherAgentParMatricule(
-								radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-					} catch (Exception e) {
-						// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-						getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-						return null;
-					}
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(
+							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
 				}
 			}
-		} else {
-			agent = getAgentDao().chercherAgentParMatricule(5138);
 		}
+
 		return agent;
 	}
 

@@ -522,8 +522,10 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 		}
 		int indicePrime = 0;
 		for (RefPrimeDto list : listeTotale) {
-			addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibelle());
-			indicePrime++;
+			if (list != null) {
+				addZone(getNOM_ST_PP_RUBR(indicePrime), list.getNumRubrique() + " - " + list.getLibelle());
+				indicePrime++;
+			}
 		}
 
 	}
@@ -2205,7 +2207,7 @@ public class OeAGENTEmploisPoste extends BasicProcess {
 	public void setRemplacement(FichePoste remp) throws Exception {
 		this.remplacement = remp;
 		if (remp != null) {
-			try{
+			try {
 				setAgtRemplacement(getAgentDao().chercherAgentAffecteFichePoste(getRemplacement().getIdFichePoste()));
 			} catch (Exception e) {
 				setAgtRemplacement(null);

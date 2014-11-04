@@ -148,27 +148,23 @@ public class OePTGSaisie extends BasicProcess {
 			return false;
 
 		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
-		if (!uUser.getUserName().equals("nicno85") && !uUser.getUserName().equals("rebjo84")) {
-			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
-			if (user == null) {
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
+		}
+		if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+			try {
+				loggedAgent = getAgentDao().chercherAgentParMatricule(
+						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+			} catch (Exception e) {
 				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
 				return false;
 			}
-			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
-				try {
-					loggedAgent = getAgentDao().chercherAgentParMatricule(
-							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-				} catch (Exception e) {
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-					return false;
-				}
-			}
-		} else {
-			loggedAgent = getAgentDao().chercherAgentParMatricule(5138);
 		}
 
 		// on enregistre les pointages
@@ -414,7 +410,8 @@ public class OePTGSaisie extends BasicProcess {
 		if (saisie) {
 			ret = new HeureSupDto();
 			ret.setRecuperee(getListeFichePointage().isDPM() ? true : data.getChk().equals("CHECKED_ON"));
-			ret.setRappelService(getListeFichePointage().isDPM() ? data.getChkRappelService().equals("CHECKED_ON") : false);
+			ret.setRappelService(getListeFichePointage().isDPM() ? data.getChkRappelService().equals("CHECKED_ON")
+					: false);
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());

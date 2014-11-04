@@ -155,21 +155,18 @@ public class OePTGPayeurFonct extends BasicProcess {
 			// on recupere l'agent connecté
 			UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 			Agent agentConnecte = null;
-			if (!u.getUserName().equals("nicno85")) {
-				// on fait la correspondance entre le login et l'agent via RADI
-				RadiWSConsumer radiConsu = new RadiWSConsumer();
-				LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
-				if (user == null) {
-					// "ERR183",
-					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
-					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
-					return false;
-				}
-				agentConnecte = getAgentDao().chercherAgentParMatricule(
-						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-			} else {
-				agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
+			// on fait la correspondance entre le login et l'agent via RADI
+			RadiWSConsumer radiConsu = new RadiWSConsumer();
+			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+			if (user == null) {
+				// "ERR183",
+				// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+				return false;
 			}
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+
 			SirhPtgWSConsumer ptg = new SirhPtgWSConsumer();
 
 			ptg.startExportEtatsPayeur(agentConnecte.getIdAgent(), STATUT);

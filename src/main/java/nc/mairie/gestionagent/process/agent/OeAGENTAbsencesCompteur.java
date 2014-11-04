@@ -589,22 +589,19 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
 		UserAppli u = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
 		Agent agentConnecte = null;
-		if (!(u.getUserName().equals("nicno85"))) {
-			// on fait la correspondance entre le login et l'agent via RADI
-			RadiWSConsumer radiConsu = new RadiWSConsumer();
-			LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
-			if (user == null) {
-				return null;
-			}
-			try {
-				agentConnecte = getAgentDao().chercherAgentParMatricule(
-						radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
-			} catch (Exception e) {
-				return null;
-			}
-		} else {
-			agentConnecte = getAgentDao().chercherAgentParMatricule(5138);
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto user = radiConsu.getAgentCompteADByLogin(u.getUserName());
+		if (user == null) {
+			return null;
 		}
+		try {
+			agentConnecte = getAgentDao().chercherAgentParMatricule(
+					radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+		} catch (Exception e) {
+			return null;
+		}
+
 		return agentConnecte;
 	}
 
