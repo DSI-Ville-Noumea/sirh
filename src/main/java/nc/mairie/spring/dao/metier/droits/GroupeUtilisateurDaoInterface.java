@@ -10,4 +10,6 @@ public interface GroupeUtilisateurDaoInterface {
 
 	public GroupeUtilisateur chercherGroupeUtilisateur(Integer idUtilisateur, Integer idGroupe) throws Exception;
 
+	public void supprimerGroupeUtilisateurAvecGroupe(Integer idGroupe);
+
 }

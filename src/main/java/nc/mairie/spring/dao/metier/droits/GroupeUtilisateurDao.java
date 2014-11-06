@@ -37,4 +37,10 @@ public class GroupeUtilisateurDao extends SirhDao implements GroupeUtilisateurDa
 				idGroupe }, new BeanPropertyRowMapper<GroupeUtilisateur>(GroupeUtilisateur.class));
 		return cadre;
 	}
+
+	@Override
+	public void supprimerGroupeUtilisateurAvecGroupe(Integer idGroupe) {
+		String sql = "DELETE FROM " + NOM_TABLE + " where " + CHAMP_ID_GROUPE + "=?";
+		jdbcTemplate.update(sql, new Object[] { idGroupe });
+	}
 }
