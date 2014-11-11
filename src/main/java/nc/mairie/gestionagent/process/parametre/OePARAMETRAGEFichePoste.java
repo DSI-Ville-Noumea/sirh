@@ -47,6 +47,9 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public String focus = null;
+	
 	private String[] LB_ENTITE_GEO;
 	private String[] LB_ENTITE_ECOLE;
 	private String[] LB_NATURE_AVANTAGE;
@@ -3360,6 +3363,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	public boolean performPB_ANNULER_BASE_HORAIRE_POINTAGE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE());
 		return true;
 	}
 
@@ -3394,6 +3398,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		addZone(getNOM_EF_HEURE_DIMANCHE(), Const.CHAINE_VIDE);
 
 		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE());
 		return true;
 	}
 
@@ -3455,8 +3460,10 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 			}
 
 			addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), ACTION_MODIFICATION);
+			setFocus(getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE());
 		} else {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "bases horaires de pointage"));
+			setFocus(getDefaultFocus());
 		}
 
 		return true;
@@ -3541,6 +3548,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			initialiseListeBaseHorairePointage(request);
 			addZone(getNOM_ST_ACTION_BASE_HORAIRE_POINTAGE(), Const.CHAINE_VIDE);
+			setFocus(getNOM_PB_ANNULER_BASE_HORAIRE_POINTAGE());
 		}
 
 		return true;
@@ -3751,5 +3759,20 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 	public String getVAL_EF_BASE_HEBDO_M() {
 		return getZone(getNOM_EF_BASE_HEBDO_M());
+	}
+
+	public String getFocus() {
+		if (focus == null) {
+			focus = getDefaultFocus();
+		}
+		return focus;
+	}
+
+	public String getDefaultFocus() {
+		return getNOM_PB_ANNULER_ENTITE_GEO();
+	}
+
+	public void setFocus(String focus) {
+		this.focus = focus;
 	}
 }
