@@ -2,7 +2,6 @@
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
-<%@page import="nc.mairie.utils.TreeHierarchy"%>
 <HTML>
 <HEAD>
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
@@ -13,7 +12,6 @@
 <TITLE>Gestion des utilisateurs</TITLE>
 
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
-<SCRIPT language="javascript" src="js/dtree.js"></SCRIPT>
 
 <SCRIPT language="JavaScript">
 //afin de sélectionner un élément dans une liste
@@ -36,24 +34,6 @@ document.formu.elements[nom].focus();
 			} 
 		 document.getElementById(id).className="selectLigne";
 		}
-			
-			// afin d'afficher la hiérarchie des services
-			function agrandirHierarchy() {
-			
-				hier = 	document.getElementById('treeHierarchy');
-			
-				if (hier.style.display!='none') {
-					reduireHierarchy();
-				} else {
-					hier.style.display='block';
-				}
-			}
-			
-			// afin de cacher la hiérarchie des services
-			function reduireHierarchy() {
-				hier = 	document.getElementById('treeHierarchy');
-				hier.style.display='none';
-			}
 
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

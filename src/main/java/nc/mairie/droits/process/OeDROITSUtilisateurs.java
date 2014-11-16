@@ -1,9 +1,6 @@
 package nc.mairie.droits.process;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +11,6 @@ import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.droits.Groupe;
 import nc.mairie.metier.droits.GroupeUtilisateur;
 import nc.mairie.metier.droits.Utilisateur;
-import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.droits.GroupeDao;
 import nc.mairie.spring.dao.metier.droits.GroupeUtilisateurDao;
@@ -29,7 +25,6 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
-import nc.mairie.utils.TreeHierarchy;
 
 import org.springframework.context.ApplicationContext;
 
@@ -59,8 +54,6 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public String focus = null;
 	private Utilisateur utilisateurCourant;
-	public Hashtable<String, TreeHierarchy> hTree = null;
-	private ArrayList<Service> listeServices;
 
 	private UtilisateurDao utilisateurDao;
 	private GroupeDao groupeDao;
@@ -80,7 +73,6 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 			throw new Exception();
 		}
 		initialiseDao();
-		initialiseListeService();
 
 		// Initialisation des utilisateurs
 		if (getListeUtilisateur() == null || getListeUtilisateur().size() == 0) {
@@ -729,67 +721,6 @@ public class OeDROITSUtilisateurs extends BasicProcess {
 
 	public String getVAL_EF_CODESERVICE() {
 		return getZone(getNOM_EF_CODESERVICE());
-	}
-
-	private void initialiseListeService() throws Exception {
-		// Si la liste des services est nulle
-		if (getListeServices() == null || getListeServices().size() == 0) {
-			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
-			setListeServices(services);
-
-			// Tri par codeservice
-			Collections.sort(getListeServices(), new Comparator<Object>() {
-				public int compare(Object o1, Object o2) {
-					Service s1 = (Service) o1;
-					Service s2 = (Service) o2;
-					return (s1.getCodService().compareTo(s2.getCodService()));
-				}
-			});
-
-			// alim de la hTree
-			// RG_PE_FP_C03
-			hTree = new Hashtable<String, TreeHierarchy>();
-			TreeHierarchy parent = null;
-			for (int i = 0; i < getListeServices().size(); i++) {
-				Service serv = (Service) getListeServices().get(i);
-
-				if (Const.CHAINE_VIDE.equals(serv.getCodService()))
-					continue;
-
-				// recherche du supérieur
-				String codeService = serv.getCodService();
-				while (codeService.endsWith("A")) {
-					codeService = codeService.substring(0, codeService.length() - 1);
-				}
-				codeService = codeService.substring(0, codeService.length() - 1);
-				codeService = Services.rpad(codeService, 4, "A");
-
-				// recherche du nfa
-				String nfa = null;
-				try {
-					nfa = getNfaDao().chercherNFAByCodeService(codeService).getNFA();
-				} catch (Exception e) {
-
-				}
-
-				parent = hTree.get(codeService);
-				int indexParent = (parent == null ? 0 : parent.getIndex());
-				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent, nfa));
-
-			}
-		}
-	}
-
-	public ArrayList<Service> getListeServices() {
-		return listeServices;
-	}
-
-	private void setListeServices(ArrayList<Service> listeServices) {
-		this.listeServices = listeServices;
-	}
-
-	public Hashtable<String, TreeHierarchy> getHTree() {
-		return hTree;
 	}
 
 	public UtilisateurDao getUtilisateurDao() {
