@@ -454,7 +454,6 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		// MAIRIE.SPADMN.CDPADM NOT IN ('CA','DC','DE','FC','LI','RF','RT','RV')
 		// AND MAIRIE.SPCARR.CDCATE NOT IN (7, 9, 10, 11)
 		SimpleDateFormat sdfMairie = new SimpleDateFormat("yyyyMMdd");
-		SimpleDateFormat sdfSIRH = new SimpleDateFormat("yyyy-MM-dd");
 		logger.info("Req AS400 : DEBUT listerAgentEligibleEAE sans affectés ");
 		ArrayList<Carriere> listeCarrierePAActive = Carriere.listerCarriereActiveAvecPA(getTransaction(),
 				sdfMairie.format(new Date()));
@@ -2333,6 +2332,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						parcours.getDateFin(), parcours.getLibelleParcoursPro());
 			} else {
 				// on regarde si il y a des lignes suivantes
+				@SuppressWarnings("unused")
 				Spmtsr spSuiv = Spmtsr.chercherSpmtsrAvecAgentEtDateDebut(getTransaction(), ag.getNomatr(),
 						(Integer.valueOf(sp.getDatfin()) + 1));
 				if (getTransaction().isErreur()) {

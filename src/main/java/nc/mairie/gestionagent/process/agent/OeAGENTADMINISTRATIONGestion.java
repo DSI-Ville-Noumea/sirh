@@ -47,6 +47,7 @@ public class OeAGENTADMINISTRATIONGestion extends BasicProcess {
 	private ArrayList<AutreAdministrationAgent> listeAgentAdministrations;
 	private ArrayList<AutreAdministration> listeAdministrations;
 	private AutreAdministrationAgent autreAdministrationAgentCourant;
+	@SuppressWarnings("unused")
 	private AutreAdministration autreAdministrationCourant;
 	public String focus = null;
 

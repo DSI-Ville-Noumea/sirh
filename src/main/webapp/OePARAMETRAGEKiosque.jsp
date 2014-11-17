@@ -143,6 +143,59 @@
 						</FIELDSET>	
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Accueil du kiosque</legend>
+					    	<span class="sigp2-saisie" style="margin-left: 5px;">Texte</span>
+							<SELECT name="<%= process.getNOM_LB_TEXTE_KIOSQUE() %>" size="10" style="width:100%;" class="sigp2-liste">
+								<%=process.forComboHTML(process.getVAL_LB_TEXTE_KIOSQUE(), process.getVAL_LB_TEXTE_KIOSQUE_SELECT()) %>
+							</SELECT>
+			
+							<div class=<%=MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>>
+								<INPUT type="image" src="images/ajout.gif" height="20px" width="20px" name="<%=process.getNOM_PB_CREER_TEXTE_KIOSQUE()%>">
+			    	        	<INPUT type="image" src="images/suppression.gif" height="20px" width="20px" name="<%=process.getNOM_PB_SUPPRIMER_TEXTE_KIOSQUE()%>">
+			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_TEXTE_KIOSQUE()%>">
+			    	        </div>
+			            	
+			            	<% if (process.getVAL_ST_ACTION_TEXTE_KIOSQUE()!= null && !process.getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(Const.CHAINE_VIDE)) {%>				            
+							<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_TEXTE_KIOSQUE())) { %>
+							<table>
+								<tr>
+									<td width="50px;">
+										<label class="sigp2Mandatory">Texte :</label>
+										<br>
+										<textarea cols="100" rows="10" name="<%=process.getNOM_EF_TEXTE_KIOSQUE()%>" title="Zone de saisie du texte d'accueil"><%=process.getVAL_EF_TEXTE_KIOSQUE().trim() %></textarea>
+									</td>
+								</tr>
+								<tr>
+									<td align="center">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_TEXTE_KIOSQUE()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TEXTE_KIOSQUE()%>">
+									</td>
+								</tr>
+							</table>
+							<%} else {%>
+							<table>
+								<tr>
+									<td>
+										<label class="sigp2Mandatory">Texte :</label>
+										<br>
+										<label class="sigp2-saisie" ><%= process.getVAL_EF_TEXTE_KIOSQUE() %></label>
+									</td>
+								</tr>
+								<tr>
+									<td align="center">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Supprimer" name="<%=process.getNOM_PB_VALIDER_TEXTE_KIOSQUE()%>">
+										<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER_TEXTE_KIOSQUE()%>">
+									</td>
+								</tr>
+							</table>
+						    <%}%>
+							<% } %>
+					    </FIELDSET>
+					</td>
+				</tr>
 			</table>
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">

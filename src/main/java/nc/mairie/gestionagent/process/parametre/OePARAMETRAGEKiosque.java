@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
+import nc.mairie.metier.parametrage.AccueilKiosque;
 import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.metier.parametrage.AccueilKiosqueDao;
 import nc.mairie.spring.dao.metier.parametrage.ReferentRhDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
@@ -43,15 +45,20 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private String[] LB_REFERENT_RH;
 	private String[] LB_SERVICE_AUTRES;
 	private String[] LB_SERVICE_UTILISATEUR;
+	private String[] LB_TEXTE_KIOSQUE;
 
 	private ArrayList<Service> listeServiceAutres;
 	private ArrayList<Service> listeServiceUtilisateur;
 
 	private ReferentRhDao referentRhDao;
+	private AccueilKiosqueDao accueilKiosqueDao;
 	private AgentDao agentDao;
 
 	private ReferentRh referentRhCourant;
 	private ArrayList<ReferentRh> listeReferentRh;
+
+	private AccueilKiosque accueilKiosqueCourant;
+	private ArrayList<AccueilKiosque> listeAccueilKiosque;
 
 	/**
 	 * Initialisation des zones à afficher dans la JSP Alimentation des listes,
@@ -89,9 +96,11 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		if (getListeReferentRh().size() == 0) {
 			initialiseListeReferentRh(request);
 		}
+		if (getListeAccueilKiosque().size() == 0) {
+			initialiseListeAccueilKiosque(request);
+		}
 
 		// Initialisation des Services
-
 		if (getListeServiceUtilisateur().size() != 0) {
 			int[] tailles = { 50 };
 			FormateListe aFormat = new FormateListe(tailles);
@@ -118,6 +127,24 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			setLB_SERVICE_AUTRES(null);
 		}
 
+	}
+
+	private void initialiseListeAccueilKiosque(HttpServletRequest request) throws Exception {
+		setListeAccueilKiosque((ArrayList<AccueilKiosque>) getAccueilKiosqueDao().getAccueilKiosque());
+		if (getListeAccueilKiosque().size() != 0) {
+			int tailles[] = { 90 };
+			String padding[] = { "G" };
+			FormateListe aFormat = new FormateListe(tailles, padding, false);
+			for (ListIterator<AccueilKiosque> list = getListeAccueilKiosque().listIterator(); list.hasNext();) {
+				AccueilKiosque ref = (AccueilKiosque) list.next();
+				String ligne[] = { ref.getTexteAccueilKiosque() };
+
+				aFormat.ajouteLigne(ligne);
+			}
+			setLB_TEXTE_KIOSQUE(aFormat.getListeFormatee());
+		} else {
+			setLB_TEXTE_KIOSQUE(null);
+		}
 	}
 
 	private void initialiseListeReferentRh(HttpServletRequest request) throws Exception {
@@ -147,6 +174,9 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		}
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAccueilKiosqueDao() == null) {
+			setAccueilKiosqueDao(new AccueilKiosqueDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -356,9 +386,12 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT(), "-1");
 		addZone(getNOM_LB_SERVICE_AUTRES_SELECT(), "-1");
+		addZone(getNOM_EF_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
 
 		setListeServiceAutres(null);
 		setListeServiceUtilisateur(null);
+		setAccueilKiosqueCourant(null);
+		setReferentRhCourant(null);
 	}
 
 	public String getNOM_PB_ANNULER_REFERENT_RH() {
@@ -368,6 +401,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	public boolean performPB_ANNULER_REFERENT_RH(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_REFERENT_RH(), Const.CHAINE_VIDE);
 		setStatut(STATUT_MEME_PROCESS);
+		viderFormulaire();
 		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
 		return true;
 	}
@@ -433,6 +467,30 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT
 			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT())) {
 				return performPB_SUPPRIMER_RECHERCHER_AGENT(request);
+			}
+			// Si clic sur le bouton PB_ANNULER_TEXTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_ANNULER_TEXTE_KIOSQUE())) {
+				return performPB_ANNULER_TEXTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_CREER_TEXTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_CREER_TEXTE_KIOSQUE())) {
+				return performPB_CREER_TEXTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_TEXTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_MODIFIER_TEXTE_KIOSQUE())) {
+				return performPB_MODIFIER_TEXTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_SUPPRIMER_TEXTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_TEXTE_KIOSQUE())) {
+				return performPB_SUPPRIMER_TEXTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_TEXTE_KIOSQUE
+			if (testerParametre(request, getNOM_PB_VALIDER_TEXTE_KIOSQUE())) {
+				return performPB_VALIDER_TEXTE_KIOSQUE(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -719,5 +777,171 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		// On enlève l'agent selectionnée
 		addZone(getNOM_EF_ID_REFERENT_RH(), Const.CHAINE_VIDE);
 		return true;
+	}
+
+	private String[] getLB_TEXTE_KIOSQUE() {
+		if (LB_TEXTE_KIOSQUE == null)
+			LB_TEXTE_KIOSQUE = initialiseLazyLB();
+		return LB_TEXTE_KIOSQUE;
+	}
+
+	private void setLB_TEXTE_KIOSQUE(String[] newLB_TEXTE_KIOSQUE) {
+		LB_TEXTE_KIOSQUE = newLB_TEXTE_KIOSQUE;
+	}
+
+	public String getNOM_LB_TEXTE_KIOSQUE() {
+		return "NOM_LB_TEXTE_KIOSQUE";
+	}
+
+	public String getNOM_LB_TEXTE_KIOSQUE_SELECT() {
+		return "NOM_LB_TEXTE_KIOSQUE_SELECT";
+	}
+
+	public String[] getVAL_LB_TEXTE_KIOSQUE() {
+		return getLB_TEXTE_KIOSQUE();
+	}
+
+	public String getVAL_LB_TEXTE_KIOSQUE_SELECT() {
+		return getZone(getNOM_LB_TEXTE_KIOSQUE_SELECT());
+	}
+
+	public String getNOM_PB_MODIFIER_TEXTE_KIOSQUE() {
+		return "NOM_PB_MODIFIER_TEXTE_KIOSQUE";
+	}
+
+	public boolean performPB_MODIFIER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+
+		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
+		if (indice != -1 && indice < getListeAccueilKiosque().size()) {
+			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
+			setAccueilKiosqueCourant(ref);
+			addZone(getNOM_EF_TEXTE_KIOSQUE(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
+			addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_MODIFICATION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'accueil"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_TEXTE_KIOSQUE() {
+		return "NOM_PB_SUPPRIMER_TEXTE_KIOSQUE";
+	}
+
+	public boolean performPB_SUPPRIMER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		int indice = (Services.estNumerique(getVAL_LB_TEXTE_KIOSQUE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_TEXTE_KIOSQUE_SELECT()) : -1);
+		if (indice != -1 && indice < getListeAccueilKiosque().size()) {
+			AccueilKiosque ref = getListeAccueilKiosque().get(indice);
+			setAccueilKiosqueCourant(ref);
+			addZone(getNOM_EF_TEXTE_KIOSQUE(), getAccueilKiosqueCourant().getTexteAccueilKiosque());
+			addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_SUPPRESSION);
+		} else {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "texte d'accueil"));
+		}
+
+		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
+		return true;
+
+	}
+
+	public String getNOM_PB_CREER_TEXTE_KIOSQUE() {
+		return "NOM_PB_CREER_TEXTE_KIOSQUE";
+	}
+
+	public boolean performPB_CREER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_CREATION);
+
+		// On vide la zone de saisie
+		viderFormulaire();
+		setAccueilKiosqueCourant(new AccueilKiosque());
+
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_TEXTE_KIOSQUE() {
+		return "NOM_ST_ACTION_TEXTE_KIOSQUE";
+	}
+
+	public String getVAL_ST_ACTION_TEXTE_KIOSQUE() {
+		return getZone(getNOM_ST_ACTION_TEXTE_KIOSQUE());
+	}
+
+	public String getNOM_PB_ANNULER_TEXTE_KIOSQUE() {
+		return "NOM_PB_ANNULER_TEXTE_KIOSQUE";
+	}
+
+	public boolean performPB_ANNULER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+		addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
+		viderFormulaire();
+		setStatut(STATUT_MEME_PROCESS);
+		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_TEXTE_KIOSQUE() {
+		return "NOM_PB_VALIDER_TEXTE_KIOSQUE";
+	}
+
+	public boolean performPB_VALIDER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
+
+		if (getVAL_ST_ACTION_TEXTE_KIOSQUE() != null && getVAL_ST_ACTION_TEXTE_KIOSQUE() != Const.CHAINE_VIDE) {
+			if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_CREATION)) {
+				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
+				getAccueilKiosqueDao().creerAccueilKiosque(getAccueilKiosqueCourant().getTexteAccueilKiosque());
+			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_SUPPRESSION)) {
+				getAccueilKiosqueDao().supprimerAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque());
+			} else if (getVAL_ST_ACTION_TEXTE_KIOSQUE().equals(ACTION_MODIFICATION)) {
+				getAccueilKiosqueCourant().setTexteAccueilKiosque(getVAL_EF_TEXTE_KIOSQUE());
+				getAccueilKiosqueDao().modifierAccueilKiosque(getAccueilKiosqueCourant().getIdAccueilKiosque(),
+						getAccueilKiosqueCourant().getTexteAccueilKiosque());
+
+			}
+			initialiseListeAccueilKiosque(request);
+			setAccueilKiosqueCourant(null);
+			addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
+		}
+
+		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
+		return true;
+	}
+
+	public String getNOM_EF_TEXTE_KIOSQUE() {
+		return "NOM_EF_TEXTE_KIOSQUE";
+	}
+
+	public String getVAL_EF_TEXTE_KIOSQUE() {
+		return getZone(getNOM_EF_TEXTE_KIOSQUE());
+	}
+
+	public AccueilKiosqueDao getAccueilKiosqueDao() {
+		return accueilKiosqueDao;
+	}
+
+	public void setAccueilKiosqueDao(AccueilKiosqueDao accueilKiosqueDao) {
+		this.accueilKiosqueDao = accueilKiosqueDao;
+	}
+
+	public AccueilKiosque getAccueilKiosqueCourant() {
+		return accueilKiosqueCourant;
+	}
+
+	public void setAccueilKiosqueCourant(AccueilKiosque accueilKiosqueCourant) {
+		this.accueilKiosqueCourant = accueilKiosqueCourant;
+	}
+
+	public ArrayList<AccueilKiosque> getListeAccueilKiosque() {
+		if (listeAccueilKiosque == null)
+			return new ArrayList<AccueilKiosque>();
+		return listeAccueilKiosque;
+	}
+
+	public void setListeAccueilKiosque(ArrayList<AccueilKiosque> listeAccueilKiosque) {
+		this.listeAccueilKiosque = listeAccueilKiosque;
 	}
 }

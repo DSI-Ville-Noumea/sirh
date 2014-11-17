@@ -2476,7 +2476,6 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				ArrayList<HistoFichePoste> listeHistoFP = new ArrayList<HistoFichePoste>();
 				if (a.getDateFinAff() != null) {
 					// on cherche la FDP dans histo_fiche_poste
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					listeHistoFP = getHistoFichePosteDao().listerHistoFichePosteDansDate(a.getIdFichePoste(),
 							a.getDateDebutAff(), a.getDateFinAff());
 				}

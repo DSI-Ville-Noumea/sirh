@@ -1104,6 +1104,7 @@ public class OeAGENTCarriere extends BasicProcess {
 
 		if (getVAL_ST_ACTION().equals(ACTION_CREATION)) {
 
+			@SuppressWarnings("unused")
 			PositionAdmAgent dernierePA = null;
 			// on verifie qu'il existe une PA comprise dans dateDebCarr
 			PositionAdmAgent posAdmAgtActiveAUneDate = PositionAdmAgent.chercherPositionAdmAgentDateFinExclu(

@@ -418,20 +418,6 @@ public class OePARAMETRAGECarriere extends BasicProcess {
 		return true;
 	}
 
-	private String getStringHeure(Double nbh) {
-		String res = nbh.toString().replace(".", ":");
-		String avantPoint = res.substring(0, res.indexOf(":"));
-		String apresPoint = res.substring(res.indexOf(":") + 1, res.length());
-
-		if (avantPoint.length() == 1) {
-			res = "0" + res;
-		}
-		if (apresPoint.length() == 1) {
-			res = res + "0";
-		}
-		return res;
-	}
-
 	/**
 	 * Retourne pour la JSP le nom de la zone statique : ST_ACTION_SPBASE Date
 	 * de création : (14/09/11 13:52:54)
