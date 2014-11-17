@@ -345,7 +345,7 @@ public class OeAGENTAbsencesHisto extends BasicProcess {
 	private static String getHeureMinute(int nombreMinute) {
 		int heure = nombreMinute / 60;
 		int minute = nombreMinute % 60;
-		String res = "";
+		String res = Const.CHAINE_VIDE;
 		if (heure > 0)
 			res += heure + "h";
 		if (minute > 0)

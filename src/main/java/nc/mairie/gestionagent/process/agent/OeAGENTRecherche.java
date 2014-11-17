@@ -274,8 +274,7 @@ public class OeAGENTRecherche extends BasicProcess {
 		}
 
 		// S'il y a un agent en entrée alors on l'enlève de la liste
-		if (getAgentActivite() != null
-				&& null != getAgentActivite().getNomatr()) {
+		if (getAgentActivite() != null && null != getAgentActivite().getNomatr()) {
 			for (int i = 0; i < aListe.size(); i++) {
 				Agent a = (Agent) aListe.get(i);
 				if (a.getNomatr().toString().equals(getAgentActivite().getNomatr().toString())) {

@@ -388,11 +388,11 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<DemandeDto> getVisualisationHistory(int absId) {
+	public List<DemandeDto> getVisualisationHistory(Integer absId) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsDemandesHistorique;
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idDemande", "" + absId);
+		parameters.put("idDemande", absId.toString());
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(DemandeDto.class, res, url);
 	}

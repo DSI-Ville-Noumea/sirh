@@ -344,7 +344,7 @@ public class OePTGSaisie extends BasicProcess {
 				break;
 			case "CASE_A_COCHER":
 				if (data.getComment().equals(Const.CHAINE_VIDE) && data.getMotif().equals(Const.CHAINE_VIDE)
-						&& (data.getChk().equals("") || data.getChk().equals("CHECKED_OFF"))) {
+						&& (data.getChk().equals(Const.CHAINE_VIDE) || data.getChk().equals("CHECKED_OFF"))) {
 					saisie = false;
 				}
 				break;
@@ -357,7 +357,7 @@ public class OePTGSaisie extends BasicProcess {
 			if (typesaisie.equals("NB_INDEMNITES")) {
 				ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()));
 			} else {
-				if (data.getNbr() != null && !"".equals(data.getNbr())) {
+				if (data.getNbr() != null && !Const.CHAINE_VIDE.equals(data.getNbr())) {
 					ret.setQuantite(Integer.parseInt("0" + data.getNbr().trim()) * 60
 							+ (Integer.parseInt(data.getMins())));
 				} else {
@@ -464,7 +464,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	public String getIdAgent() throws Exception {
 		Agent agent = getAgentDao().chercherAgentParMatricule(idAgent);
-		String service = "";
+		String service = Const.CHAINE_VIDE;
 		try {
 			Affectation affAgent = getAffectationDao().chercherAffectationActiveAvecAgent(agent.getIdAgent());
 			if (affAgent.getIdFichePoste() != null) {
@@ -480,7 +480,7 @@ public class OePTGSaisie extends BasicProcess {
 
 		}
 		return agent.getNomAgent() + " " + agent.getPrenomAgent() + " (" + idAgent + ")"
-				+ (service.equals("") ? "" : " - " + service);
+				+ (service.equals(Const.CHAINE_VIDE) ? Const.CHAINE_VIDE : " - " + service);
 	}
 
 	public Date getDateLundi(int inc) {
@@ -513,7 +513,7 @@ public class OePTGSaisie extends BasicProcess {
 
 	private Date getDateFromTimeCombo(Date d, String h, int i) {
 		Date ret = d;
-		if (h.equals("")) {
+		if (h.equals(Const.CHAINE_VIDE)) {
 			return ret;
 		}
 		GregorianCalendar calendar = new GregorianCalendar();
@@ -528,12 +528,12 @@ public class OePTGSaisie extends BasicProcess {
 	// //////////////////////////////////////////////////////
 	public String getTimeCombo(Date heure) {
 
-		String selected = "";
+		String selected = Const.CHAINE_VIDE;
 		if (null != heure) {
 			DateFormat df = new SimpleDateFormat("HH:mm");
 			selected = df.format(heure);
 		}
-		String val = "";
+		String val = Const.CHAINE_VIDE;
 
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
@@ -555,12 +555,12 @@ public class OePTGSaisie extends BasicProcess {
 
 	public String getTimeFinCombo(Date heure) {
 
-		String selected = "";
+		String selected = Const.CHAINE_VIDE;
 		if (null != heure) {
 			DateFormat df = new SimpleDateFormat("HH:mm");
 			selected = df.format(heure);
 		}
-		String val = "";
+		String val = Const.CHAINE_VIDE;
 		StringBuilder ret = new StringBuilder();
 		ret.append("<option value=''></option>");
 
@@ -594,13 +594,13 @@ public class OePTGSaisie extends BasicProcess {
 
 	public String getMinsCombo(int ival) {
 		StringBuilder ret = new StringBuilder();
-		String selected = "" + ival;
+		String selected = Const.CHAINE_VIDE + ival;
 		if (ival == 0) {
 			selected = "00";
 		}
-		String val = "";
+		String val = Const.CHAINE_VIDE;
 		for (int min = 0; min < 60; min += 15) {
-			val = "" + min;
+			val = Const.CHAINE_VIDE + min;
 			if (min == 0) {
 				val += "0";
 			}

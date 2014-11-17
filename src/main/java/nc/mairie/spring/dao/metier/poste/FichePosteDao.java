@@ -568,7 +568,7 @@ public class FichePosteDao extends SirhDao implements FichePosteDaoInterface {
 				+ "," + CHAMP_ID_ENTITE_GEO + "," + CHAMP_ID_BUDGET + "," + CHAMP_ID_STATUT_FP + ","
 				+ CHAMP_ID_RESPONSABLE + "," + CHAMP_ID_REMPLACEMENT + "," + CHAMP_ID_CDTHOR_BUD + ","
 				+ CHAMP_ID_CDTHOR_REG + "," + CHAMP_ID_SERVI + "," + CHAMP_DATE_FIN_VALIDITE_FP + "," + CHAMP_OPI + ","
-				+ CHAMP_NFA + "," + CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "" + ","
+				+ CHAMP_NFA + "," + CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + ","
 				+ CHAMP_DATE_DEBUT_VALIDITE_FP + "," + CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_OBSERVATION + ","
 				+ CHAMP_CODE_GRADE + "," + CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + ","
 				+ CHAMP_ID_BASE_HORAIRE_POINTAGE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?))";

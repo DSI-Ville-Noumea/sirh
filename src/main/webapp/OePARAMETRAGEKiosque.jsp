@@ -1,4 +1,5 @@
 <!-- Sample JSP file --> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@page import="nc.mairie.metier.Const"%>
 <%@page import="nc.mairie.metier.poste.Service"%>
 <%@page import="nc.mairie.enums.EnumTypeDroit"%>
 <%@page import="nc.mairie.utils.MairieUtils"%>
@@ -49,7 +50,7 @@
 			    	        	<INPUT type="image" src="images/modifier.gif" height="20px" width="20px" name="<%=process.getNOM_PB_MODIFIER_REFERENT_RH()%>">
 			    	        </div>
 			            	
-			            	<% if (process.getVAL_ST_ACTION_REFERENT_RH()!= null && !process.getVAL_ST_ACTION_REFERENT_RH().equals("")) {%>				            
+			            	<% if (process.getVAL_ST_ACTION_REFERENT_RH()!= null && !process.getVAL_ST_ACTION_REFERENT_RH().equals(Const.CHAINE_VIDE)) {%>				            
 							<% if (!process.ACTION_SUPPRESSION.equals(process.getVAL_ST_ACTION_REFERENT_RH())) { %>
 							<table width="100%">
 								<tr>

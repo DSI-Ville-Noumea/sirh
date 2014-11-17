@@ -117,7 +117,7 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getDefaultFocus() {
-		return "";
+		return Const.CHAINE_VIDE;
 	}
 
 	@Override
@@ -716,7 +716,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private static String getHeureMinute(int nombreMinute) {
 		int heure = nombreMinute / 60;
 		int minute = nombreMinute % 60;
-		String res = "";
+		String res = Const.CHAINE_VIDE;
 		if (heure > 0)
 			res += heure + "h";
 		if (minute > 0)
@@ -853,7 +853,7 @@ public class OeABSVisualisation extends BasicProcess {
 			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
 			setTypeCreation(type);
 		}
-		String idAgent = "";
+		String idAgent = Const.CHAINE_VIDE;
 		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
@@ -1165,7 +1165,7 @@ public class OeABSVisualisation extends BasicProcess {
 		if (d != null) {
 			return sdf.format(d);
 		} else {
-			return "";
+			return Const.CHAINE_VIDE;
 		}
 	}
 
@@ -1243,12 +1243,12 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// /////////////// MOTIF ////////////////////
 		if (type.getTypeSaisiDto().isMotif()) {
-			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? "" : dem.getMotif().trim());
+			addZone(getNOM_ST_MOTIF_CREATION(), dem.getMotif() == null ? Const.CHAINE_VIDE : dem.getMotif().trim());
 		}
 
 		// /////////////// DUREE ////////////////////
 		if (type.getTypeSaisiDto().isDuree()) {
-			String duree = (dem.getDuree() / 60) == 0 ? "" : dem.getDuree() / 60 + "";
+			String duree = (dem.getDuree() / 60) == 0 ? Const.CHAINE_VIDE : dem.getDuree() / 60 + Const.CHAINE_VIDE;
 			addZone(getNOM_ST_DUREE(), duree);
 		}
 
@@ -1685,7 +1685,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// /////////////// RADIO BOUTON DEBUT ////////////////////
 		if (type.getTypeSaisiDto().isChkDateDebut()) {
-			if (null == getVAL_RG_DEBUT_MAM() || "".equals(getVAL_RG_DEBUT_MAM())) {
+			if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
 				return false;
 			}
@@ -1726,7 +1726,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// /////////////// RADIO BOUTON FIN ////////////////////
 		if (type.getTypeSaisiDto().isChkDateFin()) {
-			if (null == getVAL_RG_FIN_MAM() || "".equals(getVAL_RG_FIN_MAM())) {
+			if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
 				return false;
 			}
@@ -1749,7 +1749,7 @@ public class OeABSVisualisation extends BasicProcess {
 		}
 		// /////////////// MOTIF ////////////////////
 		if (type.getTypeSaisiDto().isMotif()) {
-			if (null == getVAL_ST_MOTIF_CREATION() || "".equals(getVAL_ST_MOTIF_CREATION().trim())) {
+			if (null == getVAL_ST_MOTIF_CREATION() || Const.CHAINE_VIDE.equals(getVAL_ST_MOTIF_CREATION().trim())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 				return false;
 			}

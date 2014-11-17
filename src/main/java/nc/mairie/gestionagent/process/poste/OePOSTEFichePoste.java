@@ -2601,7 +2601,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				getTransaction().traiterErreur();
 			}
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR970"));
-			messageInf = "";
+			messageInf = Const.CHAINE_VIDE;
 			return false;
 		}
 

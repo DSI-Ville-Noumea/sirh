@@ -225,7 +225,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	}
 
 	public String getDefaultFocus() {
-		return "";
+		return Const.CHAINE_VIDE;
 	}
 
 	/**

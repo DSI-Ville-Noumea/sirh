@@ -86,7 +86,7 @@ public interface ISirhAbsWSConsumer {
 	List<DemandeDto> getListeDemandes(String dateDebut, String dateFin, Integer idRefEtat, Integer idRefType,
 			Integer idAgentRecherche, Integer idRefGroupe, boolean aValider);
 
-	List<DemandeDto> getVisualisationHistory(int absId);
+	List<DemandeDto> getVisualisationHistory(Integer absId);
 
 	ReturnMessageDto saveDemande(Integer idAgentConnecte, String json);
 

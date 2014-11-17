@@ -166,18 +166,18 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 
 		// Solde recup
 		int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
-		String soldeRecupHeure = (soldeRecup / 60) == 0 ? "" : soldeRecup / 60 + "h ";
+		String soldeRecupHeure = (soldeRecup / 60) == 0 ? Const.CHAINE_VIDE : soldeRecup / 60 + "h ";
 		String soldeRecupMinute = (soldeRecup % 60) == 0 ? "&nbsp;" : soldeRecup % 60 + "m";
 		addZone(getNOM_ST_SOLDE_RECUP(), soldeRecupHeure + soldeRecupMinute);
 
 		// Solde repos comp
 		int soldeReposComp = soldeGlobal.getSoldeReposCompAnnee().intValue();
-		String soldeReposCompHeure = (soldeReposComp / 60) == 0 ? "" : soldeReposComp / 60 + "h ";
+		String soldeReposCompHeure = (soldeReposComp / 60) == 0 ? Const.CHAINE_VIDE : soldeReposComp / 60 + "h ";
 		String soldeReposCompMinute = (soldeReposComp % 60) == 0 ? "&nbsp;" : soldeReposComp % 60 + "m";
 		addZone(getNOM_ST_SOLDE_REPOS_COMP(), soldeReposCompHeure + soldeReposCompMinute);
 
 		int soldeReposCompPrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
-		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? "" : soldeReposCompPrec / 60 + "h ";
+		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? Const.CHAINE_VIDE : soldeReposCompPrec / 60 + "h ";
 		String soldeReposCompPrecMinute = (soldeReposCompPrec % 60) == 0 ? "&nbsp;" : soldeReposCompPrec % 60 + "m";
 		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
 
@@ -193,7 +193,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
 		for (int i = 0; i < getListeSoldeA55().size(); i++) {
 			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
-			String soldeAsaA55Heure = (monthDto.getSoldeAsaA55() / 60) == 0 ? "" : monthDto.getSoldeAsaA55() / 60
+			String soldeAsaA55Heure = (monthDto.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : monthDto.getSoldeAsaA55() / 60
 					+ "h ";
 			String soldeAsaA55Minute = (monthDto.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : monthDto.getSoldeAsaA55()
 					% 60 + "m";
@@ -207,7 +207,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		for (int i = 0; i < getListeSoldeCongesExcep().size(); i++) {
 			SoldeSpecifiqueDto soldeSpecifiqueDto = getListeSoldeCongesExcep().get(i);
 			if ("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
-				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? "" : df
+				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? Const.CHAINE_VIDE : df
 						.format(soldeSpecifiqueDto.getSolde() / 60) + "h ";
 				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60)) ? "&nbsp;"
 						: df.format(soldeSpecifiqueDto.getSolde() % 60) + "m";

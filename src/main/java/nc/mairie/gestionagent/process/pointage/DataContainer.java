@@ -2,16 +2,18 @@ package nc.mairie.gestionagent.process.pointage;
 
 import java.util.Date;
 
+import nc.mairie.metier.Const;
+
 public class DataContainer {
 
-	private String chk = "";
-	private String chkRappelService = "";
-	private String motif = "";
-	private String comment = "";
+	private String chk = Const.CHAINE_VIDE;
+	private String chkRappelService = Const.CHAINE_VIDE;
+	private String motif = Const.CHAINE_VIDE;
+	private String comment = Const.CHAINE_VIDE;
 	private Date timeD = new Date();
 	private Date timeF = new Date();
-	private String nbr = "";
-	private String mins = "";
+	private String nbr = Const.CHAINE_VIDE;
+	private String mins = Const.CHAINE_VIDE;
 	private int idPtg = 0;
 	private int idRefEtat = 0;
 	private int idTypeAbsence = 0;

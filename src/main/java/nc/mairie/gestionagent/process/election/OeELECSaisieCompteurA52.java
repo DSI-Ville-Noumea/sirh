@@ -158,7 +158,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 			addZone(getNOM_ST_OS(indiceLigne), dto.getOrganisationSyndicaleDto().getSigle());
 			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(dto.getDateDebut()));
 			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(dto.getDateFin()));
-			String soldeAsaA52Heure = (dto.getNb().intValue() / 60) == 0 ? "" : dto.getNb().intValue() / 60 + "h ";
+			String soldeAsaA52Heure = (dto.getNb().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getNb().intValue()
+					/ 60 + "h ";
 			String soldeAsaA52Minute = (dto.getNb().intValue() % 60) == 0 ? "&nbsp;" : dto.getNb().intValue() % 60
 					+ "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA52Heure + soldeAsaA52Minute);
@@ -297,8 +298,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_LB_OS_SELECT(), String.valueOf(ligneOS + 1));
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		String soldeAsaA52Heure = (dto.getNb().intValue() / 60) == 0 ? "" : dto.getNb().intValue() / 60 + "";
-		String soldeAsaA52Minute = (dto.getNb().intValue() % 60) == 0 ? "" : "." + dto.getNb().intValue() % 60;
+		String soldeAsaA52Heure = (dto.getNb().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getNb().intValue() / 60
+				+ Const.CHAINE_VIDE;
+		String soldeAsaA52Minute = (dto.getNb().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
+				+ dto.getNb().intValue() % 60;
 		addZone(getNOM_ST_NB_HEURES(), soldeAsaA52Heure + soldeAsaA52Minute);
 		return true;
 	}

@@ -3236,7 +3236,7 @@ public class OeAGENTDIPLOMEGestion extends BasicProcess {
 		// Recup de l'unite
 		int numligneUnite = (Services.estNumerique(getZone(getNOM_LB_UNITE_DUREE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_UNITE_DUREE_SELECT())) : -1);
-		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals("") && numligneUnite == -1) {
+		if (!getZone(getNOM_ST_DUREE_PERMIS()).equals(Const.CHAINE_VIDE) && numligneUnite == -1) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "unité durée"));
 			return false;
 		}

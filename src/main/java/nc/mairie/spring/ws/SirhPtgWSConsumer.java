@@ -22,6 +22,7 @@ import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
 import nc.mairie.gestionagent.pointage.dto.VentilDateDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.metier.Const;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +113,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, int idRefEtat, Integer idAgent, String statutAgent) {
+	public ReturnMessageDto setPtgState(ArrayList<Integer> idPtgs, Integer idRefEtat, Integer idAgent,
+			String statutAgent) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVisualisationSetState;
 		HashMap<String, String> params = new HashMap<>();
@@ -132,11 +134,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	}
 
 	@Override
-	public List<ConsultPointageDto> getVisualisationHistory(int idPointage) {
+	public List<ConsultPointageDto> getVisualisationHistory(Integer idPointage) {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVisualisationHistory;
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("idPointage", "" + idPointage);
+		parameters.put("idPointage", idPointage.toString());
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(ConsultPointageDto.class, res, url);
 	}
@@ -283,11 +285,11 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 			parameters.put("to", toDate);
 		}
 		if (idAgents != null) {
-			String csvId = "";
+			String csvId = Const.CHAINE_VIDE;
 			for (String id : idAgents) {
 				csvId += id + ",";
 			}
-			if (csvId != "") {
+			if (csvId != Const.CHAINE_VIDE) {
 				csvId = csvId.substring(0, csvId.length() - 1);
 			}
 			parameters.put("idAgents", csvId);
@@ -415,10 +417,10 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVentilationsHistory;
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("mois", "" + mois);
-		parameters.put("annee", "" + annee);
-		parameters.put("typePointage", "" + idRefTypePointage);
-		parameters.put("idAgent", "" + idAgent);
+		parameters.put("mois",mois.toString());
+		parameters.put("annee", annee.toString());
+		parameters.put("typePointage",  idRefTypePointage.toString());
+		parameters.put("idAgent", idAgent.toString());
 		parameters.put("allVentilation", String.valueOf(allVentilation));
 		ClientResponse res = createAndFireRequest(parameters, url);
 		return readResponseAsList(targetClass, res, url);

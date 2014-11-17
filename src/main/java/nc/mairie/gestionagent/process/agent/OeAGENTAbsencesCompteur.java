@@ -249,7 +249,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	public boolean performPB_AFFICHER(HttpServletRequest request) throws Exception {
-		setMessageInfo("");
+		setMessageInfo(Const.CHAINE_VIDE);
 		setTypeAbsenceCourant(null);
 
 		// Recuperation type absence
@@ -370,10 +370,10 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				break;
 			case 2:
 				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
-				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? "" : soldeRecupAnnee / 60 + "h ";
+				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnnee / 60 + "h ";
 				String soldeRecupAnneeMinute = soldeRecupAnnee % 60 + "m";
 				int soldeRecupAnneePrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
-				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? "" : soldeRecupAnneePrec / 60
+				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnneePrec / 60
 						+ "h ";
 				String soldeRecupAnneePrecMinute = soldeRecupAnneePrec % 60 + "m";
 				setSoldeCourantMinute(soldeRecupAnnee);
@@ -384,7 +384,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				break;
 			case 3:
 				int soldeRecup = soldeGlobal.getSoldeRecup().intValue();
-				String soldeRecupHeure = (soldeRecup / 60) == 0 ? "" : soldeRecup / 60 + "h ";
+				String soldeRecupHeure = (soldeRecup / 60) == 0 ? Const.CHAINE_VIDE : soldeRecup / 60 + "h ";
 				String soldeRecupMinute = soldeRecup % 60 + "m";
 				addZone(getNOM_ST_SOLDE(), soldeRecupHeure + soldeRecupMinute);
 				setSoldeCourantMinute(soldeRecup);

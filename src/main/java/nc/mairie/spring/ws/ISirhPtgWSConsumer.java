@@ -64,14 +64,14 @@ public interface ISirhPtgWSConsumer {
 	List<ConsultPointageDto> getVisualisationPointage(String fromDate, String toDate, List<String> idAgents,
 			Integer idRefEtat, Integer idRefType, String typeHeureSup);
 
-	List<ConsultPointageDto> getVisualisationHistory(int idAgents);
+	List<ConsultPointageDto> getVisualisationHistory(Integer idAgents);
 
 	// Saisie
 	FichePointageDto getSaisiePointage(Integer idAgent, String monday);
 
 	ReturnMessageDto setSaisiePointage(Integer idAgent, FichePointageDto toSerialize);
 
-	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, int idRefEtat, Integer idAgent, String statutAgent);
+	ReturnMessageDto setPtgState(ArrayList<Integer> idPtg, Integer idRefEtat, Integer idAgent, String statutAgent);
 
 	// Filtres
 	List<RefEtatDto> getEtatsPointage();

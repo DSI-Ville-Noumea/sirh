@@ -64,7 +64,7 @@ public class OeDROITSKiosque extends BasicProcess {
 	}
 
 	public String getDefaultFocus() {
-		return "";
+		return Const.CHAINE_VIDE;
 	}
 
 	/**

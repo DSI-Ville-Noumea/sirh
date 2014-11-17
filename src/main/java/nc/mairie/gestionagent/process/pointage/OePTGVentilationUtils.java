@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.VentilErreurDto;
 import nc.mairie.gestionagent.pointage.dto.VentilPrimeDto;
+import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
@@ -75,7 +76,7 @@ public class OePTGVentilationUtils {
 	public static String getHeureMinute(int nombreMinute) {
 		int heure = nombreMinute / 60;
 		int minute = nombreMinute % 60;
-		String res = "";
+		String res = Const.CHAINE_VIDE;
 		if (heure > 0)
 			res += heure + "h";
 		if (minute > 0)

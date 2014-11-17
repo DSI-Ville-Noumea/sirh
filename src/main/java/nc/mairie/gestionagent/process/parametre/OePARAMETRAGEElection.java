@@ -72,7 +72,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 			String padding[] = { "G", "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (OrganisationSyndicaleDto orga : getListeOrganisation()) {
-				String ligne[] = { orga.getLibelle(), orga.getSigle(), orga.isActif() ? "" : "non" };
+				String ligne[] = { orga.getLibelle(), orga.getSigle(), orga.isActif() ? Const.CHAINE_VIDE : "non" };
 
 				aFormat.ajouteLigne(ligne);
 			}
@@ -154,7 +154,7 @@ public class OePARAMETRAGEElection extends BasicProcess {
 	}
 
 	public String getDefaultFocus() {
-		return "";
+		return Const.CHAINE_VIDE;
 	}
 
 	/**

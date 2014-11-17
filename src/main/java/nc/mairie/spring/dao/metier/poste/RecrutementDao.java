@@ -96,7 +96,7 @@ public class RecrutementDao extends SirhDao implements RecrutementDaoInterface {
 			String nomAgentRecrute) throws Exception {
 		String sql = "INSERT INTO " + NOM_TABLE + " (" + CHAMP_ID_MOTIF_RECRUT + "," + CHAMP_ID_MOTIF_NON_RECRUT + ","
 				+ CHAMP_ID_FICHE_POSTE + "," + CHAMP_REFERENCE_SES + "," + CHAMP_REFERENCE_MAIRIE + ","
-				+ CHAMP_REFERENCE_DRHFPNC + "," + CHAMP_DATE_OUVERTURE + "" + "," + CHAMP_DATE_VALIDATION + ","
+				+ CHAMP_REFERENCE_DRHFPNC + "," + CHAMP_DATE_OUVERTURE + "," + CHAMP_DATE_VALIDATION + ","
 				+ CHAMP_DATE_CLOTURE + "," + CHAMP_DATE_TRANSMISSION + "," + CHAMP_DATE_REPONSE + ","
 				+ CHAMP_NB_CAND_RECUES + "," + CHAMP_NOM_AGENT_RECRUTE + ") " + "VALUES (?)";
 		jdbcTemplate.update(sql, new Object[] { idMotifRecrut, idMotifNonRecrut, idFichePoste, referenceSes,

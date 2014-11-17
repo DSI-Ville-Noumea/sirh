@@ -1522,7 +1522,7 @@ public class OePTGVisualisation extends BasicProcess {
 			ret[index][0] = formatDate(p.getDate());
 			ret[index][1] = formatHeure(p.getDebut()).equals("00:00") ? "&nbsp;" : formatHeure(p.getDebut());
 			ret[index][2] = formatHeure(p.getFin()).equals("00:00") ? "&nbsp;" : formatHeure(p.getFin());
-			ret[index][3] = "" + p.getQuantite();
+			ret[index][3] = Const.CHAINE_VIDE + p.getQuantite();
 			ret[index][4] = p.getMotif() + " - " + p.getCommentaire();
 			AgentDto opPtg = p.getOperateur();
 			ret[index][5] = opPtg.getNom() + " " + opPtg.getPrenom() + " ("
@@ -1549,7 +1549,7 @@ public class OePTGVisualisation extends BasicProcess {
 		if (d != null) {
 			return sdf.format(d);
 		} else {
-			return "";
+			return Const.CHAINE_VIDE;
 		}
 	}
 
