@@ -418,8 +418,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		setListeServiceAutres(null);
 		setListeServiceUtilisateur(null);
-		setAccueilKiosqueCourant(null);
-		setReferentRhCourant(null);
 	}
 
 	public String getNOM_PB_ANNULER_REFERENT_RH() {
@@ -898,7 +896,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), ACTION_CREATION);
 
 		// On vide la zone de saisie
-		viderFormulaire();
 		setAccueilKiosqueCourant(new AccueilKiosque());
 
 		setStatut(STATUT_MEME_PROCESS);
@@ -920,7 +917,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public boolean performPB_ANNULER_TEXTE_KIOSQUE(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_ACTION_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
-		viderFormulaire();
+		setAccueilKiosqueCourant(null);
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_TEXTE_KIOSQUE());
 		return true;
