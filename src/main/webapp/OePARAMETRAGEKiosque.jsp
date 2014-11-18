@@ -215,6 +215,8 @@
 			</table>
 			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT()%>" value="RECHERCHERAGENT">
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT()%>" value="SUPPRECHERCHERAGENT">
+			<INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_GLOBAL()%>" value="RECHERCHERAGENTGLOBAL">
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL()%>" value="SUPPRECHERCHERAGENTGLOBAL">
 		</FORM>
 	</BODY>
 </HTML>

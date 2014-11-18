@@ -146,9 +146,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private void initialiseReferentRhGlobal(HttpServletRequest request) {
 		try {
 			setReferentRhGlobalCourant(getReferentRhDao().getReferentRhGlobal());
+			Agent ag = getAgentDao().chercherAgent(getReferentRhGlobalCourant().getIdAgentReferent());
+			addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), ag.getNomatr().toString());
+			addZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL(), getReferentRhGlobalCourant().getNumeroTelephone().toString());
 		} catch (Exception e) {
-			// aucun referent rouvé
+			// aucun referent trouvé
 			setReferentRhGlobalCourant(new ReferentRh());
+			addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), Const.CHAINE_VIDE);
+			addZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL(), Const.CHAINE_VIDE);
 		}
 	}
 
@@ -1028,10 +1033,10 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 
 		// suppression et creation
-		getReferentRhDao().supprimerReferentRh(getReferentRhGlobalCourant().getIdAgentReferent());
+		getReferentRhDao().supprimerReferentRh(getReferentRhGlobalCourant().getIdReferentRh());
 		Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_ID_REFERENT_RH_GLOBAL()));
 		getReferentRhGlobalCourant().setIdAgentReferent(ag.getIdAgent());
-		getReferentRhGlobalCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE()));
+		getReferentRhGlobalCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE_GLOBAL()));
 		getReferentRhGlobalCourant().setServi(null);
 		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getServi(),
 				getReferentRhGlobalCourant().getIdAgentReferent(), getReferentRhGlobalCourant().getNumeroTelephone());
