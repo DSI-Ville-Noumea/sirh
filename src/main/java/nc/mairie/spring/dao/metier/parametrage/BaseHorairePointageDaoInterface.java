@@ -6,7 +6,7 @@ import nc.mairie.metier.parametrage.BaseHorairePointage;
 
 public interface BaseHorairePointageDaoInterface {
 
-	public List<BaseHorairePointage> listerBaseHorairePointage() throws Exception;
+	public List<BaseHorairePointage> listerBaseHorairePointageOrderByCode() throws Exception;
 
 	public void creerBaseHorairePointage(BaseHorairePointage base) throws Exception;
 

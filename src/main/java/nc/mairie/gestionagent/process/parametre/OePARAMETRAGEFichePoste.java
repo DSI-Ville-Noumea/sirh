@@ -49,7 +49,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 	private static final long serialVersionUID = 1L;
 
 	public String focus = null;
-	
+
 	private String[] LB_ENTITE_GEO;
 	private String[] LB_ENTITE_ECOLE;
 	private String[] LB_NATURE_AVANTAGE;
@@ -458,14 +458,14 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		if (getListeBaseHorairePointage() == null) {
 			// Recherche des bases horaires de pointage
 			setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
-					.listerBaseHorairePointage());
+					.listerBaseHorairePointageOrderByCode());
 			initialiseListeBaseHorairePointage(request);
 		}
 	}
 
 	private void initialiseListeBaseHorairePointage(HttpServletRequest request) throws Exception {
 		setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
-				.listerBaseHorairePointage());
+				.listerBaseHorairePointageOrderByCode());
 		if (getListeBaseHorairePointage().size() != 0) {
 			int tailles[] = { 6, 50 };
 			String padding[] = { "G", "G" };
@@ -3486,7 +3486,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 				setBaseHorairePointageCourant(new BaseHorairePointage());
 				getBaseHorairePointageCourant().setCodeBaseHorairePointage(getVAL_EF_CODE_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
-				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(
+						getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
 				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
 				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));
@@ -3516,7 +3517,8 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 
 			} else if (getVAL_ST_ACTION_BASE_HORAIRE_POINTAGE().equals(ACTION_MODIFICATION)) {
 				getBaseHorairePointageCourant().setLibelleBaseHorairePointage(getVAL_EF_LIB_BASE_HORAIRE_POINTAGE());
-				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
+				getBaseHorairePointageCourant().setDescriptionBaseHorairePointage(
+						getVAL_EF_DESC_BASE_HORAIRE_POINTAGE());
 				getBaseHorairePointageCourant().setHeureLundi(Double.valueOf(getVAL_EF_HEURE_LUNDI()));
 				getBaseHorairePointageCourant().setHeureMardi(Double.valueOf(getVAL_EF_HEURE_MARDI()));
 				getBaseHorairePointageCourant().setHeureMercredi(Double.valueOf(getVAL_EF_HEURE_MERCREDI()));

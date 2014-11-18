@@ -1,12 +1,16 @@
 package nc.mairie.gestionagent.process.parametre;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
+import nc.mairie.metier.avancement.AvancementFonctionnaires;
 import nc.mairie.metier.parametrage.AccueilKiosque;
 import nc.mairie.metier.parametrage.ReferentRh;
 import nc.mairie.metier.poste.Service;
@@ -21,6 +25,7 @@ import nc.mairie.technique.Services;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.TreeHierarchy;
 import nc.mairie.utils.VariablesActivite;
 
 import org.springframework.context.ApplicationContext;
@@ -44,11 +49,11 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	public String ACTION_MODIFICATION = "2";
 
 	private String[] LB_REFERENT_RH;
-	private String[] LB_SERVICE_AUTRES;
 	private String[] LB_SERVICE_UTILISATEUR;
 	private String[] LB_TEXTE_KIOSQUE;
 
-	private ArrayList<Service> listeServiceAutres;
+	public Hashtable<String, TreeHierarchy> hTree = null;
+	private ArrayList<Service> listeServices;
 	private ArrayList<Service> listeServiceUtilisateur;
 
 	private ReferentRhDao referentRhDao;
@@ -113,6 +118,43 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		if (getListeAccueilKiosque().size() == 0) {
 			initialiseListeAccueilKiosque(request);
 		}
+		// Si la liste des services est nulle
+		if (getListeServices() == null || getListeServices().isEmpty()) {
+			ArrayList<Service> services = Service.listerServiceActif(getTransaction());
+			setListeServices(services);
+
+			// Tri par codeservice
+			Collections.sort(getListeServices(), new Comparator<Object>() {
+				public int compare(Object o1, Object o2) {
+					Service s1 = (Service) o1;
+					Service s2 = (Service) o2;
+					return (s1.getCodService().compareTo(s2.getCodService()));
+				}
+			});
+
+			// alim de la hTree
+			hTree = new Hashtable<>();
+			TreeHierarchy parent = null;
+			for (int i = 0; i < getListeServices().size(); i++) {
+				Service serv = (Service) getListeServices().get(i);
+
+				if (Const.CHAINE_VIDE.equals(serv.getCodService())) {
+					continue;
+				}
+
+				// recherche du supérieur
+				String codeService = serv.getCodService();
+				while (codeService.endsWith("A")) {
+					codeService = codeService.substring(0, codeService.length() - 1);
+				}
+				codeService = codeService.substring(0, codeService.length() - 1);
+				codeService = Services.rpad(codeService, 4, "A");
+				parent = hTree.get(codeService);
+				int indexParent = (parent == null ? 0 : parent.getIndex());
+				hTree.put(serv.getCodService(), new TreeHierarchy(serv, i, indexParent));
+
+			}
+		}
 
 		// Initialisation des Services
 		if (getListeServiceUtilisateur().size() != 0) {
@@ -120,7 +162,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles);
 			for (ListIterator<Service> list = getListeServiceUtilisateur().listIterator(); list.hasNext();) {
 				Service de = (Service) list.next();
-				String ligne[] = { de.getSigleService() };
+				String ligne[] = { de.getSigleService() + " " + de.getLibService() };
 				aFormat.ajouteLigne(ligne);
 			}
 			setLB_SERVICE_UTILISATEUR(aFormat.getListeFormatee());
@@ -128,19 +170,14 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			setLB_SERVICE_UTILISATEUR(null);
 		}
 
-		if (getListeServiceAutres().size() != 0) {
-			int[] tailles = { 50 };
-			FormateListe aFormat = new FormateListe(tailles);
-			for (ListIterator<Service> list = getListeServiceAutres().listIterator(); list.hasNext();) {
-				Service de = (Service) list.next();
-				String ligne[] = { de.getSigleService() };
-				aFormat.ajouteLigne(ligne);
-			}
-			setLB_SERVICE_AUTRES(aFormat.getListeFormatee());
-		} else {
-			setLB_SERVICE_AUTRES(null);
-		}
+	}
 
+	public ArrayList<Service> getListeServices() {
+		return listeServices;
+	}
+
+	private void setListeServices(ArrayList<Service> listeServices) {
+		this.listeServices = listeServices;
 	}
 
 	private void initialiseReferentRhGlobal(HttpServletRequest request) {
@@ -334,7 +371,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NOM_REFERENT_RH(), ag.getNomAgent() + " " + ag.getPrenomAgent());
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), getReferentRhCourant().getNumeroTelephone().toString());
 
-		setListeServiceAutres(Service.listerServiceActifAvecCodeService(getTransaction()));
 		ArrayList<Service> listeServ = new ArrayList<Service>();
 		for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 				getReferentRhCourant().getIdAgentReferent())) {
@@ -342,8 +378,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			listeServ.add(serv);
 		}
 		setListeServiceUtilisateur(listeServ);
-		// on enleve les service de l'agent deja existant
-		getListeServiceAutres().removeAll(getListeServiceUtilisateur());
 
 		return true;
 	}
@@ -401,7 +435,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		// On vide la zone de saisie
 		viderFormulaire();
 		setReferentRhCourant(new ReferentRh());
-		setListeServiceAutres(Service.listerServiceActifAvecCodeService(getTransaction()));
 
 		setStatut(STATUT_MEME_PROCESS);
 		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
@@ -413,10 +446,8 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		addZone(getNOM_EF_NOM_REFERENT_RH(), Const.CHAINE_VIDE);
 		addZone(getNOM_EF_NUMERO_TELEPHONE(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_SERVICE_UTILISATEUR_SELECT(), "-1");
-		addZone(getNOM_LB_SERVICE_AUTRES_SELECT(), "-1");
 		addZone(getNOM_EF_TEXTE_KIOSQUE(), Const.CHAINE_VIDE);
 
-		setListeServiceAutres(null);
 		setListeServiceUtilisateur(null);
 	}
 
@@ -637,32 +668,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 		this.referentRhCourant = referentRhCourant;
 	}
 
-	private String[] getLB_SERVICE_AUTRES() {
-		if (LB_SERVICE_AUTRES == null)
-			LB_SERVICE_AUTRES = initialiseLazyLB();
-		return LB_SERVICE_AUTRES;
-	}
-
-	private void setLB_SERVICE_AUTRES(String[] newLB_SERVICE_AUTRES) {
-		LB_SERVICE_AUTRES = newLB_SERVICE_AUTRES;
-	}
-
-	public String getNOM_LB_SERVICE_AUTRES() {
-		return "NOM_LB_SERVICE_AUTRES";
-	}
-
-	public String getNOM_LB_SERVICE_AUTRES_SELECT() {
-		return "NOM_LB_SERVICE_AUTRES_SELECT";
-	}
-
-	public String[] getVAL_LB_SERVICE_AUTRES() {
-		return getLB_SERVICE_AUTRES();
-	}
-
-	public String getVAL_LB_SERVICE_AUTRES_SELECT() {
-		return getZone(getNOM_LB_SERVICE_AUTRES_SELECT());
-	}
-
 	private String[] getLB_SERVICE_UTILISATEUR() {
 		if (LB_SERVICE_UTILISATEUR == null)
 			LB_SERVICE_UTILISATEUR = initialiseLazyLB();
@@ -694,17 +699,15 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_SERVICE(HttpServletRequest request) throws Exception {
-		// Recup du groupe sélectionné
-		int numLigne = (Services.estNumerique(getZone(getNOM_LB_SERVICE_AUTRES_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_SERVICE_AUTRES_SELECT())) : -1);
-		if (numLigne == -1 || getListeServiceAutres().size() == 0 || numLigne > getListeServiceAutres().size()) {
+		// Recup du service sélectionné
+		String codServ = getVAL_EF_CODESERVICE();
+
+		if (codServ.equals(Const.CHAINE_VIDE)) {
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Autres services"));
 			return false;
 		}
-
-		Service groupe = (Service) getListeServiceAutres().get(numLigne);
-		getListeServiceAutres().remove(groupe);
-		getListeServiceUtilisateur().add(groupe);
+		Service serv = Service.chercherService(getTransaction(), codServ);
+		getListeServiceUtilisateur().add(serv);
 
 		return true;
 	}
@@ -714,9 +717,23 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_AJOUTER_TOUT(HttpServletRequest request) throws Exception {
+		// Recup du service sélectionné
+		String codServ = getVAL_EF_CODESERVICE();
 
-		getListeServiceUtilisateur().addAll(getListeServiceAutres());
-		getListeServiceAutres().clear();
+		if (codServ.equals(Const.CHAINE_VIDE)) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "Autres services"));
+			return false;
+		}
+
+		// On recupere les sous services
+		Service serv = Service.chercherService(getTransaction(), codServ);
+		ArrayList<String> listeSousServ = Service.listSousService(getTransaction(), serv.getSigleService());
+
+		// On ajoute le service et les sous services
+		for (String codeServSele : listeSousServ) {
+			Service sousServ = Service.chercherService(getTransaction(), codeServSele);
+			getListeServiceUtilisateur().add(sousServ);
+		}
 
 		return true;
 	}
@@ -737,7 +754,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 		Service groupe = (Service) getListeServiceUtilisateur().get(numLigne);
 		getListeServiceUtilisateur().remove(groupe);
-		getListeServiceAutres().add(groupe);
 
 		return true;
 	}
@@ -747,8 +763,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	}
 
 	public boolean performPB_RETIRER_TOUT(HttpServletRequest request) throws Exception {
-
-		getListeServiceAutres().addAll(getListeServiceUtilisateur());
 		getListeServiceUtilisateur().clear();
 
 		return true;
@@ -762,16 +776,6 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	private void setListeServiceUtilisateur(ArrayList<Service> listeGroupesUtilisateur) {
 		this.listeServiceUtilisateur = listeGroupesUtilisateur;
-	}
-
-	private ArrayList<Service> getListeServiceAutres() {
-		if (listeServiceAutres == null)
-			listeServiceAutres = new ArrayList<Service>();
-		return listeServiceAutres;
-	}
-
-	private void setListeServiceAutres(ArrayList<Service> listeGroupesAutres) {
-		this.listeServiceAutres = listeGroupesAutres;
 	}
 
 	public String getNOM_EF_ID_REFERENT_RH() {
@@ -1081,5 +1085,25 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			return false;
 		}
 		return true;
+	}
+
+	public Hashtable<String, TreeHierarchy> getHTree() {
+		return hTree;
+	}
+
+	public String getNOM_EF_CODESERVICE() {
+		return "NOM_EF_CODESERVICE";
+	}
+
+	public String getVAL_EF_CODESERVICE() {
+		return getZone(getNOM_EF_CODESERVICE());
+	}
+
+	public String getNOM_EF_SERVICE() {
+		return "NOM_EF_SERVICE";
+	}
+
+	public String getVAL_EF_SERVICE() {
+		return getZone(getNOM_EF_SERVICE());
 	}
 }

@@ -1045,10 +1045,10 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// Si liste base horaire pointage vide alors affectation
 		if (getLB_BASE_HORAIRE_POINTAGE() == LBVide) {
 			ArrayList<BaseHorairePointage> listeBaseHorairePointage = (ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
-					.listerBaseHorairePointage();
+					.listerBaseHorairePointageOrderByCode();
 			setListeBaseHorairePointage(listeBaseHorairePointage);
 			if (getListeBaseHorairePointage().size() != 0) {
-				int tailles[] = { 5, 6 };
+				int tailles[] = { 5, 50 };
 				String padding[] = { "G", "G" };
 				FormateListe aFormat = new FormateListe(tailles, padding, false);
 				for (ListIterator<BaseHorairePointage> list = getListeBaseHorairePointage().listIterator(); list

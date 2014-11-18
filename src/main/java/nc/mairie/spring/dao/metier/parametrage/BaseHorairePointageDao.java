@@ -1,6 +1,9 @@
 package nc.mairie.spring.dao.metier.parametrage;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import nc.mairie.metier.parametrage.BaseHorairePointage;
 import nc.mairie.spring.dao.utils.SirhDao;
@@ -28,8 +31,40 @@ public class BaseHorairePointageDao extends SirhDao implements BaseHorairePointa
 	}
 
 	@Override
-	public List<BaseHorairePointage> listerBaseHorairePointage() throws Exception {
-		return super.getListe(BaseHorairePointage.class);
+	public List<BaseHorairePointage> listerBaseHorairePointageOrderByCode() throws Exception {
+		String sql = "select * from " + NOM_TABLE + " order by " + CHAMP_CODE_BASE_HORAIRE_POINTAGE + " desc ";
+
+		ArrayList<BaseHorairePointage> listeFam = new ArrayList<BaseHorairePointage>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+		for (Map<String, Object> row : rows) {
+			BaseHorairePointage fam = new BaseHorairePointage();
+			fam.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID));
+			fam.setCodeBaseHorairePointage((String) row.get(CHAMP_CODE_BASE_HORAIRE_POINTAGE));
+			fam.setLibelleBaseHorairePointage((String) row.get(CHAMP_LIBELLE_BASE_HORAIRE_POINTAGE));
+			fam.setDescriptionBaseHorairePointage((String) row.get(CHAMP_DESCRIPTION_BASE_HORAIRE_POINTAGE));
+			BigDecimal lundi = (BigDecimal) row.get(CHAMP_HEURE_LUNDI);
+			fam.setHeureLundi(lundi.doubleValue());
+			BigDecimal mardi = (BigDecimal) row.get(CHAMP_HEURE_MARDI);
+			fam.setHeureMardi(mardi.doubleValue());
+			BigDecimal mercredi = (BigDecimal) row.get(CHAMP_HEURE_MERCREDI);
+			fam.setHeureMercredi(mercredi.doubleValue());
+			BigDecimal jeudi = (BigDecimal) row.get(CHAMP_HEURE_JEUDI);
+			fam.setHeureJeudi(jeudi.doubleValue());
+			BigDecimal vendredi = (BigDecimal) row.get(CHAMP_HEURE_VENDREDI);
+			fam.setHeureVendredi(vendredi.doubleValue());
+			BigDecimal samedi = (BigDecimal) row.get(CHAMP_HEURE_SAMEDI);
+			fam.setHeureSamedi(samedi.doubleValue());
+			BigDecimal dimanche = (BigDecimal) row.get(CHAMP_HEURE_DIMANCHE);
+			fam.setHeureDimanche(dimanche.doubleValue());
+			BigDecimal legale = (BigDecimal) row.get(CHAMP_BASE_LEGALE);
+			fam.setBaseLegale(legale.doubleValue());
+			BigDecimal calcul = (BigDecimal) row.get(CHAMP_HEURE_MARDI);
+			fam.setBaseCalculee(calcul.doubleValue());
+			listeFam.add(fam);
+		}
+
+		return listeFam;
 	}
 
 	@Override
