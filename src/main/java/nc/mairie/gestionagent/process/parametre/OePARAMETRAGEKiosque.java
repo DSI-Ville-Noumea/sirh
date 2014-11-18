@@ -37,6 +37,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public String focus = null;
 	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
+	public static final int STATUT_RECHERCHER_AGENT_GLOBAL = 2;
 
 	public String ACTION_SUPPRESSION = "0";
 	public String ACTION_CREATION = "1";
@@ -54,6 +55,7 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 	private AccueilKiosqueDao accueilKiosqueDao;
 	private AgentDao agentDao;
 
+	private ReferentRh referentRhGlobalCourant;
 	private ReferentRh referentRhCourant;
 	private ArrayList<ReferentRh> listeReferentRh;
 
@@ -90,9 +92,21 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			}
 		}
 
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_GLOBAL) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), agt.getNomatr().toString());
+			}
+		}
+
 		// ---------------------------//
 		// Initialisation de la page.//
 		// ---------------------------//
+		if (getReferentRhGlobalCourant() == null) {
+			initialiseReferentRhGlobal(request);
+		}
+
 		if (getListeReferentRh().size() == 0) {
 			initialiseListeReferentRh(request);
 		}
@@ -127,6 +141,15 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			setLB_SERVICE_AUTRES(null);
 		}
 
+	}
+
+	private void initialiseReferentRhGlobal(HttpServletRequest request) {
+		try {
+			setReferentRhGlobalCourant(getReferentRhDao().getReferentRhGlobal());
+		} catch (Exception e) {
+			// aucun referent rouvé
+			setReferentRhGlobalCourant(new ReferentRh());
+		}
 	}
 
 	private void initialiseListeAccueilKiosque(HttpServletRequest request) throws Exception {
@@ -223,13 +246,13 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 				// on supprime toutes les entrées
 				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 						getReferentRhCourant().getIdAgentReferent())) {
-					getReferentRhDao().supprimerReferentRh(ref.getServi());
+					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 			} else if (getVAL_ST_ACTION_REFERENT_RH().equals(ACTION_MODIFICATION)) {
 				// on supprime toutes les entrées
 				for (ReferentRh ref : getReferentRhDao().listerServiceAvecReferentRh(
 						getReferentRhCourant().getIdAgentReferent())) {
-					getReferentRhDao().supprimerReferentRh(ref.getServi());
+					getReferentRhDao().supprimerReferentRh(ref.getIdReferentRh());
 				}
 				// on crée les entrées
 				for (Service serv : getListeServiceUtilisateur()) {
@@ -491,6 +514,20 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 			// Si clic sur le bouton PB_VALIDER_TEXTE_KIOSQUE
 			if (testerParametre(request, getNOM_PB_VALIDER_TEXTE_KIOSQUE())) {
 				return performPB_VALIDER_TEXTE_KIOSQUE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_REFERENT_RH_GLOBAL
+			if (testerParametre(request, getNOM_PB_VALIDER_REFERENT_RH_GLOBAL())) {
+				return performPB_VALIDER_REFERENT_RH_GLOBAL(request);
+			}
+
+			// Si clic sur le bouton PB_RECHERCHER_AGENT_GLOBAL
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_GLOBAL())) {
+				return performPB_RECHERCHER_AGENT_GLOBAL(request);
+			}
+			// Si clic sur le bouton PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL
+			if (testerParametre(request, getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL())) {
+				return performPB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL(request);
 			}
 		}
 		// Si TAG INPUT non géré par le process
@@ -943,5 +980,104 @@ public class OePARAMETRAGEKiosque extends BasicProcess {
 
 	public void setListeAccueilKiosque(ArrayList<AccueilKiosque> listeAccueilKiosque) {
 		this.listeAccueilKiosque = listeAccueilKiosque;
+	}
+
+	public String getNOM_EF_ID_REFERENT_RH_GLOBAL() {
+		return "NOM_EF_ID_REFERENT_RH_GLOBAL";
+	}
+
+	public String getVAL_EF_ID_REFERENT_RH_GLOBAL() {
+		return getZone(getNOM_EF_ID_REFERENT_RH_GLOBAL());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_GLOBAL() {
+		return "NOM_PB_RECHERCHER_AGENT_GLOBAL";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_GLOBAL(HttpServletRequest request) throws Exception {
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_RECHERCHER_AGENT_GLOBAL, true);
+		return true;
+	}
+
+	public String getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL() {
+		return "NOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL";
+	}
+
+	public boolean performPB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL(HttpServletRequest request) throws Exception {
+		// On enlève l'agent selectionnée
+		addZone(getNOM_EF_ID_REFERENT_RH_GLOBAL(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public String getNOM_EF_NUMERO_TELEPHONE_GLOBAL() {
+		return "NOM_EF_NUMERO_TELEPHONE_GLOBAL";
+	}
+
+	public String getVAL_EF_NUMERO_TELEPHONE_GLOBAL() {
+		return getZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL());
+	}
+
+	public String getNOM_PB_VALIDER_REFERENT_RH_GLOBAL() {
+		return "NOM_PB_VALIDER_REFERENT_RH_GLOBAL";
+	}
+
+	public boolean performPB_VALIDER_REFERENT_RH_GLOBAL(HttpServletRequest request) throws Exception {
+		if (!performControlerSaisieReferentRhGlobal(request))
+			return false;
+
+		// suppression et creation
+		getReferentRhDao().supprimerReferentRh(getReferentRhGlobalCourant().getIdAgentReferent());
+		Agent ag = getAgentDao().chercherAgentParMatricule(Integer.valueOf(getVAL_EF_ID_REFERENT_RH_GLOBAL()));
+		getReferentRhGlobalCourant().setIdAgentReferent(ag.getIdAgent());
+		getReferentRhGlobalCourant().setNumeroTelephone(Integer.valueOf(getVAL_EF_NUMERO_TELEPHONE()));
+		getReferentRhGlobalCourant().setServi(null);
+		getReferentRhDao().creerReferentRh(getReferentRhGlobalCourant().getServi(),
+				getReferentRhGlobalCourant().getIdAgentReferent(), getReferentRhGlobalCourant().getNumeroTelephone());
+
+		initialiseReferentRhGlobal(request);
+		setReferentRhGlobalCourant(null);
+
+		setFocus(getNOM_PB_ANNULER_REFERENT_RH());
+		return true;
+	}
+
+	public ReferentRh getReferentRhGlobalCourant() {
+		return referentRhGlobalCourant;
+	}
+
+	public void setReferentRhGlobalCourant(ReferentRh referentRhGlobalCourant) {
+		this.referentRhGlobalCourant = referentRhGlobalCourant;
+	}
+
+	private boolean performControlerSaisieReferentRhGlobal(HttpServletRequest request) throws Exception {
+		// Verification agent not null
+		if (getZone(getNOM_EF_ID_REFERENT_RH_GLOBAL()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
+			return false;
+		}
+
+		// format agent
+		if (!Services.estNumerique(getVAL_EF_ID_REFERENT_RH_GLOBAL())) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "agent"));
+			return false;
+		}
+		// Verification numero téléphone not null
+		if (getZone(getNOM_EF_NUMERO_TELEPHONE_GLOBAL()).length() == 0) {
+			// "ERR002","La zone @ est obligatoire."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "téléphone"));
+			return false;
+		}
+
+		// format numero téléphone
+		if (!Services.estNumerique(getVAL_EF_NUMERO_TELEPHONE_GLOBAL())) {
+			// "ERR992", "La zone @ doit être numérique.";
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR992", "téléphone"));
+			return false;
+		}
+		return true;
 	}
 }

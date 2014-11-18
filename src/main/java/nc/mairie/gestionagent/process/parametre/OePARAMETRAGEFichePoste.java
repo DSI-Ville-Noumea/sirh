@@ -467,7 +467,7 @@ public class OePARAMETRAGEFichePoste extends BasicProcess {
 		setListeBaseHorairePointage((ArrayList<BaseHorairePointage>) getBaseHorairePointageDao()
 				.listerBaseHorairePointage());
 		if (getListeBaseHorairePointage().size() != 0) {
-			int tailles[] = { 6, 5 };
+			int tailles[] = { 6, 50 };
 			String padding[] = { "G", "G" };
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<BaseHorairePointage> list = getListeBaseHorairePointage().listIterator(); list.hasNext();) {

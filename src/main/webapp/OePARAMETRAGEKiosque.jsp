@@ -38,6 +38,22 @@
 				<tr>
 					<td>
 						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
+					    	<legend class="sigp2Legend">Référent RH global</legend>
+							<span class="sigp2Mandatory">Ici, il faut saisir le référent RH qui'il faut contacter si il n'y a pas de referent RH associé au service de l'agent.</span>
+							<br/><br/>
+							<span class="sigp2Mandatory">Agent : </span>
+					    	<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_ID_REFERENT_RH_GLOBAL() %>" size="4" type="text" value="<%= process.getVAL_EF_ID_REFERENT_RH_GLOBAL() %>">
+							<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_GLOBAL()%>');">
+				            <img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_GLOBAL()%>');">
+                			<span class="sigp2Mandatory">Téléphone : </span>
+							<INPUT class="sigp2-saisie" maxlength="4" name="<%= process.getNOM_EF_NUMERO_TELEPHONE_GLOBAL() %>" size="4" type="text" value="<%= process.getVAL_EF_NUMERO_TELEPHONE_GLOBAL() %>">
+							<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_REFERENT_RH_GLOBAL()%>">
+						</FIELDSET>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<FIELDSET class="sigp2Fieldset"  style="text-align: left;">
 					    	<legend class="sigp2Legend">Référents RH</legend>
 							<span class="sigp2-saisie" style="margin-left: 5px;">Référent</span>
 							<SELECT name="<%= process.getNOM_LB_REFERENT_RH() %>" size="10" style="width:100%;" class="sigp2-liste">
