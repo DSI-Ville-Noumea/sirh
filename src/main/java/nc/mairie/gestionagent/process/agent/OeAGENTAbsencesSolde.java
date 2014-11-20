@@ -177,7 +177,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		addZone(getNOM_ST_SOLDE_REPOS_COMP(), soldeReposCompHeure + soldeReposCompMinute);
 
 		int soldeReposCompPrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
-		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? Const.CHAINE_VIDE : soldeReposCompPrec / 60 + "h ";
+		String soldeReposCompPrecHeure = (soldeReposCompPrec / 60) == 0 ? Const.CHAINE_VIDE : soldeReposCompPrec / 60
+				+ "h ";
 		String soldeReposCompPrecMinute = (soldeReposCompPrec % 60) == 0 ? "&nbsp;" : soldeReposCompPrec % 60 + "m";
 		addZone(getNOM_ST_SOLDE_REPOS_COMP_PREC(), soldeReposCompPrecHeure + soldeReposCompPrecMinute);
 
@@ -193,8 +194,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		setListeSoldeA55((ArrayList<SoldeMonthDto>) soldeGlobal.getListeSoldeAsaA55());
 		for (int i = 0; i < getListeSoldeA55().size(); i++) {
 			SoldeMonthDto monthDto = getListeSoldeA55().get(i);
-			String soldeAsaA55Heure = (monthDto.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : monthDto.getSoldeAsaA55() / 60
-					+ "h ";
+			String soldeAsaA55Heure = (monthDto.getSoldeAsaA55() / 60) == 0 ? Const.CHAINE_VIDE : monthDto
+					.getSoldeAsaA55() / 60 + "h ";
 			String soldeAsaA55Minute = (monthDto.getSoldeAsaA55() % 60) == 0 ? "&nbsp;" : monthDto.getSoldeAsaA55()
 					% 60 + "m";
 			addZone(getNOM_ST_SOLDE_ASA_A55(i), soldeAsaA55Heure + soldeAsaA55Minute);
@@ -207,8 +208,8 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 		for (int i = 0; i < getListeSoldeCongesExcep().size(); i++) {
 			SoldeSpecifiqueDto soldeSpecifiqueDto = getListeSoldeCongesExcep().get(i);
 			if ("minutes".equals(soldeSpecifiqueDto.getUniteDecompte())) {
-				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? Const.CHAINE_VIDE : df
-						.format(soldeSpecifiqueDto.getSolde() / 60) + "h ";
+				String soldeCongesExcepHeure = "0".equals(df.format(soldeSpecifiqueDto.getSolde() / 60)) ? Const.CHAINE_VIDE
+						: df.format(soldeSpecifiqueDto.getSolde() / 60) + "h ";
 				String soldeCongesExcepMinute = "0".equals(df.format(soldeSpecifiqueDto.getSolde() % 60)) ? "&nbsp;"
 						: df.format(soldeSpecifiqueDto.getSolde() % 60) + "m";
 				addZone(getNOM_ST_SOLDE_CONGES_EXCEP(i), soldeCongesExcepHeure + soldeCongesExcepMinute);
@@ -556,18 +557,22 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 	public boolean isAgentReposComp() throws Exception {
 		// si l'agent n'est pas contractuel ou convention collectives, alors il
 		// n'a pas le droit au repos compensateur
-		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
-		if (getTransaction().isErreur()) {
-			getTransaction().traiterErreur();
-			// "ERR136", "Cet agent n'a aucune carrière active."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
-			return false;
-		}
+		try {
+			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+			if (getTransaction().isErreur()) {
+				getTransaction().traiterErreur();
+				// "ERR136", "Cet agent n'a aucune carrière active."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
+				return false;
+			}
 
-		if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
-			// "ERR802",
-			// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
+			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
+				// "ERR802",
+				// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
+				return false;
+			}
+		} catch (Exception e) {
 			return false;
 		}
 
