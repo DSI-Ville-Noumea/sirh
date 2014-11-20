@@ -1,6 +1,7 @@
 ----------------------------------------------------------------
 -- RECETTE
 ----------------------------------------------------------------
+alter table SIRH2.FICHE_POSTE alter COLUMN OBSERVATION set data type NCLOB ;
 drop table SIRH2.P_REFERENT_RH;
 create table SIRH2.P_REFERENT_RH
 (
@@ -15,6 +16,7 @@ primary key (ID_REFERENT_RH)
 ----------------------------------------------------------------
 -- PROD
 ----------------------------------------------------------------
+alter table SIRH.FICHE_POSTE alter COLUMN OBSERVATION set data type NCLOB ;
 drop table SIRH.P_REFERENT_RH;
 create table SIRH.P_REFERENT_RH
 (
