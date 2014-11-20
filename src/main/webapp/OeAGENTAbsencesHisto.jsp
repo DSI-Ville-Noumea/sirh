@@ -93,7 +93,7 @@
 					<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
-								<td width="100px;">Type Demande</td>
+								<td width="300px;">Type Demande</td>
 								<td width="90px;" align="center">Date début</td>
 								<td width="90px;" align="center">Heure Début</td>
 								<td width="90px;" align="center">Durée</td>
@@ -150,7 +150,7 @@
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
-								<td width="100px;">Type Demande</td>
+								<td width="300px;">Type Demande</td>
 								<td width="90px;" align="center">Date début</td>
 								<td width="90px;" align="center">Heure Début</td>
 								<td width="90px;" align="center">Durée</td>
@@ -207,7 +207,7 @@
 					<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
-								<td width="100px;">Type Demande</td>
+								<td width="300px;">Type Demande</td>
 								<td width="90px;" align="center">Date début</td>
 								<td width="90px;" align="center">Heure Début</td>
 								<td width="90px;" align="center">Durée</td>

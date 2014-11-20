@@ -1699,7 +1699,7 @@ public class OeABSVisualisation extends BasicProcess {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
 				return false;
 			}
-			dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")) * 60);
+			dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")));
 		}
 		// /////////////// DATE FIN ////////////////////
 		if (type.getTypeSaisiDto().isCalendarDateFin()) {
