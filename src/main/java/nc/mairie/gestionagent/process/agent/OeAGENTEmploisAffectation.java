@@ -14,8 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import nc.mairie.connecteur.Connecteur;
 import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
+import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
+import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.gestionagent.robot.MaClasse;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -45,6 +50,7 @@ import nc.mairie.metier.specificites.PrimePointageFP;
 import nc.mairie.metier.specificites.RegIndemnAFF;
 import nc.mairie.metier.specificites.RegimeIndemnitaire;
 import nc.mairie.metier.specificites.Rubrique;
+import nc.mairie.spring.dao.metier.agent.AgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentAgentDao;
 import nc.mairie.spring.dao.metier.agent.DocumentDao;
 import nc.mairie.spring.dao.metier.parametrage.BaseHorairePointageDao;
@@ -70,6 +76,8 @@ import nc.mairie.spring.dao.metier.specificites.RubriqueDao;
 import nc.mairie.spring.dao.utils.MairieDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.RadiWSConsumer;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -135,9 +143,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private String[] LB_TYPE_AVANTAGE;
 	private String[] LB_TYPE_DELEGATION;
 	private String[] LB_BASE_HORAIRE_POINTAGE;
+	private String[] LB_BASE_HORAIRE_ABSENCE;
 	private String[] LB_TYPE_REGIME;
 
 	private ArrayList<BaseHorairePointage> listeBaseHorairePointage = new ArrayList<>();
+	private ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence = new ArrayList<>();
 
 	private ArrayList<Affectation> listeAffectation = new ArrayList<>();
 	private ArrayList<AvantageNature> listeAvantageAAjouter = new ArrayList<>();
@@ -198,6 +208,7 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 	private HistoAffectationDao histoAffectationDao;
 	private AffectationDao affectationDao;
 	private BaseHorairePointageDao baseHorairePointageDao;
+	private AgentDao agentDao;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -2284,6 +2295,22 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 			}
 
+			// Récup base horaire absence
+			if (getAffectationCourant().getIdBaseHoraireAbsence() != null) {
+				RefTypeSaisiCongeAnnuelDto dto = new RefTypeSaisiCongeAnnuelDto();
+				dto.setIdRefTypeSaisiCongeAnnuel(getAffectationCourant().getIdBaseHoraireAbsence());
+				addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(),
+						String.valueOf(getListeBaseHoraireAbsence().indexOf(dto) + 1));
+			} else {
+				// si c'est null alors on prend la base horaire de la FDP
+				if (getFichePosteCourant() != null && getFichePosteCourant().getIdBaseHoraireAbsence() != null) {
+					RefTypeSaisiCongeAnnuelDto dto = new RefTypeSaisiCongeAnnuelDto();
+					dto.setIdRefTypeSaisiCongeAnnuel(getFichePosteCourant().getIdBaseHoraireAbsence());
+					addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(),
+							String.valueOf(getListeBaseHoraireAbsence().indexOf(dto) + 1));
+				}
+			}
+
 		}
 		return true;
 	}
@@ -2590,6 +2617,37 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			setListeTempsTravail(EnumTempsTravail.getValues());
 			setLB_TEMPS_TRAVAIL(getListeTempsTravail());
 			addZone(getNOM_LB_TEMPS_TRAVAIL_SELECT(), Const.ZERO);
+		}
+
+		// Si liste base horaire absence vide alors affectation
+		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(null);
+
+			for (TypeAbsenceDto abs : listeTypeAbsence) {
+				if (abs.getGroupeAbsence() == null
+						|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_ANNUELS
+								.getValue()) {
+					continue;
+				}
+				setListeBaseHoraireAbsence((ArrayList<RefTypeSaisiCongeAnnuelDto>) abs
+						.getListeTypeSaisiCongeAnnuelDto());
+			}
+			if (getListeBaseHoraireAbsence().size() != 0) {
+				int tailles[] = { 5 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<RefTypeSaisiCongeAnnuelDto> list = getListeBaseHoraireAbsence().listIterator(); list
+						.hasNext();) {
+					RefTypeSaisiCongeAnnuelDto base = (RefTypeSaisiCongeAnnuelDto) list.next();
+					String ligne[] = { base.getCodeBaseHoraireAbsence() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_BASE_HORAIRE_ABSENCE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_BASE_HORAIRE_ABSENCE(null);
+			}
 		}
 
 		// Si liste base horaire pointage vide alors affectation
@@ -3168,6 +3226,9 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		}
 		if (getBaseHorairePointageDao() == null) {
 			setBaseHorairePointageDao(new BaseHorairePointageDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAgentDao() == null) {
+			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -4264,6 +4325,21 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 			getAffectationCourant().setCommentaire(
 					getVAL_EF_COMMENTAIRE().equals(Const.CHAINE_VIDE) ? null : getVAL_EF_COMMENTAIRE());
 
+			// Base horaire de congé
+			int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
+					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
+
+			if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
+					|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire de congé"));
+				return false;
+			}
+
+			RefTypeSaisiCongeAnnuelDto baseHoraireAbsence = (RefTypeSaisiCongeAnnuelDto) getListeBaseHoraireAbsence()
+					.get(numLigneBaseHoraireAbsence - 1);
+
+			getAffectationCourant().setIdBaseHoraireAbsence(baseHoraireAbsence.getIdRefTypeSaisiCongeAnnuel());
+
 			// Base horaire de pointage
 			int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
 					.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
@@ -4319,6 +4395,12 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 				}
 
 				commitTransaction();
+
+				// on initialise le compteur de congé
+				SirhAbsWSConsumer t = new SirhAbsWSConsumer();
+				@SuppressWarnings("unused")
+				ReturnMessageDto erreurDto = t.initialiseCompteurConge(getAgentConnecte(request).getIdAgent(),
+						getAgentCourant().getIdAgent());
 
 				// on sauvegarde les FDP au moment de la creation d'une
 				// affectation
@@ -5569,6 +5651,76 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 
 	public void setBaseHorairePointageDao(BaseHorairePointageDao baseHorairePointageDao) {
 		this.baseHorairePointageDao = baseHorairePointageDao;
+	}
+
+	private Agent getAgentConnecte(HttpServletRequest request) throws Exception {
+		Agent agent = null;
+
+		UserAppli uUser = (UserAppli) VariableGlobale.recuperer(request, VariableGlobale.GLOBAL_USER_APPLI);
+		// on fait la correspondance entre le login et l'agent via RADI
+		RadiWSConsumer radiConsu = new RadiWSConsumer();
+		LightUserDto user = radiConsu.getAgentCompteADByLogin(uUser.getUserName());
+		if (user == null) {
+			getTransaction().traiterErreur();
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return null;
+		} else {
+			if (user != null && user.getEmployeeNumber() != null && user.getEmployeeNumber() != 0) {
+				try {
+					agent = getAgentDao().chercherAgentParMatricule(
+							radiConsu.getNomatrWithEmployeeNumber(user.getEmployeeNumber()));
+				} catch (Exception e) {
+					// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+					return null;
+				}
+			}
+		}
+
+		return agent;
+	}
+
+	public AgentDao getAgentDao() {
+		return agentDao;
+	}
+
+	public void setAgentDao(AgentDao agentDao) {
+		this.agentDao = agentDao;
+	}
+
+	private String[] getLB_BASE_HORAIRE_ABSENCE() {
+		if (LB_BASE_HORAIRE_ABSENCE == null)
+			LB_BASE_HORAIRE_ABSENCE = initialiseLazyLB();
+		return LB_BASE_HORAIRE_ABSENCE;
+	}
+
+	private void setLB_BASE_HORAIRE_ABSENCE(String[] newLB_BASE_HORAIRE_ABSENCE) {
+		LB_BASE_HORAIRE_ABSENCE = newLB_BASE_HORAIRE_ABSENCE;
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_ABSENCE() {
+		return "NOM_LB_BASE_HORAIRE_ABSENCE";
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT() {
+		return "NOM_LB_BASE_HORAIRE_ABSENCE_SELECT";
+	}
+
+	public String[] getVAL_LB_BASE_HORAIRE_ABSENCE() {
+		return getLB_BASE_HORAIRE_ABSENCE();
+	}
+
+	public String getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT() {
+		return getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT());
+	}
+
+	public ArrayList<RefTypeSaisiCongeAnnuelDto> getListeBaseHoraireAbsence() {
+		return listeBaseHoraireAbsence;
+	}
+
+	public void setListeBaseHoraireAbsence(ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence) {
+		this.listeBaseHoraireAbsence = listeBaseHoraireAbsence;
 	}
 
 }

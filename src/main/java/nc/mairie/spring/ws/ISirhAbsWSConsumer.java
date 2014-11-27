@@ -79,6 +79,8 @@ public interface ISirhAbsWSConsumer {
 
 	List<HistoriqueSoldeDto> getHistoriqueCompteurAgent(Integer idAgent, Integer codeTypeAbsence, String json);
 
+	ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer idAgentConcerne);
+
 	// demandes
 	List<DemandeDto> getListeDemandesAgent(Integer idAgent, String onglet, String dateDebut, String dateFin,
 			String dateDemande, Integer idRefEtat, Integer idRefType);

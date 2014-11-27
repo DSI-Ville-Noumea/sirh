@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumStatutFichePoste;
 import nc.mairie.enums.EnumTypeCompetence;
+import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
+import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
 import nc.mairie.metier.Const;
@@ -103,6 +106,7 @@ import nc.mairie.spring.dao.metier.specificites.RegIndemnDao;
 import nc.mairie.spring.dao.metier.specificites.RegIndemnFPDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
+import nc.mairie.spring.ws.SirhAbsWSConsumer;
 import nc.mairie.spring.ws.SirhPtgWSConsumer;
 import nc.mairie.technique.BasicProcess;
 import nc.mairie.technique.FormateListe;
@@ -167,6 +171,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private String[] LB_NIVEAU_ETUDE;
 	private String[] LB_NATURE_CREDIT;
 	private String[] LB_BASE_HORAIRE_POINTAGE;
+	private String[] LB_BASE_HORAIRE_ABSENCE;
 	// nouvelle liste suite remaniement fdp/activites
 	private ArrayList<Activite> listeToutesActi;
 	// activites de la fiche emploi primaire
@@ -200,6 +205,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	private ArrayList<EntiteGeo> listeLocalisation;
 	private ArrayList<NatureCredit> listeNatureCredit;
 	private ArrayList<BaseHorairePointage> listeBaseHorairePointage;
+	private ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence;
 	private ArrayList<AvantageNature> listeAvantage;
 	private ArrayList<AvantageNature> listeAvantageAAjouter;
 	private ArrayList<AvantageNature> listeAvantageASupprimer;
@@ -740,6 +746,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 				addZone(getNOM_LB_NATURE_CREDIT_SELECT(), Const.ZERO);
 			}
 
+			// base horaire pointage
 			if (getListeBaseHorairePointage() != null && getFichePosteCourante().getIdBaseHorairePointage() != null) {
 				for (int i = 0; i < getListeBaseHorairePointage().size(); i++) {
 					BaseHorairePointage b = (BaseHorairePointage) getListeBaseHorairePointage().get(i);
@@ -751,6 +758,20 @@ public class OePOSTEFichePoste extends BasicProcess {
 				}
 			} else {
 				addZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT(), Const.ZERO);
+			}
+
+			// base horaire absence
+			if (getListeBaseHoraireAbsence() != null && getFichePosteCourante().getIdBaseHoraireAbsence() != null) {
+				for (int i = 0; i < getListeBaseHoraireAbsence().size(); i++) {
+					RefTypeSaisiCongeAnnuelDto b = (RefTypeSaisiCongeAnnuelDto) getListeBaseHoraireAbsence().get(i);
+					if (b.getIdRefTypeSaisiCongeAnnuel().toString()
+							.equals(getFichePosteCourante().getIdBaseHoraireAbsence().toString())) {
+						addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(), String.valueOf(i + 1));
+						break;
+					}
+				}
+			} else {
+				addZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT(), Const.ZERO);
 			}
 
 			afficheResponsable();
@@ -1061,6 +1082,37 @@ public class OePOSTEFichePoste extends BasicProcess {
 				setLB_BASE_HORAIRE_POINTAGE(aFormat.getListeFormatee(true));
 			} else {
 				setLB_BASE_HORAIRE_POINTAGE(null);
+			}
+		}
+
+		// Si liste base horaire absence vide alors affectation
+		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
+			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+			List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(null);
+
+			for (TypeAbsenceDto abs : listeTypeAbsence) {
+				if (abs.getGroupeAbsence() == null
+						|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_ANNUELS
+								.getValue()) {
+					continue;
+				}
+				setListeBaseHoraireAbsence((ArrayList<RefTypeSaisiCongeAnnuelDto>) abs
+						.getListeTypeSaisiCongeAnnuelDto());
+			}
+			if (getListeBaseHoraireAbsence().size() != 0) {
+				int tailles[] = { 5 };
+				String padding[] = { "G" };
+				FormateListe aFormat = new FormateListe(tailles, padding, false);
+				for (ListIterator<RefTypeSaisiCongeAnnuelDto> list = getListeBaseHoraireAbsence().listIterator(); list
+						.hasNext();) {
+					RefTypeSaisiCongeAnnuelDto base = (RefTypeSaisiCongeAnnuelDto) list.next();
+					String ligne[] = { base.getCodeBaseHoraireAbsence() };
+
+					aFormat.ajouteLigne(ligne);
+				}
+				setLB_BASE_HORAIRE_ABSENCE(aFormat.getListeFormatee(true));
+			} else {
+				setLB_BASE_HORAIRE_ABSENCE(null);
 			}
 		}
 	}
@@ -1972,6 +2024,19 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 		Horaire reglementaire = (Horaire) getListeHoraire().get(numLigneReglementaire);
 
+		// Base horaire de absence
+		int numLigneBaseHoraireAbsence = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT())) : -1);
+
+		if (numLigneBaseHoraireAbsence == 0 || getListeBaseHoraireAbsence().isEmpty()
+				|| numLigneBaseHoraireAbsence > getListeBaseHoraireAbsence().size()) {
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "base horaire d'absence"));
+			return false;
+		}
+
+		RefTypeSaisiCongeAnnuelDto baseHoraireAbsence = (RefTypeSaisiCongeAnnuelDto) getListeBaseHoraireAbsence().get(
+				numLigneBaseHoraireAbsence - 1);
+
 		// Base horaire de pointage
 		int numLigneBaseHorairePointage = (Services.estNumerique(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) ? Integer
 				.parseInt(getZone(getNOM_LB_BASE_HORAIRE_POINTAGE_SELECT())) : -1);
@@ -2018,6 +2083,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 		getFichePosteCourante().setDateDebAppliServ(sdf.parse(dateDebutAppliServ));
 		getFichePosteCourante().setIdNatureCredit(natureCredit.getIdNatureCredit());
 		getFichePosteCourante().setIdBaseHorairePointage(baseHorairePointage.getIdBaseHorairePointage());
+		getFichePosteCourante().setIdBaseHoraireAbsence(baseHoraireAbsence.getIdRefTypeSaisiCongeAnnuel());
 
 		if (getFichePosteCourante().getIdStatutFp().toString().equals(EnumStatutFichePoste.INACTIVE.getId())) {
 			getFichePosteCourante().setIdResponsable(null);
@@ -7121,5 +7187,39 @@ public class OePOSTEFichePoste extends BasicProcess {
 
 	public void setBaseHorairePointageCourant(BaseHorairePointage baseHorairePointageCourant) {
 		this.baseHorairePointageCourant = baseHorairePointageCourant;
+	}
+
+	public ArrayList<RefTypeSaisiCongeAnnuelDto> getListeBaseHoraireAbsence() {
+		return listeBaseHoraireAbsence;
+	}
+
+	public void setListeBaseHoraireAbsence(ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence) {
+		this.listeBaseHoraireAbsence = listeBaseHoraireAbsence;
+	}
+
+	private String[] getLB_BASE_HORAIRE_ABSENCE() {
+		if (LB_BASE_HORAIRE_ABSENCE == null)
+			LB_BASE_HORAIRE_ABSENCE = initialiseLazyLB();
+		return LB_BASE_HORAIRE_ABSENCE;
+	}
+
+	private void setLB_BASE_HORAIRE_ABSENCE(String[] newLB_BASE_HORAIRE_ABSENCE) {
+		LB_BASE_HORAIRE_ABSENCE = newLB_BASE_HORAIRE_ABSENCE;
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_ABSENCE() {
+		return "NOM_LB_BASE_HORAIRE_ABSENCE";
+	}
+
+	public String getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT() {
+		return "NOM_LB_BASE_HORAIRE_ABSENCE_SELECT";
+	}
+
+	public String[] getVAL_LB_BASE_HORAIRE_ABSENCE() {
+		return getLB_BASE_HORAIRE_ABSENCE();
+	}
+
+	public String getVAL_LB_BASE_HORAIRE_ABSENCE_SELECT() {
+		return getZone(getNOM_LB_BASE_HORAIRE_ABSENCE_SELECT());
 	}
 }

@@ -39,6 +39,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 	public static final String CHAMP_ID_NATURE_CREDIT = "ID_NATURE_CREDIT";
 	public static final String CHAMP_NUM_DELIBERATION = "NUM_DELIBERATION";
 	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
+	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
 
 	public HistoFichePosteDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -112,6 +113,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdNatureCredit((Integer) row.get(CHAMP_ID_NATURE_CREDIT));
 			a.setNumDeliberation((String) row.get(CHAMP_NUM_DELIBERATION));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -160,6 +162,7 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 			a.setIdNatureCredit((Integer) row.get(CHAMP_ID_NATURE_CREDIT));
 			a.setNumDeliberation((String) row.get(CHAMP_NUM_DELIBERATION));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -175,18 +178,19 @@ public class HistoFichePosteDao extends SirhDao implements HistoFichePosteDaoInt
 				+ CHAMP_MISSIONS + "," + CHAMP_ANNEE_CREATION + "," + CHAMP_NUM_FP + "," + CHAMP_DATE_HISTO + ","
 				+ CHAMP_TYPE_HISTO + "," + CHAMP_USER_HISTO + "," + CHAMP_DATE_DEBUT_VALIDITE_FP + ","
 				+ CHAMP_DATE_DEB_APPLI_SERV + "," + CHAMP_DATE_FIN_APPLI_SERV + "," + CHAMP_CODE_GRADE + ","
-				+ CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		jdbcTemplate
-				.update(sql,
-						new Object[] { histoFP.getIdFichePoste(), histoFP.getIdTitrePoste(), histoFP.getIdEntiteGeo(),
-								histoFP.getIdBudget(), histoFP.getIdStatutFp(), histoFP.getIdResponsable(),
-								histoFP.getIdRemplacement(), histoFP.getIdCdthorBud(), histoFP.getIdCdthorReg(),
-								histoFP.getIdServi(), histoFP.getDateFinValiditeFp(), histoFP.getOpi(),
-								histoFP.getNfa(), histoFP.getMissions(), histoFP.getAnneeCreation(),
-								histoFP.getNumFp(), new Date(), histoFP.getTypeHisto(), histoFP.getUserHisto(),
-								histoFP.getDateDebutValiditeFp(), histoFP.getDateDebAppliServ(),
-								histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(), histoFP.getIdNatureCredit(),
-								histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage() });
+				+ CHAMP_ID_NATURE_CREDIT + "," + CHAMP_NUM_DELIBERATION + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ","
+				+ CHAMP_ID_BASE_HORAIRE_ABSENCE + ") "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		jdbcTemplate.update(
+				sql,
+				new Object[] { histoFP.getIdFichePoste(), histoFP.getIdTitrePoste(), histoFP.getIdEntiteGeo(),
+						histoFP.getIdBudget(), histoFP.getIdStatutFp(), histoFP.getIdResponsable(),
+						histoFP.getIdRemplacement(), histoFP.getIdCdthorBud(), histoFP.getIdCdthorReg(),
+						histoFP.getIdServi(), histoFP.getDateFinValiditeFp(), histoFP.getOpi(), histoFP.getNfa(),
+						histoFP.getMissions(), histoFP.getAnneeCreation(), histoFP.getNumFp(), new Date(),
+						histoFP.getTypeHisto(), histoFP.getUserHisto(), histoFP.getDateDebutValiditeFp(),
+						histoFP.getDateDebAppliServ(), histoFP.getDateFinAppliServ(), histoFP.getCodeGrade(),
+						histoFP.getIdNatureCredit(), histoFP.getNumDeliberation(), histoFP.getIdBaseHorairePointage(),
+						histoFP.getIdBaseHoraireAbsence() });
 	}
 }

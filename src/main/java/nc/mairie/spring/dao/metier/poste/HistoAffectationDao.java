@@ -27,6 +27,7 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 	public static final String CHAMP_TYPE_HISTO = "TYPE_HISTO";
 	public static final String CHAMP_USER_HISTO = "USER_HISTO";
 	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
+	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
 
 	public HistoAffectationDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -39,15 +40,15 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 				+ CHAMP_ID_FICHE_POSTE + "," + CHAMP_ID_AGENT + "," + CHAMP_REF_ARRETE_AFF + "," + CHAMP_DATE_ARRETE
 				+ "," + CHAMP_DATE_DEBUT_AFF + "," + CHAMP_DATE_FIN_AFF + "," + CHAMP_TEMPS_TRAVAIL + ","
 				+ CHAMP_CODE_ECOLE + "," + CHAMP_ID_FICHE_POSTE_SECONDAIRE + "," + CHAMP_COMMENTAIRE + ","
-				+ CHAMP_TYPE_HISTO + "," + CHAMP_USER_HISTO + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ") "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ CHAMP_TYPE_HISTO + "," + CHAMP_USER_HISTO + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE + ","
+				+ CHAMP_ID_BASE_HORAIRE_ABSENCE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { histo.getIdAffectation(), histo.getIdMotifAffectation(), histo.getIdFichePoste(),
 						histo.getIdAgent(), histo.getRefArreteAff(), histo.getDateArrete(), histo.getDateDebutAff(),
 						histo.getDateFinAff(), histo.getTempsTravail(), histo.getCodeEcole(),
 						histo.getIdFichePosteSecondaire(), histo.getCommentaire(), histo.getTypeHisto(),
-						histo.getUserHisto(), histo.getIdBaseHorairePointage() });
+						histo.getUserHisto(), histo.getIdBaseHorairePointage(), histo.getIdBaseHoraireAbsence() });
 	}
 
 	@Override
@@ -84,6 +85,7 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 			a.setTypeHisto((String) row.get(CHAMP_TYPE_HISTO));
 			a.setUserHisto((String) row.get(CHAMP_USER_HISTO));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 

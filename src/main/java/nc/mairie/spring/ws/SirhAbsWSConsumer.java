@@ -19,6 +19,7 @@ import nc.mairie.gestionagent.absence.dto.UnitePeriodeQuotaDto;
 import nc.mairie.gestionagent.dto.AgentWithServiceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.servlets.ServletAgent;
+import nc.mairie.metier.Const;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
 	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
 	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
+	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -533,6 +535,17 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(RefGroupeAbsenceDto.class, res, url);
 
+	}
+
+	@Override
+	public ReturnMessageDto initialiseCompteurConge(Integer agentConnecte, Integer idAgentConcerne) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsInitialiseCompteurCongeAnnuel;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", agentConnecte.toString());
+		params.put("idAgentConcerne", idAgentConcerne.toString());
+		ClientResponse res = createAndPostRequest(params, url, Const.CHAINE_VIDE);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 }

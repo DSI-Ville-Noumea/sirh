@@ -24,6 +24,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 	public static final String CHAMP_ID_FICHE_POSTE_SECONDAIRE = "ID_FICHE_POSTE_SECONDAIRE";
 	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
 	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
+	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
 
 	public AffectationDao(SirhDao sirhDao) {
 		super.dataSource = sirhDao.getDataSource();
@@ -65,6 +66,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -94,6 +96,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -124,6 +127,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -182,6 +186,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -213,6 +218,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -241,6 +247,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -270,6 +277,7 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 			a.setIdFichePosteSecondaire((Integer) row.get(CHAMP_ID_FICHE_POSTE_SECONDAIRE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
+			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);
 		}
 
@@ -288,13 +296,15 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 				+ "=?," + CHAMP_ID_AGENT + "=?," + CHAMP_REF_ARRETE_AFF + "=?," + CHAMP_DATE_ARRETE + "=?" + ","
 				+ CHAMP_DATE_DEBUT_AFF + "=?," + CHAMP_DATE_FIN_AFF + "=?," + CHAMP_TEMPS_TRAVAIL + "=?,"
 				+ CHAMP_CODE_ECOLE + "=?," + CHAMP_ID_FICHE_POSTE_SECONDAIRE + "=?," + CHAMP_COMMENTAIRE + "=?,"
-				+ CHAMP_ID_BASE_HORAIRE_POINTAGE + "=? where " + CHAMP_ID + " =?";
+				+ CHAMP_ID_BASE_HORAIRE_POINTAGE + "=?," + CHAMP_ID_BASE_HORAIRE_ABSENCE + "=? where " + CHAMP_ID
+				+ " =?";
 		jdbcTemplate.update(
 				sql,
 				new Object[] { aff.getIdMotifAffectation(), aff.getIdFichePoste(), aff.getIdAgent(),
 						aff.getRefArreteAff(), aff.getDateArrete(), aff.getDateDebutAff(), aff.getDateFinAff(),
 						aff.getTempsTravail(), aff.getCodeEcole(), aff.getIdFichePosteSecondaire(),
-						aff.getCommentaire(), aff.getIdBaseHorairePointage(), aff.getIdAffectation() });
+						aff.getCommentaire(), aff.getIdBaseHorairePointage(), aff.getIdBaseHoraireAbsence(),
+						aff.getIdAffectation() });
 	}
 
 	@Override
@@ -304,13 +314,14 @@ public class AffectationDao extends SirhDao implements AffectationDaoInterface {
 				+ CHAMP_REF_ARRETE_AFF + "," + CHAMP_DATE_ARRETE + "," + CHAMP_DATE_DEBUT_AFF + ","
 				+ CHAMP_DATE_FIN_AFF + "," + CHAMP_TEMPS_TRAVAIL + "," + CHAMP_CODE_ECOLE + ","
 				+ CHAMP_ID_FICHE_POSTE_SECONDAIRE + "," + CHAMP_COMMENTAIRE + "," + CHAMP_ID_BASE_HORAIRE_POINTAGE
-				+ ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?))";
+				+ "," + CHAMP_ID_BASE_HORAIRE_ABSENCE + ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?))";
 		Integer id = jdbcTemplate.queryForObject(
 				sql,
 				new Object[] { aff.getIdMotifAffectation(), aff.getIdFichePoste(), aff.getIdAgent(),
 						aff.getRefArreteAff(), aff.getDateArrete(), aff.getDateDebutAff(), aff.getDateFinAff(),
 						aff.getTempsTravail(), aff.getCodeEcole(), aff.getIdFichePosteSecondaire(),
-						aff.getCommentaire(), aff.getIdBaseHorairePointage() }, Integer.class);
+						aff.getCommentaire(), aff.getIdBaseHorairePointage(), aff.getIdBaseHoraireAbsence() },
+				Integer.class);
 		return id;
 	}
 }

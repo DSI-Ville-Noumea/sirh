@@ -108,7 +108,8 @@ public class RefTypeSaisiCongeAnnuelDto {
 
 	@Override
 	public boolean equals(Object obj) {
-		return this.idRefTypeSaisiCongeAnnuel == ((RefTypeSaisiCongeAnnuelDto) obj).getIdRefTypeSaisiCongeAnnuel();
+		return idRefTypeSaisiCongeAnnuel.toString().equals(
+				((RefTypeSaisiCongeAnnuelDto) obj).getIdRefTypeSaisiCongeAnnuel().toString());
 	}
 
 	public String getDescription() {
