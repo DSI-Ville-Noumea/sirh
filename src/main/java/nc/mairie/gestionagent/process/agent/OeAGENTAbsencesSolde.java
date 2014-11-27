@@ -423,7 +423,7 @@ public class OeAGENTAbsencesSolde extends BasicProcess {
 			addZone(getNOM_ST_DATE(i),
 					sdfDate.format(histo.getDateModifcation()) + "<br/>" + sdfHeure.format(histo.getDateModifcation()));
 			addZone(getNOM_ST_PAR(i), ag.getNomAgent() + " " + ag.getPrenomAgent());
-			addZone(getNOM_ST_MOTIF(i), histo.getMotif().getLibelle());
+			addZone(getNOM_ST_MOTIF(i), histo.getMotif() == null ? Const.CHAINE_VIDE : histo.getMotif().getLibelle());
 			addZone(getNOM_ST_OPERATION(i), histo.getTextModification());
 
 		}
