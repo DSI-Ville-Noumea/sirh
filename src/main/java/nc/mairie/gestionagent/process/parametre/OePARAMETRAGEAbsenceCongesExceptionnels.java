@@ -37,7 +37,7 @@ import flexjson.JSONSerializer;
  * Process OePARAMETRAGERecrutement Date de création : (14/09/11 13:52:54)
  * 
  */
-public class OePARAMETRAGEAbsenceConges extends BasicProcess {
+public class OePARAMETRAGEAbsenceCongesExceptionnels extends BasicProcess {
 	/**
 	 * 
 	 */
@@ -160,7 +160,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	 * (14/09/11 13:52:54)
 	 * 
 	 */
-	public OePARAMETRAGEAbsenceConges() {
+	public OePARAMETRAGEAbsenceCongesExceptionnels() {
 		super();
 	}
 
@@ -232,7 +232,7 @@ public class OePARAMETRAGEAbsenceConges extends BasicProcess {
 	 * 
 	 */
 	public String getJSP() {
-		return "OePARAMETRAGEAbsenceConges.jsp";
+		return "OePARAMETRAGEAbsenceCongesExceptionnels.jsp";
 	}
 
 	/**

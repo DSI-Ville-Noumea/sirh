@@ -63,7 +63,8 @@ import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA53;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA54;
 import nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsence;
-import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceConges;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesAnnuels;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAbsenceCongesExceptionnels;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEAvancement;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGECarriere;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEDonneesPerso;
@@ -309,8 +310,10 @@ public class RobotAgent extends Robot {
 		} // Module PARAMETRAGE - ABSENCE
 		else if (activite.equals("ParamAbsMotif")) {
 			return new OePARAMETRAGEAbsence();
-		} else if (activite.equals("ParamAbsConge")) {
-			return new OePARAMETRAGEAbsenceConges();
+		} else if (activite.equals("ParamAbsCongeExcep")) {
+			return new OePARAMETRAGEAbsenceCongesExceptionnels();
+		} else if (activite.equals("ParamAbsCongeAnnuel")) {
+			return new OePARAMETRAGEAbsenceCongesAnnuels();
 		} // Module PARAMETRAGE - ELECTIONS
 		else if (activite.equals("ParamElec")) {
 			return new OePARAMETRAGEElection();
@@ -758,7 +761,7 @@ public class RobotAgent extends Robot {
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEAbsence.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
-		navigation.put(OePARAMETRAGEAbsenceConges.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+		navigation.put(OePARAMETRAGEAbsenceCongesExceptionnels.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());

@@ -137,7 +137,8 @@
 		listeDroits.add("ParamCarriere");		
 		listeDroits.add("ParamJour");		
 		listeDroits.add("ParamAbsMotif");		
-		listeDroits.add("ParamAbsConge");	
+		listeDroits.add("ParamAbsCongeExcep");	
+		listeDroits.add("ParamAbsCongeAnnuel");	
 		listeDroits.add("ParamElec");	
 		listeDroits.add("ParamKiosque");	
 		

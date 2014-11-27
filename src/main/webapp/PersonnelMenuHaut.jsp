@@ -215,7 +215,8 @@ document.write(menuParametrageElemSal.afficher());
 
 var menuParametrageElemAbs = new MenuHaut("Module_parametres_absence");
 menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsMotif", "CARRIERE", "Gestion des paramètres des motifs pour le module absence", true, false,"MOTIFS"));
-menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsConge", "JOUR", "Gestion des paramètres des type de congés exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeExcep", "JOUR", "Gestion des paramètres des type de congés exceptionnels", true, false,"CONGES EXCEPTIONNELS"));
+menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeAnnuel", "ANNUEL", "Gestion des paramètres des type de congés annuels", true, false,"CONGES ANNUELS"));
 document.write(menuParametrageElemAbs.afficher());
 
 </script>
