@@ -1201,7 +1201,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	 * 
 	 */
 	public boolean performPB_FILTRER(HttpServletRequest request) throws Exception {
-		// setMessage(Const.CHAINE_VIDE);
+		if (!performControlerFiltres()) {
+			return false;
+		}
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 
 		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
@@ -1271,6 +1273,33 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 		ArrayList<EAE> listeEAE = getEaeDao().listerEAEPourCampagne(getCampagneCourante().getIdCampagneEae(), etat,
 				statut, listeSousService, cap, agentEvaluateur, agentEvalue, affecte);
 		setListeEAE(listeEAE);
+		return true;
+	}
+
+	private boolean performControlerFiltres() {
+		if (!getVAL_ST_AGENT_EVALUATEUR().equals(Const.CHAINE_VIDE)) {
+			try {
+				@SuppressWarnings("unused")
+				Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + getVAL_ST_AGENT_EVALUATEUR()));
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", getVAL_ST_AGENT_EVALUATEUR()));
+				return false;
+			}
+		}
+		
+		if (!getVAL_ST_AGENT_EVALUE().equals(Const.CHAINE_VIDE)) {
+			try {
+				@SuppressWarnings("unused")
+				Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + getVAL_ST_AGENT_EVALUE()));
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", getVAL_ST_AGENT_EVALUE()));
+				return false;
+			}
+		}
 		return true;
 	}
 

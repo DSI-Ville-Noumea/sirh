@@ -137,11 +137,11 @@ function reduireHierarchy() {
 				</div>
 			<BR/><BR/>
 			<span class="sigp2" style="width:100px">Par évaluateur :</span>
-			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUATEUR() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_EVALUATEUR() %>" style="margin-right:10px;">
+			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUATEUR() %>" size="10" type="text" value="<%= process.getVAL_ST_AGENT_EVALUATEUR() %>" style="margin-right:10px;">
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUATEUR()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUATEUR()%>');">
           	<span class="sigp2" style="width:100px">Par évalué :</span>
-			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUE() %>" size="10" readonly="readonly" type="text" value="<%= process.getVAL_ST_AGENT_EVALUE() %>" style="margin-right:10px;">
+			<INPUT class="sigp2-saisie" name="<%= process.getNOM_ST_AGENT_EVALUE() %>" size="10"  type="text" value="<%= process.getVAL_ST_AGENT_EVALUE() %>" style="margin-right:10px;">
 			<img border="0" src="images/loupe.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUE()%>');">
           	<img border="0" src="images/suppression.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_EVALUE()%>');">
           	<span class="sigp2" style="width:70px">Détachés : </span>
