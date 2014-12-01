@@ -734,6 +734,7 @@ public class OePTGVisualisation extends BasicProcess {
 		// Si liste type vide alors affectation
 		if (getLB_TYPE_HS() == LBVide) {
 			ArrayList<String> listeTypeHS = new ArrayList<String>();
+			listeTypeHS.add("Payées");
 			listeTypeHS.add("Récupérées");
 			listeTypeHS.add("Rappel en service");
 			setListeTypeHS(listeTypeHS);
@@ -992,6 +993,8 @@ public class OePTGVisualisation extends BasicProcess {
 				typeHS = "R";
 			} else if (libTypeHS.equals("Rappel en service")) {
 				typeHS = "RS";
+			} else if (libTypeHS.equals("Payées")) {
+				typeHS = "AUTRE";
 			}
 		}
 
