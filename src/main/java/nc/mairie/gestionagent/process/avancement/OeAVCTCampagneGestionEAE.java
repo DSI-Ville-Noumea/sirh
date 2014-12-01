@@ -654,13 +654,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// on met à jour l'etat de l'eAE
 		EaeFichePoste eaeFDP = getEaeFichePosteDao().chercherEaeFichePoste(eaeCree.getIdEae(), true);
-		if (eaeFDP.getIdSHD() == null || eaeFDP.getIdSHD() == 0) {
+		if (eaeFDP.getIdShd() == null || eaeFDP.getIdShd() == 0) {
 			getEaeDao().modifierEtat(eaeCree.getIdEae(), EnumEtatEAE.NON_AFFECTE.getCode());
 		}
 
 		// on créer les evaluateurs
-		if (eaeFDP.getIdSHD() != null && eaeFDP.getIdSHD() != 0 && tpResp != null) {
-			Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdSHD());
+		if (eaeFDP.getIdShd() != null && eaeFDP.getIdShd() != 0 && tpResp != null) {
+			Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdShd());
 			EaeEvaluateur eval = new EaeEvaluateur();
 			eval.setIdEae(idEaeCreer);
 			eval.setIdAgent(agentResp.getIdAgent());
@@ -722,9 +722,9 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 						(eaeFDP.getDirectionService() == null ? "&nbsp;" : eaeFDP.getDirectionService()) + " <br> "
 								+ (eaeFDP.getSectionService() == null ? "&nbsp;" : eaeFDP.getSectionService())
 								+ " <br> " + (eaeFDP.getService() == null ? "&nbsp;" : eaeFDP.getService()));
-				if (eaeFDP.getIdSHD() != null) {
+				if (eaeFDP.getIdShd() != null) {
 					try {
-						Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdSHD());
+						Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdShd());
 						addZone(getNOM_ST_SHD(i), agentResp.getNomAgent() + " " + agentResp.getPrenomAgent() + " ("
 								+ agentResp.getNomatr() + ") ");
 					} catch (Exception e) {
@@ -1951,7 +1951,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				} catch (Exception e) {
 
 				}
-				fichePosteEae.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : agentResp
+				fichePosteEae.setIdShd(agentResp == null || agentResp.getIdAgent() == null ? null : agentResp
 						.getIdAgent());
 			}
 			fichePosteEae.setPrimaire(false);
@@ -2079,7 +2079,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 			setIdCreerFichePosteSecondaire(idCreer);
 
-			getEaeFichePosteDao().creerEaeFichePoste(idCreer, fichePosteEae.getIdEae(), fichePosteEae.getIdSHD(),
+			getEaeFichePosteDao().creerEaeFichePoste(idCreer, fichePosteEae.getIdEae(), fichePosteEae.getIdShd(),
 					fichePosteEae.isPrimaire(), fichePosteEae.getDirectionService(), fichePosteEae.getService(),
 					fichePosteEae.getSectionService(), fichePosteEae.getEmploi(), fichePosteEae.getFonction(),
 					fichePosteEae.getDateEntreeFonction(), fichePosteEae.getGradePoste(),
@@ -2165,7 +2165,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					} catch (Exception e) {
 
 					}
-					fpModif.setIdSHD(agentResp == null || agentResp.getIdAgent() == null ? null : agentResp
+					fpModif.setIdShd(agentResp == null || agentResp.getIdAgent() == null ? null : agentResp
 							.getIdAgent());
 				}
 				fpModif.setPrimaire(true);
@@ -2301,7 +2301,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 					// on recupere l'id
 					Integer idCreer = getEaeFichePosteDao().getIdEaeFichePoste();
 					setIdCreerFichePostePrimaire(idCreer);
-					getEaeFichePosteDao().creerEaeFichePoste(idCreer, fpModif.getIdEae(), fpModif.getIdSHD(),
+					getEaeFichePosteDao().creerEaeFichePoste(idCreer, fpModif.getIdEae(), fpModif.getIdShd(),
 							fpModif.isPrimaire(), fpModif.getDirectionService(), fpModif.getService(),
 							fpModif.getSectionService(), fpModif.getEmploi(), fpModif.getFonction(),
 							fpModif.getDateEntreeFonction(), fpModif.getGradePoste(), fpModif.getLocalisation(),
@@ -2312,7 +2312,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				} else {
 					setIdCreerFichePostePrimaire(fpModif.getIdEaeFichePoste());
 					getEaeFichePosteDao().modifierEaeFichePoste(fpModif.getIdEaeFichePoste(), fpModif.getIdEae(),
-							fpModif.getIdSHD(), fpModif.isPrimaire(), fpModif.getDirectionService(),
+							fpModif.getIdShd(), fpModif.isPrimaire(), fpModif.getDirectionService(),
 							fpModif.getService(), fpModif.getSectionService(), fpModif.getEmploi(),
 							fpModif.getFonction(), fpModif.getDateEntreeFonction(), fpModif.getGradePoste(),
 							fpModif.getLocalisation(), fpModif.getMissions(), fpModif.getFonctionResp(),

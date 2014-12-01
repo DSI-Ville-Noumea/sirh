@@ -105,7 +105,7 @@ public class EaeFichePosteDao extends EaeDao implements EaeFichePosteDaoInterfac
 			EaeFichePoste eae = new EaeFichePoste();
 			eae.setIdEaeFichePoste((Integer) row.get(CHAMP_ID));
 			eae.setIdEae((Integer) row.get(CHAMP_ID_EAE));
-			eae.setIdSHD((Integer) row.get(CHAMP_ID_SHD));
+			eae.setIdShd((Integer) row.get(CHAMP_ID_SHD));
 			eae.setPrimaire((boolean) row.get(CHAMP_PRIMAIRE));
 			eae.setDirectionService((String) row.get(CHAMP_DIRECTION_SERVICE));
 			eae.setService((String) row.get(CHAMP_SERVICE));
