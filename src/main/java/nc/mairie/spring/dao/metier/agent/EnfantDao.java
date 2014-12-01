@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.agent;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -108,9 +109,12 @@ public class EnfantDao extends SirhDao implements EnfantDaoInterface {
 			a.setPrenom((String) row.get(CHAMP_PRENOM));
 			a.setSexe((String) row.get(CHAMP_SEXE));
 			a.setDateNaissance((Date) row.get(CHAMP_DATE_NAISSANCE));
-			a.setCodePaysNaissEt((Integer) row.get(CHAMP_CODE_PAYS_NAISS_ET));
-			a.setCodeCommuneNaissEt((Integer) row.get(CHAMP_CODE_COMMUNE_NAISS_ET));
-			a.setCodeCommuneNaissFr((Integer) row.get(CHAMP_CODE_COMMUNE_NAISS_FR));
+			BigDecimal naissEt = (BigDecimal) row.get(CHAMP_CODE_PAYS_NAISS_ET);
+			a.setCodePaysNaissEt(naissEt == null ? null : naissEt.intValue());
+			BigDecimal commEt = (BigDecimal) row.get(CHAMP_CODE_COMMUNE_NAISS_ET);
+			a.setCodeCommuneNaissEt(commEt == null ? null : commEt.intValue());
+			BigDecimal naissFr = (BigDecimal) row.get(CHAMP_CODE_COMMUNE_NAISS_FR);
+			a.setCodeCommuneNaissFr(naissFr == null ? null : naissFr.intValue());
 			a.setDateDeces((Date) row.get(CHAMP_DATE_DECES));
 			a.setNationalite((String) row.get(CHAMP_NATIONALITE));
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
