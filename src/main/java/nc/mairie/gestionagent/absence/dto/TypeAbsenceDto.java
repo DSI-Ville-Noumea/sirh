@@ -1,14 +1,12 @@
 package nc.mairie.gestionagent.absence.dto;
 
-import java.util.List;
-
 public class TypeAbsenceDto {
 
 	private Integer idRefTypeAbsence;
 	private String libelle;
 	private RefGroupeAbsenceDto groupeAbsence;
 	private RefTypeSaisiDto typeSaisiDto;
-	private List<RefTypeSaisiCongeAnnuelDto> listeTypeSaisiCongeAnnuelDto;
+	private RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuelDto;
 
 	public TypeAbsenceDto() {
 
@@ -51,11 +49,11 @@ public class TypeAbsenceDto {
 		this.typeSaisiDto = typeSaisiDto;
 	}
 
-	public List<RefTypeSaisiCongeAnnuelDto> getListeTypeSaisiCongeAnnuelDto() {
-		return listeTypeSaisiCongeAnnuelDto;
+	public RefTypeSaisiCongeAnnuelDto getTypeSaisiCongeAnnuelDto() {
+		return typeSaisiCongeAnnuelDto;
 	}
 
-	public void setListeTypeSaisiCongeAnnuelDto(List<RefTypeSaisiCongeAnnuelDto> listeTypeSaisiCongeAnnuelDto) {
-		this.listeTypeSaisiCongeAnnuelDto = listeTypeSaisiCongeAnnuelDto;
+	public void setTypeSaisiCongeAnnuelDto(RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuelDto) {
+		this.typeSaisiCongeAnnuelDto = typeSaisiCongeAnnuelDto;
 	}
 }

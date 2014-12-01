@@ -1088,16 +1088,11 @@ public class OePOSTEFichePoste extends BasicProcess {
 		// Si liste base horaire absence vide alors affectation
 		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(null);
+			List<TypeAbsenceDto> listeTypeAbsence = consuAbs
+					.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 
 			for (TypeAbsenceDto abs : listeTypeAbsence) {
-				if (abs.getGroupeAbsence() == null
-						|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_ANNUELS
-								.getValue()) {
-					continue;
-				}
-				setListeBaseHoraireAbsence((ArrayList<RefTypeSaisiCongeAnnuelDto>) abs
-						.getListeTypeSaisiCongeAnnuelDto());
+				getListeBaseHoraireAbsence().add(abs.getTypeSaisiCongeAnnuelDto());
 			}
 			if (getListeBaseHoraireAbsence().size() != 0) {
 				int tailles[] = { 5 };

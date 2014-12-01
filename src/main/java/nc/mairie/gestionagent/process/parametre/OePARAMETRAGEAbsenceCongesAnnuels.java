@@ -89,24 +89,21 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 
 	private void initialiseListeTypeAbsence(HttpServletRequest request) {
 		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-		List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(null);
+		List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS
+				.getValue());
 
 		for (TypeAbsenceDto abs : listeTypeAbsence) {
-			if (abs.getGroupeAbsence() == null
-					|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_ANNUELS
-							.getValue()) {
-				continue;
-			}
-			setListeTypeAbsence((ArrayList<RefTypeSaisiCongeAnnuelDto>) abs.getListeTypeSaisiCongeAnnuelDto());
-			for (RefTypeSaisiCongeAnnuelDto type : getListeTypeAbsence()) {
-				Integer i = type.getIdRefTypeSaisiCongeAnnuel();
-				addZone(getNOM_ST_CODE_CONGE(i), type.getCodeBaseHoraireAbsence());
-				addZone(getNOM_ST_DESCRIPTION(i), type.getDescription());
-				addZone(getNOM_ST_QUOTA_MULTIPLE(i), type.getQuotaMultiple() == null ? Const.CHAINE_VIDE : type
-						.getQuotaMultiple().toString());
-
-			}
+			getListeTypeAbsence().add(abs.getTypeSaisiCongeAnnuelDto());
 		}
+		for (RefTypeSaisiCongeAnnuelDto type : getListeTypeAbsence()) {
+			Integer i = type.getIdRefTypeSaisiCongeAnnuel();
+			addZone(getNOM_ST_CODE_CONGE(i), type.getCodeBaseHoraireAbsence());
+			addZone(getNOM_ST_DESCRIPTION(i), type.getDescription());
+			addZone(getNOM_ST_QUOTA_MULTIPLE(i), type.getQuotaMultiple() == null ? Const.CHAINE_VIDE : type
+					.getQuotaMultiple().toString());
+
+		}
+
 	}
 
 	/**
@@ -423,10 +420,8 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 							.valueOf(getVAL_ST_QUOTA_MULTIPLE()));
 
 			// envoyer l'info aux WS
-			List<RefTypeSaisiCongeAnnuelDto> list = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
-			list.add(getTypeAbsenceCourant());
 			TypeAbsenceDto envoi = new TypeAbsenceDto();
-			envoi.setListeTypeSaisiCongeAnnuelDto(list);
+			envoi.setTypeSaisiCongeAnnuelDto(getTypeAbsenceCourant());
 			RefGroupeAbsenceDto groupe = new RefGroupeAbsenceDto();
 			groupe.setIdRefGroupeAbsence(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 			envoi.setGroupeAbsence(groupe);

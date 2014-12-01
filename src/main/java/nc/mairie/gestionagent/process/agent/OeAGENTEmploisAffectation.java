@@ -16,6 +16,7 @@ import nc.mairie.enums.EnumImpressionAffectation;
 import nc.mairie.enums.EnumTempsTravail;
 import nc.mairie.enums.EnumTypeGroupeAbsence;
 import nc.mairie.enums.EnumTypeHisto;
+import nc.mairie.gestionagent.absence.dto.RefGroupeAbsenceDto;
 import nc.mairie.gestionagent.absence.dto.RefTypeSaisiCongeAnnuelDto;
 import nc.mairie.gestionagent.absence.dto.TypeAbsenceDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -2622,16 +2623,11 @@ public class OeAGENTEmploisAffectation extends BasicProcess {
 		// Si liste base horaire absence vide alors affectation
 		if (getLB_BASE_HORAIRE_ABSENCE() == LBVide) {
 			SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
-			List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(null);
+			List<TypeAbsenceDto> listeTypeAbsence = consuAbs
+					.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 
 			for (TypeAbsenceDto abs : listeTypeAbsence) {
-				if (abs.getGroupeAbsence() == null
-						|| abs.getGroupeAbsence().getIdRefGroupeAbsence() != EnumTypeGroupeAbsence.CONGES_ANNUELS
-								.getValue()) {
-					continue;
-				}
-				setListeBaseHoraireAbsence((ArrayList<RefTypeSaisiCongeAnnuelDto>) abs
-						.getListeTypeSaisiCongeAnnuelDto());
+				getListeBaseHoraireAbsence().add(abs.getTypeSaisiCongeAnnuelDto());
 			}
 			if (getListeBaseHoraireAbsence().size() != 0) {
 				int tailles[] = { 5 };

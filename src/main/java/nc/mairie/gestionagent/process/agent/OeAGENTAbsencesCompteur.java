@@ -139,13 +139,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			FormateListe aFormat = new FormateListe(tailles, padding, false);
 			for (ListIterator<TypeAbsenceDto> list = listeComplete.listIterator(); list.hasNext();) {
 				TypeAbsenceDto type = (TypeAbsenceDto) list.next();
+				if (!getListeTypeAbsence().contains(type)) {
+					if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence()
+							.getIdRefGroupeAbsence().intValue()) {
+						String ligne[] = { type.getLibelle() };
 
-				if (EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() != type.getGroupeAbsence().getIdRefGroupeAbsence()
-						.intValue()) {
-					String ligne[] = { type.getLibelle() };
-
-					aFormat.ajouteLigne(ligne);
-					getListeTypeAbsence().add(type);
+						aFormat.ajouteLigne(ligne);
+						getListeTypeAbsence().add(type);
+					}
 				}
 			}
 			setLB_TYPE_ABSENCE(aFormat.getListeFormatee(false));
@@ -370,11 +371,12 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				break;
 			case 2:
 				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
-				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnnee / 60 + "h ";
+				String soldeRecupAnneeHeure = (soldeRecupAnnee / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnnee / 60
+						+ "h ";
 				String soldeRecupAnneeMinute = soldeRecupAnnee % 60 + "m";
 				int soldeRecupAnneePrec = soldeGlobal.getSoldeReposCompAnneePrec().intValue();
-				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? Const.CHAINE_VIDE : soldeRecupAnneePrec / 60
-						+ "h ";
+				String soldeRecupAnneePrecHeure = (soldeRecupAnneePrec / 60) == 0 ? Const.CHAINE_VIDE
+						: soldeRecupAnneePrec / 60 + "h ";
 				String soldeRecupAnneePrecMinute = soldeRecupAnneePrec % 60 + "m";
 				setSoldeCourantMinute(soldeRecupAnnee);
 				setSoldeCourantPrecMinute(soldeRecupAnneePrec);
