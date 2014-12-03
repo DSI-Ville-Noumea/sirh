@@ -1,5 +1,6 @@
 package nc.mairie.spring.dao.metier.EAE;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import nc.mairie.metier.eae.EaeCampagneTask;
@@ -12,4 +13,6 @@ public interface EaeCampagneTaskDaoInterface {
 	EaeCampagneTask chercherEaeCampagneTask(Integer idCampagneTask) throws Exception;
 
 	EaeCampagneTask chercherEaeCampagneTaskByIdCampagneEae(Integer idCampagneEae) throws Exception;
+
+	ArrayList<EaeCampagneTask> listerCampagneTask(Integer annee);
 }

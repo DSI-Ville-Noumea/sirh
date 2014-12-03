@@ -155,6 +155,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 	private ArrayList<String> listeAffecte;
 	private ArrayList<Service> listeServices;
 	public Hashtable<String, TreeHierarchy> hTree = null;
+	private ArrayList<EaeCampagneTask> listeCampagneTask;
 
 	private CampagneEAE campagneCourante;
 
@@ -264,6 +265,10 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 		// initialisation de l'affichage la liste des eae
 		initialiseAffichageListeEAE(request);
+
+		// initialisation de l'affichage du resultat des calculs EAEs de
+		// SIRH-JOBS
+		initialiseAffichageListeCampagneTask(request);
 
 		if (getMessage() != null && !getMessage().equals(Const.CHAINE_VIDE)) {
 			setStatut(STATUT_MEME_PROCESS, false, getMessage());
@@ -744,8 +749,8 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				// on ne fait rien
 			}
 			Agent agentEAE = getAgentDao().chercherAgent(evalue.getIdAgent());
-			addZone(getNOM_ST_AGENT(i),
-					agentEAE.getNomAgent() + " " + agentEAE.getPrenomAgent() + " (" + agentEAE.getNomatr() + ") ");
+			addZone(getNOM_ST_MATRICULE_AGENT(i), agentEAE.getNomatr().toString());
+			addZone(getNOM_ST_AGENT(i), agentEAE.getNomAgent() + " " + agentEAE.getPrenomAgent());
 			addZone(getNOM_ST_STATUT(i), (evalue.getStatut() == null ? "&nbsp;" : evalue.getStatut()) + " <br> "
 					+ (evalue.isAgentDetache() ? "oui" : "&nbsp;"));
 			// on recupere les evaluateurs
@@ -1288,7 +1293,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				return false;
 			}
 		}
-		
+
 		if (!getVAL_ST_AGENT_EVALUE().equals(Const.CHAINE_VIDE)) {
 			try {
 				@SuppressWarnings("unused")
@@ -4310,5 +4315,82 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_ST_MATRICULE_AGENT(int i) {
+		return "NOM_ST_MATRICULE_AGENT_" + i;
+	}
+
+	public String getVAL_ST_MATRICULE_AGENT(int i) {
+		return getZone(getNOM_ST_MATRICULE_AGENT(i));
+	}
+
+	public ArrayList<EaeCampagneTask> getListeCampagneTask() {
+		return listeCampagneTask == null ? new ArrayList<EaeCampagneTask>() : listeCampagneTask;
+	}
+
+	public void setListeCampagneTask(ArrayList<EaeCampagneTask> listeCampagneTask) {
+		this.listeCampagneTask = listeCampagneTask;
+	}
+
+	private void initialiseAffichageListeCampagneTask(HttpServletRequest request) {
+
+		// on recupere l'année choisie
+		int indiceCampagne = (Services.estNumerique(getVAL_LB_ANNEE_SELECT()) ? Integer
+				.parseInt(getVAL_LB_ANNEE_SELECT()) : -1);
+		CampagneEAE camp = getListeCampagneEAE().get(indiceCampagne);
+
+		ArrayList<EaeCampagneTask> listeTask = getEaeCampagneTaskDao().listerCampagneTask(camp.getAnnee());
+		setListeCampagneTask(listeTask);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		for (int p = 0; p < getListeCampagneTask().size(); p++) {
+			EaeCampagneTask task = (EaeCampagneTask) getListeCampagneTask().get(p);
+			Integer i = task.getIdCampagneTask();
+
+			try {
+				Agent agentTask = getAgentDao().chercherAgent(task.getIdAgent());
+				addZone(getNOM_ST_AGENT_TASK(i), agentTask.getNomAgent() + " " + agentTask.getPrenomAgent());
+				addZone(getNOM_ST_STATUT_TASK(i), task.getTaskStatus() == null ? " En cours" : "Terminé");
+				addZone(getNOM_ST_ERREUR_TASK(i),
+						task.getTaskStatus() != null ? task.getTaskStatus().length() > 100 ? task.getTaskStatus()
+								.substring(0, 99) : task.getTaskStatus() : "");
+				addZone(getNOM_ST_DATE_TASK(i), sdf.format(task.getDateCalculEae()));
+			} catch (Exception e) {
+				// on ne fait rien
+			}
+		}
+	}
+
+	public String getNOM_ST_AGENT_TASK(int i) {
+		return "NOM_ST_AGENT_TASK_" + i;
+	}
+
+	public String getVAL_ST_AGENT_TASK(int i) {
+		return getZone(getNOM_ST_AGENT_TASK(i));
+	}
+
+	public String getNOM_ST_DATE_TASK(int i) {
+		return "NOM_ST_DATE_TASK_" + i;
+	}
+
+	public String getVAL_ST_DATE_TASK(int i) {
+		return getZone(getNOM_ST_DATE_TASK(i));
+	}
+
+	public String getNOM_ST_STATUT_TASK(int i) {
+		return "NOM_ST_STATUT_TASK_" + i;
+	}
+
+	public String getVAL_ST_STATUT_TASK(int i) {
+		return getZone(getNOM_ST_STATUT_TASK(i));
+	}
+
+	public String getNOM_ST_ERREUR_TASK(int i) {
+		return "NOM_ST_ERREUR_TASK_" + i;
+	}
+
+	public String getVAL_ST_ERREUR_TASK(int i) {
+		return getZone(getNOM_ST_ERREUR_TASK(i));
 	}
 }

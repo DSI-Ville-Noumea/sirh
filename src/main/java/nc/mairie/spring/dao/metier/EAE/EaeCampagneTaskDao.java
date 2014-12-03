@@ -1,6 +1,9 @@
 package nc.mairie.spring.dao.metier.EAE;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import nc.mairie.metier.eae.EaeCampagneTask;
 import nc.mairie.spring.dao.utils.EaeDao;
@@ -64,6 +67,30 @@ public class EaeCampagneTaskDao extends EaeDao implements EaeCampagneTaskDaoInte
 			logger.debug("Aucun EaeCampagneTask trouvé pour idCampagneEae=" + idCampagneEae.toString());
 			return null;
 		}
+	}
+
+	@Override
+	public ArrayList<EaeCampagneTask> listerCampagneTask(Integer annee) {
+		String sql = "select * from " + NOM_TABLE + " where " + CHAMP_ANNEE + "=? order by " + CHAMP_DATE_CALCUL_EAE
+				+ " desc";
+
+		ArrayList<EaeCampagneTask> listeCampagneEAE = new ArrayList<EaeCampagneTask>();
+
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { annee });
+		for (Map<String, Object> row : rows) {
+			EaeCampagneTask camp = new EaeCampagneTask();
+			logger.info("List campagneTask EAE : " + row.toString());
+			camp.setIdCampagneTask((Integer) row.get(CHAMP_ID));
+			camp.setIdCampagneEae((Integer) row.get(CHAMP_ID_CAMPAGNE_EAE));
+			camp.setAnnee((Integer) row.get(CHAMP_ANNEE));
+			camp.setIdAgent((Integer) row.get(CHAMP_ID_AGENT));
+			Date date = (Date) row.get(CHAMP_DATE_CALCUL_EAE);
+			camp.setDateCalculEae(date);
+			camp.setTaskStatus((String) row.get(CHAMP_TASK_STATUS));
+			listeCampagneEAE.add(camp);
+		}
+
+		return listeCampagneEAE;
 	}
 
 }

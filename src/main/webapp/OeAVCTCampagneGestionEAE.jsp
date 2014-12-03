@@ -29,6 +29,15 @@ function executeBouton(nom)
 document.formu.elements[nom].click();
 }
 
+//function pour changement couleur arriere plan ligne du tableau
+function SelectLigne(id,tailleTableau)
+{
+	for (i=0; i<tailleTableau; i++){
+ 		document.getElementById(i).className="";
+	} 
+ document.getElementById(id).className="selectLigne";
+}
+
 // afin de mettre le focus sur une zone précise
 function setfocus(nom)
 {
@@ -164,13 +173,14 @@ function reduireHierarchy() {
 				<thead>
 					<tr>
 						<th width="30px;">Dir. <br> Sect. <br> Serv.</th>
-						<th width="50px;">Nom <br> Prénom <br> Matr</th>
+						<th width="30px;">Matr</th>
+						<th width="50px;">Nom <br> Prénom</th>
 						<th width="42px;">Statut <br> Détachés </th>
 						<th width="50px;">&nbsp;&nbsp;SHD&nbsp;&nbsp;</th>
 						<th width="48px;">Evaluateur(s)</th>
 						<th>Délégataire</th>
 						<th>CAP</th>
-						<th>Avis Evaluateur</th>
+						<th>Avis Eval</th>
 						<th>EAE joint</th>
 						<th>Etat <br> Crée le <br> Finalisé le <br> Contrôlé le</th>
 						<th>Dé-finaliser EAE</th>
@@ -189,7 +199,8 @@ function reduireHierarchy() {
 				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
 				%>
 						<tr>
-							<td width="30px;" ><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td width="30px;"><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td width="30px;"><%=process.getVAL_ST_MATRICULE_AGENT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
 							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
 							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
@@ -262,7 +273,8 @@ function reduireHierarchy() {
 				$(document).ready(function() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
-						"aoColumns": [{"bSearchable":false},null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],
+						"aoColumns": [{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],                        
+                        "bAutoWidth":false,
 						"sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,
@@ -275,6 +287,32 @@ function reduireHierarchy() {
 			</script>
 			<BR/>	
 		</FIELDSET>
+		
+		
+       	<br/><br/>
+        <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1000px;">	
+        	<legend class="sigp2Legend">Erreurs eventuelles sur le calcul des EAEs</legend>
+				<table class="sigp2NewTab" style="text-align:left;width:980px;">
+					<tr bgcolor="#EFEFEF">
+						<td>Agent</td>
+						<td>Date lancement</td>
+						<td>Statut</td>
+						<td>Erreur</td>
+					</tr>
+					<%
+						for (int i = 0;i<process.getListeCampagneTask().size();i++){
+							int indiceCarr = process.getListeCampagneTask().get(i).getIdCampagneTask();
+					%>
+					<tr id="<%=indiceCarr%>" onmouseover="SelectLigne(<%=indiceCarr%>,<%=process.getListeCampagneTask().size()%>)">
+						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_AGENT_TASK(indiceCarr)%></td>
+						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_DATE_TASK(indiceCarr)%></td>
+						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_STATUT_TASK(indiceCarr)%></td>
+						<td class="sigp2NewTab-liste"><%=process.getVAL_ST_ERREUR_TASK(indiceCarr)%></td>
+					</tr>
+					<%}%>
+				</table>	
+		</FIELDSET>
+		
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		
 		<INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_EVALUATEUR()%>" value="RECHERCHERAGENTEVALUATEUR">
