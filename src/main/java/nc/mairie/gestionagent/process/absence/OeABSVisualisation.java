@@ -698,7 +698,8 @@ public class OeABSVisualisation extends BasicProcess {
 				} else if (abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
 						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()) {
+						|| abs.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
+						|| abs.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 					addZone(getNOM_ST_DUREE(i), abs.getDuree() == null ? "&nbsp;" : abs.getDuree().toString() + "j");
 				} else if (abs.getGroupeAbsence() != null
 						&& abs.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
@@ -1159,7 +1160,8 @@ public class OeABSVisualisation extends BasicProcess {
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A48.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A54.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A53.getCode()
-					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()) {
+					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A50.getCode()
+					|| p.getIdTypeDemande() == EnumTypeAbsence.CONGE.getCode()) {
 				duree = p.getDuree().toString() + "j";
 			} else if (p.getIdTypeDemande() == EnumTypeAbsence.ASA_A55.getCode()
 					|| p.getIdTypeDemande() == EnumTypeAbsence.ASA_A52.getCode()
