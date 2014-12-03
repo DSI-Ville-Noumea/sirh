@@ -306,7 +306,7 @@ public class OePOSTEFPRechercheAvancee extends BasicProcess {
 			}
 		}
 		if (idTitre == null && getVAL_EF_TITRE_POSTE().length() != 0) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titre de poste"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de postes"));
 			return false;
 		}
 

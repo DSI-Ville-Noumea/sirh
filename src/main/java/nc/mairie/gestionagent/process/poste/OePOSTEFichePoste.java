@@ -1961,7 +1961,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 			}
 		}
 		if (idTitre == null) {
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titre de poste"));
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR008", "titres de postes"));
 			return false;
 		}
 
