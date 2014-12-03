@@ -391,6 +391,7 @@
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_SUPPRIMER_RECHERCHER_AGENT_ACTION()%>" value="SUPPRECHERCHERAGENTACTION"> 
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_AJOUTER_ABSENCE()%>" value="AJOUTERABSENCE">        
             <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATION()%>" value="RECHERCHERAGENTCREATION"> 
+            <INPUT type="submit" style="display:none;" name="<%=process.getNOM_PB_CALCUL_DUREE()%>" value="CALCULDUREE">
         
             <%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION)){ %>
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
@@ -446,6 +447,7 @@
 				<FIELDSET class="sigp2Fieldset" style="text-align:left;">
 	            	<legend class="sigp2Legend">Création d'une demande de type <%=typeCreation.getLibelle() %> pour l'agent <%=process.getAgentCreation().getPrenomUsage() %> <%=process.getAgentCreation().getNomUsage() %> (<%=process.getAgentCreation().getNomatr() %>)</legend>
 	            		<INPUT name="JSP" type="hidden" value="<%= process.getJSP()%>">
+		            	<% if(typeCreation.getTypeSaisiDto()!=null) { %>
 		            	<table>
 		            		<tr>
 		            			<% if(typeCreation.getTypeSaisiDto().isCalendarDateDebut()) { %>
@@ -544,6 +546,76 @@
 		            		</tr>
 		            		<% } %>
 		            	</table>
+		            	<%}else{ %>
+		            	<table>
+		            		<tr>
+		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut()) { %>
+		            			<td width="100px">
+	                        		<span class="sigp2Mandatory">Date de début :</span>
+		            			</td>
+		            			<td>
+			                        <input id="<%=process.getNOM_ST_DATE_DEBUT()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_DEBUT()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_DEBUT()%>" onfocus="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');">
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_DEBUT()%>', 'dd/mm/y');">
+		            			</td>
+		            			<% } %>
+		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isChkDateDebut()) { %>
+		            			<td>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_M()) %> onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');" ><span class="sigp2Mandatory">M</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_DEBUT_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">AM</span>
+		            			</td>
+		            			<% } %>
+		            		</tr>
+		            		<tr>
+		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isCalendarDateFin()) { %>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Date de fin :</span>
+		            			</td>
+		            			<td>
+			                        <input id="<%=process.getNOM_ST_DATE_FIN()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_FIN()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_FIN()%>"  onfocus="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');">
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_FIN()%>', 'dd/mm/y');">
+		            			</td>
+		            			<% } %>
+		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isChkDateFin()) { %>
+		            			<td>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_M()) %> onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">M</span>
+									<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_FIN_MAM(), process.getNOM_RB_AM()) %>  onclick="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');"><span class="sigp2Mandatory">AM</span>
+		            			</td>
+		            			<% } %>
+		            		</tr>
+		            		<tr>
+		            			<% if(typeCreation.getTypeSaisiCongeAnnuelDto().isCalendarDateReprise()) { %>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Date de reprise :</span>
+		            			</td>
+		            			<td colspan="2">
+			                        <input id="<%=process.getNOM_ST_DATE_REPRISE()%>" class="sigp2-saisie" maxlength="10"	
+			                        	name="<%= process.getNOM_ST_DATE_REPRISE()%>" size="10" type="text" value="<%= process.getVAL_ST_DATE_REPRISE()%>"  onfocus="executeBouton('<%=process.getNOM_PB_CALCUL_DUREE()%>');">
+			                        <IMG  src="images/calendrier.gif" hspace="5" onclick="return showCalendar('<%=process.getNOM_ST_DATE_REPRISE()%>', 'dd/mm/y');">
+		            			</td>
+		            			<% } %>
+		            		</tr>
+		            		<tr>		            		
+		            			<td>
+	                        		<span class="sigp2Mandatory">Durée :</span>
+		            			</td>
+		            			<td colspan="2">
+									<INPUT class="sigp2-saisie" disabled="disabled" maxlength="6" name="<%= process.getNOM_ST_DUREE() %>" size="6" type="text" value="<%= process.getVAL_ST_DUREE() %>">
+									<span class="sigp2Mandatory"> jour(s)</span>
+		            			</td>
+		            		</tr>
+		            		<tr>
+		            			<td>
+	                        		<span class="sigp2Mandatory">Commentaire :</span>
+		            			</td>
+		            			<td colspan="2">
+									<textarea cols="15" rows="3" name="<%=process.getNOM_ST_MOTIF_CREATION()%>" title="Zone de saisie du commentaire"><%=process.getVAL_ST_MOTIF_CREATION().trim() %></textarea>
+									<span class="sigp2Mandatory">Précisez si l'agent est joignable ou non durant son congé.</span>
+		            			</td>
+		            		</tr>
+		            	</table>
+		            	<%} %>
 		            	<BR/>
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER_CREATION_DEMANDE() %>">
 	                    <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER() %>">

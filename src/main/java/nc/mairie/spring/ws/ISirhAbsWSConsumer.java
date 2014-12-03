@@ -39,6 +39,8 @@ public interface ISirhAbsWSConsumer {
 
 	ReturnMessageDto deleteTypeAbsence(Integer idAgentConnecte, Integer idRefTypeAbsence);
 
+	TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence);
+
 	// Motifs
 	List<MotifDto> getListeMotif();
 
@@ -93,5 +95,7 @@ public interface ISirhAbsWSConsumer {
 	ReturnMessageDto saveDemande(Integer idAgentConnecte, String json);
 
 	ReturnMessageDto setAbsState(Integer idAgent, String json);
+
+	DemandeDto getDureeCongeAnnuel(DemandeDto demandeDto);
 
 }

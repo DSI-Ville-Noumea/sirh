@@ -21,6 +21,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Date dateFin;
 	private boolean isDateFinAM;
 	private boolean isDateFinPM;
+	private Date dateReprise;
 	private Double duree;
 
 	private Integer idRefEtat;
@@ -48,6 +49,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private String commentaire;
 
 	private RefTypeSaisiDto typeSaisi;
+	private RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel;
 
 	public DemandeDto() {
 	}
@@ -295,6 +297,22 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setLibelleTypeDemande(String libelleTypeDemande) {
 		this.libelleTypeDemande = libelleTypeDemande;
+	}
+
+	public Date getDateReprise() {
+		return dateReprise;
+	}
+
+	public void setDateReprise(Date dateReprise) {
+		this.dateReprise = dateReprise;
+	}
+
+	public RefTypeSaisiCongeAnnuelDto getTypeSaisiCongeAnnuel() {
+		return typeSaisiCongeAnnuel;
+	}
+
+	public void setTypeSaisiCongeAnnuel(RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel) {
+		this.typeSaisiCongeAnnuel = typeSaisiCongeAnnuel;
 	}
 
 }

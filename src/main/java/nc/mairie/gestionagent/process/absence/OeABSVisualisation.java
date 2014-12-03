@@ -29,8 +29,10 @@ import nc.mairie.gestionagent.radi.dto.LightUserDto;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
 import nc.mairie.metier.carriere.Carriere;
+import nc.mairie.metier.poste.Affectation;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.agent.AgentDao;
+import nc.mairie.spring.dao.metier.poste.AffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.spring.ws.MSDateTransformer;
@@ -99,6 +101,7 @@ public class OeABSVisualisation extends BasicProcess {
 	private TypeAbsenceDto typeCreation;
 	private Agent agentCreation;
 	private AgentDao agentDao;
+	private AffectationDao affectationDao;
 
 	@Override
 	public String getJSP() {
@@ -168,6 +171,9 @@ public class OeABSVisualisation extends BasicProcess {
 		ApplicationContext context = ApplicationContextProvider.getContext();
 		if (getAgentDao() == null) {
 			setAgentDao(new AgentDao((SirhDao) context.getBean("sirhDao")));
+		}
+		if (getAffectationDao() == null) {
+			setAffectationDao(new AffectationDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
@@ -328,6 +334,11 @@ public class OeABSVisualisation extends BasicProcess {
 			// Si clic sur le bouton PB_FILTRER_DEMANDE_A_VALIDER
 			if (testerParametre(request, getNOM_PB_FILTRER_DEMANDE_A_VALIDER())) {
 				return performPB_FILTRER_DEMANDE_A_VALIDER(request);
+			}
+
+			// Si clic sur le bouton PB_CALCUL_DUREE
+			if (testerParametre(request, getNOM_PB_CALCUL_DUREE())) {
+				return performPB_CALCUL_DUREE(request);
 			}
 
 			// Si clic sur le bouton PB_SELECT_GROUPE
@@ -845,14 +856,6 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public boolean performPB_CREATION(HttpServletRequest request) throws Exception {
-		// famille
-		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) ? Integer
-				.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
-		TypeAbsenceDto type = null;
-		if (numType != -1) {
-			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
-			setTypeCreation(type);
-		}
 		String idAgent = Const.CHAINE_VIDE;
 		if (getVAL_ST_AGENT_CREATION().equals(Const.CHAINE_VIDE)) {
 			// "ERR002","La zone @ est obligatoire."
@@ -870,6 +873,27 @@ public class OeABSVisualisation extends BasicProcess {
 				return false;
 			}
 		}
+		// famille
+		int numType = (Services.estNumerique(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) ? Integer
+				.parseInt(getZone(getNOM_LB_FAMILLE_CREATION_SELECT())) : -1);
+		TypeAbsenceDto type = null;
+		if (numType != -1) {
+			type = (TypeAbsenceDto) getListeFamilleAbsenceCreation().get(numType);
+			if (type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+				// on cherche la base horaire absence de l'agent
+				Affectation aff = getAffectationDao().chercherAffectationActiveAvecAgent(
+						getAgentCreation().getIdAgent());
+				if (aff == null || aff.getIdBaseHoraireAbsence() == null) {
+					// "ERR805",
+					// "L'agent @ n'a pas de base horaire d'absence. Merci de la renseigner dans l'affectation de l'agent."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR805", idAgent));
+					return false;
+				}
+				SirhAbsWSConsumer consu = new SirhAbsWSConsumer();
+				type = consu.getTypeAbsence(aff.getIdBaseHoraireAbsence());
+			}
+			setTypeCreation(type);
+		}
 
 		// On nomme l'action
 		if ((type != null && (type.getIdRefTypeAbsence().toString()
@@ -880,8 +904,9 @@ public class OeABSVisualisation extends BasicProcess {
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A53.getCode().toString())
 				|| type.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A54.getCode().toString()) || type
 				.getIdRefTypeAbsence().toString().equals(EnumTypeAbsence.ASA_A55.getCode().toString())))
-				|| (type != null && type.getGroupeAbsence() != null && type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
-						.getValue())) {
+				|| (type != null && type.getGroupeAbsence() != null && (type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP
+						.getValue() || type.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS
+						.getValue()))) {
 
 			addZone(getNOM_ST_ACTION(), ACTION_CREATION_DEMANDE);
 		} else {
@@ -906,6 +931,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_AGENT_CREATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DATE_REPRISE(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_DEBUT_MAM(), getNOM_RB_M());
 		addZone(getNOM_RG_FIN_MAM(), getNOM_RB_M());
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
@@ -960,6 +986,14 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public String getVAL_ST_DATE_FIN() {
 		return getZone(getNOM_ST_DATE_FIN());
+	}
+
+	public String getNOM_ST_DATE_REPRISE() {
+		return "NOM_ST_DATE_REPRISE";
+	}
+
+	public String getVAL_ST_DATE_REPRISE() {
+		return getZone(getNOM_ST_DATE_REPRISE());
 	}
 
 	public String getNOM_RG_FIN_MAM() {
@@ -1654,114 +1688,172 @@ public class OeABSVisualisation extends BasicProcess {
 
 		Date dateDebut = null;
 		Date dateFin = null;
+		Date dateReprise = null;
 
 		Agent agentConnecte = getAgentConnecte(request);
 		if (agentConnecte == null) {
 			return false;
 		}
-
-		// /////////////// DATE DEBUT ////////////////////
-		if (type.getTypeSaisiDto().isCalendarDateDebut()) {
-			if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
-				// "ERR002","La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
-				return false;
+		if (type.getTypeSaisiDto() != null) {
+			// /////////////// DATE DEBUT ////////////////////
+			if (type.getTypeSaisiDto().isCalendarDateDebut()) {
+				if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+					return false;
+				}
+				dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
 			}
-			dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
-		}
-		// /////////////// HEURE DEBUT ////////////////////
-		if (type.getTypeSaisiDto().isCalendarHeureDebut()) {
-			// heure obligatoire
-			int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_DEBUT_SELECT()) ? Integer
-					.parseInt(getVAL_LB_HEURE_DEBUT_SELECT()) : -1);
-			if (indiceHeureDebut < 0) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
-				return false;
+			// /////////////// HEURE DEBUT ////////////////////
+			if (type.getTypeSaisiDto().isCalendarHeureDebut()) {
+				// heure obligatoire
+				int indiceHeureDebut = (Services.estNumerique(getVAL_LB_HEURE_DEBUT_SELECT()) ? Integer
+						.parseInt(getVAL_LB_HEURE_DEBUT_SELECT()) : -1);
+				if (indiceHeureDebut < 0) {
+					// "ERR002", "La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de début"));
+					return false;
+				}
+				String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DEBUT_SELECT()));
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heureDebut);
 			}
-			String heureDebut = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_DEBUT_SELECT()));
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT() + " " + heureDebut);
-		}
-		// /////////////// RADIO BOUTON DEBUT ////////////////////
-		if (type.getTypeSaisiDto().isChkDateDebut()) {
-			if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
-				return false;
+			// /////////////// RADIO BOUTON DEBUT ////////////////////
+			if (type.getTypeSaisiDto().isChkDateDebut()) {
+				if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					return false;
+				}
+				dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
+				dto.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
 			}
-			dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
-			dto.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
-		}
-		// /////////////// DUREE ////////////////////
-		if (type.getTypeSaisiDto().isDuree()) {
-			if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
-				// "ERR002","La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
-				return false;
+			// /////////////// DUREE ////////////////////
+			if (type.getTypeSaisiDto().isDuree()) {
+				if (getVAL_ST_DUREE().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+					return false;
+				}
+				dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")));
 			}
-			dto.setDuree(Double.valueOf(getVAL_ST_DUREE().replace(",", ".")));
-		}
-		// /////////////// DATE FIN ////////////////////
-		if (type.getTypeSaisiDto().isCalendarDateFin()) {
-			if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
-				// "ERR002","La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
-				return false;
+			// /////////////// DATE FIN ////////////////////
+			if (type.getTypeSaisiDto().isCalendarDateFin()) {
+				if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
+					return false;
+				}
+				dateFin = sdf.parse(getVAL_ST_DATE_FIN());
 			}
-			dateFin = sdf.parse(getVAL_ST_DATE_FIN());
-		}
-		// /////////////// HEURE FIN ////////////////////
-		if (type.getTypeSaisiDto().isCalendarHeureFin()) {
-			// heure obligatoire
-			int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_FIN_SELECT()) ? Integer
-					.parseInt(getVAL_LB_HEURE_FIN_SELECT()) : -1);
-			if (indiceHeureFin <= 0) {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de fin"));
-				return false;
+			// /////////////// HEURE FIN ////////////////////
+			if (type.getTypeSaisiDto().isCalendarHeureFin()) {
+				// heure obligatoire
+				int indiceHeureFin = (Services.estNumerique(getVAL_LB_HEURE_FIN_SELECT()) ? Integer
+						.parseInt(getVAL_LB_HEURE_FIN_SELECT()) : -1);
+				if (indiceHeureFin <= 0) {
+					// "ERR002", "La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "heure de fin"));
+					return false;
+				}
+				String heureFin = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_FIN_SELECT()));
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				dateFin = sdf.parse(getVAL_ST_DATE_FIN() + " " + heureFin);
 			}
-			String heureFin = getListeHeure().get(Integer.valueOf(getVAL_LB_HEURE_FIN_SELECT()));
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			dateFin = sdf.parse(getVAL_ST_DATE_FIN() + " " + heureFin);
-		}
-		// /////////////// RADIO BOUTON FIN ////////////////////
-		if (type.getTypeSaisiDto().isChkDateFin()) {
-			if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
-				return false;
+			// /////////////// RADIO BOUTON FIN ////////////////////
+			if (type.getTypeSaisiDto().isChkDateFin()) {
+				if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					return false;
+				}
+				dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
+				dto.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
 			}
-			dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
-			dto.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
-		}
-		// /////////////// ORGANISATION SYNDICALE ////////////////////
-		if (type.getTypeSaisiDto().isCompteurCollectif()) {
-			int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
-					.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
-			OrganisationSyndicaleDto orgaSynd = null;
-			if (numOrga != -1) {
-				orgaSynd = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
-				dto.setOrganisationSyndicale(orgaSynd);
-			} else {
-				// "ERR002", "La zone @ est obligatoire."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
-				return false;
+			// /////////////// ORGANISATION SYNDICALE ////////////////////
+			if (type.getTypeSaisiDto().isCompteurCollectif()) {
+				int numOrga = (Services.estNumerique(getZone(getNOM_LB_OS_SELECT())) ? Integer
+						.parseInt(getZone(getNOM_LB_OS_SELECT())) : -1);
+				OrganisationSyndicaleDto orgaSynd = null;
+				if (numOrga != -1) {
+					orgaSynd = (OrganisationSyndicaleDto) getListeOrganisationSyndicale().get(numOrga);
+					dto.setOrganisationSyndicale(orgaSynd);
+				} else {
+					// "ERR002", "La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "organisation syndicale"));
+					return false;
+				}
 			}
-		}
-		// /////////////// MOTIF ////////////////////
-		if (type.getTypeSaisiDto().isMotif()) {
+			// /////////////// MOTIF ////////////////////
+			if (type.getTypeSaisiDto().isMotif()) {
+				if (null == getVAL_ST_MOTIF_CREATION() || Const.CHAINE_VIDE.equals(getVAL_ST_MOTIF_CREATION().trim())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
+					return false;
+				}
+				dto.setCommentaire(getVAL_ST_MOTIF_CREATION());
+			}
+			// /////////////// PIECE JOINTE ////////////////////
+			if (type.getTypeSaisiDto().isPieceJointe()) {
+				// TODO
+			}
+		} else if (type.getTypeSaisiCongeAnnuelDto() != null) {
+			// /////////////// DATE DEBUT ////////////////////
+			if (type.getTypeSaisiCongeAnnuelDto().isCalendarDateDebut()) {
+				if (getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de debut"));
+					return false;
+				}
+				dateDebut = sdf.parse(getVAL_ST_DATE_DEBUT());
+			}
+			// /////////////// RADIO BOUTON DEBUT ////////////////////
+			if (type.getTypeSaisiCongeAnnuelDto().isChkDateDebut()) {
+				if (null == getVAL_RG_DEBUT_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_DEBUT_MAM())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					return false;
+				}
+				dto.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
+				dto.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
+			}
+			// /////////////// DATE FIN ////////////////////
+			if (type.getTypeSaisiCongeAnnuelDto().isCalendarDateFin()) {
+				if (getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de fin"));
+					return false;
+				}
+				dateFin = sdf.parse(getVAL_ST_DATE_FIN());
+			}
+			// /////////////// RADIO BOUTON FIN ////////////////////
+			if (type.getTypeSaisiCongeAnnuelDto().isChkDateFin()) {
+				if (null == getVAL_RG_FIN_MAM() || Const.CHAINE_VIDE.equals(getVAL_RG_FIN_MAM())) {
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "matin ou après-midi"));
+					return false;
+				}
+				dto.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
+				dto.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
+			}
+			// /////////////// DATE REPRISE ////////////////////
+			if (type.getTypeSaisiCongeAnnuelDto().isCalendarDateReprise()) {
+				if (getVAL_ST_DATE_REPRISE().equals(Const.CHAINE_VIDE)) {
+					// "ERR002","La zone @ est obligatoire."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "date de reprise"));
+					return false;
+				}
+				dateReprise = sdf.parse(getVAL_ST_DATE_REPRISE());
+			}
+			// /////////////// MOTIF ////////////////////
 			if (null == getVAL_ST_MOTIF_CREATION() || Const.CHAINE_VIDE.equals(getVAL_ST_MOTIF_CREATION().trim())) {
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "motif"));
 				return false;
 			}
 			dto.setCommentaire(getVAL_ST_MOTIF_CREATION());
-		}
-		// /////////////// PIECE JOINTE ////////////////////
-		if (type.getTypeSaisiDto().isPieceJointe()) {
-			// TODO
+
 		}
 
 		dto.setDateDebut(dateDebut);
 		dto.setDateFin(dateFin);
+		dto.setDateReprise(dateReprise);
+		dto.setTypeSaisi(getTypeCreation().getTypeSaisiDto());
+		dto.setTypeSaisiCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto());
 
 		AgentWithServiceDto agDto = new AgentWithServiceDto();
 		agDto.setIdAgent(ag.getIdAgent());
@@ -1941,5 +2033,49 @@ public class OeABSVisualisation extends BasicProcess {
 		afficheListeAbsence();
 
 		return true;
+	}
+
+	public AffectationDao getAffectationDao() {
+		return affectationDao;
+	}
+
+	public void setAffectationDao(AffectationDao affectationDao) {
+		this.affectationDao = affectationDao;
+	}
+
+	public String getNOM_PB_CALCUL_DUREE() {
+		return "NOM_PB_CALCUL_DUREE";
+	}
+
+	public boolean performPB_CALCUL_DUREE(HttpServletRequest request) throws Exception {
+		if (!getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)
+				&& (!getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) || !getVAL_ST_DATE_REPRISE().equals(
+						Const.CHAINE_VIDE))) {
+			DemandeDto demandeCreation = new DemandeDto();
+			demandeCreation.setDateDebut(sdf.parse(getVAL_ST_DATE_DEBUT()));
+			demandeCreation.setDateFin(getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf
+					.parse(getVAL_ST_DATE_FIN()));
+			demandeCreation.setDateReprise(getVAL_ST_DATE_REPRISE().equals(Const.CHAINE_VIDE) ? null : sdf
+					.parse(getVAL_ST_DATE_REPRISE()));
+			demandeCreation.setDateDebutAM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_M()));
+			demandeCreation.setDateDebutPM(getZone(getNOM_RG_DEBUT_MAM()).equals(getNOM_RB_AM()));
+			demandeCreation.setDateFinAM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_M()));
+			demandeCreation.setDateFinPM(getZone(getNOM_RG_FIN_MAM()).equals(getNOM_RB_AM()));
+			String res = getCalculDureeCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto()
+					.getCodeBaseHoraireAbsence(), demandeCreation);
+
+			addZone(getNOM_ST_DUREE(), res);
+		}
+		return true;
+	}
+
+	public String getCalculDureeCongeAnnuel(String codeBaseHoraireAbsence, DemandeDto demandeDto) {
+		if (demandeDto.getDateDebut() != null && demandeDto.getDateFin() != null) {
+			demandeDto.setTypeSaisiCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto());
+			SirhAbsWSConsumer absWsConsumer = new SirhAbsWSConsumer();
+			DemandeDto dureeDto = absWsConsumer.getDureeCongeAnnuel(demandeDto);
+			return dureeDto.getDuree().toString();
+		}
+		return null;
 	}
 }

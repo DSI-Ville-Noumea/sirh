@@ -33,6 +33,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Service
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
@@ -69,6 +70,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
 	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
 	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
+	private static final String sirhAbsRefTypeAbs = "typeAbsence/getTypeAbsence";
+	private static final String sirhDureeCongeAnnuelUrl = "demandes/dureeDemandeCongeAnnuel";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -546,6 +549,31 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		params.put("idAgentConcerne", idAgentConcerne.toString());
 		ClientResponse res = createAndPostRequest(params, url, Const.CHAINE_VIDE);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public TypeAbsenceDto getTypeAbsence(Integer idBaseHoraireAbsence) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsRefTypeAbs;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idRefTypeAbsence", idBaseHoraireAbsence.toString());
+		logger.debug("Call " + url + " with idRefTypeAbsence : " + idBaseHoraireAbsence);
+		ClientResponse res = createAndFireRequest(params, url);
+		return readResponse(TypeAbsenceDto.class, res, url);
+	}
+
+	@Override
+	public DemandeDto getDureeCongeAnnuel(DemandeDto demandeDto) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhDureeCongeAnnuelUrl;
+		HashMap<String, String> params = new HashMap<>();
+
+		String json = new JSONSerializer().exclude("*.class").exclude("*.civilite").exclude("*.signature")
+				.exclude("*.position").exclude("*.selectedDroitAbs").transform(new MSDateTransformer(), Date.class)
+				.deepSerialize(demandeDto);
+
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponse(DemandeDto.class, res, url);
 	}
 
 }
