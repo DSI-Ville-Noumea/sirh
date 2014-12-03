@@ -730,8 +730,7 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 				if (eaeFDP.getIdShd() != null) {
 					try {
 						Agent agentResp = getAgentDao().chercherAgent(eaeFDP.getIdShd());
-						addZone(getNOM_ST_SHD(i), agentResp.getNomAgent() + " " + agentResp.getPrenomAgent() + " ("
-								+ agentResp.getNomatr() + ") ");
+						addZone(getNOM_ST_SHD(i), agentResp.getNomAgent() + " " + agentResp.getPrenomAgent());
 					} catch (Exception e) {
 						addZone(getNOM_ST_SHD(i), "&nbsp;");
 					}
@@ -759,15 +758,13 @@ public class OeAVCTCampagneGestionEAE extends BasicProcess {
 			for (int j = 0; j < listeEvaluateur.size(); j++) {
 				EaeEvaluateur evaluateur = listeEvaluateur.get(j);
 				Agent agentevaluateur = getAgentDao().chercherAgent(evaluateur.getIdAgent());
-				eval += agentevaluateur.getNomAgent() + " " + agentevaluateur.getPrenomAgent() + " ("
-						+ agentevaluateur.getNomatr() + ") <br> ";
+				eval += agentevaluateur.getNomAgent() + " " + agentevaluateur.getPrenomAgent() + "<br> ";
 			}
 			addZone(getNOM_ST_EVALUATEURS(i), eval.equals(Const.CHAINE_VIDE) ? "&nbsp;" : eval);
 			if (eae.getIdDelegataire() != null) {
 				Agent agentDelegataire = getAgentDao().chercherAgent(eae.getIdDelegataire());
 				addZone(getNOM_ST_DELEGATAIRE(i),
-						agentDelegataire.getNomAgent() + " " + agentDelegataire.getPrenomAgent() + " ("
-								+ agentDelegataire.getNomatr() + ")");
+						agentDelegataire.getNomAgent() + " " + agentDelegataire.getPrenomAgent());
 			} else {
 				addZone(getNOM_ST_DELEGATAIRE(i), "&nbsp;");
 			}

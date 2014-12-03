@@ -169,15 +169,15 @@ function reduireHierarchy() {
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;">
 		    <legend class="sigp2Legend">Gestion des EAE</legend>
 			<BR/>
-			<table class="display" id="tabEAE">
+			<table class="display" id="tabEAE" width="100%">
 				<thead>
 					<tr>
-						<th width="30px;">Dir. <br> Sect. <br> Serv.</th>
-						<th width="30px;">Matr</th>
-						<th width="50px;">Nom <br> Prénom</th>
-						<th width="42px;">Statut <br> Détachés </th>
-						<th width="50px;">&nbsp;&nbsp;SHD&nbsp;&nbsp;</th>
-						<th width="48px;">Evaluateur(s)</th>
+						<th>Direction <br> Section <br> Service</th>
+						<th>Matr</th>
+						<th>Nom <br> Prénom</th>
+						<th>Statut <br> Dét. </th>
+						<th>&nbsp;&nbsp;SHD&nbsp;&nbsp;</th>
+						<th>Evaluateur(s)</th>
 						<th>Délégataire</th>
 						<th>CAP</th>
 						<th>Avis Eval</th>
@@ -199,12 +199,12 @@ function reduireHierarchy() {
 				EaeEvalue eaeEvalue = process.getEaeEvalueDao().chercherEaeEvalue(eae.getIdEae());
 				%>
 						<tr>
-							<td width="30px;"><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
-							<td width="30px;"><%=process.getVAL_ST_MATRICULE_AGENT(indiceAvct)%></td>
-							<td width="50px;"><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
-							<td width="42px;"><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
-							<td width="50px;"><%=process.getVAL_ST_SHD(indiceAvct)%></td>
-							<td width="48px;"><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
+							<td><%=process.getVAL_ST_DIRECTION(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_MATRICULE_AGENT(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_AGENT(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_STATUT(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_SHD(indiceAvct)%></td>
+							<td><%=process.getVAL_ST_EVALUATEURS(indiceAvct)%>							
 							<%if(process.getCampagneCourante()!=null && process.getCampagneCourante().estOuverte() && !eaeEvalue.isAgentDetache() &&  !eae.getEtat().equals(EnumEtatEAE.FINALISE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.CONTROLE.getCode())&& !eae.getEtat().equals(EnumEtatEAE.SUPPRIME.getCode())){ %>
 							<INPUT title="gérer les évaluateurs" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_GERER_EVALUATEUR(indiceAvct)%>"></td>
 							<%} %>
@@ -274,8 +274,7 @@ function reduireHierarchy() {
 				    $('#tabEAE').dataTable({
 						"oLanguage": {"sUrl": "media/dataTables/language/fr_FR.txt"},
 						"aoColumns": [{"bSearchable":false},null,null,{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false,"bSortable":false},{"bSearchable":false},{"bSearchable":false},{"bSearchable":false}],                        
-                        "bAutoWidth":false,
-						"sDom": '<"H"fl>t<"F"iT>',
+                        "sDom": '<"H"fl>t<"F"iT>',
 						"sScrollY": "375px",
 						"bPaginate": false,
 						"oTableTools": {
