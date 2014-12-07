@@ -647,7 +647,6 @@ public class OeABSVisualisation extends BasicProcess {
 				idAgentDemande == null ? null : Integer.valueOf(idAgentDemande),
 				groupe == null ? null : groupe.getIdRefGroupeAbsence(), false);
 		logger.debug("Taille liste absences : " + listeDemande.size());
-
 		setListeAbsence((ArrayList<DemandeDto>) listeDemande);
 
 		loadHistory();

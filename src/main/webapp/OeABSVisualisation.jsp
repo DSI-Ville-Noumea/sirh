@@ -313,7 +313,7 @@
                             	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
                             <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
-                            <th> <img	src="images/info.jpg" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande."></th>
+                            <th> <img	src="images/info.jpg" height="16px" width="16px" title="Alertes."></th>
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Cat<br>Statut</th>
@@ -347,7 +347,10 @@
                             </td>
                             <td align="center">
                             <%if(abs.isDepassementCompteur()){ %>
-                            	<img src="images/info.jpg" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
+                            	<img src="images/seuil.png" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
+                            <%} %>
+                            <%if(abs.isDepassementMultiple()){ %>
+                            	<img src="images/multiple.jpg" height="16px" width="16px" title="Cette demande n'est pas un multiple.">
                             <%} %>
                             </td>                            
                             <td><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 

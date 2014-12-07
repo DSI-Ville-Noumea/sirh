@@ -43,6 +43,7 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 	private Boolean isValeurApprobation = null;
 	// depasement de droits
 	private boolean isDepassementCompteur;
+	private boolean isDepassementMultiple;
 
 	private OrganisationSyndicaleDto organisationSyndicale;
 
@@ -313,6 +314,14 @@ public class DemandeDto implements IJSONDeserialize<DemandeDto> {
 
 	public void setTypeSaisiCongeAnnuel(RefTypeSaisiCongeAnnuelDto typeSaisiCongeAnnuel) {
 		this.typeSaisiCongeAnnuel = typeSaisiCongeAnnuel;
+	}
+
+	public boolean isDepassementMultiple() {
+		return isDepassementMultiple;
+	}
+
+	public void setDepassementMultiple(boolean isDepassementMultiple) {
+		this.isDepassementMultiple = isDepassementMultiple;
 	}
 
 }
