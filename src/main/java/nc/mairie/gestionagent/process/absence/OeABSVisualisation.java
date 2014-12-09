@@ -1494,9 +1494,9 @@ public class OeABSVisualisation extends BasicProcess {
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		// Si ASA ou CONGE_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
-		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()|| dem
-						.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
+		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue()
+				|| dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() || dem
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
 			// "ERR803",
@@ -2055,7 +2055,10 @@ public class OeABSVisualisation extends BasicProcess {
 		if (!getVAL_ST_DATE_DEBUT().equals(Const.CHAINE_VIDE)
 				&& (!getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) || !getVAL_ST_DATE_REPRISE().equals(
 						Const.CHAINE_VIDE))) {
+			AgentWithServiceDto agentdto = new AgentWithServiceDto();
+			agentdto.setIdAgent(getAgentCreation().getIdAgent());
 			DemandeDto demandeCreation = new DemandeDto();
+			demandeCreation.setAgentWithServiceDto(agentdto);
 			demandeCreation.setDateDebut(sdf.parse(getVAL_ST_DATE_DEBUT()));
 			demandeCreation.setDateFin(getVAL_ST_DATE_FIN().equals(Const.CHAINE_VIDE) ? null : sdf
 					.parse(getVAL_ST_DATE_FIN()));
@@ -2074,7 +2077,8 @@ public class OeABSVisualisation extends BasicProcess {
 	}
 
 	public String getCalculDureeCongeAnnuel(String codeBaseHoraireAbsence, DemandeDto demandeDto) {
-		if (demandeDto.getDateDebut() != null && demandeDto.getDateFin() != null) {
+		if (demandeDto.getDateDebut() != null
+				&& (demandeDto.getDateFin() != null || demandeDto.getDateReprise() != null)) {
 			demandeDto.setTypeSaisiCongeAnnuel(getTypeCreation().getTypeSaisiCongeAnnuelDto());
 			SirhAbsWSConsumer absWsConsumer = new SirhAbsWSConsumer();
 			DemandeDto dureeDto = absWsConsumer.getDureeCongeAnnuel(demandeDto);

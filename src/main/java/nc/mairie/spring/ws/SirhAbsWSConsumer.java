@@ -556,8 +556,8 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsRefTypeAbs;
 		HashMap<String, String> params = new HashMap<>();
-		params.put("idRefTypeAbsence", idBaseHoraireAbsence.toString());
-		logger.debug("Call " + url + " with idRefTypeAbsence : " + idBaseHoraireAbsence);
+		params.put("idBaseHoraireAbsence", idBaseHoraireAbsence.toString());
+		logger.debug("Call " + url + " with idBaseHoraireAbsence : " + idBaseHoraireAbsence);
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponse(TypeAbsenceDto.class, res, url);
 	}
