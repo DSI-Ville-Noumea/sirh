@@ -932,6 +932,7 @@ public class OeABSVisualisation extends BasicProcess {
 		addZone(getNOM_ST_DATE_DEBUT(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_DATE_REPRISE(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_MOTIF_CREATION(), Const.CHAINE_VIDE);
 		addZone(getNOM_RG_DEBUT_MAM(), getNOM_RB_M());
 		addZone(getNOM_RG_FIN_MAM(), getNOM_RB_M());
 		addZone(getNOM_LB_FAMILLE_CREATION_SELECT(), Const.ZERO);
@@ -1468,6 +1469,13 @@ public class OeABSVisualisation extends BasicProcess {
 				}
 				getTransaction().declarerErreur(err);
 			}
+			if (message.getInfos().size() > 0) {
+				String inf = Const.CHAINE_VIDE;
+				for (String info : message.getInfos()) {
+					inf += " " + info;
+				}
+				getTransaction().declarerErreur(inf);
+			}
 			performPB_FILTRER(request);
 		}
 	}
@@ -1883,6 +1891,13 @@ public class OeABSVisualisation extends BasicProcess {
 			}
 			getTransaction().declarerErreur(err);
 			return false;
+		}
+		if (srm.getInfos().size() > 0) {
+			String info = Const.CHAINE_VIDE;
+			for (String erreur : srm.getInfos()) {
+				info += " " + erreur;
+			}
+			getTransaction().declarerErreur(info);
 		}
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
