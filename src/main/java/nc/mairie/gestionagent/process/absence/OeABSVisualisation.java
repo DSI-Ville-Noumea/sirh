@@ -1356,9 +1356,11 @@ public class OeABSVisualisation extends BasicProcess {
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
 		// Si ASA ou CONGES_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
-		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())
-				&& dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
+		if (((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()) && dem
+				.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode())
+				|| (dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
+				&& dem.getIdRefEtat() == EnumEtatAbsence.A_VALIDER.getCode()) {
 			// "ERR803",
 			// "Pour @ cette demande, merci de renseigner un motif."
 			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "mettre en attente"));
@@ -1493,7 +1495,8 @@ public class OeABSVisualisation extends BasicProcess {
 		// Si ASA ou CONGE_EXCEP et etat=validé ou prise,
 		// alors un motif est obligatoire
 		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())
+				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()|| dem
+						.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
 				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
 						.getCode())) {
 			// "ERR803",
