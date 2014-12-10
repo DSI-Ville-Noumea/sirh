@@ -341,23 +341,33 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	}
 
 	private boolean performVerifRG(HttpServletRequest request) throws Exception {
+
+		Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
+		if (getTransaction().isErreur()) {
+			getTransaction().traiterErreur();
+			// "ERR136", "Cet agent n'a aucune carrière active."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
+			return false;
+		}
+
 		// si l'agent n'est pas contractuel ou convention collectives, alors il
 		// n'a pas le droit au repos compensateur
 
 		if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.REPOS_COMP.getCode().toString())) {
-			Carriere carr = Carriere.chercherCarriereEnCoursAvecAgent(getTransaction(), getAgentCourant());
-			if (getTransaction().isErreur()) {
-				getTransaction().traiterErreur();
-				// "ERR136", "Cet agent n'a aucune carrière active."
-				getTransaction().declarerErreur(MessageUtils.getMessage("ERR136"));
-				return false;
-			}
-
 			if (!(carr.getCodeCategorie().equals("4") || carr.getCodeCategorie().equals("7"))) {
 				// "ERR802",
 				// "Cet agent n'est ni contractuel ni convention collective, il ne peut avoir de repos compensateur."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR802"));
+				return false;
+			}
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+			if (!(carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10") || carr
+					.getCodeCategorie().equals("11"))) {
+				// "ERR806",
+				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congé annuel."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR806"));
 				return false;
 			}
 		}

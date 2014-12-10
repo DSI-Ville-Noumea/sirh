@@ -7185,7 +7185,7 @@ public class OePOSTEFichePoste extends BasicProcess {
 	}
 
 	public ArrayList<RefTypeSaisiCongeAnnuelDto> getListeBaseHoraireAbsence() {
-		return listeBaseHoraireAbsence;
+		return listeBaseHoraireAbsence == null ? new ArrayList<RefTypeSaisiCongeAnnuelDto>() : listeBaseHoraireAbsence;
 	}
 
 	public void setListeBaseHoraireAbsence(ArrayList<RefTypeSaisiCongeAnnuelDto> listeBaseHoraireAbsence) {

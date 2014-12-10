@@ -1492,6 +1492,9 @@ public class OeABSVisualisation extends BasicProcess {
 
 	public boolean performPB_ANNULER_DEMANDE(HttpServletRequest request, int idDemande) throws Exception {
 
+		// On pose le statut
+		setStatut(STATUT_MEME_PROCESS);
+
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		if (getAgentConnecte(request) == null) {
@@ -1500,47 +1503,20 @@ public class OeABSVisualisation extends BasicProcess {
 		// on recupere la demande
 		DemandeDto dem = getListeAbsence().get(idDemande);
 		Agent ag = getAgentDao().chercherAgent(dem.getAgentWithServiceDto().getIdAgent());
-		// Si ASA ou CONGE_EXCEP et etat=validé ou prise,
-		// alors un motif est obligatoire
-		if ((dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.ASA.getValue()
-				|| dem.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_EXCEP.getValue() || dem
-				.getGroupeAbsence().getIdRefGroupeAbsence() == EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())
-				&& (dem.getIdRefEtat() == EnumEtatAbsence.VALIDEE.getCode() || dem.getIdRefEtat() == EnumEtatAbsence.PRISE
-						.getCode())) {
-			// "ERR803",
-			// "Pour @ cette demande, merci de renseigner un motif."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			TypeAbsenceDto t = new TypeAbsenceDto();
-			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande "
-					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
-					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
-			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
-			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
-			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
-			return false;
-		} else if ((dem.getIdTypeDemande() == EnumTypeAbsence.RECUP.getCode() || dem.getIdTypeDemande() == EnumTypeAbsence.REPOS_COMP
-				.getCode()) && dem.getIdRefEtat() == EnumEtatAbsence.APPROUVE.getCode()) {
-			// "ERR803",
-			// "Pour @ cette demande, merci de renseigner un motif."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
-			TypeAbsenceDto t = new TypeAbsenceDto();
-			t.setIdRefTypeAbsence(dem.getIdTypeDemande());
-			String info = "Demande "
-					+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
-					+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
-			addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
-			addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
-			addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
-			addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
-			return false;
-		}
-		changeState(request, dem, EnumEtatAbsence.ANNULEE, null);
 
-		// On pose le statut
-		setStatut(STATUT_MEME_PROCESS);
-		return true;
+		// "ERR803",
+		// "Pour @ cette demande, merci de renseigner un motif."
+		getTransaction().declarerErreur(MessageUtils.getMessage("ERR803", "annuler"));
+		TypeAbsenceDto t = new TypeAbsenceDto();
+		t.setIdRefTypeAbsence(dem.getIdTypeDemande());
+		String info = "Demande "
+				+ getListeFamilleAbsenceCreation().get(getListeFamilleAbsenceCreation().indexOf(t)).getLibelle()
+				+ " de l'agent " + ag.getNomatr() + " du " + sdf.format(dem.getDateDebut()) + ".";
+		addZone(getNOM_ST_INFO_MOTIF_ANNULATION(), info);
+		addZone(getNOM_ST_MOTIF_ANNULATION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ID_DEMANDE_ANNULATION(), dem.getIdDemande().toString());
+		addZone(getNOM_ST_ACTION(), ACTION_MOTIF_ANNULATION);
+		return false;
 	}
 
 	public String getNOM_ST_INFO_MOTIF_ANNULATION() {

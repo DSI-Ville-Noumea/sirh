@@ -463,7 +463,7 @@ public class OeELECSaisieCompteurA53 extends BasicProcess {
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdOrganisationSyndicale(os.getIdOrganisation());
 		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-		compteurDto.setDureeAAjouter(Integer.valueOf(getVAL_ST_NB_JOURS()));
+		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_JOURS())));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
 
