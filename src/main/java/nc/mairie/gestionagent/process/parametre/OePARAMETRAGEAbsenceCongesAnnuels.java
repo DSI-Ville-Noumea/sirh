@@ -92,9 +92,13 @@ public class OePARAMETRAGEAbsenceCongesAnnuels extends BasicProcess {
 		List<TypeAbsenceDto> listeTypeAbsence = consuAbs.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS
 				.getValue());
 
+
+		ArrayList<RefTypeSaisiCongeAnnuelDto> liste = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
+
 		for (TypeAbsenceDto abs : listeTypeAbsence) {
-			getListeTypeAbsence().add(abs.getTypeSaisiCongeAnnuelDto());
+			liste.add(abs.getTypeSaisiCongeAnnuelDto());
 		}
+		setListeTypeAbsence(liste);
 		for (RefTypeSaisiCongeAnnuelDto type : getListeTypeAbsence()) {
 			Integer i = type.getIdRefTypeSaisiCongeAnnuel();
 			addZone(getNOM_ST_CODE_CONGE(i), type.getCodeBaseHoraireAbsence());

@@ -1091,9 +1091,12 @@ public class OePOSTEFichePoste extends BasicProcess {
 			List<TypeAbsenceDto> listeTypeAbsence = consuAbs
 					.getListeRefTypeAbsenceDto(EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue());
 
+			ArrayList<RefTypeSaisiCongeAnnuelDto> liste = new ArrayList<RefTypeSaisiCongeAnnuelDto>();
+
 			for (TypeAbsenceDto abs : listeTypeAbsence) {
-				getListeBaseHoraireAbsence().add(abs.getTypeSaisiCongeAnnuelDto());
+				liste.add(abs.getTypeSaisiCongeAnnuelDto());
 			}
+			setListeBaseHoraireAbsence(liste);
 			if (getListeBaseHoraireAbsence().size() != 0) {
 				int tailles[] = { 5 };
 				String padding[] = { "G" };
