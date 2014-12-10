@@ -54,6 +54,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 	private Agent agentCourant;
 	private Integer soldeCourantMinute;
 	private Integer soldeCourantPrecMinute;
+	private Double soldeCourantJour;
+	private Double soldeCourantPrecJour;
 
 	private String messageInfo = Const.CHAINE_VIDE;
 
@@ -66,6 +68,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public String ACTION_CREATION_RECUP = "Alimenter le compteur de récupération";
 	public String ACTION_CREATION_REPOS_COMP = "Alimenter le compteur de repos compensateur";
+	public String ACTION_CREATION_CONGE_ANNUEL = "Alimenter le compteur des congés annuels";
 
 	private AgentDao agentDao;
 
@@ -323,6 +326,13 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("Ce type d'ASA ne se gère pas par compteur.");
 
+		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+			dto.setTypeDemande(EnumTypeAbsence.CONGE.getCode());
+			afficheSolde(getTypeAbsenceCourant(), dto);
+			addZone(getNOM_RG_COMPTEUR(), getNOM_RB_COMPTEUR_ANNEE());
+			addZone(getNOM_ST_ACTION(), ACTION_CREATION_CONGE_ANNUEL);
+
 		} else {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 			setMessageInfo("Ce type d'absence ne se gère pas par compteur.");
@@ -367,7 +377,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		switch (typeAbsenceCourant.getIdRefTypeAbsence()) {
 			case 1:
 				addZone(getNOM_ST_SOLDE(), soldeGlobal.getSoldeCongeAnnee().toString() + " j");
-				setSoldeCourantMinute((int) (soldeGlobal.getSoldeCongeAnnee() * 24));
+				addZone(getNOM_ST_SOLDE_PREC(), soldeGlobal.getSoldeCongeAnneePrec().toString() + " j");
+				setSoldeCourantJour(soldeGlobal.getSoldeCongeAnnee());
+				setSoldeCourantPrecJour(soldeGlobal.getSoldeCongeAnneePrec());
 				break;
 			case 2:
 				int soldeRecupAnnee = soldeGlobal.getSoldeReposCompAnnee().intValue();
@@ -404,6 +416,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 		addZone(getNOM_ST_DUREE_MIN_RETRAIT(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
 		addZone(getNOM_RG_COMPTEUR(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DUREE_JOUR_RETRAIT(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_DUREE_JOUR_AJOUT(), Const.CHAINE_VIDE);
 	}
 
 	public TypeAbsenceDto getTypeAbsenceCourant() {
@@ -491,8 +505,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
-			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
+			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
 			compteurDto.setAnneePrecedente(false);
 
 			// on sauvegarde
@@ -561,13 +575,76 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
-			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
-			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
+			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
 			compteurDto.setAnneePrecedente(anneePrec);
 
 			// on sauvegarde
 			message = consuAbs.addCompteurReposComp(agentConnecte.getIdAgent(), new JSONSerializer().exclude("*.class")
 					.serialize(compteurDto));
+
+		} else if (getZone(getNOM_ST_ACTION()).equals(ACTION_CREATION_CONGE_ANNUEL)
+				&& getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
+						.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
+			// on recupere la saisie
+			String dureeJour = null;
+			boolean ajout = false;
+			if (!getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)) {
+				dureeJour = getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE) ? "0" : getVAL_ST_DUREE_JOUR_AJOUT();
+				ajout = true;
+			}
+			if (!getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				dureeJour = getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE) ? "0"
+						: getVAL_ST_DUREE_JOUR_RETRAIT();
+				ajout = false;
+			}
+
+			Boolean anneePrec = getZone(getNOM_RG_COMPTEUR()).equals(getNOM_RB_COMPTEUR_ANNEE_PREC());
+
+			// verifier nouveau solde pas négatif
+			Double dureeTotaleSaisie = Double.valueOf(dureeJour);
+			Double ancienSolde = 0.0;
+			if (anneePrec) {
+				ancienSolde = getSoldeCourantPrecJour();
+			} else {
+				ancienSolde = getSoldeCourantJour();
+			}
+			if (ajout) {
+				// cas de l'ajout
+				if (ancienSolde + dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			} else {
+				// cas du retrait
+				if (ancienSolde - dureeTotaleSaisie < 0) {
+					// "ERR801",
+					// "Le nouveau solde du compteur ne peut être négatif."
+					getTransaction().declarerErreur(MessageUtils.getMessage("ERR801"));
+					return false;
+				}
+			}
+
+			// motif
+			int indiceMotif = (Services.estNumerique(getVAL_LB_MOTIF_SELECT()) ? Integer
+					.parseInt(getVAL_LB_MOTIF_SELECT()) : -1);
+			MotifCompteurDto motif = null;
+			if (indiceMotif > 0) {
+				motif = getListeMotifCompteur().get(indiceMotif - 1);
+			}
+
+			CompteurDto compteurDto = new CompteurDto();
+			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
+			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
+			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
+			compteurDto.setAnneePrecedente(anneePrec);
+
+			// on sauvegarde
+			message = consuAbs.addCompteurCongeAnnuel(agentConnecte.getIdAgent(),
+					new JSONSerializer().exclude("*.class").serialize(compteurDto));
 
 		}
 
@@ -617,33 +694,63 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			return false;
 		}
 
-		// durée obligatoire (ajout ou retrait)
-		if (getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-				&& getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)
-				&& getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-				&& getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-			// "ERR002", "La zone @ est obligatoire."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
-			return false;
-		}
+		if (getVAL_ST_ACTION().equals(ACTION_CREATION_CONGE_ANNUEL)) {
+			// durée obligatoire (ajout ou retrait)
+			if (getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)
+					&& getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+				return false;
+			}
 
-		// pas 2 durées de saisie
-		boolean ajoutSaisie = false;
-		if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
-				|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
-			ajoutSaisie = true;
-		}
+			// pas 2 durées de saisie
+			boolean ajoutSaisie = false;
+			if (!getVAL_ST_DUREE_JOUR_AJOUT().equals(Const.CHAINE_VIDE)) {
+				ajoutSaisie = true;
+			}
 
-		boolean retraitSaisie = false;
-		if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
-				|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
-			retraitSaisie = true;
-		}
+			boolean retraitSaisie = false;
+			if (!getVAL_ST_DUREE_JOUR_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				retraitSaisie = true;
+			}
 
-		if (ajoutSaisie && retraitSaisie) {
-			// "ERR800", "Seul un des deux champs durée doit être renseigné."
-			getTransaction().declarerErreur(MessageUtils.getMessage("ERR800"));
-			return false;
+			if (ajoutSaisie && retraitSaisie) {
+				// "ERR800",
+				// "Seul un des deux champs durée doit être renseigné."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR800"));
+				return false;
+			}
+		} else {
+
+			// durée obligatoire (ajout ou retrait)
+			if (getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
+					&& getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)
+					&& getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
+					&& getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				// "ERR002", "La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "durée"));
+				return false;
+			}
+
+			// pas 2 durées de saisie
+			boolean ajoutSaisie = false;
+			if (!getVAL_ST_DUREE_HEURE_AJOUT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_AJOUT().equals(Const.CHAINE_VIDE)) {
+				ajoutSaisie = true;
+			}
+
+			boolean retraitSaisie = false;
+			if (!getVAL_ST_DUREE_HEURE_RETRAIT().equals(Const.CHAINE_VIDE)
+					|| !getVAL_ST_DUREE_MIN_RETRAIT().equals(Const.CHAINE_VIDE)) {
+				retraitSaisie = true;
+			}
+
+			if (ajoutSaisie && retraitSaisie) {
+				// "ERR800",
+				// "Seul un des deux champs durée doit être renseigné."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR800"));
+				return false;
+			}
 		}
 
 		return true;
@@ -792,5 +899,37 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_ST_DUREE_JOUR_AJOUT() {
+		return "NOM_ST_DUREE_JOUR_AJOUT";
+	}
+
+	public String getVAL_ST_DUREE_JOUR_AJOUT() {
+		return getZone(getNOM_ST_DUREE_JOUR_AJOUT());
+	}
+
+	public String getNOM_ST_DUREE_JOUR_RETRAIT() {
+		return "NOM_ST_DUREE_JOUR_RETRAIT";
+	}
+
+	public String getVAL_ST_DUREE_JOUR_RETRAIT() {
+		return getZone(getNOM_ST_DUREE_JOUR_RETRAIT());
+	}
+
+	public Double getSoldeCourantJour() {
+		return soldeCourantJour;
+	}
+
+	public void setSoldeCourantJour(Double soldeCourantJour) {
+		this.soldeCourantJour = soldeCourantJour;
+	}
+
+	public Double getSoldeCourantPrecJour() {
+		return soldeCourantPrecJour;
+	}
+
+	public void setSoldeCourantPrecJour(Double soldeCourantPrecJour) {
+		this.soldeCourantPrecJour = soldeCourantPrecJour;
 	}
 }

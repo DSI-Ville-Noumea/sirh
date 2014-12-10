@@ -133,7 +133,7 @@
 							</td>
 							<td>
 								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">Année</span> 
-								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précécdente</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précédente</span> 
 							</td>
 						</tr>
 						<tr>
@@ -155,7 +155,67 @@
 					</table>
 				</FIELDSET>
 			
-			<%} %>			
+			<%} %>
+			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_CREATION_CONGE_ANNUEL)){ %>
+				<FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
+					<legend class="sigp2Legend">Compteur <%=process.getTypeAbsenceCourant().getLibelle() %> de l'agent</legend>
+					<table border="1" cellpadding="5">
+						<tr>
+							<td>
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année :</span>
+								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE() %>" type="text" value="<%= process.getVAL_ST_SOLDE() %>">
+								
+								<span class="sigp2" style="margin-left:20px;position:relative;width:110px;">Solde année précédente:</span>
+								<INPUT class="sigp2-saisie" disabled="disabled" size="10"  name="<%= process.getNOM_ST_SOLDE_PREC() %>" type="text" value="<%= process.getVAL_ST_SOLDE_PREC() %>">
+							</td>
+						</tr>
+					</table>
+					<table>
+						<tr>
+							<td width="110px;">
+		            			<span class="sigp2Mandatory">Durée à ajouter :</span>
+							</td>
+							<td>
+								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_AJOUT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_AJOUT() %>"><span class="sigp2-saisie">jours</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+		           				<span class="sigp2Mandatory">Durée à retrancher :</span>
+							</td>
+							<td>
+								<INPUT class="sigp2-saisie" maxlength="3" size="3"  name="<%= process.getNOM_ST_DUREE_JOUR_RETRAIT() %>" type="text" value="<%= process.getVAL_ST_DUREE_JOUR_RETRAIT() %>"><span class="sigp2-saisie">jours</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Compteur :</span> 
+							</td>
+							<td>
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE()) %> > <span class="sigp2-saisie">Année</span> 
+								<input type="radio" <%= process.forRadioHTML(process.getNOM_RG_COMPTEUR(), process.getNOM_RB_COMPTEUR_ANNEE_PREC()) %> > <span class="sigp2-saisie">Année précédente</span> 
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="sigp2Mandatory">Motif : </span>
+							</td>
+							<td>				
+								<SELECT class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>" style="width:150px;">
+									<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+								</SELECT>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Valider" name="<%=process.getNOM_PB_VALIDER()%>">
+								<INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">
+							</td>
+						</tr>
+					</table>
+				</FIELDSET>
+			
+			<%} %>				
 			<%} %>
 	</FORM>
 <%} %>	

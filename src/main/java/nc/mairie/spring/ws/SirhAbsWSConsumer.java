@@ -37,41 +37,52 @@ import flexjson.JSONSerializer;
 
 @Service
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
+	
+	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
+	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
+	
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
+	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
+	
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
 	private static final String sirhAbsDemandes = "demandes/listeDemandesSIRH";
 	private static final String sirhAbsDemandesHistorique = "demandes/historiqueSIRH";
-	private static final String sirhAbsMotif = "motif/getListeMotif";
-	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
-	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
-	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
-	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
-	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
-	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
-	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
-	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
-	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
-	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
 	private static final String sirhAbsStateSave = "demandes/changerEtatsSIRH";
+	private static final String sirhDureeCongeAnnuelUrl = "demandes/dureeDemandeCongeAnnuel";
+	
+	private static final String sirhAbsMotif = "motif/getListeMotif";
+	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
+	
+	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
+	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
+
+	private static final String sirhAbsListeCompteurA48 = "asaA48/listeCompteurA48";
 	private static final String sirhAbsListeCompteurA54 = "asaA54/listeCompteurA54";
-	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
 	private static final String sirhAbsListeCompteurA55 = "asaA55/listeCompteurA55";
-	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
 	private static final String sirhAbsListeCompteurA53 = "asaA53/listeCompteurA53";
-	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
+	
+	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
+
+	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
+	private static final String sirhAbsAddCompteurCongeAnnuel = "congeannuel/addManual";
+	private static final String sirhAbsAddCompteurReposComp = "reposcomps/addManual";
+	private static final String sirhAbsAddCompteurAsaA48 = "asaA48/addManual";
+	private static final String sirhAbsAddCompteurAsaA54 = "asaA54/addManual";
+	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
+	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
+	
 	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
-	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
 	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
-	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
-	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
 	private static final String sirhAbsRefTypeAbs = "typeAbsence/getTypeAbsence";
-	private static final String sirhDureeCongeAnnuelUrl = "demandes/dureeDemandeCongeAnnuel";
+	
+	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
+	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
 
 	private Logger logger = LoggerFactory.getLogger(SirhAbsWSConsumer.class);
 
@@ -574,6 +585,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponse(DemandeDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto addCompteurCongeAnnuel(Integer idAgent, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddCompteurCongeAnnuel;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}
 
 }

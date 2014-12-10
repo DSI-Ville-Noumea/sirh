@@ -6,9 +6,9 @@ public class CompteurDto {
 
 	private Integer idAgent;
 
-	private Integer dureeAAjouter;
+	private Double dureeAAjouter;
 
-	private Integer dureeARetrancher;
+	private Double dureeARetrancher;
 
 	private Integer idMotifCompteur;
 
@@ -26,22 +26,6 @@ public class CompteurDto {
 
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
-	}
-
-	public Integer getDureeAAjouter() {
-		return dureeAAjouter;
-	}
-
-	public void setDureeAAjouter(Integer dureeAAjouter) {
-		this.dureeAAjouter = dureeAAjouter;
-	}
-
-	public Integer getDureeARetrancher() {
-		return dureeARetrancher;
-	}
-
-	public void setDureeARetrancher(Integer dureeARetrancher) {
-		this.dureeARetrancher = dureeARetrancher;
 	}
 
 	public Integer getIdMotifCompteur() {
@@ -82,6 +66,22 @@ public class CompteurDto {
 
 	public void setIdOrganisationSyndicale(Integer idOrganisationSyndicale) {
 		this.idOrganisationSyndicale = idOrganisationSyndicale;
+	}
+
+	public Double getDureeAAjouter() {
+		return dureeAAjouter;
+	}
+
+	public void setDureeAAjouter(Double dureeAAjouter) {
+		this.dureeAAjouter = dureeAAjouter;
+	}
+
+	public Double getDureeARetrancher() {
+		return dureeARetrancher;
+	}
+
+	public void setDureeARetrancher(Double dureeARetrancher) {
+		this.dureeARetrancher = dureeARetrancher;
 	}
 
 }
