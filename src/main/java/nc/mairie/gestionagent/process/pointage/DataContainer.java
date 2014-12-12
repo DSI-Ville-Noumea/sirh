@@ -17,6 +17,7 @@ public class DataContainer {
 	private int idPtg = 0;
 	private int idRefEtat = 0;
 	private int idTypeAbsence = 0;
+	private int idMotifHsup = 0;
 
 	public DataContainer() {
 	}
@@ -107,6 +108,14 @@ public class DataContainer {
 
 	public void setIdTypeAbsence(int idTypeAbsence) {
 		this.idTypeAbsence = idTypeAbsence;
+	}
+
+	public int getIdMotifHsup() {
+		return idMotifHsup;
+	}
+
+	public void setIdMotifHsup(int idMotifHsup) {
+		this.idMotifHsup = idMotifHsup;
 	}
 
 }

@@ -283,7 +283,7 @@ public class OePTGSaisie extends BasicProcess {
 			for (HeureSupDto hsdto : jour.getHeuresSup()) {
 				if (hsdto != null) {
 					// vérification motif obligatoire
-					if (hsdto.getMotif().equals(Const.CHAINE_VIDE)) {
+					if (hsdto.getIdMotifHsup()==null) {
 						getTransaction().traiterErreur();
 						logger.debug("Tentative de sauvegarde d'une heure supplémentaire sans motif");
 						getTransaction()
@@ -415,7 +415,7 @@ public class OePTGSaisie extends BasicProcess {
 			ret.setHeureDebut(data.getTimeD());
 			ret.setHeureFin(data.getTimeF());
 			ret.setCommentaire(data.getComment());
-			ret.setMotif(data.getMotif());
+			ret.setIdMotifHsup(data.getIdMotifHsup());
 			ret.setIdPointage(data.getIdPtg());
 			ret.setIdRefEtat(data.getIdRefEtat());
 			logger.debug("Heure sup " + id);

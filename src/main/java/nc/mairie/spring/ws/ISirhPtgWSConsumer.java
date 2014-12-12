@@ -10,6 +10,7 @@ import nc.mairie.gestionagent.dto.ReturnMessageDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
+import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
@@ -79,6 +80,10 @@ public interface ISirhPtgWSConsumer {
 	List<RefTypePointageDto> getTypesPointage();
 
 	List<TypeAbsenceDto> getListeRefTypeAbsence();
+
+	List<MotifHeureSupDto> getListeMotifHeureSup();
+
+	ReturnMessageDto saveMotifHeureSup(String json);
 
 	// Primes
 	List<RefPrimeDto> getPrimes(String agentStatus);

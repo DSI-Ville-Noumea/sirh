@@ -16,6 +16,7 @@ import nc.mairie.gestionagent.pointage.dto.CanStartWorkflowPaieActionDto;
 import nc.mairie.gestionagent.pointage.dto.ConsultPointageDto;
 import nc.mairie.gestionagent.pointage.dto.EtatsPayeurDto;
 import nc.mairie.gestionagent.pointage.dto.FichePointageDto;
+import nc.mairie.gestionagent.pointage.dto.MotifHeureSupDto;
 import nc.mairie.gestionagent.pointage.dto.RefEtatDto;
 import nc.mairie.gestionagent.pointage.dto.RefPrimeDto;
 import nc.mairie.gestionagent.pointage.dto.RefTypePointageDto;
@@ -73,6 +74,8 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 	private static final String sirhPtgEtatsPointage = "filtres/getEtats";
 	private static final String sirhPtgTypesPointage = "filtres/getTypes";
 	private static final String sirhPtgTypeAbsence = "filtres/getTypesAbsence";
+	private static final String sirhPtgMotifHeureSup = "filtres/getMotifHsup";
+	private static final String sirhPtgSaveMotifHeureSup = "filtres/setMotifHsup";
 	// primes
 	private static final String sirhPtgPrimesStatut = "primes/getListePrimeWithStatus";
 	private static final String sirhPtgPrimes = "primes/getListePrime";
@@ -417,9 +420,9 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
 		String url = urlWS + sirhPtgVentilationsHistory;
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("mois",mois.toString());
+		parameters.put("mois", mois.toString());
 		parameters.put("annee", annee.toString());
-		parameters.put("typePointage",  idRefTypePointage.toString());
+		parameters.put("typePointage", idRefTypePointage.toString());
 		parameters.put("idAgent", idAgent.toString());
 		parameters.put("allVentilation", String.valueOf(allVentilation));
 		ClientResponse res = createAndFireRequest(parameters, url);
@@ -678,5 +681,30 @@ public class SirhPtgWSConsumer implements ISirhPtgWSConsumer {
 
 		ClientResponse res = createAndFireRequest(params, url);
 		return readResponseAsList(Integer.class, res, url);
+	}
+
+	@Override
+	public List<MotifHeureSupDto> getListeMotifHeureSup() {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgMotifHeureSup;
+
+		ClientResponse res = createAndFireRequest(new HashMap<String, String>(), url);
+		return readResponseAsList(MotifHeureSupDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveMotifHeureSup(String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_PTG_WS");
+		String url = urlWS + sirhPtgSaveMotifHeureSup;
+		HashMap<String, String> params = new HashMap<>();
+		ClientResponse res = createAndPostRequest(params, url, json);
+
+		ReturnMessageDto message = new ReturnMessageDto();
+
+		if (res.getStatus() == HttpStatus.CONFLICT.value()) {
+			message.getErrors().add("Le motif n'a pu être sauvegardé.");
+		}
+
+		return message;
 	}
 }

@@ -141,6 +141,7 @@
 		listeDroits.add("ParamAbsCongeAnnuel");	
 		listeDroits.add("ParamElec");	
 		listeDroits.add("ParamKiosque");	
+		listeDroits.add("ParamPointage");	
 		
 		
 		/*Module GESTION DROITS*/

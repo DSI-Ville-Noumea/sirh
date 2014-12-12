@@ -76,6 +76,7 @@ import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEGradeRef;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEHSCT;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEJour;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEKiosque;
+import nc.mairie.gestionagent.process.parametre.OePARAMETRAGEPointage;
 import nc.mairie.gestionagent.process.parametre.OePARAMETRAGERecrutement;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurContractuels;
 import nc.mairie.gestionagent.process.pointage.OePTGPayeurConvCol;
@@ -320,7 +321,10 @@ public class RobotAgent extends Robot {
 			// Module PARAMETRAGE - KIOSQUE
 		} else if (activite.equals("ParamKiosque")) {
 			return new OePARAMETRAGEKiosque();
-		} // Module DROITS
+		} // Module PARAMETRAGE - POINTAGE
+		else if (activite.equals("ParamPointage")) {
+			return new OePARAMETRAGEPointage();
+		}// Module DROITS
 		else if (activite.equals("DroitsUtilisateur")) {
 			return new OeDROITSUtilisateurs();
 		} else if (activite.equals("DroitsProfil")) {
@@ -766,6 +770,8 @@ public class RobotAgent extends Robot {
 		navigation.put(OePARAMETRAGEElection.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 		navigation.put(OePARAMETRAGEKiosque.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
+				OeAGENTRecherche.class.getName());
+		navigation.put(OePARAMETRAGEPointage.class.getName() + MaClasse.STATUT_RECHERCHE_AGENT,
 				OeAGENTRecherche.class.getName());
 
 		// DROITS

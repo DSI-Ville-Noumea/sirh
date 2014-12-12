@@ -219,6 +219,10 @@ menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeExcep", "JOUR", "Gesti
 menuParametrageElemAbs.ajouterFils(new Lien("ParamAbsCongeAnnuel", "ANNUEL", "Gestion des paramètres des type de congés annuels", true, false,"CONGES ANNUELS"));
 document.write(menuParametrageElemAbs.afficher());
 
+var menuParametragePointage = new MenuHaut("Module_parametres_pointage");
+menuParametragePointage.ajouterFils(new Lien("ParamPointage", "POINTAGE", "Gestion des paramètres des pointages", true, false,"MOTIFS"));
+document.write(menuParametragePointage.afficher());
+
 </script>
 
 </FORM>
