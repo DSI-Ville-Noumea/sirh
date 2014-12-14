@@ -68,10 +68,10 @@
 							<% }else if(process.getVAL_ST_ACTION_ORGANISATION()!= null && process.getVAL_ST_ACTION_ORGANISATION().equals(process.ACTION_MODIFICATION)){ %>	
 			            		<br>
 								<label class="sigp2Mandatory" style="width:50px">Libellé:</label>
-								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="250" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>">
+								<INPUT class="sigp2-saisie" maxlength="250" name="<%= process.getNOM_EF_LIB_ORGANISATION() %>" size="100" type="text" value="<%= process.getVAL_EF_LIB_ORGANISATION() %>">
 								<br /><BR/>
 								<span class="sigp2Mandatory" style="width:50px">Sigle : </span>
-								<INPUT class="sigp2-saisie" disabled="disabled" maxlength="15" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>">
+								<INPUT class="sigp2-saisie" maxlength="15" name="<%= process.getNOM_EF_SIGLE_ORGANISATION() %>" size="35" type="text" value="<%= process.getVAL_EF_SIGLE_ORGANISATION() %>">
 								<br /><BR/>
 								<span class="sigp2Mandatory" style="width:50px">Actif : </span>
 								<INPUT type="radio" <%= process.forRadioHTML(process.getNOM_RG_ORGANISATION_INACTIF(), process.getNOM_RB_OUI()) %> ><span class="sigp2Mandatory">oui</span>

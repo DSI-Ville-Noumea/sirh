@@ -257,14 +257,15 @@ public class OePARAMETRAGEElection extends BasicProcess {
 				OrganisationSyndicaleDto orga = null;
 				if (getVAL_ST_ACTION_ORGANISATION().equals(ACTION_CREATION)) {
 					orga = new OrganisationSyndicaleDto();
-					orga.setLibelle(getVAL_EF_LIB_ORGANISATION());
-					orga.setSigle(getVAL_EF_SIGLE_ORGANISATION());
 				} else {
 					// modification
 					int indice = (Services.estNumerique(getVAL_LB_ORGANISATION_SELECT()) ? Integer
 							.parseInt(getVAL_LB_ORGANISATION_SELECT()) : -1);
 					orga = getListeOrganisation().get(indice);
 				}
+
+				orga.setLibelle(getVAL_EF_LIB_ORGANISATION());
+				orga.setSigle(getVAL_EF_SIGLE_ORGANISATION());
 
 				Boolean actif = getZone(getNOM_RG_ORGANISATION_INACTIF()).equals(getNOM_RB_OUI());
 				orga.setActif(actif);

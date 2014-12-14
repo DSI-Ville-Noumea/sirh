@@ -36,7 +36,7 @@
 				<tr>
 					<td width="500px;">
 						<FIELDSET class="sigp2Fieldset" style="text-align: left;">
-					    	<legend class="sigp2Legend">Motifs</legend>
+					    	<legend class="sigp2Legend">Motifs de refus des absences</legend>
 							<span class="sigp2-saisie">Libellé</span>
 							<span class="sigp2-saisie" style="margin-left: 250px;">Type Absence</span>
 							<SELECT name="<%= process.getNOM_LB_MOTIF() %>" size="10" style="width:100%;" class="sigp2-liste">
