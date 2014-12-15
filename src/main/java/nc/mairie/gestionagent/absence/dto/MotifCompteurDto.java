@@ -40,4 +40,9 @@ public class MotifCompteurDto implements IJSONDeserialize<MotifCompteurDto> {
 	public void setIdMotifCompteur(Integer idMotifCompteur) {
 		this.idMotifCompteur = idMotifCompteur;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return idMotifCompteur.toString().equals(((MotifCompteurDto) obj).getIdMotifCompteur().toString());
+	}
 }

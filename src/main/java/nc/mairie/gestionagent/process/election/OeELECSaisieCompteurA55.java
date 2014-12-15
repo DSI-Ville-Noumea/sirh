@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
-import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -48,7 +47,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
 
-	private ArrayList<CompteurAsaDto> listeCompteur;
+	private ArrayList<CompteurDto> listeCompteur;
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
@@ -136,13 +135,13 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<CompteurAsaDto> listeCompteur = (ArrayList<CompteurAsaDto>) consum.getListeCompteursA55();
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA55();
 		logger.debug("Taille liste des compteurs ASA A55 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		int indiceLigne = 0;
-		for (CompteurAsaDto dto : getListeCompteur()) {
+		for (CompteurDto dto : getListeCompteur()) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
 
@@ -150,11 +149,12 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_DATE_DEBUT(indiceLigne), sdf.format(dto.getDateDebut()));
 			addZone(getNOM_ST_DATE_FIN(indiceLigne), sdf.format(dto.getDateFin()));
-			String soldeAsaA55Heure = (dto.getNb().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getNb().intValue()
-					/ 60 + "h ";
-			String soldeAsaA55Minute = (dto.getNb().intValue() % 60) == 0 ? "&nbsp;" : dto.getNb().intValue() % 60
-					+ "m";
+			String soldeAsaA55Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
+					.getDureeAAjouter().intValue() / 60 + "h ";
+			String soldeAsaA55Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? "&nbsp;" : dto
+					.getDureeAAjouter().intValue() % 60 + "m";
 			addZone(getNOM_ST_NB_HEURES(indiceLigne), soldeAsaA55Heure + soldeAsaA55Minute);
+			addZone(getNOM_ST_MOTIF(indiceLigne), dto.getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
 
@@ -205,11 +205,11 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		return true;
 	}
 
-	public ArrayList<CompteurAsaDto> getListeCompteur() {
-		return listeCompteur == null ? new ArrayList<CompteurAsaDto>() : listeCompteur;
+	public ArrayList<CompteurDto> getListeCompteur() {
+		return listeCompteur == null ? new ArrayList<CompteurDto>() : listeCompteur;
 	}
 
-	public void setListeCompteur(ArrayList<CompteurAsaDto> listeCompteur) {
+	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
 	}
 
@@ -249,6 +249,14 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		return "NOM_ST_NB_HEURES" + i;
 	}
 
+	public String getNOM_ST_MOTIF(int i) {
+		return "NOM_ST_MOTIF" + i;
+	}
+
+	public String getVAL_ST_MOTIF(int i) {
+		return getZone(getNOM_ST_MOTIF(i));
+	}
+
 	public String getVAL_ST_NB_HEURES(int i) {
 		return getZone(getNOM_ST_NB_HEURES(i));
 	}
@@ -283,7 +291,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(indiceEltAModifier);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -295,18 +303,20 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		return true;
 	}
 
-	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurAsaDto dto) {
+	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurDto dto) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		addZone(getNOM_ST_DATE_DEBUT(), sdf.format(dto.getDateDebut()));
 		addZone(getNOM_ST_DATE_FIN(), sdf.format(dto.getDateFin()));
-		String soldeAsaA55Heure = (dto.getNb().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto.getNb().intValue() / 60
-				+ Const.CHAINE_VIDE;
-		String soldeAsaA55Minute = (dto.getNb().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
-				+ dto.getNb().intValue() % 60;
+		String soldeAsaA55Heure = (dto.getDureeAAjouter().intValue() / 60) == 0 ? Const.CHAINE_VIDE : dto
+				.getDureeAAjouter().intValue() / 60 + Const.CHAINE_VIDE;
+		String soldeAsaA55Minute = (dto.getDureeAAjouter().intValue() % 60) == 0 ? Const.CHAINE_VIDE : "."
+				+ dto.getDureeAAjouter().intValue() % 60;
 		addZone(getNOM_ST_NB_HEURES(), soldeAsaA55Heure + soldeAsaA55Minute);
 		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
 				.substring(3, dto.getIdAgent().toString().length()));
+		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
+		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		return true;
 	}
 
@@ -319,7 +329,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(indiceEltAConsulter);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -464,12 +474,14 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 		if (indiceMotif > 0) {
 			motif = getListeMotifCompteur().get(indiceMotif - 1);
 		}
-		String dateDeb = getVAL_ST_DATE_DEBUT() + " 00:00:00";
-		String dateFin = getVAL_ST_DATE_FIN() + " 23:59:59";
+		String dateDeb = Services.formateDate(getVAL_ST_DATE_DEBUT()) + " 00:00:00";
+		String dateFin = Services.formateDate(getVAL_ST_DATE_FIN()) + " 23:59:59";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(agCompteur.getIdAgent());
-		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+		MotifCompteurDto motifDto = new MotifCompteurDto();
+		motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+		compteurDto.setMotifCompteurDto(motifDto);
 		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_HEURES()) * 60));
 		compteurDto.setDateDebut(sdf.parse(dateDeb));
 		compteurDto.setDateFin(sdf.parse(dateFin));
@@ -525,7 +537,7 @@ public class OeELECSaisieCompteurA55 extends BasicProcess {
 	}
 
 	public boolean peutModifierCompteur(int i) {
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(i);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(i);
 		if (compteurCourant.getDateFin().compareTo(new Date()) < 0) {
 			return false;
 		}

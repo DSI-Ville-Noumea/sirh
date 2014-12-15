@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
+import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.DemandeDto;
 import nc.mairie.gestionagent.absence.dto.HistoriqueSoldeDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
@@ -37,25 +37,25 @@ import flexjson.JSONSerializer;
 
 @Service
 public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
-	
+
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
-	
+
 	private static final String sirhAbsSoldeRecupAgent = "solde/soldeAgent";
 	private static final String sirhAbsHistoCompteurAgent = "solde/historiqueSolde";
-	
+
 	private static final String sirhAbsDemandesAgent = "demandes/listeDemandesAgent";
 	private static final String sirhAbsDemandes = "demandes/listeDemandesSIRH";
 	private static final String sirhAbsDemandesHistorique = "demandes/historiqueSIRH";
 	private static final String sirhAbsDemandeSauvegarde = "demandes/demandeSIRH";
 	private static final String sirhAbsStateSave = "demandes/changerEtatsSIRH";
 	private static final String sirhDureeCongeAnnuelUrl = "demandes/dureeDemandeCongeAnnuel";
-	
+
 	private static final String sirhAbsMotif = "motif/getListeMotif";
 	private static final String sirhAbsMotifSauvegarde = "motif/setMotif";
-	
+
 	private static final String sirhAbsMotifCompteur = "motifCompteur/getListeMotifCompteur";
 	private static final String sirhAbsMotifCompteurSauvegarde = "motifCompteur/setMotifCompteur";
 
@@ -64,7 +64,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsListeCompteurA55 = "asaA55/listeCompteurA55";
 	private static final String sirhAbsListeCompteurA53 = "asaA53/listeCompteurA53";
 	private static final String sirhAbsListeCompteurA52 = "asaA52/listeCompteurA52";
-	
+
 	private static final String sirhAbsInitialiseCompteurCongeAnnuel = "congeannuel/intitCompteurCongeAnnuel";
 
 	private static final String sirhAbsAddCompteurRecup = "recuperations/addManual";
@@ -75,12 +75,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	private static final String sirhAbsAddCompteurAsaA55 = "asaA55/addManual";
 	private static final String sirhAbsAddCompteurAsaA53 = "asaA53/addManual";
 	private static final String sirhAbsAddCompteurAsaA52 = "asaA52/addManual";
-	
+
 	private static final String sirhAbsListeRefTypeAbs = "typeAbsence/getListeTypeAbsence";
 	private static final String sirhAbsAddCongeExcep = "typeAbsence/setTypeAbsence";
 	private static final String sirhAbsDeleteCongeExcep = "typeAbsence/deleteTypeAbsence";
 	private static final String sirhAbsRefTypeAbs = "typeAbsence/getTypeAbsence";
-	
+
 	private static final String sirhAbsListeUnitePeriodeQuota = "filtres/getUnitePeriodeQuota";
 	private static final String sirhAbsGroupeAbsenceUrl = "filtres/getGroupesAbsence";
 
@@ -320,12 +320,12 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteursA48() {
+	public List<CompteurDto> getListeCompteursA48() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA48;
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(CompteurAsaDto.class, res, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override
@@ -435,21 +435,21 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteursA54() {
+	public List<CompteurDto> getListeCompteursA54() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA54;
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(CompteurAsaDto.class, res, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteursA55() {
+	public List<CompteurDto> getListeCompteursA55() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA55;
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(CompteurAsaDto.class, res, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override
@@ -483,21 +483,21 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteursA52() {
+	public List<CompteurDto> getListeCompteursA52() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA52;
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(CompteurAsaDto.class, res, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override
-	public List<CompteurAsaDto> getListeCompteursA53() {
+	public List<CompteurDto> getListeCompteursA53() {
 		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
 		String url = urlWS + sirhAbsListeCompteurA53;
 		HashMap<String, String> params = new HashMap<>();
 		ClientResponse res = createAndFireRequest(params, url);
-		return readResponseAsList(CompteurAsaDto.class, res, url);
+		return readResponseAsList(CompteurDto.class, res, url);
 	}
 
 	@Override

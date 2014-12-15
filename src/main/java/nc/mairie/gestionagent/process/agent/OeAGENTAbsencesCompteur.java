@@ -514,7 +514,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
-			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			MotifCompteurDto motifDto = new MotifCompteurDto();
+			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
 			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
 			compteurDto.setAnneePrecedente(false);
@@ -584,7 +586,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
-			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			MotifCompteurDto motifDto = new MotifCompteurDto();
+			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
 			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
 			compteurDto.setAnneePrecedente(anneePrec);
@@ -647,7 +651,9 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
-			compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+			MotifCompteurDto motifDto = new MotifCompteurDto();
+			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
 			compteurDto.setAnneePrecedente(anneePrec);

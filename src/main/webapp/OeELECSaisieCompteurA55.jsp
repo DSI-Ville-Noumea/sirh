@@ -32,6 +32,12 @@ function SelectLigne(id,tailleTableau)
 	} 
  document.getElementById(id).className="selectLigne";
 }
+
+function testClickEnrigistrer(){
+	if(event.keyCode == 13){
+		executeBouton('NOM_PB_VALIDER');
+	}
+}
 </SCRIPT>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
@@ -39,7 +45,7 @@ function SelectLigne(id,tailleTableau)
  class="nc.mairie.gestionagent.process.election.OeELECSaisieCompteurA55" id="process" scope="session"></jsp:useBean>
 <BODY bgcolor="#FFFFFF" background="images/fond.jpg" lang="FR" link="blue" vlink="purple" onload="window.parent.frames['refAgent'].location.reload();">
 	<%@ include file="BanniereErreur.jsp" %>
-	<FORM name="formu" method="POST" class="sigp2-titre">
+	<FORM onkeypress="testClickEnrigistrer();" name="formu" method="POST" class="sigp2-titre">
 		<INPUT name="JSP" type="hidden" value="<%= process.getJSP() %>">
 		<BR/>
 		
@@ -49,13 +55,14 @@ function SelectLigne(id,tailleTableau)
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="50px;">
-								    <INPUT title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER()%>">
+								   <img title="ajouter" border="0" src="images/ajout.gif" width="16px" height="16px" style="cursor : pointer;" onclick="executeBouton('<%=process.getNOM_PB_AJOUTER()%>');" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>">
 								</td>
 								<td align="center" width="60px;">Matricule</td>
 								<td width="300px;">Agent</td>
 								<td align="center" width="90px;">Début</td>
 								<td align="center" width="90px;">Fin</td>
-								<td align="center">Nb heures</td>
+								<td align="center" width="90px;">Nb heures</td>
+								<td align="center">Motif</td>
 							</tr>
 							<%
 							if (process.getListeCompteur()!=null){
@@ -74,6 +81,7 @@ function SelectLigne(id,tailleTableau)
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_DATE_FIN(i)%></td>
 										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_NB_HEURES(i)%></td>
+										<td class="sigp2NewTab-liste" style="text-align: center;"><%=process.getVAL_ST_MOTIF(i)%></td>
 									</tr>
 									<%
 								}
@@ -182,6 +190,17 @@ function SelectLigne(id,tailleTableau)
 						<INPUT class="sigp2-saisie" disabled="disabled" name="<%= process.getNOM_ST_NB_HEURES() %>" size="10" type="text"  value="<%= process.getVAL_ST_NB_HEURES() %>">
 					</td>
 				</tr>
+				
+				<tr>
+					<td>
+						<span class="sigp2Mandatory">Motif :</span>
+					</td>
+					<td>
+						<SELECT disabled="disabled" class="sigp2-saisie" name="<%= process.getNOM_LB_MOTIF() %>">
+							<%=process.forComboHTML(process.getVAL_LB_MOTIF(), process.getVAL_LB_MOTIF_SELECT()) %>
+						</SELECT>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="2">
                         <INPUT type="submit" class="sigp2-Bouton-100" value="Annuler" name="<%=process.getNOM_PB_ANNULER()%>">	
@@ -192,6 +211,7 @@ function SelectLigne(id,tailleTableau)
 		</FIELDSET>
 		<%} %>
 
+    <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_AJOUTER()%>" value="AJOUTER">
     <INPUT type="submit" style="visibility : hidden;" name="<%=process.getNOM_PB_RECHERCHER_AGENT_CREATE()%>" value="RECHERCHERAGENTCREATE">
 	</FORM>
 </BODY>

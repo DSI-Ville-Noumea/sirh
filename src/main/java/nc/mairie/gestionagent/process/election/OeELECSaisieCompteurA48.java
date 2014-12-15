@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
-import nc.mairie.gestionagent.absence.dto.CompteurAsaDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.dto.ReturnMessageDto;
@@ -49,7 +48,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
 
-	private ArrayList<CompteurAsaDto> listeCompteur;
+	private ArrayList<CompteurDto> listeCompteur;
 	private ArrayList<String> listeAnnee;
 	private String[] LB_ANNEE;
 	private String[] LB_MOTIF;
@@ -162,12 +161,12 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 	private void initialiseListeCompteur(HttpServletRequest request) throws Exception {
 		SirhAbsWSConsumer consum = new SirhAbsWSConsumer();
-		ArrayList<CompteurAsaDto> listeCompteur = (ArrayList<CompteurAsaDto>) consum.getListeCompteursA48();
+		ArrayList<CompteurDto> listeCompteur = (ArrayList<CompteurDto>) consum.getListeCompteursA48();
 		logger.debug("Taille liste des compteurs ASA A48 : " + listeCompteur.size());
 		setListeCompteur(listeCompteur);
 
 		int indiceLigne = 0;
-		for (CompteurAsaDto dto : getListeCompteur()) {
+		for (CompteurDto dto : getListeCompteur()) {
 
 			Agent ag = getAgentDao().chercherAgent(dto.getIdAgent());
 
@@ -178,7 +177,8 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			addZone(getNOM_ST_MATRICULE(indiceLigne), ag.getNomatr().toString());
 			addZone(getNOM_ST_AGENT(indiceLigne), ag.getNomAgent() + " " + ag.getPrenomAgent());
 			addZone(getNOM_ST_ANNEE(indiceLigne), annee.toString());
-			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(dto.getNb().intValue()));
+			addZone(getNOM_ST_NB_JOURS(indiceLigne), String.valueOf(dto.getDureeAAjouter().intValue()));
+			addZone(getNOM_ST_MOTIF(indiceLigne), dto.getMotifCompteurDto().getLibelle());
 
 			indiceLigne++;
 
@@ -191,6 +191,11 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		// Si on arrive de la JSP alors on traite le get
 		if (request.getParameter("JSP") != null && request.getParameter("JSP").equals(getJSP())) {
 
+			// Si clic sur le bouton PB_VALIDER
+			if (testerParametre(request, getNOM_PB_VALIDER())) {
+				return performPB_VALIDER(request);
+			}
+
 			// Si clic sur le bouton PB_AJOUTER
 			if (testerParametre(request, getNOM_PB_AJOUTER())) {
 				return performPB_AJOUTER(request);
@@ -199,11 +204,6 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 			// Si clic sur le bouton PB_ANNULER
 			if (testerParametre(request, getNOM_PB_ANNULER())) {
 				return performPB_ANNULER(request);
-			}
-
-			// Si clic sur le bouton PB_VALIDER
-			if (testerParametre(request, getNOM_PB_VALIDER())) {
-				return performPB_VALIDER(request);
 			}
 
 			// Si clic sur le bouton PB_MODIFIER
@@ -229,11 +229,11 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		return true;
 	}
 
-	public ArrayList<CompteurAsaDto> getListeCompteur() {
-		return listeCompteur == null ? new ArrayList<CompteurAsaDto>() : listeCompteur;
+	public ArrayList<CompteurDto> getListeCompteur() {
+		return listeCompteur == null ? new ArrayList<CompteurDto>() : listeCompteur;
 	}
 
-	public void setListeCompteur(ArrayList<CompteurAsaDto> listeCompteur) {
+	public void setListeCompteur(ArrayList<CompteurDto> listeCompteur) {
 		this.listeCompteur = listeCompteur;
 	}
 
@@ -269,6 +269,14 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		return getZone(getNOM_ST_NB_JOURS(i));
 	}
 
+	public String getNOM_ST_MOTIF(int i) {
+		return "NOM_ST_MOTIF" + i;
+	}
+
+	public String getVAL_ST_MOTIF(int i) {
+		return getZone(getNOM_ST_MOTIF(i));
+	}
+
 	private void videZonesDeSaisie(HttpServletRequest request) throws Exception {
 		addZone(getNOM_ST_NB_JOURS(), Const.CHAINE_VIDE);
 		addZone(getNOM_ST_ANNEE(), Const.CHAINE_VIDE);
@@ -299,7 +307,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(indiceEltAModifier);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -311,7 +319,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		return true;
 	}
 
-	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurAsaDto dto) {
+	private boolean initialiseCompteurCourant(HttpServletRequest request, CompteurDto dto) {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(dto.getDateDebut());
@@ -319,10 +327,12 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 		int ligneAnnee = getListeAnnee().indexOf(annee.toString());
 		addZone(getNOM_LB_ANNEE_SELECT(), String.valueOf(ligneAnnee));
-		addZone(getNOM_ST_NB_JOURS(), String.valueOf(dto.getNb().intValue()));
+		addZone(getNOM_ST_NB_JOURS(), String.valueOf(dto.getDureeAAjouter().intValue()));
 		addZone(getNOM_ST_ANNEE(), annee.toString());
 		addZone(getNOM_ST_AGENT_CREATE(), dto.getIdAgent().toString()
 				.substring(3, dto.getIdAgent().toString().length()));
+		int ligneMotif = getListeMotifCompteur().indexOf(dto.getMotifCompteurDto());
+		addZone(getNOM_LB_MOTIF_SELECT(), String.valueOf(ligneMotif + 1));
 		return true;
 	}
 
@@ -335,7 +345,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
 		videZonesDeSaisie(request);
 
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(indiceEltAConsulter);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
@@ -491,7 +501,9 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 
 		CompteurDto compteurDto = new CompteurDto();
 		compteurDto.setIdAgent(agCompteur.getIdAgent());
-		compteurDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+		MotifCompteurDto motifDto = new MotifCompteurDto();
+		motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
+		compteurDto.setMotifCompteurDto(motifDto);
 		compteurDto.setDureeAAjouter(new Double(Integer.valueOf(getVAL_ST_NB_JOURS())));
 		compteurDto.setDateDebut(new DateTime(annee, 1, 1, 0, 0, 0).toDate());
 		compteurDto.setDateFin(new DateTime(annee, 12, 31, 23, 59, 0).toDate());
@@ -581,7 +593,7 @@ public class OeELECSaisieCompteurA48 extends BasicProcess {
 	}
 
 	public boolean peutModifierCompteur(int i) {
-		CompteurAsaDto compteurCourant = (CompteurAsaDto) getListeCompteur().get(i);
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(i);
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());

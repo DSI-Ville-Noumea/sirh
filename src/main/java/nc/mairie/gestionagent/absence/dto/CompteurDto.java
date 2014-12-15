@@ -10,7 +10,7 @@ public class CompteurDto {
 
 	private Double dureeARetrancher;
 
-	private Integer idMotifCompteur;
+	private MotifCompteurDto motifCompteurDto;
 
 	private boolean isAnneePrecedente;
 
@@ -18,7 +18,7 @@ public class CompteurDto {
 
 	private Date dateFin;
 
-	private Integer idOrganisationSyndicale;
+	private OrganisationSyndicaleDto organisationSyndicaleDto;
 
 	public Integer getIdAgent() {
 		return idAgent;
@@ -26,14 +26,6 @@ public class CompteurDto {
 
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
-	}
-
-	public Integer getIdMotifCompteur() {
-		return idMotifCompteur;
-	}
-
-	public void setIdMotifCompteur(Integer idMotifCompteur) {
-		this.idMotifCompteur = idMotifCompteur;
 	}
 
 	public boolean isAnneePrecedente() {
@@ -60,14 +52,6 @@ public class CompteurDto {
 		this.dateFin = dateFin;
 	}
 
-	public Integer getIdOrganisationSyndicale() {
-		return idOrganisationSyndicale;
-	}
-
-	public void setIdOrganisationSyndicale(Integer idOrganisationSyndicale) {
-		this.idOrganisationSyndicale = idOrganisationSyndicale;
-	}
-
 	public Double getDureeAAjouter() {
 		return dureeAAjouter;
 	}
@@ -82,6 +66,22 @@ public class CompteurDto {
 
 	public void setDureeARetrancher(Double dureeARetrancher) {
 		this.dureeARetrancher = dureeARetrancher;
+	}
+
+	public OrganisationSyndicaleDto getOrganisationSyndicaleDto() {
+		return organisationSyndicaleDto;
+	}
+
+	public void setOrganisationSyndicaleDto(OrganisationSyndicaleDto organisationSyndicaleDto) {
+		this.organisationSyndicaleDto = organisationSyndicaleDto;
+	}
+
+	public MotifCompteurDto getMotifCompteurDto() {
+		return motifCompteurDto;
+	}
+
+	public void setMotifCompteurDto(MotifCompteurDto motifCompteurDto) {
+		this.motifCompteurDto = motifCompteurDto;
 	}
 
 }
