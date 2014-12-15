@@ -80,22 +80,22 @@
                     $('#VisualisationAbsenceList').dataTable({                        
                         "bAutoWidth":false,
                         "aoColumns": [
-                           {"bSearchable": false,"bSortable": false},
-                           {"bSearchable": false,"bSortable": false},
-                           {"bSearchable": false,"bSortable": false},
-                           null,
-                           null,
-                           null,
-                           null,
-                           null,
-                           null,
-                           null,
-                           null,
-                           null,
-                           {"bSearchable": false,"bSortable": false},
-                           {"bSearchable": false,"bSortable": false},
-                           {"bSearchable": false,"bSortable": false},
-                           {"bSearchable": false,"bSortable": false}
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "40px","sClass" : "center"},
+                           {"bSortable": true,"sWidth": "30px"},
+                           {"bSortable": true,"sWidth": "150px"},
+                           {"bSortable": true,"sWidth": "40px"},
+                           {"bSortable": true,"sWidth": "150px"},
+                           {"bSortable": true,"sWidth": "70px","sClass" : "center"},
+                           {"bSortable": true,"sWidth": "70px","sClass" : "center"},
+                           {"bSortable": true,"sWidth": "50px"},
+                           {"bSortable": true,"sWidth": "120px"},
+                           {"bSortable": true,"sWidth": "60px"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"}
                         ],
                         "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
@@ -108,7 +108,7 @@
                             },
                             "sZeroRecords": "Aucune information d'absence à afficher",
                             "sInfo": "Affichage de _START_ à _END_ des _TOTAL_ absences au total",
-                            "sInfoEmpty": "Aucune information de pointage à afficher",
+                            "sInfoEmpty": "Aucune information d'absence à afficher",
                             "sEmptyTable": "Veuillez sélectionner une date de début et une date de fin pour afficher les informations d'absence",
                             "sInfoFiltered": "(filtrage sur _MAX_ absences au total)",
                             "sLengthMenu": "Affichage de _MENU_ absences par page",
@@ -144,16 +144,16 @@
                             .addClass("subDataTable")
                             .attr("cellpadding", "0")
                             .attr("cellspacing", "0")
-                            .attr("style", "margin-left: 320px;")
-                            .attr("width", "580px")
+                            .attr("style", "margin-left: 345px;")
+                            .attr("width", "690px")
                             .append($(document.createElement("thead")).append($(document.createElement("tr"))
-                            		.append($(document.createElement("td")).html("Date demande"))
-                            		.append($(document.createElement("td")).html("Date debut"))
-                            		.append($(document.createElement("td")).html("Date fin"))
-                            		.append($(document.createElement("td")).html("Durée"))
-                            		.append($(document.createElement("td")).html("Etat"))
-                            		.append($(document.createElement("td")).html("Motif"))
-                            		.append($(document.createElement("td")).html("Date etat")))
+                            		.append($(document.createElement("td")).html("Date demande").attr("style", "width: 175px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Date debut").attr("style", "width: 75px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Date fin").attr("style", "width: 80px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Durée").attr("style", "width: 70px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Motif").attr("style", "width: 150px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Etat").attr("style", "width: 80px;text-align: center;"))
+                            		.append($(document.createElement("td")).html("Date etat").attr("style", "width: 80px;text-align: center;")))
                             );
 
                     // Append the tbody element
@@ -166,12 +166,12 @@
                         var donnees = pointages[i].split(",");
                         tbody.append($(document.createElement("tr"))
                                 .addClass(i % 2 == 0 ? "even" : "odd")
-                                .append($(document.createElement("td")).html(donnees[0]).attr("style", "width: 80px;"))
-                                .append($(document.createElement("td")).html(donnees[1]).attr("style", "width: 80px;"))
-                                .append($(document.createElement("td")).html(donnees[2]).attr("style", "width: 80px;"))
-                                .append($(document.createElement("td")).html(donnees[3]).attr("style", "width: 50px;"))
-                                .append($(document.createElement("td")).html(donnees[4]).attr("style", "width: 50px"))
-                                .append($(document.createElement("td")).html(donnees[5]).attr("style", "width: 80px"))
+                                .append($(document.createElement("td")).html(donnees[0]))
+                                .append($(document.createElement("td")).html(donnees[1]))
+                                .append($(document.createElement("td")).html(donnees[2]))
+                                .append($(document.createElement("td")).html(donnees[3]))
+                                .append($(document.createElement("td")).html(donnees[4]))
+                                .append($(document.createElement("td")).html(donnees[5]))
                                 .append($(document.createElement("td")).html(donnees[6]))
                                 );
                     }
@@ -312,8 +312,8 @@
                             <th>
                             	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
-                            <th> <img	src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
-                            <th> <img	src="images/info.jpg" height="16px" width="16px" title="Alertes."></th>
+                            <th> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
+                            <th> <img src="images/info.jpg" height="16px" width="16px" title="Alertes."></th>
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Cat<br>Statut</th>
@@ -387,7 +387,7 @@
                             <%} %>
 							</td>  							
                             <td>
-								<INPUT title="pieces jointes" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>">
+<%-- 								<INPUT title="pieces jointes" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>"> --%>
 							</td>		
                         </tr>
                         <%}%>
