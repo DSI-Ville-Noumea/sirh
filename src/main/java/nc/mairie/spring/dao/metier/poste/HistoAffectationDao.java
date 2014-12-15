@@ -26,6 +26,7 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 	public static final String CHAMP_COMMENTAIRE = "COMMENTAIRE";
 	public static final String CHAMP_TYPE_HISTO = "TYPE_HISTO";
 	public static final String CHAMP_USER_HISTO = "USER_HISTO";
+	public static final String CHAMP_DATE_HISTO = "DATE_HISTO";
 	public static final String CHAMP_ID_BASE_HORAIRE_POINTAGE = "ID_BASE_HORAIRE_POINTAGE";
 	public static final String CHAMP_ID_BASE_HORAIRE_ABSENCE = "ID_BASE_HORAIRE_ABSENCE";
 
@@ -63,7 +64,7 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 	@Override
 	public ArrayList<HistoAffectation> listerAffectationHistoAvecAgent(Integer idAgent) throws Exception {
 		String sql = " select * from " + NOM_TABLE + "  WHERE " + CHAMP_ID_AGENT + "=? order by "
-				+ CHAMP_DATE_DEBUT_AFF;
+				+ CHAMP_DATE_HISTO + " desc";
 
 		ArrayList<HistoAffectation> liste = new ArrayList<HistoAffectation>();
 
@@ -84,6 +85,7 @@ public class HistoAffectationDao extends SirhDao implements HistoAffectationDaoI
 			a.setCommentaire((String) row.get(CHAMP_COMMENTAIRE));
 			a.setTypeHisto((String) row.get(CHAMP_TYPE_HISTO));
 			a.setUserHisto((String) row.get(CHAMP_USER_HISTO));
+			a.setDateHisto((Date) row.get(CHAMP_DATE_HISTO));
 			a.setIdBaseHorairePointage((Integer) row.get(CHAMP_ID_BASE_HORAIRE_POINTAGE));
 			a.setIdBaseHoraireAbsence((Integer) row.get(CHAMP_ID_BASE_HORAIRE_ABSENCE));
 			liste.add(a);

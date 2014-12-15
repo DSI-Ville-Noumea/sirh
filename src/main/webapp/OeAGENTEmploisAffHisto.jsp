@@ -39,11 +39,13 @@
 				    <br/>
 				    <span style="position:relative;width:5px;"></span>
 				    <span style="position:relative;width:60px;text-align:left;">Matricule</span>
-					<span style="position:relative;width:450px;text-align:left;">Service</span>
+					<span style="position:relative;width:300px;text-align:left;">Service</span>
 					<span style="position:relative;width:75px;text-align: center;">Réf. arrêté</span>
 					<span style="position:relative;width:80px;text-align: center;">Date début</span>
 					<span style="position:relative;width:85px;text-align: center;">Date fin</span>
-					<span style="position:relative;text-align:left;">Code école</span>
+					<span style="position:relative;width:85px;text-align:left;">Code école</span>
+					<span style="position:relative;width:100px;text-align:left;">Fait le <br/> par</span>
+					<span style="position:relative;text-align:left;">Type</span>
 					<br/>
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
@@ -54,11 +56,13 @@
 							%>
 									<tr id="<%=indiceHistoAff%>" onmouseover="SelectLigne(<%=indiceHistoAff%>,<%=process.getListeHistoAffectation().size()%>)">										
 										<td class="sigp2NewTab-liste" style="position:relative;width:60px;text-align: left;"><%=process.getVAL_ST_MATR(indiceHistoAff)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;width:450px;text-align: left;"><%=process.getVAL_ST_SERV(indiceHistoAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:300px;text-align: left;"><%=process.getVAL_ST_SERV(indiceHistoAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:75px;text-align: right;"><%=process.getVAL_ST_REF_ARR(indiceHistoAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_DEBUT(indiceHistoAff)%></td>
 										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: center;"><%=process.getVAL_ST_DATE_FIN(indiceHistoAff)%></td>
-										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_CODE_ECOLE(indiceHistoAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:80px;text-align: left;">&nbsp;<%=process.getVAL_ST_CODE_ECOLE(indiceHistoAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;width:100px;text-align: left;">&nbsp;<%=process.getVAL_ST_INFO_HISTO(indiceHistoAff)%></td>
+										<td class="sigp2NewTab-liste" style="position:relative;text-align: left;">&nbsp;<%=process.getVAL_ST_TYPE_HISTO(indiceHistoAff)%></td>
 									</tr>
 									<%
 									indiceHistoAff++;

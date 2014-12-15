@@ -74,6 +74,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	private void initialiseListeHistoAffectation(HttpServletRequest request) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
 
 		ArrayList<HistoAffectation> affHisto = getHistoAffectationDao().listerAffectationHistoAvecAgent(
 				getAgentCourant().getIdAgent());
@@ -97,6 +98,10 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 						ah.getDateFinAff() == null ? "&nbsp;" : sdf.format(ah.getDateFinAff()));
 				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff), ah.getCodeEcole().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: ah.getCodeEcole());
+				addZone(getNOM_ST_INFO_HISTO(indiceHistoAff),
+						sdf.format(ah.getDateHisto()) + " à " + sdfHeure.format(ah.getDateHisto()) + "<br/>"
+								+ ah.getUserHisto());
+				addZone(getNOM_ST_TYPE_HISTO(indiceHistoAff), ah.getTypeHisto());
 
 				indiceHistoAff++;
 			}
@@ -312,5 +317,21 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
+	}
+
+	public String getNOM_ST_INFO_HISTO(int i) {
+		return "NOM_ST_INFO_HISTO" + i;
+	}
+
+	public String getVAL_ST_INFO_HISTO(int i) {
+		return getZone(getNOM_ST_INFO_HISTO(i));
+	}
+
+	public String getNOM_ST_TYPE_HISTO(int i) {
+		return "NOM_ST_TYPE_HISTO" + i;
+	}
+
+	public String getVAL_ST_TYPE_HISTO(int i) {
+		return getZone(getNOM_ST_TYPE_HISTO(i));
 	}
 }
