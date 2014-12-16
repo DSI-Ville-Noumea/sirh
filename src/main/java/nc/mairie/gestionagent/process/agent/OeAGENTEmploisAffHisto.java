@@ -1,17 +1,14 @@
 package nc.mairie.gestionagent.process.agent;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nc.mairie.connecteur.metier.Spmtsr;
 import nc.mairie.metier.Const;
 import nc.mairie.metier.agent.Agent;
-import nc.mairie.metier.poste.FichePoste;
-import nc.mairie.metier.poste.HistoAffectation;
 import nc.mairie.metier.poste.Service;
 import nc.mairie.spring.dao.metier.poste.FichePosteDao;
-import nc.mairie.spring.dao.metier.poste.HistoAffectationDao;
 import nc.mairie.spring.dao.utils.SirhDao;
 import nc.mairie.spring.utils.ApplicationContextProvider;
 import nc.mairie.technique.BasicProcess;
@@ -31,8 +28,7 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Agent agentCourant;
-	private ArrayList<HistoAffectation> listeHistoAffectation;
-	private HistoAffectationDao histoAffectationDao;
+	private ArrayList<Spmtsr> listeHistoAffectation;
 	private FichePosteDao fichePosteDao;
 
 	/**
@@ -64,44 +60,30 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 	private void initialiseDao() {
 		// on initialise le dao
 		ApplicationContext context = ApplicationContextProvider.getContext();
-		if (getHistoAffectationDao() == null) {
-			setHistoAffectationDao(new HistoAffectationDao((SirhDao) context.getBean("sirhDao")));
-		}
 		if (getFichePosteDao() == null) {
 			setFichePosteDao(new FichePosteDao((SirhDao) context.getBean("sirhDao")));
 		}
 	}
 
 	private void initialiseListeHistoAffectation(HttpServletRequest request) throws Exception {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm");
-
-		ArrayList<HistoAffectation> affHisto = getHistoAffectationDao().listerAffectationHistoAvecAgent(
-				getAgentCourant().getIdAgent());
+		ArrayList<Spmtsr> affHisto = Spmtsr.listerSpmtsrAvecAgentOrderDateDeb(getTransaction(), getAgentCourant());
 		setListeHistoAffectation(affHisto);
 
 		int indiceHistoAff = 0;
 		if (getListeHistoAffectation() != null) {
 			for (int i = 0; i < getListeHistoAffectation().size(); i++) {
-				HistoAffectation ah = (HistoAffectation) getListeHistoAffectation().get(i);
-				FichePoste fp = getFichePosteDao().chercherFichePoste(ah.getIdFichePoste());
-				Service service = Service.chercherService(getTransaction(), fp.getIdServi());
+				Spmtsr ah = (Spmtsr) getListeHistoAffectation().get(i);
+				Service service = Service.chercherService(getTransaction(), ah.getServi());
 
-				addZone(getNOM_ST_MATR(indiceHistoAff),
-						ah.getIdAgent().toString().substring(3, ah.getIdAgent().toString().length()));
+				addZone(getNOM_ST_MATR(indiceHistoAff), ah.getNomatr());
 				addZone(getNOM_ST_SERV(indiceHistoAff), service.getLibService().equals(Const.CHAINE_VIDE) ? "&nbsp;"
 						: service.getLibService());
 				addZone(getNOM_ST_REF_ARR(indiceHistoAff),
-						ah.getRefArreteAff() == null ? "&nbsp;" : ah.getRefArreteAff());
-				addZone(getNOM_ST_DATE_DEBUT(indiceHistoAff), sdf.format(ah.getDateDebutAff()));
-				addZone(getNOM_ST_DATE_FIN(indiceHistoAff),
-						ah.getDateFinAff() == null ? "&nbsp;" : sdf.format(ah.getDateFinAff()));
-				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff), ah.getCodeEcole().equals(Const.CHAINE_VIDE) ? "&nbsp;"
-						: ah.getCodeEcole());
-				addZone(getNOM_ST_INFO_HISTO(indiceHistoAff),
-						sdf.format(ah.getDateHisto()) + " à " + sdfHeure.format(ah.getDateHisto()) + "<br/>"
-								+ ah.getUserHisto());
-				addZone(getNOM_ST_TYPE_HISTO(indiceHistoAff), ah.getTypeHisto());
+						ah.getRefarr().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getRefarr());
+				addZone(getNOM_ST_DATE_DEBUT(indiceHistoAff), ah.getDatdeb());
+				addZone(getNOM_ST_DATE_FIN(indiceHistoAff), ah.getDatfin());
+				addZone(getNOM_ST_CODE_ECOLE(indiceHistoAff),
+						ah.getCdecol().equals(Const.CHAINE_VIDE) ? "&nbsp;" : ah.getCdecol());
 
 				indiceHistoAff++;
 			}
@@ -187,11 +169,11 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 		this.agentCourant = agentCourant;
 	}
 
-	public ArrayList<HistoAffectation> getListeHistoAffectation() {
+	public ArrayList<Spmtsr> getListeHistoAffectation() {
 		return listeHistoAffectation;
 	}
 
-	private void setListeHistoAffectation(ArrayList<HistoAffectation> listeHistoAffectation) {
+	private void setListeHistoAffectation(ArrayList<Spmtsr> listeHistoAffectation) {
 		this.listeHistoAffectation = listeHistoAffectation;
 	}
 
@@ -303,35 +285,11 @@ public class OeAGENTEmploisAffHisto extends BasicProcess {
 		return getZone(getNOM_ST_CODE_ECOLE(i));
 	}
 
-	public HistoAffectationDao getHistoAffectationDao() {
-		return histoAffectationDao;
-	}
-
-	public void setHistoAffectationDao(HistoAffectationDao histoAffectationDao) {
-		this.histoAffectationDao = histoAffectationDao;
-	}
-
 	public FichePosteDao getFichePosteDao() {
 		return fichePosteDao;
 	}
 
 	public void setFichePosteDao(FichePosteDao fichePosteDao) {
 		this.fichePosteDao = fichePosteDao;
-	}
-
-	public String getNOM_ST_INFO_HISTO(int i) {
-		return "NOM_ST_INFO_HISTO" + i;
-	}
-
-	public String getVAL_ST_INFO_HISTO(int i) {
-		return getZone(getNOM_ST_INFO_HISTO(i));
-	}
-
-	public String getNOM_ST_TYPE_HISTO(int i) {
-		return "NOM_ST_TYPE_HISTO" + i;
-	}
-
-	public String getVAL_ST_TYPE_HISTO(int i) {
-		return getZone(getNOM_ST_TYPE_HISTO(i));
 	}
 }
