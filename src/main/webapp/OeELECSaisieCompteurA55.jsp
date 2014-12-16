@@ -7,7 +7,7 @@
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
 <LINK rel="stylesheet" href="theme/calendrier-mairie.css" type="text/css">
-<TITLE>Gestion des compteurs ASA</TITLE>
+<TITLE>Gestion des compteurs</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 <SCRIPT type="text/javascript" src="js/GestionCalendrier.js"></SCRIPT> 
 
@@ -50,7 +50,7 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Délégation (A55)</legend>			
+			<legend class="sigp2Legend">Délégation DP</legend>			
 				<div style="overflow: auto;height: 250px;width:1000px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">

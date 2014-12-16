@@ -6,7 +6,7 @@
 <META name="GENERATOR" content="IBM WebSphere Page Designer V3.5.3 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="theme/sigp2.css" rel="stylesheet" type="text/css">
-<TITLE>Gestion des compteurs ASA</TITLE>
+<TITLE>Gestion des compteurs</TITLE>
 <SCRIPT language="javascript" src="js/GestionBoutonDroit.js"></SCRIPT> 
 
 <SCRIPT language="JavaScript">
@@ -49,7 +49,7 @@ function testClickEnrigistrer(){
 		<BR/>
 		
 	    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:1030px;">
-			<legend class="sigp2Legend">Compteurs des réunions des membres du bureau directeur (A48)</legend>			
+			<legend class="sigp2Legend">Compteurs des réunions des membres du bureau directeur</legend>			
 				<div style="overflow: auto;height: 250px;width:1000px;margin-right: 0px;margin-left: 0px;">
 						<table class="sigp2NewTab" style="text-align:left;width:980px;">
 							<tr bgcolor="#EFEFEF">

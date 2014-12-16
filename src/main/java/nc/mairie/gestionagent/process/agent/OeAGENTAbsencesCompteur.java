@@ -317,14 +317,14 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 						.equals(EnumTypeAbsence.ASA_A52.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs ASA.");
+			setMessageInfo("La gestion de ce compteur se fait dans le menu Election / Saisie des compteurs.");
 
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.ASA_A50.getCode().toString())
 				|| getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 						.equals(EnumTypeAbsence.ASA_A49.getCode().toString())) {
 			addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
-			setMessageInfo("Ce type d'ASA ne se gère pas par compteur.");
+			setMessageInfo("Ce type d'absence syndicale ne se gère pas par compteur.");
 
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {

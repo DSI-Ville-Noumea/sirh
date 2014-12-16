@@ -335,7 +335,7 @@
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
                             <td align="center">
-                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
+                            <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
                             <%if(abs.isAffichageBoutonAnnuler()){ %>                            	
@@ -363,7 +363,7 @@
                             <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
                             <td><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
                             <%} %>
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>
@@ -371,7 +371,7 @@
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>">
                             <%} %>                            
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>
@@ -379,7 +379,7 @@
                             <%} %>
 							</td>  
                             <td align="center">
-                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.ASA.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
+                            <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.A_VALIDER.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>

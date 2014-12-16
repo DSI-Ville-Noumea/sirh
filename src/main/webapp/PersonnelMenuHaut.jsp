@@ -177,11 +177,11 @@ document.write(menuPTGPayeur.afficher());
 //*               Le menu haut Election
 //***************************************************************
 var menuElecCompteur = new MenuHaut("Module_election_saisieCompteur");
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA48", "COMPTEUR", "Compteur A48", true, false,"Bureau Directeur (A48)"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"Congres et conseil syndical (A54)"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA55", "COMPTEUR", "Compteur A55", true, false,"Delegation DP (A55)"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA53", "COMPTEUR", "Compteur A53", true, false,"Formation Syndicale (A53)"));
-menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA52", "COMPTEUR", "Compteur A52", true, false,"Decharge de service (A52)"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA48", "COMPTEUR", "Compteur A48", true, false,"Bureau Directeur"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA54", "COMPTEUR", "Compteur A54", true, false,"Congrès et conseil syndical"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA55", "COMPTEUR", "Compteur A55", true, false,"Délégation DP"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA53", "COMPTEUR", "Compteur A53", true, false,"Formation Syndicale"));
+menuElecCompteur.ajouterFils(new Lien("ELECSaisieCompteurA52", "COMPTEUR", "Compteur A52", true, false,"Décharge de service CTP"));
 document.write(menuElecCompteur.afficher());
 
 //***************************************************************

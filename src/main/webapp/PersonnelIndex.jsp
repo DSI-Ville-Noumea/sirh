@@ -139,7 +139,7 @@ if (affAbsence.equals("TRUE")){ %>
 	String affElection =  (String) ServletAgent.getMesParametres().get("AFFICHAGE_ELECTION");
 	if (affElection.equals("TRUE")){ %>
 		var Module_election = new Dossier("Module_election", "Gestion des élections","GESTION ELECTIONS");
-		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteurA48", "Saisie des compteurs ASA", "Saisie des compteurs ASA", true));
+		Module_election.ajouterFils(new Lien("saisieCompteur", "ELECSaisieCompteurA48", "Saisie des compteurs", "Saisie des compteurs", true));
 	<%}%>
 	
 		

@@ -104,7 +104,7 @@
 				    <%} %>
 				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* ASA - Réunion des membres du bureau directeur (A48)</legend>
+				    	<legend class="sigp2Legend">* Réunion des membres du bureau directeur</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:200px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="200px;" align="center">En cours</td>
@@ -119,7 +119,7 @@
 				    <BR/>
 				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* ASA - Congrès et conseil syndical (A54)</legend>
+				    	<legend class="sigp2Legend">* Congrès et conseil syndical</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:200px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="200px;" align="center">En cours</td>
@@ -134,7 +134,7 @@
 				    <BR/>	
 				    
 				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
-				    	<legend class="sigp2Legend">* ASA - Délégation (A55)</legend>
+				    	<legend class="sigp2Legend">* Délégation DP</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:400px;">
 							<tr bgcolor="#EFEFEF">
 								<td width="150px;" align="center">En cours</td>
