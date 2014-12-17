@@ -41,4 +41,9 @@ public class AgentDto {
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return idAgent.toString().equals(((AgentDto) obj).getIdAgent().toString());
+	}
 }

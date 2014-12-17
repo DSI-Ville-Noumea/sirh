@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import nc.mairie.enums.EnumTypeAbsence;
+import nc.mairie.gestionagent.absence.dto.AgentOrganisationSyndicaleDto;
 import nc.mairie.gestionagent.absence.dto.CompteurDto;
 import nc.mairie.gestionagent.absence.dto.MotifCompteurDto;
 import nc.mairie.gestionagent.absence.dto.OrganisationSyndicaleDto;
@@ -27,6 +28,7 @@ import nc.mairie.technique.UserAppli;
 import nc.mairie.technique.VariableGlobale;
 import nc.mairie.utils.MairieUtils;
 import nc.mairie.utils.MessageUtils;
+import nc.mairie.utils.VariablesActivite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +45,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
      *
      */
 	private static final long serialVersionUID = 1L;
+	public static final int STATUT_RECHERCHER_AGENT_CREATE = 1;
 	private Logger logger = LoggerFactory.getLogger(OeELECSaisieCompteurA52.class);
 
 	private ArrayList<CompteurDto> listeCompteur;
 	private ArrayList<OrganisationSyndicaleDto> listeOrganisationSyndicale;
+	private OrganisationSyndicaleDto organisationCourante;
+	private ArrayList<AgentOrganisationSyndicaleDto> listeRepresentant;
 	private String[] LB_OS;
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
@@ -54,6 +59,10 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	public String ACTION_MODIFICATION = "Modification d'un compteur.";
 	public String ACTION_CREATION = "Création d'un compteur.";
 	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
+	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants";
+	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants";
+	public String ACTION_CREATION_REPRE = "Création d'un représentant";
+	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant";
 
 	private AgentDao agentDao;
 
@@ -90,6 +99,14 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		initialiseListeDeroulante();
 
 		initialiseListeCompteur(request);
+
+		if (etatStatut() == STATUT_RECHERCHER_AGENT_CREATE) {
+			Agent agt = (Agent) VariablesActivite.recuperer(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			VariablesActivite.enlever(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE);
+			if (agt != null) {
+				addZone(getNOM_ST_AGENT_CREATE(), agt.getNomatr().toString());
+			}
+		}
 	}
 
 	private void initialiseDao() {
@@ -204,6 +221,48 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 					return performPB_VISUALISATION(request, i);
 				}
 			}
+
+			// Si clic sur le bouton PB_VISU_REPRESENTANT
+			for (int i = 0; i < getListeCompteur().size(); i++) {
+				if (testerParametre(request, getNOM_PB_VISU_REPRESENTANT(i))) {
+					return performPB_VISU_REPRESENTANT(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_REPRESENTANT
+			for (int i = 0; i < getListeCompteur().size(); i++) {
+				if (testerParametre(request, getNOM_PB_MODIFIER_REPRESENTANT(i))) {
+					return performPB_MODIFIER_REPRESENTANT(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_AJOUTER_REPRESENTANT
+			if (testerParametre(request, getNOM_PB_AJOUTER_REPRESENTANT())) {
+				return performPB_AJOUTER_REPRESENTANT(request);
+			}
+
+			// Si clic sur le bouton PB_MODIFIER_REPRE
+			for (int j = 0; j < getListeRepresentant().size(); j++) {
+				Integer i = getListeRepresentant().get(j).getIdAgent();
+				if (testerParametre(request, getNOM_PB_MODIFIER_REPRE(i))) {
+					return performPB_MODIFIER_REPRE(request, i);
+				}
+			}
+
+			// Si clic sur le bouton PB_PB_RECHERCHER_AGENT_CREATE
+			if (testerParametre(request, getNOM_PB_RECHERCHER_AGENT_CREATE())) {
+				return performPB_RECHERCHER_AGENT_CREATE(request);
+			}
+
+			// Si clic sur le bouton PB_CREATE
+			if (testerParametre(request, getNOM_PB_CREATE())) {
+				return performPB_CREATE(request);
+			}
+
+			// Si clic sur le bouton PB_VALIDER_REPRESENTANT
+			if (testerParametre(request, getNOM_PB_VALIDER_REPRESENTANT())) {
+				return performPB_VALIDER_REPRESENTANT(request);
+			}
 		}
 		// Si TAG INPUT non géré par le process
 		setStatut(STATUT_MEME_PROCESS);
@@ -264,6 +323,8 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 		addZone(getNOM_ST_DATE_FIN(), Const.CHAINE_VIDE);
 		addZone(getNOM_LB_MOTIF_SELECT(), Const.ZERO);
 		addZone(getNOM_LB_OS_SELECT(), Const.ZERO);
+		addZone(getNOM_ST_AGENT_CREATE(), Const.CHAINE_VIDE);
+		addZone(getNOM_RG_REPRESENTANT_INACTIF(), getNOM_RB_NON());
 	}
 
 	public String getNOM_PB_AJOUTER() {
@@ -292,6 +353,11 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 		if (!initialiseCompteurCourant(request, compteurCourant))
 			return false;
+
+		if (getListeRepresentant().size() == 0) {
+			setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant
+					.getOrganisationSyndicaleDto().getListeAgents());
+		}
 
 		// On nomme l'action
 		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION);
@@ -599,5 +665,266 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 
 	public void setAgentDao(AgentDao agentDao) {
 		this.agentDao = agentDao;
+	}
+
+	public String getNOM_PB_VISU_REPRESENTANT(int i) {
+		return "NOM_PB_VISU_REPRESENTANT" + i;
+	}
+
+	public boolean performPB_VISU_REPRESENTANT(HttpServletRequest request, int indiceEltAConsulter) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAConsulter);
+
+		setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant.getOrganisationSyndicaleDto()
+				.getListeAgents());
+
+		if (!affichageRepresentant(request))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_VISU_REPRESENTANT);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_PB_MODIFIER_REPRESENTANT(int i) {
+		return "NOM_PB_MODIFIER_REPRESENTANT" + i;
+	}
+
+	public boolean performPB_MODIFIER_REPRESENTANT(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		CompteurDto compteurCourant = (CompteurDto) getListeCompteur().get(indiceEltAModifier);
+		setOrganisationCourante(compteurCourant.getOrganisationSyndicaleDto());
+
+		setListeRepresentant((ArrayList<AgentOrganisationSyndicaleDto>) compteurCourant.getOrganisationSyndicaleDto()
+				.getListeAgents());
+
+		if (!affichageRepresentant(request))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), ACTION_MODIFICATION_REPRESENTANT);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private boolean affichageRepresentant(HttpServletRequest request) throws Exception {
+		for (AgentOrganisationSyndicaleDto ag : getListeRepresentant()) {
+			Agent agent = getAgentDao().chercherAgent(ag.getIdAgent());
+			addZone(getNOM_ST_AGENT_REPRESENTANT(ag.getIdAgent()), agent.getNomAgent() + " " + agent.getPrenomAgent());
+			addZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(ag.getIdAgent()), ag.isActif() ? "oui" : "non");
+		}
+		return true;
+	}
+
+	public String getNOM_ST_AGENT_REPRESENTANT(int i) {
+		return "NOM_ST_AGENT_REPRESENTANT" + i;
+	}
+
+	public String getVAL_ST_AGENT_REPRESENTANT(int i) {
+		return getZone(getNOM_ST_AGENT_REPRESENTANT(i));
+	}
+
+	public String getNOM_ST_AGENT_REPRESENTANT_ACTIF(int i) {
+		return "NOM_ST_AGENT_REPRESENTANT_ACTIF" + i;
+	}
+
+	public String getVAL_ST_AGENT_REPRESENTANT_ACTIF(int i) {
+		return getZone(getNOM_ST_AGENT_REPRESENTANT_ACTIF(i));
+	}
+
+	public ArrayList<AgentOrganisationSyndicaleDto> getListeRepresentant() {
+		return listeRepresentant == null ? new ArrayList<AgentOrganisationSyndicaleDto>() : listeRepresentant;
+	}
+
+	public void setListeRepresentant(ArrayList<AgentOrganisationSyndicaleDto> listeRepresentant) {
+		this.listeRepresentant = listeRepresentant;
+	}
+
+	public String getNOM_PB_AJOUTER_REPRESENTANT() {
+		return "NOM_PB_AJOUTER_REPRESENTANT";
+	}
+
+	public boolean performPB_AJOUTER_REPRESENTANT(HttpServletRequest request) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_REPRESENTANT(), ACTION_CREATION_REPRE);
+		videZonesDeSaisie(request);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	public String getNOM_ST_ACTION_REPRESENTANT() {
+		return "NOM_ST_ACTION_REPRESENTANT";
+	}
+
+	public String getVAL_ST_ACTION_REPRESENTANT() {
+		return getZone(getNOM_ST_ACTION_REPRESENTANT());
+	}
+
+	public String getNOM_PB_MODIFIER_REPRE(int i) {
+		return "NOM_PB_MODIFIER_REPRE" + i;
+	}
+
+	public boolean performPB_MODIFIER_REPRE(HttpServletRequest request, int indiceEltAModifier) throws Exception {
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
+		videZonesDeSaisie(request);
+
+		AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
+		dto.setIdAgent(indiceEltAModifier);
+
+		AgentOrganisationSyndicaleDto agentCourant = (AgentOrganisationSyndicaleDto) getListeRepresentant().get(
+				getListeRepresentant().indexOf(dto));
+
+		if (!initialiseRepresentantCourant(request, agentCourant))
+			return false;
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION_REPRESENTANT(), ACTION_MODIFICATION_REPRE);
+
+		setStatut(STATUT_MEME_PROCESS);
+		return true;
+	}
+
+	private boolean initialiseRepresentantCourant(HttpServletRequest request, AgentOrganisationSyndicaleDto agentCourant)
+			throws Exception {
+		Agent ag = getAgentDao().chercherAgent(agentCourant.getIdAgent());
+		addZone(getNOM_ST_AGENT_CREATE(), ag.getNomatr().toString());
+		addZone(getNOM_RG_REPRESENTANT_INACTIF(), agentCourant.isActif() ? getNOM_RB_OUI() : getNOM_RB_NON());
+		return true;
+	}
+
+	public String getNOM_ST_AGENT_CREATE() {
+		return "NOM_ST_AGENT_CREATE";
+	}
+
+	public String getVAL_ST_AGENT_CREATE() {
+		return getZone(getNOM_ST_AGENT_CREATE());
+	}
+
+	public String getNOM_PB_RECHERCHER_AGENT_CREATE() {
+		return "NOM_PB_RECHERCHER_AGENT_CREATE";
+	}
+
+	public boolean performPB_RECHERCHER_AGENT_CREATE(HttpServletRequest request) throws Exception {
+
+		// On met l'agent courant en var d'activité
+		VariablesActivite.ajouter(this, VariablesActivite.ACTIVITE_AGENT_MAIRIE, new Agent());
+		setStatut(STATUT_RECHERCHER_AGENT_CREATE, true);
+		return true;
+	}
+
+	public String getNOM_PB_CREATE() {
+		return "NOM_PB_CREATE";
+	}
+
+	public boolean performPB_CREATE(HttpServletRequest request) throws Exception {
+		if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_CREATION_REPRE)) {
+			String nomatr = getVAL_ST_AGENT_CREATE();
+			if (nomatr.equals(Const.CHAINE_VIDE)) {
+				// "ERR002","La zone @ est obligatoire."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR002", "agent"));
+				return false;
+			}
+			try {
+				Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + nomatr));
+				AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
+				dto.setIdAgent(agent.getIdAgent());
+				Boolean actif = getZone(getNOM_RG_REPRESENTANT_INACTIF()).equals(getNOM_RB_OUI());
+				dto.setActif(actif);
+
+				getListeRepresentant().add(dto);
+				affichageRepresentant(request);
+				videZonesDeSaisie(request);
+			} catch (Exception e) {
+				// "ERR503",
+				// "L'agent @ n'existe pas. Merci de saisir un matricule existant."
+				getTransaction().declarerErreur(MessageUtils.getMessage("ERR503", nomatr));
+				return false;
+			}
+		} else if (getVAL_ST_ACTION_REPRESENTANT().equals(ACTION_MODIFICATION_REPRE)) {
+			Agent agent = getAgentDao().chercherAgent(Integer.valueOf("900" + getVAL_ST_AGENT_CREATE()));
+			AgentOrganisationSyndicaleDto dto = new AgentOrganisationSyndicaleDto();
+			dto.setIdAgent(agent.getIdAgent());
+			AgentOrganisationSyndicaleDto select = getListeRepresentant().get(getListeRepresentant().indexOf(dto));
+			Boolean actif = getZone(getNOM_RG_REPRESENTANT_INACTIF()).equals(getNOM_RB_OUI());
+			select.setActif(actif);
+			affichageRepresentant(request);
+			addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
+			videZonesDeSaisie(request);
+		}
+		return true;
+	}
+
+	public String getNOM_PB_VALIDER_REPRESENTANT() {
+		return "NOM_PB_VALIDER_REPRESENTANT";
+	}
+
+	public boolean performPB_VALIDER_REPRESENTANT(HttpServletRequest request) throws Exception {
+
+		// on recupere l'agent connecté
+		Agent agentConnecte = getAgentConnecte(request);
+		if (agentConnecte == null) {
+			// "Votre login ne nous permet pas de trouver votre identifiant. Merci de contacter le responsable du projet."
+			getTransaction().declarerErreur(MessageUtils.getMessage("ERR183"));
+			return false;
+		}
+
+		// on sauvegarde les données
+		SirhAbsWSConsumer consuAbs = new SirhAbsWSConsumer();
+		ReturnMessageDto message = new ReturnMessageDto();
+
+		// on sauvegarde
+		message = consuAbs.saveRepresentantAsaA52(getOrganisationCourante().getIdOrganisation(), new JSONSerializer()
+				.exclude("*.class").transform(new MSDateTransformer(), Date.class).serialize(getListeRepresentant()));
+
+		if (message.getErrors().size() > 0) {
+			String err = Const.CHAINE_VIDE;
+			for (String erreur : message.getErrors()) {
+				err += " " + erreur;
+			}
+			getTransaction().declarerErreur(err);
+		} else {
+			// "INF700", "Les représentants ont bien été mis à jour."
+			setStatut(STATUT_MEME_PROCESS, false, MessageUtils.getMessage("INF700"));
+		}
+
+		// On nomme l'action
+		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+		addZone(getNOM_ST_ACTION_REPRESENTANT(), Const.CHAINE_VIDE);
+		return true;
+	}
+
+	public OrganisationSyndicaleDto getOrganisationCourante() {
+		return organisationCourante;
+	}
+
+	public void setOrganisationCourante(OrganisationSyndicaleDto organisationCourante) {
+		this.organisationCourante = organisationCourante;
+	}
+
+	public String getNOM_RG_REPRESENTANT_INACTIF() {
+		return "NOM_RG_REPRESENTANT_INACTIF";
+	}
+
+	public String getVAL_RG_REPRESENTANT_INACTIF() {
+		return getZone(getNOM_RG_REPRESENTANT_INACTIF());
+	}
+
+	public String getNOM_RB_NON() {
+		return "NOM_RB_NON";
+	}
+
+	public String getNOM_RB_OUI() {
+		return "NOM_RB_OUI";
 	}
 }

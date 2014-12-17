@@ -1,11 +1,14 @@
 package nc.mairie.gestionagent.absence.dto;
 
+import java.util.List;
+
 public class OrganisationSyndicaleDto {
 
 	private Integer idOrganisation;
 	private String libelle;
 	private String sigle;
 	private boolean actif;
+	private List<AgentOrganisationSyndicaleDto> listeAgents;
 
 	public Integer getIdOrganisation() {
 		return idOrganisation;
@@ -42,6 +45,14 @@ public class OrganisationSyndicaleDto {
 	@Override
 	public boolean equals(Object obj) {
 		return idOrganisation.toString().equals(((OrganisationSyndicaleDto) obj).getIdOrganisation().toString());
+	}
+
+	public List<AgentOrganisationSyndicaleDto> getListeAgents() {
+		return listeAgents;
+	}
+
+	public void setListeAgents(List<AgentOrganisationSyndicaleDto> listeAgents) {
+		this.listeAgents = listeAgents;
 	}
 
 }

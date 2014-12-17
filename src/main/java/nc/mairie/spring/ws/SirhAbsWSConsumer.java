@@ -40,6 +40,7 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 
 	private static final String sirhAbsListOrganisationSyndicale = "organisation/listOrganisation";
 	private static final String sirhAbsOrganisationSyndicaleSauvegarde = "organisation/addOS";
+	private static final String sirhAbsAddRepresentantAsaA52 = "asaA52/saveRepresentant";
 
 	private static final String sirhAbsAgentsApprobateurs = "droits/approbateurs";
 
@@ -593,6 +594,16 @@ public class SirhAbsWSConsumer implements ISirhAbsWSConsumer {
 		String url = urlWS + sirhAbsAddCompteurCongeAnnuel;
 		HashMap<String, String> params = new HashMap<>();
 		params.put("idAgent", idAgent.toString());
+		ClientResponse res = createAndPostRequest(params, url, json);
+		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
+	}
+
+	@Override
+	public ReturnMessageDto saveRepresentantAsaA52(Integer idOrganisationSyndicale, String json) {
+		String urlWS = (String) ServletAgent.getMesParametres().get("SIRH_ABS_WS");
+		String url = urlWS + sirhAbsAddRepresentantAsaA52;
+		HashMap<String, String> params = new HashMap<>();
+		params.put("idOrganisationSyndicale", idOrganisationSyndicale.toString());
 		ClientResponse res = createAndPostRequest(params, url, json);
 		return readResponseWithReturnMessageDto(ReturnMessageDto.class, res, url);
 	}

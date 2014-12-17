@@ -154,6 +154,29 @@
 				    </FIELDSET>
 				    <BR/>
 				    
+				    <%if(process.isAfficheSoldeAsaA52()){ %>
+				    <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
+				    	<legend class="sigp2Legend">* Décharge de service</legend>
+						<table class="sigp2NewTab" style="text-align:left;width:400px;">
+							<tr bgcolor="#EFEFEF">
+								<td width="150px;" align="center">En cours pour OS</td>
+								<td width="90px;" align="center">Début</td>
+								<td width="90px;" align="center">Fin</td>
+								<td>Historique</td>
+							</tr>
+							<% for(int i = 0; i< process.getListeSoldeA52().size();i++){ %>
+							<tr>
+								<td style="text-align: center"><%=process.getVAL_ST_SOLDE_ASA_A52(i)%></td>
+								<td style="text-align: center"><%=process.getVAL_ST_DEBUT_ASA_A52(i)%></td>
+								<td style="text-align: center"><%=process.getVAL_ST_FIN_ASA_A52(i)%></td>
+								<td style="text-align: center"><INPUT title="historique" type="image" src="images/oeil.gif" height="15px" width="15px" name="<%=process.getNOM_PB_HISTORIQUE(EnumTypeAbsence.ASA_A52.getCode())%>"></td>
+							</tr>
+							<% } %>
+						</table>				    
+				    </FIELDSET>
+				    <BR/>
+				    <%} %>
+				    
 				     <FIELDSET class="sigp2Fieldset" style="text-align:left;width:450px;">
 				    	<legend class="sigp2Legend">* Congés Exceptionnels</legend>
 						<table class="sigp2NewTab" style="text-align:left;width:400px;">

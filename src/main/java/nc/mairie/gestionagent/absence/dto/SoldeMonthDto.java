@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class SoldeMonthDto {
 
-	private int soldeAsaA55;
+	private int soldeAsa;
 	private Date dateDebut;
 	private Date dateFin;
 
@@ -24,12 +24,12 @@ public class SoldeMonthDto {
 		this.dateFin = dateFin;
 	}
 
-	public int getSoldeAsaA55() {
-		return soldeAsaA55;
+	public int getSoldeAsa() {
+		return soldeAsa;
 	}
 
-	public void setSoldeAsaA55(int soldeAsaA55) {
-		this.soldeAsaA55 = soldeAsaA55;
+	public void setSoldeAsa(int soldeAsa) {
+		this.soldeAsa = soldeAsa;
 	}
 
 }
