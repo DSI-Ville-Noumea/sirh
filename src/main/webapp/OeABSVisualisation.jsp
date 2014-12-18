@@ -87,15 +87,15 @@
                            {"bSortable": true,"sWidth": "150px"},
                            {"bSortable": true,"sWidth": "40px"},
                            {"bSortable": true,"sWidth": "150px"},
-                           {"bSortable": true,"sWidth": "70px","sClass" : "center"},
-                           {"bSortable": true,"sWidth": "70px","sClass" : "center"},
-                           {"bSortable": true,"sWidth": "50px"},
+                           {"bSortable": true,"sWidth": "60px","sClass" : "center"},
+                           {"bSortable": true,"sWidth": "60px","sClass" : "center"},
+                           {"bSortable": true,"sWidth": "40px"},
                            {"bSortable": true,"sWidth": "120px"},
                            {"bSortable": true,"sWidth": "60px"},
-                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
-                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
-                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"},
-                           {"bSearchable": false,"bSortable": false,"sWidth": "30px","sClass" : "center"}
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"},
+                           {"bSearchable": false,"bSortable": false,"sWidth": "20px","sClass" : "center"}
                         ],
                         "sDom": '<"H"flip>t<"F"ripT>',
                         "bStateSave": true,
@@ -306,14 +306,14 @@
             <FIELDSET class="sigp2Fieldset" style="text-align:left;">
                 <legend class="sigp2Legend">Visualisation des demandes</legend>
                 <BR/>
-                <table cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
+                <table width="880px" cellpadding="0" cellspacing="0" border="0" class="display" id="VisualisationAbsenceList"> 
                     <thead>
                         <tr>
-                            <th>
+                            <th width="20px" align="center">
                             	<img src="images/ajout.gif" height="16px" width="16px" title="Creer une absence" onClick="executeBouton('<%=process.getNOM_PB_AJOUTER_ABSENCE()%>')" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "")%>">
             				</th>  
-                            <th> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
-                            <th> <img src="images/info.jpg" height="16px" width="16px" title="Alertes."></th>
+                            <th align="center"> <img src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence"></th>
+                            <th align="center"> <img src="images/info.jpg" height="16px" width="16px" title="Alertes."></th>
                             <th>Matr</th>
                             <th>Agent</th>
                             <th>Cat<br>Statut</th>
@@ -334,7 +334,7 @@
                         	int indiceAbs = abs.getIdDemande();
                         %>
                         <tr id="tr<%=process.getValHistory(indiceAbs)%>">
-                            <td align="center">
+                            <td width="20px" align="center">
                             <%if(abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_ANNUELS.getValue())){ %>                            	
                             	<INPUT title="dupliquer" type="image" src="images/dupliquer.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DUPLIQUER(indiceAbs)%>">
                             <%} %>
@@ -342,10 +342,10 @@
                             	<INPUT title="annuler" type="image" src="images/suppression.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_ANNULER_DEMANDE(indiceAbs)%>">
                             <%} %>
 							</td>  
-                            <td align="center">
+                            <td width="30px" align="center">
                             	<img onkeydown="" onkeypress="" onkeyup="" src="images/loupe.gif" height="16px" width="16px" title="Voir l'historique de l'absence" onClick="loadAbsenceHistory('<%=process.getValHistory(indiceAbs)%>', '<%=process.getHistory(indiceAbs)%>')">
                             </td>
-                            <td align="center">
+                            <td width="40px" align="center">
                             <%if(abs.isDepassementCompteur()){ %>
                             	<img src="images/seuil.png" height="16px" width="16px" title="Le seuil du compteur est dépassé pour cette demande.">
                             <%} %>
@@ -353,16 +353,16 @@
                             	<img src="images/multiple.jpg" height="16px" width="16px" title="Cette demande n'est pas un multiple.">
                             <%} %>
                             </td>                            
-                            <td><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
-                            <td><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
-                            <td><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
-                            <td><%=process.getVAL_ST_TYPE(indiceAbs)%></td>						
-                            <td><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>							
-                            <td><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>							
-                            <td><%=process.getVAL_ST_DUREE(indiceAbs)%></td>							
-                            <td><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
-                            <td><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
-                            <td align="center">
+                            <td width="30px"><%=process.getVAL_ST_MATRICULE(indiceAbs)%></td> 
+                            <td width="150px"><%=process.getVAL_ST_AGENT(indiceAbs)%></td> 
+                            <td width="40px"><%=process.getVAL_ST_INFO_AGENT(indiceAbs)%></td>  
+                            <td width="150px"><%=process.getVAL_ST_TYPE(indiceAbs)%></td>						
+                            <td width="60px"><%=process.getVAL_ST_DATE_DEB(indiceAbs)%></td>							
+                            <td width="60px"><%=process.getVAL_ST_DATE_FIN(indiceAbs)%></td>							
+                            <td width="40px"><%=process.getVAL_ST_DUREE(indiceAbs)%></td>							
+                            <td width="120px"><%=process.getVAL_ST_MOTIF(indiceAbs)%></td>							
+                            <td width="60px"><%=process.getVAL_ST_ETAT(indiceAbs)%></td>	
+                            <td width="20px" align="center">
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
                             <%} %>
@@ -370,7 +370,7 @@
                             	<INPUT title="Valider" type="image" src="images/like.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_VALIDER(indiceAbs)%>">
                             <%} %>
 							</td>  
-                            <td align="center">
+                            <td width="20px" align="center">
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode() || abs.getIdRefEtat()==EnumEtatAbsence.EN_ATTENTE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>">
                             <%} %>                            
@@ -378,7 +378,7 @@
                             	<INPUT title="Rejeter" type="image" src="images/unlike.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_REJETER(indiceAbs)%>">
                             <%} %>
 							</td>  
-                            <td align="center">
+                            <td width="20px" align="center">
                             <%if((abs.getIdRefEtat()==EnumEtatAbsence.APPROUVE.getCode()) && (abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.AS.getValue()||abs.getGroupeAbsence().getIdRefGroupeAbsence()==EnumTypeGroupeAbsence.CONGES_EXCEP.getValue())){ %>
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
@@ -386,7 +386,7 @@
                             	<INPUT title="En attente" type="image" src="images/clock.png"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_EN_ATTENTE(indiceAbs)%>">
                             <%} %>
 							</td>  							
-                            <td>
+                            <td width="20px" >
 <%-- 								<INPUT title="pieces jointes" type="image" src="images/ajout-doc.gif"  height="15px" width="15px" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" name="<%=process.getNOM_PB_DOCUMENT(indiceAbs)%>"> --%>
 							</td>		
                         </tr>
