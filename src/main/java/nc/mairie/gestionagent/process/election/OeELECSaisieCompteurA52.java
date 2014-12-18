@@ -56,13 +56,13 @@ public class OeELECSaisieCompteurA52 extends BasicProcess {
 	private String[] LB_MOTIF;
 	private ArrayList<MotifCompteurDto> listeMotifCompteur;
 
-	public String ACTION_MODIFICATION = "Modification d'un compteur.";
-	public String ACTION_CREATION = "Création d'un compteur.";
-	public String ACTION_VISUALISATION = "Consultation d'un compteur.";
-	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants";
-	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants";
-	public String ACTION_CREATION_REPRE = "Création d'un représentant";
-	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant";
+	public String ACTION_MODIFICATION = "Modification d'un compteur ";
+	public String ACTION_CREATION = "Création d'un compteur ";
+	public String ACTION_VISUALISATION = "Consultation d'un compteur ";
+	public String ACTION_VISU_REPRESENTANT = "Visualisation des représentants ";
+	public String ACTION_MODIFICATION_REPRESENTANT = "Modification des représentants ";
+	public String ACTION_CREATION_REPRE = "Création d'un représentant ";
+	public String ACTION_MODIFICATION_REPRE = "Modification d'un représentant ";
 
 	private AgentDao agentDao;
 
