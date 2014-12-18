@@ -363,8 +363,8 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			}
 		} else if (getTypeAbsenceCourant().getIdRefTypeAbsence().toString()
 				.equals(EnumTypeAbsence.CONGE.getCode().toString())) {
-			if (!(carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10") || carr
-					.getCodeCategorie().equals("11"))) {
+			if (carr.getCodeCategorie().equals("9") || carr.getCodeCategorie().equals("10") || carr
+					.getCodeCategorie().equals("11")) {
 				// "ERR806",
 				// "Cet agent est adjoint, conseiller municipal ou maire, il ne peut avoir de congé annuel."
 				getTransaction().declarerErreur(MessageUtils.getMessage("ERR806"));
@@ -515,7 +515,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			MotifCompteurDto motifDto = new MotifCompteurDto();
-			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
 			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
@@ -587,7 +587,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			MotifCompteurDto motifDto = new MotifCompteurDto();
-			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? new Double(dureeTotaleSaisie) : null);
 			compteurDto.setDureeARetrancher(ajout ? null : new Double(dureeTotaleSaisie));
@@ -652,7 +652,7 @@ public class OeAGENTAbsencesCompteur extends BasicProcess {
 			CompteurDto compteurDto = new CompteurDto();
 			compteurDto.setIdAgent(getAgentCourant().getIdAgent());
 			MotifCompteurDto motifDto = new MotifCompteurDto();
-			motif.setIdMotifCompteur(motif.getIdMotifCompteur());
+			motifDto.setIdMotifCompteur(motif.getIdMotifCompteur());
 			compteurDto.setMotifCompteurDto(motifDto);
 			compteurDto.setDureeAAjouter(ajout ? dureeTotaleSaisie : null);
 			compteurDto.setDureeARetrancher(ajout ? null : dureeTotaleSaisie);
