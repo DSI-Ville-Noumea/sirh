@@ -44,6 +44,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 	private String[] LB_TYPE_JOUR;
 
 	private ArrayList<String> listeAnnee;
+	private String anneeCourante;
 	private ArrayList<JourFerie> listeJourFerie;
 	private ArrayList<TypeJourFerie> listeTypeJourFerie;
 	private JourFerie jourFerieCourant;
@@ -337,6 +338,7 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		setJourFerieCourant(null);
 
 		String annee = getListeAnnee().get(indiceEltAModifier);
+		setAnneeCourante(annee);
 
 		setListeJourFerie(getJourFerieDao().listerJourByAnnee(annee));
 		// init du calendrier courant
@@ -692,10 +694,15 @@ public class OePARAMETRAGEJour extends BasicProcess {
 					getJourFerieCourant().getDateJour(), getJourFerieCourant().getDescription());
 
 		}
-		addZone(getNOM_ST_ACTION(), Const.CHAINE_VIDE);
+
+
+		setListeJourFerie(getJourFerieDao().listerJourByAnnee(getAnneeCourante()));
+		// init du calendrier courant
+		if (!afficheCalendrier(request))
+			return false;
+		
 		addZone(getNOM_ST_ACTION_JOUR(), Const.CHAINE_VIDE);
 		setJourFerieCourant(null);
-		setListeJourFerie(null);
 		return true;
 	}
 
@@ -834,5 +841,13 @@ public class OePARAMETRAGEJour extends BasicProcess {
 		addZone(getNOM_ST_DESCRIPTION(), Const.CHAINE_VIDE);
 		setJourFerieCourant(null);
 
+	}
+
+	public String getAnneeCourante() {
+		return anneeCourante;
+	}
+
+	public void setAnneeCourante(String anneeCourante) {
+		this.anneeCourante = anneeCourante;
 	}
 }

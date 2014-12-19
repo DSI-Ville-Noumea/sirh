@@ -73,7 +73,9 @@
 		<FIELDSET class="sigp2Fieldset" style="text-align: left; width:1030px;">
 			<legend class="sigp2Legend"><%=process.getVAL_ST_ACTION()%></legend>
 			<%if(process.getVAL_ST_ACTION().equals(process.ACTION_VISUALISATION)||process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
-				    <INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_JOUR()%>">				    
+					<%if(process.getVAL_ST_ACTION().equals(process.ACTION_MODIFICATION)){ %>
+				    <INPUT style="margin-left: 5px;" title="ajouter" type="image" class="<%= MairieUtils.getNomClasseCSS(request, process.getNomEcran(), EnumTypeDroit.EDITION, "") %>" src="images/ajout.gif" height="15px" width="16px" name="<%=process.getNOM_PB_AJOUTER_JOUR()%>">
+				    <%} %>				    
 				    <span style="margin-left: 65px;">Date</span>
 				    <span style="margin-left: 35px;">Type</span>
 				    <span style="margin-left: 65px;">Description</span>
