@@ -5,7 +5,6 @@ public class RefTypeSaisiCongeAnnuelDto {
 	private Integer idRefTypeSaisiCongeAnnuel;
 	private String codeBaseHoraireAbsence;
 	private String description;
-	private Integer idRefTypeDemande;
 	private boolean calendarDateDebut;
 	private boolean chkDateDebut;
 	private boolean calendarDateFin;
@@ -32,14 +31,6 @@ public class RefTypeSaisiCongeAnnuelDto {
 
 	public void setCodeBaseHoraireAbsence(String codeBaseHoraireAbsence) {
 		this.codeBaseHoraireAbsence = codeBaseHoraireAbsence;
-	}
-
-	public Integer getIdRefTypeDemande() {
-		return idRefTypeDemande;
-	}
-
-	public void setIdRefTypeDemande(Integer idRefTypeDemande) {
-		this.idRefTypeDemande = idRefTypeDemande;
 	}
 
 	public boolean isCalendarDateDebut() {
